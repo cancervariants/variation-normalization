@@ -1,2 +1,2 @@
 # varlex
-Repository for the Variation Lexicon normalization service
+Repository for the Variant Lexicon normalization service
