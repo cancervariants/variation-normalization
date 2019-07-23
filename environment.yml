@@ -1,0 +1,52 @@
+name: varlexenv
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - apispec=2.0.2=py_0
+  - biopython=1.74=py37h01d97ff_0
+  - bzip2=1.0.8=h01d97ff_0
+  - ca-certificates=2019.6.16=hecc5488_0
+  - certifi=2019.6.16=py37_1
+  - curl=7.65.3=h22ea746_0
+  - flask=1.1.1=py_0
+  - htslib=1.9=h3a161e8_7
+  - itsdangerous=1.1.0=py_0
+  - jinja2=2.10.1=py_0
+  - krb5=1.16.3=hcfa6398_1001
+  - libblas=3.8.0=10_openblas
+  - libcblas=3.8.0=10_openblas
+  - libcurl=7.65.3=h16faf7d_0
+  - libcxx=8.0.0=4
+  - libcxxabi=8.0.0=4
+  - libdeflate=1.0=h1de35cc_1
+  - libedit=3.1.20170329=hcfe32e1_1001
+  - libffi=3.2.1=h6de7cb9_1006
+  - libgfortran=3.0.1=0
+  - liblapack=3.8.0=10_openblas
+  - libopenblas=0.3.6=hd44dcd8_4
+  - libssh2=1.8.2=hcdc9a53_2
+  - markupsafe=1.1.1=py37h1de35cc_0
+  - ncurses=6.1=h0a44026_1002
+  - numpy=1.16.4=py37h6b0580a_0
+  - openblas=0.3.6=hd44dcd8_4
+  - openssl=1.1.1c=h01d97ff_0
+  - pip=19.2=py37_0
+  - python=3.7.3=h93065d6_1
+  - pyyaml=5.1.1=py37h01d97ff_0
+  - readline=8.0=hcfe32e1_0
+  - setuptools=41.0.1=py37_0
+  - sqlite=3.29.0=hb7d70f7_0
+  - tabix=0.2.6=ha92aebf_0
+  - tk=8.6.9=h2573ce8_1002
+  - werkzeug=0.15.5=py_0
+  - wheel=0.33.4=py37_0
+  - xz=5.2.4=h1de35cc_1001
+  - yaml=0.1.7=h1de35cc_1001
+  - zlib=1.2.11=h01d97ff_1005
+  - pip:
+    - apispec-webframeworks==0.4.0
+    - click==7.0
+prefix: /anaconda3/envs/varlexenv
+
