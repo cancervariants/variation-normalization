@@ -1,4 +1,3 @@
-from .token import Token
 from .tokenizer import Tokenizer
 from .tokenize import Tokenize
 

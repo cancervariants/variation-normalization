@@ -8,12 +8,9 @@ const App: React.FC = () => {
     <div>
       <Menu fixed='top' inverted>
         <Container>
-          <Menu.Item header>
-            Varlex Prototype
-        </Menu.Item>
-          <Menu.Item as='a'>
-            Tokenization Testing
-        </Menu.Item>
+          <Menu.Item header>Varlex Prototype</Menu.Item>
+          <Menu.Item as='a'>Tokenization Testing</Menu.Item>
+          <Menu.Item as='a' href="http://localhost:5000/openapi.json">OpenAPI JSON</Menu.Item>
         </Container>
       </Menu>
 

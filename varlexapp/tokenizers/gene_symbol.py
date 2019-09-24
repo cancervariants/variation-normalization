@@ -1,5 +1,5 @@
 from .tokenizer import Tokenizer
-from .token import Token
+from ..models import Token
 
 class GeneSymbol(Tokenizer):
     def __init__(self, gene_cache):

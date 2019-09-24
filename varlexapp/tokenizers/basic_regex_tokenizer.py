@@ -1,7 +1,7 @@
 import re
 
 from .tokenizer import Tokenizer
-from .token import Token
+from ..models import Token
 
 class BasicRegexTokenizer(Tokenizer):
     def __init__(self):

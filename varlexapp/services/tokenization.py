@@ -1,6 +1,8 @@
 from flask import (Blueprint, request)
 
 from ..tokenizers import Tokenize
+from ..schemas import TokenResponseSchema
+from ..models import TokenResponse
 
 bp = Blueprint('tokenize', __name__, url_prefix='/tokens')
 
@@ -22,12 +24,14 @@ def get_tokens():
         responses:
             200:
                 description: OK
+                content:
+                    application/json:
+                        schema:  TokenResponseSchema
     """
 
     search_term = request.args.get('q')
     tokens = tokenizer.perform(search_term)
 
-    return {
-                'searchTerm': search_term,
-                'tokens': [token.as_json() for token in tokens]
-           }
+    resp = TokenResponse(search_term=search_term, tokens=tokens)
+
+    return TokenResponseSchema().dump(resp)
