@@ -7,10 +7,11 @@ dependencies:
   - apispec=2.0.2=py_0
   - biopython=1.74=py37h01d97ff_0
   - bzip2=1.0.8=h01d97ff_0
-  - ca-certificates=2019.6.16=hecc5488_0
-  - certifi=2019.6.16=py37_1
+  - ca-certificates=2019.9.11=hecc5488_0
+  - certifi=2019.9.11=py37_0
   - curl=7.65.3=h22ea746_0
   - flask=1.1.1=py_0
+  - flask-cors=3.0.8=py_0
   - htslib=1.9=h3a161e8_7
   - itsdangerous=1.1.0=py_0
   - jinja2=2.10.1=py_0
@@ -47,6 +48,44 @@ dependencies:
   - zlib=1.2.11=h01d97ff_1005
   - pip:
     - apispec-webframeworks==0.4.0
+    - appdirs==1.4.3
+    - astroid==2.2.5
+    - beautifulsoup4==4.8.0
+    - biocommons-seqrepo==0.5.1
+    - bioutils==0.5.0
+    - bs4==0.0.1
+    - chardet==3.0.4
     - click==7.0
+    - coloredlogs==10.0
+    - cssselect==1.0.3
+    - fake-useragent==0.1.11
+    - humanfriendly==4.18
+    - idna==2.8
+    - iniherit==0.3.9
+    - isort==4.3.21
+    - jedi==0.15.1
+    - lazy-object-proxy==1.4.2
+    - lxml==4.3.4
+    - mccabe==0.6.1
+    - parse==1.12.0
+    - parso==0.5.1
+    - pyee==6.0.0
+    - pylint==2.3.1
+    - pyppeteer==0.0.25
+    - pyquery==1.4.0
+    - pysam==0.15.2
+    - requests==2.22.0
+    - requests-html==0.10.0
+    - seqrepo==0.0.0
+    - six==1.12.0
+    - soupsieve==1.9.2
+    - text-unidecode==1.2
+    - tqdm==4.32.2
+    - typed-ast==1.4.0
+    - urllib3==1.25.3
+    - w3lib==1.20.0
+    - websockets==8.0.1
+    - wrapt==1.11.2
+    - yoyo-migrations==6.1.0
 prefix: /anaconda3/envs/varlexenv
 

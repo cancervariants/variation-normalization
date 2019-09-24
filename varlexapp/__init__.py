@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 from apispec import APISpec
 from apispec_webframeworks.flask import FlaskPlugin
 
@@ -14,6 +15,7 @@ def create_app(test_config=None):
     )
 
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
     app.config.from_mapping(SECRET_KEY='dev')
 
     if test_config is None:
@@ -26,11 +28,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import tokenize
-    app.register_blueprint(tokenize.bp)
+    from .services import tokenization
+    app.register_blueprint(tokenization.bp)
 
     with app.test_request_context():
-        spec.path(view=tokenize.get_tokens)
+        spec.path(view=tokenization.get_tokens)
 
     @app.route('/swagger.json')
     def get_swagger():
