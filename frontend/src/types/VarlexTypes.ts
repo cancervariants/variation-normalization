@@ -4,6 +4,6 @@ export interface TokenResponse {
 }
 
 export interface Token {
-  term: string;
-  type: string;
+  token: string;
+  tokenType: string;
 }

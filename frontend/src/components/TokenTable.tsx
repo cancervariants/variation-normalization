@@ -58,9 +58,9 @@ export class TokenTable extends Component<{}, State> {
     private tableContents = (): JSX.Element => {
         if (this.state.tokenResponse && this.state.tokenResponse.tokens.length > 0) {
             const rows = this.state.tokenResponse.tokens.map(token =>
-                <Table.Row key={token.term}>
-                    <Table.Cell>{token.term}</Table.Cell>
-                    <Table.Cell>{token.type}</Table.Cell>
+                <Table.Row key={token.token}>
+                    <Table.Cell>{token.token}</Table.Cell>
+                    <Table.Cell>{token.tokenType}</Table.Cell>
                 </Table.Row>
             );
             return <Table.Body>{rows}</Table.Body>

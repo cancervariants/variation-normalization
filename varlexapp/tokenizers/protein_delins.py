@@ -4,7 +4,7 @@
 import re
 
 from .tokenizer import Tokenizer
-from .token import Token
+from ..models import Token
 
 class ProteinFrameshift(Tokenizer):
     def __init__(self, amino_acid_cache):
