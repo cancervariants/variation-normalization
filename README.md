@@ -23,6 +23,12 @@ export FLASK_APP=varlexapp
 flask run
 ```
 
+### Testing
+From the _root_ directory of the repository:
+```
+python -m unittest
+```
+
 ## Frontend
 
 Varlex includes a simple fronted that can be used for basic exploration of its features. It requires `yarn` wich can be installed with `npm install yarn` or via `brew`.
