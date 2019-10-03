@@ -16,6 +16,7 @@ from .protein_substitution import ProteinSubstitution
 from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
 from .wild_type import WildType
+from ..models import Token
 
 
 from .caches import GeneSymbolCache
@@ -53,11 +54,15 @@ class Tokenize:
         tokens = list()
 
         for term in terms:
+            matched = False
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
                 if res:
                     tokens.append(res)
+                    matched = True
                     break
                 else:
                     continue
+            if not matched:
+                tokens.append(Token(term, 'Unknown'))
         return tokens
