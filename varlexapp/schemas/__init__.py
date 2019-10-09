@@ -3,3 +3,5 @@ from .token_response_schema import TokenResponseSchema
 
 from .classification_schema import ClassificationSchema
 from .classification_response_schema import ClassificationResponseSchema
+
+from .apispec_enum_field import ApispecEnumField

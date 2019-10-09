@@ -5,14 +5,13 @@ from .classifier import Classifier
 from .set_based_classifier import SetBasedClassifier
 from ..models import Classification, Token, ConfidenceRating, ClassificationType
 
-class FusionClassifier(SetBasedClassifier):
+class ProteinTerminationClassifier(SetBasedClassifier):
     def classification_type(self) -> ClassificationType:
-        return ClassificationType.FUSION
+        return ClassificationType.PROTEIN_TERMINATION
 
     def exact_match_candidates(self) -> List[List[str]]:
         return [
-          ['GenePair', 'Fusion'],
-          ['GenePair'],
-          ['GeneSymbol', 'Fusion']
+          ['GeneSymbol', 'ProteinTermination'],
+          ['ProteinTermination']
         ]
 

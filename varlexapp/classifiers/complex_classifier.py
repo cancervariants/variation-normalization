@@ -5,14 +5,15 @@ from .classifier import Classifier
 from .set_based_classifier import SetBasedClassifier
 from ..models import Classification, Token, ConfidenceRating, ClassificationType
 
-class FusionClassifier(SetBasedClassifier):
+class ComplexClassifier(SetBasedClassifier):
     def classification_type(self) -> ClassificationType:
-        return ClassificationType.FUSION
+        return ClassificationType.COMPLEX
 
     def exact_match_candidates(self) -> List[List[str]]:
         return [
-          ['GenePair', 'Fusion'],
-          ['GenePair'],
-          ['GeneSymbol', 'Fusion']
+          ['GeneSymbol', 'Amplification'],
+          ['GeneSymbol', 'Exon'],
+          ['GeneSymbol', 'Exon', 'Deletion'],
+          ['Amplification'],
         ]
 

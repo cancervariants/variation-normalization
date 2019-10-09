@@ -11,7 +11,7 @@ def create_app(test_config=None):
             title="varlex",
             version="0.0.1",
             openapi_version="3.0.2",
-            info=dict(description="Testing out the flask plugin"),
+            info=dict(description="Varlex - 'variant lexer' prototype for VICC variant harmonization."),
             plugins=[FlaskPlugin(), MarshmallowPlugin()]
     )
 
