@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <Menu fixed='top' inverted>
         <Container>
           <Menu.Item header>Varlex Prototype</Menu.Item>
-          <Menu.Item as='a' href="http://localhost:5000/openapi.json">OpenAPI JSON</Menu.Item>
+          <Menu.Item as='a' href="/openapi.json">OpenAPI JSON</Menu.Item>
         </Container>
       </Menu>
 
