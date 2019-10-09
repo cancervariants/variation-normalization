@@ -2,13 +2,13 @@ import axios from "axios";
 import { TokenResponse, ClassificationResponse } from "../types/VarlexTypes";
 
 const varlexApi = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "http://dev.varlex.org/",
   headers: { Accept: "application/json" }
 });
 
 export async function getTokens(query: string): Promise<TokenResponse | null> {
   try {
-    const resp = await varlexApi.get<TokenResponse>("/tokens", {
+    const resp = await varlexApi.get<TokenResponse>("/tokens/", {
       params: { q: query }
     });
 
@@ -24,7 +24,7 @@ export async function getClassifications(
 ): Promise<ClassificationResponse | null> {
   try {
     const resp = await varlexApi.get<ClassificationResponse>(
-      "/classifications",
+      "/classifications/",
       {
         params: { q: query }
       }
