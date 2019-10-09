@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Table, Input, InputOnChangeData } from "semantic-ui-react";
-import { TokenResponse } from "../types/VarlexTypes";
+import { TokenResponse, Token } from "../types/VarlexTypes";
 import { getTokens } from "../services/VarlexApi"
 
 type State = {
@@ -18,6 +18,7 @@ export class TokenTable extends Component<{}, State> {
     render() {
         return (
             <div>
+                <h3>Tokenization Testing</h3>
                 <Input icon='search' placeholder='Tokenize' onChange={this.onSearchChanged} />
                 <Table celled>
                     <Table.Header>
@@ -31,8 +32,6 @@ export class TokenTable extends Component<{}, State> {
             </div>
         );
     }
-
-    componentDidMount() { this.tokenize() }
 
     private onSearchChanged = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         if (this.state.activeTimeout) {
@@ -57,8 +56,8 @@ export class TokenTable extends Component<{}, State> {
 
     private tableContents = (): JSX.Element => {
         if (this.state.tokenResponse && this.state.tokenResponse.tokens.length > 0) {
-            const rows = this.state.tokenResponse.tokens.map(token =>
-                <Table.Row key={token.token}>
+            const rows = this.state.tokenResponse.tokens.map((token: Token, index: number) =>
+                <Table.Row key={index}>
                     <Table.Cell>{token.token}</Table.Cell>
                     <Table.Cell>{token.tokenType}</Table.Cell>
                 </Table.Row>

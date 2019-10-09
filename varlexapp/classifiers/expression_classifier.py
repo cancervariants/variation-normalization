@@ -5,14 +5,17 @@ from .classifier import Classifier
 from .set_based_classifier import SetBasedClassifier
 from ..models import Classification, Token, ConfidenceRating, ClassificationType
 
-class FusionClassifier(SetBasedClassifier):
+class ExpressionClassifier(SetBasedClassifier):
     def classification_type(self) -> ClassificationType:
-        return ClassificationType.FUSION
+        return ClassificationType.EXPRESSION
 
     def exact_match_candidates(self) -> List[List[str]]:
         return [
-          ['GenePair', 'Fusion'],
-          ['GenePair'],
-          ['GeneSymbol', 'Fusion']
+          ['GeneSymbol', 'Expression'],
+          ['GeneSymbol', 'OverExpression'],
+          ['GeneSymbol', 'UnderExpression'],
+          ['Expression'],
+          ['OverExpression'],
+          ['UnderExpression']
         ]
 
