@@ -1,0 +1,20 @@
+language: python
+python:
+  - 3.7
+
+notifications:
+  email: false
+
+before_install:
+    - sudo apt-get update
+    - sudo apt-get -y install tabix
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - mkdir -p varlexapp/data
+  - wget ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt -O varlexapp/data/gene_symbols.txt
+
+script:
+  - python -m unittest
