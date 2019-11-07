@@ -6,6 +6,7 @@ export interface TokenResponse {
 export interface Token {
   token: string;
   tokenType: string;
+  matchType: string;
 }
 
 export interface ClassificationResponse {

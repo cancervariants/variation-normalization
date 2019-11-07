@@ -4,3 +4,4 @@ from .classification import Classification
 from .confidence_rating import ConfidenceRating
 from .classification_response import ClassificationResponse
 from .classification_type import ClassificationType
+from .token_match_type import TokenMatchType
