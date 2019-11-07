@@ -1,4 +1,6 @@
 # varlex
+[![Build Status](https://travis-ci.org/cancervariants/varlex.svg?branch=master)](https://travis-ci.org/cancervariants/varlex)
+
 Repository for the Variant Lexicon normalization service
 
 
