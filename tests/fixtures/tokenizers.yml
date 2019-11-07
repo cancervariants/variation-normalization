@@ -1,0 +1,12 @@
+fusion:
+  should_match:
+    - token: Fusion
+    - token: fusions
+    - token: FUSION
+    - token: fuSions
+  should_not_match:
+    - token: afusion
+    - token: fused
+    - token: fusio
+
+
