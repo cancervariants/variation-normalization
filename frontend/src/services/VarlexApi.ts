@@ -2,7 +2,7 @@ import axios from "axios";
 import { TokenResponse, ClassificationResponse } from "../types/VarlexTypes";
 
 const varlexApi = axios.create({
-  baseURL: "http://dev.varlex.org/",
+  baseURL: "http://localhost:5000/",
   headers: { Accept: "application/json" }
 });
 

@@ -1,16 +1,46 @@
 from csv import DictReader
 
+import re
+
 class GeneSymbolCache:
     def __init__(self, gene_file_path):
-        self.__gene_symbol_cache = self.__load_gene_symbols(gene_file_path)
+        self.__load_caches(gene_file_path)
 
-    def __contains__(self, item):
-        return item in self.__gene_symbol_cache
+    def __load_caches(self, gene_file_path):
+        self.gene_symbols = set()
+        self.gene_ids = {}
+        self.gene_aliases = {}
 
-    def __load_gene_symbols(self, gene_file_path):
-        gene_symbols = set()
+        self.previous_identifiers = {}
+
         with open(gene_file_path, 'r') as f:
             reader = DictReader(f, delimiter='\t')
             for row in reader:
-                gene_symbols.add(row['symbol'])
-        return gene_symbols
+                symbol = row['symbol'].upper()
+                self.gene_symbols.add(symbol)
+
+                if row['entrez_id']:
+                    self.gene_ids[row['entrez_id'].upper()] = symbol
+                if row['ensembl_gene_id']:
+                    self.gene_ids[row['ensembl_gene_id'].upper()] = symbol
+                if row['hgnc_id']:
+                    self.gene_ids[row['hgnc_id'].upper()] = symbol
+
+                for x in self.__process_field(row['name']):
+                    self.gene_aliases[x] = symbol
+                for x in self.__process_field(row['alias_name']):
+                    self.gene_aliases[x] = symbol
+                for x in self.__process_field(row['alias_symbol']):
+                    self.gene_aliases[x] = symbol
+
+                for x in self.__process_field(row['prev_name']):
+                    self.previous_identifiers[x] = symbol
+                for x in self.__process_field(row['prev_symbol']):
+                    self.previous_identifiers[x] = symbol
+
+    def __process_field(self, field):
+        if field:
+            return map(lambda x: x.upper(), re.sub('"', '', field).split('|'))
+        else:
+           return []
+
