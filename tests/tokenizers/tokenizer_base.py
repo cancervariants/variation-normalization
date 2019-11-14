@@ -1,7 +1,7 @@
 import unittest
 import yaml
 
-class TokenizerTest(unittest.TestCase):
+class TokenizerBase(object):
 
     def setUp(self):
         with open('tests/fixtures/tokenizers.yml') as stream:
@@ -13,13 +13,13 @@ class TokenizerTest(unittest.TestCase):
         self.tokenizer = self.tokenizer_instance()
 
     def tokenizer_instance(self):
-        pass
+        raise NotImplementedError()
 
     def token_type(self):
-        pass
+        raise NotImplementedError()
 
     def fixture_name(self):
-        pass
+        raise NotImplementedError()
 
     def test_matches(self):
         for x in self.fixtures['should_match']:

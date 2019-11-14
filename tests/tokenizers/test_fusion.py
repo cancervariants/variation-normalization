@@ -1,7 +1,9 @@
-from varlexapp.tokenizers import Fusion
-from .tokenizer_test import TokenizerTest
+import unittest
 
-class TestFusionTokenizer(TokenizerTest):
+from varlexapp.tokenizers import Fusion
+from .tokenizer_base import TokenizerBase
+
+class TestFusionTokenizer(TokenizerBase, unittest.TestCase):
     def tokenizer_instance(self):
         return Fusion()
 

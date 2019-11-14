@@ -28,7 +28,7 @@ flask run
 ### Testing
 From the _root_ directory of the repository:
 ```
-python -m unittest
+pytest tests/
 ```
 
 ## Frontend
