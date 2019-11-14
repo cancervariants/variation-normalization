@@ -54,6 +54,7 @@ class Tokenize:
         tokens = list()
 
         for term in terms:
+            if not term: continue
             matched = False
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
