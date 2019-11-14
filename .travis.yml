@@ -17,4 +17,4 @@ before_script:
   - wget ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt -O varlexapp/data/gene_symbols.txt
 
 script:
-  - python -m unittest
+  - pytest tests/
