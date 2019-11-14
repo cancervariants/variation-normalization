@@ -20,10 +20,13 @@ class GeneSymbolCache:
                 self.gene_symbols.add(symbol)
 
                 if row['entrez_id']:
-                    self.gene_ids[row['entrez_id'].upper()] = symbol
+                    curie_string = f"ncbigene:{row['entrez_id']}".upper()
+                    self.gene_ids[curie_string] = symbol
                 if row['ensembl_gene_id']:
-                    self.gene_ids[row['ensembl_gene_id'].upper()] = symbol
+                    curie_string = f"ensembl:{row['ensembl_gene_id']}".upper()
+                    self.gene_ids[curie_string] = symbol
                 if row['hgnc_id']:
+                    #already in curie format
                     self.gene_ids[row['hgnc_id'].upper()] = symbol
 
                 for x in self.__process_field(row['name']):
