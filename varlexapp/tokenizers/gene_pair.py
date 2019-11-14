@@ -9,9 +9,9 @@ class GenePair(Tokenizer):
 
     def match(self, input_string):
         potential_genes = input_string.split('-')
-        if (len(potential_genes) == 2 and
-                self.__gene_matcher.match(potential_genes[0].upper()) and
-                self.__gene_matcher.match(potential_genes[1].upper())):
-            return Token(input_string, 'GenePair')
-        else:
-            return None
+        if len(potential_genes) == 2:
+            first_match = self.__gene_matcher.match(potential_genes[0].upper())
+            second_match = self.__gene_matcher.match(potential_genes[1].upper())
+            if (first_match and second_match):
+                return Token(f"{first_match.token}-{second_match.token}", 'GenePair', input_string)
+        return None

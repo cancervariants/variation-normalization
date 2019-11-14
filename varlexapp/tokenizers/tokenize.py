@@ -56,6 +56,7 @@ class Tokenize:
         tokens = list()
 
         for term in terms:
+            if not term: continue
             matched = False
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
@@ -66,5 +67,5 @@ class Tokenize:
                 else:
                     continue
             if not matched:
-                tokens.append(Token(term, 'Unknown'))
+                tokens.append(Token('', 'Unknown', term))
         return tokens
