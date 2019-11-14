@@ -17,3 +17,4 @@ from .protein_substitution import ProteinSubstitution
 from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
 from .wild_type import WildType
+from .hgvs import HGVS

@@ -16,6 +16,7 @@ from .protein_substitution import ProteinSubstitution
 from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
 from .wild_type import WildType
+from .hgvs import HGVS
 from ..models import Token
 
 
@@ -45,7 +46,8 @@ class Tokenize:
                 ProteinSubstitution(amino_acid_cache),
                 ProteinTermination(amino_acid_cache),
                 UnderExpression(),
-                WildType()
+                WildType(),
+                HGVS()
         )
 
 
