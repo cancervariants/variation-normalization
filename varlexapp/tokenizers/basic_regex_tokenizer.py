@@ -9,7 +9,7 @@ class BasicRegexTokenizer(Tokenizer):
 
     def match(self, input_string):
         if self.matcher.match(input_string):
-            return Token(input_string, self.token_type())
+            return Token(input_string, self.token_type(), input_string)
         else:
             return None
 

@@ -26,6 +26,7 @@ export class TokenTable extends Component<{}, State> {
                             <Table.HeaderCell>Term</Table.HeaderCell>
                             <Table.HeaderCell>Token Type</Table.HeaderCell>
                             <Table.HeaderCell>Match Type</Table.HeaderCell>
+                            <Table.HeaderCell>Input String</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     {this.tableContents()}
@@ -62,6 +63,7 @@ export class TokenTable extends Component<{}, State> {
                     <Table.Cell>{token.token}</Table.Cell>
                     <Table.Cell>{token.tokenType}</Table.Cell>
                     <Table.Cell>{token.matchType}</Table.Cell>
+                    <Table.Cell>{token.inputString}</Table.Cell>
                 </Table.Row>
             );
             return <Table.Body>{rows}</Table.Body>

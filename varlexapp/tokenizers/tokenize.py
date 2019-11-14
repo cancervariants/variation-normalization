@@ -64,5 +64,5 @@ class Tokenize:
                 else:
                     continue
             if not matched:
-                tokens.append(Token(term, 'Unknown'))
+                tokens.append(Token('', 'Unknown', term))
         return tokens
