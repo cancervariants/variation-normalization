@@ -1,4 +1,5 @@
 apispec==2.0.2
+apispec-oneofschema==2.1.0
 apispec-webframeworks==0.4.0
 appdirs==1.4.3
 appnope==0.1.0
@@ -37,6 +38,7 @@ lxml==4.3.4
 MarkupSafe==1.1.1
 marshmallow==3.2.0
 marshmallow-enum==1.5.1
+marshmallow-oneofschema==2.0.1
 mccabe==0.6.1
 more-itertools==7.2.0
 numpy==1.17.2

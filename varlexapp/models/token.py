@@ -6,3 +6,4 @@ class Token:
         self.token_type = token_type
         self.match_type = match_type
         self.input_string = input_string
+        self.object_type = self.__class__.__name__
