@@ -15,4 +15,4 @@ class ClassificationType(Enum):
     COMPLEX = 10
 
     def __str__(self):
-        self.name
+        return self.name
