@@ -1,8 +1,9 @@
 import axios from "axios";
 import { TokenResponse, ClassificationResponse } from "../types/VarlexTypes";
+import { varlexApiDomain } from "../services/Config";
 
 const varlexApi = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: varlexApiDomain(),
   headers: { Accept: "application/json" }
 });
 
