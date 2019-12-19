@@ -4,7 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from apispec import APISpec
 from apispec_webframeworks.flask import FlaskPlugin
-from apispec.ext.marshmallow import MarshmallowPlugin
+from apispec_oneofschema import MarshmallowPlugin
 
 def create_app(test_config=None):
     spec = APISpec(
