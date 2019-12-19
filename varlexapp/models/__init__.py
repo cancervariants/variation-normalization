@@ -5,3 +5,5 @@ from .confidence_rating import ConfidenceRating
 from .classification_response import ClassificationResponse
 from .classification_type import ClassificationType
 from .token_match_type import TokenMatchType
+from .gene_match_token import GeneMatchToken
+from .gene_pair_match_token import GenePairMatchToken

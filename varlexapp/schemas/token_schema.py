@@ -1,9 +1,12 @@
-from marshmallow import Schema, fields
-from ..models import TokenMatchType
-from .apispec_enum_field import ApispecEnumField
+from marshmallow_oneofschema import OneOfSchema
 
-class TokenSchema(Schema):
-    token = fields.Str()
-    tokenType = fields.Str(attribute='token_type')
-    matchType = ApispecEnumField(TokenMatchType, attribute='match_type')
-    inputString = fields.Str(attribute='input_string')
+from .basic_token_schema import BasicTokenSchema
+from .gene_match_token_schema import GeneMatchTokenSchema
+from .gene_pair_match_token_schema import GenePairMatchTokenSchema
+
+class TokenSchema(OneOfSchema):
+    type_schemas = {
+            'BasicToken': BasicTokenSchema,
+            'GeneMatchToken': GeneMatchTokenSchema,
+            'GenePairMatchToken': GenePairMatchTokenSchema
+        }
