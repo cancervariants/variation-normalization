@@ -9,4 +9,24 @@ fusion:
     - token: fused
     - token: fusio
 
+gene_pair:
+  should_match:
+    - token: flt3-braf
+    - token: braf-abl1
+    - token: HGNC:1097-abl1
+    - token: ncbigene:673-flt3
+  should_not_match:
+    - token: foo-braf
+    - token: ncbigene:-673-flt3
+
+gene:
+  should_match:
+    - token: flt3
+    - token: abl
+    - token: abl1
+    - token: HGNC:1097
+    - token: ncbigene:673
+    - token: ensembl:ENSG00000157764
+  should_not_match:
+    - token: not-a-gene
 

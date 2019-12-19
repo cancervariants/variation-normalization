@@ -1,0 +1,19 @@
+fusion:
+  should_match:
+    - query: braf-flt3 fusion
+      confidence: EXACT
+    - query: braf-flt3
+      confidence: EXACT
+    - query: braf fusion
+      confidence: EXACT
+    - query: fusion braf
+      confidence: UNORDERED
+    - query: flt3-braf fusion foo
+      confidence: SUPERSET
+    - query: flt3 foo
+      confidence: INTERSECTION
+  should_not_match:
+    - query: afusion
+    - query: fused
+    - query: fusio
+
