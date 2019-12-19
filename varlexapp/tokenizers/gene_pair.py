@@ -1,6 +1,6 @@
 from .tokenizer import Tokenizer
 from .gene_symbol import GeneSymbol
-from ..models import Token
+from ..models import GenePairMatchToken
 
 class GenePair(Tokenizer):
     def __init__(self, gene_cache):
@@ -13,5 +13,5 @@ class GenePair(Tokenizer):
             first_match = self.__gene_matcher.match(potential_genes[0].upper())
             second_match = self.__gene_matcher.match(potential_genes[1].upper())
             if (first_match and second_match):
-                return Token(f"{first_match.token}-{second_match.token}", 'GenePair', input_string)
+                return GenePairMatchToken(f"{first_match.token}-{second_match.token}", input_string, first_match, second_match)
         return None

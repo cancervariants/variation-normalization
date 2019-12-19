@@ -1,5 +1,5 @@
 from .tokenizer import Tokenizer
-from ..models import Token, TokenMatchType
+from ..models import GeneMatchToken, TokenMatchType
 
 class GeneSymbol(Tokenizer):
     def __init__(self, gene_cache):
@@ -8,12 +8,12 @@ class GeneSymbol(Tokenizer):
     def match(self, input_string):
         uppercase_input = input_string.upper()
         if uppercase_input in self.gene_cache.gene_symbols:
-            return Token(uppercase_input, 'GeneSymbol', input_string, TokenMatchType.SYMBOL)
+            return GeneMatchToken(uppercase_input, input_string, uppercase_input, TokenMatchType.SYMBOL)
         elif uppercase_input in self.gene_cache.gene_ids:
-            return Token(self.gene_cache.gene_ids[uppercase_input], 'GeneSymbol', input_string, TokenMatchType.ID)
+            return GeneMatchToken(self.gene_cache.gene_ids[uppercase_input], input_string, uppercase_input, TokenMatchType.ID)
         elif uppercase_input in self.gene_cache.gene_aliases:
-            return Token(self.gene_cache.gene_aliases[uppercase_input], 'GeneSymbol', input_string, TokenMatchType.ALIAS)
+            return GeneMatchToken(self.gene_cache.gene_aliases[uppercase_input], input_string, uppercase_input, TokenMatchType.ALIAS)
         elif uppercase_input in self.gene_cache.previous_identifiers:
-            return Token(self.gene_cache.previous_identifiers[uppercase_input], 'GeneSymbol', input_string, TokenMatchType.PREVIOUS)
+            return GeneMatchToken(self.gene_cache.previous_identifiers[uppercase_input], input_string, uppercase_input, TokenMatchType.PREVIOUS)
         else:
             return None
