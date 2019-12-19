@@ -8,4 +8,4 @@ class ConfidenceRating(Enum):
     EXACT = 4
 
     def __str__(self):
-        self.name
+        return self.name
