@@ -18,3 +18,11 @@ from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
 from .wild_type import WildType
 from .hgvs import HGVS
+
+from .methylation import Methylation
+from .rsid import RSID
+from .msih import MSIH
+from .itd import ITD
+from .dom import DOM
+from .local import LOCAL
+from .protein_duplication import ProteinDuplication

@@ -21,4 +21,3 @@ class ProteinFrameshift(Tokenizer):
 
         if all(conditions):
             return Token(input_string, 'ProteinDelins')
-

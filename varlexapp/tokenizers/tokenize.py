@@ -19,6 +19,14 @@ from .wild_type import WildType
 from .hgvs import HGVS
 from ..models import Token
 
+from .methylation import Methylation
+from .rsid import RSID
+from .msih import MSIH
+from .itd import ITD
+from .dom import DOM
+from .local import LOCAL
+from .protein_duplication import ProteinDuplication
+
 
 from .caches import GeneSymbolCache
 from .caches import AminoAcidCache
@@ -47,7 +55,14 @@ class Tokenize:
                 ProteinTermination(amino_acid_cache),
                 UnderExpression(),
                 WildType(),
-                HGVS()
+                HGVS(),
+                Methylation(),
+                RSID(),
+                MSIH(),
+                ITD(),
+                DOM(),
+                LOCAL(),
+                ProteinDuplication(amino_acid_cache)
         )
 
 
