@@ -18,9 +18,9 @@ class ProteinFrameshift(Tokenizer):
         else:
             potential_protein = self.__splitter_2.split(input_string)
             potential_amino_acid = re.split(r'\d+', potential_protein[0])
-            if (len(potential_amino_acid) == 2) and
+            if (len(potential_amino_acid) == 2 and
                 potential_amino_acid[0] in self.__amino_acid_cache and
-                potential_amino_acid[1] in self.__amino_acid_cache:
+                potential_amino_acid[1] in self.__amino_acid_cache):
                 return Token(input_string, 'ProteinFrameshift')
             else:
                 return None

@@ -15,8 +15,8 @@ class ProteinSubstitution(Tokenizer):
                 potential_proteins[1] in self.__amino_acid_cache):
             return Token(input_string, 'ProteinSubstitution')
         if (len(potential_proteins) == 2 and
-                potential_proteins[0] in self.__amino_acid_cache) and
-                potential_proteins[1] == "*":
+                potential_proteins[0] in self.__amino_acid_cache and
+                potential_proteins[1] == "*"):
             return Token(input_string, 'ProteinSubstitution')       
         if (len(potential_proteins) == 2 and
                 potential_proteins[0] == "*" and
