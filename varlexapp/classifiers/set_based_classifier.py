@@ -30,6 +30,7 @@ class SetBasedClassifier(Classifier):
                     self.classification_type(),
                     exact_matches[0],
                     [],
+                    tokens,
                     ConfidenceRating.EXACT
             )
         elif len(out_of_order_matches) > 0:
@@ -37,6 +38,7 @@ class SetBasedClassifier(Classifier):
                     self.classification_type(),
                     list(set(reduce(operator.concat, out_of_order_matches))),
                     [],
+                    tokens,
                     ConfidenceRating.UNORDERED
             )
         elif len(matches_with_extra_terms) > 0:
@@ -44,6 +46,7 @@ class SetBasedClassifier(Classifier):
                     self.classification_type(),
                     list(matches_with_extra_terms),
                     list(token_set - matches_with_extra_terms),
+                    tokens,
                     ConfidenceRating.SUPERSET
             )
         elif len(partial_matches) > 0:
@@ -51,6 +54,7 @@ class SetBasedClassifier(Classifier):
                     self.classification_type(),
                     list(partial_matches),
                     list(token_set - partial_matches),
+                    tokens,
                     ConfidenceRating.INTERSECTION
             )
         else:

@@ -18,8 +18,6 @@ dependencies:
   - libblas=3.8.0=12_openblas
   - libcblas=3.8.0=12_openblas
   - libcurl=7.65.3=h16faf7d_0
-  - libcxx=9.0.0=0
-  - libcxxabi=9.0.0=0
   - libdeflate=1.0=h1de35cc_1
   - libedit=3.1.20170329=hcfe32e1_1001
   - libffi=3.2.1=h6de7cb9_1006

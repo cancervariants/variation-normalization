@@ -1,11 +1,18 @@
 import React from 'react';
 import './App.css';
 import { TokenTable } from './components/TokenTable';
-import { Menu, Container, Divider } from 'semantic-ui-react';
+import { Menu, Container, Tab } from 'semantic-ui-react';
 import { ClassificationTable } from './components/ClassificationTable';
 import { SwaggerDocs } from './components/SwaggerDocs';
+import { ValidationTable } from './components/ValidationTable';
 
 const App: React.FC = () => {
+  const tabPanes = [
+    { menuItem: 'Tokenizer', render: () => <TokenTable /> },
+    { menuItem: 'Classifier', render: () => <ClassificationTable /> },
+    { menuItem: 'Validator', render: () => <ValidationTable /> },
+    { menuItem: 'OpenAPI Docs', render: () => <SwaggerDocs /> },
+  ]
   return (
     <div>
       <Menu fixed='top' inverted>
@@ -16,11 +23,7 @@ const App: React.FC = () => {
       </Menu>
 
       <Container style={{ marginTop: '7em' }}>
-        <TokenTable />
-        <Divider section />
-        <ClassificationTable />
-        <Divider section />
-        <SwaggerDocs />
+        <Tab panes={tabPanes} menu={{ pointing: true }} />
       </Container>
     </div >
   );
