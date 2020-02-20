@@ -29,13 +29,15 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from .services import tokenization, classification
+    from .services import tokenization, classification, validation
     app.register_blueprint(tokenization.bp)
     app.register_blueprint(classification.bp)
+    app.register_blueprint(validation.bp)
 
     with app.test_request_context():
         spec.path(view=tokenization.get_tokens)
         spec.path(view=classification.get_classifications)
+        spec.path(view=validation.get_validation_status)
 
     @app.route('/openapi.json')
     def get_openapi():

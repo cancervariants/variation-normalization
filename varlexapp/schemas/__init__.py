@@ -4,7 +4,13 @@ from .token_response_schema import TokenResponseSchema
 from .gene_match_token_schema import GeneMatchTokenSchema
 from .gene_pair_match_token_schema import GenePairMatchTokenSchema
 
+from .protein_substitution_token_schema import ProteinSubstitutionTokenSchema
+
 from .classification_schema import ClassificationSchema
 from .classification_response_schema import ClassificationResponseSchema
+
+from .validation_response_schema import ValidationResponseSchema
+from .validation_result_schema import ValidationResultSchema
+from .validation_summary_schema import ValidationSummarySchema
 
 from .apispec_enum_field import ApispecEnumField

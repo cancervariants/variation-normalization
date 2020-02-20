@@ -1,5 +1,9 @@
 import axios from "axios";
-import { TokenResponse, ClassificationResponse } from "../types/VarlexTypes";
+import {
+  TokenResponse,
+  ClassificationResponse,
+  ValidationResponse
+} from "../types/VarlexTypes";
 import { varlexApiDomain } from "../services/Config";
 
 const varlexApi = axios.create({
@@ -30,6 +34,21 @@ export async function getClassifications(
         params: { q: query }
       }
     );
+
+    return resp.data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+export async function getValidations(
+  query: string
+): Promise<ValidationResponse | null> {
+  try {
+    const resp = await varlexApi.get<ValidationResponse>("/validations/", {
+      params: { q: query }
+    });
 
     return resp.data;
   } catch (err) {
