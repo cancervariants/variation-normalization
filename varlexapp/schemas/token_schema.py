@@ -8,6 +8,7 @@ from .protein_substitution_token_schema import ProteinSubstitutionTokenSchema
 
 class TokenSchema(OneOfSchema):
     type_schemas = {
+            'Token': BasicTokenSchema,
             'BasicToken': BasicTokenSchema,
             'GeneMatchToken': GeneMatchTokenSchema,
             'GenePairMatchToken': GenePairMatchTokenSchema,
