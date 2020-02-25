@@ -1,3 +1,5 @@
+from typing import Optional
+
 from biocommons.seqrepo import SeqRepo
 
 from Bio.Seq import Seq
@@ -19,9 +21,8 @@ class SeqRepoAccess:
         return [a for a in tx if a['alt_aln_method'] == 'genebuild']
 
 
-    #not a multiple of three?
     #TODO:definitely will want to cache this
-    def protein_at_position(self, transcript, pos):
+    def protein_at_position(self, transcript, pos: int) -> Optional[str]:
         bases = self.seq_repo_client.fetch(
                 transcript['tx_ac'],
                 transcript['cds_start_i'],

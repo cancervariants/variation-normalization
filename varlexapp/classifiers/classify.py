@@ -1,11 +1,11 @@
-from typing import Optional, List
+from typing import Optional, List, Callable
 
 from ..models import Token, Classification, ConfidenceRating
 from . import *
 
 class Classify:
-    def __init__(self):
-        self.classifiers = [
+    def __init__(self) -> None:
+        self.classifiers: List[Classifier] = [
                 ComplexClassifier(),
                 ExpressionClassifier(),
                 FusionClassifier(),
@@ -19,7 +19,7 @@ class Classify:
 
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
-        classifications = list()
+        classifications: List[Classification] = list()
 
         for classifier in self.classifiers:
             res = classifier.match(tokens)
@@ -33,4 +33,6 @@ class Classify:
             if match.confidence.value > highest_confidence:
                 highest_confidence = match.confidence.value
 
-        return list(filter(lambda m, c=highest_confidence : m.confidence.value == c, classifications))
+        filter_lambda: Callable[[Classification], bool] = lambda match: match.confidence.value == highest_confidence
+
+        return list(filter(filter_lambda, classifications))

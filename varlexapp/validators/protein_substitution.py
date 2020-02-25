@@ -1,21 +1,24 @@
+from typing import List
+
 from .validator import Validator
-from ..models import ValidationResult, ClassificationType
+from ..models import ValidationResult, ClassificationType, Classification, ProteinSubstitutionToken
+from .data_sources import SeqRepoAccess
 
 class ProteinSubstitution(Validator):
-    def __init__(self, seq_repo_client):
+    def __init__(self, seq_repo_client: SeqRepoAccess) -> None:
         self.seq_repo_client = seq_repo_client
 
-    def validate(self, classification):
+    def validate(self, classification: Classification) -> List[ValidationResult]:
         results = list()
         errors = list()
         gene_tokens = [t for t in classification.all_tokens if t.token_type == 'GeneSymbol']
-        psub_tokens = [t for t in classification.all_tokens if t.token_type == 'ProteinSubstitution']
+        psub_tokens = [t for t in classification.all_tokens if isinstance(t, ProteinSubstitutionToken)]
 
         if len(gene_tokens) > 1:
             errors.append('More than one gene symbol found for a single protein substitution')
 
         if len(errors) > 0:
-            return [ValidationResult(classification, False, 0, '', errors)]
+            return [ValidationResult(classification, False, 0, '', '', errors)]
 
         transcripts = self.seq_repo_client.transcripts_for_gene_symbol(gene_tokens[0].token)
 
@@ -50,13 +53,13 @@ class ProteinSubstitution(Validator):
         return results
 
 
-    def validates_classification_type(self, classification_type):
+    def validates_classification_type(self, classification_type: ClassificationType) -> bool:
         return classification_type == ClassificationType.PROTEIN_SUBSTITUTION
 
 
-    def concise_description(self, transcsript, psub_tokens):
-        return f'{transcsript["tx_ac"]} {psub_tokens.ref_protein}{psub_tokens.pos}{psub_tokens.alt_protein}'
+    def concise_description(self, transcsript, psub_token: ProteinSubstitutionToken) -> str:
+        return f'{transcsript["tx_ac"]} {psub_token.ref_protein}{psub_token.pos}{psub_token.alt_protein}'
 
-    def human_description(self, transcsript, psub_tokens):
-        return f'A protein substitution from {psub_tokens.ref_protein} to {psub_tokens.alt_protein} at position {psub_tokens.pos} on transcript {transcsript["tx_ac"]}'
+    def human_description(self, transcsript, psub_token: ProteinSubstitutionToken) -> str:
+        return f'A protein substitution from {psub_token.ref_protein} to {psub_token.alt_protein} at position {psub_token.pos} on transcript {transcsript["tx_ac"]}'
 
