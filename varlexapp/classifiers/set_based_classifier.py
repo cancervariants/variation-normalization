@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Set
 from functools import reduce
 import operator
 
@@ -8,10 +8,10 @@ from ..models import Classification, Token, ConfidenceRating, ClassificationType
 class SetBasedClassifier(Classifier):
     def match(self, tokens: List[Token]) -> Optional[Classification]:
         token_types = list(map(lambda t: t.token_type, tokens))
-        exact_matches = []
-        out_of_order_matches = []
-        matches_with_extra_terms = set()
-        partial_matches = set()
+        exact_matches: List[List[str]] = []
+        out_of_order_matches: List[List[str]] = []
+        matches_with_extra_terms: Set[str] = set()
+        partial_matches: Set[str] = set()
 
         for candidate in self.exact_match_candidates():
             token_set = set(token_types)
@@ -34,9 +34,13 @@ class SetBasedClassifier(Classifier):
                     ConfidenceRating.EXACT
             )
         elif len(out_of_order_matches) > 0:
+            all_unordered_matches: Set[str] = set()
+            for match in out_of_order_matches:
+                for token in match:
+                    all_unordered_matches.add(token)
             return Classification(
                     self.classification_type(),
-                    list(set(reduce(operator.concat, out_of_order_matches))),
+                    list(all_unordered_matches),
                     [],
                     tokens,
                     ConfidenceRating.UNORDERED

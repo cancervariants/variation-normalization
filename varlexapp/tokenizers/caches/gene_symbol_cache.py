@@ -1,17 +1,18 @@
+from typing import Set, Dict, Iterable
 from csv import DictReader
 
 import re
 
 class GeneSymbolCache:
-    def __init__(self, gene_file_path):
+    def __init__(self, gene_file_path: str) -> None:
         self.__load_caches(gene_file_path)
 
-    def __load_caches(self, gene_file_path):
-        self.gene_symbols = set()
-        self.gene_ids = {}
-        self.gene_aliases = {}
+    def __load_caches(self, gene_file_path: str) -> None:
+        self.gene_symbols: Set[str] = set()
+        self.gene_ids: Dict[str, str] = {}
+        self.gene_aliases: Dict[str, str] = {}
 
-        self.previous_identifiers = {}
+        self.previous_identifiers: Dict[str, str] = {}
 
         with open(gene_file_path, 'r') as f:
             reader = DictReader(f, delimiter='\t')
@@ -41,7 +42,7 @@ class GeneSymbolCache:
                 for x in self.__process_field(row['prev_symbol']):
                     self.previous_identifiers[x] = symbol
 
-    def __process_field(self, field):
+    def __process_field(self, field: str) -> Iterable[str]:
         if field:
             return map(lambda x: x.upper(), re.sub('"', '', field).split('|'))
         else:

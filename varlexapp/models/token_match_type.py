@@ -9,5 +9,5 @@ class TokenMatchType(Enum):
     UNSPECIFIED = 5
 
 
-    def __str__(self):
-        self.name
+    def __str__(self) -> str:
+        return self.name

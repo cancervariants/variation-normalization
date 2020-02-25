@@ -1,5 +1,7 @@
 import re
 
+from typing import Iterable, List
+
 from .amplification import Amplification
 from .deletion import Deletion
 from .exon import Exon
@@ -24,7 +26,7 @@ from .caches import GeneSymbolCache
 from .caches import AminoAcidCache
 
 class Tokenize:
-    def __init__(self, gene_file_path):
+    def __init__(self, gene_file_path: str) -> None:
         gene_cache = GeneSymbolCache(gene_file_path)
         amino_acid_cache = AminoAcidCache()
 
@@ -51,9 +53,9 @@ class Tokenize:
         )
 
 
-    def perform(self, search_string):
+    def perform(self, search_string: str) -> Iterable[Token]:
         terms = self.search_term_splitter.split(search_string)
-        tokens = list()
+        tokens: List[Token] = list()
 
         for term in terms:
             if not term: continue
