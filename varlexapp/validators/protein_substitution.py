@@ -2,7 +2,7 @@ from typing import List
 
 from .validator import Validator
 from ..models import ValidationResult, ClassificationType, Classification, ProteinSubstitutionToken
-from .data_sources import SeqRepoAccess
+from ..data_sources import SeqRepoAccess
 
 class ProteinSubstitution(Validator):
     def __init__(self, seq_repo_client: SeqRepoAccess) -> None:
