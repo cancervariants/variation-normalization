@@ -14,5 +14,5 @@ class ClassificationType(Enum):
     EXPRESSION = 9
     COMPLEX = 10
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name

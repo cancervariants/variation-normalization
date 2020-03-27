@@ -6,11 +6,14 @@ instance/
 .pytest_cache/
 .coverage
 htmlcov/
+.vim/
 
 dist/
 *.egg-info/
 
 .DS_Store
+
+.mypy_cache/
 
 
 varlexapp/data/seqrepo/

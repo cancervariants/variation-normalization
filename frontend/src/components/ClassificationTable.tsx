@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Input, InputOnChangeData } from "semantic-ui-react";
+import { Table, Input, InputOnChangeData, Divider } from "semantic-ui-react";
 import { ClassificationResponse, Classification } from "../types/VarlexTypes";
 import { getClassifications } from "../services/VarlexApi"
 
@@ -18,6 +18,7 @@ export class ClassificationTable extends Component<{}, State> {
     render() {
         return (
             <div>
+                <Divider />
                 <h3>Classification Testing</h3>
                 <Input icon='search' placeholder='Classify' onChange={this.onSearchChanged} />
                 <Table celled>
@@ -68,7 +69,7 @@ export class ClassificationTable extends Component<{}, State> {
             );
             return <Table.Body>{rows}</Table.Body>
         } else {
-            return <div>No Matches...</div>;
+            return <Table.Body><Table.Row><Table.Cell>No Matches...</Table.Cell></Table.Row></Table.Body>;
         }
     }
 }
