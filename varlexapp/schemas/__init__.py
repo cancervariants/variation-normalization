@@ -13,4 +13,10 @@ from .validation_response_schema import ValidationResponseSchema
 from .validation_result_schema import ValidationResultSchema
 from .validation_summary_schema import ValidationSummarySchema
 
+from .translation_response_schema import TranslationResponseSchema
+from .variant_representation_schema import VariantRepresentationSchema
+from .location_schema import LocationSchema
+from .sequence_state_schema import SequenceStateSchema
+from .simple_interval_schema import SimpleIntervalSchema
+
 from .apispec_enum_field import ApispecEnumField

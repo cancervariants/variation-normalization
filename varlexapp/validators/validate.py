@@ -1,13 +1,16 @@
-from ..models import ValidationResult, ValidationSummary
+from ..models import ValidationResult, ValidationSummary, Classification
+from ..data_sources import TranscriptMappings, SeqRepoAccess
 from .protein_substitution import ProteinSubstitution
 
+from typing import List
+
 class Validate:
-    def __init__(self, seq_repo_client):
+    def __init__(self, seq_repo_client: SeqRepoAccess, transcript_mappings: TranscriptMappings) -> None:
         self.validators = [
-                ProteinSubstitution(seq_repo_client)
+                ProteinSubstitution(seq_repo_client, transcript_mappings)
         ]
 
-    def perform(self, classifications):
+    def perform(self, classifications: List[Classification]) -> ValidationSummary:
         valid_possibilities = list()
         invalid_possibilities = list()
 
