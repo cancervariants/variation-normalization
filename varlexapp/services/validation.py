@@ -1,6 +1,6 @@
 from flask import (Blueprint, request)
 
-from ..data_sources import SeqRepoAccess
+from ..data_sources import SeqRepoAccess, TranscriptMappings
 from ..classifiers import Classify
 from ..tokenizers import Tokenize
 from ..validators import Validate
@@ -15,7 +15,8 @@ bp = Blueprint('validate', __name__, url_prefix='/validations')
 tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
 classifier = Classify()
 seq_repo_access = SeqRepoAccess('varlexapp/data/seqrepo/latest')
-validator = Validate(seq_repo_access)
+transcript_mappings = TranscriptMappings('varlexapp/data/transcript_mapping.tsv')
+validator = Validate(seq_repo_access, transcript_mappings)
 
 @bp.route('/')
 def get_validation_status():
