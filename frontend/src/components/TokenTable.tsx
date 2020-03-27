@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Input, InputOnChangeData } from "semantic-ui-react";
+import { Table, Input, InputOnChangeData, Divider } from "semantic-ui-react";
 import { TokenResponse, Token } from "../types/VarlexTypes";
 import { getTokens } from "../services/VarlexApi"
 
@@ -18,6 +18,7 @@ export class TokenTable extends Component<{}, State> {
     render() {
         return (
             <div>
+                <Divider />
                 <h3>Tokenization Testing</h3>
                 <Input icon='search' placeholder='Tokenize' onChange={this.onSearchChanged} />
                 <Table celled>
@@ -68,7 +69,7 @@ export class TokenTable extends Component<{}, State> {
             );
             return <Table.Body>{rows}</Table.Body>
         } else {
-            return <div>No Matches...</div>;
+            return <Table.Body><Table.Row><Table.Cell>No Matches...</Table.Cell></Table.Row></Table.Body>;
         }
     }
 }

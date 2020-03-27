@@ -7,5 +7,5 @@ class ConfidenceRating(Enum):
     UNORDERED = 3
     EXACT = 4
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
