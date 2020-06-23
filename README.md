@@ -13,7 +13,7 @@ From the _root_ directory of the repository:
 ```
 conda env create -f environment.yml
 conda activate varlexenv
-touch varlexapp/data
+mkdir -p varlexapp/data/seqrepo
 curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > varlexapp/data/gene_symbols.txt
 seqrepo --root-directory varlexapp/data/seqrepo pull
 ```
