@@ -46,6 +46,7 @@ dependencies:
   - yaml=0.1.7=h1de35cc_1001
   - zlib=1.2.11=h01d97ff_1006
   - pip:
+	- apispec-oneofschema==2.1.0
     - apispec-webframeworks==0.4.0
     - appdirs==1.4.3
     - appnope==0.1.0
