@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f20cc59fe61d3eea5bfc556dcf45ca13963c2fd70dbaf267112c2f639e400145"
+            "sha256": "40841149a34bbfbca320f141241af188f9c6729f282ee37cd4233c91431ae383"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -29,11 +29,11 @@
         },
         "apispec-oneofschema": {
             "hashes": [
-                "sha256:044072c19a0080d3eeb9f92d379c88a17e6feb65c749625668be51e44c45e2dd",
-                "sha256:2bea35797f4df97372b80d8b4e4c0a33c0b84e87760b9e6fbe67c6a1fac10bb4"
+                "sha256:43b0d59951e9dd17f3fbbf762775e73f7fc1e8064248d9a3549067848adfa11b",
+                "sha256:9ac9ac402c2f31d9c023a99019d59bb30e1e409825c81d32db2e814676f7cf75"
             ],
             "index": "pypi",
-            "version": "==2.1.0"
+            "version": "==2.1.1"
         },
         "apispec-webframeworks": {
             "hashes": [
@@ -41,7 +41,7 @@
                 "sha256:c138482361d6bde96c1f643136a44e8f1c958710bdd622328fd662e096be20e7"
             ],
             "index": "pypi",
-            "version": "==0.4.0"
+            "version": "==0.4"
         },
         "appdirs": {
             "hashes": [
@@ -394,11 +394,11 @@
         },
         "marshmallow": {
             "hashes": [
-                "sha256:6dca0125320c15795c4f2dfe8f2f5c37a96916e7a09a123eba05ef24d3126b94",
-                "sha256:801a7c70f0596b812a086773b9d7ba85b4bbad1becab14cde460ab7798511409"
+                "sha256:35ee2fb188f0bd9fc1cf9ac35e45fd394bd1c153cee430745a465ea435514bd5",
+                "sha256:9aa20f9b71c992b4782dad07c51d92884fd0f7c5cb9d3c737bea17ec1bad765f"
             ],
             "index": "pypi",
-            "version": "==3.2.0"
+            "version": "==3.6.1"
         },
         "marshmallow-enum": {
             "hashes": [
