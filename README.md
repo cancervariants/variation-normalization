@@ -15,6 +15,9 @@ pipenv sync
 mkdir -p varlexapp/data/seqrepo
 curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > varlexapp/data/gene_symbols.txt
 seqrepo --root-directory varlexapp/data/seqrepo pull
+cd varlexapp/data/seqrepo
+chmod -R u+w varlexapp/data/seqrepo/<DATE>
+ln -s varlexapp/data/seqrepo/<DATE> latest
 ```
 
 ### Running
