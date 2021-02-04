@@ -1,9 +1,7 @@
-from typing import List, Optional
-import operator
-
-from .classifier import Classifier
+from typing import List
 from .set_based_classifier import SetBasedClassifier
 from ..models import Classification, Token, ConfidenceRating, ClassificationType
+
 
 class ProteinSubstitutionClassifier(SetBasedClassifier):
     def classification_type(self) -> ClassificationType:
