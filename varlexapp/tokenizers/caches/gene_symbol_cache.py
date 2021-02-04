@@ -1,11 +1,12 @@
 from typing import Set, Dict, Iterable
 from csv import DictReader
+from varlexapp import PROJECT_ROOT
 
 import re
 
 class GeneSymbolCache:
     def __init__(self, gene_file_path: str) -> None:
-        self.__load_caches(gene_file_path)
+        self.__load_caches(f"{PROJECT_ROOT}/{gene_file_path}")
 
     def __load_caches(self, gene_file_path: str) -> None:
         self.gene_symbols: Set[str] = set()
