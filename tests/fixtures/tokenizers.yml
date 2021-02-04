@@ -30,3 +30,14 @@ gene:
   should_not_match:
     - token: not-a-gene
 
+protein_substitution:
+  should_match:
+    - token: V600E
+    - token: Arg54Ser
+    - token: p.(Arg54Ser)
+    - token: p.Arg54Ser
+  should_not_match:
+    - token: v600e
+    - token: p.(Arg54Ser
+    - token: p.(Z600B)
+

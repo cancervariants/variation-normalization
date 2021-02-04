@@ -12,5 +12,4 @@ class AminoAcidCache:
         return ({'Ala', 'Asx', 'Cys', 'Asp', 'Glu', 'Phe', 'Gly', 'His', 'Ile',
                  'Lys', 'Leu', 'Met', 'Asn', 'Pro', 'Gln', 'Arg', 'Ser', 'Thr',
                  'Sec', 'Val', 'Trp', 'Xaa', 'Tyr', 'Glx'} -
-                { 'Asx', 'Sec', 'Glx', 'Xaa'}) | \
-               set('ACDEFGHIKLMNPQRSTVWY')
+                {'Asx', 'Sec', 'Glx', 'Xaa'}) | set('ACDEFGHIKLMNPQRSTVWY')
