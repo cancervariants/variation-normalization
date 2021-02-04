@@ -19,3 +19,5 @@ dist/
 varlexapp/data/seqrepo/
 
 .idea/
+
+Pipfile.lock
