@@ -93,4 +93,4 @@ uWSGI = "==2.0.18"
 Werkzeug = "==0.16.0"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"

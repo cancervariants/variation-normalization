@@ -1,10 +1,11 @@
 import unittest
 import yaml
+from varlexapp import PROJECT_ROOT
 
 class TokenizerBase(object):
 
     def setUp(self):
-        with open('tests/fixtures/tokenizers.yml') as stream:
+        with open(f'{PROJECT_ROOT}/tests/fixtures/tokenizers.yml') as stream:
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
                 self.fixture_name(),

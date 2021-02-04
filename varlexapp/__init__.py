@@ -5,6 +5,9 @@ from flask_cors import CORS
 from apispec import APISpec
 from apispec_webframeworks.flask import FlaskPlugin
 from apispec_oneofschema import MarshmallowPlugin
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def create_app(test_config=None):
     spec = APISpec(
