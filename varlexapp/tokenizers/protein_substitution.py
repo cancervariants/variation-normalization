@@ -47,6 +47,8 @@ class ProteinSubstitution(Tokenizer):
         amino_acid = None
         position = None,
         new_amino_acid = None
+
+        # missense
         if len(psub_parts) == 3:
             if self._is_valid_amino_acid(psub_parts[0], psub_parts[2]):
                 amino_acid = psub_parts[0]
