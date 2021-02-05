@@ -16,11 +16,7 @@ class ProteinSubstitution(Tokenizer):
         """
         self.amino_acid_cache = amino_acid_cache
         self.splitter = re.compile(r'(\d+)')
-        self.psub = {
-            'amino_acid': None,
-            'position': None,
-            'new_amino_acid': None
-        }
+        self.psub = None
 
     def match(self, input_string) -> Optional[ProteinSubstitutionToken]:
         """Return a ProteinSubstitutionToken match if one exists.
@@ -28,6 +24,12 @@ class ProteinSubstitution(Tokenizer):
         :param str input_string: The input string to match
         :return: A ProteinSubstitutionToken if a match exists. Otherwise, None.
         """
+        self.psub = {
+            'amino_acid': None,
+            'position': None,
+            'new_amino_acid': None
+        }
+
         if input_string is None:
             return None
 

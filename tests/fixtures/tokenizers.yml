@@ -46,10 +46,12 @@ protein_substitution:
     - token: LRG_199t1:p.(Trp24=/Cys)
     - token: LRG_199p1:p.Trp24=/Cys
   should_not_match:
+    - token: foo
     - token: v600e
     - token: p.(Arg54Ser
     - token: p.(Z600B)
     - token: (p.TrpVal24CysArg)
     - token: NP_004324.2:c.Val600Glu
     - token: NM_004985.4:c.437C>T
+    - token: BRAF V600E foo
 
