@@ -50,7 +50,8 @@ class ProteinSubstitution(Tokenizer):
                 # missense
                 amino_acids = [self.psub['amino_acid'],
                                self.psub['new_amino_acid']]
-            if 'Ter' not in self.psub['new_amino_acid']:
+            if self.psub['new_amino_acid'] not in ['Ter', '=']:
+                # nonsense, silent
                 if not self._is_valid_amino_acid(amino_acids=amino_acids):
                     return None
 
@@ -76,6 +77,11 @@ class ProteinSubstitution(Tokenizer):
                 psub_parts[2] = psub_parts[2].split(')')[0]
 
             self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
+
+            if '=/' in self.psub['new_amino_acid']:
+                # mosaic
+                self.psub['new_amino_acid'] = \
+                    self.psub['new_amino_acid'].split('=/')[-1]
         elif psub_parts_len == 2:
             psub_parts[0] = psub_parts[0].split(':')[-1]
             if 'Ter' in psub_parts[0]:
