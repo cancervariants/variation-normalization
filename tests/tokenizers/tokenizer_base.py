@@ -14,7 +14,6 @@ class TokenizerBase(object):
                 self.fixture_name(),
                 {'should_match': [], 'should_not_match': []}
         )
-        self.tokenizer = self.tokenizer_instance()
 
     def tokenizer_instance(self):
         """Check that tokenizer_instance method is implemented."""
@@ -31,12 +30,12 @@ class TokenizerBase(object):
     def test_matches(self):
         """Test that tokenizer matches correctly."""
         for x in self.fixtures['should_match']:
-            res = self.tokenizer.match(x['token'])
+            res = self.tokenizer_instance().match(x['token'])
             self.assertIsNotNone(res)
             self.assertEqual(self.token_type(), res.token_type)
 
     def test_not_matches(self):
         """Test that tokenizer matches correctly."""
         for x in self.fixtures['should_not_match']:
-            res = self.tokenizer.match(x['token'])
+            res = self.tokenizer_instance().match(x['token'])
             self.assertIsNone(res)

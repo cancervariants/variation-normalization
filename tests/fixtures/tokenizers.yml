@@ -39,10 +39,14 @@ protein_substitution:
     - token: NP_004324.2:p.Val600Glu
     - token: LRG_199p1:p.Trp24Cys
     - token: NP_003997.1:p.(Trp24Cys)
+    - token: NP_003997.1:p.(Gly56Ala^Ser^Cys)  # TODO: How to handle?
+    - token: NP_004976.2:p.Ala146Val
+    - token: LRG_199p1:p.Trp24Ter (p.Trp24*)  # TODO: How to handle?
   should_not_match:
     - token: v600e
     - token: p.(Arg54Ser
     - token: p.(Z600B)
     - token: (p.TrpVal24CysArg)
     - token: NP_004324.2:c.Val600Glu
+    - token: NM_004985.4:c.437C>T
 

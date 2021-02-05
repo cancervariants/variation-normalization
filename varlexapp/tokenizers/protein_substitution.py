@@ -32,20 +32,33 @@ class ProteinSubstitution(Tokenizer):
             return None
 
         if ':p.' in input_string:
-            psub_parts = self.splitter.split(input_string.split(':')[-1])
+            p_count = input_string.count('p.')
+            if p_count == 1:
+                psub_parts = self.splitter.split(input_string.split(':')[-1])
+            elif p_count == 2:
+                psub_parts = input_string.split()
         else:
             psub_parts = self.splitter.split(input_string)
 
         self._get_psub(psub_parts)
 
         if all(self.psub.values()):
-            if not self._is_valid_amino_acid(self.psub['amino_acid'],
-                                             self.psub['new_amino_acid']):
-                return None
+            if '^' in self.psub['new_amino_acid']:
+                # uncertain
+                amino_acids = self.psub['new_amino_acid'].split('^')
+            else:
+                # missense
+                amino_acids = [self.psub['amino_acid'],
+                               self.psub['new_amino_acid']]
+            if 'Ter' not in self.psub['new_amino_acid']:
+                if not self._is_valid_amino_acid(amino_acids=amino_acids):
+                    return None
+
             return ProteinSubstitutionToken(input_string,
                                             self.psub['amino_acid'],
                                             self.psub['new_amino_acid'],
                                             self.psub['position'])
+
         return None
 
     def _get_psub(self, psub_parts):
@@ -53,33 +66,42 @@ class ProteinSubstitution(Tokenizer):
 
         :param list psub_parts: The split input string
         """
-        # missense
-        if len(psub_parts) == 3:
-            if self._is_valid_amino_acid(psub_parts[0], psub_parts[2]):
-                self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
-            elif 'p.' in psub_parts[0]:
-                # Predicted consequences given in parentheses
-                if '(' in psub_parts[0] and ')' in psub_parts[-1]:
-                    self._set_psub(
-                        psub_parts[0].split('p.')[-1].split('(')[-1],
-                        psub_parts[1],
-                        psub_parts[-1].split(')')[0]
-                    )
-                else:
-                    self._set_psub(psub_parts[0].split('p.')[-1],
-                                   psub_parts[1],
-                                   psub_parts[-1])
+        psub_parts_len = len(psub_parts)
+        if psub_parts_len == 3:
+            if 'p.' in psub_parts[0]:
+                psub_parts[0] = psub_parts[0].split('p.')[-1]
+
+            if '(' in psub_parts[0] and ')' in psub_parts[2]:
+                psub_parts[0] = psub_parts[0].split('(')[-1]
+                psub_parts[2] = psub_parts[2].split(')')[0]
+
+            self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
+        elif psub_parts_len == 2:
+            psub_parts[0] = psub_parts[0].split(':')[-1]
+            if 'Ter' in psub_parts[0]:
+                check_nonsense = f"({psub_parts[0].replace('Ter', '*')})"
+                if check_nonsense == psub_parts[1]:
+                    psub_parts = \
+                        self.splitter.split(psub_parts[0].split('p.')[-1])
+                    self._get_psub(psub_parts)
 
     def _set_psub(self, amino_acid, position, new_amino_acid):
-        self.psub['amino_acid'] = amino_acid
-        self.psub['position'] = position
-        self.psub['new_amino_acid'] = new_amino_acid
-
-    def _is_valid_amino_acid(self, amino_acid, new_amino_acid):
-        """Return whether or not amino acids are valid.
+        """Initialize protein substitution.
 
         :param str amino_acid: Reference amino acid
-        :param str new_amino_acid: New amino acid
+        :param str position: The position of the amino acid substituted
+        :param str new_amino_acid: The new amino_acid
         """
-        return (amino_acid in self.amino_acid_cache and
-                new_amino_acid in self.amino_acid_cache)
+        self.psub['amino_acid'] = amino_acid
+        self.psub['position'] = int(position)
+        self.psub['new_amino_acid'] = new_amino_acid
+
+    def _is_valid_amino_acid(self, **kwargs):
+        """Return whether or not amino acids are valid."""
+        if 'amino_acids' in kwargs:
+            for amino_acid in kwargs['amino_acids']:
+                if amino_acid not in self.amino_acid_cache:
+                    return False
+            return True
+        else:
+            raise KeyError("amino_acids not found in kwargs.")
