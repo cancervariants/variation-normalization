@@ -17,3 +17,24 @@ fusion:
     - query: fused
     - query: fusio
 
+
+protein_substitution:
+  should_match:
+    - query: BRAF V600E
+      confidence: EXACT
+    - query: braf v600e
+      confidence: INTERSECTION
+    - query: braf V600E
+      confidence: EXACT
+    - query: V600E BRAF
+      confidence: UNORDERED
+    - query: BRAF V600E foo
+      confidence: SUPERSET
+    - query: BRAF
+      confidence: INTERSECTION
+    - query: NRAS G13V
+      confidence: EXACT
+  should_not_match:
+    - query: BRAFV600E
+    - query: v600e
+
