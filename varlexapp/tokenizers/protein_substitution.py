@@ -33,7 +33,9 @@ class ProteinSubstitution(Tokenizer):
         if input_string is None:
             return None
 
-        if ':p.' in input_string:
+        if 'p.' in input_string:
+            if not input_string.startswith('p.'):
+                return None
             p_count = input_string.count('p.')
             if p_count == 1:
                 psub_parts = self.splitter.split(input_string.split(':')[-1])

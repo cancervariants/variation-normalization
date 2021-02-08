@@ -36,15 +36,15 @@ protein_substitution:
     - token: Arg54Ser
     - token: p.(Arg54Ser)
     - token: p.Arg54Ser
-    - token: NP_004324.2:p.Val600Glu
-    - token: LRG_199p1:p.Trp24Cys
-    - token: NP_003997.1:p.(Trp24Cys)
-    - token: NP_003997.1:p.(Gly56Ala^Ser^Cys)  # TODO: How to handle?
-    - token: NP_004976.2:p.Ala146Val
-    - token: LRG_199p1:p.Trp24Ter (p.Trp24*)  # TODO: How to handle?
-    - token: NP_003997.1:p.Cys188=
-    - token: LRG_199t1:p.(Trp24=/Cys)
-    - token: LRG_199p1:p.Trp24=/Cys
+    - token: p.Val600Glu
+    - token: p.Trp24Cys
+    - token: p.(Trp24Cys)
+    - token: p.(Gly56Ala^Ser^Cys)
+    - token: p.Ala146Val
+    - token: p.Trp24Ter (p.Trp24*)
+    - token: p.Cys188=
+    - token: p.(Trp24=/Cys)
+    - token: p.Trp24=/Cys
   should_not_match:
     - token: foo
     - token: v600e
@@ -54,4 +54,12 @@ protein_substitution:
     - token: NP_004324.2:c.Val600Glu
     - token: NM_004985.4:c.437C>T
     - token: BRAF V600E foo
+    - token: NP_004324.2:p.Val600Glu
 
+hgvs:
+  should_match:
+    - token: NC_000007.13:g.36561662C>T
+    - token: LRG_199p1:p.Trp24Cys
+    - token: NM_01234.5:c.22+1A>T
+  should_not_match:
+    - token: NP004324.2
