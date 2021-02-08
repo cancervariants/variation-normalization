@@ -1,19 +1,20 @@
-from .token import Token
-from .token_response import TokenResponse
-from .classification_type import ClassificationType
-from .confidence_rating import ConfidenceRating
-from .classification import Classification
-from .classification_response import ClassificationResponse
-from .token_match_type import TokenMatchType
-from .gene_match_token import GeneMatchToken
-from .gene_pair_match_token import GenePairMatchToken
-from .validation_result import ValidationResult
-from .validation_summary import ValidationSummary
-from .validation_response import ValidationResponse
-from .protein_substitution_token import ProteinSubstitutionToken
-from .lookup_type import LookupType
-from .simple_interval import SimpleInterval
-from .variant_representation import VariantRepresentation
-from .location import Location
-from .sequence_state import SequenceState
-from .translation_response import TranslationResponse
+"""Module to load and init namespace at package level."""
+from .token import Token  # noqa: F401
+from .token_response import TokenResponse  # noqa: F401
+from .classification_type import ClassificationType  # noqa: F401
+from .confidence_rating import ConfidenceRating  # noqa: F401
+from .classification import Classification  # noqa: F401
+from .classification_response import ClassificationResponse  # noqa: F401
+from .token_match_type import TokenMatchType  # noqa: F401
+from .gene_match_token import GeneMatchToken  # noqa: F401
+from .gene_pair_match_token import GenePairMatchToken  # noqa: F401
+from .validation_result import ValidationResult  # noqa: F401
+from .validation_summary import ValidationSummary  # noqa: F401
+from .validation_response import ValidationResponse  # noqa: F401
+from .protein_substitution_token import ProteinSubstitutionToken  # noqa: F401
+from .lookup_type import LookupType  # noqa: F401
+from .simple_interval import SimpleInterval  # noqa: F401
+from .variant_representation import VariantRepresentation  # noqa: F401
+from .location import Location  # noqa: F401
+from .sequence_state import SequenceState  # noqa: F401
+from .translation_response import TranslationResponse  # noqa: F401
