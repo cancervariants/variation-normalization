@@ -31,11 +31,11 @@ class TokenizerBase(object):
         """Test that tokenizer matches correctly."""
         for x in self.fixtures['should_match']:
             res = self.tokenizer_instance().match(x['token'])
-            self.assertIsNotNone(res)
+            self.assertIsNotNone(res, msg=x)
             self.assertEqual(self.token_type(), res.token_type)
 
     def test_not_matches(self):
         """Test that tokenizer matches correctly."""
         for x in self.fixtures['should_not_match']:
             res = self.tokenizer_instance().match(x['token'])
-            self.assertIsNone(res)
+            self.assertIsNone(res, msg=x)
