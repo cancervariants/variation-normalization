@@ -1,20 +1,21 @@
-from .tokenizer import Tokenizer
-from .tokenize import Tokenize
-
-from .amplification import Amplification
-from .deletion import Deletion
-from .exon import Exon
-from .expression import Expression
-from .fusion import Fusion
-from .gain_of_function import GainOfFunction
-from .gene_pair import GenePair
-from .gene_symbol import GeneSymbol
-from .loss_of_function import LossOfFunction
-from .overexpression import OverExpression
-from .protein_alternate import ProteinAlternate
-from .protein_frameshift import ProteinFrameshift
-from .protein_substitution import ProteinSubstitution
-from .protein_termination import ProteinTermination
-from .underexpression import UnderExpression
-from .wild_type import WildType
-from .hgvs import HGVS
+"""Module to load and init namespace at package level."""
+from .tokenizer import Tokenizer  # noqa: F401
+from .tokenize import Tokenize  # noqa: F401
+from .amplification import Amplification  # noqa: F401
+from .deletion import Deletion  # noqa: F401
+from .exon import Exon  # noqa: F401
+from .expression import Expression  # noqa: F401
+from .fusion import Fusion  # noqa: F401
+from .gain_of_function import GainOfFunction  # noqa: F401
+from .gene_pair import GenePair  # noqa: F401
+from .gene_symbol import GeneSymbol  # noqa: F401
+from .loss_of_function import LossOfFunction  # noqa: F401
+from .overexpression import OverExpression  # noqa: F401
+from .protein_alternate import ProteinAlternate  # noqa: F401
+from .protein_frameshift import ProteinFrameshift  # noqa: F401
+from .protein_substitution import ProteinSubstitution  # noqa: F401
+from .protein_termination import ProteinTermination  # noqa: F401
+from .underexpression import UnderExpression  # noqa: F401
+from .wild_type import WildType  # noqa: F401
+from .hgvs import HGVS  # noqa: F401
+from .reference_sequence import ReferenceSequence  # noqa: F401
