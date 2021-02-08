@@ -38,27 +38,41 @@ class ProteinSubstitution(Tokenizer):
                 return None
             p_count = input_string.count('p.')
             if p_count == 1:
-                psub_parts = self.splitter.split(input_string.split(':')[-1])
+                psub_parts = self.splitter.split(input_string)
             elif p_count == 2:
                 psub_parts = input_string.split()
         else:
             psub_parts = self.splitter.split(input_string)
 
         self._get_psub(psub_parts)
+        ret_psub = False
 
         if all(self.psub.values()):
             if '^' in self.psub['new_amino_acid']:
                 # uncertain
-                amino_acids = self.psub['new_amino_acid'].split('^')
+                amino_acids = set(self.psub['new_amino_acid'].split('^'))
             else:
                 # missense
-                amino_acids = [self.psub['amino_acid'],
-                               self.psub['new_amino_acid']]
-            if self.psub['new_amino_acid'] not in ['Ter', '=']:
-                # nonsense, silent
-                if not self._is_valid_amino_acid(amino_acids=amino_acids):
-                    return None
+                amino_acids = {self.psub['amino_acid'],
+                               self.psub['new_amino_acid']}
 
+            # nonsense, silent, unknown
+            amino_acids = amino_acids - {'Ter', '=', '?'}
+
+            if not self._is_valid_amino_acid(amino_acids=amino_acids):
+                return None
+
+            ret_psub = True
+        else:
+            # Translation initiation codon: no protein
+            if self.psub['amino_acid'] == '' and self.psub['position'] == 0 \
+                    and self.psub['new_amino_acid'] == '':
+                ret_psub = True
+            # splicing
+            elif not self.psub['amino_acid'] and not self.psub['position'] \
+                    and self.psub['new_amino_acid'] == '?':
+                ret_psub = True
+        if ret_psub:
             return ProteinSubstitutionToken(input_string,
                                             self.psub['amino_acid'],
                                             self.psub['new_amino_acid'],
@@ -94,6 +108,11 @@ class ProteinSubstitution(Tokenizer):
                     psub_parts = \
                         self.splitter.split(psub_parts[0].split('p.')[-1])
                     self._get_psub(psub_parts)
+        elif psub_parts_len == 1:
+            if 'p.' in psub_parts[0]:
+                psub_parts[0] = psub_parts[0].split('p.')[1]
+                if psub_parts[0] == '?':
+                    self.psub['new_amino_acid'] = psub_parts[0]
 
     def _set_psub(self, amino_acid, position, new_amino_acid):
         """Initialize protein substitution.

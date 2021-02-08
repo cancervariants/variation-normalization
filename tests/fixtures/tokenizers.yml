@@ -45,6 +45,9 @@ protein_substitution:
     - token: p.Cys188=
     - token: p.(Trp24=/Cys)
     - token: p.Trp24=/Cys
+    - token: p.0
+    - token: p.Met1?
+    - token: p.?
   should_not_match:
     - token: foo
     - token: v600e
