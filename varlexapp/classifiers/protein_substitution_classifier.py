@@ -16,5 +16,6 @@ class ProteinSubstitutionClassifier(SetBasedClassifier):
         return [
             ['ProteinSubstitution'],
             ['GeneSymbol', 'ProteinSubstitution'],
-            ['HGVS', 'ProteinSubstitution']
+            ['HGVS', 'ProteinSubstitution'],
+            ['ReferenceSequence', 'ProteinSubstitution']
         ]

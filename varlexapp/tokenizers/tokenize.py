@@ -18,6 +18,7 @@ from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
 from .wild_type import WildType
 from .hgvs import HGVS
+from .reference_sequence import ReferenceSequence
 from ..models import Token
 
 
@@ -55,7 +56,8 @@ class Tokenize:
                 ProteinTermination(amino_acid_cache),
                 UnderExpression(),
                 WildType(),
-                HGVS()
+                HGVS(),
+                ReferenceSequence()
         )
 
     def perform(self, search_string: str) -> Iterable[Token]:
@@ -65,16 +67,22 @@ class Tokenize:
         :return: An Iterable of Tokens
         """
         tokens: List[Token] = list()
-        self._add_tokens(tokens, search_string)
+        terms = self.search_term_splitter.split(search_string)
+        self._add_tokens(tokens, terms, search_string)
+
+        # If reference sequence: Check description
+        if list(map(lambda t: t.token_type, tokens)) == ['ReferenceSequence']:
+            self._add_tokens(tokens,
+                             [search_string.split(':')[1]],
+                             search_string)
         return tokens
 
-    def _add_tokens(self, tokens, search_string):
+    def _add_tokens(self, tokens, terms, search_string):
         """Add tokens to a list for a given search string.
 
         :param list tokens: A list of tokens
         :param str search_string: The input string to search on
         """
-        terms = self.search_term_splitter.split(search_string)
         for term in terms:
             if not term:
                 continue
@@ -84,9 +92,11 @@ class Tokenize:
                 if res:
                     tokens.append(res)
                     if list(map(lambda t: t.token_type, tokens))[0] == 'HGVS':
+                        # Give specific type of HGVS (i.e. protein sub)
                         if len(tokens) == 1:
                             self._add_tokens(tokens,
-                                             search_string.split(':')[1])
+                                             [search_string.split(':')[1]],
+                                             search_string)
                     matched = True
                     break
                 else:
