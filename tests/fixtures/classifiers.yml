@@ -45,4 +45,3 @@ protein_substitution:
   should_not_match:
     - query: BRAFV600E
     - query: v600e
-

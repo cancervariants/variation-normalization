@@ -58,6 +58,7 @@ protein_substitution:
     - token: NM_004985.4:c.437C>T
     - token: BRAF V600E foo
     - token: NP_004324.2:p.Val600Glu
+    - token: 0
 
 hgvs:
   should_match:

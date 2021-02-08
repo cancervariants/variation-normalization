@@ -24,6 +24,8 @@ class ProteinSubstitution(Tokenizer):
         :param str input_string: The input string to match
         :return: A ProteinSubstitutionToken if a match exists. Otherwise, None.
         """
+        input_string = str(input_string)
+
         self.psub = {
             'amino_acid': None,
             'position': None,
@@ -89,6 +91,9 @@ class ProteinSubstitution(Tokenizer):
         if psub_parts_len == 3:
             if 'p.' in psub_parts[0]:
                 psub_parts[0] = psub_parts[0].split('p.')[-1]
+            else:
+                if not psub_parts[0] and psub_parts[1] and not psub_parts[2]:
+                    return
 
             if '(' in psub_parts[0] and ')' in psub_parts[2]:
                 psub_parts[0] = psub_parts[0].split('(')[-1]
