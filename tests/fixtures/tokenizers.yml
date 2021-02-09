@@ -34,6 +34,8 @@ protein_substitution:
   should_match:
     - token: V600E
     - token: Arg54Ser
+    - token: p.Met918Thr
+    - token: p.Asp842Val
     - token: p.(Arg54Ser)
     - token: p.Arg54Ser
     - token: p.Val600Glu
@@ -43,6 +45,7 @@ protein_substitution:
     - token: p.Ala146Val
     - token: p.Trp24Ter (p.Trp24*)
     - token: p.Cys188=
+    - token: p.Glu55=
     - token: p.(Trp24=/Cys)
     - token: p.Trp24=/Cys
     - token: p.0
@@ -59,6 +62,10 @@ protein_substitution:
     - token: BRAF V600E foo
     - token: NP_004324.2:p.Val600Glu
     - token: 0
+    - token: NP_006197.1:p.Asp842Val
+    - token: NP_
+    - token: NP_:p.
+    - token: c.Met918Thr
 
 hgvs:
   should_match:
