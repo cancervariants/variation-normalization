@@ -1,6 +1,13 @@
 protein_substitution:
-  tests:
+  should_match:
     - query: BRAF V600E
-      is_valid: False
+      is_valid: True
     - query: NP_004324.2:p.Val600Glu
       is_valid: True
+    - query: NP_060842.3:p.Tyr365Ter
+      is_valid: True
+  should_not_match:
+    - query: NP_004324.2:p.Val600000000000Glu
+      is_valid: False
+    - query: NP_004324.2:p.Glu600Val
+      is_valid: False

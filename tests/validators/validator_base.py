@@ -2,7 +2,6 @@
 import yaml
 from varlexapp import PROJECT_ROOT
 from varlexapp.tokenizers import Tokenize
-from varlexapp.models import ClassificationType
 
 
 class ValidatorBase(object):
@@ -14,7 +13,7 @@ class ValidatorBase(object):
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
                 self.fixture_name(),
-                {'tests': []}
+                {'should_match': [], 'should_not_match': []}
         )
         self.tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
         self.classifier = self.classifier_instance()
@@ -34,13 +33,27 @@ class ValidatorBase(object):
 
     def test_matches(self):
         """Test that validator matches correctly."""
-        for x in self.fixtures['tests']:
+        for x in self.fixtures['should_match']:
             tokens = self.tokenizer.perform(x['query'])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
+            is_valid = False
             for vr in validation_results:
-                self.assertEqual(ClassificationType.PROTEIN_SUBSTITUTION,
-                                 vr.classification.classification_type,
-                                 msg=x)
-                self.assertEqual(x['is_valid'], vr.is_valid, msg=x)
+                if vr.is_valid:
+                    is_valid = True
+                    break
+            self.assertEqual(x['is_valid'], is_valid, msg=x)
             self.assertIsNotNone(validation_results, msg=x)
+
+    def test_not_matches(self):
+        """Test that validator matches correctly."""
+        for x in self.fixtures['should_not_match']:
+            tokens = self.tokenizer.perform(x['query'])
+            classification = self.classifier.match(tokens)
+            validation_results = self.validator.validate(classification)
+            is_valid = False
+            for vr in validation_results:
+                if vr.is_valid:
+                    is_valid = True
+                    break
+            self.assertEqual(x['is_valid'], is_valid, msg=x)
