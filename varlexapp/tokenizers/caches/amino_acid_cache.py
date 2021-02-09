@@ -2,13 +2,7 @@
 from typing import Set
 
 # 20 standard amino acids
-THREE_LETTER_CODE = {'Ala', 'Cys', 'Asp', 'Glu', 'Phe', 'Gly', 'His', 'Ile',
-                     'Lys', 'Leu', 'Met', 'Asn', 'Pro', 'Gln', 'Arg', 'Ser',
-                     'Thr', 'Val', 'Trp', 'Tyr'}
-
-ONE_LETTER_CODE = set('ACDEFGHIKLMNPQRSTVWY')
-
-AMINO_ACID_CONVERSION = {
+AMINO_ACID_CODES = {
     'A': 'Ala', 'C': 'Cys', 'D': 'Asp', 'E': 'Glu', 'F': 'Phe', 'G': 'Gly',
     'H': 'His', 'I': 'Ile', 'K': 'Lys', 'L': 'Leu', 'M': 'Met', 'N': 'Asn',
     'P': 'Pro', 'Q': 'Gln', 'R': 'Arg', 'S': 'Ser', 'T': 'Thr', 'V': 'Val',
@@ -32,4 +26,4 @@ class AminoAcidCache:
 
         :return: A set of valid amino acid codes.
         """
-        return (THREE_LETTER_CODE | ONE_LETTER_CODE)
+        return (set(AMINO_ACID_CODES.keys()) | set(AMINO_ACID_CODES.values()))
