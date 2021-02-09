@@ -25,7 +25,11 @@ class SeqRepoAccess:
         except KeyError:
             return None
 
-    def _translate_alias(self, input_str):
-        """Get Ensembl aliases for gene symbols."""
+    def aliases(self, input_str):
+        """Get aliases for gene symbols."""
+        aliases = list()
         res = self.seq_repo_client.translate_alias(input_str.strip())
-        return res
+        for alias in res:
+            if alias['namespace'] == 'Ensembl':
+                aliases.append(alias['alias'])
+        return aliases

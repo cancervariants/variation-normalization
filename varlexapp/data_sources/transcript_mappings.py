@@ -47,6 +47,6 @@ class TranscriptMappings:
         else:
             return None
 
-    def refseq_to_gene_symbol(self, refseq: str):
-        """Return the gene symbol for a given refseq."""
+    def refseq_gene_symbol(self, refseq: str):
+        """Return the gene symbol for a given reference sequence."""
         return self.protein_stable_id_to_gene_symbol.get(refseq)

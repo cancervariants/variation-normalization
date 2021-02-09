@@ -5,7 +5,7 @@ from ..models import ValidationResult, ClassificationType, Classification,\
     ProteinSubstitutionToken, LookupType, Location, SimpleInterval
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
-from varlexapp.tokenizers.caches.amino_acid_cache import AMINO_ACID_CONVERSION
+from varlexapp.tokenizers.caches.amino_acid_cache import AMINO_ACID_CODES
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
 
 
@@ -17,6 +17,7 @@ class ProteinSubstitution(Validator):
         """Initialize the Protein Substitution validator."""
         self.transcript_mappings = transcript_mappings
         self.seq_repo_client = seq_repo_client
+        self._gene_matcher = GeneSymbol(GeneSymbolCache())
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -24,32 +25,9 @@ class ProteinSubstitution(Validator):
         results = list()
         errors = list()
 
-        gene_tokens = [t for t in classification.all_tokens if t.token_type == 'GeneSymbol']  # noqa: E501
         psub_tokens = [t for t in classification.all_tokens if isinstance(t, ProteinSubstitutionToken)]  # noqa: E501
 
-        if not gene_tokens:
-            refseq = \
-                [t.token for t in classification.all_tokens if
-                 t.token_type in ['HGVS', 'ReferenceSequence']][0]
-
-            if ':' in refseq:
-                refseq = refseq.split(':')[0]
-
-            aliases = list()
-            res = self.seq_repo_client._translate_alias(refseq)
-            for alias in res:
-                if alias['namespace'] == 'Ensembl':
-                    aliases.append(alias['alias'])
-
-            gene_symbols = list()
-            for alias in aliases:
-                gene_symbol = \
-                    self.transcript_mappings.refseq_to_gene_symbol(alias)
-
-                if gene_symbol and gene_symbol not in gene_symbols:
-                    gene_symbols.append(gene_symbol)
-                    gene_tokens.append(GeneSymbol(GeneSymbolCache()).match(
-                        gene_symbol))
+        gene_tokens = self.get_gene_tokens(classification)
 
         if len(gene_tokens) > 1:
             errors.append('More than one gene symbol found for a single'
@@ -78,7 +56,7 @@ class ProteinSubstitution(Validator):
                 location = Location(f'ensembl:{t}', interval)
                 if ref_protein and len(ref_protein) == 1 \
                         and len(s.ref_protein) == 3:
-                    ref_protein = AMINO_ACID_CONVERSION[ref_protein]
+                    ref_protein = AMINO_ACID_CODES[ref_protein]
                 if ref_protein != s.ref_protein:
                     errors.append(f'Needed to find {s.ref_protein} at position'
                                   f' {s.pos} on {t} but found {ref_protein}')
@@ -105,6 +83,31 @@ class ProteinSubstitution(Validator):
                     ))
                 errors = list()
         return results
+
+    def get_gene_tokens(self, classification):
+        """Return gene tokens for a classification."""
+        gene_tokens = [t for t in classification.all_tokens
+                       if t.token_type == 'GeneSymbol']
+        if not gene_tokens:
+            # Convert refseq to gene symbol
+            refseq = \
+                [t.token for t in classification.all_tokens if
+                 t.token_type in ['HGVS', 'ReferenceSequence']][0]
+
+            if ':' in refseq:
+                refseq = refseq.split(':')[0]
+
+            aliases = self.seq_repo_client.aliases(refseq)
+
+            gene_symbols = list()
+            for alias in aliases:
+                gene_symbol = \
+                    self.transcript_mappings.refseq_gene_symbol(alias)
+
+                if gene_symbol and gene_symbol not in gene_symbols:
+                    gene_symbols.append(gene_symbol)
+                    gene_tokens.append(self._gene_matcher.match(gene_symbol))
+        return gene_tokens
 
     def validates_classification_type(
             self,
