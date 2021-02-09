@@ -42,7 +42,7 @@ class ValidatorBase(object):
                 if vr.is_valid:
                     is_valid = True
                     break
-            self.assertEqual(x['is_valid'], is_valid, msg=x)
+            self.assertTrue(is_valid, msg=x)
             self.assertIsNotNone(validation_results, msg=x)
 
     def test_not_matches(self):
@@ -56,4 +56,4 @@ class ValidatorBase(object):
                 if vr.is_valid:
                     is_valid = True
                     break
-            self.assertEqual(x['is_valid'], is_valid, msg=x)
+            self.assertFalse(is_valid, msg=x)

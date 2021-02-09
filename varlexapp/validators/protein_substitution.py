@@ -5,7 +5,7 @@ from ..models import ValidationResult, ClassificationType, Classification,\
     ProteinSubstitutionToken, LookupType, Location, SimpleInterval
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
-from varlexapp.tokenizers.caches.amino_acid_cache import AMINO_ACID_CODES
+from varlexapp.tokenizers.caches import AminoAcidCache
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
 
 
@@ -18,6 +18,7 @@ class ProteinSubstitution(Validator):
         self.transcript_mappings = transcript_mappings
         self.seq_repo_client = seq_repo_client
         self._gene_matcher = GeneSymbol(GeneSymbolCache())
+        self._amino_acid_cache = AminoAcidCache()
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -28,6 +29,9 @@ class ProteinSubstitution(Validator):
         psub_tokens = [t for t in classification.all_tokens if isinstance(t, ProteinSubstitutionToken)]  # noqa: E501
 
         gene_tokens = self.get_gene_tokens(classification)
+
+        if len(gene_tokens) == 0:
+            errors.append('No gene tokens for a protein substitution.')
 
         if len(gene_tokens) > 1:
             errors.append('More than one gene symbol found for a single'
@@ -56,7 +60,9 @@ class ProteinSubstitution(Validator):
                 location = Location(f'ensembl:{t}', interval)
                 if ref_protein and len(ref_protein) == 1 \
                         and len(s.ref_protein) == 3:
-                    ref_protein = AMINO_ACID_CODES[ref_protein]
+                    ref_protein = \
+                        self._amino_acid_cache._amino_acid_code_conversion[
+                            ref_protein]
                 if ref_protein != s.ref_protein:
                     errors.append(f'Needed to find {s.ref_protein} at position'
                                   f' {s.pos} on {t} but found {ref_protein}')
