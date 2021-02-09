@@ -1,14 +1,21 @@
+"""A module for caching gene symbols."""
 from typing import Set, Dict, Iterable
 from csv import DictReader
 from varlexapp import PROJECT_ROOT
-
 import re
 
+
 class GeneSymbolCache:
-    def __init__(self, gene_file_path: str) -> None:
+    """The gene symbol cache class."""
+
+    def __init__(self,
+                 gene_file_path: str = "varlexapp/data/gene_symbols.txt") \
+            -> None:
+        """Initialize the gene symbol cache class."""
         self.__load_caches(f"{PROJECT_ROOT}/{gene_file_path}")
 
     def __load_caches(self, gene_file_path: str) -> None:
+        """Load gene symbol cache."""
         self.gene_symbols: Set[str] = set()
         self.gene_ids: Dict[str, str] = {}
         self.gene_aliases: Dict[str, str] = {}
@@ -28,7 +35,7 @@ class GeneSymbolCache:
                     curie_string = f"ensembl:{row['ensembl_gene_id']}".upper()
                     self.gene_ids[curie_string] = symbol
                 if row['hgnc_id']:
-                    #already in curie format
+                    # already in curie format
                     self.gene_ids[row['hgnc_id'].upper()] = symbol
 
                 for x in self.__process_field(row['name']):
@@ -44,8 +51,8 @@ class GeneSymbolCache:
                     self.previous_identifiers[x] = symbol
 
     def __process_field(self, field: str) -> Iterable[str]:
+        """Process a field."""
         if field:
             return map(lambda x: x.upper(), re.sub('"', '', field).split('|'))
         else:
-           return []
-
+            return []

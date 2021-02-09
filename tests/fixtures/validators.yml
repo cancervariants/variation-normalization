@@ -1,0 +1,4 @@
+protein_substitution:
+  should_match:
+    - token: BRAF V600E
+    - token: NP_004324.2:p.Val600Glu

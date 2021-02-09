@@ -1,14 +1,18 @@
+"""The module for Transcript Mappings."""
 import csv
-
 from typing import Dict, List, Optional
-
 from ..models import LookupType
 
+
 class TranscriptMappings:
+    """The transcript mappings class."""
+
     def __init__(self, transcript_file_path: str) -> None:
+        """Initialize the transcript mappings class."""
         self.file_path = transcript_file_path
         self.protein_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
         self.genomic_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
+        self.protein_stable_id_to_gene_symbol: Dict[str, str] = {}
         with open(transcript_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
@@ -19,23 +23,31 @@ class TranscriptMappings:
                         self.protein_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(protein_transcript)
+                        self.protein_stable_id_to_gene_symbol[
+                            protein_transcript] = gene
                     genomic_transcript = row['Transcript stable ID']
                     if genomic_transcript:
                         self.genomic_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(genomic_transcript)
+        # print(self.protein_transcripts_for_gene_symbol)
 
-
-    def protein_transcripts(self, identifier: str, lookup_type: LookupType) -> Optional[List[str]]:
+    def protein_transcripts(self, identifier: str,
+                            lookup_type: LookupType) -> Optional[List[str]]:
+        """Return the protein transcripts for a gene symbol."""
         if lookup_type == LookupType.GENE_SYMBOL:
             return self.protein_transcripts_for_gene_symbol.get(identifier)
         else:
             return None
 
-    def genomic_transcripts(self, identifier: str, lookup_type: LookupType) -> Optional[List[str]]:
+    def genomic_transcripts(self, identifier: str,
+                            lookup_type: LookupType) -> Optional[List[str]]:
+        """Return the genomic transcripts for a gene symbol."""
         if lookup_type == LookupType.GENE_SYMBOL:
             return self.genomic_transcripts_for_gene_symbol.get(identifier)
         else:
             return None
 
-
+    def refseq_to_gene_symbol(self, refseq: str):
+        """Return the gene symbol for a given refseq."""
+        return self.protein_stable_id_to_gene_symbol.get(refseq)
