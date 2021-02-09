@@ -42,6 +42,14 @@ protein_substitution:
       confidence: EXACT
     - query: NP_003997.1:p.(Gly56Ala^Ser^Cys)
       confidence: EXACT
+    - query: ENSP00000256474.2:p.Ter214Gly
+      confidence: EXACT
+    - query: NP_065681.1:p.Met918Thr
+      confidence: EXACT
+    - query: ENSP00000343204.4:p.Trp690Ter
+      confidence: EXACT
+    - query: NP_065681.1:c.Met918Thr
+      confidence: INTERSECTION
   should_not_match:
     - query: BRAFV600E
     - query: v600e
