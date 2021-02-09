@@ -18,19 +18,18 @@ class TranscriptMappings:
             for row in reader:
                 gene = row['Gene name']
                 if gene:
-                    protein_transcript = row['Protein stable ID']
+                    protein_transcript = row['Protein stable ID version']
                     if protein_transcript:
                         self.protein_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(protein_transcript)
                         self.protein_stable_id_to_gene_symbol[
                             protein_transcript] = gene
-                    genomic_transcript = row['Transcript stable ID']
+                    genomic_transcript = row['Transcript stable ID version']
                     if genomic_transcript:
                         self.genomic_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(genomic_transcript)
-        # print(self.protein_transcripts_for_gene_symbol)
 
     def protein_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:

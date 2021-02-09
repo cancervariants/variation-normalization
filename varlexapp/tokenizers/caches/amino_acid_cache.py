@@ -8,6 +8,13 @@ THREE_LETTER_CODE = {'Ala', 'Cys', 'Asp', 'Glu', 'Phe', 'Gly', 'His', 'Ile',
 
 ONE_LETTER_CODE = set('ACDEFGHIKLMNPQRSTVWY')
 
+AMINO_ACID_CONVERSION = {
+    'A': 'Ala', 'C': 'Cys', 'D': 'Asp', 'E': 'Glu', 'F': 'Phe', 'G': 'Gly',
+    'H': 'His', 'I': 'Ile', 'K': 'Lys', 'L': 'Leu', 'M': 'Met', 'N': 'Asn',
+    'P': 'Pro', 'Q': 'Gln', 'R': 'Arg', 'S': 'Ser', 'T': 'Thr', 'V': 'Val',
+    'W': 'Trp', 'Y': 'Tyr'
+}
+
 
 class AminoAcidCache:
     """A class to cache amino acid codes."""
