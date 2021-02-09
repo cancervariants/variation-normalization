@@ -5,6 +5,7 @@ from ..models import ValidationResult, ClassificationType, Classification,\
     ProteinSubstitutionToken, LookupType, Location, SimpleInterval
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
+from varlexapp.tokenizers.caches.amino_acid_cache import AMINO_ACID_CONVERSION
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
 
 
@@ -34,13 +35,18 @@ class ProteinSubstitution(Validator):
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
 
-            aliases = self.seq_repo_client.translate_alias(refseq)
+            aliases = list()
+            res = self.seq_repo_client._translate_alias(refseq)
+            for alias in res:
+                if alias['namespace'] == 'Ensembl':
+                    aliases.append(alias['alias'])
+
             gene_symbols = list()
             for alias in aliases:
                 gene_symbol = \
-                    self.transcript_mappings.refseq_to_gene_symbol(
-                        alias.split('.')[0]).strip()
-                if gene_symbol not in gene_symbols:
+                    self.transcript_mappings.refseq_to_gene_symbol(alias)
+
+                if gene_symbol and gene_symbol not in gene_symbols:
                     gene_symbols.append(gene_symbol)
                     gene_tokens.append(GeneSymbol(GeneSymbolCache()).match(
                         gene_symbol))
@@ -55,7 +61,6 @@ class ProteinSubstitution(Validator):
 
         transcripts = self.transcript_mappings.protein_transcripts(
             gene_tokens[0].token, LookupType.GENE_SYMBOL)
-        # print(transcripts)
 
         if not transcripts:
             errors.append(f'No transcripts found for gene symbol '
@@ -71,6 +76,9 @@ class ProteinSubstitution(Validator):
                     self.seq_repo_client.protein_at_position(t, s.pos)
                 interval = SimpleInterval(s.pos, s.pos + 1)
                 location = Location(f'ensembl:{t}', interval)
+                if ref_protein and len(ref_protein) == 1 \
+                        and len(s.ref_protein) == 3:
+                    ref_protein = AMINO_ACID_CONVERSION[ref_protein]
                 if ref_protein != s.ref_protein:
                     errors.append(f'Needed to find {s.ref_protein} at position'
                                   f' {s.pos} on {t} but found {ref_protein}')
@@ -96,7 +104,6 @@ class ProteinSubstitution(Validator):
                         errors
                     ))
                 errors = list()
-
         return results
 
     def validates_classification_type(
