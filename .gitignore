@@ -21,3 +21,5 @@ varlexapp/data/seqrepo/
 .idea/
 
 Pipfile.lock
+
+.python-version

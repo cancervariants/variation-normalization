@@ -5,17 +5,18 @@ Repository for the Variant Lexicon normalization service
 
 
 ## Backend Services
-
 VarLex relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
 From the _root_ directory of the repository:
 ```
-conda env create -f environment.yml
-conda activate varlexenv
+pipenv sync
 mkdir -p varlexapp/data/seqrepo
 curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > varlexapp/data/gene_symbols.txt
 seqrepo --root-directory varlexapp/data/seqrepo pull
+cd varlexapp/data/seqrepo
+chmod -R u+w varlexapp/data/seqrepo/<DATE>
+ln -s varlexapp/data/seqrepo/<DATE> latest
 ```
 
 ### Init coding style tests
