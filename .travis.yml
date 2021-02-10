@@ -10,7 +10,8 @@ before_install:
     - sudo apt-get -y install tabix
 
 install:
-  - pip install -r requirements.txt
+  - pip install pipenv
+  - pipenv install
 
 script:
   - pytest tests/

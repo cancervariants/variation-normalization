@@ -7,9 +7,9 @@ verify_ssl = true
 pytest = "*"
 
 [packages]
-apispec = "==2.0.2"
-apispec-oneofschema = "==2.1.0"
-apispec-webframeworks = "==0.4.0"
+apispec = "~=2.0"
+apispec-oneofschema = "~=2.1"
+apispec-webframeworks = "==0.4"
 appdirs = "==1.4.3"
 appnope = "==0.1.0"
 astroid = "==2.2.5"
@@ -95,3 +95,4 @@ pyparsing = "*"
 uvloop = "*"
 httptools = "*"
 py = "*"
+python-dotenv = "*"
