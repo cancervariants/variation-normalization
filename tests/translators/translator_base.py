@@ -1,6 +1,7 @@
 """A module for testing translator classes."""
 import yaml
 from varlexapp import PROJECT_ROOT
+from varlexapp.tokenizers import Tokenize
 
 
 class TranslatorBase(object):
@@ -12,8 +13,20 @@ class TranslatorBase(object):
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
                 self.fixture_name(),
-                {'should_match': [], 'should_not_match': []}
+                {'tests': []}
         )
+        self.tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
+        self.classifier = self.classifier_instance()
+        self.validator = self.validator_instance()
+        self.translator = self.translator_instance()
+
+    def classifier_instance(self):
+        """Check that the classifier_instance method is implemented."""
+        raise NotImplementedError()
+
+    def validator_instance(self):
+        """Check that the validator_instance method is implemented."""
+        raise NotImplementedError()
 
     def translator_instance(self):
         """Check that the translator_instance method is implemented."""
@@ -23,12 +36,14 @@ class TranslatorBase(object):
         """Check that the fixture_name method is implemented."""
         raise NotImplementedError()
 
-    def test_matches(self):
+    def test_translator(self):
         """Test that translator matches correctly."""
-        for x in self.fixtures['should_match']:
-            res = self.translator_instance().perform(x['query'])  # noqa: F841
-
-    def test_not_matches(self):
-        """Test that translator matches correctly."""
-        for x in self.fixtures['should_not_match']:
-            res = self.translator_instance().perform(x['query'])  # noqa: F841
+        for x in self.fixtures['tests']:
+            tokens = self.tokenizer.perform(x['query'])
+            classification = self.classifier.match(tokens)
+            validation_results = self.validator.validate(classification)
+            for vr in validation_results:
+                if vr.is_valid:
+                    loc = (self.translator.translate(vr)).__dict__
+                    loc['state'] = loc['state'].__dict__
+                    self.assertIn(loc, x['variants'], msg=x['query'])

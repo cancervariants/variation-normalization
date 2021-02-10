@@ -1,0 +1,39 @@
+protein_substitution:
+  tests:
+    - query: BRAF V600E
+      variants: [
+        {
+          "location": {
+            "_id": "ga4gh:VSL.5S5olFMx5Iba3Ulc3nefdz5mJQ1ueU81",
+            "interval": {
+              "end": 601,
+              "start": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "location": {
+            "_id": "ga4gh:VSL.PH9QjFtdVLUIuQwuoToZOqUnz0Fg_qdP",
+            "interval": {
+              "end": 601,
+              "start": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
