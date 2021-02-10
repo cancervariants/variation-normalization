@@ -6,7 +6,7 @@ Repository for the Variant Lexicon normalization service
 
 ## Backend Services
 
-The varlex backend is a simple flask app, but it does rely on some local data caches which you will need to set up. It uses conda to manage its environment, which you will also need to install.
+VarLex relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
 From the _root_ directory of the repository:
@@ -18,11 +18,23 @@ curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > 
 seqrepo --root-directory varlexapp/data/seqrepo pull
 ```
 
-### Running
+### Init coding style tests
+
+Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
+
+We use [pre-commit](https://pre-commit.com/#usage) to run conformance tests.
+
+This ensures:
+
+* Check code style
+* Check for added large files
+* Detect AWS Credentials
+* Detect Private Key
+
+Before first commit run:
+
 ```
-export FLASK_ENV=development
-export FLASK_APP=varlexapp
-flask run
+pre-commit install
 ```
 
 ### Testing
@@ -31,12 +43,10 @@ From the _root_ directory of the repository:
 pytest tests/
 ```
 
-## Frontend
-
-Varlex includes a simple fronted that can be used for basic exploration of its features. It requires `yarn` wich can be installed with `npm install yarn` or via `brew`.
-
-### Installation/Running
-From the _frontend_ directory of the repository:
+### Starting the VarLex Service
+From the _root_ directory of the repository:
 ```
-yarn start
+uvicorn main:app --reload
 ```
+Next, view the OpenAPI docs on your local machine:
+http://127.0.0.1:8000/variant
