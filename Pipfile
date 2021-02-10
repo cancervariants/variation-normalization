@@ -93,3 +93,6 @@ Werkzeug = "*"
 biocommons = "*"
 "biocommons.seqrepo" = "*"
 "ga4gh.vrs" = {version = "==0.6.3rc0", extras = ["extras"]}
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
