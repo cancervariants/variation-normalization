@@ -1,12 +1,14 @@
 """The module for Protein Substitution Validation."""
 from typing import List
 from .validator import Validator
-from ..models import ValidationResult, ClassificationType, Classification,\
-    ProteinSubstitutionToken, LookupType, Location, SimpleInterval
+from ..models import ValidationResult, ClassificationType, Classification, \
+    ProteinSubstitutionToken, LookupType
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
 from varlexapp.tokenizers.caches import AminoAcidCache
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
+from ga4gh.vrs import models
+from ga4gh.core import ga4gh_identify
 
 
 class ProteinSubstitution(Validator):
@@ -56,13 +58,23 @@ class ProteinSubstitution(Validator):
                 errors = list()
                 ref_protein = \
                     self.seq_repo_client.protein_at_position(t, s.pos)
-                interval = SimpleInterval(s.pos, s.pos + 1)
-                location = Location(f'ensembl:{t}', interval)
+
+                sequence_id = [a for a in self.seq_repo_client.aliases(t)
+                               if a.startswith('ga4gh:')][0]
+
+                seq_location = models.SequenceLocation(
+                    sequence_id=sequence_id,
+                    interval=models.SimpleInterval(
+                        start=s.pos,
+                        end=s.pos + 1
+                    )
+                )
+                seq_location['_id'] = ga4gh_identify(seq_location)
+                location = seq_location.as_dict()
+
                 if ref_protein and len(ref_protein) == 1 \
                         and len(s.ref_protein) == 3:
-                    ref_protein = \
-                        self._amino_acid_cache._amino_acid_code_conversion[
-                            ref_protein]
+                    ref_protein = self._amino_acid_cache._amino_acid_code_conversion[ref_protein]  # noqa: E501
                 if ref_protein != s.ref_protein:
                     errors.append(f'Needed to find {s.ref_protein} at position'
                                   f' {s.pos} on {t} but found {ref_protein}')
@@ -103,7 +115,9 @@ class ProteinSubstitution(Validator):
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
 
-            aliases = self.seq_repo_client.aliases(refseq)
+            res = self.seq_repo_client.aliases(refseq)
+            aliases = [a.split('ensembl:')[1] for a
+                       in res if a.startswith('ensembl')]
 
             gene_symbols = list()
             for alias in aliases:
