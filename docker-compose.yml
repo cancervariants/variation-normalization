@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  seqrepo-rest-service:
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+    image: biocommons/seqrepo-rest-service:latest
+    volumes:
+      - seqrepo_vol:/usr/local/share/seqrepo
+
+  uta:
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    image: biocommons/uta:uta_20180821
+    volumes:
+      - uta_vol:/var/lib/postgresql/data
+
+volumes:
+  seqrepo_vol:
+    external: true
+  uta_vol:
+    external: true
