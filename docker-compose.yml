@@ -8,7 +8,7 @@ services:
       - 5000:5000
     image: biocommons/seqrepo-rest-service:latest
     volumes:
-      - seqrepo_vol:/usr/local/share/seqrepo
+      - /usr/local/share/seqrepo:/usr/local/share/seqrepo
 
   uta:
     expose:
