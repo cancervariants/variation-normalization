@@ -1,12 +1,15 @@
-from . import ValidationResult, ClassificationType
+"""Module for Variant Representation model."""
 from .location import Location
 from .sequence_state import SequenceState
-from ..data_sources import SeqRepoAccess
 
 
 class VariantRepresentation:
-    def __init__(self, location: Location, state: SequenceState) -> None:
+    """The Variant Representation model class."""
+
+    def __init__(self, _id: str, location: Location, state: SequenceState,
+                 vrs_type: str) -> None:
+        """Initialize variant representation."""
+        self._id = _id
         self.state = state
         self.location = location
-        self.type = 'Allele'
-
+        self.type = vrs_type

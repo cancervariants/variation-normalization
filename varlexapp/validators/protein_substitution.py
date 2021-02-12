@@ -1,26 +1,34 @@
 """The module for Protein Substitution Validation."""
 from typing import List
+from requests.exceptions import HTTPError
 from .validator import Validator
 from ..models import ValidationResult, ClassificationType, Classification, \
-    ProteinSubstitutionToken, LookupType
+    ProteinSubstitutionToken, LookupType, Token
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
 from varlexapp.tokenizers.caches import AminoAcidCache
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 class ProteinSubstitution(Validator):
     """The Protein Substitution Validator class."""
 
     def __init__(self, seq_repo_client: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings) -> None:
+                 transcript_mappings: TranscriptMappings,
+                 seqrepo_rest_service_url="http://localhost:5000/seqrepo") \
+            -> None:
         """Initialize the Protein Substitution validator."""
         self.transcript_mappings = transcript_mappings
         self.seq_repo_client = seq_repo_client
         self._gene_matcher = GeneSymbol(GeneSymbolCache())
         self._amino_acid_cache = AminoAcidCache()
+        self.seqrepo_rest_service = seqrepo_rest_service_url
+        self.dp = SeqRepoRESTDataProxy(base_url=seqrepo_rest_service_url)
+        self.tlr = Translator(data_proxy=self.dp)
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -59,27 +67,56 @@ class ProteinSubstitution(Validator):
                 ref_protein = \
                     self.seq_repo_client.protein_at_position(t, s.pos)
 
-                sequence_id = [a for a in self.seq_repo_client.aliases(t)
-                               if a.startswith('ga4gh:')][0]
+                # TODO: Should sequence_id be GS or SQ?
 
-                # TODO: Switch to using VRS Python to get location
-                seq_location = models.SequenceLocation(
-                    sequence_id=sequence_id,
-                    interval=models.SimpleInterval(
-                        start=s.pos - 1,
-                        end=s.pos
+                if 'HGVS' in classification.matching_tokens:
+                    hgvs_token = \
+                        [t for t in classification.all_tokens if
+                         isinstance(t, Token) and t.token_type == 'HGVS'][0]
+                    hgvs_expr = hgvs_token.input_string
+
+                    try:
+                        seq_location = self.tlr.translate_from(hgvs_expr,
+                                                               'hgvs')
+                    except HTTPError:
+                        errors.append(f"{hgvs_expr} is an invalid "
+                                      f"HGVS expression.")
+                        valid = False
+                        location = None
+                    else:
+                        location = seq_location.as_dict()
+                        location['location']['sequence_id'] =\
+                            location['location']['sequence_id'].replace(
+                                "ga4gh:GS", "ga4gh:SQ")
+                else:
+                    sequence_id = \
+                        self.dp.translate_sequence_identifier(
+                            t, 'ga4gh')[0].replace("ga4gh:GS", "ga4gh:SQ")
+
+                    seq_location = models.SequenceLocation(
+                        sequence_id=sequence_id,
+                        interval=models.SimpleInterval(
+                            start=s.pos - 1,
+                            end=s.pos
+                        )
                     )
-                )
-                seq_location['_id'] = ga4gh_identify(seq_location)
-                location = seq_location.as_dict()
 
-                if ref_protein and len(ref_protein) == 1 \
-                        and len(s.ref_protein) == 3:
-                    ref_protein = self._amino_acid_cache._amino_acid_code_conversion[ref_protein]  # noqa: E501
-                if ref_protein != s.ref_protein:
-                    errors.append(f'Needed to find {s.ref_protein} at position'
-                                  f' {s.pos} on {t} but found {ref_protein}')
-                    valid = False
+                    state = models.SequenceState(sequence=s.alt_protein)
+                    allele = models.Allele(location=seq_location,
+                                           state=state)
+                    allele['_id'] = ga4gh_identify(allele)
+                    location = allele.as_dict()
+
+                if not errors:
+                    if ref_protein and len(ref_protein) == 1 \
+                            and len(s.ref_protein) == 3:
+                        ref_protein = self._amino_acid_cache._amino_acid_code_conversion[ref_protein]  # noqa: E501
+                    if ref_protein != s.ref_protein:
+                        errors.append(f'Needed to find {s.ref_protein} at'
+                                      f' position {s.pos} on {t} but found '
+                                      f'{ref_protein}')
+                        valid = False
+
                 if valid:
                     results.append(ValidationResult(
                         classification,
