@@ -62,11 +62,12 @@ class ProteinSubstitution(Validator):
                 sequence_id = [a for a in self.seq_repo_client.aliases(t)
                                if a.startswith('ga4gh:')][0]
 
+                # TODO: Switch to using VRS Python to get location
                 seq_location = models.SequenceLocation(
                     sequence_id=sequence_id,
                     interval=models.SimpleInterval(
-                        start=s.pos,
-                        end=s.pos + 1
+                        start=s.pos - 1,
+                        end=s.pos
                     )
                 )
                 seq_location['_id'] = ga4gh_identify(seq_location)

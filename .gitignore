@@ -17,11 +17,11 @@ dist/
 
 
 varlexapp/data/seqrepo/
+varlexapp/data/uta_20180821/
+varlexapp/data/notebooks
 
 .idea/
 
 Pipfile.lock
 
 .python-version
-
-uta_20180821/
