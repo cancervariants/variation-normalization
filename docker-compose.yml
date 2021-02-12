@@ -17,9 +17,10 @@ services:
       - 5432:5432
     environment:
       - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
     image: biocommons/uta:uta_20180821
     volumes:
-      - ./uta_20180821:/var/lib/postgresql/data
+      - ./varlexapp/data/uta_20180821:/var/lib/postgresql/data
 
 volumes:
   seqrepo_vol:
