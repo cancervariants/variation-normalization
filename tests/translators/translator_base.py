@@ -45,5 +45,4 @@ class TranslatorBase(object):
             for vr in validation_results:
                 if vr.is_valid:
                     loc = (self.translator.translate(vr)).__dict__
-                    loc['state'] = loc['state'].__dict__
                     self.assertIn(loc, x['variants'], msg=x['query'])

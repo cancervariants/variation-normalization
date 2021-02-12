@@ -12,3 +12,4 @@ protein_substitution:
     - query: NP_004324.2:p.Glu600Val
     - query: NP_005148.2:p.Leu2733Gln
     - query: NP_000000000542.1:p.Val66Gly
+    - query: BRAF V9999999999999999999999999999999E

@@ -3,8 +3,8 @@ protein_substitution:
     - query: BRAF V600E
       variants: [
         {
+          "_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
           "location": {
-            "_id": "ga4gh:VSL.AO9chSP6yzDTKDrP9W1FNG3vzrQFxiDg",
             "interval": {
               "end": 600,
               "start": 599,
@@ -20,8 +20,8 @@ protein_substitution:
           "type": "Allele"
         },
         {
+          "_id": "ga4gh:VA.mJbjSsW541oOsOtBoX36Mppr6hMjbjFr",
           "location": {
-            "_id": "ga4gh:VSL.gJeEs42k4qeXOKy9CJ515c0v2HTu8s4K",
             "interval": {
               "end": 600,
               "start": 599,
