@@ -15,9 +15,11 @@ services:
       - 5432
     ports:
       - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
     image: biocommons/uta:uta_20180821
     volumes:
-      - uta_vol:/var/lib/postgresql/data
+      - ./uta_20180821:/var/lib/postgresql/data
 
 volumes:
   seqrepo_vol:
