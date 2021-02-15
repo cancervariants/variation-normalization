@@ -1,6 +1,7 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
-from ..models import ValidationResult, VariantRepresentation
+from ..models import VariantRepresentation
+from varlexapp.schemas.validation_response_schema import ValidationResult
 from varlexapp.schemas.classification_response_schema import ClassificationType
 
 

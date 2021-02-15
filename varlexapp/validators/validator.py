@@ -3,7 +3,7 @@ from typing import List
 from abc import ABC, abstractmethod
 from varlexapp.schemas.classification_response_schema import Classification, \
     ClassificationType
-from ..models import ValidationResult
+from varlexapp.schemas.validation_response_schema import ValidationResult
 
 
 class Validator(ABC):

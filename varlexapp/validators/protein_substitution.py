@@ -5,7 +5,8 @@ from .validator import Validator
 from varlexapp.schemas.classification_response_schema import \
     ClassificationType, Classification
 from varlexapp.schemas.token_response_schema import ProteinSubstitutionToken
-from ..models import ValidationResult, LookupType
+from varlexapp.schemas.validation_response_schema import ValidationResult
+from ..models import LookupType
 from varlexapp.schemas.token_response_schema import Token
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
@@ -51,8 +52,15 @@ class ProteinSubstitution(Validator):
                           ' protein substitution')
 
         if len(errors) > 0:
-            return [ValidationResult(classification, False, 0, None, '', '',
-                                     errors)]
+            return [ValidationResult(
+                classification=classification,
+                is_valid=False,
+                confidence_score=0,
+                location=None,
+                human_description='',
+                concise_description='',
+                errors=errors
+            )]
 
         transcripts = self.transcript_mappings.protein_transcripts(
             gene_tokens[0].token, LookupType.GENE_SYMBOL)
@@ -60,15 +68,22 @@ class ProteinSubstitution(Validator):
         if not transcripts:
             errors.append(f'No transcripts found for gene symbol '
                           f'{gene_tokens[0].token}')
-            return [ValidationResult(classification, False, 0, None, '', '',
-                                     errors)]
+            return [ValidationResult(
+                classification=classification,
+                is_valid=False,
+                confidence_score=0,
+                location=None,
+                human_description='',
+                concise_description='',
+                errors=errors
+            )]
 
         for s in psub_tokens:
             for t in transcripts:
                 valid = True
                 errors = list()
                 ref_protein = \
-                    self.seq_repo_client.protein_at_position(t, s.pos)
+                    self.seq_repo_client.protein_at_position(t, s.position)
 
                 # TODO: Should sequence_id be GS or SQ?
 
@@ -99,8 +114,8 @@ class ProteinSubstitution(Validator):
                     seq_location = models.SequenceLocation(
                         sequence_id=sequence_id,
                         interval=models.SimpleInterval(
-                            start=s.pos - 1,
-                            end=s.pos
+                            start=s.position - 1,
+                            end=s.position
                         )
                     )
 
@@ -116,29 +131,29 @@ class ProteinSubstitution(Validator):
                         ref_protein = self._amino_acid_cache._amino_acid_code_conversion[ref_protein]  # noqa: E501
                     if ref_protein != s.ref_protein:
                         errors.append(f'Needed to find {s.ref_protein} at'
-                                      f' position {s.pos} on {t} but found '
-                                      f'{ref_protein}')
+                                      f' position {s.position} on {t}'
+                                      f' but found {ref_protein}')
                         valid = False
 
                 if valid:
                     results.append(ValidationResult(
-                        classification,
-                        True,
-                        1,
-                        location,
-                        self.concise_description(t, s),
-                        self.human_description(t, s),
-                        []
+                        classification=classification,
+                        is_valid=True,
+                        confidence_score=1,
+                        location=location,
+                        human_description=self.concise_description(t, s),
+                        concise_description=self.concise_description(t, s),
+                        errors=[]
                     ))
                 else:
                     results.append(ValidationResult(
-                        classification,
-                        False,
-                        1,
-                        location,
-                        self.concise_description(t, s),
-                        self.human_description(t, s),
-                        errors
+                        classification=classification,
+                        is_valid=False,
+                        confidence_score=1,
+                        location=location,
+                        human_description=self.concise_description(t, s),
+                        concise_description=self.concise_description(t, s),
+                        errors=errors
                     ))
                 errors = list()
         return results
@@ -180,11 +195,11 @@ class ProteinSubstitution(Validator):
                             psub_token: ProteinSubstitutionToken) -> str:
         """Return a precise description."""
         return f'{transcript} {psub_token.ref_protein}' \
-               f'{psub_token.pos}{psub_token.alt_protein}'
+               f'{psub_token.position}{psub_token.alt_protein}'
 
     def human_description(self, transcript,
                           psub_token: ProteinSubstitutionToken) -> str:
         """Return a human description."""
         return f'A protein substitution from {psub_token.ref_protein}' \
-               f' to {psub_token.alt_protein} at position {psub_token.pos}' \
-               f' on transcript {transcript}'
+               f' to {psub_token.alt_protein} at position ' \
+               f'{psub_token.position} on transcript {transcript}'
