@@ -1,6 +1,6 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
-from ..models import VariantRepresentation
+from varlexapp.schemas.ga4gh_vrs import Allele
 from varlexapp.schemas.validation_response_schema import ValidationResult
 from varlexapp.schemas.classification_response_schema import ClassificationType
 
@@ -9,7 +9,7 @@ class Translator(ABC):
     """The translation class."""
 
     @abstractmethod
-    def translate(self, res: ValidationResult) -> VariantRepresentation:
+    def translate(self, res: ValidationResult) -> Allele:
         """Translate a validation result to a VRS representation."""
         pass
 

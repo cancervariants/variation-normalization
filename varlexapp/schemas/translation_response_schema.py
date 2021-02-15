@@ -1,7 +1,16 @@
-from marshmallow import Schema, fields
+"""Module for Translation Response Schema."""
+from pydantic import BaseModel
+from typing import List
+from varlexapp.schemas.ga4gh_vrs import Allele
 
-from .variant_representation_schema import VariantRepresentationSchema
 
-class TranslationResponseSchema(Schema):
-    searchTerm = fields.Str(attribute='search_term')
-    variants = fields.Nested(VariantRepresentationSchema, many=True)
+class TranslationResponseSchema(BaseModel):
+    """Define model for translation response."""
+
+    search_term: str
+    variants: List[Allele]
+
+    class Config:
+        """Configure model."""
+
+        orm_mode = True

@@ -6,7 +6,6 @@ from varlexapp.tokenizers import Tokenize
 from varlexapp.validators import Validate
 from varlexapp.translators import Translate
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
-from varlexapp.models import TranslationResponse
 from varlexapp.schemas import TranslationResponseSchema, \
     ValidationResponseSchema, ClassificationResponseSchema, TokenResponseSchema
 
@@ -120,7 +119,7 @@ q_description = "Variant to translate."
 @app.get('/variant/translate',
          summary=translate_summary,
          response_description=translate_response_description,
-         # response_model=TranslationResponseSchema,
+         response_model=TranslationResponseSchema,
          description=translate_description)
 def translate(q: str = Query(..., description=q_description)):
     """Return a VRS-like representation of all validated variants for the search term.  # noqa: E501, D400
@@ -134,7 +133,7 @@ def translate(q: str = Query(..., description=q_description)):
     translations = []
     for valid_variant in validations.valid_results:
         translations.append(translator.perform(valid_variant))
-
-    resp = TranslationResponse(q, translations)
-
-    return TranslationResponseSchema().dump(resp)
+    return TranslationResponseSchema(
+        search_term=q,
+        variants=translations
+    )
