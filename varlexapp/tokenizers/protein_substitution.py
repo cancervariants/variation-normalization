@@ -3,7 +3,8 @@ import re
 from typing import Optional
 from .caches import AminoAcidCache
 from .tokenizer import Tokenizer
-from ..models import ProteinSubstitutionToken
+from varlexapp.schemas.token_response_schema import ProteinSubstitutionToken,\
+    TokenMatchType
 
 
 class ProteinSubstitution(Tokenizer):
@@ -75,10 +76,14 @@ class ProteinSubstitution(Tokenizer):
                     and self.psub['new_amino_acid'] == '?':
                 ret_psub = True
         if ret_psub:
-            return ProteinSubstitutionToken(input_string,
-                                            self.psub['amino_acid'],
-                                            self.psub['new_amino_acid'],
-                                            self.psub['position'])
+            return ProteinSubstitutionToken(
+                token=input_string,
+                input_string=input_string,
+                match_type=TokenMatchType.UNSPECIFIED.value,
+                ref_protein=self.psub['amino_acid'],
+                alt_protein=self.psub['new_amino_acid'],
+                position=self.psub['position']
+            )
 
         return None
 

@@ -1,7 +1,7 @@
 """A module for Reference Sequence Tokenization."""
 from typing import Optional
 from .tokenizer import Tokenizer
-from ..models import Token
+from varlexapp.schemas.token_response_schema import Token
 
 REFSEQ_PREFIXES = ["NC_", "NT_", "NW_", "NG_", "NM_", "NR_", "NP_", "LRG_",
                    "ENSP"]

@@ -1,10 +1,18 @@
-from typing import Optional, List, Callable
+"""Module for classification."""
+from typing import List, Callable
+from ..models import Classification, ConfidenceRating
+from varlexapp.schemas.token_response_schema import Token
+from varlexapp.classifiers import ComplexClassifier, ExpressionClassifier, \
+    FusionClassifier, OncogenicClassifier, ProteinAlternateClassifier, \
+    ProteinDelinsClassifier, ProteinFrameshiftClassifier, \
+    ProteinSubstitutionClassifier, ProteinTerminationClassifier, Classifier
 
-from ..models import Token, Classification, ConfidenceRating
-from . import *
 
 class Classify:
+    """The classify class."""
+
     def __init__(self) -> None:
+        """Initialize the Classify class."""
         self.classifiers: List[Classifier] = [
                 ComplexClassifier(),
                 ExpressionClassifier(),
@@ -17,8 +25,8 @@ class Classify:
                 ProteinTerminationClassifier()
         ]
 
-
     def perform(self, tokens: List[Token]) -> List[Classification]:
+        """Classify a list of tokens."""
         classifications: List[Classification] = list()
 
         for classifier in self.classifiers:
@@ -33,6 +41,7 @@ class Classify:
             if match.confidence.value > highest_confidence:
                 highest_confidence = match.confidence.value
 
-        filter_lambda: Callable[[Classification], bool] = lambda match: match.confidence.value == highest_confidence
+        filter_lambda: Callable[[Classification], bool] = \
+            lambda match: match.confidence.value == highest_confidence
 
         return list(filter(filter_lambda, classifications))
