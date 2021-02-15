@@ -1,10 +1,11 @@
 """Module for VRS location schemas."""
 from pydantic import BaseModel
 from pydantic.fields import Field
+from typing import Dict, Any, Type
 
 
 class SequenceState(BaseModel):
-    """VRS Sequence State constraints."""
+    """Captures a Sequence as a State."""
 
     sequence: str
     type = 'SequenceState'
@@ -14,9 +15,22 @@ class SequenceState(BaseModel):
 
         orm_mode = True
 
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['SequenceState']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "sequence": "T",
+                "type": "SequenceState"
+            }
+
 
 class SimpleInterval(BaseModel):
-    """VRS Simple Interval constraints."""
+    """A SequenceInterval with a single start and end coordinate."""
 
     start: int
     end: int
@@ -27,9 +41,23 @@ class SimpleInterval(BaseModel):
 
         orm_mode = True
 
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['SimpleInterval']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "end": 44908822,
+                "start": 44908821,
+                "type": "SimpleInterval"
+            }
+
 
 class SequenceLocation(BaseModel):
-    """VRS sequence location constraints."""
+    """A specified subsequence within another sequence that is used as a reference sequence."""  # noqa: E501
 
     interval: SimpleInterval
     sequence_id: str
@@ -40,9 +68,27 @@ class SequenceLocation(BaseModel):
 
         orm_mode = True
 
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['SequenceLocation']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "interval": {
+                    "end": 44908822,
+                    "start": 44908821,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.IIB53T8CNeJJdUqzn9V_JnRtQadwWCbl",
+                "type": "SequenceLocation"
+            }
+
 
 class Allele(BaseModel):
-    """VRS Allele constraints."""
+    """A Sequence or Sequence change with respect to a reference sequence, without regard to genes or other features."""  # noqa: E501
 
     id: str = Field(..., alias='_id')
     location: SequenceLocation
@@ -53,3 +99,28 @@ class Allele(BaseModel):
         """Configure model."""
 
         orm_mode = True
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['Allele']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "location": {
+                    "interval": {
+                        "end": 44908822,
+                        "start": 44908821,
+                        "type": "SimpleInterval"
+                    },
+                    "sequence_id": "ga4gh:SQ.IIB53T8CNeJJdUqzn9V_JnRtQadwWCbl",
+                    "type": "SequenceLocation"
+                },
+                "state": {
+                    "sequence": "T",
+                    "type": "SequenceState"
+                },
+                "type": "Allele"
+            }
