@@ -1,7 +1,7 @@
 """The module for Transcript Mappings."""
 import csv
 from typing import Dict, List, Optional
-from ..models import LookupType
+from varlexapp.schemas.validation_response_schema import LookupType
 
 
 class TranscriptMappings:

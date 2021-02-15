@@ -5,8 +5,8 @@ from .validator import Validator
 from varlexapp.schemas.classification_response_schema import \
     ClassificationType, Classification
 from varlexapp.schemas.token_response_schema import ProteinSubstitutionToken
-from varlexapp.schemas.validation_response_schema import ValidationResult
-from ..models import LookupType
+from varlexapp.schemas.validation_response_schema import ValidationResult, \
+    LookupType
 from varlexapp.schemas.token_response_schema import Token
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache
@@ -56,7 +56,7 @@ class ProteinSubstitution(Validator):
                 classification=classification,
                 is_valid=False,
                 confidence_score=0,
-                location=None,
+                allele=None,
                 human_description='',
                 concise_description='',
                 errors=errors
@@ -72,7 +72,7 @@ class ProteinSubstitution(Validator):
                 classification=classification,
                 is_valid=False,
                 confidence_score=0,
-                location=None,
+                allele=None,
                 human_description='',
                 concise_description='',
                 errors=errors
@@ -100,11 +100,11 @@ class ProteinSubstitution(Validator):
                         errors.append(f"{hgvs_expr} is an invalid "
                                       f"HGVS expression.")
                         valid = False
-                        location = None
+                        allele = None
                     else:
-                        location = seq_location.as_dict()
-                        location['location']['sequence_id'] =\
-                            location['location']['sequence_id'].replace(
+                        allele = seq_location.as_dict()
+                        allele['location']['sequence_id'] =\
+                            allele['location']['sequence_id'].replace(
                                 "ga4gh:GS", "ga4gh:SQ")
                 else:
                     sequence_id = \
@@ -123,7 +123,7 @@ class ProteinSubstitution(Validator):
                     allele = models.Allele(location=seq_location,
                                            state=state)
                     allele['_id'] = ga4gh_identify(allele)
-                    location = allele.as_dict()
+                    allele = allele.as_dict()
 
                 if not errors:
                     if ref_protein and len(ref_protein) == 1 \
@@ -140,7 +140,7 @@ class ProteinSubstitution(Validator):
                         classification=classification,
                         is_valid=True,
                         confidence_score=1,
-                        location=location,
+                        allele=allele,
                         human_description=self.concise_description(t, s),
                         concise_description=self.concise_description(t, s),
                         errors=[]
@@ -150,7 +150,7 @@ class ProteinSubstitution(Validator):
                         classification=classification,
                         is_valid=False,
                         confidence_score=1,
-                        location=location,
+                        allele=allele,
                         human_description=self.concise_description(t, s),
                         concise_description=self.concise_description(t, s),
                         errors=errors

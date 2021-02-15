@@ -1,5 +1,5 @@
 """Module for translation."""
-from ..models import VariantRepresentation
+from varlexapp.schemas.ga4gh_vrs import Allele
 from varlexapp.schemas.validation_response_schema import ValidationResult
 from ..data_sources import SeqRepoAccess
 from .translator import Translator
@@ -19,7 +19,7 @@ class Translate:
         ]
 
     def perform(self, res: ValidationResult) \
-            -> Optional[VariantRepresentation]:
+            -> Optional[Allele]:
         """Translate a valid variant query."""
         for translator in self.all_translators:
             if translator.can_translate(
