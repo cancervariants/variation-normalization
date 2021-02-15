@@ -1,6 +1,6 @@
 """A module for the Validation Result model."""
 from typing import List
-from .classification import Classification
+from varlexapp.schemas.classification_response_schema import Classification
 from typing import Optional
 
 

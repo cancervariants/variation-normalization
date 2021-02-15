@@ -6,11 +6,9 @@ from varlexapp.tokenizers import Tokenize
 from varlexapp.validators import Validate
 from varlexapp.translators import Translate
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
-from varlexapp.models import TranslationResponse, ValidationResponse, \
-    ClassificationResponse
+from varlexapp.models import TranslationResponse, ValidationResponse
 from varlexapp.schemas import TranslationResponseSchema, \
     ValidationResponseSchema, ClassificationResponseSchema, TokenResponseSchema
-
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
@@ -75,7 +73,7 @@ q_description = "Variant to classify."
 @app.get('/variant/classification',
          summary=classify_summary,
          response_description=classify_response_description,
-         # response_model=ClassificationResponseSchema,
+         response_model=ClassificationResponseSchema,
          description=classify_description)
 def classify(q: str = Query(..., description="Classify a given variant.")):
     """Return the classifications that VarLex detected in the query.
@@ -84,9 +82,8 @@ def classify(q: str = Query(..., description="Classify a given variant.")):
     """
     tokens = tokenizer.perform(q)
     classifications = classifier.perform(tokens)
-    resp = ClassificationResponse(search_term=q,
-                                  classifications=classifications)
-    return ClassificationResponseSchema().dump(resp)
+    return ClassificationResponseSchema(search_term=q,
+                                        classifications=classifications)
 
 
 validate_summary = "Validate a given variant."

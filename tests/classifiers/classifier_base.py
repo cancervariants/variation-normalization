@@ -32,7 +32,8 @@ class ClassifierBase(object):
             tokens = self.tokenizer.perform(x['query'])
             classification = self.classifier.match(tokens)
             self.assertIsNotNone(classification, msg=x)
-            self.assertEqual(x['confidence'], str(classification.confidence),
+            self.assertEqual(x['confidence'],
+                             str(classification.confidence),
                              msg=x)
 
     def test_not_matches(self):

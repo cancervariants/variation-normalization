@@ -1,7 +1,7 @@
 """Module for Protein Alternate classification."""
 from typing import List
 from .set_based_classifier import SetBasedClassifier
-from ..models import ClassificationType
+from varlexapp.schemas.classification_response_schema import ClassificationType
 
 
 class ProteinAlternateClassifier(SetBasedClassifier):
@@ -9,7 +9,7 @@ class ProteinAlternateClassifier(SetBasedClassifier):
 
     def classification_type(self) -> ClassificationType:
         """Return the Protein Alternate classification type."""
-        return ClassificationType.PROTEIN_ALTERNATEt
+        return ClassificationType.PROTEIN_ALTERNATE
 
     def exact_match_candidates(self) -> List[List[str]]:
         """Return tokens that match Protein Alternate classification type."""

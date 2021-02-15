@@ -1,7 +1,8 @@
 """Module for Classifier."""
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from ..models import Classification, ClassificationType
+from varlexapp.schemas.classification_response_schema import Classification,\
+    ClassificationType
 from varlexapp.schemas.token_response_schema import Token
 
 

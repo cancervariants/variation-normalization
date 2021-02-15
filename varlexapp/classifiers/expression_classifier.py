@@ -1,7 +1,7 @@
 """Module for the Expression Classifier."""
 from typing import List
 from .set_based_classifier import SetBasedClassifier
-from ..models import ClassificationType
+from varlexapp.schemas.classification_response_schema import ClassificationType
 
 
 class ExpressionClassifier(SetBasedClassifier):

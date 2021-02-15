@@ -3,7 +3,7 @@ import re
 from typing import Optional
 from .caches import AminoAcidCache
 from .tokenizer import Tokenizer
-from varlexapp.schemas.token_response_schema import Token
+from varlexapp.schemas.token_response_schema import Token, TokenMatchType
 
 
 class ProteinTermination(Tokenizer):
@@ -20,6 +20,11 @@ class ProteinTermination(Tokenizer):
         if (len(potential_protein) == 2 and
                 potential_protein[0] in self.__amino_acid_cache and
                 potential_protein[1].upper() == 'X'):
-            return Token(input_string, 'ProteinTermination', input_string)
+            return Token(
+                token=input_string,
+                token_type='ProteinTermination',
+                input_string=input_string,
+                match_type=TokenMatchType.UNSPECIFIED
+            )
         else:
             return None
