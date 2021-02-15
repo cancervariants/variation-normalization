@@ -7,7 +7,7 @@ from varlexapp.validators import Validate
 from varlexapp.translators import Translate
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
 from varlexapp.models import TranslationResponse, ValidationResponse, \
-    ClassificationResponse, TokenResponse
+    ClassificationResponse
 from varlexapp.schemas import TranslationResponseSchema, \
     ValidationResponseSchema, ClassificationResponseSchema, TokenResponseSchema
 
@@ -54,7 +54,7 @@ q_description = "Query to tokenize."
 @app.get('/variant/tokenization',
          summary=token_summary,
          response_description=token_response_description,
-         # response_model=TokenResponseSchema,
+         response_model=TokenResponseSchema,
          description=token_description)
 def tokenize(q: str = Query(..., description="Tokenize a given variant.")):
     """Return the tokens that VarLex detected in the query.
@@ -62,8 +62,7 @@ def tokenize(q: str = Query(..., description="Tokenize a given variant.")):
     :param str q: The query to search on
     """
     tokens = tokenizer.perform(q)
-    resp = TokenResponse(search_term=q, tokens=tokens)
-    return TokenResponseSchema().dump(resp)
+    return TokenResponseSchema(search_term=q, tokens=tokens)
 
 
 classify_summary = "Classify a given query."

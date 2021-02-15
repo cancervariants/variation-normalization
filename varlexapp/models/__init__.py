@@ -1,17 +1,11 @@
 """Module to load and init namespace at package level."""
-from .token import Token  # noqa: F401
-from .token_response import TokenResponse  # noqa: F401
 from .classification_type import ClassificationType  # noqa: F401
 from .confidence_rating import ConfidenceRating  # noqa: F401
 from .classification import Classification  # noqa: F401
 from .classification_response import ClassificationResponse  # noqa: F401
-from .token_match_type import TokenMatchType  # noqa: F401
-from .gene_match_token import GeneMatchToken  # noqa: F401
-from .gene_pair_match_token import GenePairMatchToken  # noqa: F401
 from .validation_result import ValidationResult  # noqa: F401
 from .validation_summary import ValidationSummary  # noqa: F401
 from .validation_response import ValidationResponse  # noqa: F401
-from .protein_substitution_token import ProteinSubstitutionToken  # noqa: F401
 from .lookup_type import LookupType  # noqa: F401
 from .simple_interval import SimpleInterval  # noqa: F401
 from .variant_representation import VariantRepresentation  # noqa: F401

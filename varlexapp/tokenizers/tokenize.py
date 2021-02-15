@@ -19,7 +19,7 @@ from .underexpression import UnderExpression
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
-from ..models import Token
+from varlexapp.schemas.token_response_schema import Token
 
 
 from .caches import GeneSymbolCache

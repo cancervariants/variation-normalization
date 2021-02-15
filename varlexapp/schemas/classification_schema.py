@@ -1,15 +1,19 @@
-from marshmallow import Schema, fields
-from ..models import ConfidenceRating, ClassificationType
+"""Module for classification schema."""
+from pydantic import BaseModel
+from typing import List, Union
+from varlexapp.models import ClassificationType
+from varlexapp.schemas.token_response_schema import Token, \
+    GeneMatchToken, GenePairMatchToken, ProteinSubstitutionToken
 
 
-from .token_schema import TokenSchema
+class ClassificationSchema(BaseModel):
+    """The classification schema class."""
 
-from .apispec_enum_field import ApispecEnumField
+    classificationType: ClassificationType
+    allTokens: List[Union[Token, GeneMatchToken, GenePairMatchToken,
+                    ProteinSubstitutionToken]]
 
-class ClassificationSchema(Schema):
-    classificationType = ApispecEnumField(ClassificationType, attribute='classification_type')
-    allTokens = fields.Nested(TokenSchema, many=True, attribute='all_tokens')
-    matchingTokens = fields.List(fields.Str(), attribute='matching_tokens')
-    nonMatchingTokens = fields.List(fields.Str(), attribute='non_matching_tokens')
-    confidence = ApispecEnumField(ConfidenceRating)
+    class Config:
+        """Configure model."""
 
+        orm_mode = True
