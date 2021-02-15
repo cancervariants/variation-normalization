@@ -1,17 +1,17 @@
 fusion:
   should_match:
     - query: braf-flt3 fusion
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: braf-flt3
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: braf fusion
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: fusion braf
-      confidence: UNORDERED
+      confidence: ConfidenceRating.UNORDERED
     - query: flt3-braf fusion foo
-      confidence: SUPERSET
+      confidence: ConfidenceRating.SUPERSET
     - query: flt3 foo
-      confidence: INTERSECTION
+      confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: afusion
     - query: fused
@@ -21,35 +21,35 @@ fusion:
 protein_substitution:
   should_match:
     - query: BRAF V600E
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: braf v600e
-      confidence: INTERSECTION
+      confidence: ConfidenceRating.INTERSECTION
     - query: braf V600E
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: V600E BRAF
-      confidence: UNORDERED
+      confidence: ConfidenceRating.UNORDERED
     - query: V600E
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: (V600E)
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: BRAF V600E foo
-      confidence: SUPERSET
+      confidence: ConfidenceRating.SUPERSET
     - query: BRAF
-      confidence: INTERSECTION
+      confidence: ConfidenceRating.INTERSECTION
     - query: NRAS G13V
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: NP_004324.2:p.Val600Glu
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: NP_003997.1:p.(Gly56Ala^Ser^Cys)
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: ENSP00000256474.2:p.Ter214Gly
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: NP_065681.1:p.Met918Thr
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: ENSP00000343204.4:p.Trp690Ter
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: NP_065681.1:c.Met918Thr
-      confidence: INTERSECTION
+      confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: BRAFV600E
     - query: v600e

@@ -1,7 +1,7 @@
 """A module for Reference Sequence Tokenization."""
 from typing import Optional
 from .tokenizer import Tokenizer
-from varlexapp.schemas.token_response_schema import Token
+from varlexapp.schemas.token_response_schema import Token, TokenMatchType
 
 REFSEQ_PREFIXES = ["NC_", "NT_", "NW_", "NG_", "NM_", "NR_", "NP_", "LRG_",
                    "ENSP"]
@@ -16,5 +16,10 @@ class ReferenceSequence(Tokenizer):
         :param str input_string: The input string to match
         """
         if input_string[:3] in REFSEQ_PREFIXES:
-            return Token(input_string, 'ReferenceSequence', input_string)
+            return Token(
+                token=input_string,
+                token_type='ReferenceSequence',
+                input_string=input_string,
+                match_type=TokenMatchType.UNSPECIFIED
+            )
         return None

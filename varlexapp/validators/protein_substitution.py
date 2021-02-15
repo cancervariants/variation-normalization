@@ -2,8 +2,10 @@
 from typing import List
 from requests.exceptions import HTTPError
 from .validator import Validator
-from ..models import ValidationResult, ClassificationType, Classification, \
-    ProteinSubstitutionToken, LookupType
+from varlexapp.schemas.classification_response_schema import \
+    ClassificationType, Classification
+from varlexapp.schemas.token_response_schema import ProteinSubstitutionToken
+from ..models import ValidationResult, LookupType
 from varlexapp.schemas.token_response_schema import Token
 from varlexapp.tokenizers import GeneSymbol
 from varlexapp.tokenizers.caches import GeneSymbolCache

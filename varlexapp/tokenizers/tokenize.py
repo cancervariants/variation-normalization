@@ -19,7 +19,7 @@ from .underexpression import UnderExpression
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
-from varlexapp.schemas.token_response_schema import Token
+from varlexapp.schemas.token_response_schema import Token, TokenMatchType
 
 
 from .caches import GeneSymbolCache
@@ -102,4 +102,9 @@ class Tokenize:
                 else:
                     continue
             if not matched:
-                tokens.append(Token('', 'Unknown', term))
+                tokens.append(Token(
+                    token='',
+                    token_type='Unknown',
+                    input_string=term,
+                    match_type=TokenMatchType.UNSPECIFIED
+                ))

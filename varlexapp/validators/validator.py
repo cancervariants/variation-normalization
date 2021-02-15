@@ -1,13 +1,23 @@
+"""Module for Validation."""
 from typing import List
 from abc import ABC, abstractmethod
+from varlexapp.schemas.classification_response_schema import Classification, \
+    ClassificationType
+from ..models import ValidationResult
 
-from ..models import ValidationResult, Classification, ClassificationType
 
 class Validator(ABC):
+    """The validator class."""
+
     @abstractmethod
-    def validate(self, classification: Classification) -> List[ValidationResult]:
+    def validate(self, classification: Classification) \
+            -> List[ValidationResult]:
+        """Return validation result for a given classification."""
         pass
 
     @abstractmethod
-    def validates_classification_type(self, classification_type: ClassificationType) -> bool:
+    def validates_classification_type(self,
+                                      classification_type: ClassificationType)\
+            -> bool:
+        """Check that classification type matches."""
         pass

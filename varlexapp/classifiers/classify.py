@@ -1,6 +1,7 @@
 """Module for classification."""
 from typing import List, Callable
-from ..models import Classification, ConfidenceRating
+from varlexapp.schemas.classification_response_schema import Classification, \
+    ConfidenceRating
 from varlexapp.schemas.token_response_schema import Token
 from varlexapp.classifiers import ComplexClassifier, ExpressionClassifier, \
     FusionClassifier, OncogenicClassifier, ProteinAlternateClassifier, \

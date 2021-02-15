@@ -21,7 +21,7 @@ class GeneSymbol(Tokenizer):
                 token=uppercase_input,
                 input_string=input_string,
                 matched_value=uppercase_input,
-                match_type=TokenMatchType.SYMBOL.value
+                match_type=TokenMatchType.SYMBOL
             )
         elif uppercase_input in self.gene_cache.gene_ids:
             return GeneMatchToken(

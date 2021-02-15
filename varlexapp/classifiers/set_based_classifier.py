@@ -1,12 +1,16 @@
+"""Module for the set based classifier."""
 from typing import List, Optional, Set
-from functools import reduce
-import operator
-
 from .classifier import Classifier
-from ..models import Classification, Token, ConfidenceRating, ClassificationType
+from varlexapp.schemas.classification_response_schema import Classification, \
+    ClassificationType, ConfidenceRating
+from varlexapp.schemas.token_response_schema import Token
+
 
 class SetBasedClassifier(Classifier):
+    """The set based classifier class."""
+
     def match(self, tokens: List[Token]) -> Optional[Classification]:
+        """Return a classification from a list of tokens."""
         token_types = list(map(lambda t: t.token_type, tokens))
         exact_matches: List[List[str]] = []
         out_of_order_matches: List[List[str]] = []
@@ -27,11 +31,11 @@ class SetBasedClassifier(Classifier):
 
         if len(exact_matches) == 1:
             return Classification(
-                    self.classification_type(),
-                    exact_matches[0],
-                    [],
-                    tokens,
-                    ConfidenceRating.EXACT
+                classification_type=self.classification_type(),
+                matching_tokens=exact_matches[0],
+                non_matching_tokens=[],
+                all_tokens=tokens,
+                confidence=ConfidenceRating.EXACT
             )
         elif len(out_of_order_matches) > 0:
             all_unordered_matches: Set[str] = set()
@@ -39,34 +43,35 @@ class SetBasedClassifier(Classifier):
                 for token in match:
                     all_unordered_matches.add(token)
             return Classification(
-                    self.classification_type(),
-                    list(all_unordered_matches),
-                    [],
-                    tokens,
-                    ConfidenceRating.UNORDERED
+                classification_type=self.classification_type(),
+                matching_tokens=list(all_unordered_matches),
+                non_matching_tokens=[],
+                all_tokens=tokens,
+                confidence=ConfidenceRating.UNORDERED
             )
         elif len(matches_with_extra_terms) > 0:
             return Classification(
-                    self.classification_type(),
-                    list(matches_with_extra_terms),
-                    list(token_set - matches_with_extra_terms),
-                    tokens,
-                    ConfidenceRating.SUPERSET
+                classification_type=self.classification_type(),
+                matching_tokens=list(matches_with_extra_terms),
+                non_matching_tokens=list(token_set - matches_with_extra_terms),
+                all_tokens=tokens,
+                confidence=ConfidenceRating.SUPERSET
             )
         elif len(partial_matches) > 0:
             return Classification(
-                    self.classification_type(),
-                    list(partial_matches),
-                    list(token_set - partial_matches),
-                    tokens,
-                    ConfidenceRating.INTERSECTION
+                classification_type=self.classification_type(),
+                matching_tokens=list(partial_matches),
+                non_matching_tokens=list(token_set - partial_matches),
+                all_tokens=tokens,
+                confidence=ConfidenceRating.INTERSECTION
             )
         else:
             return None
 
     def classification_type(self) -> ClassificationType:
+        """Return the classification type."""
         pass
 
     def exact_match_candidates(self) -> List[List[str]]:
+        """Return the token match candidates."""
         pass
-
