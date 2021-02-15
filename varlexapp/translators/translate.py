@@ -1,5 +1,6 @@
 """Module for translation."""
-from ..models import ValidationResult, VariantRepresentation
+from ..models import VariantRepresentation
+from varlexapp.schemas.validation_response_schema import ValidationResult
 from ..data_sources import SeqRepoAccess
 from .translator import Translator
 from .protein_substitution import ProteinSubstitution

@@ -6,7 +6,7 @@ from varlexapp.tokenizers import Tokenize
 from varlexapp.validators import Validate
 from varlexapp.translators import Translate
 from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
-from varlexapp.models import TranslationResponse, ValidationResponse
+from varlexapp.models import TranslationResponse
 from varlexapp.schemas import TranslationResponseSchema, \
     ValidationResponseSchema, ClassificationResponseSchema, TokenResponseSchema
 
@@ -96,7 +96,7 @@ q_description = "Variant to validate."
 @app.get('/variant/validation',
          summary=validate_summary,
          response_description=validate_response_description,
-         # response_model=ValidationResponseSchema,
+         response_model=ValidationResponseSchema,
          description=validate_description)
 def validate(q: str = Query(..., description="Validate a given variant.")):
     """Return the validation status that VarLex determined for a given variant.
@@ -106,8 +106,8 @@ def validate(q: str = Query(..., description="Validate a given variant.")):
     tokens = tokenizer.perform(q)
     classifications = classifier.perform(tokens)
     res = validator.perform(classifications)
-    resp = ValidationResponse(q, validation_summary=res)
-    return ValidationResponseSchema().dump(resp)
+    return ValidationResponseSchema(search_term=q,
+                                    validation_summary=res)
 
 
 translate_summary = "Translate a given variant."

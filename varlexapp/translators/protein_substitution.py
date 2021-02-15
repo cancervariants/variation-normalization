@@ -1,6 +1,6 @@
 """Module for Protein Substitution Translation."""
 from .translator import Translator
-from ..models import ValidationResult
+from varlexapp.schemas.validation_response_schema import ValidationResult
 from varlexapp.schemas.classification_response_schema import ClassificationType
 from varlexapp.schemas.token_response_schema import ProteinSubstitutionToken
 from ..models import VariantRepresentation

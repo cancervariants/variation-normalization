@@ -1,5 +1,5 @@
 """Module for Validation."""
-from ..models import ValidationSummary
+from varlexapp.schemas.validation_response_schema import ValidationSummary
 from varlexapp.schemas.classification_response_schema import Classification
 from ..data_sources import TranscriptMappings, SeqRepoAccess
 from .protein_substitution import ProteinSubstitution
@@ -33,4 +33,7 @@ class Validate:
                         else:
                             invalid_possibilities.append(res)
 
-        return ValidationSummary(valid_possibilities, invalid_possibilities)
+        return ValidationSummary(
+            valid_results=valid_possibilities,
+            invalid_results=invalid_possibilities
+        )
