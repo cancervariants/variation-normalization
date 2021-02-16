@@ -26,8 +26,7 @@ def custom_openapi():
     openapi_schema = get_openapi(
         title="The VICC Variant Normalizer",
         version="0.1.0",
-        description="VarLex - 'variant lexicon' prototype for "
-                    "variant normalization.",
+        description="Services and guidelines for normalizing variants.",
         routes=app.routes
     )
 
