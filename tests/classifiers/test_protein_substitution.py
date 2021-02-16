@@ -1,6 +1,6 @@
 """Module for testing Protein Substitution Classifier."""
 import unittest
-from varlexapp.classifiers import ProteinSubstitutionClassifier
+from variant.classifiers import ProteinSubstitutionClassifier
 from .classifier_base import ClassifierBase
 
 

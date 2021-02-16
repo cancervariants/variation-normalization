@@ -1,7 +1,7 @@
 """A module for testing classifier classes."""
 import yaml
-from varlexapp.tokenizers import Tokenize
-from varlexapp import PROJECT_ROOT
+from variant.tokenizers import Tokenize
+from variant import PROJECT_ROOT
 
 
 class ClassifierBase(object):
@@ -16,7 +16,7 @@ class ClassifierBase(object):
                 {'should_match': [], 'should_not_match': []}
         )
         self.classifier = self.classifier_instance()
-        self.tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
+        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
 
     def classifier_instance(self):
         """Check that the classifier_instance method is implemented."""

@@ -1,6 +1,6 @@
 """Module for testing Fusion classification."""
 import unittest
-from varlexapp.classifiers import FusionClassifier
+from variant.classifiers import FusionClassifier
 from .classifier_base import ClassifierBase
 
 

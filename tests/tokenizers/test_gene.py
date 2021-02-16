@@ -1,7 +1,7 @@
 """A module for testing the Gene Pair Tokenizer."""
 import unittest
-from varlexapp.tokenizers import GeneSymbol
-from varlexapp.tokenizers.caches import GeneSymbolCache
+from variant.tokenizers import GeneSymbol
+from variant.tokenizers.caches import GeneSymbolCache
 from .tokenizer_base import TokenizerBase
 
 

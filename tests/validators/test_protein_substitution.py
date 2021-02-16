@@ -1,10 +1,10 @@
 """Module for testing Protein Substitution Validator."""
 import unittest
-from varlexapp.validators import ProteinSubstitution
-from varlexapp.classifiers import ProteinSubstitutionClassifier
+from variant.validators import ProteinSubstitution
+from variant.classifiers import ProteinSubstitutionClassifier
 from .validator_base import ValidatorBase
-from varlexapp.data_sources import TranscriptMappings, SeqRepoAccess
-from varlexapp import PROJECT_ROOT
+from variant.data_sources import TranscriptMappings, SeqRepoAccess
+from variant import PROJECT_ROOT
 
 
 class TestProteinSubstitutionValidator(ValidatorBase, unittest.TestCase):
@@ -13,8 +13,8 @@ class TestProteinSubstitutionValidator(ValidatorBase, unittest.TestCase):
     def validator_instance(self):
         """Return protein substitution instance."""
         return ProteinSubstitution(SeqRepoAccess(
-            f"{PROJECT_ROOT}/varlexapp/data/seqrepo/latest"),
-            TranscriptMappings(f"{PROJECT_ROOT}/varlexapp/data"
+            f"{PROJECT_ROOT}/variant/data/seqrepo/latest"),
+            TranscriptMappings(f"{PROJECT_ROOT}/variant/data"
                                f"/transcript_mapping.tsv")
         )
 

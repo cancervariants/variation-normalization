@@ -1,22 +1,22 @@
-# varlex
-[![Build Status](https://travis-ci.org/cancervariants/varlex.svg?branch=master)](https://travis-ci.org/cancervariants/varlex)
+# Variant Normalization
+[![Build Status](https://travis-ci.org/cancervariants/variant-normalization.svg?branch=master)](https://travis-ci.org/cancervariants/variant-normalization)
 
 Repository for the Variant Lexicon normalization service
 
 
 ## Backend Services
-VarLex relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
+Variant Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
 From the _root_ directory of the repository:
 ```
 pipenv sync
-mkdir -p varlexapp/data/seqrepo
-curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > varlexapp/data/gene_symbols.txt
-seqrepo --root-directory varlexapp/data/seqrepo pull
-cd varlexapp/data/seqrepo
-chmod -R u+w varlexapp/data/seqrepo/<DATE>
-ln -s varlexapp/data/seqrepo/<DATE> latest
+mkdir -p variant/data/seqrepo
+curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > variant/data/gene_symbols.txt
+seqrepo --root-directory variant/data/seqrepo pull
+cd variant/data/seqrepo
+chmod -R u+w variant/data/seqrepo/<DATE>
+ln -s variant/data/seqrepo/<DATE> latest
 ```
 
 #### Installing Dependencies
@@ -60,7 +60,7 @@ From the _root_ directory of the repository:
 pytest tests/
 ```
 
-### Starting the VarLex Service
+### Starting the Variant Normalization Service
 From the _root_ directory of the repository:
 ```
 uvicorn main:app --reload

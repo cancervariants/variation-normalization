@@ -1,20 +1,20 @@
 """Main application for FastAPI."""
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from varlexapp.classifiers import Classify
-from varlexapp.tokenizers import Tokenize
-from varlexapp.validators import Validate
-from varlexapp.translators import Translate
-from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
-from varlexapp.schemas import TranslationResponseSchema, \
+from variant.classifiers import Classify
+from variant.tokenizers import Tokenize
+from variant.validators import Validate
+from variant.translators import Translate
+from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from variant.schemas import TranslationResponseSchema, \
     ValidationResponseSchema, ClassificationResponseSchema, TokenResponseSchema
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
-tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
+tokenizer = Tokenize('variant/data/gene_symbols.txt')
 classifier = Classify()
-seq_repo_access = SeqRepoAccess('varlexapp/data/seqrepo/latest')
+seq_repo_access = SeqRepoAccess('variant/data/seqrepo/latest')
 transcript_mappings = \
-    TranscriptMappings('varlexapp/data/transcript_mapping.tsv')
+    TranscriptMappings('variant/data/transcript_mapping.tsv')
 validator = Validate(seq_repo_access, transcript_mappings)
 translator = Translate(seq_repo_access)
 
@@ -52,7 +52,7 @@ q_description = "Query to tokenize."
          response_description=token_response_description,
          response_model=TokenResponseSchema,
          description=token_description)
-def tokenize(q: str = Query(..., description="Tokenize a given variant.")):
+def tokenize(q: str = Query(..., description=q_description)):
     """Return the tokens that VarLex detected in the query.
 
     :param str q: The query to search on
@@ -65,7 +65,7 @@ classify_summary = "Classify a given query."
 classify_description = ("Return the detected classifications with associated "
                         "confidence levels for a given variant.")
 classify_response_description = "A  response to a validly-formed query."
-q_description = "Variant to classify."
+q_description = "Query to classify."
 
 
 @app.get('/variant/classification',
@@ -73,7 +73,7 @@ q_description = "Variant to classify."
          response_description=classify_response_description,
          response_model=ClassificationResponseSchema,
          description=classify_description)
-def classify(q: str = Query(..., description="Classify a given variant.")):
+def classify(q: str = Query(..., description=q_description)):
     """Return the classifications that VarLex detected in the query.
 
     :param str q: The query to search on
@@ -96,7 +96,7 @@ q_description = "Variant to validate."
          response_description=validate_response_description,
          response_model=ValidationResponseSchema,
          description=validate_description)
-def validate(q: str = Query(..., description="Validate a given variant.")):
+def validate(q: str = Query(..., description=q_description)):
     """Return the validation status that VarLex determined for a given variant.
 
     :param str q: The variant to search on
