@@ -1,7 +1,7 @@
 """A module for testing translator classes."""
 import yaml
-from varlexapp import PROJECT_ROOT
-from varlexapp.tokenizers import Tokenize
+from variant import PROJECT_ROOT
+from variant.tokenizers import Tokenize
 
 
 class TranslatorBase(object):
@@ -15,7 +15,7 @@ class TranslatorBase(object):
                 self.fixture_name(),
                 {'tests': []}
         )
-        self.tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
+        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
         self.translator = self.translator_instance()

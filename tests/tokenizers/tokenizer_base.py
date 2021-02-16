@@ -1,6 +1,6 @@
 """A module for testing tokenizer classes."""
 import yaml
-from varlexapp import PROJECT_ROOT
+from variant import PROJECT_ROOT
 
 
 class TokenizerBase(object):

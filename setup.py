@@ -1,11 +1,12 @@
+"""Module for package setup."""
 from setuptools import setup
-from varlexapp.__version__ import __version__, __authors__, __author_email__, \
+from variant.__version__ import __version__, __authors__, __author_email__, \
     __description__, __url__
 
 setup(
-    name='varlex',
+    name='variant-normalization',
     version=__version__,
-    packages=['varlexapp'],
+    packages=['variant-normalization'],
     url=__url__,
     license='MIT',
     author=', '.join(__authors__),

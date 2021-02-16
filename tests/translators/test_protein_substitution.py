@@ -1,11 +1,11 @@
 """Module for testing Protein Substitution Translator."""
 import unittest
-from varlexapp.classifiers import ProteinSubstitutionClassifier
-from varlexapp.translators import ProteinSubstitution
-from varlexapp.validators import ProteinSubstitution as PSUB_V
+from variant.classifiers import ProteinSubstitutionClassifier
+from variant.translators import ProteinSubstitution
+from variant.validators import ProteinSubstitution as PSUB_V
 from .translator_base import TranslatorBase
-from varlexapp.data_sources import SeqRepoAccess, TranscriptMappings
-from varlexapp import PROJECT_ROOT
+from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from variant import PROJECT_ROOT
 
 
 class TestProteinSubstitutionTranslator(TranslatorBase, unittest.TestCase):
@@ -18,8 +18,8 @@ class TestProteinSubstitutionTranslator(TranslatorBase, unittest.TestCase):
     def validator_instance(self):
         """Return protein substitution instance."""
         return PSUB_V(SeqRepoAccess(
-            f"{PROJECT_ROOT}/varlexapp/data/seqrepo/latest"),
-            TranscriptMappings(f"{PROJECT_ROOT}/varlexapp/data"
+            f"{PROJECT_ROOT}/variant/data/seqrepo/latest"),
+            TranscriptMappings(f"{PROJECT_ROOT}/variant/data"
                                f"/transcript_mapping.tsv"))
 
     def translator_instance(self):

@@ -1,7 +1,7 @@
 """A module for testing validator classes."""
 import yaml
-from varlexapp import PROJECT_ROOT
-from varlexapp.tokenizers import Tokenize
+from variant import PROJECT_ROOT
+from variant.tokenizers import Tokenize
 
 
 class ValidatorBase(object):
@@ -15,7 +15,7 @@ class ValidatorBase(object):
                 self.fixture_name(),
                 {'should_match': [], 'should_not_match': []}
         )
-        self.tokenizer = Tokenize('varlexapp/data/gene_symbols.txt')
+        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
 

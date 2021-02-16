@@ -16,9 +16,9 @@ dist/
 .mypy_cache/
 
 
-varlexapp/data/seqrepo/
-varlexapp/data/uta_20180821/
-varlexapp/data/notebooks
+variant/data/seqrepo/
+variant/data/uta_20180821/
+variant/data/notebooks
 
 .idea/
 

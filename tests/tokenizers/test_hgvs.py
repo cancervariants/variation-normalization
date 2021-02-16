@@ -1,6 +1,6 @@
 """A module for testing HGVS tokenization."""
 import unittest
-from varlexapp.tokenizers import HGVS
+from variant.tokenizers import HGVS
 from .tokenizer_base import TokenizerBase
 
 

@@ -1,8 +1,8 @@
 """A module for testing Protein Substitution tokenization."""
 import unittest
-from varlexapp.tokenizers import ProteinSubstitution
+from variant.tokenizers import ProteinSubstitution
 from .tokenizer_base import TokenizerBase
-from varlexapp.tokenizers.caches import AminoAcidCache
+from variant.tokenizers.caches import AminoAcidCache
 
 
 class TestProteinSubstitutionTokenizer(TokenizerBase, unittest.TestCase):

@@ -81,11 +81,11 @@ pyrsistent==0.17.3; python_version >= '3.5'
 pysam==0.16.0.1
 python-dotenv==0.15.0
 python-jsonschema-objects==0.3.10
-pyyaml==5.4.1
+pyyaml~=5.1.2
 readme-renderer==28.0
 requests-html==0.10.0
 requests-toolbelt==0.9.1
-requests==2.25.1
+requests~=2.22.0
 rfc3986==1.4.0
 seqrepo==0.0.0
 simplegeneric==0.8.1
@@ -113,3 +113,4 @@ werkzeug==1.0.1
 wrapt==1.12.1
 yoyo-migrations==7.3.1
 zipp==3.4.0
+setuptools~=53.0.0

@@ -15,4 +15,4 @@ install:
 
 script:
   - pytest tests/
-  - mypy --ignore-missing-imports varlexapp/
+  - mypy --ignore-missing-imports variant/
