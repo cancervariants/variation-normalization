@@ -19,13 +19,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3'
     ],
-    install_requires=[
-        'apispec~=2.0.2',
-        'apispec-oneofschema~=2.1.0',
-        'apispec-webframeworks~=0.4.0',
-        'Flask~=1.1.1',
-        'Flask-Cors~=3.0.8'
-    ],
+    install_requires=[],  # TODO: ADD
     extras_require={
         'test': [
             'pytest'
