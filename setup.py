@@ -6,7 +6,7 @@ from variant.__version__ import __version__, __authors__, __author_email__, \
 setup(
     name='variant-normalization',
     version=__version__,
-    packages=['variant-normalization'],
+    packages=['variant'],
     url=__url__,
     license='MIT',
     author=', '.join(__authors__),
