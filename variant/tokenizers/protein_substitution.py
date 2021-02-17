@@ -60,7 +60,7 @@ class ProteinSubstitution(Tokenizer):
                                self.psub['new_amino_acid']}
 
             # nonsense, silent, unknown
-            amino_acids = amino_acids - {'Ter', '=', '?'}
+            amino_acids = amino_acids - {'*', 'Ter', '=', '?'}
 
             if not self._is_valid_amino_acid(amino_acids=amino_acids):
                 return None

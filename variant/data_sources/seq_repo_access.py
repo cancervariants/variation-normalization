@@ -21,7 +21,10 @@ class SeqRepoAccess:
             if len(t) < pos - 1:
                 return None
             else:
-                return t[pos - 1]
+                try:
+                    return t[pos - 1]
+                except IndexError:
+                    return None
         except KeyError:
             return None
 

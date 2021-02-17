@@ -44,6 +44,9 @@ protein_substitution:
     - token: p.(Gly56Ala^Ser^Cys)
     - token: p.Ala146Val
     - token: p.Trp24Ter (p.Trp24*)
+    - token: p.W24*
+    - token: p.Trp24Ter
+    - token: p.Trp24*
     - token: p.Cys188=
     - token: p.Glu55=
     - token: p.(Trp24=/Cys)
