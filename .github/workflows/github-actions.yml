@@ -1,0 +1,21 @@
+name: github-actions
+on: [push, pull_request]
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup Python
+              uses: actions/setup-python@v1
+              with:
+                  python-version: 3.7
+
+            - name: Install dependencies
+              run: |
+                  python3 -m pip install pipenv
+                  pipenv install --dev
+
+            - name: Flake8 and Tests
+            - run: pipenv run flake8
+            - run: pipenv run pytest tests/
