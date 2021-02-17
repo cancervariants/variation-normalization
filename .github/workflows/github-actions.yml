@@ -16,6 +16,5 @@ jobs:
                   python3 -m pip install pipenv
                   pipenv install --dev
 
-            - name: Flake8 and Tests
             - run: pipenv run flake8
             - run: pipenv run pytest tests/
