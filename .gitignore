@@ -25,3 +25,5 @@ variant/data/notebooks
 Pipfile.lock
 
 .python-version
+
+pyproject.toml

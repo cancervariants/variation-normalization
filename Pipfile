@@ -6,6 +6,13 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 jupyterlab = "*"
+pytest-cov = "*"
+flake8 = "*"
+coveralls = "*"
+coverage = "*"
+flake8-docstrings = "*"
+pre-commit = "*"
+variant-normalization = {editable = true, path = "."}
 
 [packages]
 appdirs = "*"
@@ -76,7 +83,6 @@ MarkupSafe = "*"
 Parsley = "*"
 PyYAML = "*"
 "biocommons.seqrepo" = "*"
-"ga4gh.vrs" = {version = "==0.6.3rc0", extras = ["extras"]}
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
@@ -89,3 +95,4 @@ py = "*"
 python-dotenv = "*"
 twine = "*"
 werkzeug = "*"
+"ga4gh.vrs" = {version = "==0.6.3rc0", extras = ["extras"]}
