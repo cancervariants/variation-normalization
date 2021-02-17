@@ -37,3 +37,175 @@ protein_substitution:
           "type": "Allele"
         }
       ]
+    - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
+      variants: [
+        {
+          "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+          "location": {
+            "interval": {
+              "start": 184,
+              "end": 185,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NP_000542.1:p.Tyr185Ter
+      variants: [
+        {
+          "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+          "location": {
+            "interval": {
+              "start": 184,
+              "end": 185,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NP_000542.1:p.(Tyr185Ter)
+        variants: [
+          {
+            "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+            "location": {
+              "interval": {
+                "start": 184,
+                "end": 185,
+                "type": "SimpleInterval"
+              },
+              "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+              "type": "SequenceLocation"
+            },
+            "state": {
+              "sequence": "*",
+              "type": "SequenceState"
+            },
+            "type": "Allele"
+          }
+        ]
+    - query: NP_000539.2:p.Gln1178Ter
+      variants: [
+        {
+          "id": "ga4gh:VA.za7tYoH27J_IdV6xlDcAWimFAQ4ORugp",
+          "location": {
+            "interval": {
+              "start": 1177,
+              "end": 1178,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.OBQRUmiVewAVPYXV5ACyxczHF1Q4YGOm",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.za7tYoH27J_IdV6xlDcAWimFAQ4ORugp",
+          "location": {
+            "interval": {
+              "start": 1177,
+              "end": 1178,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.OBQRUmiVewAVPYXV5ACyxczHF1Q4YGOm",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.za7tYoH27J_IdV6xlDcAWimFAQ4ORugp",
+          "location": {
+            "interval": {
+              "start": 1177,
+              "end": 1178,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.OBQRUmiVewAVPYXV5ACyxczHF1Q4YGOm",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.za7tYoH27J_IdV6xlDcAWimFAQ4ORugp",
+          "location": {
+            "interval": {
+              "start": 1177,
+              "end": 1178,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.OBQRUmiVewAVPYXV5ACyxczHF1Q4YGOm",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NP_000542.1:p.Pro154=
+      variants: [
+        {
+          "id": "ga4gh:VA.rVexjvD44WBTwBulB5OayUPby5y6Px1H",
+          "location": {
+            "interval": {
+              "start": 153,
+              "end": 154,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "P",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NP_000213.1:p.Leu862=
+      variants: [
+        {
+          "_id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
+          "location": {
+            "interval": {
+              "start": 861,
+              "end": 862,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.TcMVFj5kDODDWpiy1d_1-3_gOf4BYaAB",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "L",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+

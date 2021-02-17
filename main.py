@@ -56,7 +56,7 @@ def translate(q: str = Query(..., description=q_description)):
 
     :param str q: The variant to search on
     """
-    tokens = tokenizer.perform(q)
+    tokens = tokenizer.perform(q.strip())
     classifications = classifier.perform(tokens)
     validations = validator.perform(classifications)
 
