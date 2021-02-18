@@ -1,6 +1,6 @@
 """A module to cache amino acid codes."""
 from typing import Set
-from variant import PROJECT_ROOT
+from variant import AMINO_ACID_PATH
 import csv
 
 
@@ -8,10 +8,9 @@ class AminoAcidCache:
     """A class to cache amino acid codes."""
 
     def __init__(self,
-                 amino_acids_file_path: str =
-                 "variant/data/amino_acids.csv") -> None:
+                 amino_acids_file_path=AMINO_ACID_PATH) -> None:
         """Initialize the AminoAcidCache class."""
-        self._amino_acids_file = f"{PROJECT_ROOT}/{amino_acids_file_path}"
+        self._amino_acids_file = amino_acids_file_path
         self._amino_acid_code_conversion = dict()
         self.__amino_acid_codes = self.__load_amino_acid_codes()
 

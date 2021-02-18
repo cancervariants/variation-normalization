@@ -16,7 +16,7 @@ class ClassifierBase:
                 {'should_match': [], 'should_not_match': []}
         )
         self.classifier = self.classifier_instance()
-        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
+        self.tokenizer = Tokenize()
 
     def classifier_instance(self):
         """Check that the classifier_instance method is implemented."""

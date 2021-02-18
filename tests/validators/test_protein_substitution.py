@@ -4,7 +4,7 @@ from variant.validators import ProteinSubstitution
 from variant.classifiers import ProteinSubstitutionClassifier
 from .validator_base import ValidatorBase
 from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import PROJECT_ROOT
+from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestProteinSubstitutionValidator(ValidatorBase, unittest.TestCase):
@@ -12,11 +12,9 @@ class TestProteinSubstitutionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return protein substitution instance."""
-        return ProteinSubstitution(SeqRepoAccess(
-            f"{PROJECT_ROOT}/variant/data/seqrepo/latest"),
-            TranscriptMappings(f"{PROJECT_ROOT}/variant/data"
-                               f"/transcript_mapping.tsv")
-        )
+        return ProteinSubstitution(SeqRepoAccess(SEQREPO_DATA_PATH),
+                                   TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH)
+                                   )
 
     def classifier_instance(self):
         """Return the protein substitution classifier instance."""
