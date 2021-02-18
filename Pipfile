@@ -95,4 +95,4 @@ py = "*"
 python-dotenv = "*"
 twine = "*"
 werkzeug = "*"
-"ga4gh.vrs" = {extras = ["extras"], version = "*"}
+"ga4gh.vrs" = {version = "==0.6.3rc0", extras = ["extras"]}
