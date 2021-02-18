@@ -4,7 +4,8 @@ from requests.exceptions import HTTPError
 from .validator import Validator
 from variant.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variant.schemas.token_response_schema import ProteinSubstitutionToken
+from variant.schemas.token_response_schema import ProteinSubstitutionToken, \
+    GeneMatchToken
 from variant.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variant.schemas.token_response_schema import Token
@@ -26,7 +27,12 @@ class ProteinSubstitution(Validator):
     def __init__(self, seq_repo_client: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings) \
             -> None:
-        """Initialize the Protein Substitution validator."""
+        """Initialize the Protein Substitution validator.
+
+        :param SeqRepoAccess seq_repo_client: Access to SeqRepo data
+        :param TranscriptMappings transcript_mappings: Access to transcript
+            mappings
+        """
         self.transcript_mappings = transcript_mappings
         self.seq_repo_client = seq_repo_client
         self._gene_matcher = GeneSymbol(GeneSymbolCache())
@@ -37,7 +43,12 @@ class ProteinSubstitution(Validator):
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
-        """Validate a given protein substitution classification."""
+        """Validate a given protein substitution classification.
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :return: A list of validation results
+        """
         results = list()
         errors = list()
 
@@ -71,8 +82,13 @@ class ProteinSubstitution(Validator):
                                        classification, results)
         return results
 
-    def get_vrs_allele(self, sequence_id, s):
-        """Return VRS Allele object."""
+    def get_vrs_allele(self, sequence_id, s) -> dict:
+        """Return VRS Allele object.
+
+        :param str sequence_id: Sequence containing the sequence to be located
+        :param ProteinSubstitutionToken s: A protein substitution token
+        :return: A VRS Allele object as a dictionary
+        """
         seq_location = models.SequenceLocation(
             sequence_id=sequence_id,
             interval=models.SimpleInterval(
@@ -87,8 +103,13 @@ class ProteinSubstitution(Validator):
         allele['_id'] = ga4gh_identify(allele)
         return allele.as_dict()
 
-    def get_hgvs_expr(self, classification):
-        """Return HGVS expression."""
+    def get_hgvs_expr(self, classification) -> str:
+        """Return HGVS expression for a classification.
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :return: The classification's HGVS expression as a string
+        """
         # Replace `=` in silent mutation with 3 letter amino acid code
         hgvs_token = \
             [t for t in classification.all_tokens if
@@ -105,8 +126,15 @@ class ProteinSubstitution(Validator):
         return hgvs_expr
 
     def get_valid_invalid_results(self, psub_tokens, transcripts,
-                                  classification, results):
-        """Add validation result objects to a list of results."""
+                                  classification, results) -> None:
+        """Add validation result objects to a list of results.
+
+        :param list psub_tokens: A list of Protein Substitution Tokens
+        :param list transcripts: A list of transcript strings
+        :param Classification classification: A classification for a list of
+            tokens
+        :param list results: A list to store validation result objects
+        """
         for s in psub_tokens:
             for t in transcripts:
                 valid = True
@@ -158,8 +186,20 @@ class ProteinSubstitution(Validator):
 
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
-                              errors):
-        """Return a validation result object."""
+                              errors) -> ValidationResult:
+        """Return a validation result object.
+
+        :param Classification classification: The classification for tokens
+        :param boolean is_valid: Whether or not the classification is valid
+        :param int confidence_score: The classification confidence score
+        :param dict allele: A VRS Allele object
+        :param str human_description: A human description describing the
+            protein substiution variant
+        :param str concise_description: The identified protein substitution
+            variant
+        :param list errors: A list of errors for the classification
+        :return: A validation result
+        """
         return ValidationResult(
             classification=classification,
             is_valid=is_valid,
@@ -170,8 +210,12 @@ class ProteinSubstitution(Validator):
             errors=errors
         )
 
-    def get_gene_tokens(self, classification):
-        """Return gene tokens for a classification."""
+    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+        """Return gene tokens for a classification.
+
+        :param Classification classification: The classification for tokens
+        :return: A list of Gene Match Tokens in the classification
+        """
         gene_tokens = [t for t in classification.all_tokens
                        if t.token_type == 'GeneSymbol']
         if not gene_tokens:
@@ -205,13 +249,13 @@ class ProteinSubstitution(Validator):
 
     def concise_description(self, transcript,
                             psub_token: ProteinSubstitutionToken) -> str:
-        """Return a precise description."""
+        """Return a description of the identified variant."""
         return f'{transcript} {psub_token.ref_protein}' \
                f'{psub_token.position}{psub_token.alt_protein}'
 
     def human_description(self, transcript,
                           psub_token: ProteinSubstitutionToken) -> str:
-        """Return a human description."""
+        """Return a human description of the identified variant."""
         return f'A protein substitution from {psub_token.ref_protein}' \
                f' to {psub_token.alt_protein} at position ' \
                f'{psub_token.position} on transcript {transcript}'
