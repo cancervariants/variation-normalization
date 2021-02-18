@@ -1,12 +1,13 @@
 """A module for accessing SeqRepo."""
 from typing import Optional
 from biocommons.seqrepo import SeqRepo
+from variant import SEQREPO_DATA_PATH
 
 
 class SeqRepoAccess:
     """The SeqRepoAccess class."""
 
-    def __init__(self, seqrepo_data_path):
+    def __init__(self, seqrepo_data_path=SEQREPO_DATA_PATH):
         """Initialize the SeqRepoAccess class.
 
         :param str seqrepo_data_path: The path to the seqrepo directory.

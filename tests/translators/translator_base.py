@@ -15,7 +15,7 @@ class TranslatorBase:
                 self.fixture_name(),
                 {'tests': []}
         )
-        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
+        self.tokenizer = Tokenize()
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
         self.translator = self.translator_instance()

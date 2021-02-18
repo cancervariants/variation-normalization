@@ -2,12 +2,13 @@
 import csv
 from typing import Dict, List, Optional
 from variant.schemas.validation_response_schema import LookupType
+from variant import TRANSCRIPT_MAPPINGS_PATH
 
 
 class TranscriptMappings:
     """The transcript mappings class."""
 
-    def __init__(self, transcript_file_path: str) -> None:
+    def __init__(self, transcript_file_path=TRANSCRIPT_MAPPINGS_PATH) -> None:
         """Initialize the transcript mappings class."""
         self.file_path = transcript_file_path
         self.protein_transcripts_for_gene_symbol: Dict[str, List[str]] = {}

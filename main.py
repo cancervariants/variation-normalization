@@ -9,11 +9,10 @@ from variant.data_sources import SeqRepoAccess, TranscriptMappings
 from variant.schemas import TranslationResponseSchema
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
-tokenizer = Tokenize('variant/data/gene_symbols.txt')
+tokenizer = Tokenize()
 classifier = Classify()
-seq_repo_access = SeqRepoAccess('variant/data/seqrepo/latest')
-transcript_mappings = \
-    TranscriptMappings('variant/data/transcript_mapping.tsv')
+seq_repo_access = SeqRepoAccess()
+transcript_mappings = TranscriptMappings()
 validator = Validate(seq_repo_access, transcript_mappings)
 translator = Translate(seq_repo_access)
 

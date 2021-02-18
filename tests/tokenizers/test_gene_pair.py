@@ -11,7 +11,7 @@ class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
     # TODO: don't hardcode this, inject with config
     def tokenizer_instance(self):
         """Return Gene Pair Tokenizer instance."""
-        gene_cache = GeneSymbolCache('variant/data/gene_symbols.txt')
+        gene_cache = GeneSymbolCache()
         return GenePair(gene_cache)
 
     def token_type(self):

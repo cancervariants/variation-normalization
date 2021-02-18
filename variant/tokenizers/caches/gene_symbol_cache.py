@@ -1,7 +1,7 @@
 """A module for caching gene symbols."""
 from typing import Set, Dict, Iterable
 from csv import DictReader
-from variant import PROJECT_ROOT
+from variant import GENE_SYMBOL_PATH
 import re
 
 
@@ -9,10 +9,10 @@ class GeneSymbolCache:
     """The gene symbol cache class."""
 
     def __init__(self,
-                 gene_file_path: str = "variant/data/gene_symbols.txt") \
+                 gene_file_path: str = GENE_SYMBOL_PATH) \
             -> None:
         """Initialize the gene symbol cache class."""
-        self.__load_caches(f"{PROJECT_ROOT}/{gene_file_path}")
+        self.__load_caches(gene_file_path)
 
     def __load_caches(self, gene_file_path: str) -> None:
         """Load gene symbol cache."""

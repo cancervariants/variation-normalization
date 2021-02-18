@@ -15,7 +15,7 @@ class ValidatorBase:
                 self.fixture_name(),
                 {'should_match': [], 'should_not_match': []}
         )
-        self.tokenizer = Tokenize('variant/data/gene_symbols.txt')
+        self.tokenizer = Tokenize()
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
 
