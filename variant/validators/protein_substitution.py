@@ -53,15 +53,9 @@ class ProteinSubstitution(Validator):
                           ' protein substitution')
 
         if len(errors) > 0:
-            return [ValidationResult(
-                classification=classification,
-                is_valid=False,
-                confidence_score=0,
-                allele=None,
-                human_description='',
-                concise_description='',
-                errors=errors
-            )]
+            return [self.get_validation_result(
+                        classification, False, 0, None,
+                        '', '', errors)]
 
         transcripts = self.transcript_mappings.protein_transcripts(
             gene_tokens[0].token, LookupType.GENE_SYMBOL)
@@ -69,16 +63,50 @@ class ProteinSubstitution(Validator):
         if not transcripts:
             errors.append(f'No transcripts found for gene symbol '
                           f'{gene_tokens[0].token}')
-            return [ValidationResult(
-                classification=classification,
-                is_valid=False,
-                confidence_score=0,
-                allele=None,
-                human_description='',
-                concise_description='',
-                errors=errors
-            )]
+            return [self.get_validation_result(
+                        classification, False, 0, None,
+                        '', '', errors)]
 
+        self.get_valid_invalid_results(psub_tokens, transcripts,
+                                       classification, results)
+        return results
+
+    def get_vrs_allele(self, sequence_id, s):
+        """Return VRS Allele object."""
+        seq_location = models.SequenceLocation(
+            sequence_id=sequence_id,
+            interval=models.SimpleInterval(
+                start=s.position - 1,
+                end=s.position
+            )
+        )
+
+        state = models.SequenceState(sequence=s.alt_protein)
+        allele = models.Allele(location=seq_location,
+                               state=state)
+        allele['_id'] = ga4gh_identify(allele)
+        return allele.as_dict()
+
+    def get_hgvs_expr(self, classification):
+        """Return HGVS expression."""
+        # Replace `=` in silent mutation with 3 letter amino acid code
+        hgvs_token = \
+            [t for t in classification.all_tokens if
+             isinstance(t, Token) and t.token_type == 'HGVS'][0]
+        hgvs_expr = hgvs_token.input_string
+
+        if '=' in hgvs_expr:
+            hgvs_parsed = \
+                self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
+            alt_amino = hgvs_parsed.posedit.pos.end.aa
+            three_letter = \
+                self._amino_acid_cache._amino_acid_code_conversion[alt_amino]
+            hgvs_expr = hgvs_expr.replace('=', three_letter)
+        return hgvs_expr
+
+    def get_valid_invalid_results(self, psub_tokens, transcripts,
+                                  classification, results):
+        """Add validation result objects to a list of results."""
         for s in psub_tokens:
             for t in transcripts:
                 valid = True
@@ -86,20 +114,8 @@ class ProteinSubstitution(Validator):
                 ref_protein = \
                     self.seq_repo_client.protein_at_position(t, s.position)
 
-                # TODO: Should sequence_id be GS or SQ?
-
                 if 'HGVS' in classification.matching_tokens:
-                    hgvs_token = \
-                        [t for t in classification.all_tokens if
-                         isinstance(t, Token) and t.token_type == 'HGVS'][0]
-                    hgvs_expr = hgvs_token.input_string
-
-                    if '=' in hgvs_expr:
-                        hgvs_parsed = \
-                            self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
-                        alt_amino = hgvs_parsed.posedit.pos.end.aa
-                        three_letter = self._amino_acid_cache._amino_acid_code_conversion[alt_amino]  # noqa: E501
-                        hgvs_expr = hgvs_expr.replace('=', three_letter)
+                    hgvs_expr = self.get_hgvs_expr(classification)
 
                     try:
                         # TODO: We should get this to work w/o doing above
@@ -116,20 +132,7 @@ class ProteinSubstitution(Validator):
                 else:
                     sequence_id = \
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
-
-                    seq_location = models.SequenceLocation(
-                        sequence_id=sequence_id,
-                        interval=models.SimpleInterval(
-                            start=s.position - 1,
-                            end=s.position
-                        )
-                    )
-
-                    state = models.SequenceState(sequence=s.alt_protein)
-                    allele = models.Allele(location=seq_location,
-                                           state=state)
-                    allele['_id'] = ga4gh_identify(allele)
-                    allele = allele.as_dict()
+                    allele = self.get_vrs_allele(sequence_id, s)
 
                 if not errors:
                     if ref_protein and len(ref_protein) == 1 \
@@ -142,27 +145,30 @@ class ProteinSubstitution(Validator):
                         valid = False
 
                 if valid:
-                    results.append(ValidationResult(
-                        classification=classification,
-                        is_valid=True,
-                        confidence_score=1,
-                        allele=allele,
-                        human_description=self.concise_description(t, s),
-                        concise_description=self.concise_description(t, s),
-                        errors=[]
-                    ))
+                    results.append(self.get_validation_result(
+                        classification, True, 1, allele,
+                        self.human_description(t, s),
+                        self.concise_description(t, s), []))
                 else:
-                    results.append(ValidationResult(
-                        classification=classification,
-                        is_valid=False,
-                        confidence_score=1,
-                        allele=allele,
-                        human_description=self.concise_description(t, s),
-                        concise_description=self.concise_description(t, s),
-                        errors=errors
-                    ))
+                    results.append(self.get_validation_result(
+                        classification, False, 1, allele,
+                        self.human_description(t, s),
+                        self.concise_description(t, s), errors))
                 errors = list()
-        return results
+
+    def get_validation_result(self, classification, is_valid, confidence_score,
+                              allele, human_description, concise_description,
+                              errors):
+        """Return a validation result object."""
+        return ValidationResult(
+            classification=classification,
+            is_valid=is_valid,
+            confidence_score=confidence_score,
+            allele=allele,
+            human_description=human_description,
+            concise_description=concise_description,
+            errors=errors
+        )
 
     def get_gene_tokens(self, classification):
         """Return gene tokens for a classification."""
