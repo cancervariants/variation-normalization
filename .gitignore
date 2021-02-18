@@ -16,8 +16,7 @@ dist/
 .mypy_cache/
 
 
-variant/data/seqrepo/
-variant/data/uta_20180821/
+# variant/data/seqrepo/
 variant/data/notebooks
 
 .idea/
