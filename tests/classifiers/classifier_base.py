@@ -4,7 +4,7 @@ from variant.tokenizers import Tokenize
 from variant import PROJECT_ROOT
 
 
-class ClassifierBase(object):
+class ClassifierBase:
     """The classifier base class."""
 
     def setUp(self):
