@@ -4,7 +4,7 @@ from variant import PROJECT_ROOT
 from variant.tokenizers import Tokenize
 
 
-class ValidatorBase(object):
+class ValidatorBase:
     """The validator base class."""
 
     def setUp(self):

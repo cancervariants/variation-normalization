@@ -3,7 +3,7 @@ import yaml
 from variant import PROJECT_ROOT
 
 
-class TokenizerBase(object):
+class TokenizerBase:
     """The tokenizer base class."""
 
     def setUp(self):

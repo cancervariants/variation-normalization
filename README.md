@@ -1,8 +1,5 @@
 # Variant Normalization
-[![Build Status](https://travis-ci.org/cancervariants/variant-normalization.svg?branch=master)](https://travis-ci.org/cancervariants/variant-normalization)
-
-Repository for the Variant Lexicon normalization service
-
+Services and guidelines for normalizing variant terms
 
 ## Backend Services
 Variant Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.

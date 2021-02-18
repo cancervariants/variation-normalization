@@ -13,25 +13,27 @@ from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
+from variant import SEQREPO_DATA_PATH
+from biocommons.seqrepo import SeqRepo
+import hgvs.parser
 
 
 class ProteinSubstitution(Validator):
     """The Protein Substitution Validator class."""
 
     def __init__(self, seq_repo_client: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 seqrepo_rest_service_url="http://localhost:5000/seqrepo") \
+                 transcript_mappings: TranscriptMappings) \
             -> None:
         """Initialize the Protein Substitution validator."""
         self.transcript_mappings = transcript_mappings
         self.seq_repo_client = seq_repo_client
         self._gene_matcher = GeneSymbol(GeneSymbolCache())
         self._amino_acid_cache = AminoAcidCache()
-        self.seqrepo_rest_service = seqrepo_rest_service_url
-        self.dp = SeqRepoRESTDataProxy(base_url=seqrepo_rest_service_url)
+        self.dp = SeqRepoDataProxy(SeqRepo(SEQREPO_DATA_PATH))
         self.tlr = Translator(data_proxy=self.dp)
+        self.hgvs_parser = hgvs.parser.Parser()
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -92,7 +94,16 @@ class ProteinSubstitution(Validator):
                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
                     hgvs_expr = hgvs_token.input_string
 
+                    if '=' in hgvs_expr:
+                        hgvs_parsed = \
+                            self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
+                        alt_amino = hgvs_parsed.posedit.pos.end.aa
+                        three_letter = self._amino_acid_cache._amino_acid_code_conversion[alt_amino]  # noqa: E501
+                        hgvs_expr = hgvs_expr.replace('=', three_letter)
+
                     try:
+                        # TODO: We should get this to work w/o doing above
+                        #       replacement
                         seq_location = self.tlr.translate_from(hgvs_expr,
                                                                'hgvs')
                     except HTTPError:
@@ -102,13 +113,9 @@ class ProteinSubstitution(Validator):
                         allele = None
                     else:
                         allele = seq_location.as_dict()
-                        allele['location']['sequence_id'] =\
-                            allele['location']['sequence_id'].replace(
-                                "ga4gh:GS", "ga4gh:SQ")
                 else:
                     sequence_id = \
-                        self.dp.translate_sequence_identifier(
-                            t, 'ga4gh')[0].replace("ga4gh:GS", "ga4gh:SQ")
+                        self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
 
                     seq_location = models.SequenceLocation(
                         sequence_id=sequence_id,

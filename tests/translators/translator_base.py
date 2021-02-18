@@ -4,7 +4,7 @@ from variant import PROJECT_ROOT
 from variant.tokenizers import Tokenize
 
 
-class TranslatorBase(object):
+class TranslatorBase:
     """The translator base class."""
 
     def setUp(self):
