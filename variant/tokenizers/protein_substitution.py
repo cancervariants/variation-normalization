@@ -62,7 +62,7 @@ class ProteinSubstitution(Tokenizer):
             # nonsense, silent, unknown
             amino_acids = amino_acids - {'*', 'Ter', '=', '?'}
 
-            if not self._is_valid_amino_acid(amino_acids=amino_acids):
+            if not self._is_valid_amino_acid(amino_acids):
                 return None
 
             ret_psub = True
@@ -135,12 +135,9 @@ class ProteinSubstitution(Tokenizer):
         self.psub['position'] = int(position)
         self.psub['new_amino_acid'] = new_amino_acid
 
-    def _is_valid_amino_acid(self, **kwargs):
+    def _is_valid_amino_acid(self, amino_acids):
         """Return whether or not amino acids are valid."""
-        if 'amino_acids' in kwargs:
-            for amino_acid in kwargs['amino_acids']:
-                if amino_acid not in self.amino_acid_cache:
-                    return False
-            return True
-        else:
-            raise KeyError("amino_acids not found in kwargs.")
+        for amino_acid_code in amino_acids:
+            if not self.amino_acid_cache.__contains__(amino_acid_code):
+                return False
+        return True
