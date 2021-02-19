@@ -10,4 +10,4 @@ class Tokenizer(ABC):
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
         """Return tokens that match the input string."""
-        pass
+        raise NotImplementedError
