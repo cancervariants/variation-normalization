@@ -20,8 +20,6 @@ dist/
 variant/data/seqrepo/
 variant/data/notebooks
 
-.idea/
-
 Pipfile.lock
 
 .python-version
