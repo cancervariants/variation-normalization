@@ -13,11 +13,11 @@ class Validator(ABC):
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
         """Return validation result for a given classification."""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def validates_classification_type(self,
                                       classification_type: ClassificationType)\
             -> bool:
         """Check that classification type matches."""
-        pass
+        raise NotImplementedError
