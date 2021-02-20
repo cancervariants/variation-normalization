@@ -16,22 +16,6 @@ chmod -R u+w variant/data/seqrepo/<DATE>
 ln -s variant/data/seqrepo/<DATE> latest
 ```
 
-#### Installing Dependencies
-From the _root_ directory of the repository:
-```
-$ docker volume create --name=uta_vol
-$ docker volume create --name=seqrepo_vol
-$ docker-compose -f docker-compose.yml up
-```
-
-This should start three containers:
-
-  * [seqrepo](https://github.com/biocommons/seqrepo): a non-redundant archive of sequences
-  * [seqrepo-rest-service](https://github.com/biocommons/seqrepo-rest-service): a REST service on seqrepo (localhost:5000)
-  * [uta](https://github.com/biocommons/uta): a database of transcripts and alignments (localhost:5432)
-
-The seqrepo container will exit as soon as the data are downloaded.
-
 ### Init coding style tests
 
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.

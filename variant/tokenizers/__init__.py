@@ -12,6 +12,7 @@ from .gene_symbol import GeneSymbol  # noqa: F401
 from .loss_of_function import LossOfFunction  # noqa: F401
 from .overexpression import OverExpression  # noqa: F401
 from .protein_alternate import ProteinAlternate  # noqa: F401
+from .protein_delins import ProteinDelIns  # noqa: F401
 from .protein_frameshift import ProteinFrameshift  # noqa: F401
 from .protein_substitution import ProteinSubstitution  # noqa: F401
 from .protein_termination import ProteinTermination  # noqa: F401

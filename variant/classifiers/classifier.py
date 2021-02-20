@@ -12,9 +12,9 @@ class Classifier(ABC):
     @abstractmethod
     def match(self, tokens: List[Token]) -> Optional[Classification]:
         """Return the classification from a list of token matches."""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def classification_type(self) -> ClassificationType:
         """Return the classification type."""
-        pass
+        raise NotImplementedError

@@ -5,6 +5,7 @@ instance/
 
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 .vim/
 
@@ -17,13 +18,13 @@ dist/
 
 
 variant/data/seqrepo/
-variant/data/uta_20180821/
 variant/data/notebooks
-
-.idea/
 
 Pipfile.lock
 
 .python-version
 
 pyproject.toml
+
+# Jupyter Notebook
+.ipynb_checkpoints/

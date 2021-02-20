@@ -11,9 +11,9 @@ class Translator(ABC):
     @abstractmethod
     def translate(self, res: ValidationResult) -> Allele:
         """Translate a validation result to a VRS representation."""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def can_translate(self, type: ClassificationType) -> bool:
         """Determine if it's possible to translate a classification."""
-        pass
+        raise NotImplementedError

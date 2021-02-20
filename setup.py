@@ -4,7 +4,7 @@ from variant.__version__ import __version__, __authors__, __author_email__, \
     __description__, __url__
 
 setup(
-    name='variant-normalization',
+    name='variant',
     version=__version__,
     packages=['variant'],
     url=__url__,
@@ -26,5 +26,6 @@ setup(
             'pytest'
         ]
     },
-    python_requires='>=3.7'
+    python_requires='>=3.7',
+    zip_safe=False
 )
