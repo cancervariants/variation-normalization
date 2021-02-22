@@ -1,23 +1,12 @@
 """A module for Amino Acid Substitution Tokenization."""
-import re
 from typing import Optional
-from .caches import AminoAcidCache
-from .tokenizer import Tokenizer
 from variant.schemas.token_response_schema import AminoAcidSubstitutionToken,\
     TokenMatchType
+from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase
 
 
-class AminoAcidSubstitution(Tokenizer):
+class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
     """Class for tokenizing Amino Acid Substitution."""
-
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the Amino Acid Substitution Class.
-
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
-        """
-        self.amino_acid_cache = amino_acid_cache
-        self.splitter = re.compile(r'(\d+)')
-        self.psub = None
 
     def match(self, input_string) -> Optional[AminoAcidSubstitutionToken]:
         """Return a AminoAcidSubstitutionToken match if one exists.
@@ -87,21 +76,3 @@ class AminoAcidSubstitution(Tokenizer):
                 psub_parts[2] = psub_parts[2].split(')')[0]
 
             self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
-
-    def _set_psub(self, amino_acid, position, new_amino_acid):
-        """Initialize protein substitution.
-
-        :param str amino_acid: Reference amino acid
-        :param str position: The position of the amino acid substituted
-        :param str new_amino_acid: The new amino_acid
-        """
-        self.psub['amino_acid'] = amino_acid
-        self.psub['position'] = int(position)
-        self.psub['new_amino_acid'] = new_amino_acid
-
-    def _is_valid_amino_acid(self, amino_acids):
-        """Return whether or not amino acids are valid."""
-        for amino_acid_code in amino_acids:
-            if not self.amino_acid_cache.__contains__(amino_acid_code):
-                return False
-        return True
