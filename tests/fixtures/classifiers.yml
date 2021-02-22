@@ -18,7 +18,7 @@ fusion:
     - query: fusio
 
 
-protein_substitution:
+amino_acid_substitution:
   should_match:
     - query: BRAF V600E
       confidence: ConfidenceRating.EXACT
@@ -40,16 +40,26 @@ protein_substitution:
       confidence: ConfidenceRating.EXACT
     - query: NP_004324.2:p.Val600Glu
       confidence: ConfidenceRating.EXACT
-    - query: NP_003997.1:p.(Gly56Ala^Ser^Cys)
-      confidence: ConfidenceRating.EXACT
-    - query: ENSP00000256474.2:p.Ter214Gly
-      confidence: ConfidenceRating.EXACT
     - query: NP_065681.1:p.Met918Thr
-      confidence: ConfidenceRating.EXACT
-    - query: ENSP00000343204.4:p.Trp690Ter
       confidence: ConfidenceRating.EXACT
     - query: NP_065681.1:c.Met918Thr
       confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: BRAFV600E
     - query: v600e
+
+polypeptide_truncation:
+  should_match:
+    - query: ENSP00000343204.4:p.Trp690Ter
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: ENSP00000343204.4:c.Trp690Ter
+
+silent_mutation:
+  should_match:
+    - query: NP_000213.1:p.Leu862=
+      confidence: ConfidenceRating.EXACT
+    - query: NP_000213.1:p.Leu862==
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: Leu862==

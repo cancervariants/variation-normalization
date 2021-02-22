@@ -13,9 +13,11 @@ from .loss_of_function import LossOfFunction
 from .overexpression import OverExpression
 from .protein_alternate import ProteinAlternate
 from .protein_frameshift import ProteinFrameshift
-from .protein_substitution import ProteinSubstitution
 from .protein_termination import ProteinTermination
 from .underexpression import UnderExpression
+from .amino_acid_substitution import AminoAcidSubstitution
+from .polypeptide_truncation import PolypeptideTruncation
+from .silent_mutation import SilentMutation
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
@@ -41,24 +43,26 @@ class Tokenize:
         self.search_term_splitter = re.compile(r'\s+')
 
         self.tokenizers = (
-                Amplification(),
-                Deletion(),
-                Exon(),
-                Expression(),
-                Fusion(),
-                GainOfFunction(),
-                GenePair(gene_cache),
-                GeneSymbol(gene_cache),
-                LossOfFunction(),
-                OverExpression(),
-                ProteinAlternate(amino_acid_cache),
-                ProteinFrameshift(amino_acid_cache),
-                ProteinSubstitution(amino_acid_cache),
-                ProteinTermination(amino_acid_cache),
-                UnderExpression(),
-                WildType(),
-                HGVS(),
-                ReferenceSequence()
+            Amplification(),
+            Deletion(),
+            Exon(),
+            Expression(),
+            Fusion(),
+            GainOfFunction(),
+            GenePair(gene_cache),
+            GeneSymbol(gene_cache),
+            LossOfFunction(),
+            OverExpression(),
+            ProteinAlternate(amino_acid_cache),
+            ProteinFrameshift(amino_acid_cache),
+            AminoAcidSubstitution(amino_acid_cache),
+            PolypeptideTruncation(amino_acid_cache),
+            SilentMutation(amino_acid_cache),
+            ProteinTermination(amino_acid_cache),
+            UnderExpression(),
+            WildType(),
+            HGVS(),
+            ReferenceSequence()
         )
 
     def perform(self, search_string: str) -> Iterable[Token]:
