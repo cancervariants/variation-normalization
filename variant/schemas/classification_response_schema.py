@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from typing import List, Union, Dict, Any, Type
 from enum import IntEnum
 from variant.schemas.token_response_schema import Token, \
-    GeneMatchToken, GenePairMatchToken, ProteinSubstitutionToken
+    GeneMatchToken, GenePairMatchToken, AminoAcidSubstitutionToken, \
+    PolypeptideTruncationToken, SilentMutationToken
 
 
 class ClassificationType(IntEnum):
@@ -11,14 +12,17 @@ class ClassificationType(IntEnum):
 
     FUSION = 1
     PROTEIN_SUBSTITUTION = 2
-    PROTEIN_FRAMESHIFT = 3
-    PROTEIN_ALTERNATE = 4
-    PROTEIN_DELINS = 5
-    PROTEIN_TERMINATION = 6
-    PROTEIN_DUPLICATION = 7
-    ONCOGENIC = 8
-    EXPRESSION = 9
-    COMPLEX = 10
+    AMINO_ACID_SUBSTITUTION = 3
+    POLYPEPTIDE_TRUNCATION = 4
+    SILENT_MUTATION = 5
+    PROTEIN_FRAMESHIFT = 6
+    PROTEIN_ALTERNATE = 7
+    PROTEIN_DELINS = 8
+    PROTEIN_TERMINATION = 9
+    PROTEIN_DUPLICATION = 10
+    ONCOGENIC = 11
+    EXPRESSION = 12
+    COMPLEX = 13
 
 
 class ConfidenceRating(IntEnum):
@@ -37,7 +41,9 @@ class Classification(BaseModel):
     matching_tokens: List[str]
     non_matching_tokens: List[str]
     all_tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                     ProteinSubstitutionToken, Token]]
+                           AminoAcidSubstitutionToken,
+                           PolypeptideTruncationToken,
+                           SilentMutationToken, Token]]
     confidence: ConfidenceRating
 
     class Config:

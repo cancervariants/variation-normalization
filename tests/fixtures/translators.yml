@@ -1,4 +1,4 @@
-protein_substitution:
+amino_acid_substitution:
   tests:
     - query: BRAF V600E
       variants: [
@@ -37,6 +37,10 @@ protein_substitution:
           "type": "Allele"
         }
       ]
+
+
+polypeptide_truncation:
+  tests:
     - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
       variants: [
         {
@@ -79,24 +83,24 @@ protein_substitution:
       ]
     - query: NP_000542.1:p.(Tyr185Ter)
       variants: [
-          {
-            "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
-            "location": {
-              "interval": {
-                "start": 184,
-                "end": 185,
-                "type": "SimpleInterval"
-              },
-              "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
-              "type": "SequenceLocation"
+        {
+          "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+          "location": {
+            "interval": {
+              "start": 184,
+              "end": 185,
+              "type": "SimpleInterval"
             },
-            "state": {
-              "sequence": "*",
-              "type": "SequenceState"
-            },
-            "type": "Allele"
-          }
-        ]
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "*",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
     - query: NP_000539.2:p.Gln1178Ter
       variants: [
         {
@@ -168,6 +172,10 @@ protein_substitution:
           "type": "Allele"
         }
       ]
+
+
+silent_mutation:
+  tests:
     - query: NP_000542.1:p.Pro154=
       variants: [
         {
@@ -208,4 +216,3 @@ protein_substitution:
           "type": "Allele"
         }
       ]
-

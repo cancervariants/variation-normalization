@@ -3,7 +3,9 @@ from variant.schemas.ga4gh_vrs import Allele
 from variant.schemas.validation_response_schema import ValidationResult
 from ..data_sources import SeqRepoAccess
 from .translator import Translator
-from .protein_substitution import ProteinSubstitution
+from .amino_acid_substitution import AminoAcidSubstitution
+from .polypeptide_truncation import PolypeptideTruncation
+from .silent_mutation import SilentMutation
 
 from typing import List, Optional
 
@@ -15,7 +17,9 @@ class Translate:
         """Initialize the translation class."""
         self.seqrepo = seqrepo
         self.all_translators: List[Translator] = [
-                ProteinSubstitution()
+            AminoAcidSubstitution(),
+            PolypeptideTruncation(),
+            SilentMutation()
         ]
 
     def perform(self, res: ValidationResult) \
