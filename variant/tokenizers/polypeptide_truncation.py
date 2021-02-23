@@ -43,8 +43,7 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
 
         self._get_psub(psub_parts)
 
-        if all(self.psub.values()):
-            # print(input_string, self.psub)
+        if None not in self.psub.values():
             if self.psub['new_amino_acid'] == '*' or \
                     self.psub['new_amino_acid'] == 'Ter':
                 amino_acids = {self.psub['amino_acid']}
@@ -63,7 +62,7 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
         return None
 
     def _get_psub(self, psub_parts):
-        """Return Protein Substitution tokens.
+        """Get polypeptide truncation tokens.
 
         :param list psub_parts: The split input string
         """

@@ -42,6 +42,7 @@ amino_acid_substitution:
     - token: p.Trp24Cys
     - token: p.(Trp24Cys)
     - token: p.Ala146Val
+    - token: V0E
   should_not_match:
     - token: foo
     - token: v600e
@@ -67,6 +68,7 @@ polypeptide_truncation:
     - token: p.Tyr365Ter (p.Tyr365*)
     - token: p.Tyr365Ter
     - token: p.(Tyr365Ter)
+    - token: Tyr0Ter
   should_not_match:
     - token: BRAF V600E
     - token: NP_060842.3:p.Tyr365Terr
@@ -79,6 +81,7 @@ silent_mutation:
     - token: p.Glu55=
     - token: p.(G55=)
     - token: Glu55=
+    - token: Glu0=
   should_not_match:
     - token: c.Cys188=
     - token: p.Leu862==

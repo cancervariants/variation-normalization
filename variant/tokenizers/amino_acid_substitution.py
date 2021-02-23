@@ -40,7 +40,7 @@ class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
 
         self._get_psub(psub_parts)
 
-        if all(self.psub.values()):
+        if None not in self.psub.values():
             amino_acids = {self.psub['amino_acid'],
                            self.psub['new_amino_acid']}
 
@@ -59,7 +59,7 @@ class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
         return None
 
     def _get_psub(self, psub_parts):
-        """Return Protein Substitution tokens.
+        """Get amino acid substitution tokens.
 
         :param list psub_parts: The split input string
         """
