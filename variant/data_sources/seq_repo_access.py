@@ -16,7 +16,7 @@ class SeqRepoAccess:
 
         :param str seqrepo_data_path: The path to the seqrepo directory.
         """
-        if not os.path.exists:
+        if not os.path.exists(seqrepo_data_path):
             self._download_from_s3()
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
 
@@ -24,11 +24,11 @@ class SeqRepoAccess:
         """Download SeqRepo data for Elastic Beanstalk."""
         # TODO: Consider doing this in .ebextensions?
         s3 = boto3.resource('s3')
-        zip_path = f"{PROJECT_ROOT}/test.zip"
+        zip_path = f"{PROJECT_ROOT}/temp_seqrepo.zip"
         bucket = os.environ['AWS_BUCKET_NAME']
         obj = os.environ['AWS_SEQREPO_OBJECT']
         s3.meta.client.download_file(bucket, obj, zip_path)
-        data_dir = f"{PROJECT_ROOT}/variant/data/seqrepo"
+        data_dir = f"{PROJECT_ROOT}/variant/data"
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(data_dir)
         os.remove(zip_path)
