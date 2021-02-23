@@ -1,19 +1,65 @@
 fusion:
   should_match:
     - query: braf-flt3 fusion
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: braf-flt3
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: braf fusion
-      confidence: EXACT
+      confidence: ConfidenceRating.EXACT
     - query: fusion braf
-      confidence: UNORDERED
+      confidence: ConfidenceRating.UNORDERED
     - query: flt3-braf fusion foo
-      confidence: SUPERSET
+      confidence: ConfidenceRating.SUPERSET
     - query: flt3 foo
-      confidence: INTERSECTION
+      confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: afusion
     - query: fused
     - query: fusio
 
+
+amino_acid_substitution:
+  should_match:
+    - query: BRAF V600E
+      confidence: ConfidenceRating.EXACT
+    - query: braf v600e
+      confidence: ConfidenceRating.INTERSECTION
+    - query: braf V600E
+      confidence: ConfidenceRating.EXACT
+    - query: V600E BRAF
+      confidence: ConfidenceRating.UNORDERED
+    - query: V600E
+      confidence: ConfidenceRating.EXACT
+    - query: (V600E)
+      confidence: ConfidenceRating.EXACT
+    - query: BRAF V600E foo
+      confidence: ConfidenceRating.SUPERSET
+    - query: BRAF
+      confidence: ConfidenceRating.INTERSECTION
+    - query: NRAS G13V
+      confidence: ConfidenceRating.EXACT
+    - query: NP_004324.2:p.Val600Glu
+      confidence: ConfidenceRating.EXACT
+    - query: NP_065681.1:p.Met918Thr
+      confidence: ConfidenceRating.EXACT
+    - query: NP_065681.1:c.Met918Thr
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: BRAFV600E
+    - query: v600e
+
+polypeptide_truncation:
+  should_match:
+    - query: ENSP00000343204.4:p.Trp690Ter
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: ENSP00000343204.4:c.Trp690Ter
+
+silent_mutation:
+  should_match:
+    - query: NP_000213.1:p.Leu862=
+      confidence: ConfidenceRating.EXACT
+    - query: NP_000213.1:p.Leu862==
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: Leu862==
