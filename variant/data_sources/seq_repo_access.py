@@ -1,7 +1,11 @@
 """A module for accessing SeqRepo."""
 from typing import Optional
 from biocommons.seqrepo import SeqRepo
-from variant import SEQREPO_DATA_PATH
+from variant import SEQREPO_DATA_PATH, PROJECT_ROOT
+import os
+import boto3
+import zipfile
+import shutil
 
 
 class SeqRepoAccess:
@@ -12,7 +16,23 @@ class SeqRepoAccess:
 
         :param str seqrepo_data_path: The path to the seqrepo directory.
         """
+        if not os.path.exists:
+            self._download_from_s3()
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
+
+    def _download_from_s3(self):
+        """Download SeqRepo data for Elastic Beanstalk."""
+        # TODO: Consider doing this in .ebextensions?
+        s3 = boto3.resource('s3')
+        zip_path = f"{PROJECT_ROOT}/test.zip"
+        bucket = os.environ['AWS_BUCKET_NAME']
+        obj = os.environ['AWS_SEQREPO_OBJECT']
+        s3.meta.client.download_file(bucket, obj, zip_path)
+        data_dir = f"{PROJECT_ROOT}/variant/data/seqrepo"
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(data_dir)
+        os.remove(zip_path)
+        shutil.rmtree(f"{data_dir}/__MACOSX")
 
     def protein_at_position(self, transcript: str, pos: int) -> Optional[str]:
         """Get the protein at a position."""
