@@ -119,14 +119,15 @@ class GenePairMatchToken(Token):
             }
 
 
-class ProteinSubstitutionToken(Token):
-    """Define model for Protein Substitution token."""
+class PolypeptideTruncationToken(Token):
+    """A sequence variant of the CD that causes a truncation of the
+    resulting polypeptide. (nonsense)
+    """
 
-    # TODO: These might be optional in future
     ref_protein: str
-    alt_protein: str
+    alt_protein = 'Ter'
     position: int
-    token_type = 'ProteinSubstitution'
+    token_type = 'PolypeptideTruncation'
 
     class Config:
         """Configure model."""
@@ -135,7 +136,42 @@ class ProteinSubstitutionToken(Token):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['ProteinSubstitutionToken']) -> None:
+                         model: Type['PolypeptideTruncationToken']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "token": "Tyr365Ter",
+                "token_type": "PolypeptideTruncation",
+                "match_type": 5,
+                "input_string": "Tyr365Ter",
+                "object_type": "Token",
+                "ref_protein": "Tyr",
+                "alt_protein": "Ter",
+                "position": 365
+            }
+
+
+class AminoAcidSubstitutionToken(Token):
+    """A sequence variant of a codon resulting in the substitution of one
+    amino acid for another in the resulting polypeptide. (missense)
+    """
+
+    ref_protein: str
+    alt_protein: str
+    position: int
+    token_type = 'AminoAcidSubstitution'
+
+    class Config:
+        """Configure model."""
+
+        orm_mode = True
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['AminoAcidSubstitutionToken']) -> None:
             """Configure OpenAPI schema."""
             if 'title' in schema.keys():
                 schema.pop('title', None)
@@ -143,7 +179,7 @@ class ProteinSubstitutionToken(Token):
                 prop.pop('title', None)
             schema['example'] = {
                 "token": "V600E",
-                "token_type": "ProteinSubstitution",
+                "token_type": "AminoAcidSubstitution",
                 "match_type": 5,
                 "input_string": "V600E",
                 "object_type": "Token",
@@ -153,12 +189,46 @@ class ProteinSubstitutionToken(Token):
             }
 
 
+class SilentMutationToken(Token):
+    """A sequence variant that does not affect protein functions."""
+
+    ref_protein: str
+    alt_protein = '='
+    position: int
+    token_type = 'SilentMutation'
+
+    class Config:
+        """Configure model."""
+
+        orm_mode = True
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['SilentMutationToken']) -> None:
+            """Configure OpenAPI schema."""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                "token": "p.Cys188=",
+                "token_type": "SilentMutation",
+                "match_type": 5,
+                "input_string": "p.Cys188=",
+                "object_type": "Token",
+                "ref_protein": "Cys",
+                "alt_protein": "=",
+                "position": 188
+            }
+
+
 class TokenResponseSchema(BaseModel):
     """Define model for token response."""
 
     search_term: str
     tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                       ProteinSubstitutionToken, Token]]
+                       AminoAcidSubstitutionToken, PolypeptideTruncationToken,
+                       SilentMutationToken, Token]]
 
     class Config:
         """Configure model."""
@@ -186,7 +256,7 @@ class TokenResponseSchema(BaseModel):
                     },
                     {
                         "token": "V600E",
-                        "token_type": "ProteinSubstitution",
+                        "token_type": "AminoAcidSubstitution",
                         "match_type": 5,
                         "input_string": "V600E",
                         "object_type": "Token",
