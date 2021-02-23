@@ -6,7 +6,9 @@ from variant.schemas.token_response_schema import Token
 from variant.classifiers import ComplexClassifier, ExpressionClassifier, \
     FusionClassifier, OncogenicClassifier, ProteinAlternateClassifier, \
     ProteinDelinsClassifier, ProteinFrameshiftClassifier, \
-    ProteinSubstitutionClassifier, ProteinTerminationClassifier, Classifier
+    ProteinTerminationClassifier, \
+    AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
+    SilentMutationClassifier, Classifier
 
 
 class Classify:
@@ -15,15 +17,17 @@ class Classify:
     def __init__(self) -> None:
         """Initialize the Classify class."""
         self.classifiers: List[Classifier] = [
-                ComplexClassifier(),
-                ExpressionClassifier(),
-                FusionClassifier(),
-                OncogenicClassifier(),
-                ProteinAlternateClassifier(),
-                ProteinDelinsClassifier(),
-                ProteinFrameshiftClassifier(),
-                ProteinSubstitutionClassifier(),
-                ProteinTerminationClassifier()
+            ComplexClassifier(),
+            ExpressionClassifier(),
+            FusionClassifier(),
+            OncogenicClassifier(),
+            ProteinAlternateClassifier(),
+            ProteinDelinsClassifier(),
+            ProteinFrameshiftClassifier(),
+            AminoAcidSubstitutionClassifier(),
+            PolypeptideTruncationClassifier(),
+            SilentMutationClassifier(),
+            ProteinTerminationClassifier()
         ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:

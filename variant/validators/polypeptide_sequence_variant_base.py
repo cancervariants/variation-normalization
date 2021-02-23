@@ -1,11 +1,10 @@
-"""The module for Protein Substitution Validation."""
+"""The module for Polypeptide Sequence Variant Validation."""
 from typing import List
+from abc import abstractmethod
 from requests.exceptions import HTTPError
 from .validator import Validator
-from variant.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variant.schemas.token_response_schema import ProteinSubstitutionToken, \
-    GeneMatchToken
+from variant.schemas.classification_response_schema import Classification
+from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variant.schemas.token_response_schema import Token
@@ -21,13 +20,13 @@ from biocommons.seqrepo import SeqRepo
 import hgvs.parser
 
 
-class ProteinSubstitution(Validator):
-    """The Protein Substitution Validator class."""
+class PolypeptideSequenceVariantBase(Validator):
+    """The Polypeptide Sequence Variant Validator Base class."""
 
     def __init__(self, seq_repo_client: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings) \
             -> None:
-        """Initialize the Protein Substitution validator.
+        """Initialize the validator.
 
         :param SeqRepoAccess seq_repo_client: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
@@ -43,7 +42,7 @@ class ProteinSubstitution(Validator):
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
-        """Validate a given protein substitution classification.
+        """Validate a given classification.
 
         :param Classification classification: A classification for a list of
             tokens
@@ -52,21 +51,20 @@ class ProteinSubstitution(Validator):
         results = list()
         errors = list()
 
-        psub_tokens = [t for t in classification.all_tokens if isinstance(t, ProteinSubstitutionToken)]  # noqa: E501
-
+        classification_tokens = [t for t in classification.all_tokens if self.is_token_instance(t)]  # noqa: E501
         gene_tokens = self.get_gene_tokens(classification)
 
         if len(gene_tokens) == 0:
-            errors.append('No gene tokens for a protein substitution.')
+            errors.append(f'No gene tokens for a {self.variant_name()}.')
 
         if len(gene_tokens) > 1:
             errors.append('More than one gene symbol found for a single'
-                          ' protein substitution')
+                          f' {self.variant_name()}')
 
         if len(errors) > 0:
             return [self.get_validation_result(
-                        classification, False, 0, None,
-                        '', '', errors)]
+                    classification, False, 0, None,
+                    '', '', errors)]
 
         transcripts = self.transcript_mappings.protein_transcripts(
             gene_tokens[0].token, LookupType.GENE_SYMBOL)
@@ -75,10 +73,10 @@ class ProteinSubstitution(Validator):
             errors.append(f'No transcripts found for gene symbol '
                           f'{gene_tokens[0].token}')
             return [self.get_validation_result(
-                        classification, False, 0, None,
-                        '', '', errors)]
+                    classification, False, 0, None,
+                    '', '', errors)]
 
-        self.get_valid_invalid_results(psub_tokens, transcripts,
+        self.get_valid_invalid_results(classification_tokens, transcripts,
                                        classification, results)
         return results
 
@@ -86,7 +84,7 @@ class ProteinSubstitution(Validator):
         """Return VRS Allele object.
 
         :param str sequence_id: Sequence containing the sequence to be located
-        :param ProteinSubstitutionToken s: A protein substitution token
+        :param Token s: A token
         :return: A VRS Allele object as a dictionary
         """
         seq_location = models.SequenceLocation(
@@ -125,17 +123,18 @@ class ProteinSubstitution(Validator):
             hgvs_expr = hgvs_expr.replace('=', three_letter)
         return hgvs_expr
 
-    def get_valid_invalid_results(self, psub_tokens, transcripts,
+    def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results) -> None:
-        """Add validation result objects to a list of results.
+        """Add validation result objects to a list of results.  # noqa: D202
 
-        :param list psub_tokens: A list of Protein Substitution Tokens
+        :param list classification_tokens: A list of Tokens
         :param list transcripts: A list of transcript strings
         :param Classification classification: A classification for a list of
             tokens
         :param list results: A list to store validation result objects
         """
-        for s in psub_tokens:
+
+        for s in classification_tokens:
             for t in transcripts:
                 valid = True
                 errors = list()
@@ -194,9 +193,8 @@ class ProteinSubstitution(Validator):
         :param int confidence_score: The classification confidence score
         :param dict allele: A VRS Allele object
         :param str human_description: A human description describing the
-            protein substiution variant
-        :param str concise_description: The identified protein substitution
             variant
+        :param str concise_description: The identified variant
         :param list errors: A list of errors for the classification
         :return: A validation result
         """
@@ -241,21 +239,28 @@ class ProteinSubstitution(Validator):
                     gene_tokens.append(self._gene_matcher.match(gene_symbol))
         return gene_tokens
 
-    def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
-        """Return the protein substitution classification type."""
-        return classification_type == ClassificationType.PROTEIN_SUBSTITUTION
+    @abstractmethod
+    def is_token_instance(self, t) -> bool:
+        """Check to see if token is instance of a token type."""
+        raise NotImplementedError
 
-    def concise_description(self, transcript,
-                            psub_token: ProteinSubstitutionToken) -> str:
+    @abstractmethod
+    def variant_name(self):
+        """Return the variant name"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def validates_classification_type(self, classification_type) \
+            -> bool:
+        """Return the classification type"""
+        raise NotImplementedError
+
+    def concise_description(self, transcript, token) -> str:
         """Return a description of the identified variant."""
-        return f'{transcript} {psub_token.ref_protein}' \
-               f'{psub_token.position}{psub_token.alt_protein}'
+        return f'{transcript} {token.ref_protein}' \
+               f'{token.position}{token.alt_protein}'
 
-    def human_description(self, transcript,
-                          psub_token: ProteinSubstitutionToken) -> str:
+    @abstractmethod
+    def human_description(self, transcript, token) -> str:
         """Return a human description of the identified variant."""
-        return f'A protein substitution from {psub_token.ref_protein}' \
-               f' to {psub_token.alt_protein} at position ' \
-               f'{psub_token.position} on transcript {transcript}'
+        raise NotImplementedError

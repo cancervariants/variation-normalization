@@ -14,9 +14,12 @@ from .overexpression import OverExpression  # noqa: F401
 from .protein_alternate import ProteinAlternate  # noqa: F401
 from .protein_delins import ProteinDelIns  # noqa: F401
 from .protein_frameshift import ProteinFrameshift  # noqa: F401
-from .protein_substitution import ProteinSubstitution  # noqa: F401
 from .protein_termination import ProteinTermination  # noqa: F401
 from .underexpression import UnderExpression  # noqa: F401
 from .wild_type import WildType  # noqa: F401
 from .hgvs import HGVS  # noqa: F401
 from .reference_sequence import ReferenceSequence  # noqa: F401
+from .amino_acid_substitution import AminoAcidSubstitution  # noqa: F401
+from .polypeptide_truncation import PolypeptideTruncation  # noqa: F401
+from .silent_mutation import SilentMutation  # noqa: F401
+from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase  # noqa: F401, E501
