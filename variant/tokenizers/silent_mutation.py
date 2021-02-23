@@ -37,7 +37,7 @@ class SilentMutation(PolypeptideSequenceVariantBase):
 
         self._get_psub(psub_parts)
 
-        if all(self.psub.values()):
+        if None not in self.psub.values():
             if self.psub['new_amino_acid'] == '=':
                 if not self._is_valid_amino_acid({self.psub['amino_acid']}):
                     return None
@@ -53,7 +53,7 @@ class SilentMutation(PolypeptideSequenceVariantBase):
         return None
 
     def _get_psub(self, psub_parts):
-        """Return Protein Substitution tokens.
+        """Get silent mutation tokens.
 
         :param list psub_parts: The split input string
         """
