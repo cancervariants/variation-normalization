@@ -99,7 +99,13 @@ class PolypeptideSequenceVariantBase(Validator):
         allele = models.Allele(location=seq_location,
                                state=state)
         allele['_id'] = ga4gh_identify(allele)
-        return allele.as_dict()
+        allele = allele.as_dict()
+        if len(allele['state']['sequence']) == 3:
+            for one, three in \
+                    self._amino_acid_cache._amino_acid_code_conversion:
+                if three == allele['state']['sequence']:
+                    allele['state']['sequence'] = one
+        return allele
 
     def get_hgvs_expr(self, classification) -> str:
         """Return HGVS expression for a classification.
@@ -133,7 +139,6 @@ class PolypeptideSequenceVariantBase(Validator):
             tokens
         :param list results: A list to store validation result objects
         """
-
         for s in classification_tokens:
             for t in transcripts:
                 valid = True

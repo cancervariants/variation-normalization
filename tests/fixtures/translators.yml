@@ -37,6 +37,26 @@ amino_acid_substitution:
           "type": "Allele"
         }
       ]
+    - query: NP_004324.2:p.Val600Glu
+      variants: [
+        {
+          "id": "ga4gh:VA.mJbjSsW541oOsOtBoX36Mppr6hMjbjFr",
+          "location": {
+            "interval": {
+              "end": 600,
+              "start": 599,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
 
 
 polypeptide_truncation:
