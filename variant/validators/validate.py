@@ -2,6 +2,8 @@
 from variant.schemas.validation_response_schema import ValidationSummary
 from variant.schemas.classification_response_schema import Classification
 from ..data_sources import TranscriptMappings, SeqRepoAccess
+from variant.tokenizers import GeneSymbol
+from variant.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
@@ -12,12 +14,17 @@ class Validate:
     """The validation class."""
 
     def __init__(self, seq_repo_client: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings) -> None:
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol,
+                 amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validate class."""
         self.validators = [
-            AminoAcidSubstitution(seq_repo_client, transcript_mappings),
-            PolypeptideTruncation(seq_repo_client, transcript_mappings),
-            SilentMutation(seq_repo_client, transcript_mappings)
+            AminoAcidSubstitution(seq_repo_client, transcript_mappings,
+                                  gene_symbol, amino_acid_cache),
+            PolypeptideTruncation(seq_repo_client, transcript_mappings,
+                                  gene_symbol, amino_acid_cache),
+            SilentMutation(seq_repo_client, transcript_mappings,
+                           gene_symbol, amino_acid_cache)
         ]
 
     def perform(self, classifications: List[Classification]) \

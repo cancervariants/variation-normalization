@@ -6,15 +6,21 @@ from variant.tokenizers import Tokenize
 from variant.validators import Validate
 from variant.translators import Translate
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from variant.tokenizers import GeneSymbol
+from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from variant.schemas import TranslationResponseSchema
+
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 tokenizer = Tokenize()
 classifier = Classify()
 seq_repo_access = SeqRepoAccess()
 transcript_mappings = TranscriptMappings()
-validator = Validate(seq_repo_access, transcript_mappings)
-translator = Translate(seq_repo_access)
+gene_symbol = GeneSymbol(GeneSymbolCache())
+amino_acid_cache = AminoAcidCache()
+validator = Validate(seq_repo_access, transcript_mappings, gene_symbol,
+                     amino_acid_cache)
+translator = Translate()
 
 
 def custom_openapi():
@@ -39,8 +45,8 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 translate_summary = "Translate a variant to a VRS compatible object."
-translate_description = ("Translate a variant into VR-Spec (VRS) compatible "
-                         "representations.")
+translate_description = ("Translate a variant into Variation Representation "
+                         "Specification (VRS) compatible representations.")
 translate_response_description = "A  response to a validly-formed query."
 q_description = "Variant to translate."
 
