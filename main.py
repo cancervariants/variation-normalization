@@ -67,7 +67,9 @@ def translate(q: str = Query(..., description=q_description)):
 
     translations = []
     for valid_variant in validations.valid_results:
-        translations.append(translator.perform(valid_variant))
+        result = translator.perform(valid_variant)
+        if result not in translations:
+            translations.append(result)
     return TranslationResponseSchema(
         search_term=q,
         variants=translations
