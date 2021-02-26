@@ -96,6 +96,13 @@ class PolypeptideSequenceVariantBase(Validator):
         )
 
         state = models.SequenceState(sequence=s.alt_protein)
+        state_dict = state.as_dict()
+        if len(state_dict['sequence']) == 3:
+            for one, three in \
+                    self._amino_acid_cache._amino_acid_code_conversion.items():
+                if three == state_dict['sequence']:
+                    state.sequence = one
+
         allele = models.Allele(location=seq_location,
                                state=state)
         allele['_id'] = ga4gh_identify(allele)
@@ -133,7 +140,6 @@ class PolypeptideSequenceVariantBase(Validator):
             tokens
         :param list results: A list to store validation result objects
         """
-
         for s in classification_tokens:
             for t in transcripts:
                 valid = True
