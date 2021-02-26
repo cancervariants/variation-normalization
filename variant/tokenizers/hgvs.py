@@ -26,6 +26,5 @@ class HGVS(Tokenizer):
                 input_string=input_string,
                 match_type=TokenMatchType.UNSPECIFIED
             )
-            return Token(input_string, 'HGVS', input_string)
         except (HGVSParseError, HGVSInvalidVariantError):
             return None

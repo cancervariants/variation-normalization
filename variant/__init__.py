@@ -1,5 +1,13 @@
 """The Variant Normalization package."""
 from pathlib import Path
+import os
+
+
+if 'DEV' in os.environ:
+    LOG_FN = 'variant.log'
+else:
+    # Elastic beanstalk
+    LOG_FN = '/tmp/sample-app.log'
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SEQREPO_DATA_PATH = f"{PROJECT_ROOT}/variant/data/seqrepo/latest"
