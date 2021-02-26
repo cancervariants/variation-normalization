@@ -9,34 +9,34 @@ from variant.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from variant import SEQREPO_DATA_PATH
-from biocommons.seqrepo import SeqRepo
 import hgvs.parser
 
 
 class PolypeptideSequenceVariantBase(Validator):
     """The Polypeptide Sequence Variant Validator Base class."""
 
-    def __init__(self, seq_repo_client: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings) \
+    def __init__(self, seq_repo_access: SeqRepoAccess,
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol,
+                 amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
 
-        :param SeqRepoAccess seq_repo_client: Access to SeqRepo data
+        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings
         """
         self.transcript_mappings = transcript_mappings
-        self.seq_repo_client = seq_repo_client
-        self._gene_matcher = GeneSymbol(GeneSymbolCache())
-        self._amino_acid_cache = AminoAcidCache()
-        self.dp = SeqRepoDataProxy(SeqRepo(SEQREPO_DATA_PATH))
+        self.seq_repo_access = seq_repo_access
+        self._gene_matcher = gene_symbol
+        self._amino_acid_cache = amino_acid_cache
+        self.dp = SeqRepoDataProxy(seq_repo_access.seq_repo_client)
         self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_parser = hgvs.parser.Parser()
 
@@ -139,7 +139,7 @@ class PolypeptideSequenceVariantBase(Validator):
                 valid = True
                 errors = list()
                 ref_protein = \
-                    self.seq_repo_client.protein_at_position(t, s.position)
+                    self.seq_repo_access.protein_at_position(t, s.position)
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
@@ -225,7 +225,7 @@ class PolypeptideSequenceVariantBase(Validator):
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
 
-            res = self.seq_repo_client.aliases(refseq)
+            res = self.seq_repo_access.aliases(refseq)
             aliases = [a.split('ensembl:')[1] for a
                        in res if a.startswith('ensembl')]
 

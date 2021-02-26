@@ -28,3 +28,9 @@ pyproject.toml
 
 # Jupyter Notebook
 .ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Zip
+*.zip
