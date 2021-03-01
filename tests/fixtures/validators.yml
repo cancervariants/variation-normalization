@@ -10,6 +10,7 @@ amino_acid_substitution:
     - query: NP_005148.2:p.Leu2733Gln
     - query: NP_000000000542.1:p.Val66Gly
     - query: BRAF V9999999999999999999999999999999E
+    - query: BRAF V600E 33
 
 polpeptide_truncation:
   should_match:
