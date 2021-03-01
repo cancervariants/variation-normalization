@@ -54,6 +54,10 @@ class PolypeptideSequenceVariantBase(Validator):
         classification_tokens = [t for t in classification.all_tokens if self.is_token_instance(t)]  # noqa: E501
         gene_tokens = self.get_gene_tokens(classification)
 
+        if len(classification.non_matching_tokens) > 0:
+            errors.append(f"Non matching tokens found for "
+                          f"{self.variant_name()}.")
+
         if len(gene_tokens) == 0:
             errors.append(f'No gene tokens for a {self.variant_name()}.')
 
