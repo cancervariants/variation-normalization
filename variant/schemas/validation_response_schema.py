@@ -28,8 +28,6 @@ class ValidationResult(BaseModel):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['ValidationResult']) -> None:
@@ -102,8 +100,6 @@ class ValidationSummary(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -237,8 +233,6 @@ class ValidationResponseSchema(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],

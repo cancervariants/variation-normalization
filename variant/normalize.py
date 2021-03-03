@@ -23,8 +23,7 @@ class Normalize:
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = validations.valid_results[0]
-            valid_result_tokens = \
-                validations.valid_results[0].classification.all_tokens
+            valid_result_tokens = valid_result.classification.all_tokens
 
             polypeptide_sequence_variant_token = \
                 ([t for t in valid_result_tokens if isinstance(t, PolypeptideSequenceVariant)] or [None])[0]  # noqa: E501
@@ -68,7 +67,8 @@ class Normalize:
         """Return a GA4GH Gene Descriptor using Gene Normalization.
 
         :param GeneMatchToken gene_token: A gene token
-        :return: A gene descriptor for a given gene
+        :return: A gene descriptor for a given gene if a record exists in
+            gene-normalizer.
         """
         gene_symbol = gene_token.matched_value
         response = self.gene_normalizer.normalize(gene_symbol, incl='hgnc')
@@ -84,6 +84,7 @@ class Normalize:
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)
             )
+        return None
 
     def get_extensions(self, record, record_location):
         """Return a list of ga4gh extensions.
