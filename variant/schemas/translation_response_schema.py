@@ -13,8 +13,6 @@ class TranslationResponseSchema(BaseModel):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['TranslationResponseSchema']) -> None:

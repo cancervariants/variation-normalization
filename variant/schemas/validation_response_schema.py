@@ -4,6 +4,7 @@ from pydantic.types import StrictBool
 from typing import List, Optional, Dict, Any, Type
 from enum import IntEnum
 from variant.schemas.classification_response_schema import Classification
+from variant.schemas.token_response_schema import GeneMatchToken
 
 
 class LookupType(IntEnum):
@@ -22,11 +23,10 @@ class ValidationResult(BaseModel):
     human_description: Optional[str]
     concise_description: str
     errors: List[str]
+    gene_tokens: Optional[List[GeneMatchToken]]
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -69,21 +69,22 @@ class ValidationResult(BaseModel):
                 "is_valid": True,
                 "confidence_score": 1,
                 "allele": {
-                  "_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
-                  "location": {
-                    "interval": {
-                      "end": 600,
-                      "start": 599,
-                      "type": "SimpleInterval"
+                    "_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
+                    "location": {
+                        "interval": {
+                            "end": 600,
+                            "start": 599,
+                            "type": "SimpleInterval"
+                        },
+                        "sequence_id":
+                        "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                        "type": "SequenceLocation"
                     },
-                    "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
-                    "type": "SequenceLocation"
-                  },
-                  "state": {
-                    "sequence": "E",
-                    "type": "SequenceState"
-                  },
-                  "type": "Allele"
+                    "state": {
+                        "sequence": "E",
+                        "type": "SequenceState"
+                    },
+                    "type": "Allele"
                 },
                 "human_description": "ENSP00000419060.2 V600E",
                 "concise_description": "ENSP00000419060.2 V600E",
@@ -99,8 +100,6 @@ class ValidationSummary(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -234,8 +233,6 @@ class ValidationResponseSchema(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],

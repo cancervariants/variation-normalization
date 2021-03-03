@@ -13,8 +13,6 @@ class SequenceState(BaseModel):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['SequenceState']) -> None:
@@ -38,8 +36,6 @@ class SimpleInterval(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -65,8 +61,6 @@ class SequenceLocation(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -97,8 +91,6 @@ class Allele(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],

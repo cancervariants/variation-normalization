@@ -54,6 +54,10 @@ class PolypeptideSequenceVariantBase(Validator):
         classification_tokens = [t for t in classification.all_tokens if self.is_token_instance(t)]  # noqa: E501
         gene_tokens = self.get_gene_tokens(classification)
 
+        if len(classification.non_matching_tokens) > 0:
+            errors.append(f"Non matching tokens found for "
+                          f"{self.variant_name()}.")
+
         if len(gene_tokens) == 0:
             errors.append(f'No gene tokens for a {self.variant_name()}.')
 
@@ -64,7 +68,7 @@ class PolypeptideSequenceVariantBase(Validator):
         if len(errors) > 0:
             return [self.get_validation_result(
                     classification, False, 0, None,
-                    '', '', errors)]
+                    '', '', errors, gene_tokens)]
 
         transcripts = self.transcript_mappings.protein_transcripts(
             gene_tokens[0].token, LookupType.GENE_SYMBOL)
@@ -74,10 +78,10 @@ class PolypeptideSequenceVariantBase(Validator):
                           f'{gene_tokens[0].token}')
             return [self.get_validation_result(
                     classification, False, 0, None,
-                    '', '', errors)]
+                    '', '', errors, gene_tokens)]
 
         self.get_valid_invalid_results(classification_tokens, transcripts,
-                                       classification, results)
+                                       classification, results, gene_tokens)
         return results
 
     def get_vrs_allele(self, sequence_id, s) -> dict:
@@ -131,7 +135,8 @@ class PolypeptideSequenceVariantBase(Validator):
         return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results) -> None:
+                                  classification, results, gene_tokens) \
+            -> None:
         """Add validation result objects to a list of results.  # noqa: D202
 
         :param list classification_tokens: A list of Tokens
@@ -139,6 +144,7 @@ class PolypeptideSequenceVariantBase(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param list results: A list to store validation result objects
+        :param list gene_tokens: List of GeneMatchTokens
         """
         for s in classification_tokens:
             for t in transcripts:
@@ -181,17 +187,17 @@ class PolypeptideSequenceVariantBase(Validator):
                     results.append(self.get_validation_result(
                         classification, True, 1, allele,
                         self.human_description(t, s),
-                        self.concise_description(t, s), []))
+                        self.concise_description(t, s), [], gene_tokens))
                 else:
                     results.append(self.get_validation_result(
                         classification, False, 1, allele,
                         self.human_description(t, s),
-                        self.concise_description(t, s), errors))
+                        self.concise_description(t, s), errors, gene_tokens))
                 errors = list()
 
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
-                              errors) -> ValidationResult:
+                              errors, gene_tokens) -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
@@ -211,7 +217,8 @@ class PolypeptideSequenceVariantBase(Validator):
             allele=allele,
             human_description=human_description,
             concise_description=concise_description,
-            errors=errors
+            errors=errors,
+            gene_tokens=gene_tokens
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
