@@ -26,8 +26,6 @@ class Token(BaseModel):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['Token']) -> None:
@@ -53,8 +51,6 @@ class GeneMatchToken(Token):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -83,8 +79,6 @@ class GenePairMatchToken(Token):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -139,8 +133,6 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariant):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['PolypeptideTruncationToken']) -> None:
@@ -171,8 +163,6 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariant):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['AminoAcidSubstitutionToken']) -> None:
@@ -201,8 +191,6 @@ class SilentMutationToken(PolypeptideSequenceVariant):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -234,8 +222,6 @@ class TokenResponseSchema(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],

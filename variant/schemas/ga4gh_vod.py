@@ -39,11 +39,6 @@ class ValueObjectDescriptor(BaseModel):
     alternate_labels: Optional[List[str]]
     extensions: Optional[List[Extension]]
 
-    class Config:
-        """Configure model."""
-
-        orm_mode = True
-
 
 class MoleculeContext(str, Enum):
     """Define constraints for types of molecule context."""
@@ -63,8 +58,6 @@ class Expression(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -88,8 +81,6 @@ class GeneDescriptor(ValueObjectDescriptor):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -169,8 +160,6 @@ class VariationDescriptor(ValueObjectDescriptor):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
