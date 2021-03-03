@@ -119,14 +119,21 @@ class GenePairMatchToken(Token):
             }
 
 
-class PolypeptideTruncationToken(Token):
+class PolypeptideSequenceVariant(Token):
+    """Polypeptide Sequence Variant Token Class."""
+
+    ref_protein: str
+    alt_protein: str
+    position: int
+    token_type: str
+
+
+class PolypeptideTruncationToken(PolypeptideSequenceVariant):
     """A sequence variant of the CD that causes a truncation of the
     resulting polypeptide. (nonsense)
     """
 
-    ref_protein: str
     alt_protein = 'Ter'
-    position: int
     token_type = 'PolypeptideTruncation'
 
     class Config:
@@ -154,14 +161,11 @@ class PolypeptideTruncationToken(Token):
             }
 
 
-class AminoAcidSubstitutionToken(Token):
+class AminoAcidSubstitutionToken(PolypeptideSequenceVariant):
     """A sequence variant of a codon resulting in the substitution of one
     amino acid for another in the resulting polypeptide. (missense)
     """
 
-    ref_protein: str
-    alt_protein: str
-    position: int
     token_type = 'AminoAcidSubstitution'
 
     class Config:
@@ -189,12 +193,10 @@ class AminoAcidSubstitutionToken(Token):
             }
 
 
-class SilentMutationToken(Token):
+class SilentMutationToken(PolypeptideSequenceVariant):
     """A sequence variant that does not affect protein functions."""
 
-    ref_protein: str
     alt_protein = '='
-    position: int
     token_type = 'SilentMutation'
 
     class Config:

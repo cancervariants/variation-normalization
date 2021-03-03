@@ -44,7 +44,7 @@ pytest tests/
 ### Starting the Variant Normalization Service
 From the _root_ directory of the repository:
 ```
-uvicorn main:app --reload
+uvicorn variant.main:app --reload
 ```
 Next, view the OpenAPI docs on your local machine:
 http://127.0.0.1:8000/variant
