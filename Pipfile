@@ -98,3 +98,4 @@ werkzeug = "*"
 "ga4gh.vrs" = {extras = ["extras"], version = "*"}
 boto3 = "*"
 setuptools = "*"
+gene-normalizer = "*"

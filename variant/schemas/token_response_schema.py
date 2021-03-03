@@ -26,8 +26,6 @@ class Token(BaseModel):
     class Config:
         """Configure model."""
 
-        orm_mode = True
-
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
                          model: Type['Token']) -> None:
@@ -53,8 +51,6 @@ class GeneMatchToken(Token):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -83,8 +79,6 @@ class GenePairMatchToken(Token):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -119,20 +113,25 @@ class GenePairMatchToken(Token):
             }
 
 
-class PolypeptideTruncationToken(Token):
+class PolypeptideSequenceVariant(Token):
+    """Polypeptide Sequence Variant Token Class."""
+
+    ref_protein: str
+    alt_protein: str
+    position: int
+    token_type: str
+
+
+class PolypeptideTruncationToken(PolypeptideSequenceVariant):
     """A sequence variant of the CD that causes a truncation of the
     resulting polypeptide. (nonsense)
     """
 
-    ref_protein: str
     alt_protein = 'Ter'
-    position: int
     token_type = 'PolypeptideTruncation'
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -154,20 +153,15 @@ class PolypeptideTruncationToken(Token):
             }
 
 
-class AminoAcidSubstitutionToken(Token):
+class AminoAcidSubstitutionToken(PolypeptideSequenceVariant):
     """A sequence variant of a codon resulting in the substitution of one
     amino acid for another in the resulting polypeptide. (missense)
     """
 
-    ref_protein: str
-    alt_protein: str
-    position: int
     token_type = 'AminoAcidSubstitution'
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -189,18 +183,14 @@ class AminoAcidSubstitutionToken(Token):
             }
 
 
-class SilentMutationToken(Token):
+class SilentMutationToken(PolypeptideSequenceVariant):
     """A sequence variant that does not affect protein functions."""
 
-    ref_protein: str
     alt_protein = '='
-    position: int
     token_type = 'SilentMutation'
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
@@ -232,8 +222,6 @@ class TokenResponseSchema(BaseModel):
 
     class Config:
         """Configure model."""
-
-        orm_mode = True
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
