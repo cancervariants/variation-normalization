@@ -135,7 +135,7 @@ class PolypeptideSequenceVariantBase(Validator):
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
             -> None:
-        """Add validation result objects to a list of results.  # noqa: D202
+        """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
         :param list transcripts: A list of transcript strings
@@ -213,6 +213,7 @@ class PolypeptideSequenceVariantBase(Validator):
             variant
         :param str concise_description: The identified variant
         :param list errors: A list of errors for the classification
+        :param list gene_tokens: List of GeneMatchTokens
         :return: A validation result
         """
         return ValidationResult(
