@@ -198,7 +198,6 @@ class PolypeptideSequenceVariantBase(Validator):
                         classification, False, 1, allele,
                         self.human_description(t, s),
                         self.concise_description(t, s), errors, gene_tokens))
-                errors = list()
 
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
