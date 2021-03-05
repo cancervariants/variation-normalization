@@ -10,6 +10,7 @@ from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from variant.schemas import TranslationResponseSchema, NormalizeService
 from variant.normalize import Normalize
+from variant import __version__
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 tokenizer = Tokenize()
@@ -30,7 +31,7 @@ def custom_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="The VICC Variant Normalizer",
-        version="0.1.0",
+        version=__version__,
         description="Services and guidelines for normalizing variants.",
         routes=app.routes
     )
