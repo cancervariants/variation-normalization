@@ -49,7 +49,7 @@ class Normalize:
 
             variation_descriptor = VariationDescriptor(
                 id=f"normalize:"
-                   f"{q.strip().replace(' ', '_')}",
+                   f"{'_'.join(q.strip().split())}",
                 value_id=allele_id,
                 label=q,
                 value=allele,
