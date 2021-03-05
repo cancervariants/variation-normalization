@@ -16,6 +16,14 @@ chmod -R u+w variant/data/seqrepo/<DATE>
 ln -s variant/data/seqrepo/<DATE> latest
 ```
 
+### Setting up Gene Normalizer
+Variant Normalization relies on data from Gene Normalization. To install:
+```shell script
+pip install gene-normalizer
+```
+
+To setup, follow the instructions from the [Gene Normalization README](https://github.com/cancervariants/gene-normalization). 
+
 ### Init coding style tests
 
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
