@@ -99,13 +99,11 @@ class PolypeptideSequenceVariantBase(Validator):
             )
         )
 
-        state = models.SequenceState(sequence=s.alt_protein)
+        state = models.SequenceState(sequence=s.alt_protein.upper())
         state_dict = state.as_dict()
         if len(state_dict['sequence']) == 3:
-            for one, three in \
-                    self._amino_acid_cache._amino_acid_code_conversion.items():
-                if three == state_dict['sequence']:
-                    state.sequence = one
+            state.sequence = self._amino_acid_cache._convert_three_to_one(
+                state_dict['sequence'])
 
         allele = models.Allele(location=seq_location,
                                state=state)
@@ -146,6 +144,7 @@ class PolypeptideSequenceVariantBase(Validator):
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
         """
+        valid_alleles = list()
         for s in classification_tokens:
             for t in transcripts:
                 valid = True
@@ -155,7 +154,6 @@ class PolypeptideSequenceVariantBase(Validator):
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
-
                     try:
                         # TODO: We should get this to work w/o doing above
                         #       replacement
@@ -173,6 +171,11 @@ class PolypeptideSequenceVariantBase(Validator):
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
                     allele = self.get_vrs_allele(sequence_id, s)
 
+                if len(allele['state']['sequence']) == 3:
+                    allele['state']['sequence'] = \
+                        self._amino_acid_cache._convert_three_to_one(
+                            allele['state']['sequence'])
+
                 if not errors:
                     if ref_protein and len(ref_protein) == 1 \
                             and len(s.ref_protein) == 3:
@@ -183,11 +186,13 @@ class PolypeptideSequenceVariantBase(Validator):
                                       f' but found {ref_protein}')
                         valid = False
 
-                if valid:
+                if valid and allele not in valid_alleles:
                     results.append(self.get_validation_result(
                         classification, True, 1, allele,
                         self.human_description(t, s),
                         self.concise_description(t, s), [], gene_tokens))
+
+                    valid_alleles.append(allele)
                 else:
                     results.append(self.get_validation_result(
                         classification, False, 1, allele,
