@@ -1,13 +1,8 @@
 """Module for testing the normalize endpoint."""
 import pytest
-from variant.classifiers import Classify
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
 from variant.normalize import Normalize
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers import Tokenize
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.validators import Validate
 from variant.schemas.ga4gh_vod import VariationDescriptor
+from variant.to_vrs import ToVRS
 
 
 @pytest.fixture(scope="module")
@@ -16,24 +11,13 @@ def test_normalize():
     class TestNormalize:
 
         def __init__(self):
+            self.to_vrs = ToVRS()
             self.test_normalize = Normalize()
-            self.tokenizer = Tokenize()
-            self.classifier = Classify()
-            self.seq_repo_access = SeqRepoAccess()
-            self.transcript_mappings = TranscriptMappings()
-            self.gene_symbol = GeneSymbol(GeneSymbolCache())
-            self.amino_acid_cache = AminoAcidCache()
-            self.validator = Validate(self.seq_repo_access,
-                                      self.transcript_mappings,
-                                      self.gene_symbol,
-                                      self.amino_acid_cache)
 
         def normalize(self, q):
-            tokens = self.tokenizer.perform(q.strip())
-            classifications = self.classifier.perform(tokens)
-            validations = self.validator.perform(classifications)
-            resp = self.test_normalize.normalize(q, validations,
-                                                 self.amino_acid_cache)
+            resp = self.test_normalize.normalize(q,
+                                                 self.to_vrs.get_validations(q),  # noqa: E501
+                                                 self.to_vrs.amino_acid_cache)
             return resp
 
     return TestNormalize()
