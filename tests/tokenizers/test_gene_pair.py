@@ -8,11 +8,9 @@ from .tokenizer_base import TokenizerBase
 class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
     """Gene Pair Tokenizer Test class."""
 
-    # TODO: don't hardcode this, inject with config
     def tokenizer_instance(self):
         """Return Gene Pair Tokenizer instance."""
-        gene_cache = GeneSymbolCache()
-        return GenePair(gene_cache)
+        return GenePair(GeneSymbolCache())
 
     def token_type(self):
         """Return Gene Pair token type."""

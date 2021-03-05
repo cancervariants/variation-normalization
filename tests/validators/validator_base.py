@@ -1,6 +1,6 @@
 """A module for testing validator classes."""
 import yaml
-from variant import PROJECT_ROOT
+from tests import PROJECT_ROOT
 from variant.tokenizers import Tokenize
 
 
@@ -12,8 +12,8 @@ class ValidatorBase:
         with open(f'{PROJECT_ROOT}/tests/fixtures/validators.yml') as stream:
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
-                self.fixture_name(),
-                {'should_match': [], 'should_not_match': []}
+            self.fixture_name(),
+            {'should_match': [], 'should_not_match': []}
         )
         self.tokenizer = Tokenize()
         self.classifier = self.classifier_instance()
