@@ -15,7 +15,7 @@ class ReferenceSequence(Tokenizer):
 
         :param str input_string: The input string to match
         """
-        if input_string[:3] in REFSEQ_PREFIXES:
+        if input_string[:3].upper() in REFSEQ_PREFIXES:
             return Token(
                 token=input_string,
                 token_type='ReferenceSequence',

@@ -26,9 +26,11 @@ class PolypeptideSequenceVariantBase(Tokenizer):
         :param str position: The position of the amino acid substituted
         :param str new_amino_acid: The new amino_acid
         """
-        self.psub['amino_acid'] = amino_acid
+        self.psub['amino_acid'] = amino_acid.upper() if \
+            len(amino_acid) == 1 else amino_acid.capitalize()
         self.psub['position'] = int(position)
-        self.psub['new_amino_acid'] = new_amino_acid
+        self.psub['new_amino_acid'] = new_amino_acid if \
+            len(new_amino_acid) == 1 else new_amino_acid.capitalize()
 
     def _is_valid_amino_acid(self, amino_acids):
         """Return whether or not amino acids are valid."""

@@ -10,6 +10,7 @@ from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from variant.schemas import TranslationResponseSchema, NormalizeService
 from variant.normalize import Normalize
+from variant import __version__
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 tokenizer = Tokenize()
@@ -21,6 +22,7 @@ amino_acid_cache = AminoAcidCache()
 validator = Validate(seq_repo_access, transcript_mappings, gene_symbol,
                      amino_acid_cache)
 translator = Translate()
+normalizer = Normalize()
 
 
 def custom_openapi():
@@ -29,7 +31,7 @@ def custom_openapi():
         return app.openapi_schema
     openapi_schema = get_openapi(
         title="The VICC Variant Normalizer",
-        version="0.1.0",
+        version=__version__,
         description="Services and guidelines for normalizing variants.",
         routes=app.routes
     )
@@ -106,9 +108,9 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variant to normalize
     :return: NormalizeService for variant
     """
-    normalize_resp = Normalize().normalize(q,
-                                           get_validations(q),
-                                           amino_acid_cache)
+    normalize_resp = normalizer.normalize(q,
+                                          get_validations(q),
+                                          amino_acid_cache)
     # For now, use vague error msg
     if not normalize_resp:
         errors = ['Could not normalize variant.']

@@ -45,7 +45,6 @@ amino_acid_substitution:
     - token: V0E
   should_not_match:
     - token: foo
-    - token: v600e
     - token: p.(Arg54Ser
     - token: p.(Z600B)
     - token: p.(Gly56Ala^Ser^Cys)
@@ -63,6 +62,7 @@ amino_acid_substitution:
 polypeptide_truncation:
   should_match:
     - token: Tyr365Ter
+    - token: (p.Tyr365*)
     - token: Tyr365Ter (p.Tyr365*)
     - token: (Tyr365Ter)
     - token: p.Tyr365Ter (p.Tyr365*)
@@ -91,5 +91,6 @@ hgvs:
     - token: NC_000007.13:g.36561662C>T
     - token: LRG_199p1:p.Trp24Cys
     - token: NM_01234.5:c.22+1A>T
+    - token: NP_000918.2:p.Ile1145=
   should_not_match:
     - token: NP004324.2

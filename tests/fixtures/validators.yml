@@ -1,6 +1,8 @@
 amino_acid_substitution:
   should_match:
     - query: BRAF V600E
+    - query: BRAF v600e
+    - query: braf v600e
     - query: NP_004324.2:p.Val600Glu
     - query: NP_005219.2:p.Thr790Met
     - query: EGFR Leu858Arg

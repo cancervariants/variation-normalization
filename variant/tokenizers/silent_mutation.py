@@ -14,7 +14,7 @@ class SilentMutation(PolypeptideSequenceVariantBase):
         :param str input_string: The input string to match
         :return: A ProteinSubstitutionToken if a match exists. Otherwise, None.
         """
-        input_string = str(input_string)
+        input_string = str(input_string).lower()
         psub_parts = None
 
         self.psub = {
