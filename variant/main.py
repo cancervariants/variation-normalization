@@ -21,6 +21,7 @@ amino_acid_cache = AminoAcidCache()
 validator = Validate(seq_repo_access, transcript_mappings, gene_symbol,
                      amino_acid_cache)
 translator = Translate()
+normalizer = Normalize()
 
 
 def custom_openapi():
@@ -106,9 +107,9 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variant to normalize
     :return: NormalizeService for variant
     """
-    normalize_resp = Normalize().normalize(q,
-                                           get_validations(q),
-                                           amino_acid_cache)
+    normalize_resp = normalizer.normalize(q,
+                                          get_validations(q),
+                                          amino_acid_cache)
     # For now, use vague error msg
     if not normalize_resp:
         errors = ['Could not normalize variant.']

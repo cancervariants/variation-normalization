@@ -16,7 +16,7 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
             Otherwise, None.
         """
 
-        input_string = str(input_string)
+        input_string = str(input_string).lower()
         psub_parts = None
         self.psub = {
             'amino_acid': None,
@@ -26,6 +26,11 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
 
         if input_string is None:
             return None
+
+        if input_string.startswith('(') and input_string.endswith(')'):
+            input_string = input_string[1:-1]
+            if input_string.endswith('*'):
+                input_string = input_string.replace('*', 'Ter')
 
         if '.' in input_string:
             split_whitespace = input_string.split()
@@ -81,10 +86,10 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
             self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
 
         elif psub_parts_len == 2:
-            if 'Ter' in psub_parts[0]:
+            if 'ter' in psub_parts[0]:
                 if 'p.' not in psub_parts[0] and 'p.' in psub_parts[1]:
                     psub_parts[0] = f"p.{psub_parts[0]}"
-                check_nonsense = f"({psub_parts[0].replace('Ter', '*')})"
+                check_nonsense = f"({psub_parts[0].replace('ter', '*')})"
                 if check_nonsense == psub_parts[1]:
                     psub_parts = \
                         self.splitter.split(psub_parts[0].split('p.')[-1])

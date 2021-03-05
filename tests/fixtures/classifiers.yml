@@ -23,7 +23,7 @@ amino_acid_substitution:
     - query: BRAF V600E
       confidence: ConfidenceRating.EXACT
     - query: braf v600e
-      confidence: ConfidenceRating.INTERSECTION
+      confidence: ConfidenceRating.EXACT
     - query: braf V600E
       confidence: ConfidenceRating.EXACT
     - query: V600E BRAF
@@ -46,7 +46,7 @@ amino_acid_substitution:
       confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: BRAFV600E
-    - query: v600e
+    - query: v600z
 
 polypeptide_truncation:
   should_match:

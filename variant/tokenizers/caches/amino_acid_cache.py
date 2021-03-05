@@ -16,7 +16,7 @@ class AminoAcidCache:
 
     def __contains__(self, item: str) -> bool:
         """Return whether a string in the amino acid cache."""
-        return item in self.__amino_acid_codes
+        return item.upper() in self.__amino_acid_codes
 
     def __load_amino_acid_codes(self) -> Set[str]:
         """Load amino acid cache with amino acid codes.
@@ -28,4 +28,14 @@ class AminoAcidCache:
             for row in data:
                 self._amino_acid_code_conversion[row[2]] = row[1]
 
-        return ({item for sublist in data for item in sublist})
+        return ({item.upper() for sublist in data for item in sublist})
+
+    def _convert_three_to_one(self, three_letter_amino_acid):
+        """Convert a 3 letter amino acid code to a 1 letter amino acid code.
+
+        :param str three_letter_amino_acid: Amino Acid Code to convert
+        :return: A str of the one letter amino acid code
+        """
+        for one_letter, three_letter in self._amino_acid_code_conversion.items():  # noqa: E501
+            if three_letter.upper() == three_letter_amino_acid.upper():
+                return one_letter.upper()
