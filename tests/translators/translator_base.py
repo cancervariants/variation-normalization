@@ -12,8 +12,8 @@ class TranslatorBase:
         with open(f'{PROJECT_ROOT}/tests/fixtures/translators.yml') as stream:
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
-                self.fixture_name(),
-                {'tests': []}
+            self.fixture_name(),
+            {'tests': []}
         )
         self.tokenizer = Tokenize()
         self.classifier = self.classifier_instance()
@@ -42,7 +42,10 @@ class TranslatorBase:
             tokens = self.tokenizer.perform(x['query'])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
+            num_valid = 0
             for vr in validation_results:
                 if vr.is_valid:
+                    num_valid += 1
                     loc = (self.translator.translate(vr)).__dict__
                     self.assertIn(loc, x['variants'], msg=x['query'])
+            self.assertEqual(len(x['variants']), num_valid, msg=x['query'])
