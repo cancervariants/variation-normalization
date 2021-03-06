@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import logging
 
-__version__ = "0.1.5"
+__version__ = "0.1.0"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
