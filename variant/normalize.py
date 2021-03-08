@@ -48,8 +48,7 @@ class Normalize:
                         polypeptide_sequence_variant_token.ref_protein = one
 
             variation_descriptor = VariationDescriptor(
-                id=f"normalize:"
-                   f"{'_'.join(q.strip().split())}",
+                id=self.validate_curie_syntax(q),
                 value_id=allele_id,
                 label=' '.join(q.strip().split()),
                 value=allele,
@@ -62,6 +61,19 @@ class Normalize:
             variation_descriptor = None
 
         return variation_descriptor
+
+    def validate_curie_syntax(self, q):
+        """Return a valid curie.
+
+        :param str q: The input variant query
+        :return: The variant descriptor id represented as a string
+        """
+        vd_id = '_'.join(q.strip().split())
+
+        # TODO: There may be more changes to make in the future
+        if ':' in vd_id:
+            vd_id = vd_id.replace(':', '-')
+        return f"normalize:{vd_id}"
 
     def get_gene_descriptor(self, gene_token):
         """Return a GA4GH Gene Descriptor using Gene Normalization.
