@@ -51,7 +51,7 @@ class Normalize:
                 id=f"normalize:"
                    f"{'_'.join(q.strip().split())}",
                 value_id=allele_id,
-                label=q,
+                label=' '.join(q.strip().split()),
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,

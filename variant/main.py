@@ -90,6 +90,6 @@ def normalize(q: str = Query(..., description=q_description)):
 
     return NormalizeService(
         variant_query=q,
-        value_object_descriptor=normalize_resp,
+        variation_descriptor=normalize_resp,
         errors=errors
     )
