@@ -27,7 +27,7 @@ def test_normalize():
 def braf_v600e():
     """Create BRAF V600E fixture."""
     params = {
-        "id": "normalize:BRAF_V600E",
+        "id": "normalize:BRAF%20V600E",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
         "value": {
@@ -121,7 +121,7 @@ def braf_v600e():
 def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
-        "id": "normalize:NP_000542.1-p.Tyr185Ter",
+        "id": "normalize:NP_000542.1%3Ap.Tyr185Ter",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
         "value": {
@@ -213,7 +213,7 @@ def vhl():
 def kit():
     """Create NP_000213.1:p.Leu862= fixture."""
     params = {
-        "id": "normalize:NP_000213.1-p.Leu862=",
+        "id": "normalize:NP_000213.1%3Ap.Leu862%3D",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
         "value": {
@@ -339,7 +339,7 @@ def assertion_checks(normalize_response, test_variant):
 
 def test_amino_acid_substitution(test_normalize, braf_v600e):
     """Test that amino acid substitutions normalize correctly."""
-    resp = test_normalize.normalize('BRAF V600E')
+    resp = test_normalize.normalize('     BRAF      V600E    ')
     assertion_checks(resp, braf_v600e)
 
 
