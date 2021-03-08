@@ -121,7 +121,7 @@ def braf_v600e():
 def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
-        "id": "normalize:NP_000542.1:p.Tyr185Ter",
+        "id": "normalize:NP_000542.1-p.Tyr185Ter",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
         "value": {
@@ -213,7 +213,7 @@ def vhl():
 def kit():
     """Create NP_000213.1:p.Leu862= fixture."""
     params = {
-        "id": "normalize:NP_000213.1:p.Leu862=",
+        "id": "normalize:NP_000213.1-p.Leu862=",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
         "value": {

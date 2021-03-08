@@ -2,6 +2,7 @@
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import Normalizer as GeneNormalizer
+import re
 
 
 class Normalize:
@@ -70,9 +71,11 @@ class Normalize:
         """
         vd_id = '_'.join(q.strip().split())
 
-        # TODO: There may be more changes to make in the future
-        if ':' in vd_id:
-            vd_id = vd_id.replace(':', '-')
+        # https://www.ietf.org/rfc/rfc3987.txt
+        # Replace invalid curie reference characters with hyphen
+        curie_pattern = r"(?!\w|-|\.|~|%|!|$|&|'|\(|\)|\*|\+|,|;|=)."
+        vd_id = re.sub(curie_pattern, '-', vd_id)
+
         return f"normalize:{vd_id}"
 
     def get_gene_descriptor(self, gene_token):
