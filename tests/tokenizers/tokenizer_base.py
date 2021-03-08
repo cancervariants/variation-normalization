@@ -1,6 +1,6 @@
 """A module for testing tokenizer classes."""
 import yaml
-from variant import PROJECT_ROOT
+from tests import PROJECT_ROOT
 
 
 class TokenizerBase:
@@ -11,8 +11,8 @@ class TokenizerBase:
         with open(f'{PROJECT_ROOT}/tests/fixtures/tokenizers.yml') as stream:
             self.all_fixtures = yaml.safe_load(stream)
         self.fixtures = self.all_fixtures.get(
-                self.fixture_name(),
-                {'should_match': [], 'should_not_match': []}
+            self.fixture_name(),
+            {'should_match': [], 'should_not_match': []}
         )
 
     def tokenizer_instance(self):

@@ -34,3 +34,5 @@ pyproject.toml
 
 # Zip
 *.zip
+
+build/

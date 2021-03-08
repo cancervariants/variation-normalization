@@ -1,27 +1,14 @@
 """Main application for FastAPI."""
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from variant.classifiers import Classify
-from variant.tokenizers import Tokenize
-from variant.validators import Validate
-from variant.translators import Translate
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variant.to_vrs import ToVRS
 from variant.schemas import TranslationResponseSchema, NormalizeService
 from variant.normalize import Normalize
 from variant import __version__
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
-tokenizer = Tokenize()
-classifier = Classify()
-seq_repo_access = SeqRepoAccess()
-transcript_mappings = TranscriptMappings()
-gene_symbol = GeneSymbol(GeneSymbolCache())
-amino_acid_cache = AminoAcidCache()
-validator = Validate(seq_repo_access, transcript_mappings, gene_symbol,
-                     amino_acid_cache)
-translator = Translate()
+
+to_vrs = ToVRS()
 normalizer = Normalize()
 
 
@@ -53,18 +40,6 @@ translate_response_description = "A  response to a validly-formed query."
 q_description = "Variant to translate."
 
 
-def get_validations(q):
-    """Return validation results for a given variant.
-
-    :param str q: Variant to get validation results for
-    :return: ValidationSummary for the variant
-    """
-    tokens = tokenizer.perform(q.strip())
-    classifications = classifier.perform(tokens)
-    validations = validator.perform(classifications)
-    return validations
-
-
 @app.get('/variant/toVRS',
          summary=translate_summary,
          response_description=translate_response_description,
@@ -76,13 +51,9 @@ def translate(q: str = Query(..., description=q_description)):
     :param str q: The variant to search on
     :return: TranslationResponseSchema for variant
     """
-    validations = get_validations(q)
+    validations = to_vrs.get_validations(q)
+    translations = to_vrs.get_translations(validations)
 
-    translations = []
-    for valid_variant in validations.valid_results:
-        result = translator.perform(valid_variant)
-        if result not in translations:
-            translations.append(result)
     return TranslationResponseSchema(
         search_term=q,
         variants=translations
@@ -109,8 +80,8 @@ def normalize(q: str = Query(..., description=q_description)):
     :return: NormalizeService for variant
     """
     normalize_resp = normalizer.normalize(q,
-                                          get_validations(q),
-                                          amino_acid_cache)
+                                          to_vrs.get_validations(q),
+                                          to_vrs.amino_acid_cache)
     # For now, use vague error msg
     if not normalize_resp:
         errors = ['Could not normalize variant.']
@@ -119,6 +90,6 @@ def normalize(q: str = Query(..., description=q_description)):
 
     return NormalizeService(
         variant_query=q,
-        value_object_descriptor=normalize_resp,
+        variation_descriptor=normalize_resp,
         errors=errors
     )

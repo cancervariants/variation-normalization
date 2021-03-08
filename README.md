@@ -5,15 +5,17 @@ Services and guidelines for normalizing variant terms
 Variant Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
-From the _root_ directory of the repository:
+From the _variant_ directory of the repository:
 ```
 pipenv sync
-mkdir -p variant/data/seqrepo
-curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > variant/data/gene_symbols.txt
-seqrepo --root-directory variant/data/seqrepo pull
-cd variant/data/seqrepo
-chmod -R u+w variant/data/seqrepo/<DATE>
-ln -s variant/data/seqrepo/<DATE> latest
+curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > data/gene_symbols.txt
+pip install seqrepo
+mkdir -p data/seqrepo
+seqrepo -r data/seqrepo pull -i 2020-11-27
+chmod -R u+w data/seqrepo
+cd data/seqrepo
+seqrepo_date_dir=$(ls -d */)
+mv $seqrepo_date_dir latest
 ```
 
 ### Setting up Gene Normalizer
