@@ -1,6 +1,6 @@
 """A module for testing translator classes."""
 import yaml
-from variant import PROJECT_ROOT
+from tests import PROJECT_ROOT
 from variant.tokenizers import Tokenize
 
 

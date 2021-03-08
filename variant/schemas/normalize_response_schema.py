@@ -1,16 +1,14 @@
 """Module for normalize endpoint response schema."""
 from pydantic import BaseModel
-from variant.schemas.ga4gh_vod import ValueObjectDescriptor, \
-    VariationDescriptor
-from typing import List, Union, Optional, Dict, Any, Type
+from variant.schemas.ga4gh_vod import VariationDescriptor
+from typing import List, Optional, Dict, Any, Type
 
 
 class NormalizeService(BaseModel):
     """A response to normalizing a variant to a single GA4GH Value Object Descriptor."""  # noqa: E501
 
     variant_query: str
-    value_object_descriptor: Optional[Union[VariationDescriptor,
-                                            ValueObjectDescriptor]]
+    variation_descriptor: Optional[VariationDescriptor]
     errors: Optional[List[str]]
 
     class Config:
@@ -26,7 +24,7 @@ class NormalizeService(BaseModel):
                 prop.pop('title', None)
             schema['example'] = {
                 "variant_query": "BRAF V600E",
-                "value_object_descriptor": {
+                "variation_descriptor": {
                     "id": "normalize:BRAF_V600E",
                     "type": "VariationDescriptor",
                     "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",

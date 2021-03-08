@@ -2,6 +2,7 @@
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import Normalizer as GeneNormalizer
+from urllib.parse import quote
 
 
 class Normalize:
@@ -48,10 +49,9 @@ class Normalize:
                         polypeptide_sequence_variant_token.ref_protein = one
 
             variation_descriptor = VariationDescriptor(
-                id=f"normalize:"
-                   f"{q.strip().replace(' ', '_')}",
+                id=f"normalize:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
-                label=q,
+                label=' '.join(q.strip().split()),
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,
