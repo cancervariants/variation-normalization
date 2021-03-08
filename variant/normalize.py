@@ -2,7 +2,7 @@
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import Normalizer as GeneNormalizer
-import re
+from urllib.parse import quote
 
 
 class Normalize:
@@ -49,7 +49,7 @@ class Normalize:
                         polypeptide_sequence_variant_token.ref_protein = one
 
             variation_descriptor = VariationDescriptor(
-                id=self.validate_curie_syntax(q),
+                id=f"normalize:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
                 label=' '.join(q.strip().split()),
                 value=allele,
@@ -62,21 +62,6 @@ class Normalize:
             variation_descriptor = None
 
         return variation_descriptor
-
-    def validate_curie_syntax(self, q):
-        """Return a valid curie.
-
-        :param str q: The input variant query
-        :return: The variant descriptor id represented as a string
-        """
-        vd_id = '_'.join(q.strip().split())
-
-        # https://www.ietf.org/rfc/rfc3987.txt
-        # Replace invalid curie reference characters with hyphen
-        curie_pattern = r"(?!\w|-|\.|~|%|!|$|&|'|\(|\)|\*|\+|,|;|=)."
-        vd_id = re.sub(curie_pattern, '-', vd_id)
-
-        return f"normalize:{vd_id}"
 
     def get_gene_descriptor(self, gene_token):
         """Return a GA4GH Gene Descriptor using Gene Normalization.
