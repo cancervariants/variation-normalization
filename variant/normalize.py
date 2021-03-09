@@ -49,7 +49,7 @@ class Normalize:
                         polypeptide_sequence_variant_token.ref_protein = one
 
             variation_descriptor = VariationDescriptor(
-                id=f"normalize:{quote(' '.join(q.strip().split()))}",
+                id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
                 label=' '.join(q.strip().split()),
                 value=allele,
@@ -77,7 +77,7 @@ class Normalize:
             record_location = record.locations[0] if record.locations else None
 
             return GeneDescriptor(
-                id=f"normalize:{gene_symbol}",
+                id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
                 value=Gene(gene_id=record.concept_id),
                 xrefs=record.other_identifiers,
@@ -97,13 +97,13 @@ class Normalize:
         """
         extensions = list()
         if record.strand:
-            self.add_extension(extensions, 'strand', [record.strand])
+            self.add_extension(extensions, 'strand', record.strand)
         if record.symbol_status:
             self.add_extension(extensions, 'symbol_status',
-                               [record.symbol_status])
+                               record.symbol_status)
         self.add_extension(extensions, 'associated_with', record.xrefs)
         self.add_extension(extensions, 'chromosome_location',
-                           [record_location.dict(by_alias=True)])
+                           record_location.dict(by_alias=True))
         return extensions
 
     def add_extension(self, extensions, name, value):
