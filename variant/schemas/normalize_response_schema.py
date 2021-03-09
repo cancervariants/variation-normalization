@@ -25,7 +25,7 @@ class NormalizeService(BaseModel):
             schema['example'] = {
                 "variant_query": "BRAF V600E",
                 "variation_descriptor": {
-                    "id": "normalize:BRAF_V600E",
+                    "id": "normalize.variant:BRAF%20v600e",
                     "type": "VariationDescriptor",
                     "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
                     "value": {
@@ -49,7 +49,7 @@ class NormalizeService(BaseModel):
                     "structural_type": "SO:0001606",
                     "ref_allele_seq": "V",
                     "gene_context": {
-                        "id": "normalize:BRAF",
+                        "id": "normalize.gene:BRAF",
                         "type": "GeneDescriptor",
                         "label": "BRAF",
                         "value": {
@@ -68,9 +68,7 @@ class NormalizeService(BaseModel):
                             {
                                 "type": "Extension",
                                 "name": "symbol_status",
-                                "value": [
-                                    "approved"
-                                ]
+                                "value": "approved"
                             },
                             {
                                 "type": "Extension",
@@ -94,22 +92,19 @@ class NormalizeService(BaseModel):
                             {
                                 "type": "Extension",
                                 "name": "chromosome_location",
-                                "value": [
-                                    {
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
-                                        "type": "ChromosomeLocation",
-                                        "species_id": "taxonomy:9606",
-                                        "chr": "7",
-                                        "interval": {
-                                            "end": "q34",
-                                            "start": "q34",
-                                            "type": "CytobandInterval"
-                                        }
+                                "value": {
+                                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
+                                    "type": "ChromosomeLocation",
+                                    "species_id": "taxonomy:9606",
+                                    "chr": "7",
+                                    "interval": {
+                                        "end": "q34",
+                                        "start": "q34",
+                                        "type": "CytobandInterval"
                                     }
-                                ]
+                                }
                             }
                         ]
                     }
-                },
-                "errors": []
+                }
             }
