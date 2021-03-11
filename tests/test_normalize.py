@@ -27,7 +27,7 @@ def test_normalize():
 def braf_v600e():
     """Create BRAF V600E fixture."""
     params = {
-        "id": "normalize:BRAF%20V600E",
+        "id": "normalize.variant:BRAF%20V600E",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
         "value": {
@@ -51,7 +51,7 @@ def braf_v600e():
         "structural_type": "SO:0001606",
         "ref_allele_seq": "V",
         "gene_context": {
-            "id": "normalize:BRAF",
+            "id": "normalize.gene:BRAF",
             "type": "GeneDescriptor",
             "label": "BRAF",
             "value": {
@@ -70,9 +70,7 @@ def braf_v600e():
                 {
                     "type": "Extension",
                     "name": "symbol_status",
-                    "value": [
-                        "approved"
-                    ]
+                    "value": "approved"
                 },
                 {
                     "type": "Extension",
@@ -96,20 +94,18 @@ def braf_v600e():
                 {
                     "type": "Extension",
                     "name": "chromosome_location",
-                    "value": [
-                        {
-                            "_id":
-                                "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "7",
-                            "interval": {
-                                "end": "q34",
-                                "start": "q34",
-                                "type": "CytobandInterval"
-                            }
+                    "value": {
+                        "_id":
+                            "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "q34",
+                            "start": "q34",
+                            "type": "CytobandInterval"
                         }
-                    ]
+                    }
                 }
             ]
         }
@@ -121,7 +117,7 @@ def braf_v600e():
 def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
-        "id": "normalize:NP_000542.1%3Ap.Tyr185Ter",
+        "id": "normalize.variant:NP_000542.1%3Ap.Tyr185Ter",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
         "value": {
@@ -145,7 +141,7 @@ def vhl():
         "structural_type": "SO:0001606",
         "ref_allele_seq": "Y",
         "gene_context": {
-            "id": "normalize:VHL",
+            "id": "normalize.gene:VHL",
             "type": "GeneDescriptor",
             "label": "VHL",
             "value": {
@@ -164,9 +160,7 @@ def vhl():
                 {
                     "type": "Extension",
                     "name": "symbol_status",
-                    "value": [
-                        "approved"
-                    ]
+                    "value": "approved"
                 },
                 {
                     "type": "Extension",
@@ -188,20 +182,18 @@ def vhl():
                 {
                     "type": "Extension",
                     "name": "chromosome_location",
-                    "value": [
-                        {
-                            "_id":
-                                "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "3",
-                            "interval": {
-                                "end": "p25.3",
-                                "start": "p25.3",
-                                "type": "CytobandInterval"
-                            }
+                    "value": {
+                        "_id":
+                            "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "3",
+                        "interval": {
+                            "end": "p25.3",
+                            "start": "p25.3",
+                            "type": "CytobandInterval"
                         }
-                    ]
+                    }
                 }
             ]
         }
@@ -213,7 +205,7 @@ def vhl():
 def kit():
     """Create NP_000213.1:p.Leu862= fixture."""
     params = {
-        "id": "normalize:NP_000213.1%3Ap.Leu862%3D",
+        "id": "normalize.variant:NP_000213.1%3Ap.Leu862%3D",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
         "value": {
@@ -237,7 +229,7 @@ def kit():
         "structural_type": "SO:0001606",
         "ref_allele_seq": "L",
         "gene_context": {
-            "id": "normalize:KIT",
+            "id": "normalize.gene:KIT",
             "type": "GeneDescriptor",
             "label": "KIT",
             "value": {
@@ -259,9 +251,7 @@ def kit():
                 {
                     "type": "Extension",
                     "name": "symbol_status",
-                    "value": [
-                        "approved"
-                    ]
+                    "value": "approved"
                 },
                 {
                     "type": "Extension",
@@ -285,20 +275,18 @@ def kit():
                 {
                     "type": "Extension",
                     "name": "chromosome_location",
-                    "value": [
-                        {
-                            "_id":
-                                "ga4gh:VCL.QH-9ROGxiMyAhhzVwvwcGrOfQ0kjO2yS",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "4",
-                            "interval": {
-                                "end": "q12",
-                                "start": "q12",
-                                "type": "CytobandInterval"
-                            }
+                    "value": {
+                        "_id":
+                            "ga4gh:VCL.QH-9ROGxiMyAhhzVwvwcGrOfQ0kjO2yS",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "4",
+                        "interval": {
+                            "end": "q12",
+                            "start": "q12",
+                            "type": "CytobandInterval"
                         }
-                    ]
+                    }
                 }
             ]
         }
