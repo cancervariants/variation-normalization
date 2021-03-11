@@ -19,12 +19,14 @@ mv $seqrepo_date_dir latest
 ```
 
 ### Setting up Gene Normalizer
-Variant Normalization relies on data from Gene Normalization. To install:
+Variant Normalization `normalize` endpoint relies on data from Gene Normalization. To install:
 ```shell script
 pip install gene-normalizer
 ```
 
 To setup, follow the instructions from the [Gene Normalization README](https://github.com/cancervariants/gene-normalization). 
+
+You must have the Gene Normalizer DynamoDB running for the variant `normalize` endpoint to work.
 
 ### Init coding style tests
 
