@@ -36,6 +36,8 @@ class AminoAcidCache:
         :param str three_letter_amino_acid: Amino Acid Code to convert
         :return: A str of the one letter amino acid code
         """
+        if three_letter_amino_acid.upper() == 'TER':
+            return '*'
         for one_letter, three_letter in self._amino_acid_code_conversion.items():  # noqa: E501
             if three_letter.upper() == three_letter_amino_acid.upper():
                 return one_letter.upper()
