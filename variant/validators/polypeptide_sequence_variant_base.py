@@ -237,8 +237,11 @@ class PolypeptideSequenceVariantBase(Validator):
         if not gene_tokens:
             # Convert refseq to gene symbol
             refseq = \
-                [t.token for t in classification.all_tokens if
-                 t.token_type in ['HGVS', 'ReferenceSequence']][0]
+                ([t.token for t in classification.all_tokens if
+                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
+
+            if not refseq:
+                return []
 
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
