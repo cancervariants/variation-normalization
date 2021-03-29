@@ -12,7 +12,6 @@ class Normalize:
     def __init__(self):
         """Initialize Normalize class."""
         if 'VARIANT_NORM_PROD' in environ.keys():
-            environ['GENE_NORM_PROD'] = "true"
             environ['GENE_NORM_EB_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
 
