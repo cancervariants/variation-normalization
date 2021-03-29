@@ -1,0 +1,26 @@
+"""Module for terminating EB staging environment."""
+import boto3
+import json
+import time
+client = boto3.client('lambda')
+servicecatalog = boto3.client('servicecatalog')
+eb_env_name = "VariantNormalization-staging-env"
+data = {"sc_provisioned_name": eb_env_name}
+client.invoke(FunctionName='igm-inf-terminate-provisioned-product',
+              Payload=json.dumps(data))
+time.sleep(10)
+provisioned_product = \
+    servicecatalog.describe_provisioned_product(Name=eb_env_name)
+eb_provisioned_product_Id = \
+    provisioned_product['ProvisionedProductDetail']['Id']
+product_status = \
+    servicecatalog.describe_provisioned_product(Id=eb_provisioned_product_Id)
+eb_provisioned_product_status = \
+    product_status['ProvisionedProductDetail']['Status']
+while eb_provisioned_product_status == "UNDER_CHANGE":
+    time.sleep(10)
+    product_status = servicecatalog.describe_provisioned_product(
+        Id=eb_provisioned_product_Id)
+    eb_provisioned_product_status = \
+        product_status['ProvisionedProductDetail']['Status']
+    print(eb_provisioned_product_status)
