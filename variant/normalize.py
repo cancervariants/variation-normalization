@@ -4,6 +4,7 @@ from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
 from os import environ
+import os
 
 
 class Normalize:
@@ -11,9 +12,9 @@ class Normalize:
 
     def __init__(self):
         """Initialize Normalize class."""
-        if 'VARIANT_NORM_PROD' in environ.keys():
-            environ['GENE_NORM_PROD'] = "true"
+        if os.getenv('VARIANT_NORM_PROD'):
             environ['GENE_NORM_EB_PROD'] = "true"
+            environ['GENE_NORM_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
 
     def normalize(self, q, validations, amino_acid_cache):
