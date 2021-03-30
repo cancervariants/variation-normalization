@@ -14,7 +14,6 @@ class Normalize:
         """Initialize Normalize class."""
         if os.getenv('VARIANT_NORM_PROD'):
             environ['GENE_NORM_EB_PROD'] = "true"
-            environ['GENE_NORM_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
 
     def normalize(self, q, validations, amino_acid_cache):
