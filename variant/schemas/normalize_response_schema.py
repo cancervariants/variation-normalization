@@ -4,20 +4,21 @@ from variant.schemas.ga4gh_vod import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
+
 class ServiceMeta(BaseModel):
     """Metadata regarding the variant-normalization service."""
 
     name = 'variant-normalizer'
     version: str
     response_datetime: datetime
-    url = 'https://github.com/cancervariants/therapy-normalization'
+    url = 'https://github.com/cancervariants/variant-normalization'
 
     class Config:
         """Enables orm_mode"""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['SourceMeta']) -> None:
+                         model: Type['ServiceMeta']) -> None:
             """Configure OpenAPI schema"""
             if 'title' in schema.keys():
                 schema.pop('title', None)
