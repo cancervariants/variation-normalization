@@ -14,7 +14,7 @@ class ServiceMeta(BaseModel):
     url = 'https://github.com/cancervariants/variant-normalization'
 
     class Config:
-        """Enables orm_mode"""
+        """Configure schema example."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
