@@ -2,6 +2,7 @@
 from pydantic import BaseModel
 from typing import List, Dict, Type, Any
 from variant.schemas.ga4gh_vrs import Allele
+from variant.schemas.normalize_response_schema import ServiceMeta
 
 
 class TranslationResponseSchema(BaseModel):
@@ -9,6 +10,7 @@ class TranslationResponseSchema(BaseModel):
 
     search_term: str
     variants: List[Allele]
+    service_meta_: ServiceMeta
 
     class Config:
         """Configure model."""
@@ -41,5 +43,12 @@ class TranslationResponseSchema(BaseModel):
                         },
                         "type": "Allele"
                     }
-                ]
+                ],
+                "service_meta_": {
+                    'name': 'variant-normalizer',
+                    'version': '0.1.0',
+                    'response_datetime': '2021-04-05T16:44:15.367831',
+                    'url': 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+                }
+
             }
