@@ -4,6 +4,7 @@ from variant.normalize import Normalize
 from variant.schemas.ga4gh_vod import VariationDescriptor
 from variant.to_vrs import ToVRS
 from variant.main import normalize as normalize_get_response
+from variant.main import translate as to_vrs_get_response
 from datetime import datetime
 
 
@@ -355,6 +356,20 @@ def test_service_meta():
     assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
 
     response = normalize_get_response('this-wont-normalize')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+
+    response = to_vrs_get_response('BRAF v600e')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+
+    response = to_vrs_get_response('this-wont-normalize')
     service_meta = response.service_meta_
     assert service_meta.name == "variant-normalizer"
     assert service_meta.version
