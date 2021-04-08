@@ -2,9 +2,11 @@
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from variant.to_vrs import ToVRS
-from variant.schemas import TranslationResponseSchema, NormalizeService
+from variant.schemas import TranslationResponseSchema, NormalizeService, \
+    ServiceMeta
 from variant.normalize import Normalize
 from variant import __version__
+from datetime import datetime
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 
@@ -56,7 +58,11 @@ def translate(q: str = Query(..., description=q_description)):
 
     return TranslationResponseSchema(
         search_term=q,
-        variants=translations
+        variants=translations,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
     )
 
 
@@ -91,5 +97,9 @@ def normalize(q: str = Query(..., description=q_description)):
     return NormalizeService(
         variant_query=q,
         variation_descriptor=normalize_resp,
-        errors=errors
+        errors=errors,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
     )

@@ -3,6 +3,9 @@ import pytest
 from variant.normalize import Normalize
 from variant.schemas.ga4gh_vod import VariationDescriptor
 from variant.to_vrs import ToVRS
+from variant.main import normalize as normalize_get_response
+from variant.main import translate as to_vrs_get_response
+from datetime import datetime
 
 
 @pytest.fixture(scope="module")
@@ -341,3 +344,34 @@ def test_silent_mutation(test_normalize, kit):
     """Test that silent mutations V600E normalize correctly."""
     resp = test_normalize.normalize('NP_000213.1:p.Leu862=')
     assertion_checks(resp, kit)
+
+
+def test_service_meta():
+    """Test that service meta info populates correctly."""
+    response = normalize_get_response('BRAF v600e')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+
+    response = normalize_get_response('this-wont-normalize')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+
+    response = to_vrs_get_response('BRAF v600e')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+
+    response = to_vrs_get_response('this-wont-normalize')
+    service_meta = response.service_meta_
+    assert service_meta.name == "variant-normalizer"
+    assert service_meta.version
+    assert isinstance(service_meta.response_datetime, datetime)
+    assert service_meta.url == 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
