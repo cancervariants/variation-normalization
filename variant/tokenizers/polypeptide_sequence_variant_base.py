@@ -29,7 +29,7 @@ class PolypeptideSequenceVariantBase(Tokenizer):
         self.psub['amino_acid'] = amino_acid.upper() if \
             len(amino_acid) == 1 else amino_acid.capitalize()
         self.psub['position'] = int(position)
-        self.psub['new_amino_acid'] = new_amino_acid if \
+        self.psub['new_amino_acid'] = new_amino_acid.upper() if \
             len(new_amino_acid) == 1 else new_amino_acid.capitalize()
 
     def _is_valid_amino_acid(self, amino_acids):
