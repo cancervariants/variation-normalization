@@ -8,6 +8,7 @@ Variant Normalization relies on some local data caches which you will need to se
 From the _variant_ directory of the repository:
 ```
 pipenv sync
+curl ftp://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/current/MANE.GRCh38.v0.93.summary.txt.gz | gunzip - > data/mane_transcripts.txt
 curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/non_alt_loci_set.txt > data/gene_symbols.txt
 pip install seqrepo
 mkdir -p data/seqrepo
@@ -17,6 +18,9 @@ cd data/seqrepo
 seqrepo_date_dir=$(ls -d */)
 mv $seqrepo_date_dir latest
 ```
+
+### Manual data download
+Variant Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to download `variant/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
 
 ### Setting up Gene Normalizer
 Variant Normalization `normalize` endpoint relies on data from Gene Normalization. To install:
