@@ -11,15 +11,26 @@ class TranscriptMappings:
     def __init__(self, transcript_file_path=TRANSCRIPT_MAPPINGS_PATH) -> None:
         """Initialize the transcript mappings class."""
         self.file_path = transcript_file_path
+        self.protein_transcripts_versioned_for_gene_symbol: \
+            Dict[str, List[str]] = {}
+        self.protein_stable_id_version_to_gene_symbol: Dict[str, str] = {}
         self.protein_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
-        self.genomic_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
         self.protein_stable_id_to_gene_symbol: Dict[str, str] = {}
+        self.genomic_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
         with open(transcript_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
                 gene = row['Gene name']
                 if gene:
-                    protein_transcript = row['Protein stable ID version']
+                    versioned_protein_transcript = \
+                        row['Protein stable ID version']
+                    if versioned_protein_transcript:
+                        self.protein_transcripts_versioned_for_gene_symbol \
+                            .setdefault(gene, []) \
+                            .append(versioned_protein_transcript)
+                        self.protein_stable_id_version_to_gene_symbol[
+                            versioned_protein_transcript] = gene
+                    protein_transcript = row['Protein stable ID']
                     if protein_transcript:
                         self.protein_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
@@ -34,20 +45,24 @@ class TranscriptMappings:
 
     def protein_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
-        """Return the protein transcripts for a gene symbol."""
+        """Return the versioned protein transcripts for a gene symbol."""
         if lookup_type == LookupType.GENE_SYMBOL:
-            return self.protein_transcripts_for_gene_symbol.get(identifier)
+            return self.protein_transcripts_versioned_for_gene_symbol.get(
+                identifier)
         else:
             return None
 
     def genomic_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
-        """Return the genomic transcripts for a gene symbol."""
+        """Return the versioned genomic transcripts for a gene symbol."""
         if lookup_type == LookupType.GENE_SYMBOL:
             return self.genomic_transcripts_for_gene_symbol.get(identifier)
         else:
             return None
 
-    def refseq_gene_symbol(self, refseq: str):
+    def refseq_gene_symbol(self, refseq: str, versioned=True):
         """Return the gene symbol for a given reference sequence."""
-        return self.protein_stable_id_to_gene_symbol.get(refseq)
+        if versioned:
+            return self.protein_stable_id_version_to_gene_symbol.get(refseq)
+        else:
+            return self.protein_stable_id_to_gene_symbol.get(refseq)
