@@ -256,14 +256,10 @@ class PolypeptideSequenceVariantBase(Validator):
                            f"{self.variant_name()}")
             return
 
-        if len(mane_transcripts) > 1:
-            logger.warning("More than one MANE Select transcript found for a "
-                           f"single {self.variant_name()}")
-            return
+        for el in mane_transcripts:
+            hgvs_expr = el[0]
+            transcript = el[1]
 
-        hgvs_expr = mane_transcripts[0][0]
-        transcript = mane_transcripts[0][1]
-        if len(mane_transcripts) == 1:
             try:
                 seq_location = self.tlr.translate_from(transcript, 'hgvs')
             except HTTPError:
@@ -276,22 +272,22 @@ class PolypeptideSequenceVariantBase(Validator):
                     allele['state']['sequence'] = \
                         self._amino_acid_cache._convert_three_to_one(
                             allele['state']['sequence'])
-                if allele not in valid_alleles:
-                    results.append(self.get_validation_result(
-                        classification, True, 1, allele,
-                        self.human_description(
-                            mane_transcripts_dict[hgvs_expr][
-                                'transcript_token'],
-                            mane_transcripts_dict[hgvs_expr][
-                                'classification_token']
-                        ),
-                        self.concise_description(
-                            mane_transcripts_dict[hgvs_expr][
-                                'transcript_token'],
-                            mane_transcripts_dict[hgvs_expr][
-                                'classification_token']
-                        ), errors, gene_tokens, True
-                    ))
+
+                results.append(self.get_validation_result(
+                    classification, True, 1, allele,
+                    self.human_description(
+                        mane_transcripts_dict[hgvs_expr][
+                            'transcript_token'],
+                        mane_transcripts_dict[hgvs_expr][
+                            'classification_token']
+                    ),
+                    self.concise_description(
+                        mane_transcripts_dict[hgvs_expr][
+                            'transcript_token'],
+                        mane_transcripts_dict[hgvs_expr][
+                            'classification_token']
+                    ), errors, gene_tokens, True
+                ))
             else:
                 results.append(self.get_validation_result(
                     classification, False, 1, allele,
