@@ -7,6 +7,7 @@ from variant.schemas import TranslationResponseSchema, NormalizeService, \
 from variant.normalize import Normalize
 from variant import __version__
 from datetime import datetime
+import html
 
 app = FastAPI(docs_url='/variant', openapi_url='/variant/openapi.json')
 
@@ -53,7 +54,7 @@ def translate(q: str = Query(..., description=q_description)):
     :param str q: The variant to search on
     :return: TranslationResponseSchema for variant
     """
-    validations = to_vrs.get_validations(q)
+    validations = to_vrs.get_validations(html.unescape(q))
     translations = to_vrs.get_translations(validations)
 
     return TranslationResponseSchema(
@@ -85,14 +86,14 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variant to normalize
     :return: NormalizeService for variant
     """
-    normalize_resp = normalizer.normalize(q,
+    normalize_resp = normalizer.normalize(html.unescape(q),
                                           to_vrs.get_validations(q),
                                           to_vrs.amino_acid_cache)
 
     return NormalizeService(
         variant_query=q,
-        variation_descriptor=normalize_resp[0],
-        warnings=normalize_resp[1] if normalize_resp[1] else None,
+        variation_descriptor=normalize_resp,
+        warnings=normalizer.warnings if normalizer.warnings else None,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()

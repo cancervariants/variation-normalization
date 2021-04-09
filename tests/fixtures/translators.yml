@@ -35,6 +35,23 @@ amino_acid_substitution:
             "type": "SequenceState"
           },
           "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
+          "location": {
+            "interval": {
+              "start": 639,
+              "end": 640,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
         }
       ]
     - query: braf v600e
@@ -72,6 +89,23 @@ amino_acid_substitution:
             "type": "SequenceState"
           },
           "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
+          "location": {
+            "interval": {
+              "start": 639,
+              "end": 640,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
         }
       ]
     - query: NP_004324.2:p.Val600Glu
@@ -85,6 +119,23 @@ amino_acid_substitution:
               "type": "SimpleInterval"
             },
             "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
+          "location": {
+            "interval": {
+              "start": 639,
+              "end": 640,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
             "type": "SequenceLocation"
           },
           "state": {
@@ -183,13 +234,15 @@ polypeptide_truncation:
 silent_mutation:
   tests:
     - query: NP_000542.1:p.Pro154=
+      variants: []
+    - query: NP_000542.1:p.Pro61=
       variants: [
         {
-          "id": "ga4gh:VA.rVexjvD44WBTwBulB5OayUPby5y6Px1H",
+          "id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
           "location": {
             "interval": {
-              "start": 153,
-              "end": 154,
+              "start": 60,
+              "end": 61,
               "type": "SimpleInterval"
             },
             "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
@@ -202,21 +255,21 @@ silent_mutation:
           "type": "Allele"
         }
       ]
-    - query: NP_000213.1:p.Leu862=
+    - query: NP_000542.1:p.Glu55=
       variants: [
         {
-          "id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
+          "id": "ga4gh:VA.wDFRtlaQa8RY5lYKlEXECYM23g_95yUu",
           "location": {
             "interval": {
-              "start": 861,
-              "end": 862,
+              "start": 54,
+              "end": 55,
               "type": "SimpleInterval"
             },
-            "sequence_id": "ga4gh:SQ.TcMVFj5kDODDWpiy1d_1-3_gOf4BYaAB",
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "L",
+            "sequence": "E",
             "type": "SequenceState"
           },
           "type": "Allele"

@@ -6,6 +6,7 @@ from variant.translators import Translate
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from urllib.parse import unquote
 
 
 class ToVRS:
@@ -30,7 +31,7 @@ class ToVRS:
         :param str q: Variant to get validation results for
         :return: ValidationSummary for the variant
         """
-        tokens = self.tokenizer.perform(q.strip())
+        tokens = self.tokenizer.perform(unquote(q.strip()))
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(classifications)
         return validations

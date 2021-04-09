@@ -17,7 +17,10 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
 import requests
-from variant import logger
+import logging
+
+logger = logging.getLogger('variant')
+logger.setLevel(logging.DEBUG)
 
 
 class PolypeptideSequenceVariantBase(Validator):
@@ -176,25 +179,35 @@ class PolypeptideSequenceVariantBase(Validator):
                     else:
                         allele = seq_location.as_dict()
                 else:
-                    sequence_id = \
-                        self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
-                    allele = self.get_vrs_allele(sequence_id, s)
+                    try:
+                        sequence_id = \
+                            self.dp.translate_sequence_identifier(t,
+                                                                  'ga4gh')[0]
+                    except KeyError:
+                        allele = None
+                        error = "GA4GH Data Proxy unable to translate" \
+                                f" sequence identifier: {t}"
+                        valid = False
+                        logger.warning(error)
+                        errors.append(error)
+                    else:
+                        allele = self.get_vrs_allele(sequence_id, s)
 
-                    # MANE Select Transcript for Gene Name + Variation
-                    # (ex: BRAF V600E)
-                    refseq = ([a for a in self.seq_repo_access.aliases(t)
-                               if a.startswith('refseq:NP_')] or [None])[0]
-                    if refseq:
-                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                    f"{s.ref_protein}{s.position}" \
-                                    f"{s.alt_protein}"
-                        if hgvs_expr not in mane_transcripts_dict.keys():
-                            mane_transcripts_dict[hgvs_expr] = {
-                                'classification_token': s,
-                                'transcript_token': t
-                            }
+                        # MANE Select Transcript for Gene Name + Variation
+                        # (ex: BRAF V600E)
+                        refseq = ([a for a in self.seq_repo_access.aliases(t)
+                                   if a.startswith('refseq:NP_')] or [None])[0]
+                        if refseq:
+                            hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
+                                        f"{s.ref_protein}{s.position}" \
+                                        f"{s.alt_protein}"
+                            if hgvs_expr not in mane_transcripts_dict.keys():
+                                mane_transcripts_dict[hgvs_expr] = {
+                                    'classification_token': s,
+                                    'transcript_token': t
+                                }
 
-                if len(allele['state']['sequence']) == 3:
+                if allele and len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
                         self._amino_acid_cache._convert_three_to_one(
                             allele['state']['sequence'])
@@ -224,10 +237,10 @@ class PolypeptideSequenceVariantBase(Validator):
 
         # Now add Mane transcripts to results
         self.add_mane_transcript(classification, results, gene_tokens,
-                                 mane_transcripts_dict, valid_alleles)
+                                 mane_transcripts_dict)
 
     def add_mane_transcript(self, classification, results, gene_tokens,
-                            mane_transcripts_dict, valid_alleles):
+                            mane_transcripts_dict):
         """Add MANE transcript validation result objects to a list of results.
 
         :param Classification classification: A classification for a list of
@@ -236,24 +249,38 @@ class PolypeptideSequenceVariantBase(Validator):
         :param list gene_tokens: List of GeneMatchTokens
         :param dict mane_transcripts_dict: Possible MANE select transcripts
             with classification and Ensembl transcript
-        :param list valid_alleles: A list of valid alleles that have already
-            been added to the list of results
         """
         mane_transcripts = list()
         found_mane_transcripts = list()
+        replace_old_keys = list()
         for hgvs_expr in mane_transcripts_dict.keys():
+            if '(' in hgvs_expr and ')' in hgvs_expr:
+                # ClinGen Allele Registry doesn't like () in the query
+                if mane_transcripts_dict[hgvs_expr][
+                    'classification_token'].token_type ==\
+                        'PolypeptideTruncation':
+                    old = hgvs_expr
+                    hgvs_expr = hgvs_expr.replace('(', '')
+                    hgvs_expr = hgvs_expr.replace(')', '')
+                    old_and_new = old, hgvs_expr
+                    if old_and_new not in replace_old_keys:
+                        replace_old_keys.append(old_and_new)
             t = self.get_mane_transcript(hgvs_expr)
             if t and t not in found_mane_transcripts:
                 found_mane_transcripts.append(t)
                 mane_transcripts.append((hgvs_expr, t))
+
+        for tup in replace_old_keys:
+            mane_transcripts_dict[tup[1]] = mane_transcripts_dict[tup[0]]
+            del mane_transcripts_dict[tup[0]]
 
         errors = list()
         allele = {}
         seq_location = None
 
         if len(mane_transcripts) == 0:
-            logger.warning("No MANE Select transcript found for a single "
-                           f"{self.variant_name()}")
+            logger.warning("No MANE Select transcript found for "
+                           f"{mane_transcripts_dict.keys()}")
             return
 
         for el in mane_transcripts:
@@ -328,8 +355,11 @@ class PolypeptideSequenceVariantBase(Validator):
                     amino_acid_allele = resp['aminoAcidAlleles'][0]
                     if 'hgvsMatchingTranscriptVariant' in amino_acid_allele.keys():  # noqa: E501
                         if len(amino_acid_allele['hgvsMatchingTranscriptVariant']) > 0:  # noqa: E501
-                            return self.get_mane_transcript(
-                                amino_acid_allele['hgvsMatchingTranscriptVariant'][0])  # noqa: E501
+                            for t in amino_acid_allele['hgvsMatchingTranscriptVariant']:  # noqa: E501
+                                if '>' in t and '[' not in t:
+                                    # Temp condition since variant norm
+                                    # cannot handle multiple possible variants
+                                    return self.get_mane_transcript(t)
         return None
 
     def get_validation_result(self, classification, is_valid, confidence_score,
@@ -392,9 +422,23 @@ class PolypeptideSequenceVariantBase(Validator):
                 gene_symbol = \
                     self.transcript_mappings.refseq_gene_symbol(alias)
 
-                if gene_symbol and gene_symbol not in gene_symbols:
-                    gene_symbols.append(gene_symbol)
-                    gene_tokens.append(self._gene_matcher.match(gene_symbol))
+                # Try alias with no version
+                if not gene_symbol:
+                    if '.' in alias:
+                        no_version_alias = alias.split('.')[0]
+                    gene_symbol = \
+                        self.transcript_mappings.refseq_gene_symbol(
+                            no_version_alias, versioned=False)
+
+                if gene_symbol:
+                    if gene_symbol not in gene_symbols:
+                        gene_symbols.append(gene_symbol)
+                        gene_tokens.append(
+                            self._gene_matcher.match(gene_symbol))
+                else:
+                    logger.warning(f"No gene symbol found for Protein "
+                                   f"{alias} and {no_version_alias} "
+                                   f"in transcript_mappings.tsv")
         return gene_tokens
 
     @abstractmethod
