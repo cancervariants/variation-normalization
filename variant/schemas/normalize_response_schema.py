@@ -2,6 +2,34 @@
 from pydantic import BaseModel
 from variant.schemas.ga4gh_vod import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
+from datetime import datetime
+
+
+class ServiceMeta(BaseModel):
+    """Metadata regarding the variant-normalization service."""
+
+    name = 'variant-normalizer'
+    version: str
+    response_datetime: datetime
+    url = 'https://github.com/cancervariants/variant-normalization'
+
+    class Config:
+        """Configure schema example."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type['ServiceMeta']) -> None:
+            """Configure OpenAPI schema"""
+            if 'title' in schema.keys():
+                schema.pop('title', None)
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
+            schema['example'] = {
+                'name': 'variant-normalizer',
+                'version': '0.1.0',
+                'response_datetime': '2021-04-05T16:44:15.367831',
+                'url': 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
+            }
 
 
 class NormalizeService(BaseModel):
@@ -10,6 +38,7 @@ class NormalizeService(BaseModel):
     variant_query: str
     warnings: Optional[List[str]]
     variation_descriptor: Optional[VariationDescriptor]
+    service_meta_: ServiceMeta
 
     class Config:
         """Configure model."""
@@ -106,5 +135,11 @@ class NormalizeService(BaseModel):
                             }
                         ]
                     }
+                },
+                "service_meta_": {
+                    'name': 'variant-normalizer',
+                    'version': '0.1.0',
+                    'response_datetime': '2021-04-05T16:44:15.367831',
+                    'url': 'https://github.com/cancervariants/variant-normalization'  # noqa: E501
                 }
             }
