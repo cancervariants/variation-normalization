@@ -15,6 +15,7 @@ class Normalize:
         if 'VARIANT_NORM_EB_PROD' in environ:
             environ['GENE_NORM_EB_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
+        self.warnings = list()
 
     def normalize(self, q, validations, amino_acid_cache):
         """Normalize a given variant.
@@ -79,7 +80,8 @@ class Normalize:
             logger.warning(warning)
             warnings.append(warning)
 
-        return variation_descriptor, warnings
+        self.warnings = warnings
+        return variation_descriptor
 
     def get_gene_descriptor(self, gene_token):
         """Return a GA4GH Gene Descriptor using Gene Normalization.

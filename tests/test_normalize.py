@@ -32,15 +32,15 @@ def braf_v600e():
     params = {
         "id": "normalize.variant:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
+        "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
         "value": {
             "location": {
                 "interval": {
-                    "end": 600,
-                    "start": 599,
+                    "end": 640,
+                    "start": 639,
                     "type": "SimpleInterval"
                 },
-                "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
                 "type": "SequenceLocation"
             },
             "state": {
@@ -98,8 +98,7 @@ def braf_v600e():
                     "type": "Extension",
                     "name": "chromosome_location",
                     "value": {
-                        "_id":
-                            "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
                         "type": "ChromosomeLocation",
                         "species_id": "taxonomy:9606",
                         "chr": "7",
@@ -205,91 +204,85 @@ def vhl():
 
 
 @pytest.fixture(scope="module")
-def kit():
-    """Create NP_000213.1:p.Leu862= fixture."""
+def vhl_silent():
+    """Create NP_000542.1:p.Pro61 fixture."""
     params = {
-        "id": "normalize.variant:NP_000213.1%3Ap.Leu862%3D",
+        "id": "normalize.variant:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.N9L1bGWMk2IDg9aB83D-pS-V6n-oqqxy",
+        "label": "NP_000542.1:p.Pro61=",
+        "value_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
         "value": {
             "location": {
                 "interval": {
-                    "end": 862,
-                    "start": 861,
+                    "end": 61,
+                    "start": 60,
                     "type": "SimpleInterval"
                 },
-                "sequence_id": "ga4gh:SQ.TcMVFj5kDODDWpiy1d_1-3_gOf4BYaAB",
+                "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "L",
+                "sequence": "P",
                 "type": "SequenceState"
             },
             "type": "Allele"
         },
-        "label": "NP_000213.1:p.Leu862=",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
-        "ref_allele_seq": "L",
+        "ref_allele_seq": "P",
         "gene_context": {
-            "id": "normalize.gene:KIT",
+            "id": "normalize.gene:VHL",
             "type": "GeneDescriptor",
-            "label": "KIT",
+            "label": "VHL",
             "value": {
-                "gene_id": "hgnc:6342",
+                "gene_id": "hgnc:12687",
                 "type": "Gene"
             },
             "xrefs": [
-                "ncbigene:3815",
-                "ensembl:ENSG00000157404"
+                "ncbigene:7428",
+                "ensembl:ENSG00000134086"
             ],
             "alternate_labels": [
-                "C-Kit",
-                "CD117",
-                "SCFR",
-                "PBT",
-                "KIT proto-oncogene, receptor tyrosine kinase"
+                "von Hippel-Lindau tumor suppressor",
+                "VHL1"
             ],
             "extensions": [
                 {
-                    "type": "Extension",
                     "name": "symbol_status",
-                    "value": "approved"
+                    "value": "approved",
+                    "type": "Extension"
                 },
                 {
-                    "type": "Extension",
                     "name": "associated_with",
                     "value": [
-                        "vega:OTTHUMG00000128713",
-                        "ucsc:uc010igr.4",
-                        "ccds:CCDS47058",
-                        "ccds:CCDS3496",
-                        "uniprot:P10721",
-                        "pubmed:9027509",
-                        "cosmic:KIT",
-                        "omim:164920",
-                        "orphanet:122862",
-                        "iuphar:1805",
-                        "hcdmdb:CD117",
-                        "refseq:NM_000222",
-                        "ena.embl:S67773"
-                    ]
+                        "vega:OTTHUMG00000128668",
+                        "ucsc:uc003bvc.4",
+                        "ccds:CCDS2597",
+                        "ccds:CCDS2598",
+                        "uniprot:P40337",
+                        "pubmed:9671762",
+                        "cosmic:VHL",
+                        "omim:608537",
+                        "orphanet:120467",
+                        "ena.embl:L15409",
+                        "refseq:NM_000551"
+                    ],
+                    "type": "Extension"
                 },
                 {
-                    "type": "Extension",
                     "name": "chromosome_location",
                     "value": {
-                        "_id":
-                            "ga4gh:VCL.QH-9ROGxiMyAhhzVwvwcGrOfQ0kjO2yS",
+                        "_id": "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
                         "type": "ChromosomeLocation",
                         "species_id": "taxonomy:9606",
-                        "chr": "4",
+                        "chr": "3",
                         "interval": {
-                            "end": "q12",
-                            "start": "q12",
+                            "end": "p25.3",
+                            "start": "p25.3",
                             "type": "CytobandInterval"
                         }
-                    }
+                    },
+                    "type": "Extension"
                 }
             ]
         }
@@ -333,6 +326,11 @@ def test_amino_acid_substitution(test_normalize, braf_v600e):
     resp = test_normalize.normalize('     BRAF      V600E    ')
     assertion_checks(resp, braf_v600e)
 
+    resp = test_normalize.normalize('NP_004324.2:p.Val600Glu')
+    resp.id = "normalize.variant:BRAF%20V600E"
+    resp.label = "BRAF V600E"
+    assertion_checks(resp, braf_v600e)
+
 
 def test_polypeptide_truncation(test_normalize, vhl):
     """Test that polypeptide truncations normalize correctly."""
@@ -340,10 +338,25 @@ def test_polypeptide_truncation(test_normalize, vhl):
     assertion_checks(resp, vhl)
 
 
-def test_silent_mutation(test_normalize, kit):
-    """Test that silent mutations V600E normalize correctly."""
-    resp = test_normalize.normalize('NP_000213.1:p.Leu862=')
-    assertion_checks(resp, kit)
+def test_silent_mutation(test_normalize, vhl_silent):
+    """Test that silent mutations normalize correctly."""
+    resp = test_normalize.normalize('NP_000542.1:p.Pro61=')
+    assertion_checks(resp, vhl_silent)
+
+
+def test_no_matches(test_normalize):
+    """Test no matches work correctly."""
+    resp = test_normalize.normalize('')
+    assert resp is None
+
+    resp = test_normalize.normalize('braf')
+    assert resp is None
+
+    resp = test_normalize.normalize('braf v600000932092039e')
+    assert resp is None
+
+    resp = test_normalize.normalize('NP_000213.1:cp.Leu862=')
+    assert resp is None
 
 
 def test_service_meta():
