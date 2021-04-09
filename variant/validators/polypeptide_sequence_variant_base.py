@@ -16,6 +16,8 @@ from ga4gh.core import ga4gh_identify
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
+import requests
+from variant import logger
 
 
 class PolypeptideSequenceVariantBase(Validator):
@@ -145,6 +147,7 @@ class PolypeptideSequenceVariantBase(Validator):
         :param list gene_tokens: List of GeneMatchTokens
         """
         valid_alleles = list()
+        mane_transcripts_dict = dict()
         for s in classification_tokens:
             for t in transcripts:
                 valid = True
@@ -154,6 +157,12 @@ class PolypeptideSequenceVariantBase(Validator):
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
+
+                    # MANE Select Transcript for HGVS expressions
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t
+                    }
                     try:
                         # TODO: We should get this to work w/o doing above
                         #       replacement
@@ -170,6 +179,20 @@ class PolypeptideSequenceVariantBase(Validator):
                     sequence_id = \
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
                     allele = self.get_vrs_allele(sequence_id, s)
+
+                    # MANE Select Transcript for Gene Name + Variation
+                    # (ex: BRAF V600E)
+                    refseq = ([a for a in self.seq_repo_access.aliases(t)
+                               if a.startswith('refseq:NP_')] or [None])[0]
+                    if refseq:
+                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
+                                    f"{s.ref_protein}{s.position}" \
+                                    f"{s.alt_protein}"
+                        if hgvs_expr not in mane_transcripts_dict.keys():
+                            mane_transcripts_dict[hgvs_expr] = {
+                                'classification_token': s,
+                                'transcript_token': t
+                            }
 
                 if len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
@@ -199,9 +222,124 @@ class PolypeptideSequenceVariantBase(Validator):
                         self.human_description(t, s),
                         self.concise_description(t, s), errors, gene_tokens))
 
+        # Now add Mane transcripts to results
+        self.add_mane_transcript(classification, results, gene_tokens,
+                                 mane_transcripts_dict, valid_alleles)
+
+    def add_mane_transcript(self, classification, results, gene_tokens,
+                            mane_transcripts_dict, valid_alleles):
+        """Add MANE transcript validation result objects to a list of results.
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :param list results: A list to store validation result objects
+        :param list gene_tokens: List of GeneMatchTokens
+        :param dict mane_transcripts_dict: Possible MANE select transcripts
+            with classification and Ensembl transcript
+        :param list valid_alleles: A list of valid alleles that have already
+            been added to the list of results
+        """
+        mane_transcripts = list()
+        found_mane_transcripts = list()
+        for hgvs_expr in mane_transcripts_dict.keys():
+            t = self.get_mane_transcript(hgvs_expr)
+            if t and t not in found_mane_transcripts:
+                found_mane_transcripts.append(t)
+                mane_transcripts.append((hgvs_expr, t))
+
+        errors = list()
+        allele = {}
+        seq_location = None
+
+        if len(mane_transcripts) == 0:
+            logger.warning("No MANE Select transcript found for a single "
+                           f"{self.variant_name()}")
+            return
+
+        if len(mane_transcripts) > 1:
+            logger.warning("More than one MANE Select transcript found for a "
+                           f"single {self.variant_name()}")
+            return
+
+        hgvs_expr = mane_transcripts[0][0]
+        transcript = mane_transcripts[0][1]
+        if len(mane_transcripts) == 1:
+            try:
+                seq_location = self.tlr.translate_from(transcript, 'hgvs')
+            except HTTPError:
+                errors.append(f"{mane_transcripts[0]} is an invalid HGVS "
+                              f"expression.")
+
+            if not errors:
+                allele = seq_location.as_dict()
+                if len(allele['state']['sequence']) == 3:
+                    allele['state']['sequence'] = \
+                        self._amino_acid_cache._convert_three_to_one(
+                            allele['state']['sequence'])
+                if allele not in valid_alleles:
+                    results.append(self.get_validation_result(
+                        classification, True, 1, allele,
+                        self.human_description(
+                            mane_transcripts_dict[hgvs_expr][
+                                'transcript_token'],
+                            mane_transcripts_dict[hgvs_expr][
+                                'classification_token']
+                        ),
+                        self.concise_description(
+                            mane_transcripts_dict[hgvs_expr][
+                                'transcript_token'],
+                            mane_transcripts_dict[hgvs_expr][
+                                'classification_token']
+                        ), errors, gene_tokens, True
+                    ))
+            else:
+                results.append(self.get_validation_result(
+                    classification, False, 1, allele,
+                    self.human_description(
+                        mane_transcripts_dict[hgvs_expr]['transcript_token'],
+                        mane_transcripts_dict[hgvs_expr][
+                            'classification_token']
+                    ),
+                    self.concise_description(
+                        mane_transcripts_dict[hgvs_expr]['transcript_token'],
+                        mane_transcripts_dict[hgvs_expr][
+                            'classification_token']
+                    ), errors, gene_tokens, True
+                ))
+
+    def get_mane_transcript(self, hgvs_expr):
+        """Return MANE Select Transcript from ClinGene Allele Registry.
+
+        :param str hgvs_expr: The HGVS expression to query
+        :return: The HGVS RefSeq MANE Select Transcript represented as a string
+        """
+        request = requests.get(
+            f"https://reg.genome.network/allele?hgvs={hgvs_expr}")
+        if request.status_code == 200:
+            resp = request.json()
+            if 'transcriptAlleles' in resp.keys():
+                mane_transcript = None
+                for t in resp['transcriptAlleles']:
+                    if 'MANE' in t.keys():
+                        mane_transcript = t['MANE']
+                        break
+                if mane_transcript:
+                    if mane_transcript['maneStatus'] == 'MANE Select':
+                        result = mane_transcript['protein']['RefSeq']['hgvs']
+                        return result
+            else:
+                if 'aminoAcidAlleles' in resp.keys() and len(resp['aminoAcidAlleles']) > 0:  # noqa: E501
+                    amino_acid_allele = resp['aminoAcidAlleles'][0]
+                    if 'hgvsMatchingTranscriptVariant' in amino_acid_allele.keys():  # noqa: E501
+                        if len(amino_acid_allele['hgvsMatchingTranscriptVariant']) > 0:  # noqa: E501
+                            return self.get_mane_transcript(
+                                amino_acid_allele['hgvsMatchingTranscriptVariant'][0])  # noqa: E501
+        return None
+
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
-                              errors, gene_tokens) -> ValidationResult:
+                              errors, gene_tokens,
+                              is_mane_transcript=False) -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
@@ -213,6 +351,8 @@ class PolypeptideSequenceVariantBase(Validator):
         :param str concise_description: The identified variant
         :param list errors: A list of errors for the classification
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool is_mane_transcript: Whether or not the result is a
+            MANE Select Transcript
         :return: A validation result
         """
         return ValidationResult(
@@ -223,7 +363,8 @@ class PolypeptideSequenceVariantBase(Validator):
             human_description=human_description,
             concise_description=concise_description,
             errors=errors,
-            gene_tokens=gene_tokens
+            gene_tokens=gene_tokens,
+            is_mane_transcript=is_mane_transcript
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:

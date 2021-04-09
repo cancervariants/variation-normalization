@@ -24,6 +24,7 @@ class ValidationResult(BaseModel):
     concise_description: str
     errors: List[str]
     gene_tokens: Optional[List[GeneMatchToken]]
+    is_mane_transcript: StrictBool
 
     class Config:
         """Configure model."""
