@@ -8,8 +8,8 @@ class NormalizeService(BaseModel):
     """A response to normalizing a variant to a single GA4GH Value Object Descriptor."""  # noqa: E501
 
     variant_query: str
+    warnings: Optional[List[str]]
     variation_descriptor: Optional[VariationDescriptor]
-    errors: Optional[List[str]]
 
     class Config:
         """Configure model."""

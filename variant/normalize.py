@@ -4,6 +4,7 @@ from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
 from os import environ
+from variant import logger
 
 
 class Normalize:
@@ -24,9 +25,20 @@ class Normalize:
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
         """
+        warnings = list()
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
-            valid_result = validations.valid_results[0]
+            valid_result = None
+            for r in validations.valid_results:
+                if r.is_mane_transcript:
+                    valid_result = r
+                    break
+            if not valid_result:
+                warning = f"Unable to find MANE Select Transcript for {q}."
+                logger.warning(warning)
+                warnings.append(warning)
+                valid_result = validations.valid_results[0]
+
             valid_result_tokens = valid_result.classification.all_tokens
 
             polypeptide_sequence_variant_token = \
@@ -63,8 +75,11 @@ class Normalize:
             )
         else:
             variation_descriptor = None
+            warning = f"Unable to normalize {q}."
+            logger.warning(warning)
+            warnings.append(warning)
 
-        return variation_descriptor
+        return variation_descriptor, warnings
 
     def get_gene_descriptor(self, gene_token):
         """Return a GA4GH Gene Descriptor using Gene Normalization.

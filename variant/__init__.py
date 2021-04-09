@@ -7,11 +7,11 @@ __version__ = "0.1.9"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
-if 'DEV' in os.environ:
-    LOG_FN = './variant/variant.log'
-else:
+if 'VARIANT_NORM_EB_PROD' in os.environ:
     # Elastic beanstalk
     LOG_FN = '/tmp/sample-app.log'
+else:
+    LOG_FN = './variant/variant.log'
 
 logger = logging.getLogger('variant')
 fhandler = logging.FileHandler(filename=LOG_FN)

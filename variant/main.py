@@ -82,14 +82,9 @@ def normalize(q: str = Query(..., description=q_description)):
     normalize_resp = normalizer.normalize(q,
                                           to_vrs.get_validations(q),
                                           to_vrs.amino_acid_cache)
-    # For now, use vague error msg
-    if not normalize_resp:
-        errors = ['Could not normalize variant.']
-    else:
-        errors = None
 
     return NormalizeService(
         variant_query=q,
-        variation_descriptor=normalize_resp,
-        errors=errors
+        variation_descriptor=normalize_resp[0],
+        warnings=normalize_resp[1] if normalize_resp[1] else None
     )
