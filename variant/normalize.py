@@ -31,14 +31,16 @@ class Normalize:
             # For now, only use first valid result
             valid_result = None
             for r in validations.valid_results:
-                if r.is_mane_transcript:
+                if r.mane_transcript:
                     valid_result = r
+                    label = quote(valid_result.mane_transcript.strip())
                     break
             if not valid_result:
                 warning = f"Unable to find MANE Select Transcript for {q}."
                 logger.warning(warning)
                 warnings.append(warning)
                 valid_result = validations.valid_results[0]
+                label = quote(' '.join(q.strip().split()))
 
             valid_result_tokens = valid_result.classification.all_tokens
 
@@ -67,7 +69,7 @@ class Normalize:
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
-                label=' '.join(q.strip().split()),
+                label=label,
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,

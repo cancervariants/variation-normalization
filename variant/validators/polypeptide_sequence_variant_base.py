@@ -313,7 +313,7 @@ class PolypeptideSequenceVariantBase(Validator):
                             'transcript_token'],
                         mane_transcripts_dict[hgvs_expr][
                             'classification_token']
-                    ), errors, gene_tokens, True
+                    ), errors, gene_tokens, transcript
                 ))
             else:
                 results.append(self.get_validation_result(
@@ -327,7 +327,7 @@ class PolypeptideSequenceVariantBase(Validator):
                         mane_transcripts_dict[hgvs_expr]['transcript_token'],
                         mane_transcripts_dict[hgvs_expr][
                             'classification_token']
-                    ), errors, gene_tokens, True
+                    ), errors, gene_tokens, transcript
                 ))
 
     def get_mane_transcript(self, hgvs_expr):
@@ -365,7 +365,7 @@ class PolypeptideSequenceVariantBase(Validator):
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
                               errors, gene_tokens,
-                              is_mane_transcript=False) -> ValidationResult:
+                              mane_transcript=None) -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
@@ -377,8 +377,7 @@ class PolypeptideSequenceVariantBase(Validator):
         :param str concise_description: The identified variant
         :param list errors: A list of errors for the classification
         :param list gene_tokens: List of GeneMatchTokens
-        :param bool is_mane_transcript: Whether or not the result is a
-            MANE Select Transcript
+        :param str mane_transcript: MANE transcript
         :return: A validation result
         """
         return ValidationResult(
@@ -390,7 +389,7 @@ class PolypeptideSequenceVariantBase(Validator):
             concise_description=concise_description,
             errors=errors,
             gene_tokens=gene_tokens,
-            is_mane_transcript=is_mane_transcript
+            mane_transcript=mane_transcript
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:

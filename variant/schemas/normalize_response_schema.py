@@ -56,7 +56,7 @@ class NormalizeService(BaseModel):
                 "variation_descriptor": {
                     "id": "normalize.variant:BRAF%20V600E",
                     "type": "VariationDescriptor",
-                    "label": "BRAF V600E",
+                    "label": "NP_001361187.1:p.Val640Glu",
                     "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
                     "value": {
                         "location": {
