@@ -331,6 +331,16 @@ def test_amino_acid_substitution(test_normalize, braf_v600e):
     resp.id = "normalize.variant:BRAF%20V600E"
     assertion_checks(resp, braf_v600e)
 
+    resp = test_normalize.normalize('braf v512e')
+    assert resp.id == 'normalize.variant:braf%20v512e'
+    resp.id = "normalize.variant:BRAF%20V600E"
+    assertion_checks(resp, braf_v600e)
+
+    resp = test_normalize.normalize(' NP_001365404.1:p.Val512Glu  ')
+    assert resp.id == 'normalize.variant:NP_001365404.1%3Ap.Val512Glu'
+    resp.id = "normalize.variant:BRAF%20V600E"
+    assertion_checks(resp, braf_v600e)
+
 
 def test_polypeptide_truncation(test_normalize, vhl):
     """Test that polypeptide truncations normalize correctly."""
