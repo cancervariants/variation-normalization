@@ -4,6 +4,7 @@ from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
 from os import environ
+from variant import logger
 
 
 class Normalize:
@@ -14,6 +15,7 @@ class Normalize:
         if 'VARIANT_NORM_EB_PROD' in environ:
             environ['GENE_NORM_EB_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
+        self.warnings = list()
 
     def normalize(self, q, validations, amino_acid_cache):
         """Normalize a given variant.
@@ -24,9 +26,22 @@ class Normalize:
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
         """
+        warnings = list()
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
-            valid_result = validations.valid_results[0]
+            valid_result = None
+            for r in validations.valid_results:
+                if r.mane_transcript:
+                    valid_result = r
+                    label = quote(valid_result.mane_transcript.strip())
+                    break
+            if not valid_result:
+                warning = f"Unable to find MANE Select Transcript for {q}."
+                logger.warning(warning)
+                warnings.append(warning)
+                valid_result = validations.valid_results[0]
+                label = quote(' '.join(q.strip().split()))
+
             valid_result_tokens = valid_result.classification.all_tokens
 
             polypeptide_sequence_variant_token = \
@@ -54,7 +69,7 @@ class Normalize:
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
-                label=' '.join(q.strip().split()),
+                label=label,
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,
@@ -63,7 +78,11 @@ class Normalize:
             )
         else:
             variation_descriptor = None
+            warning = f"Unable to normalize {q}."
+            logger.warning(warning)
+            warnings.append(warning)
 
+        self.warnings = warnings
         return variation_descriptor
 
     def get_gene_descriptor(self, gene_token):
@@ -83,7 +102,7 @@ class Normalize:
             return GeneDescriptor(
                 id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
-                value=Gene(gene_id=record.concept_id),
+                value=Gene(id=record.concept_id),
                 xrefs=record.other_identifiers,
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)
