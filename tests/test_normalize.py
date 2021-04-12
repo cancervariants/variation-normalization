@@ -49,7 +49,7 @@ def braf_v600e():
             },
             "type": "Allele"
         },
-        "label": "BRAF V600E",
+        "label": "NP_001361187.1%3Ap.Val640Glu",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "V",
@@ -138,7 +138,7 @@ def vhl():
             },
             "type": "Allele"
         },
-        "label": "NP_000542.1:p.Tyr185Ter",
+        "label": "NP_000542.1%3Ap.Tyr185Ter",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "Y",
@@ -209,7 +209,7 @@ def vhl_silent():
     params = {
         "id": "normalize.variant:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "label": "NP_000542.1:p.Pro61=",
+        "label": "NP_000542.1%3Ap.Pro61%3D",
         "value_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
         "value": {
             "location": {
@@ -327,8 +327,8 @@ def test_amino_acid_substitution(test_normalize, braf_v600e):
     assertion_checks(resp, braf_v600e)
 
     resp = test_normalize.normalize('NP_004324.2:p.Val600Glu')
+    assert resp.id == "normalize.variant:NP_004324.2%3Ap.Val600Glu"
     resp.id = "normalize.variant:BRAF%20V600E"
-    resp.label = "BRAF V600E"
     assertion_checks(resp, braf_v600e)
 
 
