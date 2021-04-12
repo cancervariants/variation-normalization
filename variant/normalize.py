@@ -100,7 +100,7 @@ class Normalize:
             return GeneDescriptor(
                 id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
-                value=Gene(gene_id=record.concept_id),
+                value=Gene(id=record.concept_id),
                 xrefs=record.other_identifiers,
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)

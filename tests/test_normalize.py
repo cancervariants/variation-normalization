@@ -58,7 +58,7 @@ def braf_v600e():
             "type": "GeneDescriptor",
             "label": "BRAF",
             "value": {
-                "gene_id": "hgnc:1097",
+                "id": "hgnc:1097",
                 "type": "Gene"
             },
             "xrefs": [
@@ -147,7 +147,7 @@ def vhl():
             "type": "GeneDescriptor",
             "label": "VHL",
             "value": {
-                "gene_id": "hgnc:12687",
+                "id": "hgnc:12687",
                 "type": "Gene"
             },
             "xrefs": [
@@ -235,7 +235,7 @@ def vhl_silent():
             "type": "GeneDescriptor",
             "label": "VHL",
             "value": {
-                "gene_id": "hgnc:12687",
+                "id": "hgnc:12687",
                 "type": "Gene"
             },
             "xrefs": [
