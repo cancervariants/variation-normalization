@@ -1,7 +1,7 @@
 """A module for caching gene symbols."""
 from typing import Set, Dict, Iterable
 from csv import DictReader
-from variant import GENE_SYMBOL_PATH
+from variant import HGNC_GENE_SYMBOL_PATH
 import re
 
 
@@ -9,7 +9,7 @@ class GeneSymbolCache:
     """The gene symbol cache class."""
 
     def __init__(self,
-                 gene_file_path: str = GENE_SYMBOL_PATH) \
+                 gene_file_path: str = HGNC_GENE_SYMBOL_PATH) \
             -> None:
         """Initialize the gene symbol cache class."""
         self.__load_caches(gene_file_path)
@@ -19,7 +19,6 @@ class GeneSymbolCache:
         self.gene_symbols: Set[str] = set()
         self.gene_ids: Dict[str, str] = {}
         self.gene_aliases: Dict[str, str] = {}
-
         self.previous_identifiers: Dict[str, str] = {}
 
         with open(gene_file_path, 'r') as f:

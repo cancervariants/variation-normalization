@@ -24,4 +24,5 @@ logger.setLevel(logging.DEBUG)
 SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/latest"
 TRANSCRIPT_MAPPINGS_PATH = f"{APP_ROOT}/data/transcript_mapping.tsv"
 AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
-GENE_SYMBOL_PATH = f"{APP_ROOT}/data/gene_symbols.txt"
+HGNC_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/hgnc_gene_symbols.txt"
+REFSEQ_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/refseq_gene_symbols.txt"
