@@ -21,7 +21,7 @@ if Path(LOG_FN).exists():
     logger.addHandler(fhandler)
 logger.setLevel(logging.DEBUG)
 
-SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/2021-01-29"
+SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/latest"
 TRANSCRIPT_MAPPINGS_PATH = f"{APP_ROOT}/data/transcript_mapping.tsv"
 AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
 GENE_SYMBOL_PATH = f"{APP_ROOT}/data/gene_symbols.txt"
