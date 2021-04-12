@@ -5,7 +5,7 @@ from variant.schemas.ga4gh_vrs import Allele
 from variant.schemas.normalize_response_schema import ServiceMeta
 
 
-class TranslationResponseSchema(BaseModel):
+class ToVRSService(BaseModel):
     """Define model for translation response."""
 
     search_term: str
@@ -17,7 +17,7 @@ class TranslationResponseSchema(BaseModel):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['TranslationResponseSchema']) -> None:
+                         model: Type['ToVRSService']) -> None:
             """Configure OpenAPI schema."""
             if 'title' in schema.keys():
                 schema.pop('title', None)

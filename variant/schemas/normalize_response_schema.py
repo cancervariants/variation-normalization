@@ -54,17 +54,18 @@ class NormalizeService(BaseModel):
             schema['example'] = {
                 "variant_query": "BRAF V600E",
                 "variation_descriptor": {
-                    "id": "normalize.variant:BRAF%20v600e",
+                    "id": "normalize.variant:BRAF%20V600E",
                     "type": "VariationDescriptor",
-                    "value_id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
+                    "label": "BRAF V600E",
+                    "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
                     "value": {
                         "location": {
                             "interval": {
-                                "end": 600,
-                                "start": 599,
+                                "end": 640,
+                                "start": 639,
                                 "type": "SimpleInterval"
                             },
-                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",  # noqa: E501
+                            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
                             "type": "SequenceLocation"
                         },
                         "state": {
@@ -73,7 +74,6 @@ class NormalizeService(BaseModel):
                         },
                         "type": "Allele"
                     },
-                    "label": "BRAF V600E",
                     "molecule_context": "protein",
                     "structural_type": "SO:0001606",
                     "ref_allele_seq": "V",
@@ -82,7 +82,7 @@ class NormalizeService(BaseModel):
                         "type": "GeneDescriptor",
                         "label": "BRAF",
                         "value": {
-                            "gene_id": "hgnc:1097",
+                            "id": "hgnc:1097",
                             "type": "Gene"
                         },
                         "xrefs": [
@@ -95,16 +95,15 @@ class NormalizeService(BaseModel):
                         ],
                         "extensions": [
                             {
-                                "type": "Extension",
                                 "name": "symbol_status",
-                                "value": "approved"
+                                "value": "approved",
+                                "type": "Extension"
                             },
                             {
-                                "type": "Extension",
                                 "name": "associated_with",
                                 "value": [
                                     "vega:OTTHUMG00000157457",
-                                    "ucsc:uc003vwc.5",  # noqa: E501
+                                    "ucsc:uc003vwc.5",
                                     "ccds:CCDS5863",
                                     "ccds:CCDS87555",
                                     "uniprot:P15056",
@@ -116,10 +115,10 @@ class NormalizeService(BaseModel):
                                     "iuphar:1943",
                                     "ena.embl:M95712",
                                     "refseq:NM_004333"
-                                ]
+                                ],
+                                "type": "Extension"
                             },
                             {
-                                "type": "Extension",
                                 "name": "chromosome_location",
                                 "value": {
                                     "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
@@ -131,7 +130,8 @@ class NormalizeService(BaseModel):
                                         "start": "q34",
                                         "type": "CytobandInterval"
                                     }
-                                }
+                                },
+                                "type": "Extension"
                             }
                         ]
                     }

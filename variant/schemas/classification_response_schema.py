@@ -1,6 +1,6 @@
 """Module for Classification schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type
+from typing import List, Union
 from enum import IntEnum
 from variant.schemas.token_response_schema import Token, \
     GeneMatchToken, GenePairMatchToken, AminoAcidSubstitutionToken, \
@@ -46,93 +46,9 @@ class Classification(BaseModel):
                            SilentMutationToken, Token]]
     confidence: ConfidenceRating
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type['Classification']) -> None:
-            """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
-                "classification_type": 2,
-                "matching_tokens": [
-                    "GeneSymbol",
-                    "ProteinSubstitution"
-                ],
-                "non_matching_tokens": [],
-                "all_tokens": [
-                    {
-                        "token": "BRAF",
-                        "token_type": "GeneSymbol",
-                        "match_type": 2,
-                        "input_string": "BRAF",
-                        "object_type": "Token",
-                        "matched_value": "BRAF"
-                    },
-                    {
-                        "token": "V600E",
-                        "token_type": "ProteinSubstitution",
-                        "match_type": 5,
-                        "input_string": "V600E",
-                        "object_type": "Token",
-                        "ref_protein": "V",
-                        "alt_protein": "E",
-                        "position": 600
-                    }
-                ],
-                "confidence": 4
-            }
-
 
 class ClassificationResponseSchema(BaseModel):
     """Classification response for a given query."""
 
     search_term: str
     classifications: List[Classification]
-
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type['ClassificationResponseSchema']) -> None:
-            """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
-                "search_term": "BRAF V600E",
-                "classifications": [
-                    {
-                        "classification_type": 2,
-                        "matching_tokens": [
-                            "GeneSymbol",
-                            "ProteinSubstitution"
-                        ],
-                        "non_matching_tokens": [],
-                        "all_tokens": [
-                            {
-                                "token": "BRAF",
-                                "token_type": "GeneSymbol",
-                                "match_type": 2,
-                                "input_string": "BRAF",
-                                "object_type": "Token",
-                                "matched_value": "BRAF"
-                            },
-                            {
-                                "token": "V600E",
-                                "token_type": "ProteinSubstitution",
-                                "match_type": 5,
-                                "input_string": "V600E",
-                                "object_type": "Token"
-                            }
-                        ],
-                        "confidence": 4
-                    }
-                ]
-            }

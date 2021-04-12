@@ -2,8 +2,7 @@
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from variant.to_vrs import ToVRS
-from variant.schemas import TranslationResponseSchema, NormalizeService, \
-    ServiceMeta
+from variant.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variant.normalize import Normalize
 from variant import __version__
 from datetime import datetime
@@ -46,7 +45,7 @@ q_description = "Variant to translate."
 @app.get('/variant/toVRS',
          summary=translate_summary,
          response_description=translate_response_description,
-         response_model=TranslationResponseSchema,
+         response_model=ToVRSService,
          description=translate_description)
 def translate(q: str = Query(..., description=q_description)):
     """Return a VRS-like representation of all validated variants for the search term.  # noqa: E501, D400
@@ -57,7 +56,7 @@ def translate(q: str = Query(..., description=q_description)):
     validations = to_vrs.get_validations(html.unescape(q))
     translations = to_vrs.get_translations(validations)
 
-    return TranslationResponseSchema(
+    return ToVRSService(
         search_term=q,
         variants=translations,
         service_meta_=ServiceMeta(
