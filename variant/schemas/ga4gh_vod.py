@@ -95,7 +95,7 @@ class GeneDescriptor(ValueObjectDescriptor):
                 "type": "GeneDescriptor",
                 "label": "BRAF",
                 "value": {
-                    "gene_id": "hgnc:1097",
+                    "id": "hgnc:1097",
                     "type": "Gene"
                 },
                 "xrefs": ["ncbigene:673", "ensembl:ENSG00000157764"],
@@ -144,7 +144,7 @@ class GeneDescriptor(ValueObjectDescriptor):
 class Gene(BaseModel):
     """GA4GH Gene Value Object."""
 
-    gene_id: str
+    id: str
     type = "Gene"
 
 
@@ -199,7 +199,7 @@ class VariationDescriptor(ValueObjectDescriptor):
                     "type": "GeneDescriptor",
                     "label": "BRAF",
                     "value": {
-                        "gene_id": "hgnc:1097",
+                        "id": "hgnc:1097",
                         "type": "Gene"
                     },
                     "xrefs": [

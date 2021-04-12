@@ -19,6 +19,7 @@ dist/
 
 variant/data/seqrepo/
 variant/data/notebooks
+variant/data/refseq_gene_symbols.txt
 
 Pipfile.lock
 
