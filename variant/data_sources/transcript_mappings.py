@@ -62,9 +62,16 @@ class TranscriptMappings:
     def protein_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
         """Return the versioned protein transcripts for a gene symbol."""
+        protein_transcripts = list()
         if lookup_type == LookupType.GENE_SYMBOL:
-            return self.protein_transcripts_versioned_for_gene_symbol.get(
-                identifier)
+            protein_transcripts += \
+                self.protein_transcripts_versioned_for_gene_symbol.get(
+                    identifier)
+            protein_transcripts += \
+                self.protein_transcripts_for_gene_symbol.get(identifier)
+            protein_transcripts += \
+                self.refseq_protein_transcripts_for_gene_symbol.get(identifier)
+            return list(set(protein_transcripts))
         else:
             return None
 
