@@ -43,9 +43,12 @@ class TranslatorBase:
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
             num_valid = 0
+            found = list()
             for vr in validation_results:
                 if vr.is_valid:
-                    num_valid += 1
                     loc = (self.translator.translate(vr)).__dict__
-                    self.assertIn(loc, x['variants'], msg=x['query'])
+                    if loc not in found:
+                        found.append(loc)
+                        num_valid += 1
+                        self.assertIn(loc, x['variants'], msg=x['query'])
             self.assertEqual(len(x['variants']), num_valid, msg=x['query'])

@@ -52,6 +52,40 @@ amino_acid_substitution:
             "type": "SequenceState"
           },
           "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.fC1iEWNGM54CnSI3VDiW9h1jETr1NCmI",
+          "location": {
+            "interval": {
+              "start": 599,
+              "end": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.2A1O22DON5OKrUXyniXurZuogFLuhGvG",
+          "location": {
+            "interval": {
+              "start": 599,
+              "end": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
         }
       ]
     - query: braf v600e
@@ -99,6 +133,40 @@ amino_acid_substitution:
               "type": "SimpleInterval"
             },
             "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.fC1iEWNGM54CnSI3VDiW9h1jETr1NCmI",
+          "location": {
+            "interval": {
+              "start": 599,
+              "end": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "E",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.2A1O22DON5OKrUXyniXurZuogFLuhGvG",
+          "location": {
+            "interval": {
+              "start": 599,
+              "end": 600,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
             "type": "SequenceLocation"
           },
           "state": {
@@ -234,7 +302,25 @@ polypeptide_truncation:
 silent_mutation:
   tests:
     - query: NP_000542.1:p.Pro154=
-      variants: []
+      variants: [
+        {
+          "id": "ga4gh:VA.rVexjvD44WBTwBulB5OayUPby5y6Px1H",
+          "location": {
+            "interval": {
+              "start": 153,
+              "end": 154,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "P",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
     - query: NP_000542.1:p.Pro61=
       variants: [
         {
