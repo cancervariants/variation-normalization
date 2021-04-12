@@ -417,27 +417,36 @@ class PolypeptideSequenceVariantBase(Validator):
                        in res if a.startswith('ensembl')]
 
             gene_symbols = list()
-            for alias in aliases:
-                gene_symbol = \
-                    self.transcript_mappings.refseq_gene_symbol(alias)
-
-                # Try alias with no version
-                if not gene_symbol:
-                    if '.' in alias:
-                        no_version_alias = alias.split('.')[0]
+            if aliases:
+                for alias in aliases:
                     gene_symbol = \
-                        self.transcript_mappings.refseq_gene_symbol(
-                            no_version_alias, versioned=False)
+                        self.transcript_mappings.ensembl_gene_symbol(alias)
 
+                    # Try alias with no version
+                    if not gene_symbol:
+                        if '.' in alias:
+                            no_version_alias = alias.split('.')[0]
+                        gene_symbol = \
+                            self.transcript_mappings.ensembl_gene_symbol(
+                                no_version_alias, versioned=False)
+
+                    if gene_symbol:
+                        if gene_symbol not in gene_symbols:
+                            gene_symbols.append(gene_symbol)
+                            gene_tokens.append(
+                                self._gene_matcher.match(gene_symbol))
+                    else:
+                        logger.warning(f"No gene symbol found for Protein "
+                                       f"{alias} and {no_version_alias} "
+                                       f"in transcript_mappings.tsv")
+            else:
+                gene_symbol = \
+                    self.transcript_mappings.refseq_gene_symbol(refseq)
                 if gene_symbol:
                     if gene_symbol not in gene_symbols:
                         gene_symbols.append(gene_symbol)
-                        gene_tokens.append(
-                            self._gene_matcher.match(gene_symbol))
-                else:
-                    logger.warning(f"No gene symbol found for Protein "
-                                   f"{alias} and {no_version_alias} "
-                                   f"in transcript_mappings.tsv")
+                        gene_tokens.append(self._gene_matcher.match(
+                            gene_symbol))
         return gene_tokens
 
     @abstractmethod

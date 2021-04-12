@@ -26,13 +26,13 @@ from variant.schemas.token_response_schema import Token, TokenMatchType
 
 from .caches import GeneSymbolCache
 from .caches import AminoAcidCache
-from variant import GENE_SYMBOL_PATH
+from variant import HGNC_GENE_SYMBOL_PATH
 
 
 class Tokenize:
     """The tokenize class."""
 
-    def __init__(self, gene_file_path=GENE_SYMBOL_PATH) -> None:
+    def __init__(self, gene_file_path=HGNC_GENE_SYMBOL_PATH) -> None:
         """Initialize the tokenize class.
 
         :param str gene_file_path: The path to the gene file
