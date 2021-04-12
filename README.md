@@ -8,8 +8,6 @@ Variant Normalization relies on some local data caches which you will need to se
 From the _variant_ directory of the repository:
 ```
 pipenv sync
-curl ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt.txt > data/hgnc_gene_symbols.txt
-curl ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/RefSeqGene/LRG_RefSeqGene > data/refseq_gene_symbols.txt
 pip install seqrepo
 mkdir -p data/seqrepo
 seqrepo -r data/seqrepo pull -i 2021-01-29
