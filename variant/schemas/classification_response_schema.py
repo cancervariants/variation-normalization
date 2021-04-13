@@ -23,6 +23,7 @@ class ClassificationType(IntEnum):
     ONCOGENIC = 11
     EXPRESSION = 12
     COMPLEX = 13
+    DNA_CODING_SUBSTITUTION = 14
 
 
 class ConfidenceRating(IntEnum):
