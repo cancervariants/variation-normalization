@@ -254,3 +254,27 @@ class TokenResponseSchema(BaseModel):
                     }
                 ]
             }
+
+
+# TODO: Better names
+class DNASequenceVariant(Token):
+    """DNA Sequence Variant Token Class."""
+
+    position: int
+    ref_nucleotide: str
+    new_nucleotide: str
+    token_type: str
+
+
+class DNASubstitutionToken(DNASequenceVariant):
+    """DNA Substitution class."""
+
+    reference_sequence: str
+    token_type: str
+
+
+class CodingDNASubstitutionToken(DNASubstitutionToken):
+    """Coding DNA Substitution class."""
+
+    reference_sequence = 'coding DNA'
+    token_type = 'CodingDNASubstitution'
