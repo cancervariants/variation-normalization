@@ -4,7 +4,7 @@ import os
 import logging
 from ftplib import FTP
 
-__version__ = "0.1.11"
+__version__ = "0.1.12"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
