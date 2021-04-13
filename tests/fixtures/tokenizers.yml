@@ -94,3 +94,20 @@ hgvs:
     - token: NP_000918.2:p.Ile1145=
   should_not_match:
     - token: NP004324.2
+
+coding_dna_substitution:
+  should_match:
+    - token: (c.292T>C)
+    - token: c.292T>C
+    - token: (c.233A>G)
+    - token: c.509T>A
+  should_not_match:
+    - token: (c.292T>C
+    - token: g.292T>C
+    - token: c.292T<C
+    - token: c.292B>C
+    - token: c.j324T<C
+    - token: 292T<C
+    - token: c.509T>
+    - token: c.509>A
+    - token: c.T>A
