@@ -49,7 +49,7 @@ def braf_v600e():
             },
             "type": "Allele"
         },
-        "label": "NP_001361187.1%3Ap.Val640Glu",
+        "label": "NP_001361187.1:p.Val640Glu",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "V",
@@ -138,7 +138,7 @@ def vhl():
             },
             "type": "Allele"
         },
-        "label": "NP_000542.1%3Ap.Tyr185Ter",
+        "label": "NP_000542.1:p.Tyr185Ter",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "Y",
@@ -209,7 +209,7 @@ def vhl_silent():
     params = {
         "id": "normalize.variant:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "label": "NP_000542.1%3Ap.Pro61%3D",
+        "label": "NP_000542.1:p.Pro61=",
         "value_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
         "value": {
             "location": {

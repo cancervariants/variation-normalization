@@ -33,14 +33,14 @@ class Normalize:
             for r in validations.valid_results:
                 if r.mane_transcript:
                     valid_result = r
-                    label = quote(valid_result.mane_transcript.strip())
+                    label = valid_result.mane_transcript.strip()
                     break
             if not valid_result:
                 warning = f"Unable to find MANE Select Transcript for {q}."
                 logger.warning(warning)
                 warnings.append(warning)
                 valid_result = validations.valid_results[0]
-                label = quote(' '.join(q.strip().split()))
+                label = ' '.join(q.strip().split())
 
             valid_result_tokens = valid_result.classification.all_tokens
 
