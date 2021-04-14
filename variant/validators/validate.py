@@ -7,6 +7,7 @@ from variant.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
+from .dna_coding_substitution import CodingDNASubstitution
 from typing import List
 
 
@@ -24,7 +25,9 @@ class Validate:
             PolypeptideTruncation(seq_repo_client, transcript_mappings,
                                   gene_symbol, amino_acid_cache),
             SilentMutation(seq_repo_client, transcript_mappings,
-                           gene_symbol, amino_acid_cache)
+                           gene_symbol, amino_acid_cache),
+            CodingDNASubstitution(seq_repo_client, transcript_mappings,
+                                  gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \

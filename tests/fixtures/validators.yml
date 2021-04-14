@@ -28,3 +28,7 @@ silent_mutation:
     - query: NP_000918.2:p.Ile1145=
   should_not_match:
     - query: NP_000542.1:p.Pro62=
+
+coding_dna_substitution:
+  should_match:
+    - query: NM_004333.4:c.1799T>A
