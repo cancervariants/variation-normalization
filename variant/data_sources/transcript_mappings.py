@@ -14,13 +14,29 @@ class TranscriptMappings:
         self.file_path = transcript_file_path
         self.protein_transcripts_versioned_for_gene_symbol: \
             Dict[str, List[str]] = {}
+
+        # ENSP <-> Gene Symbol
         self.protein_stable_id_version_to_gene_symbol: Dict[str, str] = {}
         self.protein_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
         self.protein_stable_id_to_gene_symbol: Dict[str, str] = {}
+
+        # Gene Symbol -> ENST
         self.genomic_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
+
+        # NP_ <-> Gene Symbol
         self.refseq_protein_transcripts_for_gene_symbol:\
             Dict[str, List[str]] = {}
         self.refseq_protein_transcript_to_gene_symbol: Dict[str, str] = {}
+
+        # NM_ <-> Gene Symbol
+        self.refseq_rna_transcripts_for_gene_symbol: Dict[str, List[str]] = {}
+        self.refseq_rna_transcripts_to_gene_symbol: Dict[str, str] = {}
+
+        self._load_transcript_mappings_data(transcript_file_path)
+        self._load_refseq_gene_symbol_data(refseq_file_path)
+
+    def _load_transcript_mappings_data(self, transcript_file_path):
+        """Load transcript mappings file to dictionaries."""
         with open(transcript_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
@@ -41,11 +57,15 @@ class TranscriptMappings:
                             .append(protein_transcript)
                         self.protein_stable_id_to_gene_symbol[
                             protein_transcript] = gene
-                    genomic_transcript = row['Transcript stable ID version']
-                    if genomic_transcript:
+                    versioned_genomic_transcript = \
+                        row['Transcript stable ID version']
+                    if versioned_genomic_transcript:
                         self.genomic_transcripts_for_gene_symbol \
                             .setdefault(gene, []) \
-                            .append(genomic_transcript)
+                            .append(versioned_genomic_transcript)
+
+    def _load_refseq_gene_symbol_data(self, refseq_file_path):
+        """Load data from RefSeq Gene Symbol file to dictionaries."""
         with open(refseq_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
@@ -58,6 +78,13 @@ class TranscriptMappings:
                             append(refseq_transcript)
                         self.refseq_protein_transcript_to_gene_symbol[
                             refseq_transcript] = gene
+                    rna_trasncript = row['RNA']
+                    if rna_trasncript:
+                        self.refseq_rna_transcripts_for_gene_symbol.\
+                            setdefault(gene, []).\
+                            append(rna_trasncript)
+                        self.refseq_rna_transcripts_to_gene_symbol[
+                            rna_trasncript] = gene
 
     def protein_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
@@ -77,7 +104,7 @@ class TranscriptMappings:
 
     def genomic_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
-        """Return the versioned genomic transcripts for a gene symbol."""
+        """Return versioned ensembl genomic transcripts for a gene symbol."""
         if lookup_type == LookupType.GENE_SYMBOL:
             return self.genomic_transcripts_for_gene_symbol.get(identifier)
         else:
@@ -93,3 +120,7 @@ class TranscriptMappings:
     def refseq_gene_symbol(self, q: str):
         """Return the gene symbol for a Refseq Protein."""
         return self.refseq_protein_transcript_to_gene_symbol.get(q)
+
+    def refseq_rna_to_gene_symbol(self, q: str) -> Optional[List[str]]:
+        """Return gene symbol for a Refseq RNA Transcript."""
+        return self.refseq_rna_transcripts_to_gene_symbol.get(q)
