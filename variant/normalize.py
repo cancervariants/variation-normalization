@@ -146,7 +146,7 @@ class Normalize:
             # convert 3 letter to 1 letter amino acid code
             if len(polypeptide_sequence_variant_token.ref_protein) == 3:
                 for one, three in \
-                        amino_acid_cache._amino_acid_code_conversion.items():
+                        amino_acid_cache.amino_acid_code_conversion.items():
                     if three == polypeptide_sequence_variant_token.ref_protein:
                         polypeptide_sequence_variant_token.ref_protein = one
             ref_allele_seq = polypeptide_sequence_variant_token.ref_protein

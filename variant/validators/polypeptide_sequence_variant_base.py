@@ -107,7 +107,7 @@ class PolypeptideSequenceVariantBase(Validator):
         state = models.SequenceState(sequence=s.alt_protein.upper())
         state_dict = state.as_dict()
         if len(state_dict['sequence']) == 3:
-            state.sequence = self._amino_acid_cache._convert_three_to_one(
+            state.sequence = self._amino_acid_cache.convert_three_to_one(
                 state_dict['sequence'])
 
         allele = models.Allele(location=seq_location,
@@ -133,7 +133,7 @@ class PolypeptideSequenceVariantBase(Validator):
                 self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
             alt_amino = hgvs_parsed.posedit.pos.end.aa
             three_letter = \
-                self._amino_acid_cache._amino_acid_code_conversion[alt_amino]
+                self._amino_acid_cache.amino_acid_code_conversion[alt_amino]
             hgvs_expr = hgvs_expr.replace('=', three_letter)
         return hgvs_expr
 
@@ -209,13 +209,13 @@ class PolypeptideSequenceVariantBase(Validator):
 
                 if allele and len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
-                        self._amino_acid_cache._convert_three_to_one(
+                        self._amino_acid_cache.convert_three_to_one(
                             allele['state']['sequence'])
 
                 if not errors:
                     if ref_protein and len(ref_protein) == 1 \
                             and len(s.ref_protein) == 3:
-                        ref_protein = self._amino_acid_cache._amino_acid_code_conversion[ref_protein]  # noqa: E501
+                        ref_protein = self._amino_acid_cache.amino_acid_code_conversion[ref_protein]  # noqa: E501
                     if ref_protein != s.ref_protein:
                         errors.append(f'Needed to find {s.ref_protein} at'
                                       f' position {s.position} on {t}'
@@ -297,7 +297,7 @@ class PolypeptideSequenceVariantBase(Validator):
                 allele = seq_location.as_dict()
                 if len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
-                        self._amino_acid_cache._convert_three_to_one(
+                        self._amino_acid_cache.convert_three_to_one(
                             allele['state']['sequence'])
 
                 results.append(self.get_validation_result(
