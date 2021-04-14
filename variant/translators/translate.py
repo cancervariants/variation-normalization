@@ -5,6 +5,7 @@ from .translator import Translator
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
+from .coding_dna_substitution import CodingDNASubstitution
 from typing import List, Optional
 
 
@@ -16,7 +17,8 @@ class Translate:
         self.all_translators: List[Translator] = [
             AminoAcidSubstitution(),
             PolypeptideTruncation(),
-            SilentMutation()
+            SilentMutation(),
+            CodingDNASubstitution()
         ]
 
     def perform(self, res: ValidationResult) \
