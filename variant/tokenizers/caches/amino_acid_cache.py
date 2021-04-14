@@ -11,7 +11,7 @@ class AminoAcidCache:
                  amino_acids_file_path=AMINO_ACID_PATH) -> None:
         """Initialize the AminoAcidCache class."""
         self._amino_acids_file = amino_acids_file_path
-        self._amino_acid_code_conversion = dict()
+        self.amino_acid_code_conversion = dict()
         self.__amino_acid_codes = self.__load_amino_acid_codes()
 
     def __contains__(self, item: str) -> bool:
@@ -26,11 +26,11 @@ class AminoAcidCache:
         with open(self._amino_acids_file, 'r') as f:
             data = list(csv.reader(f))
             for row in data:
-                self._amino_acid_code_conversion[row[2]] = row[1]
+                self.amino_acid_code_conversion[row[2]] = row[1]
 
         return ({item.upper() for sublist in data for item in sublist})
 
-    def _convert_three_to_one(self, three_letter_amino_acid):
+    def convert_three_to_one(self, three_letter_amino_acid):
         """Convert a 3 letter amino acid code to a 1 letter amino acid code.
 
         :param str three_letter_amino_acid: Amino Acid Code to convert
@@ -38,6 +38,6 @@ class AminoAcidCache:
         """
         if three_letter_amino_acid.upper() == 'TER':
             return '*'
-        for one_letter, three_letter in self._amino_acid_code_conversion.items():  # noqa: E501
+        for one_letter, three_letter in self.amino_acid_code_conversion.items():  # noqa: E501
             if three_letter.upper() == three_letter_amino_acid.upper():
                 return one_letter.upper()
