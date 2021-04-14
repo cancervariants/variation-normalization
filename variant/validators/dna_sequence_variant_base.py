@@ -397,8 +397,7 @@ class DNASequenceVariantBase(Validator):
             if aliases:
                 for alias in aliases:
                     gene_symbol = \
-                        self.transcript_mappings.refseq_rna_to_gene_symbol(
-                            alias)
+                        self.transcript_mappings.get_gene_symbol_from_refseq_rna(alias)  # noqa: E501
 
                     if gene_symbol:
                         if gene_symbol not in gene_symbols:

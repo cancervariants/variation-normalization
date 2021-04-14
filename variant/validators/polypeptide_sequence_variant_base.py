@@ -420,15 +420,14 @@ class PolypeptideSequenceVariantBase(Validator):
             if aliases:
                 for alias in aliases:
                     gene_symbol = \
-                        self.transcript_mappings.ensembl_gene_symbol(alias)
+                        self.transcript_mappings.get_gene_symbol_from_ensembl_protein(alias)  # noqa: E501
 
                     # Try alias with no version
                     if not gene_symbol:
                         if '.' in alias:
                             no_version_alias = alias.split('.')[0]
-                        gene_symbol = \
-                            self.transcript_mappings.ensembl_gene_symbol(
-                                no_version_alias, versioned=False)
+                            gene_symbol = \
+                                self.transcript_mappings.get_gene_symbol_from_ensembl_protein(no_version_alias, versioned=False)  # noqa: E501
 
                     if gene_symbol:
                         if gene_symbol not in gene_symbols:
@@ -441,7 +440,7 @@ class PolypeptideSequenceVariantBase(Validator):
                                        f"in transcript_mappings.tsv")
             else:
                 gene_symbol = \
-                    self.transcript_mappings.refseq_gene_symbol(refseq)
+                    self.transcript_mappings.get_gene_symbol_from_refeq_protein(refseq)  # noqa: E501
                 if gene_symbol:
                     if gene_symbol not in gene_symbols:
                         gene_symbols.append(gene_symbol)
