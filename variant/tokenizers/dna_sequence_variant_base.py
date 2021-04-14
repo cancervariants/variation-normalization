@@ -23,9 +23,9 @@ class DNASequenceVariantBase(Tokenizer):
         :param str new_nucleotide: The substituted nucleotide
         :param str reference_sequence: The reference sequence used
         """
-        self.sub['ref_nucleotide'] = ref_nucleotide
+        self.sub['ref_nucleotide'] = ref_nucleotide.upper()
         self.sub['position'] = int(position)
-        self.sub['new_nucleotide'] = new_nucleotide
+        self.sub['new_nucleotide'] = new_nucleotide.upper()
         self.sub['reference_sequence'] = reference_sequence
 
     @abstractmethod
