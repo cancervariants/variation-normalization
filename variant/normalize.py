@@ -1,5 +1,6 @@
 """Module for Variant Normalization."""
-from variant.schemas.token_response_schema import PolypeptideSequenceVariant
+from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
+    DNASequenceVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
@@ -43,28 +44,13 @@ class Normalize:
                 label = ' '.join(q.strip().split())
 
             valid_result_tokens = valid_result.classification.all_tokens
-
-            polypeptide_sequence_variant_token = \
-                ([t for t in valid_result_tokens if isinstance(t, PolypeptideSequenceVariant)] or [None])[0]  # noqa: E501
-
-            if polypeptide_sequence_variant_token:
-                molecule_context = 'protein'
-                structural_type = 'SO:0001606'
-            else:
-                molecule_context = None
-                structural_type = None
+            molecule_context, structural_type, ref_allele_seq = \
+                self._get_context(valid_result_tokens, amino_acid_cache)
             allele = valid_result.allele
             allele_id = allele['_id']
             del allele['_id']
 
             gene_token = valid_result.gene_tokens[0]
-
-            # convert 3 letter to 1 letter amino acid code
-            if len(polypeptide_sequence_variant_token.ref_protein) == 3:
-                for one, three in \
-                        amino_acid_cache._amino_acid_code_conversion.items():
-                    if three == polypeptide_sequence_variant_token.ref_protein:
-                        polypeptide_sequence_variant_token.ref_protein = one
 
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
@@ -73,7 +59,7 @@ class Normalize:
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,
-                ref_allele_seq=polypeptide_sequence_variant_token.ref_protein,
+                ref_allele_seq=ref_allele_seq,
                 gene_context=self.get_gene_descriptor(gene_token)
             )
         else:
@@ -141,3 +127,45 @@ class Normalize:
             'name': name,
             'value': value
         })
+
+    # TODO better method name
+    def _get_context(self, valid_result_tokens, amino_acid_cache):
+        """Return context for a token.
+
+        :return: (molecule_context, structural_type, ref_allele_seq)
+        """
+        polypeptide_sequence_variant_token = \
+            self._get_instance_type_token(valid_result_tokens,
+                                          PolypeptideSequenceVariant)
+        dna_sequence_variant_token = \
+            self._get_instance_type_token(valid_result_tokens,
+                                          DNASequenceVariant)
+        if polypeptide_sequence_variant_token:
+            molecule_context = 'protein'
+            structural_type = 'SO:0001606'
+            # convert 3 letter to 1 letter amino acid code
+            if len(polypeptide_sequence_variant_token.ref_protein) == 3:
+                for one, three in \
+                        amino_acid_cache._amino_acid_code_conversion.items():
+                    if three == polypeptide_sequence_variant_token.ref_protein:
+                        polypeptide_sequence_variant_token.ref_protein = one
+            ref_allele_seq = polypeptide_sequence_variant_token.ref_protein
+        elif dna_sequence_variant_token:
+            molecule_context = 'genomic'
+            structural_type = 'SO:0001606'
+            ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
+        else:
+            molecule_context = None
+            structural_type = None
+            ref_allele_seq = None
+        return molecule_context, structural_type, ref_allele_seq
+
+    def _get_instance_type_token(self, valid_result_tokens, instance_type):
+        """Return the tokens for a given instance type.
+
+        :return: A list of tokens
+        """
+        for t in valid_result_tokens:
+            if isinstance(t, instance_type):
+                return t
+        return None
