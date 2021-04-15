@@ -422,13 +422,6 @@ class PolypeptideSequenceVariantBase(Validator):
                     gene_symbol = \
                         self.transcript_mappings.get_gene_symbol_from_ensembl_protein(alias)  # noqa: E501
 
-                    # Try alias with no version
-                    if not gene_symbol:
-                        if '.' in alias:
-                            no_version_alias = alias.split('.')[0]
-                            gene_symbol = \
-                                self.transcript_mappings.get_gene_symbol_from_ensembl_protein(no_version_alias, versioned=False)  # noqa: E501
-
                     if gene_symbol:
                         if gene_symbol not in gene_symbols:
                             gene_symbols.append(gene_symbol)
@@ -436,8 +429,7 @@ class PolypeptideSequenceVariantBase(Validator):
                                 self._gene_matcher.match(gene_symbol))
                     else:
                         logger.warning(f"No gene symbol found for Protein "
-                                       f"{alias} and {no_version_alias} "
-                                       f"in transcript_mappings.tsv")
+                                       f"{alias} in transcript_mappings.tsv")
             else:
                 gene_symbol = \
                     self.transcript_mappings.get_gene_symbol_from_refeq_protein(refseq)  # noqa: E501
