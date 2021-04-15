@@ -21,6 +21,9 @@ import logging
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
+# TODO:
+#  Fix ENST search
+
 
 class DNASequenceVariantBase(Validator):
     """The DNA Sequence Variant Validator Base class."""
@@ -195,17 +198,21 @@ class DNASequenceVariantBase(Validator):
                         # MANE Select Transcript for Gene Name + Variation
                         # (ex: BRAF V600E)
                         refseq = ([a for a in self.seq_repo_access.aliases(t)
-                                   if a.startswith('refseq:NP_')] or [None])[0]
+                                   if a.startswith('refseq:NM_')] or [None])[0]
                         if refseq:
-                            hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                        f"{s.ref_protein}{s.position}" \
-                                        f"{s.alt_protein}"
-                            if hgvs_expr not in mane_transcripts_dict.keys():
-                                mane_transcripts_dict[hgvs_expr] = {
-                                    'classification_token': s,
-                                    'transcript_token': t,
-                                    'is_ensembl_transcript': False
-                                }
+                            if 'CodingDNASubstitution' in\
+                                    classification.matching_tokens:
+                                hgvs_expr = f"{refseq.split('refseq:')[-1]}:" \
+                                            f"c.{s.position}" \
+                                            f"{s.ref_nucleotide}" \
+                                            f">{s.new_nucleotide}"
+                                if hgvs_expr not in \
+                                        mane_transcripts_dict.keys():
+                                    mane_transcripts_dict[hgvs_expr] = {
+                                        'classification_token': s,
+                                        'transcript_token': t,
+                                        'is_ensembl_transcript': False
+                                    }
 
                 if not errors:
                     if ref_nuc != s.ref_nucleotide:
