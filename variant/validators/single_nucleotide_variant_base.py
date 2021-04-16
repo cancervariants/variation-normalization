@@ -123,7 +123,8 @@ class SingleNucleotideVariantBase(Validator):
                     old_and_new = old, hgvs_expr
                     if old_and_new not in replace_old_keys:
                         replace_old_keys.append(old_and_new)
-            mane_transcript_tuple = self.get_mane_transcript(hgvs_expr)
+            mane_transcript_tuple = self.get_mane_transcript(hgvs_expr,
+                                                             gene_tokens)
             if mane_transcript_tuple:
                 ensembl, refseq = mane_transcript_tuple
 
@@ -201,7 +202,7 @@ class SingleNucleotideVariantBase(Validator):
                     ), errors, gene_tokens, transcript
                 ))
 
-    def get_mane_transcript(self, hgvs_expr):
+    def get_mane_transcript(self, hgvs_expr, gene_tokens):
         """Return MANE Select Transcript from ClinGene Allele Registry.
 
         :param str hgvs_expr: The HGVS expression to query
@@ -213,12 +214,18 @@ class SingleNucleotideVariantBase(Validator):
             resp = request.json()
             if 'transcriptAlleles' in resp.keys():
                 mane_transcript = None
+                gene_symbol = None
                 for t in resp['transcriptAlleles']:
                     if 'MANE' in t.keys():
                         mane_transcript = t['MANE']
+                        gene_symbol = t['geneSymbol']
                         break
                 if mane_transcript:
                     if mane_transcript['maneStatus'] == 'MANE Select':
+                        if gene_symbol:
+                            gene = self._gene_matcher.match(gene_symbol)
+                            if gene not in gene_tokens:
+                                gene_tokens.append(gene)
                         return (mane_transcript['nucleotide']['Ensembl']['hgvs'],   # noqa: E501
                                 mane_transcript['nucleotide']['RefSeq']['hgvs'])  # noqa: E501
             else:

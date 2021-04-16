@@ -14,7 +14,7 @@ from requests.exceptions import HTTPError
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
-# TODO: Find gene from NC accession
+# TODO: Find gene from NC accession (in event of no mane transcripts)
 
 
 class GenomicSubstitution(SingleNucleotideVariantBase):
