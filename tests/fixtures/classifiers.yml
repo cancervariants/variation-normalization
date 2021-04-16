@@ -79,3 +79,20 @@ coding_dna_substitution:
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
+
+
+genomic_substitution:
+  should_match:
+    - query: V170D (g.509T>A)
+      confidence: ConfidenceRating.SUPERSET
+    - query: NM_000551.3:g.292T>C
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000551.3:g.292TC
+      confidence: ConfidenceRating.INTERSECTION
+    - query: foo Y98H (g.292T>C)
+      confidence: ConfidenceRating.SUPERSET
+    - query: BRAF V600E g.23T>A
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: V170 (g.509F>A)
+    - query: RX_:c.292TC
