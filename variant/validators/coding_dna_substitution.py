@@ -1,11 +1,11 @@
 """The module for Coding DNA Substitution Validation."""
-from .dna_sequence_variant_base import DNASequenceVariantBase
+from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import CodingDNASubstitutionToken
 
 
-class CodingDNASubstitution(DNASequenceVariantBase):
+class CodingDNASubstitution(SingleNucleotideVariantBase):
     """The Coding DNA Substitution Validator class."""
 
     def variant_name(self):
@@ -22,7 +22,7 @@ class CodingDNASubstitution(DNASequenceVariantBase):
         """Return whether or not the classification type is amino acid
         substitution.
         """
-        return classification_type == ClassificationType.DNA_CODING_SUBSTITUTION  # noqa: E501
+        return classification_type == ClassificationType.CODING_DNA_SUBSTITUTION  # noqa: E501
 
     def human_description(self, transcript,
                           psub_token: CodingDNASubstitutionToken) -> str:

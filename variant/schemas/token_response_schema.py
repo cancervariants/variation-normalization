@@ -1,7 +1,7 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
 from typing import List, Union, Dict, Any, Type
-from enum import IntEnum
+from enum import IntEnum, Enum
 
 
 class TokenMatchType(IntEnum):
@@ -256,25 +256,35 @@ class TokenResponseSchema(BaseModel):
             }
 
 
-# TODO: Better names
-class DNASequenceVariant(Token):
-    """DNA Sequence Variant Token Class."""
+class ReferenceSequence(str, Enum):
+    """Define constraints for reference sequence."""
+
+    CODING_DNA = 'c'
+    LINEAR_GENOMIC = 'g'
+
+
+class SequenceAlteration(Token):
+    """Sequence feature whose extent is the deviation from another sequence.
+    (SO:0001059)
+    """
 
     position: int
     ref_nucleotide: str
     new_nucleotide: str
     token_type: str
+    reference_sequence: ReferenceSequence
 
 
-class DNASubstitutionToken(DNASequenceVariant):
-    """DNA Substitution class."""
+class SingleNucleotideVariantToken(SequenceAlteration):
+    """Single nucleotide positions in genomic DNA at which different
+    sequence alternatives exist.
+    """
 
-    reference_sequence: str
-    token_type: str
+    token_type = 'SNV'
 
 
-class CodingDNASubstitutionToken(DNASubstitutionToken):
-    """Coding DNA Substitution class."""
+class CodingDNASubstitutionToken(SingleNucleotideVariantToken):
+    """SNV substitution at the coding DNA reference sequence."""
 
-    reference_sequence = 'coding DNA'
+    reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'

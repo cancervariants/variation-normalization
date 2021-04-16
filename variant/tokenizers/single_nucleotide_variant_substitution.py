@@ -1,18 +1,18 @@
 """A module for DNA Substitution Tokenization."""
 from typing import Optional
-from variant.schemas.token_response_schema import DNASubstitutionToken, \
-    CodingDNASubstitutionToken, TokenMatchType
-from .dna_sequence_variant_base import DNASequenceVariantBase
+from variant.schemas.token_response_schema import \
+    SingleNucleotideVariantToken, CodingDNASubstitutionToken, TokenMatchType
+from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 
 
-class DNASubstitution(DNASequenceVariantBase):
-    """Class for tokenizing DNA Substitution."""
+class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
+    """Class for tokenizing SNV Substitution."""
 
-    def match(self, input_string) -> Optional[DNASubstitutionToken]:
-        """Return a DNASubstitutionToken match if one exists.
+    def match(self, input_string) -> Optional[SingleNucleotideVariantToken]:
+        """Return a SingleNucleotideVariantToken match if one exists.
 
         :param str input_string: The input string to match
-        :return: A DNASubstitutionToken if a match one exists.
+        :return: A SingleNucleotideVariantToken if a match one exists.
         """
         input_string = str(input_string).lower()
         self.sub = {

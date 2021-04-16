@@ -1,6 +1,6 @@
 """A module for testing DNA Coding Substitution tokenization."""
 import unittest
-from variant.tokenizers import DNASubstitution
+from variant.tokenizers import SingleNucleotideVariantSubstitution
 from .tokenizer_base import TokenizerBase
 
 
@@ -8,8 +8,8 @@ class TestDNACodingSubstitutionTokenizer(TokenizerBase, unittest.TestCase):
     """A class for testing DNA Coding Substitution Tokenization."""
 
     def tokenizer_instance(self):
-        """Return amino acid substitution instance."""
-        return DNASubstitution()
+        """Return Single Nucleotide Variant Substitution instance."""
+        return SingleNucleotideVariantSubstitution()
 
     def token_type(self):
         """Return DNA coding substitution token type."""

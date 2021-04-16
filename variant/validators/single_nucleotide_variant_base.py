@@ -1,4 +1,4 @@
-"""The module for Polypeptide Sequence Variant Validation."""
+"""The module for Single Nucleotide Variant Validation."""
 from typing import List
 from abc import abstractmethod
 from requests.exceptions import HTTPError
@@ -22,8 +22,8 @@ logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
 
-class DNASequenceVariantBase(Validator):
-    """The DNA Sequence Variant Validator Base class."""
+class SingleNucleotideVariantBase(Validator):
+    """The Single Nucleotide Variant Validator Base class."""
 
     def __init__(self, seq_repo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,

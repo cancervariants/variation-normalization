@@ -5,6 +5,8 @@ Services and guidelines for normalizing variant terms
 Variant Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
+Variant Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
+
 From the _variant_ directory of the repository:
 ```
 pipenv sync
@@ -18,8 +20,6 @@ sudo mv $seqrepo_date_dir latest
 ```
 
 ### Data
-Variant Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo). We are currently using version `2021-01-29`.
-
 Variant Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to retrieve `variant/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
 
 ![image](biomart.png)
