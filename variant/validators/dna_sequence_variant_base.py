@@ -21,9 +21,6 @@ import logging
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
-# TODO:
-#  Fix ENST search
-
 
 class DNASequenceVariantBase(Validator):
     """The DNA Sequence Variant Validator Base class."""
@@ -115,7 +112,7 @@ class DNASequenceVariantBase(Validator):
 
         :param Classification classification: A classification for a list of
             tokens
-        :param str t: Transcript
+        :param str t: Transcript retreived from transcript mapping
         :return: A tuple containing the hgvs expression and whether or not
             it's an Ensembl Transcript
         """
@@ -129,6 +126,11 @@ class DNASequenceVariantBase(Validator):
                 hgvs_expr = f"{t}:{hgvs_expr.split(':')[1]}"
         else:
             is_ensembl_transcript = False
+
+        gene_token = [t for t in classification.all_tokens
+                      if t.token_type == 'GeneSymbol']
+        if gene_token:
+            is_ensembl_transcript = True
 
         # Replace `=` in silent mutation
         if '=' in hgvs_expr:
@@ -200,6 +202,12 @@ class DNASequenceVariantBase(Validator):
                         refseq = ([a for a in self.seq_repo_access.aliases(t)
                                    if a.startswith('refseq:NM_')] or [None])[0]
                         if refseq:
+                            gene_token = [t for t in classification.all_tokens
+                                          if t.token_type == 'GeneSymbol']
+                            if gene_token:
+                                is_ensembl_transcript = True
+                            else:
+                                is_ensembl_transcript = False
                             if 'CodingDNASubstitution' in\
                                     classification.matching_tokens:
                                 hgvs_expr = f"{refseq.split('refseq:')[-1]}:" \
@@ -211,7 +219,8 @@ class DNASequenceVariantBase(Validator):
                                     mane_transcripts_dict[hgvs_expr] = {
                                         'classification_token': s,
                                         'transcript_token': t,
-                                        'is_ensembl_transcript': False
+                                        'is_ensembl_transcript':
+                                            is_ensembl_transcript
                                     }
 
                 if not errors:
@@ -264,11 +273,14 @@ class DNASequenceVariantBase(Validator):
                     old_and_new = old, hgvs_expr
                     if old_and_new not in replace_old_keys:
                         replace_old_keys.append(old_and_new)
-            t = self.get_mane_transcript(hgvs_expr,
-                                         mane_transcripts_dict[hgvs_expr]['is_ensembl_transcript'])  # noqa: E501
-            if t and t not in found_mane_transcripts:
-                found_mane_transcripts.append(t)
-                mane_transcripts.append((hgvs_expr, t))
+            mane_transcript_tuple = self.get_mane_transcript(hgvs_expr)
+            if mane_transcript_tuple:
+                ensembl, refseq = mane_transcript_tuple
+
+                if ensembl and refseq:
+                    if (ensembl, refseq) not in found_mane_transcripts:
+                        found_mane_transcripts.append((ensembl, refseq))
+                        mane_transcripts.append((hgvs_expr, ensembl, refseq))
 
         for tup in replace_old_keys:
             mane_transcripts_dict[tup[1]] = mane_transcripts_dict[tup[0]]
@@ -285,30 +297,28 @@ class DNASequenceVariantBase(Validator):
 
         for el in mane_transcripts:
             hgvs_expr = el[0]
-            transcript = el[1]
+            ensembl_transcript = el[1]
+            refseq_transcript = el[2]
 
             try:
-                seq_location = self.tlr.translate_from(transcript, 'hgvs')
+                seq_location = self.tlr.translate_from(refseq_transcript,
+                                                       'hgvs')
             except HTTPError:
                 errors.append(f"{mane_transcripts[0]} is an invalid HGVS "
                               f"expression.")
             except KeyError:
-                try:
-                    sequence_id = self.dp.translate_sequence_identifier(
-                        mane_transcripts_dict[hgvs_expr]['transcript_token'],
-                        'ga4gh'
-                    )[0]
-                except KeyError:
-                    allele = None
-                    error = "GA4GH Data Proxy unable to translate  sequence " \
-                            f"identifier: {mane_transcripts_dict[hgvs_expr]['transcript_token']}"  # noqa: E501
-                    logger.warning(error)
-                    errors.append(error)
-                else:
-                    allele = self.get_vrs_allele(sequence_id,
-                                                 mane_transcripts_dict[hgvs_expr]['classification_token'])  # noqa: E501
+                allele = None
+                error = "GA4GH Data Proxy unable to translate  sequence " \
+                        f"identifier: {refseq_transcript}"
+                logger.warning(error)
+                errors.append(error)
             else:
                 allele = seq_location.as_dict()
+
+            if mane_transcripts_dict[hgvs_expr]['is_ensembl_transcript']:
+                transcript = ensembl_transcript
+            else:
+                transcript = refseq_transcript
 
             if not errors:
                 results.append(self.get_validation_result(
@@ -341,7 +351,7 @@ class DNASequenceVariantBase(Validator):
                     ), errors, gene_tokens, transcript
                 ))
 
-    def get_mane_transcript(self, hgvs_expr, is_ensembl_transcript):
+    def get_mane_transcript(self, hgvs_expr):
         """Return MANE Select Transcript from ClinGene Allele Registry.
 
         :param str hgvs_expr: The HGVS expression to query
@@ -361,13 +371,8 @@ class DNASequenceVariantBase(Validator):
                         break
                 if mane_transcript:
                     if mane_transcript['maneStatus'] == 'MANE Select':
-                        if is_ensembl_transcript:
-                            result = \
-                                mane_transcript['nucleotide']['Ensembl']['hgvs']  # noqa: E501
-                        else:
-                            result = \
-                                mane_transcript['nucleotide']['RefSeq']['hgvs']
-                        return result
+                        return (mane_transcript['nucleotide']['Ensembl']['hgvs'],   # noqa: E501
+                                mane_transcript['nucleotide']['RefSeq']['hgvs'])  # noqa: E501
             else:
                 if 'aminoAcidAlleles' in resp.keys() and len(resp['aminoAcidAlleles']) > 0:  # noqa: E501
                     amino_acid_allele = resp['aminoAcidAlleles'][0]

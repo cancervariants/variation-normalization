@@ -67,13 +67,15 @@ silent_mutation:
 dna_coding_substitution:
   should_match:
     - query: V170D (c.509T>A)
-      confidence: ConfidenceRating.EXACT
+      confidence: ConfidenceRating.SUPERSET
     - query: NM_000551.3:c.292T>C
       confidence: ConfidenceRating.EXACT
     - query: NM_000551.3:c.292TC
       confidence: ConfidenceRating.INTERSECTION
     - query: foo Y98H (c.292T>C)
       confidence: ConfidenceRating.SUPERSET
+    - query: BRAF V600E c.23T>A
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
