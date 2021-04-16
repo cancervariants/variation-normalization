@@ -288,3 +288,10 @@ class CodingDNASubstitutionToken(SingleNucleotideVariantToken):
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'
+
+
+class GenomicSubstitutionToken(SingleNucleotideVariantToken):
+    """SNV substitution at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    token_type = 'GenomicSubstitution'
