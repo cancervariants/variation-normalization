@@ -4,7 +4,7 @@ from variant.classifiers import CodingDNASubstitutionClassifier
 from .classifier_base import ClassifierBase
 
 
-class TestDNACodingSubstitutionClassifier(ClassifierBase, unittest.TestCase):
+class TestCodingDNASubstitutionClassifier(ClassifierBase, unittest.TestCase):
     """A class to test the Coding DNA Substitution Classifier."""
 
     def classifier_instance(self):

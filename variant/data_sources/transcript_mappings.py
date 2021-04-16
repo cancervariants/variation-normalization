@@ -3,6 +3,7 @@ import csv
 from typing import Dict, List, Optional
 from variant.schemas.validation_response_schema import LookupType
 from variant import TRANSCRIPT_MAPPINGS_PATH, REFSEQ_GENE_SYMBOL_PATH
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TranscriptMappings:
@@ -31,6 +32,7 @@ class TranscriptMappings:
         # NM_ <-> Gene Symbol
         self.refseq_rna_for_gene_symbol: Dict[str, List[str]] = {}
         self.refseq_rna_to_gene_symbol: Dict[str, str] = {}
+        self.gene_query_handler = GeneQueryHandler()
 
         self._load_transcript_mappings_data(transcript_file_path)
         self._load_refseq_gene_symbol_data(refseq_file_path)
@@ -111,9 +113,9 @@ class TranscriptMappings:
         else:
             return []
 
-    def genomic_transcripts(self, identifier: str,
-                            lookup_type: LookupType) -> Optional[List[str]]:
-        """Return genomic transcripts for a gene symbol."""
+    def coding_dna_transcripts(self, identifier: str,
+                               lookup_type: LookupType) -> Optional[List[str]]:
+        """Return transcripts from a coding dna refseq for a gene symbol."""
         genomic_transcripts = list()
         if lookup_type == LookupType.GENE_SYMBOL:
             genomic_transcripts += \
