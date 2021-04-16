@@ -4,7 +4,6 @@ from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
-from os import environ
 from variant import logger
 
 
@@ -13,8 +12,6 @@ class Normalize:
 
     def __init__(self):
         """Initialize Normalize class."""
-        if 'VARIANT_NORM_EB_PROD' in environ:
-            environ['GENE_NORM_EB_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
         self.warnings = list()
 
@@ -50,7 +47,12 @@ class Normalize:
             allele_id = allele['_id']
             del allele['_id']
 
-            gene_token = valid_result.gene_tokens[0]
+            if valid_result.gene_tokens:
+                gene_token = valid_result.gene_tokens[0]
+                gene_context = self.get_gene_descriptor(gene_token)
+            else:
+                # TODO: Find gene context for genomic substitution
+                gene_context = None
 
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
@@ -60,7 +62,7 @@ class Normalize:
                 molecule_context=molecule_context,
                 structural_type=structural_type,
                 ref_allele_seq=ref_allele_seq,
-                gene_context=self.get_gene_descriptor(gene_token)
+                gene_context=gene_context
             )
         else:
             variation_descriptor = None

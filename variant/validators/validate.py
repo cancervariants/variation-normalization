@@ -8,6 +8,7 @@ from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
+from .genomic_substitution import GenomicSubstitution
 from typing import List
 
 
@@ -27,7 +28,9 @@ class Validate:
             SilentMutation(seq_repo_client, transcript_mappings,
                            gene_symbol, amino_acid_cache),
             CodingDNASubstitution(seq_repo_client, transcript_mappings,
-                                  gene_symbol)
+                                  gene_symbol),
+            GenomicSubstitution(seq_repo_client, transcript_mappings,
+                                gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \

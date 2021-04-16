@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import logging
 from ftplib import FTP
+from os import environ
 
 __version__ = "0.1.13"
 
@@ -11,6 +12,7 @@ APP_ROOT = Path(__file__).resolve().parents[0]
 if 'VARIANT_NORM_EB_PROD' in os.environ:
     # Elastic beanstalk
     LOG_FN = '/tmp/sample-app.log'
+    environ['GENE_NORM_EB_PROD'] = "true"
 else:
     LOG_FN = f'{APP_ROOT}/variant/variant.log'
 
