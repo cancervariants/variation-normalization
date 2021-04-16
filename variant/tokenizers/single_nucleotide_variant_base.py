@@ -1,4 +1,4 @@
-"""A module for DNA Sequence Variant Tokenization Base Class."""
+"""A module for Single Nucleotide Variant Tokenization Base Class."""
 import re
 from abc import abstractmethod
 from typing import Optional
@@ -6,11 +6,11 @@ from .tokenizer import Tokenizer
 from ..schemas.token_response_schema import Token
 
 
-class DNASequenceVariantBase(Tokenizer):
-    """Class for tokenizing DNA Sequence Variants."""
+class SingleNucleotideVariantBase(Tokenizer):
+    """Class for tokenizing Single Nucleotide Variants."""
 
     def __init__(self) -> None:
-        """Initialize the DNA Sequence Variant Base Class."""
+        """Initialize the Single Nucleotide Variant Base Class."""
         self.splitter = re.compile(r'(\d+)')
         self.sub = None
 

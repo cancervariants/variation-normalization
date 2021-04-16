@@ -4,12 +4,12 @@ from .set_based_classifier import SetBasedClassifier
 from variant.schemas.classification_response_schema import ClassificationType
 
 
-class DNACodingSubstitutionClassifier(SetBasedClassifier):
-    """The DNA Coding Substitution Classifier class."""
+class CodingDNASubstitutionClassifier(SetBasedClassifier):
+    """The Coding DNA Substitution Classifier class."""
 
     def classification_type(self) -> ClassificationType:
         """Return the DNA Coding Substitution classification type."""
-        return ClassificationType.DNA_CODING_SUBSTITUTION
+        return ClassificationType.CODING_DNA_SUBSTITUTION
 
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""

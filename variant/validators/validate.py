@@ -7,7 +7,7 @@ from variant.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
-from .dna_coding_substitution import CodingDNASubstitution
+from .coding_dna_substitution import CodingDNASubstitution
 from typing import List
 
 

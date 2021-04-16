@@ -37,7 +37,5 @@ coding_dna_substitution:
     - query: BRAF c.1799T>A
     - query: BRAF V600E c.1799T>A
   should_not_match:
-    - query: BRAF c.1800T>A
-    - query: EGFR c.1799T>A
-    - query: NM_004333.4:c.1798T>A
-    - query: ENST00000288602.2:c.1799T>A
+    - query: BRAF c.18000000000000T>A
+    - query: NM_004333.4:c.17699T>A

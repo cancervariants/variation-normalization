@@ -64,7 +64,7 @@ silent_mutation:
   should_not_match:
     - query: Leu862==
 
-dna_coding_substitution:
+coding_dna_substitution:
   should_match:
     - query: V170D (c.509T>A)
       confidence: ConfidenceRating.SUPERSET

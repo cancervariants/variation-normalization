@@ -8,7 +8,7 @@ from variant.classifiers import ComplexClassifier, ExpressionClassifier, \
     ProteinDelinsClassifier, ProteinFrameshiftClassifier, \
     ProteinTerminationClassifier, \
     AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
-    SilentMutationClassifier, DNACodingSubstitutionClassifier, Classifier
+    SilentMutationClassifier, CodingDNASubstitutionClassifier, Classifier
 
 
 class Classify:
@@ -28,7 +28,7 @@ class Classify:
             PolypeptideTruncationClassifier(),
             SilentMutationClassifier(),
             ProteinTerminationClassifier(),
-            DNACodingSubstitutionClassifier()
+            CodingDNASubstitutionClassifier()
         ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
