@@ -39,3 +39,11 @@ coding_dna_substitution:
   should_not_match:
     - query: BRAF c.18000000000000T>A
     - query: NM_004333.4:c.17699T>A
+
+genomic_substitution:
+  should_match:
+    - query: NC_000007.13:g.140453136A>T
+    - query: NC_000007.13:g.55259515T>G
+  should_not_match:
+    - query: NC_000007.13:g.1436A>T
+    - query: NC_000007.13:g.4T>A
