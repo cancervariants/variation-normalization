@@ -32,6 +32,7 @@ class SingleNucleotideVariantBase(Validator):
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings
+        :param GeneSymbol gene_symbol: GeneSymbol tokenizer
         """
         self.transcript_mappings = transcript_mappings
         self.seq_repo_access = seq_repo_access
@@ -55,7 +56,7 @@ class SingleNucleotideVariantBase(Validator):
         """Return VRS Allele object.
 
         :param str sequence_id: Sequence containing the sequence to be located
-        :param Token s: A token
+        :param Token s: A Classification token
         :return: A VRS Allele object as a dictionary
         """
         seq_location = models.SequenceLocation(
@@ -67,14 +68,13 @@ class SingleNucleotideVariantBase(Validator):
         )
 
         state = models.SequenceState(sequence=s.new_nucleotide)
-        allele = models.Allele(location=seq_location,
-                               state=state)
+        allele = models.Allele(location=seq_location, state=state)
         allele['_id'] = ga4gh_identify(allele)
         return allele.as_dict()
 
     @abstractmethod
     def get_hgvs_expr(self, classification, t):
-        """Return HGVS expression and whether or not it's an Ensembl transcript
+        """Return a HGVS expression.
 
         :param Classification classification: A classification for a list of
             tokens
@@ -106,40 +106,22 @@ class SingleNucleotideVariantBase(Validator):
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
         :param dict mane_transcripts_dict: Possible MANE select transcripts
-            with classification and Ensembl transcript
+            with classification and transcript
         """
         mane_transcripts = list()
         found_mane_transcripts = list()
         replace_old_keys = list()
         for hgvs_expr in mane_transcripts_dict.keys():
-            if '(' in hgvs_expr and ')' in hgvs_expr:
-                # ClinGen Allele Registry doesn't like () in the query
-                if mane_transcripts_dict[hgvs_expr][
-                    'classification_token'].token_type ==\
-                        'PolypeptideTruncation':  # TODO: Change
-                    old = hgvs_expr
-                    hgvs_expr = hgvs_expr.replace('(', '')
-                    hgvs_expr = hgvs_expr.replace(')', '')
-                    old_and_new = old, hgvs_expr
-                    if old_and_new not in replace_old_keys:
-                        replace_old_keys.append(old_and_new)
-            mane_transcript_tuple = self.get_mane_transcript(hgvs_expr,
-                                                             gene_tokens)
-            if mane_transcript_tuple:
-                ensembl, refseq = mane_transcript_tuple
-
-                if ensembl and refseq:
-                    if (ensembl, refseq) not in found_mane_transcripts:
-                        found_mane_transcripts.append((ensembl, refseq))
-                        mane_transcripts.append((hgvs_expr, ensembl, refseq))
+            self.add_valid_mane_transcripts(hgvs_expr, mane_transcripts_dict,
+                                            replace_old_keys, gene_tokens,
+                                            found_mane_transcripts,
+                                            mane_transcripts)
 
         for tup in replace_old_keys:
             mane_transcripts_dict[tup[1]] = mane_transcripts_dict[tup[0]]
             del mane_transcripts_dict[tup[0]]
 
         errors = list()
-        allele = {}
-        seq_location = None
 
         if len(mane_transcripts) == 0:
             logger.warning("No MANE Select transcript found for "
@@ -151,61 +133,62 @@ class SingleNucleotideVariantBase(Validator):
             ensembl_transcript = el[1]
             refseq_transcript = el[2]
 
-            try:
-                seq_location = self.tlr.translate_from(refseq_transcript,
-                                                       'hgvs')
-            except HTTPError:
-                errors.append(f"{mane_transcripts[0]} is an invalid HGVS "
-                              f"expression.")
-            except KeyError:
-                allele = None
-                error = "GA4GH Data Proxy unable to translate  sequence " \
-                        f"identifier: {refseq_transcript}"
-                logger.warning(error)
-                errors.append(error)
-            else:
-                allele = seq_location.as_dict()
+            allele = self.get_allele_from_hgvs(refseq_transcript, errors)
 
             if mane_transcripts_dict[hgvs_expr]['is_ensembl_transcript']:
                 transcript = ensembl_transcript
             else:
                 transcript = refseq_transcript
 
-            if not errors:
-                results.append(self.get_validation_result(
-                    classification, True, 1, allele,
-                    self.human_description(
-                        mane_transcripts_dict[hgvs_expr][
-                            'transcript_token'],
-                        mane_transcripts_dict[hgvs_expr][
-                            'classification_token']
-                    ),
-                    self.concise_description(
-                        mane_transcripts_dict[hgvs_expr][
-                            'transcript_token'],
-                        mane_transcripts_dict[hgvs_expr][
-                            'classification_token']
-                    ), errors, gene_tokens, transcript
-                ))
-            else:
-                results.append(self.get_validation_result(
-                    classification, False, 1, allele,
-                    self.human_description(
-                        mane_transcripts_dict[hgvs_expr]['transcript_token'],
-                        mane_transcripts_dict[hgvs_expr][
-                            'classification_token']
-                    ),
-                    self.concise_description(
-                        mane_transcripts_dict[hgvs_expr]['transcript_token'],
-                        mane_transcripts_dict[hgvs_expr][
-                            'classification_token']
-                    ), errors, gene_tokens, transcript
-                ))
+            self.add_validation_result(
+                allele, [], results, classification,
+                mane_transcripts_dict[hgvs_expr]['classification_token'],
+                mane_transcripts_dict[hgvs_expr]['transcript_token'],
+                gene_tokens, errors, transcript
+            )
+
+    def add_valid_mane_transcripts(self, hgvs_expr, mane_transcripts_dict,
+                                   replace_old_keys, gene_tokens,
+                                   found_mane_transcripts, mane_transcripts):
+        """Add valid mane transcripts to a list.
+
+        :param str hgvs_expr: The HGVS expression to find a mane transcript for
+        :param dict mane_transcripts_dict: Possible MANE select transcripts
+            with classification and transcript
+        :param list replace_old_keys: Contains tuples of old and new keys to
+            replace in mane_transcripts_dict
+        :param list gene_tokens: A list of GeneMatchTokens
+        :param list found_mane_transcripts: Contains tuple of ensembl and
+            refseq hgvs expressions that have already been found
+        :param list mane_transcripts: The list of mane transcripts for
+            a given hgvs_expr
+        """
+        if '(' in hgvs_expr and ')' in hgvs_expr:
+            # ClinGen Allele Registry doesn't like () in the query
+            if mane_transcripts_dict[hgvs_expr][
+                'classification_token'].token_type == \
+                    'PolypeptideTruncation':  # TODO: Change
+                old = hgvs_expr
+                hgvs_expr = hgvs_expr.replace('(', '')
+                hgvs_expr = hgvs_expr.replace(')', '')
+                old_and_new = old, hgvs_expr
+                if old_and_new not in replace_old_keys:
+                    replace_old_keys.append(old_and_new)
+        mane_transcript_tuple = self.get_mane_transcript(hgvs_expr,
+                                                         gene_tokens)
+        if mane_transcript_tuple:
+            ensembl, refseq = mane_transcript_tuple
+
+            if ensembl and refseq:
+                if (ensembl, refseq) not in found_mane_transcripts:
+                    found_mane_transcripts.append((ensembl, refseq))
+                    mane_transcripts.append((hgvs_expr, ensembl, refseq))
 
     def get_mane_transcript(self, hgvs_expr, gene_tokens):
         """Return MANE Select Transcript from ClinGene Allele Registry.
 
         :param str hgvs_expr: The HGVS expression to query
+        :param list gene_tokens: List of GeneMatchTokens
         :return: The HGVS RefSeq MANE Select Transcript represented as a string
         """
         request = requests.get(
@@ -226,8 +209,10 @@ class SingleNucleotideVariantBase(Validator):
                             gene = self._gene_matcher.match(gene_symbol)
                             if gene not in gene_tokens:
                                 gene_tokens.append(gene)
-                        return (mane_transcript['nucleotide']['Ensembl']['hgvs'],   # noqa: E501
-                                mane_transcript['nucleotide']['RefSeq']['hgvs'])  # noqa: E501
+                        return (
+                            mane_transcript['nucleotide']['Ensembl']['hgvs'],
+                            mane_transcript['nucleotide']['RefSeq']['hgvs']
+                        )
             else:
                 if 'aminoAcidAlleles' in resp.keys() and len(resp['aminoAcidAlleles']) > 0:  # noqa: E501
                     amino_acid_allele = resp['aminoAcidAlleles'][0]
@@ -237,7 +222,9 @@ class SingleNucleotideVariantBase(Validator):
                                 if '>' in t and '[' not in t:
                                     # Temp condition since variant norm
                                     # cannot handle multiple possible variants
-                                    return self.get_mane_transcript(t)
+                                    return self.get_mane_transcript(
+                                        t, gene_tokens
+                                    )
         return None
 
     def get_validation_result(self, classification, is_valid, confidence_score,
@@ -269,6 +256,141 @@ class SingleNucleotideVariantBase(Validator):
             gene_tokens=gene_tokens,
             mane_transcript=mane_transcript
         )
+
+    def get_classification_tokens(self, classification):
+        """Get classification tokens for a given instance.
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :return: A list of classification tokens
+        """
+        return [t for t in classification.all_tokens
+                if self.is_token_instance(t)]
+
+    def get_allele_from_hgvs(self, hgvs_expr, errors):
+        """Return allele from a given hgvs_expr.
+
+        :param str hgvs_expr: The HGVS string
+        :param list errors: List of errors
+        :return: Allele as a dictionary
+        """
+        allele = None
+        try:
+            seq_location = self.tlr.translate_from(hgvs_expr, 'hgvs')
+        except HTTPError:
+            errors.append(f"{hgvs_expr} is an invalid HGVS expression.")
+        except KeyError:
+            errors.append("GA4GH Data Proxy unable to translate sequence "
+                          f"identifier: {hgvs_expr}.")
+        else:
+            allele = seq_location.as_dict()
+        return allele
+
+    def get_allele_from_transcript(self, s, t, errors):
+        """Return allele from a given transcript.
+
+        :param Classification s: Classification token
+        :param str t: Transcript
+        :param list errors: List of errors
+        :return: Allele as a dictionary
+        """
+        allele = None
+        try:
+            sequence_id = self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
+        except KeyError:
+            errors.append("GA4GH Data Proxy unable to translate sequence "
+                          f"identifier: {t}")
+        else:
+            allele = self.get_vrs_allele(sequence_id, s)
+        return allele
+
+    def _add_hgvs_to_mane_transcripts_dict(self, classification,
+                                           mane_transcripts_dict, s, t,
+                                           gene_tokens):
+        """Add HGVS expressions to mane transcript dictionary.
+
+        :param Classification classification: Classification for tokens
+        :param mane_transcripts_dict: Stores possible mane transcript strings
+            with classification token, transcript token, and whether or not
+            the mane transcript should be respresented as ensembl or refseq
+            hgvs
+        :param Token s: The classification token
+        :param string t: Transcript
+        :param list gene_tokens: List of GeneMatchTokens
+        """
+        refseq = ([a for a in self.seq_repo_access.aliases(t)
+                   if a.startswith('refseq:')] or [None])[0]
+
+        if refseq:
+            if gene_tokens:
+                is_ensembl_transcript = True
+            else:
+                is_ensembl_transcript = False
+            matching_tokens = classification.matching_tokens
+
+            if 'CodingDNASubstitution' in matching_tokens or\
+                    'GenomicSubstitution' in matching_tokens:
+                hgvs_expr = f"{refseq.split('refseq:')[-1]}:" \
+                            f"{s.reference_sequence}.{s.position}" \
+                            f"{s.ref_nucleotide}" \
+                            f">{s.new_nucleotide}"
+                if hgvs_expr not in \
+                        mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'is_ensembl_transcript':
+                            is_ensembl_transcript
+                    }
+
+    def get_gene_symbol_tokens(self, classification) -> List[GeneMatchToken]:
+        """Return tokens with token type GeneSymbol from a classification."""
+        return [t for t in classification.all_tokens
+                if t.token_type == 'GeneSymbol']
+
+    def check_ref_nucleotide(self, ref_nuc, s, t, errors):
+        """Assert that ref_nuc matches s.ref_nucleotide."""
+        if ref_nuc != s.ref_nucleotide:
+            errors.append(f'Needed to find {s.ref_nucleotide} at'
+                          f' position {s.position} on {t}'
+                          f' but found {ref_nuc}')
+
+    def add_validation_result(self, allele, valid_alleles, results,
+                              classification, s, t, gene_tokens, errors,
+                              mane_transcript=None):
+        """Add validation result to list of results.
+
+        :param boolean valid: Whether or not the classification is valid
+        :param dict allele: A VRS Allele object
+        :param list valid_alleles: A list containing current valid alleles
+        :param list results: A list of validation results
+        :param Classification classification: The classification for tokens
+        :param Token s: The classification token
+        :param string t: Transcript
+        :param list gene_tokens: List of GeneMatchTokens
+        :param list errors: A list of errors for the classification
+        """
+        if not errors:
+            if mane_transcript or allele not in valid_alleles:
+                results.append(
+                    self.get_validation_result(
+                        classification, True, 1, allele,
+                        self.human_description(t, s),
+                        self.concise_description(t, s), [],
+                        gene_tokens, mane_transcript
+                    )
+                )
+
+                valid_alleles.append(allele)
+        else:
+            results.append(
+                self.get_validation_result(
+                    classification, False, 1, allele,
+                    self.human_description(t, s),
+                    self.concise_description(t, s), errors,
+                    gene_tokens, mane_transcript
+                )
+            )
 
     @abstractmethod
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
