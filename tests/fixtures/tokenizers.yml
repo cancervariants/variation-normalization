@@ -101,11 +101,12 @@ coding_dna_substitution:
     - token: c.292T>C
     - token: (c.233A>G)
     - token: c.509T>A
+    - token: c.54G>H
   should_not_match:
     - token: (c.292T>C
     - token: g.292T>C
     - token: c.292T<C
-    - token: c.292B>C
+    - token: c.292Z>C
     - token: c.j324T<C
     - token: 292T<C
     - token: c.509T>
@@ -118,11 +119,12 @@ genomic_substition:
     - token: g.292T>C
     - token: (g.233A>G)
     - token: g.509T>A
+    - token: g.54G>H
   should_not_match:
     - token: (g.292T>C
     - token: c.292T>C
     - token: g.292T<C
-    - token: g.292B>C
+    - token: g.292Z>C
     - token: g.j324T<C
     - token: 292T<C
     - token: g.509T>

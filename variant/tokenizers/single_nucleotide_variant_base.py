@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import Optional
 from .tokenizer import Tokenizer
 from ..schemas.token_response_schema import Token
+from variant.tokenizers.caches import NucleotideCache
 
 
 class SingleNucleotideVariantBase(Tokenizer):
@@ -13,6 +14,7 @@ class SingleNucleotideVariantBase(Tokenizer):
         """Initialize the Single Nucleotide Variant Base Class."""
         self.splitter = re.compile(r'(\d+)')
         self.sub = None
+        self.nucleotide_cache = NucleotideCache()
 
     def _set_sub(self, ref_nucleotide, position, new_nucleotide,
                  reference_sequence):
