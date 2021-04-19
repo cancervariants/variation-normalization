@@ -9,7 +9,7 @@ class CodingDNASubstitution(DNASequenceVariantBase):
 
     def can_translate(self, type: ClassificationType) -> bool:
         """Return if classification type is Amino Acid Substitution."""
-        return type == ClassificationType.DNA_CODING_SUBSTITUTION
+        return type == ClassificationType.CODING_DNA_SUBSTITUTION
 
     def is_token_instance(self, token):
         """Return if the token is an Coding DNA Substitution token instance."""
