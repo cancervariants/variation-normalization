@@ -52,8 +52,9 @@ class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
 
             if sub_parts[1].isdigit() and '>' in sub_parts[2]:
                 ref_nuc, new_nuc = sub_parts[2].split('>')
-                nucleotides = ['a', 't', 'c', 'g']
-                if ref_nuc in nucleotides and new_nuc in nucleotides:
+                nucleotides = self.nucleotide_cache.nucleotides.keys()
+                if ref_nuc.upper() in nucleotides \
+                        and new_nuc.upper() in nucleotides:  # noqa: E501
                     self._set_sub(ref_nuc, sub_parts[1], new_nuc,
                                   sub_parts[0].split('.')[0])
 
