@@ -445,8 +445,9 @@ def test_silent_mutation(test_normalize, vhl_silent):
     assertion_checks(resp, vhl_silent)
 
 
-def test_coding_dna_substitution(test_normalize, braf_v600e_nucleotide):
-    """Test that coding dna substitutions normalize correctly."""
+def test_coding_dna_and_genomic_substitution(test_normalize,
+                                             braf_v600e_nucleotide):
+    """Test that coding dna and genomic substitutions normalize correctly."""
     resp = test_normalize.normalize('NM_004333.4:c.1799T>A')
     assertion_checks(resp, braf_v600e_nucleotide)
 
@@ -462,6 +463,27 @@ def test_coding_dna_substitution(test_normalize, braf_v600e_nucleotide):
     resp.label = refseq_label
     assertion_checks(resp, braf_v600e_nucleotide)
 
+    resp = test_normalize.normalize('BRAF V600E c.1799T>A')
+    assert resp.id == 'normalize.variant:BRAF%20V600E%20c.1799T%3EA'
+    assert resp.label == ensembl_label
+    resp.id = refseq_id
+    resp.label = refseq_label
+    assertion_checks(resp, braf_v600e_nucleotide)
+
+    resp = test_normalize.normalize('BRAF V600E (c.1799T>A)')
+    assert resp.id == 'normalize.variant:BRAF%20V600E%20%28c.1799T%3EA%29'
+    assert resp.label == ensembl_label
+    resp.id = refseq_id
+    resp.label = refseq_label
+    assertion_checks(resp, braf_v600e_nucleotide)
+
+    resp = test_normalize.normalize('BRAF c.1799T>A')
+    assert resp.id == 'normalize.variant:BRAF%20c.1799T%3EA'
+    assert resp.label == ensembl_label
+    resp.id = refseq_id
+    resp.label = refseq_label
+    assertion_checks(resp, braf_v600e_nucleotide)
+
     resp = test_normalize.normalize('NC_000007.13:g.140453136A>T')
     assert resp.id == 'normalize.variant:NC_000007.13%3Ag.140453136A%3ET'
     assert resp.ref_allele_seq == 'A'
@@ -469,11 +491,22 @@ def test_coding_dna_substitution(test_normalize, braf_v600e_nucleotide):
     resp.ref_allele_seq = 'T'
     assertion_checks(resp, braf_v600e_nucleotide)
 
-    resp = test_normalize.normalize('BRAF V600E c.1799T>A')
-    assert resp.id == 'normalize.variant:BRAF%20V600E%20c.1799T%3EA'
+    resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
+    assert resp.id == 'normalize.variant:BRAF%20V600E%20%28g.140453136A%3ET%29'
     assert resp.label == ensembl_label
+    assert resp.ref_allele_seq == 'A'
     resp.id = refseq_id
     resp.label = refseq_label
+    resp.ref_allele_seq = 'T'
+    assertion_checks(resp, braf_v600e_nucleotide)
+
+    resp = test_normalize.normalize('BRAF g.140453136A>T')
+    assert resp.id == 'normalize.variant:BRAF%20g.140453136A%3ET'
+    assert resp.label == ensembl_label
+    assert resp.ref_allele_seq == 'A'
+    resp.id = refseq_id
+    resp.label = refseq_label
+    resp.ref_allele_seq = 'T'
     assertion_checks(resp, braf_v600e_nucleotide)
 
 

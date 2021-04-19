@@ -6,6 +6,7 @@ from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
+from .genomic_substitution import GenomicSubstitution
 from typing import List, Optional
 
 
@@ -18,7 +19,8 @@ class Translate:
             AminoAcidSubstitution(),
             PolypeptideTruncation(),
             SilentMutation(),
-            CodingDNASubstitution()
+            CodingDNASubstitution(),
+            GenomicSubstitution()
         ]
 
     def perform(self, res: ValidationResult) \
