@@ -42,7 +42,8 @@ class Normalize:
 
             valid_result_tokens = valid_result.classification.all_tokens
             molecule_context, structural_type, ref_allele_seq = \
-                self._get_context(valid_result_tokens, amino_acid_cache)
+                self._get_molecule_context_structural_type_ref_allele_seq(
+                    valid_result_tokens, amino_acid_cache)
             allele = valid_result.allele
             allele_id = allele['_id']
             del allele['_id']
@@ -130,8 +131,9 @@ class Normalize:
             'value': value
         })
 
-    # TODO better method name
-    def _get_context(self, valid_result_tokens, amino_acid_cache):
+    def _get_molecule_context_structural_type_ref_allele_seq(self,
+                                                             valid_result_tokens,  # noqa: E501
+                                                             amino_acid_cache):
         """Return context for a token.
 
         :return: (molecule_context, structural_type, ref_allele_seq)
@@ -142,9 +144,23 @@ class Normalize:
         dna_sequence_variant_token = \
             self._get_instance_type_token(valid_result_tokens,
                                           SequenceAlteration)
-        if polypeptide_sequence_variant_token:
+
+        if polypeptide_sequence_variant_token and not \
+                dna_sequence_variant_token:
             molecule_context = 'protein'
-            structural_type = 'SO:0001606'
+
+            if self._is_token_type(valid_result_tokens,
+                                   'AminoAcidSubstitution'):
+                structural_type = 'SO:0001606'
+            elif self._is_token_type(valid_result_tokens,
+                                     'PolypeptideTruncation'):
+                structural_type = 'SO:0001617'
+            elif self._is_token_type(valid_result_tokens,
+                                     'SilentMutation'):
+                structural_type = 'SO:0001017'
+            else:
+                structural_type = None
+
             # convert 3 letter to 1 letter amino acid code
             if len(polypeptide_sequence_variant_token.ref_protein) == 3:
                 for one, three in \
@@ -154,13 +170,26 @@ class Normalize:
             ref_allele_seq = polypeptide_sequence_variant_token.ref_protein
         elif dna_sequence_variant_token:
             molecule_context = 'genomic'
-            structural_type = 'SO:0001606'
+            if self._is_token_type(valid_result_tokens,
+                                   'CodingDNASubstitution') or \
+                    self._is_token_type(valid_result_tokens,
+                                        'GenomicSubstitution'):
+                structural_type = 'SO:0001483'
+            else:
+                structural_type = None
             ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
         else:
             molecule_context = None
             structural_type = None
             ref_allele_seq = None
         return molecule_context, structural_type, ref_allele_seq
+
+    def _is_token_type(self, valid_result_tokens, token_type):
+        """Return whether or not token_type is in valid_result_tokens."""
+        for t in valid_result_tokens:
+            if t.token_type == token_type:
+                return True
+        return False
 
     def _get_instance_type_token(self, valid_result_tokens, instance_type):
         """Return the tokens for a given instance type.
