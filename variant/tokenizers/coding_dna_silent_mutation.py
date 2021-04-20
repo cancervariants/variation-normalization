@@ -8,7 +8,7 @@ class CodingDNASilentMutation(SingleNucleotideVariantSubstitution):
     """Class for tokenizing SNV Substitution."""
 
     def return_token(self, params):
-        """Return coding DNA substitution token."""
+        """Return coding DNA silent mutation token."""
         if self.sub['reference_sequence'] == 'c' and \
                 self.sub['ref_nucleotide'] is None:
             return CodingDNASilentMutationToken(**params)
