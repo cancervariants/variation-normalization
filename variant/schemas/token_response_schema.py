@@ -303,3 +303,11 @@ class GenomicSubstitutionToken(SingleNucleotideVariantToken):
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicSubstitution'
+
+
+class GenomicSilentMutationToken(SingleNucleotideVariantToken):
+    """SNV no change at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    new_nucleotide = '='
+    token_type = 'GenomicSilentMutation'

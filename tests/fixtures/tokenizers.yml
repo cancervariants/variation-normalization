@@ -143,3 +143,16 @@ coding_dna_silent_mutation:
     - token: c.123=)
     - token: c.123
     - token: c.123==
+
+genomic_silent_mutation:
+  should_match:
+    - token: g.123=
+    - token: (g.123=)
+  should_not_match:
+    - token: c.292T>C
+    - token: c.292T>C
+    - token: c.123
+    - token: (g.123=
+    - token: g.123=)
+    - token: g.123
+    - token: g.123==
