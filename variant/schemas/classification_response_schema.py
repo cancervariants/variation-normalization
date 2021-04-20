@@ -26,6 +26,7 @@ class ClassificationType(IntEnum):
     COMPLEX = 13
     CODING_DNA_SUBSTITUTION = 14
     GENOMIC_SUBSTITUTION = 15
+    CODING_DNA_SILENT_MUTATION = 16
 
 
 class ConfidenceRating(IntEnum):

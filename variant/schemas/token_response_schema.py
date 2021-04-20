@@ -263,9 +263,9 @@ class ReferenceSequence(str, Enum):
     LINEAR_GENOMIC = 'g'
 
 
-class SequenceAlteration(Token):
-    """Sequence feature whose extent is the deviation from another sequence.
-    (SO:0001059)
+class SingleNucleotideVariant(Token):
+    """Single nucleotide positions in genomic DNA at which different
+    sequence alternatives exist.
     """
 
     position: int
@@ -275,22 +275,14 @@ class SequenceAlteration(Token):
     reference_sequence: ReferenceSequence
 
 
-class SingleNucleotideVariantToken(SequenceAlteration):
-    """Single nucleotide positions in genomic DNA at which different
-    sequence alternatives exist.
-    """
-
-    token_type = 'SNV'
-
-
-class CodingDNASubstitutionToken(SingleNucleotideVariantToken):
+class CodingDNASubstitutionToken(SingleNucleotideVariant):
     """SNV substitution at the coding DNA reference sequence."""
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'
 
 
-class CodingDNASilentMutationToken(SingleNucleotideVariantToken):
+class CodingDNASilentMutationToken(SingleNucleotideVariant):
     """SNV no change at the coding DNA reference sequence."""
 
     reference_sequence = ReferenceSequence.CODING_DNA
@@ -298,16 +290,43 @@ class CodingDNASilentMutationToken(SingleNucleotideVariantToken):
     token_type = 'CodingDNASilentMutation'
 
 
-class GenomicSubstitutionToken(SingleNucleotideVariantToken):
+class GenomicSubstitutionToken(SingleNucleotideVariant):
     """SNV substitution at the linear genomic reference sequence."""
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicSubstitution'
 
 
-class GenomicSilentMutationToken(SingleNucleotideVariantToken):
+class GenomicSilentMutationToken(SingleNucleotideVariant):
     """SNV no change at the linear genomic reference sequence."""
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     new_nucleotide = '='
     token_type = 'GenomicSilentMutation'
+
+
+class DelIns(Token):
+    """A sequence alteration which included an insertion and a deletion,
+    affecting 2 or more bases.
+    """
+
+    pos1_del: str
+    pos2_del: Optional[str]
+    inserted_sequence1: str
+    inserted_sequence2: Optional[str]
+    token_type: str
+    reference_sequence: ReferenceSequence
+
+
+class CodingDNADelInsToken(DelIns):
+    """DelIns at the coding DNA reference sequence."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    token_type = 'CodingDNADelIns'
+
+
+class GenomicDelInsToken(DelIns):
+    """DelIns at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    token_type = 'GenomicDNADelIns'
