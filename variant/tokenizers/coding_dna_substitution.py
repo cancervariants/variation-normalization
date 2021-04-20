@@ -1,10 +1,9 @@
 """A module for Coding DNA Substitution Tokenization."""
 from variant.schemas.token_response_schema import CodingDNASubstitutionToken
-from .single_nucleotide_variant_substitution import\
-    SingleNucleotideVariantSubstitution
+from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 
 
-class CodingDNASubstitution(SingleNucleotideVariantSubstitution):
+class CodingDNASubstitution(SingleNucleotideVariantBase):
     """Class for tokenizing SNV Substitution."""
 
     def return_token(self, params):
