@@ -1,4 +1,4 @@
-"""A module for DNA Substitution Tokenization."""
+"""A module for Coding DNA Substitution Tokenization."""
 from variant.schemas.token_response_schema import CodingDNASubstitutionToken
 from .single_nucleotide_variant_substitution import\
     SingleNucleotideVariantSubstitution
@@ -9,5 +9,6 @@ class CodingDNASubstitution(SingleNucleotideVariantSubstitution):
 
     def return_token(self, params):
         """Return coding DNA substitution token."""
-        if self.sub['reference_sequence'] == 'c':
+        if self.sub['reference_sequence'] == 'c' and \
+                self.sub['ref_nucleotide'] is not None:
             return CodingDNASubstitutionToken(**params)

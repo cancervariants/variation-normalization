@@ -19,7 +19,8 @@ class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
         self.sub = {
             'ref_nucleotide': None,
             'position': None,
-            'new_nucleotide': None
+            'new_nucleotide': None,
+            'reference_sequence': None
         }
 
         if input_string is None:
@@ -32,7 +33,6 @@ class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
         sub_parts = self.splitter.split(input_string)
         self._get_sub(sub_parts)
         if None not in self.sub.values():
-
             params = {
                 'token': input_string,
                 'input_string': input_string,
@@ -42,6 +42,19 @@ class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
                 'new_nucleotide': self.sub['new_nucleotide']
             }
             return self.return_token(params)
+        else:
+            if self.sub['position'] is not None and \
+                    self.sub['new_nucleotide'] == '=' and \
+                    self.sub['reference_sequence'] is not None:
+                params = {
+                    'token': input_string,
+                    'input_string': input_string,
+                    'match_type': TokenMatchType.UNSPECIFIED.value,
+                    'position': self.sub['position'],
+                    'new_nucleotide': self.sub['new_nucleotide']
+                }
+                return self.return_token(params)
+
         return None
 
     def _get_sub(self, sub_parts):
@@ -50,12 +63,18 @@ class SingleNucleotideVariantSubstitution(SingleNucleotideVariantBase):
                 sub_parts[0] = sub_parts[0].split('(')[-1]
                 sub_parts[2] = sub_parts[2].split(')')[0]
 
-            if sub_parts[1].isdigit() and '>' in sub_parts[2]:
-                ref_nuc, new_nuc = sub_parts[2].split('>')
-                nucleotides = self.nucleotide_cache.nucleotides.keys()
-                if ref_nuc.upper() in nucleotides \
-                        and new_nuc.upper() in nucleotides:  # noqa: E501
-                    self._set_sub(ref_nuc, sub_parts[1], new_nuc,
+            if sub_parts[1].isdigit():
+                if '>' in sub_parts[2]:
+                    # Substitution
+                    ref_nuc, new_nuc = sub_parts[2].split('>')
+                    nucleotides = self.nucleotide_cache.nucleotides.keys()
+                    if ref_nuc.upper() in nucleotides \
+                            and new_nuc.upper() in nucleotides:  # noqa: E501
+                        self._set_sub(ref_nuc, sub_parts[1], new_nuc,
+                                      sub_parts[0].split('.')[0])
+                elif sub_parts[2] == '=':
+                    # Silent Mutation
+                    self._set_sub(None, sub_parts[1], sub_parts[2],
                                   sub_parts[0].split('.')[0])
 
     @abstractmethod
