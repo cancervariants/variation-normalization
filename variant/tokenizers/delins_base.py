@@ -23,6 +23,9 @@ class DelInsBase(Tokenizer):
 
         input_string = str(input_string).lower()
 
+        if input_string.startswith('(') and input_string.endswith(')'):
+            input_string = input_string[1:-1]
+
         if ('delins' not in input_string) or (
                 (not input_string.startswith('c.') and (not
                  input_string.startswith('g.')))):
@@ -65,36 +68,17 @@ class DelInsBase(Tokenizer):
         reference_sequence = parts[0][:1]
         parts[0] = parts[0][2:]
 
-        # Check positions deleted
-        if '_' in parts[0] and parts[0].count('_') == 1:
-            positions = parts[0].split('_')
-            pos1_del = positions[0]
-            pos2_del = positions[1]
-            if not pos1_del.isdigit() or not pos2_del.isdigit():
-                return
-        else:
-            pos1_del = parts[0]
-            pos2_del = None
-            if not pos1_del.isdigit():
-                return
+        positions_deleted = self._get_positions_deleted(parts)
+        if not positions_deleted:
+            return
+        pos1_del = positions_deleted[0]
+        pos2_del = positions_deleted[1]
 
-        # Check inserted sequences
-        if '_' in parts[1] and parts[1].count('_') == 1:
-            # Replaced by sequence position
-            inserted_sequences = parts[1].split('_')
-            inserted_sequence1 = inserted_sequences[0]
-            inserted_sequence2 = inserted_sequences[1]
-            if not inserted_sequence1.isdigit() or \
-                    not inserted_sequence2.isdigit():
-                return
-        else:
-            # Replaced by nucleotides
-            nucleotides = ['a', 'c', 't', 'g']
-            for char in parts[1]:
-                if char not in nucleotides:
-                    return
-            inserted_sequence1 = parts[1].upper()
-            inserted_sequence2 = None
+        inserted_sequences = self._get_inserted_sequence(parts)
+        if not inserted_sequences:
+            return
+        inserted_sequence1 = inserted_sequences[0]
+        inserted_sequence2 = inserted_sequences[1]
 
         self.parts = {
             'pos1_del': pos1_del,
@@ -103,6 +87,49 @@ class DelInsBase(Tokenizer):
             'inserted_sequence2': inserted_sequence2,
             'reference_sequence': reference_sequence
         }
+
+    def _get_positions_deleted(self, parts):
+        """Return position(s) deleted."""
+        # Check positions deleted
+        if '_' in parts[0] and parts[0].count('_') == 1:
+            positions = self._get_valid_digits(parts[0])
+            if not positions:
+                return
+            pos1_del, pos2_del = positions
+        else:
+            pos1_del = parts[0]
+            pos2_del = None
+            if not pos1_del.isdigit():
+                return None
+        return pos1_del, pos2_del
+
+    def _get_inserted_sequence(self, parts):
+        """Return inserted sequence."""
+        # Check inserted sequences
+        if '_' in parts[1] and parts[1].count('_') == 1:
+            # Replaced by sequence position
+            inserted_sequences = self._get_valid_digits(parts[1])
+            if not inserted_sequences:
+                return
+            inserted_sequence1, inserted_sequence2 = inserted_sequences
+        else:
+            # Replaced by nucleotides
+            nucleotides = ['a', 'c', 't', 'g']
+            for char in parts[1]:
+                if char not in nucleotides:
+                    return
+            inserted_sequence1 = parts[1].upper()
+            inserted_sequence2 = None
+        return inserted_sequence1, inserted_sequence2
+
+    def _get_valid_digits(self, part):
+        """Return valid digits after splitting on `_`."""
+        digits = part.split('_')
+        digit1 = digits[0]
+        digit2 = digits[1]
+        if not digit1.isdigit() or not digit2.isdigit():
+            return None
+        return digit1, digit2
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]):
