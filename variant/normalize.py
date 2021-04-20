@@ -1,6 +1,6 @@
 """Module for Variant Normalization."""
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
-    SequenceAlteration
+    SingleNucleotideVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
@@ -143,7 +143,7 @@ class Normalize:
                                           PolypeptideSequenceVariant)
         dna_sequence_variant_token = \
             self._get_instance_type_token(valid_result_tokens,
-                                          SequenceAlteration)
+                                          SingleNucleotideVariant)
 
         if polypeptide_sequence_variant_token and not \
                 dna_sequence_variant_token:

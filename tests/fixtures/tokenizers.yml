@@ -156,3 +156,19 @@ genomic_silent_mutation:
     - token: g.123=)
     - token: g.123
     - token: g.123==
+
+
+coding_dna_delins:
+  should_match:
+    - token: c.32386323delinsGA
+    - token: c.6775_6777delinsC
+    - token: c.145_147delinsTGG
+    - token: c.9002_9009delinsTTT
+    - token: c.850_901delinsTTCCTCGATGCCTG
+    - token: c.42522624_42522669delins42536337_42536382
+    - token: c.812_829delins908_925
+  should_not_match:
+    - token: 32386323delinsGA
+    - token: c.145_147delinsTGGS
+    - token: c.145_147delTGG
+    - token: g.32386323delinsGA
