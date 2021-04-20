@@ -20,6 +20,7 @@ from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
+from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
@@ -62,6 +63,7 @@ class Tokenize:
             SilentMutation(amino_acid_cache),
             CodingDNASubstitution(),
             GenomicSubstitution(),
+            CodingDNASilentMutation(),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),

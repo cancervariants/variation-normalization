@@ -1,6 +1,6 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type
+from typing import List, Union, Dict, Any, Type, Optional
 from enum import IntEnum, Enum
 
 
@@ -269,7 +269,7 @@ class SequenceAlteration(Token):
     """
 
     position: int
-    ref_nucleotide: str
+    ref_nucleotide: Optional[str]
     new_nucleotide: str
     token_type: str
     reference_sequence: ReferenceSequence
@@ -288,6 +288,14 @@ class CodingDNASubstitutionToken(SingleNucleotideVariantToken):
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'
+
+
+class CodingDNASilentMutationToken(SingleNucleotideVariantToken):
+    """SNV no change at the coding DNA reference sequence."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    new_nucleotide = '='
+    token_type = 'CodingDNASilentMutation'
 
 
 class GenomicSubstitutionToken(SingleNucleotideVariantToken):

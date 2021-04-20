@@ -130,3 +130,16 @@ genomic_substition:
     - token: g.509T>
     - token: g.509>A
     - token: g.T>A
+
+coding_dna_silent_mutation:
+  should_match:
+    - token: c.123=
+    - token: (c.123=)
+  should_not_match:
+    - token: c.292T>C
+    - token: g.292T>C
+    - token: g.123
+    - token: (c.123=
+    - token: c.123=)
+    - token: c.123
+    - token: c.123==
