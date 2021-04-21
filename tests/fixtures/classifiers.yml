@@ -96,3 +96,19 @@ genomic_substitution:
   should_not_match:
     - query: V170 (g.509F>A)
     - query: RX_:c.292TC
+
+coding_dna_delins:
+  should_match:
+    - query: NM_005157.6:c.1423_1424delinsGT
+      confidence: ConfidenceRating.EXACT
+    - query: ENST00000277541.6:c.7330delinsACA
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000797.3:c.812_829delins908_925
+      confidence: ConfidenceRating.EXACT
+    - query: foo c.131_234delinsA
+      confidence: ConfidenceRating.SUPERSET
+    - query: foo NM_005157.6:c.1423_1424delinsGT
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: N_005157.6:g.1423_1424delinsGT
+    - query: c.1423delinsX
