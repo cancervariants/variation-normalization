@@ -173,3 +173,14 @@ coding_dna_delins:
     - token: c.145_147delinsTGGS
     - token: c.145_147delTGG
     - token: g.32386323delinsGA
+    - token: NM_000797.3:c.812_829delins908_
+    - token: c.42522624_42522669delins_42536382
+    - token: c.delinsGA
+    - token: c.32386323delins
+    - token: (c.301_302delinsGG
+    - token: c.delins
+    - token: delins
+    - token: c._147delinsTGG
+    - token: c.145_delinsTGG
+    - token: c.delinsTGG
+    - token: c.d_delinsTG

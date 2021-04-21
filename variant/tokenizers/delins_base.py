@@ -80,6 +80,9 @@ class DelInsBase(Tokenizer):
         inserted_sequence1 = inserted_sequences[0]
         inserted_sequence2 = inserted_sequences[1]
 
+        if not inserted_sequence1 and not inserted_sequence2:
+            return
+
         self.parts = {
             'pos1_del': pos1_del,
             'pos2_del': pos2_del,
