@@ -99,6 +99,8 @@ class DelInsBase(Tokenizer):
             if not positions:
                 return
             pos1_del, pos2_del = positions
+            if pos1_del > pos2_del:
+                return
         else:
             pos1_del = parts[0]
             pos2_del = None
@@ -115,6 +117,8 @@ class DelInsBase(Tokenizer):
             if not inserted_sequences:
                 return
             inserted_sequence1, inserted_sequence2 = inserted_sequences
+            if inserted_sequence1 > inserted_sequence2:
+                return
         else:
             # Replaced by nucleotides
             nucleotides = ['a', 'c', 't', 'g']
