@@ -169,6 +169,7 @@ coding_dna_delins:
     - token: c.812_829delins908_925
     - token: (c.301_302delinsGG)
   should_not_match:
+    - token: c.150_147delinsTGG
     - token: 32386323delinsGA
     - token: c.145_147delinsTGGS
     - token: c.145_147delTGG
