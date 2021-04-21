@@ -14,4 +14,5 @@ from .polypeptide_truncation_classifier import PolypeptideTruncationClassifier  
 from .silent_mutation import SilentMutationClassifier  # noqa: F401
 from .coding_dna_substitution_classifier import CodingDNASubstitutionClassifier  # noqa: F401, E501
 from .genomic_substitution_classifier import GenomicSubstitutionClassifier  # noqa: F401, E501
+from .coding_dna_delins_classifier import CodingDNADelInsClassifier  # noqa: F401, E501
 from .classify import Classify  # noqa: F401
