@@ -9,6 +9,7 @@ from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
+from .coding_dna_delins import CodingDNADelIns
 from typing import List
 
 
@@ -30,7 +31,8 @@ class Validate:
             CodingDNASubstitution(seq_repo_client, transcript_mappings,
                                   gene_symbol),
             GenomicSubstitution(seq_repo_client, transcript_mappings,
-                                gene_symbol)
+                                gene_symbol),
+            CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \
