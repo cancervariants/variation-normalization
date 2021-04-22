@@ -84,7 +84,7 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
             for t in transcripts:
                 errors = list()
                 ref_nuc = \
-                    self.seq_repo_access.sequence_at_position(t, s.position)
+                    self.seqrepo_access.sequence_at_position(t, s.position)
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification, t)

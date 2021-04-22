@@ -115,7 +115,7 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
             for t in transcripts:
                 errors = list()
                 ref_nuc = \
-                    self.seq_repo_access.sequence_at_position(t, s.position)
+                    self.seqrepo_access.sequence_at_position(t, s.position)
 
                 if 'HGVS' in classification.matching_tokens and \
                         not t.startswith('ENST'):
@@ -168,7 +168,7 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
 
-            res = self.seq_repo_access.aliases(refseq)
+            res = self.seqrepo_access.aliases(refseq)
             aliases = [a.split('refseq:')[1] for a
                        in res if a.startswith('refseq')]
 
