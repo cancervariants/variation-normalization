@@ -137,6 +137,41 @@ class PolypeptideSequenceVariantBase(Validator):
             hgvs_expr = hgvs_expr.replace('=', three_letter)
         return hgvs_expr
 
+    def get_allele_from_hgvs(self, hgvs_expr, errors):
+        """Return allele from a given hgvs_expr.
+
+        :param str hgvs_expr: The HGVS string
+        :param list errors: List of errors
+        :return: Allele as a dictionary
+        """
+        allele = None
+        try:
+            allele = self.tlr.translate_from(hgvs_expr, 'hgvs')
+        except HTTPError:
+            errors.append(f"{hgvs_expr} is an invalid HGVS expression.")
+        except KeyError:
+            errors.append("GA4GH Data Proxy unable to translate sequence "
+                          f"identifier: {hgvs_expr}.")
+        except ValueError:
+            errors.append(f"Unable to parse {hgvs_expr} as hgvs variation")
+        else:
+            allele = allele.as_dict()
+        return allele
+
+    def get_allele_from_transcript(self, hgvs_expr, t, errors):
+        """Return allele from a given transcript.
+
+        :param Classification s: Classification token
+        :param str t: Transcript
+        :param list errors: List of errors
+        :return: Allele as a dictionary
+        """
+        allele = None
+        if t.startswith('ENST'):
+            return allele
+
+        return self.get_allele_from_hgvs(hgvs_expr, errors)
+
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
             -> None:
@@ -155,62 +190,47 @@ class PolypeptideSequenceVariantBase(Validator):
             for t in transcripts:
                 valid = True
                 errors = list()
-                ref_protein = \
-                    self.seq_repo_access.sequence_at_position(t, s.position)
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                    t = hgvs_expr.split(':')[0]
 
-                    # MANE Select Transcript for HGVS expressions
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t
-                    }
-                    try:
-                        # TODO: We should get this to work w/o doing above
-                        #       replacement
-                        seq_location = self.tlr.translate_from(hgvs_expr,
-                                                               'hgvs')
-                    except HTTPError:
-                        errors.append(f"{hgvs_expr} is an invalid "
-                                      f"HGVS expression.")
-                        valid = False
-                        allele = None
-                    else:
-                        allele = seq_location.as_dict()
+                    if allele:
+                        # MANE Select Transcript for HGVS expressions
+                        mane_transcripts_dict[hgvs_expr] = {
+                            'classification_token': s,
+                            'transcript_token': t
+                        }
                 else:
-                    try:
-                        sequence_id = \
-                            self.dp.translate_sequence_identifier(t,
-                                                                  'ga4gh')[0]
-                    except KeyError:
+                    refseq = ([a for a in self.seq_repo_access.aliases(t)
+                               if a.startswith('refseq:NP_')] or [None])[0]
+
+                    if not refseq:
                         allele = None
-                        error = "GA4GH Data Proxy unable to translate" \
-                                f" sequence identifier: {t}"
-                        valid = False
-                        logger.warning(error)
-                        errors.append(error)
                     else:
-                        allele = self.get_vrs_allele(sequence_id, s)
+                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
+                                    f"{s.ref_protein}{s.position}" \
+                                    f"{s.alt_protein}"
 
                         # MANE Select Transcript for Gene Name + Variation
                         # (ex: BRAF V600E)
-                        refseq = ([a for a in self.seq_repo_access.aliases(t)
-                                   if a.startswith('refseq:NP_')] or [None])[0]
-                        if refseq:
-                            hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                        f"{s.ref_protein}{s.position}" \
-                                        f"{s.alt_protein}"
-                            if hgvs_expr not in mane_transcripts_dict.keys():
-                                mane_transcripts_dict[hgvs_expr] = {
-                                    'classification_token': s,
-                                    'transcript_token': t
-                                }
+                        if hgvs_expr not in mane_transcripts_dict.keys():
+                            mane_transcripts_dict[hgvs_expr] = {
+                                'classification_token': s,
+                                'transcript_token': t
+                            }
+
+                        allele = self.get_allele_from_transcript(hgvs_expr, t,
+                                                                 errors)
 
                 if allele and len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
                         self._amino_acid_cache.convert_three_to_one(
                             allele['state']['sequence'])
+
+                ref_protein = \
+                    self.seq_repo_access.sequence_at_position(t, s.position)
 
                 if not errors:
                     if ref_protein and len(ref_protein) == 1 \
