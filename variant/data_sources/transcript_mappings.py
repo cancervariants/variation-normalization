@@ -30,8 +30,11 @@ class TranscriptMappings:
         self.refseq_protein_to_gene_symbol: Dict[str, str] = {}
 
         # NM_ <-> Gene Symbol
+        self.refseq_rna_version_for_gene_symbol: Dict[str, List[str]] = {}
+        self.refseq_rna_version_to_gene_symbol: Dict[str, str] = {}
         self.refseq_rna_for_gene_symbol: Dict[str, List[str]] = {}
         self.refseq_rna_to_gene_symbol: Dict[str, str] = {}
+
         self.gene_query_handler = GeneQueryHandler()
 
         self._load_transcript_mappings_data(transcript_file_path)
@@ -89,13 +92,20 @@ class TranscriptMappings:
                             append(refseq_transcript)
                         self.refseq_protein_to_gene_symbol[
                             refseq_transcript] = gene
-                    rna_trasncript = row['RNA']
-                    if rna_trasncript:
-                        self.refseq_rna_for_gene_symbol.\
+                    rna_transcript = row['RNA']
+                    if rna_transcript:
+                        self.refseq_rna_version_for_gene_symbol.\
                             setdefault(gene, []).\
-                            append(rna_trasncript)
-                        self.refseq_rna_to_gene_symbol[
-                            rna_trasncript] = gene
+                            append(rna_transcript)
+                        self.refseq_rna_version_to_gene_symbol[
+                            rna_transcript] = gene
+                        if '.' in rna_transcript:
+                            rna_transcript = rna_transcript.split('.')[0]
+                            self.refseq_rna_for_gene_symbol.\
+                                setdefault(gene, []).\
+                                append(rna_transcript)
+                            self.refseq_rna_to_gene_symbol[
+                                rna_transcript] = gene
 
     def protein_transcripts(self, identifier: str,
                             lookup_type: LookupType) -> Optional[List[str]]:
@@ -121,7 +131,9 @@ class TranscriptMappings:
             genomic_transcripts += \
                 self.ensembl_transcript_version_for_gene_symbol.get(identifier)
             genomic_transcripts += \
-                self.refseq_rna_for_gene_symbol.get(identifier)
+                self.refseq_rna_version_for_gene_symbol.get(identifier)
+            genomic_transcripts += \
+                self.refseq_rna_version_for_gene_symbol.get(identifier)
             return list(set(genomic_transcripts))
         else:
             return []
@@ -141,7 +153,12 @@ class TranscriptMappings:
 
     def get_gene_symbol_from_refseq_rna(self, q: str) -> Optional[List[str]]:
         """Return gene symbol for a Refseq RNA Transcript."""
-        return self.refseq_rna_to_gene_symbol.get(q)
+        gene_symbol = self.refseq_rna_version_to_gene_symbol.get(q)
+        if not gene_symbol:
+            if '.' in q:
+                q = q.split('.')[0]
+                gene_symbol = self.refseq_rna_to_gene_symbol.get(q)
+        return gene_symbol
 
     def get_gene_symbol_from_ensembl_transcript(self, q: str):
         """Return gene symbol for an Ensembl Transcript."""
