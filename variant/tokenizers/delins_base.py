@@ -32,8 +32,8 @@ class DelInsBase(Tokenizer):
             return None
 
         self.parts = {
-            'pos1_del': None,
-            'pos2_del': None,
+            'start_pos_del': None,
+            'end_pos_del': None,
             'inserted_sequence1': None,
             'inserted_sequence2': None,
             'reference_sequence': None
@@ -45,8 +45,8 @@ class DelInsBase(Tokenizer):
             'token': input_string,
             'input_string': input_string,
             'match_type': TokenMatchType.UNSPECIFIED.value,
-            'pos1_del': self.parts['pos1_del'],
-            'pos2_del': self.parts['pos2_del'],
+            'start_pos_del': self.parts['start_pos_del'],
+            'end_pos_del': self.parts['end_pos_del'],
             'inserted_sequence1': self.parts['inserted_sequence1'],
             'inserted_sequence2': self.parts['inserted_sequence2'],
             'reference_sequence': self.parts['reference_sequence']
@@ -71,8 +71,8 @@ class DelInsBase(Tokenizer):
         positions_deleted = self._get_positions_deleted(parts)
         if not positions_deleted:
             return
-        pos1_del = positions_deleted[0]
-        pos2_del = positions_deleted[1]
+        start_pos_del = positions_deleted[0]
+        end_pos_del = positions_deleted[1]
 
         inserted_sequences = self._get_inserted_sequence(parts)
         if not inserted_sequences:
@@ -84,8 +84,8 @@ class DelInsBase(Tokenizer):
             return
 
         self.parts = {
-            'pos1_del': pos1_del,
-            'pos2_del': pos2_del,
+            'start_pos_del': start_pos_del,
+            'end_pos_del': end_pos_del,
             'inserted_sequence1': inserted_sequence1,
             'inserted_sequence2': inserted_sequence2,
             'reference_sequence': reference_sequence
@@ -98,15 +98,15 @@ class DelInsBase(Tokenizer):
             positions = self._get_valid_digits(parts[0])
             if not positions:
                 return
-            pos1_del, pos2_del = positions
-            if pos1_del > pos2_del:
+            start_pos_del, end_pos_del = positions
+            if start_pos_del > end_pos_del:
                 return
         else:
-            pos1_del = parts[0]
-            pos2_del = None
-            if not pos1_del.isdigit():
+            start_pos_del = None
+            end_pos_del = parts[0]
+            if not end_pos_del.isdigit():
                 return None
-        return pos1_del, pos2_del
+        return start_pos_del, end_pos_del
 
     def _get_inserted_sequence(self, parts):
         """Return inserted sequence."""
