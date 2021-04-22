@@ -1,6 +1,7 @@
 """Module for HGVS tokenization."""
 from typing import Optional
 from .tokenizer import Tokenizer
+from variant.tokenizers.reference_sequence import REFSEQ_PREFIXES
 from variant.schemas.token_response_schema import Token, TokenMatchType
 from hgvs.parser import Parser
 from hgvs.exceptions import HGVSParseError, HGVSInvalidVariantError
@@ -17,6 +18,15 @@ class HGVS(Tokenizer):
 
     def match(self, input_string: str) -> Optional[Token]:
         """Return token matches from input string."""
+        valid_prefix = False
+        for prefix in REFSEQ_PREFIXES:
+            if input_string.upper().startswith(prefix):
+                valid_prefix = True
+                break
+
+        if not valid_prefix:
+            return None
+
         try:
             variant = self.parser.parse_hgvs_variant(input_string)
             self.validator.validate(variant)
