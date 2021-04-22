@@ -7,6 +7,7 @@ from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
+from .coding_dna_delins import CodingDNADelins
 from typing import List, Optional
 
 
@@ -20,7 +21,8 @@ class Translate:
             PolypeptideTruncation(),
             SilentMutation(),
             CodingDNASubstitution(),
-            GenomicSubstitution()
+            GenomicSubstitution(),
+            CodingDNADelins()
         ]
 
     def perform(self, res: ValidationResult) \
