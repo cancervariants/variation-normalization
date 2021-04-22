@@ -94,6 +94,7 @@ hgvs:
     - token: NP_000918.2:p.Ile1145=
   should_not_match:
     - token: NP004324.2
+    - token: ERBB2:c.2326_2327delinsCT
 
 coding_dna_substitution:
   should_match:
