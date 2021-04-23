@@ -1,7 +1,8 @@
 """Module for Variant Normalization."""
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
-    SingleNucleotideVariant
+    SingleNucleotideVariant, DelIns
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
+from variant.data_sources import SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
 from variant import logger
@@ -13,6 +14,7 @@ class Normalize:
     def __init__(self):
         """Initialize Normalize class."""
         self.gene_query_handler = GeneQueryHandler()
+        self.seqrepo_access = SeqRepoAccess()
         self.warnings = list()
 
     def normalize(self, q, validations, amino_acid_cache):
@@ -28,6 +30,7 @@ class Normalize:
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
+            label = None
             for r in validations.valid_results:
                 if r.mane_transcript:
                     valid_result = r
@@ -41,12 +44,12 @@ class Normalize:
                 label = ' '.join(q.strip().split())
 
             valid_result_tokens = valid_result.classification.all_tokens
-            molecule_context, structural_type, ref_allele_seq = \
-                self._get_molecule_context_structural_type_ref_allele_seq(
-                    valid_result_tokens, amino_acid_cache)
             allele = valid_result.allele
             allele_id = allele['_id']
             del allele['_id']
+            molecule_context, structural_type, ref_allele_seq = \
+                self._get_molecule_context_structural_type_ref_allele_seq(
+                    valid_result_tokens, amino_acid_cache, label)
 
             if valid_result.gene_tokens:
                 gene_token = valid_result.gene_tokens[0]
@@ -133,7 +136,8 @@ class Normalize:
 
     def _get_molecule_context_structural_type_ref_allele_seq(self,
                                                              valid_result_tokens,  # noqa: E501
-                                                             amino_acid_cache):
+                                                             amino_acid_cache,
+                                                             label):
         """Return context for a token.
 
         :return: (molecule_context, structural_type, ref_allele_seq)
@@ -144,6 +148,9 @@ class Normalize:
         dna_sequence_variant_token = \
             self._get_instance_type_token(valid_result_tokens,
                                           SingleNucleotideVariant)
+
+        delins_token = self._get_instance_type_token(valid_result_tokens,
+                                                     DelIns)
 
         if polypeptide_sequence_variant_token and not \
                 dna_sequence_variant_token:
@@ -178,11 +185,46 @@ class Normalize:
             else:
                 structural_type = None
             ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
+        elif delins_token:
+            if delins_token.reference_sequence in ['c', 'g']:
+                molecule_context = 'genomic'
+            else:
+                # TODO
+                molecule_context = None
+            structural_type = 'SO:1000032'
+            ref_allele_seq = self.get_delins_ref_allele_seq(delins_token,
+                                                            label)
         else:
             molecule_context = None
             structural_type = None
             ref_allele_seq = None
         return molecule_context, structural_type, ref_allele_seq
+
+    def get_delins_ref_allele_seq(self, delins_token, label):
+        """Return ref allele seq for transcript.
+
+        :param Token delins_token: DelIns token
+        :param str label: Transcript label
+        """
+        label = label.split(':')[0]
+        if delins_token.start_pos_del is not None:
+            start = int(delins_token.start_pos_del)
+        else:
+            start = None
+        end = int(delins_token.end_pos_del)
+
+        if start and end:
+            refseq_list = list()
+            while start <= end:
+                refseq_list.append(self.seqrepo_access.sequence_at_position(
+                    label, start
+                ))
+                start += 1
+            try:
+                return ''.join(refseq_list)
+            except TypeError:
+                pass
+        return None
 
     def _is_token_type(self, valid_result_tokens, token_type):
         """Return whether or not token_type is in valid_result_tokens."""
