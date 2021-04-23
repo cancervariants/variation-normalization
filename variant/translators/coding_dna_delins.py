@@ -1,10 +1,10 @@
 """Module for Coding DNA DelIns Translation."""
-from variant.translators.delins_base import DelInsBase
+from variant.translators.translator import Translator
 from variant.schemas.classification_response_schema import ClassificationType
 from variant.schemas.token_response_schema import CodingDNADelInsToken
 
 
-class CodingDNADelins(DelInsBase):
+class CodingDNADelins(Translator):
     """The Coding DNA Substitution Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:

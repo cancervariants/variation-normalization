@@ -343,7 +343,10 @@ class Validator(ABC):
                 for t in resp['transcriptAlleles']:
                     if 'MANE' in t.keys():
                         mane_transcript = t['MANE']
-                        gene_symbol = t['geneSymbol']
+                        if 'geneSymbol' in t.keys():
+                            gene_symbol = t['geneSymbol']
+                        else:
+                            gene_symbol = None
                         break
                 if mane_transcript:
                     if mane_transcript['maneStatus'] == 'MANE Select':
