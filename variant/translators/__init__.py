@@ -6,4 +6,5 @@ from .polypeptide_truncation import PolypeptideTruncation  # noqa: F401
 from .silent_mutation import SilentMutation  # noqa: F401
 from .coding_dna_substitution import CodingDNASubstitution  # noqa: F401
 from .genomic_substitution import GenomicSubstitution  # noqa: F401
-from .coding_dna_delins import CodingDNADelins  # noqa: F401
+from .coding_dna_delins import CodingDNADelIns  # noqa: F401
+from .genomic_delins import GenomicDelIns  # noqa: F401

@@ -4,7 +4,7 @@ from variant.schemas.classification_response_schema import ClassificationType
 from variant.schemas.token_response_schema import CodingDNADelInsToken
 
 
-class CodingDNADelins(Translator):
+class CodingDNADelIns(Translator):
     """The Coding DNA Substitution Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
