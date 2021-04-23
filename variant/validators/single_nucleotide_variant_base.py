@@ -33,7 +33,7 @@ class SingleNucleotideVariantBase(Validator):
         return allele.as_dict()
 
     @abstractmethod
-    def get_hgvs_expr(self, classification, t):
+    def get_hgvs_expr(self, classification, t, s, is_hgvs):
         """Return a HGVS expression.
 
         :param Classification classification: A classification for a list of
@@ -42,22 +42,15 @@ class SingleNucleotideVariantBase(Validator):
         """
         raise NotImplementedError
 
-    def get_allele_from_transcript(self, s, t, errors):
+    def get_allele_from_transcript(self, classification, t, s, errors):
         """Return allele from a given transcript.
         :param Classification s: Classification token
         :param str t: Transcript
         :param list errors: List of errors
         :return: Allele as a dictionary
         """
-        allele = None
-        try:
-            sequence_id = self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
-        except KeyError:
-            errors.append("GA4GH Data Proxy unable to translate sequence "
-                          f"identifier: {t}")
-        else:
-            allele = self.get_vrs_allele(sequence_id, s)
-        return allele
+        hgvs_expr, _ = self.get_hgvs_expr(classification, t, s, False)
+        return self.get_allele_from_hgvs(hgvs_expr, errors)
 
     def check_ref_nucleotide(self, ref_nuc, s, t, errors):
         """Assert that ref_nuc matches s.ref_nucleotide."""

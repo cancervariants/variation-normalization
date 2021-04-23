@@ -367,40 +367,6 @@ coding_dna_substitution:
     - query: NM_004333.4:c.1799T>A
       variants: [
         {
-          "id": "ga4gh:VA.HObIJBUCRtChaU0v49RYMWGgMx031wL3",
-          "location": {
-            "interval": {
-              "start": 1798,
-              "end": 1799,
-              "type": "SimpleInterval"
-            },
-            "sequence_id": "ga4gh:SQ.jkiXxxRjK7uTMiW2KQFjpgvF3VQi-HhX",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "A",
-            "type": "SequenceState"
-          },
-          "type": "Allele"
-        },
-        {
-          "id": "ga4gh:VA.w0CgyYGYSF0NsFpMLBLxzRAk8evEApyz",
-          "location": {
-            "interval": {
-              "start": 1798,
-              "end": 1799,
-              "type": "SimpleInterval"
-            },
-            "sequence_id": "ga4gh:SQ.qH6-ddtw5cXQpsDAjADTqm2rlEtK060e",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "A",
-            "type": "SequenceState"
-          },
-          "type": "Allele"
-        },
-        {
           "id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
           "location": {
             "interval": {
