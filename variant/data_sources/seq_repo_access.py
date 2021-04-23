@@ -34,6 +34,13 @@ class SeqRepoAccess:
         except KeyError:
             return None
 
+    def len_of_sequence(self, transcript: str):
+        """Return the length of a transcript's sequence.
+
+        :param str transcript: Transcript to find sequence length of
+        """
+        return len(self.seq_repo_client.fetch(transcript))
+
     def aliases(self, input_str):
         """Get aliases for a given input."""
         try:

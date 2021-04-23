@@ -73,10 +73,6 @@ class CodingDNADelIns(DelInsBase):
         :return: A tuple containing the hgvs expression and whether or not
             it's an Ensembl Transcript
         """
-        if t.startswith('ENST'):
-            # TODO
-            return None, True
-
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}."
             if s.start_pos_del is not None and s.end_pos_del is not None:
@@ -122,21 +118,33 @@ class CodingDNADelIns(DelInsBase):
             for t in transcripts:
                 errors = list()
 
-                if 'HGVS' in classification.matching_tokens and \
-                        not t.startswith('ENST'):
+                if 'HGVS' in classification.matching_tokens:
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
-                    t = hgvs_expr.split(':')[0]
-
                     if allele:
+                        t = hgvs_expr.split(':')[0]
                         # MANE Select Transcript for HGVS expressions
                         mane_transcripts_dict[hgvs_expr] = {
                             'classification_token': s,
                             'transcript_token': t,
                             'is_ensembl_transcript': is_ensembl_transcript
                         }
+                    else:
+                        # Typically cant find an allele when querying ENST
+                        # So try again using transcript mapping
+                        errors = list()
+                        allele = self.get_allele_from_transcript(
+                            classification, t, s, errors
+                        )
+
+                        if allele:
+                            # MANE Select Transcript for Gene Name + Variation
+                            # (ex: BRAF V600E)
+                            self._add_hgvs_to_mane_transcripts_dict(
+                                classification, mane_transcripts_dict, s, t,
+                                gene_tokens
+                            )
                 else:
                     allele = self.get_allele_from_transcript(classification,
                                                              t, s, errors)
@@ -147,6 +155,15 @@ class CodingDNADelIns(DelInsBase):
                             classification, mane_transcripts_dict, s, t,
                             gene_tokens
                         )
+
+                if allele:
+                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
+                    is_len_lt_end = len_of_seq < int(s.end_pos_del) - 1
+                    is_len_lt_start = \
+                        s.start_pos_del and len_of_seq < int(s.start_pos_del) - 1  # noqa: E501
+
+                    if is_len_lt_end or is_len_lt_start:
+                        errors.append('Sequence index error')
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

@@ -813,3 +813,120 @@ genomic_substitution:
           "type": "Allele"
         }
       ]
+
+coding_dna_delins:
+  tests:
+    - query: NM_001289937.1:c.2326_2327delinsCT
+      variants: [
+        {
+          "id": "ga4gh:VA.Zemq4aZqC9jzp2WAXFPnQpbvdlmkgymG",
+          "location": {
+            "interval": {
+              "start": 2325,
+              "end": 2327,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.Djq77klvL3m3p0xzraFfQPyuFhFgN_9w",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "CT",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.G8pUN2zEuDtTfI8i30RNLF-gQAab4rUC",
+          "location": {
+            "interval": {
+              "start": 2325,
+              "end": 2327,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "CT",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: ENST00000256474.2:c.364_365delinsAT
+      variants: [
+        {
+          "id": "ga4gh:VA.3FHtedgq7y__Dv4CQESYOFUgiJW8KbIW",
+          "location": {
+            "interval": {
+              "start": 363,
+              "end": 365,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.guuEF-tM_kFZodRliLEI35w_k-DqTaDs",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AT",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.ANyAMC-gERSW3699uNNNiVnzLIK--5S8",
+          "location": {
+            "interval": {
+              "start": 363,
+              "end": 365,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AT",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+
+genomic_delins:
+  tests:
+    - query: NC_000007.13:g.140453135_140453136delinsAT
+      variants: [
+        {
+          "id": "ga4gh:VA.mFIMSODRDoCuDbiOjoCHmOEGgvebdt2T",
+          "location": {
+            "interval": {
+              "start": 140453134,
+              "end": 140453136,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AT",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
+          "location": {
+            "interval": {
+              "start": 1918,
+              "end": 1919,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "A",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
