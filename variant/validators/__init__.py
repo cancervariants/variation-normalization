@@ -9,3 +9,5 @@ from .single_nucleotide_variant_base import SingleNucleotideVariantBase  # noqa:
 from .coding_dna_substitution import CodingDNASubstitution  # noqa: F401
 from .genomic_substitution import GenomicSubstitution  # noqa: F401
 from .coding_dna_delins import CodingDNADelIns  # noqa: F401
+from .genomic_delins import GenomicDelIns  # noqa: F401
+from .genomic_base import GenomicBase  # noqa: F401
