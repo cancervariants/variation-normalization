@@ -379,6 +379,100 @@ def braf_v600e_nucleotide():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def nm_004448_coding_dna_delins():
+    """Create test fixture for NM_004448.4:c.2326_2327delinsCT."""
+    params = {
+        "id": "normalize.variant:NM_004448.4%3Ac.2326_2327delinsCT",
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.G8pUN2zEuDtTfI8i30RNLF-gQAab4rUC",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 2327,
+                    "start": 2325,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "CT",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_004448.4:c.2326_2327delinsCT",
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "ref_allele_seq": "GA",
+        "gene_context": {
+            "id": "normalize.gene:ERBB2",
+            "type": "GeneDescriptor",
+            "label": "ERBB2",
+            "value": {
+                "id": "hgnc:3430",
+                "type": "Gene"
+            },
+            "xrefs": [
+                "ncbigene:2064",
+                "ensembl:ENSG00000141736"
+            ],
+            "alternate_labels": [
+                "NEU",
+                "HER-2",
+                "HER2",
+                "CD340",
+                "erb-b2 receptor tyrosine kinase 2",
+                "NGL"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "vega:OTTHUMG00000179300",
+                        "ucsc:uc002hso.4",
+                        "ccds:CCDS77016",
+                        "ccds:CCDS74052",
+                        "ccds:CCDS45667",
+                        "ccds:CCDS32642",
+                        "ccds:CCDS77017",
+                        "uniprot:P04626",
+                        "cosmic:ERBB2",
+                        "omim:164870",
+                        "iuphar:2019",
+                        "hcdmdb:CD340",
+                        "ena.embl:X03363",
+                        "refseq:NM_004448"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "17",
+                        "interval": {
+                            "end": "q12",
+                            "start": "q12",
+                            "type": "CytobandInterval"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -508,6 +602,12 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     resp.label = refseq_label
     resp.ref_allele_seq = 'T'
     assertion_checks(resp, braf_v600e_nucleotide)
+
+
+def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins):
+    """Test that Coding DNA DelIns normalizes correctly."""
+    resp = test_normalize.normalize('    NM_004448.4:c.2326_2327delinsCT    ')
+    assertion_checks(resp, nm_004448_coding_dna_delins)
 
 
 def test_no_matches(test_normalize):
