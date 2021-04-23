@@ -1,11 +1,11 @@
 """Module for Silent Mutation Translation."""
-from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase
+from variant.translators.translator import Translator
 from variant.schemas.classification_response_schema import ClassificationType
 from variant.schemas.token_response_schema import SilentMutationToken
 
 
-class SilentMutation(PolypeptideSequenceVariantBase):
-    """The Amino Acid Substitution Translator class."""
+class SilentMutation(Translator):
+    """The Silent Mutation Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
         """Return if classification type is Silent Mutation."""
