@@ -473,6 +473,95 @@ def nm_004448_coding_dna_delins():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def nc_000007_genomic_delins():
+    """Create test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
+    params = {
+        "id": "normalize.variant:NC_000007.13%3Ag.140453135_140453136delinsAT",
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 1919,
+                    "start": 1918,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "A",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_001374258.1:c.1919_1920delinsAT",
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "ref_allele_seq": "C",
+        "gene_context": {
+            "id": "normalize.gene:BRAF",
+            "type": "GeneDescriptor",
+            "label": "BRAF",
+            "value": {
+                "id": "hgnc:1097",
+                "type": "Gene"
+            },
+            "xrefs": [
+                "ncbigene:673",
+                "ensembl:ENSG00000157764"
+            ],
+            "alternate_labels": [
+                "B-Raf proto-oncogene, serine/threonine kinase",
+                "BRAF1"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "vega:OTTHUMG00000157457",
+                        "ucsc:uc003vwc.5",
+                        "ccds:CCDS5863",
+                        "ccds:CCDS87555",
+                        "uniprot:P15056",
+                        "pubmed:2284096",
+                        "pubmed:1565476",
+                        "cosmic:BRAF",
+                        "omim:164757",
+                        "orphanet:119066",
+                        "iuphar:1943",
+                        "ena.embl:M95712",
+                        "refseq:NM_004333"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "q34",
+                            "start": "q34",
+                            "type": "CytobandInterval"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -550,6 +639,7 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     refseq_label = 'NM_001374258.1:c.1919T>A'
     ensembl_label = 'ENST00000644969.2:c.1919T>A'
 
+    # TODO: Check if this should return a different VRS object?
     resp = test_normalize.normalize('ENST00000288602.6:c.1799T>A')
     assert resp.id == 'normalize.variant:ENST00000288602.6%3Ac.1799T%3EA'
     assert resp.label == ensembl_label
@@ -608,6 +698,16 @@ def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins):
     """Test that Coding DNA DelIns normalizes correctly."""
     resp = test_normalize.normalize('    NM_004448.4:c.2326_2327delinsCT    ')
     assertion_checks(resp, nm_004448_coding_dna_delins)
+
+    # TODO: Test ENST###.c
+
+
+def test_genomic_delins(test_normalize, nc_000007_genomic_delins):
+    """Test that Genomic DelIns normalizes correctly."""
+    resp = test_normalize.normalize(
+        'NC_000007.13:g.140453135_140453136delinsAT'
+    )
+    assertion_checks(resp, nc_000007_genomic_delins)
 
 
 def test_no_matches(test_normalize):

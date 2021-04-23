@@ -49,7 +49,7 @@ class Normalize:
             del allele['_id']
             molecule_context, structural_type, ref_allele_seq = \
                 self._get_molecule_context_structural_type_ref_allele_seq(
-                    valid_result_tokens, amino_acid_cache, label)
+                    valid_result_tokens, amino_acid_cache, label, allele)
 
             if valid_result.gene_tokens:
                 gene_token = valid_result.gene_tokens[0]
@@ -137,7 +137,7 @@ class Normalize:
     def _get_molecule_context_structural_type_ref_allele_seq(self,
                                                              valid_result_tokens,  # noqa: E501
                                                              amino_acid_cache,
-                                                             label):
+                                                             label, allele):
         """Return context for a token.
 
         :return: (molecule_context, structural_type, ref_allele_seq)
@@ -192,7 +192,7 @@ class Normalize:
                 # TODO
                 molecule_context = None
             structural_type = 'SO:1000032'
-            ref_allele_seq = self.get_delins_ref_allele_seq(delins_token,
+            ref_allele_seq = self.get_delins_ref_allele_seq(allele,
                                                             label)
         else:
             molecule_context = None
@@ -200,18 +200,16 @@ class Normalize:
             ref_allele_seq = None
         return molecule_context, structural_type, ref_allele_seq
 
-    def get_delins_ref_allele_seq(self, delins_token, label):
+    def get_delins_ref_allele_seq(self, allele, label):
         """Return ref allele seq for transcript.
 
-        :param Token delins_token: DelIns token
+        :param dict allele: VRS Allele object
         :param str label: Transcript label
         """
         label = label.split(':')[0]
-        if delins_token.start_pos_del is not None:
-            start = int(delins_token.start_pos_del)
-        else:
-            start = None
-        end = int(delins_token.end_pos_del)
+        interval = allele['location']['interval']
+        start = interval['start'] + 1
+        end = interval['end']
 
         if start and end:
             refseq_list = list()
