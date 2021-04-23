@@ -85,9 +85,9 @@ genomic_substitution:
   should_match:
     - query: V170D (g.509T>A)
       confidence: ConfidenceRating.SUPERSET
-    - query: NM_000551.3:g.292T>C
+    - query:  NC_000017.10:g.292T>C
       confidence: ConfidenceRating.EXACT
-    - query: NM_000551.3:g.292TC
+    - query:  NC_000017.10:g.292TC
       confidence: ConfidenceRating.INTERSECTION
     - query: foo Y98H (g.292T>C)
       confidence: ConfidenceRating.SUPERSET
@@ -112,3 +112,19 @@ coding_dna_delins:
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT
     - query: c.1423delinsX
+
+genomic_delins:
+  should_match:
+    - query: NC_000017.10:g.1423_1424delinsGT
+      confidence: ConfidenceRating.EXACT
+    - query:  NC_000017.10:g.7330delinsACA
+      confidence: ConfidenceRating.EXACT
+    - query:  NC_000017.10:g.812_829delins908_925
+      confidence: ConfidenceRating.EXACT
+    - query: foo g.131_234delinsA
+      confidence: ConfidenceRating.SUPERSET
+    - query: foo  NC_000017.10:g.1423_1424delinsGT
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query:  N_000017.10:c.1423_1424delinsGT
+    - query: g.1423delinsX
