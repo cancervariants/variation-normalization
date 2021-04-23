@@ -29,3 +29,4 @@ from .genomic_substitution import GenomicSubstitution  # noqa: F401
 from .coding_dna_silent_mutation import CodingDNASilentMutation  # noqa: F401
 from .genomic_silent_mutation import GenomicSilentMutation  # noqa: F401
 from .coding_dna_delins import CodingDNADelIns  # noqa: F401
+from .genomic_delins import GenomicDelIns  # noqa: F401

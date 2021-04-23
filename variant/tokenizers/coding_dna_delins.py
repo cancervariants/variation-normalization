@@ -7,6 +7,6 @@ class CodingDNADelIns(DelInsBase):
     """Class for tokenizing SNV Substitution."""
 
     def return_token(self, params):
-        """Return coding DNA silent mutation token."""
+        """Return coding DNA DelIns token."""
         if self.parts['reference_sequence'] == 'c':
             return CodingDNADelInsToken(**params)

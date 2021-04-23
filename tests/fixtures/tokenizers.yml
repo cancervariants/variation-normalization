@@ -186,3 +186,32 @@ coding_dna_delins:
     - token: c.145_delinsTGG
     - token: c.delinsTGG
     - token: c.d_delinsTG
+
+
+genomic_dna_delins:
+  should_match:
+    - token: g.32386323delinsGA
+    - token: g.6775_6777delinsC
+    - token: g.145_147delinsTGG
+    - token: g.9002_9009delinsTTT
+    - token: g.850_901delinsTTCCTCGATGCCTG
+    - token: g.42522624_42522669delins42536337_42536382
+    - token: g.812_829delins908_925
+    - token: (g.301_302delinsGG)
+  should_not_match:
+    - token: g.150_147delinsTGG
+    - token: 32386323delinsGA
+    - token: g.145_147delinsTGGS
+    - token: g.145_147delTGG
+    - token: c.32386323delinsGA
+    - token: NM_000797.3:g.812_829delins908_
+    - token: g.42522624_42522669delins_42536382
+    - token: g.delinsGA
+    - token: g.32386323delins
+    - token: (g.301_302delinsGG
+    - token: g.delins
+    - token: delins
+    - token: g._147delinsTGG
+    - token: g.145_delinsTGG
+    - token: g.delinsTGG
+    - token: g.d_delinsTG
