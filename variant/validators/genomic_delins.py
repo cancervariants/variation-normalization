@@ -148,7 +148,6 @@ class GenomicDelIns(DelInsBase):
         # Now add Mane transcripts to results
         self.add_mane_transcript(classification, results, gene_tokens,
                                  mane_transcripts_dict)
-        print(results)
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
