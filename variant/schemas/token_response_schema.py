@@ -329,4 +329,4 @@ class GenomicDelInsToken(DelIns):
     """DelIns at the linear genomic reference sequence."""
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    token_type = 'GenomicDNADelIns'
+    token_type = 'GenomicDelIns'

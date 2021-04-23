@@ -188,7 +188,7 @@ coding_dna_delins:
     - token: c.d_delinsTG
 
 
-genomic_dna_delins:
+genomic_delins:
   should_match:
     - token: g.32386323delinsGA
     - token: g.6775_6777delinsC

@@ -28,6 +28,7 @@ class ClassificationType(IntEnum):
     GENOMIC_SUBSTITUTION = 15
     CODING_DNA_SILENT_MUTATION = 16
     CODING_DNA_DELINS = 17
+    GENOMIC_DELINS = 18
 
 
 class ConfidenceRating(IntEnum):

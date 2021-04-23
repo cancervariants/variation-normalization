@@ -13,8 +13,8 @@ class TestGenomicDelInsTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic delins token type."""
-        return 'GenomicDNADelIns'
+        return 'GenomicDelIns'
 
     def fixture_name(self):
         """Return the fixture name for genomic delins."""
-        return 'genomic_dna_delins'
+        return 'genomic_delins'
