@@ -140,6 +140,15 @@ class GenomicDelIns(DelInsBase):
                             gene_tokens
                         )
 
+                if allele:
+                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
+                    is_len_lt_end = len_of_seq < int(s.end_pos_del) - 1
+                    is_len_lt_start = \
+                        s.start_pos_del and len_of_seq < int(s.start_pos_del) - 1  # noqa: E501
+
+                    if is_len_lt_end or is_len_lt_start:
+                        errors.append('Sequence index error')
+
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors

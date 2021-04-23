@@ -47,3 +47,24 @@ genomic_substitution:
   should_not_match:
     - query: NC_000007.13:g.1436A>T
     - query: NC_000007.13:g.4T>A
+
+coding_dna_delins:
+  should_match:
+    - query: NM_001289937.1:c.2326_2327delinsCT
+    - query: NM_000551.3:c.615delinsAA
+    - query: ENST00000440973.1:c.1607_1608delinsAG
+      # TODO: Find this gene symbol
+#    - query: ENST00000277541.6:c.7330delinsACA
+    - query: ENST00000318560.5:c.1423_1424delinsGT
+    - query: ENST00000256474.2:c.364_365delinsAT
+  should_not_match:
+    - query: NM_005228:c.2237_2253delinsTTGCT
+    - query: ENST00000277541.6:c.7330479587395delinsACA
+
+genomic_delins:
+  should_match:
+    - query: NC_000007.13:g.140453135_140453136delinsAT
+    - query: NC_000023.11:g.32386323delinsGA
+  should_not_match:
+    - query: NC_000023.21:g.32386323delinsGA
+    - query: NC_000023.11:g.3238646549879323delinsGA
