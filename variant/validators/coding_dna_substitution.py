@@ -66,35 +66,37 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                                        classification, results, gene_tokens)
         return results
 
-    def get_hgvs_expr(self, classification, t) -> tuple:
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> tuple:
         """Return HGVS expression and whether or not it's an Ensembl transcript
 
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+         :param bool is_hgvs: Whether or not classification is HGVS token
         :return: A tuple containing the hgvs expression and whether or not
             it's an Ensembl Transcript
         """
-        hgvs_token = \
-            [t for t in classification.all_tokens if
-             isinstance(t, Token) and t.token_type == 'HGVS'][0]
-        hgvs_expr = hgvs_token.input_string
-        if hgvs_expr.startswith('ENST'):
+        hgvs_from_transcript = f"{t}:{s.reference_sequence.lower()}." \
+                               f"{s.position}{s.ref_nucleotide}" \
+                               f">{s.new_nucleotide}"
+        if not is_hgvs:
+            hgvs_expr = hgvs_from_transcript
             is_ensembl_transcript = True
-            if not t.startswith('ENST'):
-                hgvs_expr = f"{t}:{hgvs_expr.split(':')[1]}"
         else:
-            is_ensembl_transcript = False
+            hgvs_token = [t for t in classification.all_tokens if
+                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+            hgvs_expr = hgvs_token.input_string
+
+            if hgvs_expr.startswith('ENST'):
+                is_ensembl_transcript = True
+                hgvs_expr = hgvs_from_transcript
+            else:
+                is_ensembl_transcript = False
 
         gene_token = [t for t in classification.all_tokens
                       if t.token_type == 'GeneSymbol']
         if gene_token:
             is_ensembl_transcript = True
-
-        # Replace `=` in silent mutation
-        if '=' in hgvs_expr:
-            # TODO
-            pass
         return hgvs_expr, is_ensembl_transcript
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
@@ -114,14 +116,13 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                ref_nuc = \
-                    self.seqrepo_access.sequence_at_position(t, s.position)
 
-                if 'HGVS' in classification.matching_tokens and \
-                        not t.startswith('ENST'):
+                if 'HGVS' in classification.matching_tokens:
+                    # TODO: How to convert ENST_ to NM_ versioned
                     hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t)
+                        self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                    t = hgvs_expr.split(':')[0]
                     if allele:
                         # MANE Select Transcript for HGVS expressions
                         mane_transcripts_dict[hgvs_expr] = {
@@ -130,7 +131,8 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                             'is_ensembl_transcript': is_ensembl_transcript
                         }
                 else:
-                    allele = self.get_allele_from_transcript(s, t, errors)
+                    allele = self.get_allele_from_transcript(classification,
+                                                             t, s, errors)
                     if allele:
                         # MANE Select Transcript for Gene Name + Variation
                         # (ex: BRAF V600E)
@@ -139,6 +141,8 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                             gene_tokens
                         )
 
+                ref_nuc = \
+                    self.seqrepo_access.sequence_at_position(t, s.position)
                 self.check_ref_nucleotide(ref_nuc, s, t, errors)
                 self.add_validation_result(
                     allele, valid_alleles, results,
