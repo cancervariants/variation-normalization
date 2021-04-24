@@ -562,6 +562,94 @@ def nc_000007_genomic_delins():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def nm_000551():
+    """Create test fixture for NM_000551.4:c.615delinsAA."""
+    params = {
+        "id": 'temp_id',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.tPF0lpCD-oDyX3SdqSDAbSXfaB_7Lo8x",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 615,
+                    "start": 614,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "AA",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_000551.4:c.615delinsAA",
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "ref_allele_seq": "G",
+        "gene_context": {
+            "id": "normalize.gene:VHL",
+            "type": "GeneDescriptor",
+            "label": "VHL",
+            "value": {
+                "id": "hgnc:12687",
+                "type": "Gene"
+            },
+            "xrefs": [
+                "ncbigene:7428",
+                "ensembl:ENSG00000134086"
+            ],
+            "alternate_labels": [
+                "VHL1",
+                "von Hippel-Lindau tumor suppressor"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "vega:OTTHUMG00000128668",
+                        "ucsc:uc003bvc.4",
+                        "ccds:CCDS2597",
+                        "ccds:CCDS2598",
+                        "uniprot:P40337",
+                        "pubmed:9671762",
+                        "cosmic:VHL",
+                        "omim:608537",
+                        "orphanet:120467",
+                        "ena.embl:L15409",
+                        "refseq:NM_000551"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "_id":
+                            "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "3",
+                        "interval": {
+                            "end": "p25.3",
+                            "start": "p25.3",
+                            "type": "CytobandInterval"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -694,20 +782,30 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     assertion_checks(resp, braf_v600e_nucleotide)
 
 
-def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins):
+def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,
+                           nm_000551):
     """Test that Coding DNA DelIns normalizes correctly."""
     resp = test_normalize.normalize('    NM_004448.4:c.2326_2327delinsCT    ')
     assertion_checks(resp, nm_004448_coding_dna_delins)
 
     # TODO: Test ENST###.c
 
+    resp = test_normalize.normalize('NM_000551.3:c.615delinsAA')
+    nm_000551.id = 'normalize.variant:NM_000551.3%3Ac.615delinsAA'
+    assertion_checks(resp, nm_000551)
 
-def test_genomic_delins(test_normalize, nc_000007_genomic_delins):
+
+def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
+                        nm_000551):
     """Test that Genomic DelIns normalizes correctly."""
     resp = test_normalize.normalize(
         'NC_000007.13:g.140453135_140453136delinsAT'
     )
     assertion_checks(resp, nc_000007_genomic_delins)
+
+    resp = test_normalize.normalize('NC_000003.12:g.10149938delinsAA')
+    nm_000551.id = 'normalize.variant:NC_000003.12%3Ag.10149938delinsAA'
+    assertion_checks(resp, nm_000551)
 
 
 def test_no_matches(test_normalize):

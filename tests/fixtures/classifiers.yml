@@ -109,6 +109,8 @@ coding_dna_delins:
       confidence: ConfidenceRating.SUPERSET
     - query: foo NM_005157.6:c.1423_1424delinsGT
       confidence: ConfidenceRating.INTERSECTION
+    - query: NM_000551.3:c.615delinsAA
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT
     - query: c.1423delinsX
@@ -125,6 +127,8 @@ genomic_delins:
       confidence: ConfidenceRating.SUPERSET
     - query: foo  NC_000017.10:g.1423_1424delinsGT
       confidence: ConfidenceRating.INTERSECTION
+    - query: NC_000003.12:g.10149938delinsAA
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query:  N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX

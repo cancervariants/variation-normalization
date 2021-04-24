@@ -890,6 +890,43 @@ coding_dna_delins:
           "type": "Allele"
         }
       ]
+    - query: NM_000551.3:c.615delinsAA
+      variants: [
+        {
+          "id": "ga4gh:VA.rn1RLLOfAqQG7C1YdDE8qzCgYiws8RvE",
+          "location": {
+            "interval": {
+              "start": 613,
+              "end": 615,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.v_QTc1p-MUYdgrRv4LMT6ByXIOsdw3C_",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AAA",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.tPF0lpCD-oDyX3SdqSDAbSXfaB_7Lo8x",
+          "location": {
+            "interval": {
+              "start": 614,
+              "end": 615,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AA",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
 
 genomic_delins:
   tests:
@@ -925,6 +962,43 @@ genomic_delins:
           },
           "state": {
             "sequence": "A",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NC_000003.12:g.10149938delinsAA
+      variants: [
+        {
+          "id": "ga4gh:VA.-f07PmCJYlYbzBHVUQzDYWguUU4usche",
+          "location": {
+            "interval": {
+              "start": 10149937,
+              "end": 10149938,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AA",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.tPF0lpCD-oDyX3SdqSDAbSXfaB_7Lo8x",
+          "location": {
+            "interval": {
+              "start": 614,
+              "end": 615,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AA",
             "type": "SequenceState"
           },
           "type": "Allele"
