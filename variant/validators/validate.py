@@ -8,6 +8,7 @@ from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
+from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_substitution import GenomicSubstitution
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
@@ -33,6 +34,8 @@ class Validate:
                                   gene_symbol),
             GenomicSubstitution(seq_repo_client, transcript_mappings,
                                 gene_symbol),
+            CodingDNASilentMutation(seq_repo_client, transcript_mappings,
+                                    gene_symbol),
             CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol),
             GenomicDelIns(seq_repo_client, transcript_mappings, gene_symbol)
         ]

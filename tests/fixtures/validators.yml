@@ -48,6 +48,17 @@ genomic_substitution:
     - query: NC_000007.13:g.1436A>T
     - query: NC_000007.13:g.4T>A
 
+coding_dna_silent_mutation:
+  should_match:
+    - query: NM_004006.2:c.123=
+    - query: NM_004333.4:c.1799=
+    - query: ENST00000288602.6:c.1799=
+    - query: BRAF c.1799=
+    - query: BRAF V600E c.1799=
+  should_not_match:
+    - query: NM_004006.2:c.13994=
+    - query: BRAF c.18000000000000=
+
 coding_dna_delins:
   should_match:
     - query: NM_001289937.1:c.2326_2327delinsCT
