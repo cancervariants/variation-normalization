@@ -217,3 +217,17 @@ genomic_delins:
     - token: g.145_delinsTGG
     - token: g.delinsTGG
     - token: g.d_delinsTG
+
+locus_reference_genomic:
+  should_match:
+    - token: LRG_199
+    - token: LRG_199t1
+    - token: LRG_199p1
+  should_not_match:
+    - token: LRG_199t1p1
+    - token: LRG_199p1t1
+    - token: LRG_
+    - token: LRG_t1
+    - token: LRG_p1
+    - token: LRGt1
+    - token: LRGp1

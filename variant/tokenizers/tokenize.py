@@ -27,6 +27,7 @@ from .genomic_delins import GenomicDelIns
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
+from .locus_reference_genomic import LocusReferenceGenomic
 from variant.schemas.token_response_schema import Token, TokenMatchType
 
 
@@ -74,7 +75,8 @@ class Tokenize:
             UnderExpression(),
             WildType(),
             HGVS(),
-            ReferenceSequence()
+            ReferenceSequence(),
+            LocusReferenceGenomic()
         )
 
     def perform(self, search_string: str) -> Iterable[Token]:

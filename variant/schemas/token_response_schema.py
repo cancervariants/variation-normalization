@@ -330,3 +330,14 @@ class GenomicDelInsToken(DelIns):
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicDelIns'
+
+
+class LocusReferenceGenomicToken(Token):
+    """Contain stable reference sequences that are used for reporting
+    sequence variants with clinical implications.
+    """
+
+    id: int
+    t: Optional[int]
+    p: Optional[int]
+    token_type = 'LocusReferenceGenomic'
