@@ -814,6 +814,89 @@ genomic_substitution:
         }
       ]
 
+coding_dna_silent_mutation:
+  tests:
+    - query:  NM_004333.4:c.1799=
+      variants: [
+        {
+          "id": "ga4gh:VA.HObIJBUCRtChaU0v49RYMWGgMx031wL3",
+          "location": {
+            "interval": {
+              "start": 1798,
+              "end": 1799,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.jkiXxxRjK7uTMiW2KQFjpgvF3VQi-HhX",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "A",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+
+genomic_silent_mutation:
+  tests:
+    - query: NC_000007.13:g.140453136=
+      variants: [
+        {
+          "id": "ga4gh:VA.d_gv3DxemrrINBM8LnjHLCX7CScUbfbZ",
+          "location": {
+            "interval": {
+              "start": 140453135,
+              "end": 140453136,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "A",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: BRAF g.140453136=
+      variants: [
+        {
+          "id": "ga4gh:VA.d_gv3DxemrrINBM8LnjHLCX7CScUbfbZ",
+          "location": {
+            "interval": {
+              "start": 140453135,
+              "end": 140453136,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "A",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.z65Ys4mFA_ViSVPEr5SPCb8Q0n_cegHq",
+          "location": {
+            "interval": {
+              "start": 140453135,
+              "end": 140453136,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "T",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+
 coding_dna_delins:
   tests:
     - query: NM_001289937.1:c.2326_2327delinsCT
