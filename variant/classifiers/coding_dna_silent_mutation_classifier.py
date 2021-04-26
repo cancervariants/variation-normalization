@@ -19,5 +19,6 @@ class CodingDNASilentMutationClassifier(SetBasedClassifier):
             ['CodingDNASilentMutation', 'GeneSymbol'],
             ['GeneSymbol', 'CodingDNASilentMutation'],
             ['HGVS', 'CodingDNASilentMutation'],
-            ['ReferenceSequence', 'CodingDNASilentMutation']
+            ['ReferenceSequence', 'CodingDNASilentMutation'],
+            ['LocusReferenceGenomic', 'CodingDNASilentMutation']
         ]

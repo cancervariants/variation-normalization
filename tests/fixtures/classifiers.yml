@@ -75,6 +75,8 @@ coding_dna_substitution:
       confidence: ConfidenceRating.SUPERSET
     - query: BRAF V600E c.23T>A
       confidence: ConfidenceRating.EXACT
+    - query: LRG_199t1:c.54G>H
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
@@ -128,6 +130,8 @@ coding_dna_delins:
     - query: foo NM_005157.6:c.1423_1424delinsGT
       confidence: ConfidenceRating.INTERSECTION
     - query: NM_000551.3:c.615delinsAA
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199t1:c.79_80delinsTT
       confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT

@@ -110,7 +110,8 @@ class Tokenize:
                 res = tokenizer.match(term)
                 if res:
                     tokens.append(res)
-                    if list(map(lambda t: t.token_type, tokens))[0] == 'HGVS':
+                    token = list(map(lambda t: t.token_type, tokens))[0]
+                    if token == 'HGVS' or token == 'LocusReferenceGenomic':
                         # Give specific type of HGVS (i.e. protein sub)
                         if len(tokens) == 1:
                             self._add_tokens(tokens,

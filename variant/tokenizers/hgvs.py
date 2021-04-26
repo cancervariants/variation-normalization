@@ -6,6 +6,7 @@ from variant.schemas.token_response_schema import Token, TokenMatchType
 from hgvs.parser import Parser
 from hgvs.exceptions import HGVSParseError, HGVSInvalidVariantError
 from hgvs.validator import IntrinsicValidator
+from .locus_reference_genomic import LocusReferenceGenomic
 
 
 class HGVS(Tokenizer):
@@ -30,11 +31,18 @@ class HGVS(Tokenizer):
         try:
             variant = self.parser.parse_hgvs_variant(input_string)
             self.validator.validate(variant)
-            return Token(
-                token=input_string,
-                token_type='HGVS',
-                input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED
-            )
+            if input_string[:3].upper().startswith('LRG'):
+                lrg_token = LocusReferenceGenomic().match(
+                    input_string.split(':')[0]
+                )
+                lrg_token.input_string = input_string
+                return lrg_token
+            else:
+                return Token(
+                    token=input_string,
+                    token_type='HGVS',
+                    input_string=input_string,
+                    match_type=TokenMatchType.UNSPECIFIED
+                )
         except (HGVSParseError, HGVSInvalidVariantError):
             return None
