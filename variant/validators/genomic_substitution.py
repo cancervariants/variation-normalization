@@ -130,13 +130,13 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
         return 'genomic substitution'
 
     def is_token_instance(self, t):
-        """Check that token is Coding DNA Substitution."""
+        """Check that token is genomic substitution."""
         return t.token_type == 'GenomicSubstitution'
 
     def validates_classification_type(
             self,
             classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is amino acid
+        """Return whether or not the classification type is genomic
         substitution.
         """
         return classification_type == ClassificationType.GENOMIC_SUBSTITUTION
@@ -144,6 +144,6 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
     def human_description(self, transcript,
                           psub_token: GenomicSubstitutionToken) -> str:
         """Return a human description of the identified variant."""
-        return f'A genomic DNA substitution from {psub_token.ref_nucleotide}' \
+        return f'A genomic substitution from {psub_token.ref_nucleotide}' \
                f' to {psub_token.new_nucleotide} at position ' \
                f'{psub_token.position} on transcript {transcript}'

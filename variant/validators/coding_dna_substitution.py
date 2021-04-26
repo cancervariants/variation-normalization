@@ -211,7 +211,7 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
     def validates_classification_type(
             self,
             classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is amino acid
+        """Return whether or not the classification type is coding dna
         substitution.
         """
         return classification_type == ClassificationType.CODING_DNA_SUBSTITUTION  # noqa: E501
@@ -219,6 +219,6 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
     def human_description(self, transcript,
                           psub_token: CodingDNASubstitutionToken) -> str:
         """Return a human description of the identified variant."""
-        return f'An coding DNA substitution from {psub_token.ref_nucleotide}' \
+        return f'A coding DNA substitution from {psub_token.ref_nucleotide}' \
                f' to {psub_token.new_nucleotide} at position ' \
                f'{psub_token.position} on transcript {transcript}'

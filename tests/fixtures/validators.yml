@@ -59,6 +59,13 @@ coding_dna_silent_mutation:
     - query: NM_004006.2:c.13994=
     - query: BRAF c.18000000000000=
 
+genomic_silent_mutation:
+  should_match:
+    - query: NC_000007.13:g.140453136=
+    - query: NC_000007.13:g.55259515=
+  should_not_match:
+    - query: NC_000007.13:g.159138664=
+
 coding_dna_delins:
   should_match:
     - query: NM_001289937.1:c.2326_2327delinsCT
