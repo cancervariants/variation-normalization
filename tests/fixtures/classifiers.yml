@@ -133,6 +133,8 @@ coding_dna_delins:
       confidence: ConfidenceRating.EXACT
     - query: LRG_199t1:c.79_80delinsTT
       confidence: ConfidenceRating.EXACT
+    - query: LRG_199:c.79_80delinsTT
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT
     - query: c.1423delinsX

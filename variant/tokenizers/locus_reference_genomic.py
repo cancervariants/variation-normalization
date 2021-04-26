@@ -26,7 +26,10 @@ class LocusReferenceGenomic(Tokenizer):
         if not match:
             return None
 
-        input_str = input_string.lower().split('lrg_')[-1]
+        if ':' in input_string:
+            input_str = input_string.lower().split(':')[0].split('lrg_')[-1]
+        else:
+            input_str = input_string.lower().split('lrg_')[-1]
 
         if input_str.isdigit():
             return LocusReferenceGenomicToken(
