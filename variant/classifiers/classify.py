@@ -9,7 +9,8 @@ from variant.classifiers import ComplexClassifier, ExpressionClassifier, \
     ProteinTerminationClassifier, \
     AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
     SilentMutationClassifier, CodingDNASubstitutionClassifier,\
-    GenomicSubstitutionClassifier, CodingDNADelInsClassifier,\
+    GenomicSubstitutionClassifier, CodingDNASilentMutationClassifier, \
+    GenomicSilentMutationClassifier, CodingDNADelInsClassifier,\
     GenomicDelInsClassifier, Classifier
 
 
@@ -32,6 +33,8 @@ class Classify:
             ProteinTerminationClassifier(),
             CodingDNASubstitutionClassifier(),
             GenomicSubstitutionClassifier(),
+            CodingDNASilentMutationClassifier(),
+            GenomicSilentMutationClassifier(),
             CodingDNADelInsClassifier(),
             GenomicDelInsClassifier()
         ]

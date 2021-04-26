@@ -9,5 +9,6 @@ class GenomicSilentMutation(SingleNucleotideVariantBase):
     def return_token(self, params):
         """Return genomic silent mutation token."""
         if self.sub['reference_sequence'] == 'g' and \
-                self.sub['ref_nucleotide'] is None:
+                self.sub['ref_nucleotide'] is None and \
+                self.sub['new_nucleotide'] == '=':
             return GenomicSilentMutationToken(**params)
