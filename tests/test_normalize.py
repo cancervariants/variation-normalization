@@ -26,8 +26,133 @@ def test_normalize():
     return TestNormalize()
 
 
+@pytest.fixture(scope='module')
+def braf_gene_context():
+    """Create BRAF gene context test fixture."""
+    return {
+        "id": "normalize.gene:BRAF",
+        "type": "GeneDescriptor",
+        "label": "BRAF",
+        "value": {
+            "id": "hgnc:1097",
+            "type": "Gene"
+        },
+        "xrefs": [
+            "ncbigene:673",
+            "ensembl:ENSG00000157764"
+        ],
+        "alternate_labels": [
+            "B-Raf proto-oncogene, serine/threonine kinase",
+            "BRAF1"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "vega:OTTHUMG00000157457",
+                    "ucsc:uc003vwc.5",
+                    "ccds:CCDS5863",
+                    "ccds:CCDS87555",
+                    "uniprot:P15056",
+                    "pubmed:2284096",
+                    "pubmed:1565476",
+                    "cosmic:BRAF",
+                    "omim:164757",
+                    "orphanet:119066",
+                    "iuphar:1943",
+                    "ena.embl:M95712",
+                    "refseq:NM_004333"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "7",
+                    "interval": {
+                        "end": "q34",
+                        "start": "q34",
+                        "type": "CytobandInterval"
+                    }
+                }
+            }
+        ]
+    }
+
+
+@pytest.fixture(scope='module')
+def vhl_gene_context():
+    """Create a VHL gene context."""
+    return {
+        "id": "normalize.gene:VHL",
+        "type": "GeneDescriptor",
+        "label": "VHL",
+        "value": {
+            "id": "hgnc:12687",
+            "type": "Gene"
+        },
+        "xrefs": [
+            "ncbigene:7428",
+            "ensembl:ENSG00000134086"
+        ],
+        "alternate_labels": [
+            "VHL1",
+            "von Hippel-Lindau tumor suppressor"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "vega:OTTHUMG00000128668",
+                    "ucsc:uc003bvc.4",
+                    "ccds:CCDS2597",
+                    "ccds:CCDS2598",
+                    "uniprot:P40337",
+                    "pubmed:9671762",
+                    "cosmic:VHL",
+                    "omim:608537",
+                    "orphanet:120467",
+                    "ena.embl:L15409",
+                    "refseq:NM_000551"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id":
+                        "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "3",
+                    "interval": {
+                        "end": "p25.3",
+                        "start": "p25.3",
+                        "type": "CytobandInterval"
+                    }
+                }
+            }
+        ]
+    }
+
+
 @pytest.fixture(scope="module")
-def braf_v600e():
+def braf_v600e(braf_gene_context):
     """Create BRAF V600E protein test fixture."""
     params = {
         "id": "normalize.variant:BRAF%20V600E",
@@ -53,70 +178,13 @@ def braf_v600e():
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "V",
-        "gene_context": {
-            "id": "normalize.gene:BRAF",
-            "type": "GeneDescriptor",
-            "label": "BRAF",
-            "value": {
-                "id": "hgnc:1097",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:673",
-                "ensembl:ENSG00000157764"
-            ],
-            "alternate_labels": [
-                "B-Raf proto-oncogene, serine/threonine kinase",
-                "BRAF1"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000157457",
-                        "ucsc:uc003vwc.5",
-                        "ccds:CCDS5863",
-                        "ccds:CCDS87555",
-                        "uniprot:P15056",
-                        "pubmed:2284096",
-                        "pubmed:1565476",
-                        "cosmic:BRAF",
-                        "omim:164757",
-                        "orphanet:119066",
-                        "iuphar:1943",
-                        "ena.embl:M95712",
-                        "refseq:NM_004333"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "7",
-                        "interval": {
-                            "end": "q34",
-                            "start": "q34",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+        "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def vhl():
+def vhl(vhl_gene_context):
     """Create VHL Tyr185Ter fixture."""
     params = {
         "id": "normalize.variant:NP_000542.1%3Ap.Tyr185Ter",
@@ -142,69 +210,13 @@ def vhl():
         "molecule_context": "protein",
         "structural_type": "SO:0001617",
         "ref_allele_seq": "Y",
-        "gene_context": {
-            "id": "normalize.gene:VHL",
-            "type": "GeneDescriptor",
-            "label": "VHL",
-            "value": {
-                "id": "hgnc:12687",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:7428",
-                "ensembl:ENSG00000134086"
-            ],
-            "alternate_labels": [
-                "VHL1",
-                "von Hippel-Lindau tumor suppressor"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000128668",
-                        "ucsc:uc003bvc.4",
-                        "ccds:CCDS2597",
-                        "ccds:CCDS2598",
-                        "uniprot:P40337",
-                        "pubmed:9671762",
-                        "cosmic:VHL",
-                        "omim:608537",
-                        "orphanet:120467",
-                        "ena.embl:L15409",
-                        "refseq:NM_000551"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id":
-                            "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "3",
-                        "interval": {
-                            "end": "p25.3",
-                            "start": "p25.3",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+        "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def vhl_silent():
+def vhl_silent(vhl_gene_context):
     """Create NP_000542.1:p.Pro61 fixture."""
     params = {
         "id": "normalize.variant:NP_000542.1%3Ap.Pro61%3D",
@@ -230,68 +242,13 @@ def vhl_silent():
         "molecule_context": "protein",
         "structural_type": "SO:0001017",
         "ref_allele_seq": "P",
-        "gene_context": {
-            "id": "normalize.gene:VHL",
-            "type": "GeneDescriptor",
-            "label": "VHL",
-            "value": {
-                "id": "hgnc:12687",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:7428",
-                "ensembl:ENSG00000134086"
-            ],
-            "alternate_labels": [
-                "von Hippel-Lindau tumor suppressor",
-                "VHL1"
-            ],
-            "extensions": [
-                {
-                    "name": "symbol_status",
-                    "value": "approved",
-                    "type": "Extension"
-                },
-                {
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000128668",
-                        "ucsc:uc003bvc.4",
-                        "ccds:CCDS2597",
-                        "ccds:CCDS2598",
-                        "uniprot:P40337",
-                        "pubmed:9671762",
-                        "cosmic:VHL",
-                        "omim:608537",
-                        "orphanet:120467",
-                        "ena.embl:L15409",
-                        "refseq:NM_000551"
-                    ],
-                    "type": "Extension"
-                },
-                {
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id": "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "3",
-                        "interval": {
-                            "end": "p25.3",
-                            "start": "p25.3",
-                            "type": "CytobandInterval"
-                        }
-                    },
-                    "type": "Extension"
-                }
-            ]
-        }
+        "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope='module')
-def braf_v600e_nucleotide():
+def braf_v600e_nucleotide(braf_gene_context):
     """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
     params = {
         "id": "normalize.variant:NM_004333.4%3Ac.1799T%3EA",
@@ -317,64 +274,7 @@ def braf_v600e_nucleotide():
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "T",
-        "gene_context": {
-            "id": "normalize.gene:BRAF",
-            "type": "GeneDescriptor",
-            "label": "BRAF",
-            "value": {
-                "id": "hgnc:1097",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:673",
-                "ensembl:ENSG00000157764"
-            ],
-            "alternate_labels": [
-                "B-Raf proto-oncogene, serine/threonine kinase",
-                "BRAF1"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000157457",
-                        "ucsc:uc003vwc.5",
-                        "ccds:CCDS5863",
-                        "ccds:CCDS87555",
-                        "uniprot:P15056",
-                        "pubmed:2284096",
-                        "pubmed:1565476",
-                        "cosmic:BRAF",
-                        "omim:164757",
-                        "orphanet:119066",
-                        "iuphar:1943",
-                        "ena.embl:M95712",
-                        "refseq:NM_004333"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "7",
-                        "interval": {
-                            "end": "q34",
-                            "start": "q34",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+        "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
 
@@ -474,7 +374,7 @@ def nm_004448_coding_dna_delins():
 
 
 @pytest.fixture(scope='module')
-def nc_000007_genomic_delins():
+def nc_000007_genomic_delins(braf_gene_context):
     """Create test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
     params = {
         "id": "normalize.variant:NC_000007.13%3Ag.140453135_140453136delinsAT",
@@ -500,70 +400,13 @@ def nc_000007_genomic_delins():
         "molecule_context": "genomic",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "C",
-        "gene_context": {
-            "id": "normalize.gene:BRAF",
-            "type": "GeneDescriptor",
-            "label": "BRAF",
-            "value": {
-                "id": "hgnc:1097",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:673",
-                "ensembl:ENSG00000157764"
-            ],
-            "alternate_labels": [
-                "B-Raf proto-oncogene, serine/threonine kinase",
-                "BRAF1"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000157457",
-                        "ucsc:uc003vwc.5",
-                        "ccds:CCDS5863",
-                        "ccds:CCDS87555",
-                        "uniprot:P15056",
-                        "pubmed:2284096",
-                        "pubmed:1565476",
-                        "cosmic:BRAF",
-                        "omim:164757",
-                        "orphanet:119066",
-                        "iuphar:1943",
-                        "ena.embl:M95712",
-                        "refseq:NM_004333"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "7",
-                        "interval": {
-                            "end": "q34",
-                            "start": "q34",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+        "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope='module')
-def nm_000551():
+def nm_000551(vhl_gene_context):
     """Create test fixture for NM_000551.4:c.615delinsAA."""
     params = {
         "id": 'temp_id',
@@ -589,63 +432,71 @@ def nm_000551():
         "molecule_context": "genomic",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "G",
-        "gene_context": {
-            "id": "normalize.gene:VHL",
-            "type": "GeneDescriptor",
-            "label": "VHL",
-            "value": {
-                "id": "hgnc:12687",
-                "type": "Gene"
+        "gene_context": vhl_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def coding_dna_silent_mutation(braf_gene_context):
+    """Create test fixture for NM_004333.4:c.1799=."""
+    params = {
+        "id": 'normalize.variant:NM_004333.4%3Ac.1799%3D',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.KDlNyhYx4zWLSa_zB_db5bFOjuhmawK8",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 1799,
+                    "start": 1798,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.jkiXxxRjK7uTMiW2KQFjpgvF3VQi-HhX",
+                "type": "SequenceLocation"
             },
-            "xrefs": [
-                "ncbigene:7428",
-                "ensembl:ENSG00000134086"
-            ],
-            "alternate_labels": [
-                "VHL1",
-                "von Hippel-Lindau tumor suppressor"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
+            "state": {
+                "sequence": "A",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_004333.4:c.1799=",
+        "molecule_context": "genomic",
+        "structural_type": "SO:0002073",
+        "ref_allele_seq": "A",
+        "gene_context": braf_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def nc_000007_silent_mutation():
+    """Create test fixture for NC_000007.13:g.140453136=."""
+    params = {
+        "id": 'normalize.variant:NC_000007.13%3Ag.140453136%3D',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.y3OnKtG-zUM-LTJHOg7IsLVfm8x3PNLI",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 140453136,
+                    "start": 140453135,
+                    "type": "SimpleInterval"
                 },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000128668",
-                        "ucsc:uc003bvc.4",
-                        "ccds:CCDS2597",
-                        "ccds:CCDS2598",
-                        "uniprot:P40337",
-                        "pubmed:9671762",
-                        "cosmic:VHL",
-                        "omim:608537",
-                        "orphanet:120467",
-                        "ena.embl:L15409",
-                        "refseq:NM_000551"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id":
-                            "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "3",
-                        "interval": {
-                            "end": "p25.3",
-                            "start": "p25.3",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+                "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "A",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NC_000007.13:g.140453136=",
+        "molecule_context": "genomic",
+        "structural_type": "SO:0002073",
+        "ref_allele_seq": "A",
+        "gene_context": None
     }
     return VariationDescriptor(**params)
 
@@ -662,23 +513,26 @@ def assertion_checks(normalize_response, test_variant):
 
     resp_gene_context = normalize_response.gene_context
     test_variant_context = test_variant.gene_context
-    assert resp_gene_context.id == test_variant_context.id
-    assert resp_gene_context.label == test_variant_context.label
-    assert resp_gene_context.value_id == test_variant_context.value_id
-    assert set(resp_gene_context.xrefs) == set(test_variant_context.xrefs)
-    assert set(resp_gene_context.alternate_labels) == \
-           set(test_variant_context.alternate_labels)
-    assert len(resp_gene_context.extensions) == \
-           len(test_variant_context.extensions)
-    for resp_ext in resp_gene_context.extensions:
-        for test_var in test_variant_context.extensions:
-            if resp_ext.name == test_var.name:
-                if resp_ext.name == 'chromosome_location':
-                    assert resp_ext.value == test_var.value
-                elif resp_ext.name == 'associated_with':
-                    assert set(resp_ext.value) == set(test_var.value)
-                else:
-                    assert resp_ext.value == test_var.value
+    if resp_gene_context:
+        assert resp_gene_context.id == test_variant_context.id
+        assert resp_gene_context.label == test_variant_context.label
+        assert resp_gene_context.value_id == test_variant_context.value_id
+        assert set(resp_gene_context.xrefs) == set(test_variant_context.xrefs)
+        assert set(resp_gene_context.alternate_labels) == \
+               set(test_variant_context.alternate_labels)
+        assert len(resp_gene_context.extensions) == \
+               len(test_variant_context.extensions)
+        for resp_ext in resp_gene_context.extensions:
+            for test_var in test_variant_context.extensions:
+                if resp_ext.name == test_var.name:
+                    if resp_ext.name == 'chromosome_location':
+                        assert resp_ext.value == test_var.value
+                    elif resp_ext.name == 'associated_with':
+                        assert set(resp_ext.value) == set(test_var.value)
+                    else:
+                        assert resp_ext.value == test_var.value
+    else:
+        assert not test_variant_context
 
 
 def test_amino_acid_substitution(test_normalize, braf_v600e):
@@ -780,6 +634,57 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     resp.label = refseq_label
     resp.ref_allele_seq = 'T'
     assertion_checks(resp, braf_v600e_nucleotide)
+
+
+def assert_coding_dna_genomic_silent_mutation(resp, gene_context, start, stop):
+    """Check for coding dna or genomic silent mutation."""
+    assert resp
+    assert resp.value_id.startswith('ga4gh:VA.')
+    assert resp.value['location']['interval']['start'] == start
+    assert resp.value['location']['interval']['end'] == stop
+    assert resp.value['location']['sequence_id'].startswith('ga4gh:SQ.')
+    assert resp.gene_context.dict(exclude_none=True) == gene_context
+    assert resp.molecule_context == 'genomic'
+    assert resp.structural_type == 'SO:0002073'
+
+
+def test_coding_dna_silent_mutation(test_normalize,
+                                    coding_dna_silent_mutation,
+                                    braf_gene_context):
+    """Test that Coding DNA Silent Mutation normalizes correctly."""
+    resp = test_normalize.normalize('NM_004333.4:c.1799= ')
+    assertion_checks(resp, coding_dna_silent_mutation)
+
+    # Only selects first from VRS, so this might change.
+    # Update test once MANE select works on silent mutations
+    resp = test_normalize.normalize('ENST00000288602.6:c.1799=')
+    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+                                              1798, 1799)
+    assert resp.id == 'normalize.variant:ENST00000288602.6%3Ac.1799%3D'
+    assert resp.label == 'ENST00000288602.6:c.1799='
+
+    resp = test_normalize.normalize('BRAF    c.1799=')
+    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+                                              1798, 1799)
+    assert resp.id == 'normalize.variant:BRAF%20c.1799%3D'
+    assert resp.label == 'BRAF c.1799='
+
+    resp = test_normalize.normalize('  BRAF  V600E  c.1799=  ')
+    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+                                              1798, 1799)
+    assert resp.id == 'normalize.variant:BRAF%20V600E%20c.1799%3D'
+    assert resp.label == 'BRAF V600E c.1799='
+
+
+def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
+                                 braf_gene_context):
+    """Test that genomic silent mutation normalizes correctly."""
+    resp = test_normalize.normalize('NC_000007.13:g.140453136=')
+    assertion_checks(resp, nc_000007_silent_mutation)
+
+    resp = test_normalize.normalize('BRAF g.140453136=')
+    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+                                              140453135, 140453136)
 
 
 def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,

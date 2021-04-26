@@ -182,9 +182,17 @@ class Normalize:
                     self._is_token_type(valid_result_tokens,
                                         'GenomicSubstitution'):
                 structural_type = 'SO:0001483'
+                ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
+            elif self._is_token_type(valid_result_tokens,
+                                     'CodingDNASilentMutation') or \
+                    self._is_token_type(valid_result_tokens,
+                                        'GenomicSilentMutation'):
+                structural_type = 'SO:0002073'
+                ref_allele_seq = self.get_delins_ref_allele_seq(allele,
+                                                                label)
             else:
                 structural_type = None
-            ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
+                ref_allele_seq = None
         elif delins_token:
             if delins_token.reference_sequence in ['c', 'g']:
                 molecule_context = 'genomic'
