@@ -8,7 +8,7 @@ class CodingDNASilentMutationClassifier(SetBasedClassifier):
     """The Coding DNA Silent Mutation Classifier class."""
 
     def classification_type(self) -> ClassificationType:
-        """Return the DNA Coding Silent Mutation classification type."""
+        """Return the Coding DNA Silent Mutation classification type."""
         return ClassificationType.CODING_DNA_SILENT_MUTATION
 
     def exact_match_candidates(self) -> List[List[str]]:

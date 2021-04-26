@@ -8,5 +8,7 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
 
     def return_token(self, params):
         """Return Genomic Substitution token."""
-        if self.sub['reference_sequence'] == 'g':
+        if self.sub['reference_sequence'] == 'g' and \
+                self.sub['ref_nucleotide'] is not None and \
+                self.sub['new_nucleotide'] != '=':
             return GenomicSubstitutionToken(**params)

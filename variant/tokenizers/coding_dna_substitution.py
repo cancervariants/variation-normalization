@@ -9,5 +9,6 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
     def return_token(self, params):
         """Return coding DNA substitution token."""
         if self.sub['reference_sequence'] == 'c' and \
-                self.sub['ref_nucleotide'] is not None:
+                self.sub['ref_nucleotide'] is not None and \
+                self.sub['new_nucleotide'] != '=':
             return CodingDNASubstitutionToken(**params)

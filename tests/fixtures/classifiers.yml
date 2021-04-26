@@ -17,7 +17,6 @@ fusion:
     - query: fused
     - query: fusio
 
-
 amino_acid_substitution:
   should_match:
     - query: BRAF V600E
@@ -80,7 +79,6 @@ coding_dna_substitution:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
 
-
 genomic_substitution:
   should_match:
     - query: V170D (g.509T>A)
@@ -96,6 +94,26 @@ genomic_substitution:
   should_not_match:
     - query: V170 (g.509F>A)
     - query: RX_:c.292TC
+
+coding_dna_silent_mutation:
+  should_match:
+    - query: NM_004006.2:c.123=
+      confidence: ConfidenceRating.EXACT
+    - query: foo VHL c.123=
+      confidence: ConfidenceRating.SUPERSET
+  should_not_match:
+    - query: CODING_DNA_:c.123=
+    - query: g.123=
+
+genomic_silent_mutation:
+  should_match:
+    - query: NC_000017.10:g.123=
+      confidence: ConfidenceRating.EXACT
+    - query: foo VHL g.123=
+      confidence: ConfidenceRating.SUPERSET
+  should_not_match:
+    - query: GENOMIC_:g.123=
+    - query: c.123=
 
 coding_dna_delins:
   should_match:
