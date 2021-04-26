@@ -106,6 +106,72 @@ class Validator(ABC):
         return [t for t in classification.all_tokens
                 if t.token_type == 'GeneSymbol']
 
+    def get_coding_dna_gene_symbol_tokens(self, classification):
+        """Return gene symbol tokens for coding dna classifications."""
+        gene_tokens = self.get_gene_symbol_tokens(classification)
+        if not gene_tokens:
+            # Convert refseq to gene symbol
+            refseq = \
+                ([t.token for t in classification.all_tokens if
+                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
+
+            if not refseq:
+                lrg_token = None
+                for t in classification.all_tokens:
+                    if t.token_type == 'LocusReferenceGenomic':
+                        lrg_token = t.token
+                        if ':' in lrg_token:
+                            lrg_token = lrg_token.split(':')[0]
+                        break
+
+                if not lrg_token:
+                    return []
+                gene_symbol = \
+                    self.transcript_mappings.get_gene_symbol_from_lrg(
+                        lrg_token
+                    )
+
+                if gene_symbol:
+                    gene_tokens.append(
+                        self._gene_matcher.match(gene_symbol)
+                    )
+                else:
+                    logger.warning(f"No gene symbol found for LRG "
+                                   f"{lrg_token} in transcript_mappings.tsv")
+
+            else:
+                if ':' in refseq:
+                    refseq = refseq.split(':')[0]
+
+                res = self.seqrepo_access.aliases(refseq)
+                aliases = [a.split('refseq:')[1] for a
+                           in res if a.startswith('refseq')]
+
+                if not aliases:
+                    aliases = [refseq]
+
+                gene_symbols = list()
+                if aliases:
+                    for alias in aliases:
+                        gene_symbol = \
+                            self.transcript_mappings.get_gene_symbol_from_refseq_rna(alias)  # noqa: E501
+
+                        if not gene_symbol:
+                            gene_symbol = \
+                                self.transcript_mappings.get_gene_symbol_from_ensembl_transcript(alias)  # noqa: E501
+
+                        if gene_symbol:
+                            if gene_symbol not in gene_symbols:
+                                gene_symbols.append(gene_symbol)
+                                gene_tokens.append(
+                                    self._gene_matcher.match(gene_symbol)
+                                )
+                        else:
+                            logger.warning(f"No gene symbol found "
+                                           f"for rna {alias} in "
+                                           f"transcript_mappings.tsv")
+        return gene_tokens
+
     def get_validation_result(self, classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
                               errors, gene_tokens,
