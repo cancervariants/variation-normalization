@@ -19,5 +19,6 @@ class CodingDNASubstitutionClassifier(SetBasedClassifier):
             ['CodingDNASubstitution', 'GeneSymbol'],
             ['GeneSymbol', 'CodingDNASubstitution'],
             ['HGVS', 'CodingDNASubstitution'],
-            ['ReferenceSequence', 'CodingDNASubstitution']
+            ['ReferenceSequence', 'CodingDNASubstitution'],
+            ['LocusReferenceGenomic', 'CodingDNASubstitution']
         ]

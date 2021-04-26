@@ -19,5 +19,6 @@ class CodingDNADelInsClassifier(SetBasedClassifier):
             ['CodingDNADelIns', 'GeneSymbol'],
             ['GeneSymbol', 'CodingDNADelIns'],
             ['HGVS', 'CodingDNADelIns'],
-            ['ReferenceSequence', 'CodingDNADelIns']
+            ['ReferenceSequence', 'CodingDNADelIns'],
+            ['LocusReferenceGenomic', 'CodingDNADelIns']
         ]
