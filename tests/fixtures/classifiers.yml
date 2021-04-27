@@ -124,7 +124,7 @@ coding_dna_delins:
     - query: ENST00000277541.6:c.7330delinsACA
       confidence: ConfidenceRating.EXACT
     - query: NM_000797.3:c.812_829delins908_925
-      confidence: ConfidenceRating.EXACT
+      confidence: ConfidenceRating.INTERSECTION
     - query: foo c.131_234delinsA
       confidence: ConfidenceRating.SUPERSET
     - query: foo NM_005157.6:c.1423_1424delinsGT
@@ -146,7 +146,7 @@ genomic_delins:
     - query:  NC_000017.10:g.7330delinsACA
       confidence: ConfidenceRating.EXACT
     - query:  NC_000017.10:g.812_829delins908_925
-      confidence: ConfidenceRating.EXACT
+      confidence: ConfidenceRating.INTERSECTION
     - query: foo g.131_234delinsA
       confidence: ConfidenceRating.SUPERSET
     - query: foo  NC_000017.10:g.1423_1424delinsGT
