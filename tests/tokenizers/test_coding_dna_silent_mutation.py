@@ -1,4 +1,4 @@
-"""A module for testing DNA Coding Silent Mutation tokenization."""
+"""A module for testing Coding DNA Silent Mutation tokenization."""
 import unittest
 from variant.tokenizers import CodingDNASilentMutation
 from .tokenizer_base import TokenizerBase
@@ -16,5 +16,5 @@ class TestCodingDNASilentMutationTokenizer(TokenizerBase, unittest.TestCase):
         return 'CodingDNASilentMutation'
 
     def fixture_name(self):
-        """Return the fixture name for coding  DNA silent mutation."""
+        """Return the fixture name for coding DNA silent mutation."""
         return 'coding_dna_silent_mutation'
