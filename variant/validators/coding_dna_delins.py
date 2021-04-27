@@ -4,7 +4,7 @@ from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import CodingDNADelInsToken
 from variant.schemas.validation_response_schema import LookupType
-from typing import List
+from typing import List, Tuple
 from variant.schemas.classification_response_schema import Classification
 from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.validation_response_schema import ValidationResult
@@ -63,7 +63,7 @@ class CodingDNADelIns(DelInsBase):
                                        classification, results, gene_tokens)
         return results
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> tuple:
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
         """Return HGVS expression and whether or not it's an Ensembl transcript
 
         :param Classification classification: A classification for a list of

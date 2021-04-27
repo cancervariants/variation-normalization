@@ -119,6 +119,7 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
 
                 if 'HGVS' in classification.matching_tokens:
                     # TODO: How to convert ENST_ to NM_ versioned
+                    #  and return one match
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
@@ -178,8 +179,8 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
         return classification_type == ClassificationType.CODING_DNA_SUBSTITUTION  # noqa: E501
 
     def human_description(self, transcript,
-                          psub_token: CodingDNASubstitutionToken) -> str:
+                          token: CodingDNASubstitutionToken) -> str:
         """Return a human description of the identified variant."""
-        return f'A coding DNA substitution from {psub_token.ref_nucleotide}' \
-               f' to {psub_token.new_nucleotide} at position ' \
-               f'{psub_token.position} on transcript {transcript}'
+        return f'A coding DNA substitution from {token.ref_nucleotide}' \
+               f' to {token.new_nucleotide} at position ' \
+               f'{token.position} on transcript {transcript}'

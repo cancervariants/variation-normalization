@@ -102,12 +102,20 @@ class Validator(ABC):
                 if self.is_token_instance(t)]
 
     def get_gene_symbol_tokens(self, classification) -> List[GeneMatchToken]:
-        """Return tokens with token type GeneSymbol from a classification."""
+        """Return tokens with token type GeneSymbol from a classification.
+
+        :param Classification classification: Classification of input string
+        :return: List of Gene Match Tokens
+        """
         return [t for t in classification.all_tokens
                 if t.token_type == 'GeneSymbol']
 
     def get_coding_dna_gene_symbol_tokens(self, classification):
-        """Return gene symbol tokens for coding dna classifications."""
+        """Return gene symbol tokens for coding dna classifications.
+
+        :param Classification classification: Classification of input string
+        :return: A list of gene symbol tokens
+        """
         gene_tokens = self.get_gene_symbol_tokens(classification)
         if not gene_tokens:
             # Convert refseq to gene symbol
