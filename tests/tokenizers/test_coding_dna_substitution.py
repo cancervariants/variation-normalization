@@ -1,4 +1,4 @@
-"""A module for testing DNA Coding Substitution tokenization."""
+"""A module for testing Coding DNA Substitution tokenization."""
 import unittest
 from variant.tokenizers import CodingDNASubstitution
 from .tokenizer_base import TokenizerBase
@@ -12,9 +12,9 @@ class TestCodingDNASubstitutionTokenizer(TokenizerBase, unittest.TestCase):
         return CodingDNASubstitution()
 
     def token_type(self):
-        """Return DNA coding substitution token type."""
+        """Return coding DNA substitution token type."""
         return 'CodingDNASubstitution'
 
     def fixture_name(self):
-        """Return the fixture name for DNA coding substitution."""
+        """Return the fixture name for coding DNA substitution."""
         return 'coding_dna_substitution'

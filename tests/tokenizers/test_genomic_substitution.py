@@ -16,5 +16,5 @@ class TestGenomicSubstitutionTokenizer(TokenizerBase, unittest.TestCase):
         return 'GenomicSubstitution'
 
     def fixture_name(self):
-        """Return the fixture name for DNA coding substitution."""
+        """Return the fixture name for genomic substitution."""
         return 'genomic_substitution'
