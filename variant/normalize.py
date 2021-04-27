@@ -1,4 +1,5 @@
 """Module for Variant Normalization."""
+from typing import Tuple, Optional
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
     SingleNucleotideVariant, DelIns
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
@@ -55,7 +56,6 @@ class Normalize:
                 gene_token = valid_result.gene_tokens[0]
                 gene_context = self.get_gene_descriptor(gene_token)
             else:
-                # TODO: Find gene context for genomic substitution
                 gene_context = None
 
             variation_descriptor = VariationDescriptor(
@@ -137,10 +137,11 @@ class Normalize:
     def _get_molecule_context_structural_type_ref_allele_seq(self,
                                                              valid_result_tokens,  # noqa: E501
                                                              amino_acid_cache,
-                                                             label, allele):
-        """Return context for a token.
+                                                             label, allele)\
+            -> Tuple[str, str, str]:
+        """Return sequence data for a variant.
 
-        :return: (molecule_context, structural_type, ref_allele_seq)
+        :return: Tuple[molecule_context, structural_type, ref_allele_seq]
         """
         polypeptide_sequence_variant_token = \
             self._get_instance_type_token(valid_result_tokens,
@@ -176,7 +177,9 @@ class Normalize:
                         polypeptide_sequence_variant_token.ref_protein = one
             ref_allele_seq = polypeptide_sequence_variant_token.ref_protein
         elif dna_sequence_variant_token:
-            molecule_context = 'genomic'
+            molecule_context = self._get_molecule_context(
+                dna_sequence_variant_token.reference_sequence
+            )
             if self._is_token_type(valid_result_tokens,
                                    'CodingDNASubstitution') or \
                     self._is_token_type(valid_result_tokens,
@@ -194,11 +197,9 @@ class Normalize:
                 structural_type = None
                 ref_allele_seq = None
         elif delins_token:
-            if delins_token.reference_sequence in ['c', 'g']:
-                molecule_context = 'genomic'
-            else:
-                # TODO
-                molecule_context = None
+            molecule_context = self._get_molecule_context(
+                delins_token.reference_sequence
+            )
             structural_type = 'SO:1000032'
             ref_allele_seq = self.get_delins_ref_allele_seq(allele,
                                                             label)
@@ -208,11 +209,12 @@ class Normalize:
             ref_allele_seq = None
         return molecule_context, structural_type, ref_allele_seq
 
-    def get_delins_ref_allele_seq(self, allele, label):
+    def get_delins_ref_allele_seq(self, allele, label) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
         :param str label: Transcript label
+        :return: Ref seq allele
         """
         label = label.split(':')[0]
         interval = allele['location']['interval']
@@ -232,8 +234,13 @@ class Normalize:
                 pass
         return None
 
-    def _is_token_type(self, valid_result_tokens, token_type):
-        """Return whether or not token_type is in valid_result_tokens."""
+    def _is_token_type(self, valid_result_tokens, token_type) -> bool:
+        """Return whether or not token_type is in valid_result_tokens.
+
+        :param list valid_result_tokens: Valid token matches
+        :param str token_type: The token's type
+        :return: Whether or not token_type is in valid_result_tokens
+        """
         for t in valid_result_tokens:
             if t.token_type == token_type:
                 return True
@@ -248,3 +255,17 @@ class Normalize:
             if isinstance(t, instance_type):
                 return t
         return None
+
+    def _get_molecule_context(self, reference_sequence):
+        """Get molecule context for a token.
+
+        :param str reference_sequence: The token's reference sequence
+        """
+        molecule_context = None
+        if reference_sequence == 'c':
+            molecule_context = 'transcript'
+        elif reference_sequence == 'g':
+            molecule_context = 'genomic'
+        elif reference_sequence == 'p':
+            molecule_context = 'protein'
+        return molecule_context
