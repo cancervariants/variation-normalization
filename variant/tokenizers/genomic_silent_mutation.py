@@ -4,7 +4,9 @@ from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 
 
 class GenomicSilentMutation(SingleNucleotideVariantBase):
-    """Class for tokenizing SNV Substitution."""
+    """Class for tokenizing Silent Mutation at the linear genomic
+    reference sequence.
+    """
 
     def return_token(self, params):
         """Return genomic silent mutation token."""

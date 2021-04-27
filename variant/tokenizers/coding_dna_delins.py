@@ -4,7 +4,7 @@ from variant.tokenizers.delins_base import DelInsBase
 
 
 class CodingDNADelIns(DelInsBase):
-    """Class for tokenizing SNV Substitution."""
+    """Class for tokenizing DelIns at the coding dna reference sequence."""
 
     def return_token(self, params):
         """Return coding DNA DelIns token."""

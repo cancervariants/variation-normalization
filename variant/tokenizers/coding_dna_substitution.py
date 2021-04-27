@@ -4,7 +4,9 @@ from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 
 
 class CodingDNASubstitution(SingleNucleotideVariantBase):
-    """Class for tokenizing SNV Substitution."""
+    """Class for tokenizing SNV Substitution at the coding dna
+    reference sequence.
+    """
 
     def return_token(self, params):
         """Return coding DNA substitution token."""
