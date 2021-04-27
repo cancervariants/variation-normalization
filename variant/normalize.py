@@ -249,7 +249,10 @@ class Normalize:
     def _get_instance_type_token(self, valid_result_tokens, instance_type):
         """Return the tokens for a given instance type.
 
-        :return: A list of tokens
+        :param list valid_result_tokens: A list of valid tokens for the input
+            string
+        :param Token instance_type: The instance type to check
+        :return: Token for a given instance type
         """
         for t in valid_result_tokens:
             if isinstance(t, instance_type):
