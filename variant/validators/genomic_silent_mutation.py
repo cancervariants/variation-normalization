@@ -63,14 +63,7 @@ class GenomicSilentMutation(SingleNucleotideVariantBase):
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             t = hgvs_token.input_string.split(':')[0]
 
-        ref_nuc = self.seqrepo_access.sequence_at_position(t, s.position)
-        if not ref_nuc:
-            hgvs_expr = None
-        else:
-            nucleotides = {'C', 'T', 'A', 'G'}
-            new_nuc = (nucleotides - {ref_nuc}).pop()
-            hgvs_expr = f"{t}:{s.reference_sequence.lower()}." \
-                        f"{s.position}{ref_nuc}>{new_nuc}"
+        hgvs_expr = f"{t}:{s.reference_sequence.lower()}.{s.position}="
 
         return hgvs_expr, None
 
@@ -86,35 +79,10 @@ class GenomicSilentMutation(SingleNucleotideVariantBase):
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
         """
-        valid_alleles = list()
-        for s in classification_tokens:
-            for t in transcripts:
-                errors = list()
-
-                if 'HGVS' in classification.matching_tokens:
-                    hgvs_expr, _ = self.get_hgvs_expr(classification,
-                                                      t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    if hgvs_expr:
-                        t = hgvs_expr.split(':')[0]
-                else:
-                    allele = self.get_allele_from_transcript(classification,
-                                                             t, s, errors)
-
-                if allele:
-                    # Fix ref nuc in allele
-                    ref_nuc = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
-                    allele['state']['sequence'] = ref_nuc
-
-                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
-                    if len_of_seq < s.position - 1:
-                        errors.append('Sequence index error')
-
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+        self.silent_mutation_valid_invalid_results(
+            classification_tokens, transcripts, classification, results,
+            gene_tokens
+        )
 
     def get_gene_tokens(self, classification):
         """Return gene tokens for a classification.
