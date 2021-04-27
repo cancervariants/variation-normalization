@@ -46,8 +46,7 @@ class Normalize:
 
             valid_result_tokens = valid_result.classification.all_tokens
             allele = valid_result.allele
-            allele_id = allele['_id']
-            del allele['_id']
+            allele_id = allele.pop('_id')
             molecule_context, structural_type, ref_allele_seq = \
                 self._get_molecule_context_structural_type_ref_allele_seq(
                     valid_result_tokens, amino_acid_cache, label, allele)
