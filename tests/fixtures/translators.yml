@@ -699,6 +699,26 @@ coding_dna_substitution:
           "type": "Allele"
         }
       ]
+    - query: NM_005502.4:c.900A>G
+      variants: [
+        {
+          "id": "ga4gh:VA.MD0bh3rKFAvh8K6TFGyMKODjd9ersAnr",
+          "location": {
+            "interval": {
+              "start": 899,
+              "end": 900,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.U_uwMjCJru2vU7eBuynumaQJqT0O6cIV",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "G",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
 
 genomic_substitution:
   tests:
@@ -1005,6 +1025,26 @@ coding_dna_delins:
           },
           "state": {
             "sequence": "AA",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: LRG_542:c.900_901delinsAC
+      variants: [
+        {
+          "id": "ga4gh:VA.CkL-YB0851Pe7TtRQyQP7_OBiLwyKfD4",
+          "location": {
+            "interval": {
+              "start": 900,
+              "end": 901,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.U_uwMjCJru2vU7eBuynumaQJqT0O6cIV",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "C",
             "type": "SequenceState"
           },
           "type": "Allele"
