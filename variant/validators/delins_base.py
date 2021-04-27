@@ -72,4 +72,5 @@ class DelInsBase(Validator):
         else:
             sequence = token.inserted_sequence1
 
-        return f'{transcript} {position} {sequence}'
+        return f'{transcript}:{token.reference_sequence}.' \
+               f'{position}delins{sequence}'

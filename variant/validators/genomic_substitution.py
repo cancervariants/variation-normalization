@@ -142,8 +142,8 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
         return classification_type == ClassificationType.GENOMIC_SUBSTITUTION
 
     def human_description(self, transcript,
-                          psub_token: GenomicSubstitutionToken) -> str:
+                          token: GenomicSubstitutionToken) -> str:
         """Return a human description of the identified variant."""
-        return f'A genomic substitution from {psub_token.ref_nucleotide}' \
-               f' to {psub_token.new_nucleotide} at position ' \
-               f'{psub_token.position} on transcript {transcript}'
+        return f'A genomic substitution from {token.ref_nucleotide}' \
+               f' to {token.new_nucleotide} at position ' \
+               f'{token.position} on transcript {transcript}'

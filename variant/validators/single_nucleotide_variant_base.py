@@ -110,5 +110,9 @@ class SingleNucleotideVariantBase(Validator):
 
     def concise_description(self, transcript, token) -> str:
         """Return a description of the identified variant."""
-        return f'{transcript} {token.ref_nucleotide}' \
-               f'{token.position}{token.new_nucleotide}'
+        prefix = f'{transcript}:{token.reference_sequence}.{token.position}'
+        if token.new_nucleotide == '=':
+            change = "="
+        else:
+            change = f"{token.ref_nucleotide}>{token.new_nucleotide}"
+        return prefix + change
