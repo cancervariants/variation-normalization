@@ -271,7 +271,7 @@ def braf_v600e_nucleotide(braf_gene_context):
             "type": "Allele"
         },
         "label": "NM_001374258.1:c.1919T>A",
-        "molecule_context": "genomic",
+        "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "T",
         "gene_context": braf_gene_context
@@ -303,7 +303,7 @@ def nm_004448_coding_dna_delins():
             "type": "Allele"
         },
         "label": "NM_004448.4:c.2326_2327delinsCT",
-        "molecule_context": "genomic",
+        "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "GA",
         "gene_context": {
@@ -429,7 +429,7 @@ def nm_000551(vhl_gene_context):
             "type": "Allele"
         },
         "label": "NM_000551.4:c.615delinsAA",
-        "molecule_context": "genomic",
+        "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "G",
         "gene_context": vhl_gene_context
@@ -461,7 +461,7 @@ def coding_dna_silent_mutation(braf_gene_context):
             "type": "Allele"
         },
         "label": "NM_004333.4:c.1799=",
-        "molecule_context": "genomic",
+        "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "ref_allele_seq": "A",
         "gene_context": braf_gene_context
@@ -613,26 +613,32 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     resp = test_normalize.normalize('NC_000007.13:g.140453136A>T')
     assert resp.id == 'normalize.variant:NC_000007.13%3Ag.140453136A%3ET'
     assert resp.ref_allele_seq == 'A'
+    assert resp.molecule_context == 'genomic'
     resp.id = refseq_id
     resp.ref_allele_seq = 'T'
+    resp.molecule_context = 'transcript'
     assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
     assert resp.id == 'normalize.variant:BRAF%20V600E%20%28g.140453136A%3ET%29'
     assert resp.label == ensembl_label
     assert resp.ref_allele_seq == 'A'
+    assert resp.molecule_context == 'genomic'
     resp.id = refseq_id
     resp.label = refseq_label
     resp.ref_allele_seq = 'T'
+    resp.molecule_context = 'transcript'
     assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = test_normalize.normalize('BRAF g.140453136A>T')
     assert resp.id == 'normalize.variant:BRAF%20g.140453136A%3ET'
     assert resp.label == ensembl_label
     assert resp.ref_allele_seq == 'A'
+    assert resp.molecule_context == 'genomic'
     resp.id = refseq_id
     resp.label = refseq_label
     resp.ref_allele_seq = 'T'
+    resp.molecule_context = 'transcript'
     assertion_checks(resp, braf_v600e_nucleotide)
 
 
@@ -644,7 +650,6 @@ def assert_coding_dna_genomic_silent_mutation(resp, gene_context, start, stop):
     assert resp.value['location']['interval']['end'] == stop
     assert resp.value['location']['sequence_id'].startswith('ga4gh:SQ.')
     assert resp.gene_context.dict(exclude_none=True) == gene_context
-    assert resp.molecule_context == 'genomic'
     assert resp.structural_type == 'SO:0002073'
 
 
@@ -662,18 +667,21 @@ def test_coding_dna_silent_mutation(test_normalize,
                                               1798, 1799)
     assert resp.id == 'normalize.variant:ENST00000288602.6%3Ac.1799%3D'
     assert resp.label == 'ENST00000288602.6:c.1799='
+    assert resp.molecule_context == 'transcript'
 
     resp = test_normalize.normalize('BRAF    c.1799=')
     assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
                                               1798, 1799)
     assert resp.id == 'normalize.variant:BRAF%20c.1799%3D'
     assert resp.label == 'BRAF c.1799='
+    assert resp.molecule_context == 'transcript'
 
     resp = test_normalize.normalize('  BRAF  V600E  c.1799=  ')
     assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
                                               1798, 1799)
     assert resp.id == 'normalize.variant:BRAF%20V600E%20c.1799%3D'
     assert resp.label == 'BRAF V600E c.1799='
+    assert resp.molecule_context == 'transcript'
 
 
 def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
@@ -685,6 +693,7 @@ def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
     resp = test_normalize.normalize('BRAF g.140453136=')
     assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
                                               140453135, 140453136)
+    assert resp.molecule_context == 'genomic'
 
 
 def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,
@@ -709,6 +718,8 @@ def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
     assertion_checks(resp, nc_000007_genomic_delins)
 
     resp = test_normalize.normalize('NC_000003.12:g.10149938delinsAA')
+    assert resp.molecule_context == 'genomic'
+    resp.molecule_context = 'transcript'
     nm_000551.id = 'normalize.variant:NC_000003.12%3Ag.10149938delinsAA'
     assertion_checks(resp, nm_000551)
 
