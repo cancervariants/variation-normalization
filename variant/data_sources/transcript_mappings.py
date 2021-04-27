@@ -18,7 +18,7 @@ class TranscriptMappings:
         self.ensembl_protein_for_gene_symbol: Dict[str, List[str]] = {}
         self.ensembl_protein_to_gene_symbol: Dict[str, str] = {}
 
-        # Gene Symbol -> ENST
+        # Gene Symbol <-> ENST
         self.ensembl_transcript_version_for_gene_symbol: \
             Dict[str, List[str]] = {}
         self.ensembl_transcript_version_to_gene_symbol: Dict[str, str] = {}

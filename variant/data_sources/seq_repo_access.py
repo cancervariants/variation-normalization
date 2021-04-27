@@ -1,5 +1,5 @@
 """A module for accessing SeqRepo."""
-from typing import Optional
+from typing import Optional, List
 from biocommons.seqrepo import SeqRepo
 from variant import SEQREPO_DATA_PATH
 
@@ -15,13 +15,12 @@ class SeqRepoAccess:
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
 
     def sequence_at_position(self, transcript: str, pos: int) -> Optional[str]:
-        """Return sequence at a given transcript position.
+        """Return sequence at a position for a given transcript.
 
-        :param str transcript: Transcript
+        :param str transcript: Transcript accession
         :param int pos: The position to search on
         :return: A sequence (protein or nucleotide)
         """
-        # why does this not exist sometimes?
         try:
             t = self.seq_repo_client.fetch(transcript)
             if len(t) < pos - 1:
@@ -34,14 +33,18 @@ class SeqRepoAccess:
         except KeyError:
             return None
 
-    def len_of_sequence(self, transcript: str):
+    def len_of_sequence(self, transcript: str) -> int:
         """Return the length of a transcript's sequence.
 
         :param str transcript: Transcript to find sequence length of
+        :return: Length of transcript
         """
-        return len(self.seq_repo_client.fetch(transcript))
+        try:
+            return len(self.seq_repo_client.fetch(transcript))
+        except KeyError:
+            return 0
 
-    def aliases(self, input_str):
+    def aliases(self, input_str) -> List[str]:
         """Get aliases for a given input."""
         try:
             return self.seq_repo_client.translate_alias(input_str.strip())
