@@ -41,6 +41,12 @@ class DelInsBase(Tokenizer):
 
         parts = self.splitter.split(input_string)
         self._get_parts(parts)
+
+        # TODO: implement delins range
+        #  Ex: 812_829delins908_925
+        if self.parts['inserted_sequence1'] is not None and \
+                self.parts['inserted_sequence2'] is not None:
+            return None
         params = {
             'token': input_string,
             'input_string': input_string,
