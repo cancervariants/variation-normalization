@@ -15,6 +15,8 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
         :return: A PolypeptideTruncationToken if a match exists.
             Otherwise, None.
         """
+        if input_string is None:
+            return None
 
         input_string = str(input_string).lower()
         psub_parts = None
@@ -23,9 +25,6 @@ class PolypeptideTruncation(PolypeptideSequenceVariantBase):
             'position': None,
             'new_amino_acid': None
         }
-
-        if input_string is None:
-            return None
 
         if input_string.startswith('(') and input_string.endswith(')'):
             input_string = input_string[1:-1]

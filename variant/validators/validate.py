@@ -1,12 +1,18 @@
 """Module for Validation."""
 from variant.schemas.validation_response_schema import ValidationSummary
 from variant.schemas.classification_response_schema import Classification
-from ..data_sources import TranscriptMappings, SeqRepoAccess
+from variant.data_sources import TranscriptMappings, SeqRepoAccess
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
+from .coding_dna_substitution import CodingDNASubstitution
+from .coding_dna_silent_mutation import CodingDNASilentMutation
+from .genomic_silent_mutation import GenomicSilentMutation
+from .genomic_substitution import GenomicSubstitution
+from .coding_dna_delins import CodingDNADelIns
+from .genomic_delins import GenomicDelIns
 from typing import List
 
 
@@ -24,7 +30,17 @@ class Validate:
             PolypeptideTruncation(seq_repo_client, transcript_mappings,
                                   gene_symbol, amino_acid_cache),
             SilentMutation(seq_repo_client, transcript_mappings,
-                           gene_symbol, amino_acid_cache)
+                           gene_symbol, amino_acid_cache),
+            CodingDNASubstitution(seq_repo_client, transcript_mappings,
+                                  gene_symbol),
+            GenomicSubstitution(seq_repo_client, transcript_mappings,
+                                gene_symbol),
+            CodingDNASilentMutation(seq_repo_client, transcript_mappings,
+                                    gene_symbol),
+            GenomicSilentMutation(seq_repo_client, transcript_mappings,
+                                  gene_symbol),
+            CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol),
+            GenomicDelIns(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \

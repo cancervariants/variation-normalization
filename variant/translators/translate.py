@@ -5,6 +5,12 @@ from .translator import Translator
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
+from .coding_dna_substitution import CodingDNASubstitution
+from .genomic_substitution import GenomicSubstitution
+from .coding_dna_silent_mutation import CodingDNASilentMutation
+from .genomic_silent_mutation import GenomicSilentMutation
+from .coding_dna_delins import CodingDNADelIns
+from .genomic_delins import GenomicDelIns
 from typing import List, Optional
 
 
@@ -16,7 +22,13 @@ class Translate:
         self.all_translators: List[Translator] = [
             AminoAcidSubstitution(),
             PolypeptideTruncation(),
-            SilentMutation()
+            SilentMutation(),
+            CodingDNASubstitution(),
+            GenomicSubstitution(),
+            CodingDNASilentMutation(),
+            GenomicSilentMutation(),
+            CodingDNADelIns(),
+            GenomicDelIns()
         ]
 
     def perform(self, res: ValidationResult) \

@@ -23,3 +23,11 @@ from .amino_acid_substitution import AminoAcidSubstitution  # noqa: F401
 from .polypeptide_truncation import PolypeptideTruncation  # noqa: F401
 from .silent_mutation import SilentMutation  # noqa: F401
 from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase  # noqa: F401, E501
+from .single_nucleotide_variant_base import SingleNucleotideVariantBase  # noqa: F401, E501
+from .coding_dna_substitution import CodingDNASubstitution  # noqa: F401
+from .genomic_substitution import GenomicSubstitution  # noqa: F401
+from .coding_dna_silent_mutation import CodingDNASilentMutation  # noqa: F401
+from .genomic_silent_mutation import GenomicSilentMutation  # noqa: F401
+from .coding_dna_delins import CodingDNADelIns  # noqa: F401
+from .genomic_delins import GenomicDelIns  # noqa: F401
+from .locus_reference_genomic import LocusReferenceGenomic  # noqa: F401

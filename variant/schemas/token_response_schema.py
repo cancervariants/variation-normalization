@@ -1,7 +1,7 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type
-from enum import IntEnum
+from typing import List, Union, Dict, Any, Type, Optional
+from enum import IntEnum, Enum
 
 
 class TokenMatchType(IntEnum):
@@ -254,3 +254,90 @@ class TokenResponseSchema(BaseModel):
                     }
                 ]
             }
+
+
+class ReferenceSequence(str, Enum):
+    """Define constraints for reference sequence."""
+
+    CODING_DNA = 'c'
+    LINEAR_GENOMIC = 'g'
+
+
+class SingleNucleotideVariant(Token):
+    """Single nucleotide positions in genomic DNA at which different
+    sequence alternatives exist.
+    """
+
+    position: int
+    ref_nucleotide: Optional[str]
+    new_nucleotide: str
+    token_type: str
+    reference_sequence: ReferenceSequence
+
+
+class CodingDNASubstitutionToken(SingleNucleotideVariant):
+    """SNV substitution at the coding DNA reference sequence."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    token_type = 'CodingDNASubstitution'
+
+
+class CodingDNASilentMutationToken(SingleNucleotideVariant):
+    """SNV no change at the coding DNA reference sequence."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    new_nucleotide = '='
+    token_type = 'CodingDNASilentMutation'
+
+
+class GenomicSubstitutionToken(SingleNucleotideVariant):
+    """SNV substitution at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    token_type = 'GenomicSubstitution'
+
+
+class GenomicSilentMutationToken(SingleNucleotideVariant):
+    """SNV no change at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    new_nucleotide = '='
+    token_type = 'GenomicSilentMutation'
+
+
+class DelIns(Token):
+    """A sequence alteration which included an insertion and a deletion,
+    affecting 2 or more bases.
+    """
+
+    start_pos_del: Optional[str]
+    end_pos_del: str
+    inserted_sequence1: str
+    inserted_sequence2: Optional[str]
+    token_type: str
+    reference_sequence: ReferenceSequence
+
+
+class CodingDNADelInsToken(DelIns):
+    """DelIns at the coding DNA reference sequence."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    token_type = 'CodingDNADelIns'
+
+
+class GenomicDelInsToken(DelIns):
+    """DelIns at the linear genomic reference sequence."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    token_type = 'GenomicDelIns'
+
+
+class LocusReferenceGenomicToken(Token):
+    """Contain stable reference sequences that are used for reporting
+    sequence variants with clinical implications.
+    """
+
+    id: int
+    t: Optional[int]
+    p: Optional[int]
+    token_type = 'LocusReferenceGenomic'

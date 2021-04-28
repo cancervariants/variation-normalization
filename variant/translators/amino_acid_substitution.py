@@ -1,10 +1,10 @@
 """Module for Amino Acid Substitution Translation."""
-from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase
+from variant.translators.translator import Translator
 from variant.schemas.classification_response_schema import ClassificationType
 from variant.schemas.token_response_schema import AminoAcidSubstitutionToken
 
 
-class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
+class AminoAcidSubstitution(Translator):
     """The Amino Acid Substitution Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:

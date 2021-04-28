@@ -18,9 +18,16 @@ from .underexpression import UnderExpression
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
+from .coding_dna_substitution import CodingDNASubstitution
+from .genomic_substitution import GenomicSubstitution
+from .coding_dna_silent_mutation import CodingDNASilentMutation
+from .genomic_silent_mutation import GenomicSilentMutation
+from .coding_dna_delins import CodingDNADelIns
+from .genomic_delins import GenomicDelIns
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
+from .locus_reference_genomic import LocusReferenceGenomic
 from variant.schemas.token_response_schema import Token, TokenMatchType
 
 
@@ -58,11 +65,18 @@ class Tokenize:
             AminoAcidSubstitution(amino_acid_cache),
             PolypeptideTruncation(amino_acid_cache),
             SilentMutation(amino_acid_cache),
+            CodingDNASubstitution(),
+            GenomicSubstitution(),
+            CodingDNASilentMutation(),
+            GenomicSilentMutation(),
+            CodingDNADelIns(),
+            GenomicDelIns(),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),
             HGVS(),
-            ReferenceSequence()
+            ReferenceSequence(),
+            LocusReferenceGenomic()
         )
 
     def perform(self, search_string: str) -> Iterable[Token]:
@@ -96,7 +110,8 @@ class Tokenize:
                 res = tokenizer.match(term)
                 if res:
                     tokens.append(res)
-                    if list(map(lambda t: t.token_type, tokens))[0] == 'HGVS':
+                    token = list(map(lambda t: t.token_type, tokens))[0]
+                    if token == 'HGVS' or token == 'LocusReferenceGenomic':
                         # Give specific type of HGVS (i.e. protein sub)
                         if len(tokens) == 1:
                             self._add_tokens(tokens,
