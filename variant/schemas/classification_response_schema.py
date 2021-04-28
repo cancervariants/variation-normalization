@@ -4,7 +4,8 @@ from typing import List, Union
 from enum import IntEnum
 from variant.schemas.token_response_schema import Token, \
     GeneMatchToken, GenePairMatchToken, AminoAcidSubstitutionToken, \
-    PolypeptideTruncationToken, SilentMutationToken
+    PolypeptideTruncationToken, SilentMutationToken, \
+    CodingDNASubstitutionToken, GenomicSubstitutionToken
 
 
 class ClassificationType(IntEnum):
@@ -23,6 +24,12 @@ class ClassificationType(IntEnum):
     ONCOGENIC = 11
     EXPRESSION = 12
     COMPLEX = 13
+    CODING_DNA_SUBSTITUTION = 14
+    GENOMIC_SUBSTITUTION = 15
+    CODING_DNA_SILENT_MUTATION = 16
+    GENOMIC_SILENT_MUTATION = 17
+    CODING_DNA_DELINS = 18
+    GENOMIC_DELINS = 19
 
 
 class ConfidenceRating(IntEnum):
@@ -43,7 +50,8 @@ class Classification(BaseModel):
     all_tokens: List[Union[GeneMatchToken, GenePairMatchToken,
                            AminoAcidSubstitutionToken,
                            PolypeptideTruncationToken,
-                           SilentMutationToken, Token]]
+                           SilentMutationToken, CodingDNASubstitutionToken,
+                           GenomicSubstitutionToken, Token]]
     confidence: ConfidenceRating
 
 

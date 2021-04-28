@@ -17,7 +17,6 @@ fusion:
     - query: fused
     - query: fusio
 
-
 amino_acid_substitution:
   should_match:
     - query: BRAF V600E
@@ -63,3 +62,97 @@ silent_mutation:
       confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: Leu862==
+
+coding_dna_substitution:
+  should_match:
+    - query: V170D (c.509T>A)
+      confidence: ConfidenceRating.SUPERSET
+    - query: NM_000551.3:c.292T>C
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000551.3:c.292TC
+      confidence: ConfidenceRating.INTERSECTION
+    - query: foo Y98H (c.292T>C)
+      confidence: ConfidenceRating.SUPERSET
+    - query: BRAF V600E c.23T>A
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199t1:c.54G>H
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: V170 (c.509F>A)
+    - query: RX_:g.292TC
+
+genomic_substitution:
+  should_match:
+    - query: V170D (g.509T>A)
+      confidence: ConfidenceRating.SUPERSET
+    - query:  NC_000017.10:g.292T>C
+      confidence: ConfidenceRating.EXACT
+    - query:  NC_000017.10:g.292TC
+      confidence: ConfidenceRating.INTERSECTION
+    - query: foo Y98H (g.292T>C)
+      confidence: ConfidenceRating.SUPERSET
+    - query: BRAF V600E g.23T>A
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: V170 (g.509F>A)
+    - query: RX_:c.292TC
+
+coding_dna_silent_mutation:
+  should_match:
+    - query: NM_004006.2:c.123=
+      confidence: ConfidenceRating.EXACT
+    - query: foo VHL c.123=
+      confidence: ConfidenceRating.SUPERSET
+  should_not_match:
+    - query: CODING_DNA_:c.123=
+    - query: g.123=
+
+genomic_silent_mutation:
+  should_match:
+    - query: NC_000017.10:g.123=
+      confidence: ConfidenceRating.EXACT
+    - query: foo VHL g.123=
+      confidence: ConfidenceRating.SUPERSET
+  should_not_match:
+    - query: GENOMIC_:g.123=
+    - query: c.123=
+
+coding_dna_delins:
+  should_match:
+    - query: NM_005157.6:c.1423_1424delinsGT
+      confidence: ConfidenceRating.EXACT
+    - query: ENST00000277541.6:c.7330delinsACA
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000797.3:c.812_829delins908_925
+      confidence: ConfidenceRating.INTERSECTION
+    - query: foo c.131_234delinsA
+      confidence: ConfidenceRating.SUPERSET
+    - query: foo NM_005157.6:c.1423_1424delinsGT
+      confidence: ConfidenceRating.INTERSECTION
+    - query: NM_000551.3:c.615delinsAA
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199t1:c.79_80delinsTT
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199:c.79_80delinsTT
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: N_005157.6:g.1423_1424delinsGT
+    - query: c.1423delinsX
+
+genomic_delins:
+  should_match:
+    - query: NC_000017.10:g.1423_1424delinsGT
+      confidence: ConfidenceRating.EXACT
+    - query:  NC_000017.10:g.7330delinsACA
+      confidence: ConfidenceRating.EXACT
+    - query:  NC_000017.10:g.812_829delins908_925
+      confidence: ConfidenceRating.INTERSECTION
+    - query: foo g.131_234delinsA
+      confidence: ConfidenceRating.SUPERSET
+    - query: foo  NC_000017.10:g.1423_1424delinsGT
+      confidence: ConfidenceRating.INTERSECTION
+    - query: NC_000003.12:g.10149938delinsAA
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query:  N_000017.10:c.1423_1424delinsGT
+    - query: g.1423delinsX

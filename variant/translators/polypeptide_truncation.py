@@ -1,10 +1,10 @@
 """Module for Polypeptide Truncation Translation."""
-from .polypeptide_sequence_variant_base import PolypeptideSequenceVariantBase
+from variant.translators.translator import Translator
 from variant.schemas.classification_response_schema import ClassificationType
 from variant.schemas.token_response_schema import PolypeptideTruncationToken
 
 
-class PolypeptideTruncation(PolypeptideSequenceVariantBase):
+class PolypeptideTruncation(Translator):
     """The Polypeptide Truncation Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:

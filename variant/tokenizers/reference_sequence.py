@@ -4,7 +4,7 @@ from .tokenizer import Tokenizer
 from variant.schemas.token_response_schema import Token, TokenMatchType
 
 REFSEQ_PREFIXES = ["NC_", "NT_", "NW_", "NG_", "NM_", "NR_", "NP_", "LRG_",
-                   "ENSP"]
+                   "ENSP", "ENST"]
 
 
 class ReferenceSequence(Tokenizer):

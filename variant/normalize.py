@@ -1,9 +1,11 @@
 """Module for Variant Normalization."""
-from variant.schemas.token_response_schema import PolypeptideSequenceVariant
+from typing import Tuple, Optional
+from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
+    SingleNucleotideVariant, DelIns
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
+from variant.data_sources import SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
-from os import environ
 from variant import logger
 
 
@@ -12,9 +14,8 @@ class Normalize:
 
     def __init__(self):
         """Initialize Normalize class."""
-        if 'VARIANT_NORM_EB_PROD' in environ:
-            environ['GENE_NORM_EB_PROD'] = "true"
         self.gene_query_handler = GeneQueryHandler()
+        self.seqrepo_access = SeqRepoAccess()
         self.warnings = list()
 
     def normalize(self, q, validations, amino_acid_cache):
@@ -30,6 +31,7 @@ class Normalize:
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
+            label = None
             for r in validations.valid_results:
                 if r.mane_transcript:
                     valid_result = r
@@ -43,28 +45,17 @@ class Normalize:
                 label = ' '.join(q.strip().split())
 
             valid_result_tokens = valid_result.classification.all_tokens
-
-            polypeptide_sequence_variant_token = \
-                ([t for t in valid_result_tokens if isinstance(t, PolypeptideSequenceVariant)] or [None])[0]  # noqa: E501
-
-            if polypeptide_sequence_variant_token:
-                molecule_context = 'protein'
-                structural_type = 'SO:0001606'
-            else:
-                molecule_context = None
-                structural_type = None
             allele = valid_result.allele
-            allele_id = allele['_id']
-            del allele['_id']
+            allele_id = allele.pop('_id')
+            molecule_context, structural_type, ref_allele_seq = \
+                self._get_molecule_context_structural_type_ref_allele_seq(
+                    valid_result_tokens, amino_acid_cache, label, allele)
 
-            gene_token = valid_result.gene_tokens[0]
-
-            # convert 3 letter to 1 letter amino acid code
-            if len(polypeptide_sequence_variant_token.ref_protein) == 3:
-                for one, three in \
-                        amino_acid_cache._amino_acid_code_conversion.items():
-                    if three == polypeptide_sequence_variant_token.ref_protein:
-                        polypeptide_sequence_variant_token.ref_protein = one
+            if valid_result.gene_tokens:
+                gene_token = valid_result.gene_tokens[0]
+                gene_context = self.get_gene_descriptor(gene_token)
+            else:
+                gene_context = None
 
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variant:{quote(' '.join(q.strip().split()))}",
@@ -73,8 +64,8 @@ class Normalize:
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,
-                ref_allele_seq=polypeptide_sequence_variant_token.ref_protein,
-                gene_context=self.get_gene_descriptor(gene_token)
+                ref_allele_seq=ref_allele_seq,
+                gene_context=gene_context
             )
         else:
             variation_descriptor = None
@@ -141,3 +132,142 @@ class Normalize:
             'name': name,
             'value': value
         })
+
+    def _get_molecule_context_structural_type_ref_allele_seq(self,
+                                                             valid_result_tokens,  # noqa: E501
+                                                             amino_acid_cache,
+                                                             label, allele)\
+            -> Tuple[str, str, str]:
+        """Return sequence data for a variant.
+
+        :return: Tuple[molecule_context, structural_type, ref_allele_seq]
+        """
+        polypeptide_sequence_variant_token = \
+            self._get_instance_type_token(valid_result_tokens,
+                                          PolypeptideSequenceVariant)
+        dna_sequence_variant_token = \
+            self._get_instance_type_token(valid_result_tokens,
+                                          SingleNucleotideVariant)
+
+        delins_token = self._get_instance_type_token(valid_result_tokens,
+                                                     DelIns)
+
+        if polypeptide_sequence_variant_token and not \
+                dna_sequence_variant_token:
+            molecule_context = 'protein'
+
+            if self._is_token_type(valid_result_tokens,
+                                   'AminoAcidSubstitution'):
+                structural_type = 'SO:0001606'
+            elif self._is_token_type(valid_result_tokens,
+                                     'PolypeptideTruncation'):
+                structural_type = 'SO:0001617'
+            elif self._is_token_type(valid_result_tokens,
+                                     'SilentMutation'):
+                structural_type = 'SO:0001017'
+            else:
+                structural_type = None
+
+            # convert 3 letter to 1 letter amino acid code
+            if len(polypeptide_sequence_variant_token.ref_protein) == 3:
+                for one, three in \
+                        amino_acid_cache.amino_acid_code_conversion.items():
+                    if three == polypeptide_sequence_variant_token.ref_protein:
+                        polypeptide_sequence_variant_token.ref_protein = one
+            ref_allele_seq = polypeptide_sequence_variant_token.ref_protein
+        elif dna_sequence_variant_token:
+            molecule_context = self._get_molecule_context(
+                dna_sequence_variant_token.reference_sequence
+            )
+            if self._is_token_type(valid_result_tokens,
+                                   'CodingDNASubstitution') or \
+                    self._is_token_type(valid_result_tokens,
+                                        'GenomicSubstitution'):
+                structural_type = 'SO:0001483'
+                ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
+            elif self._is_token_type(valid_result_tokens,
+                                     'CodingDNASilentMutation') or \
+                    self._is_token_type(valid_result_tokens,
+                                        'GenomicSilentMutation'):
+                structural_type = 'SO:0002073'
+                ref_allele_seq = self.get_delins_ref_allele_seq(allele,
+                                                                label)
+            else:
+                structural_type = None
+                ref_allele_seq = None
+        elif delins_token:
+            molecule_context = self._get_molecule_context(
+                delins_token.reference_sequence
+            )
+            structural_type = 'SO:1000032'
+            ref_allele_seq = self.get_delins_ref_allele_seq(allele,
+                                                            label)
+        else:
+            molecule_context = None
+            structural_type = None
+            ref_allele_seq = None
+        return molecule_context, structural_type, ref_allele_seq
+
+    def get_delins_ref_allele_seq(self, allele, label) -> Optional[str]:
+        """Return ref allele seq for transcript.
+
+        :param dict allele: VRS Allele object
+        :param str label: Transcript label
+        :return: Ref seq allele
+        """
+        label = label.split(':')[0]
+        interval = allele['location']['interval']
+        start = interval['start'] + 1
+        end = interval['end']
+
+        if start and end:
+            refseq_list = list()
+            while start <= end:
+                refseq_list.append(self.seqrepo_access.sequence_at_position(
+                    label, start
+                ))
+                start += 1
+            try:
+                return ''.join(refseq_list)
+            except TypeError:
+                pass
+        return None
+
+    def _is_token_type(self, valid_result_tokens, token_type) -> bool:
+        """Return whether or not token_type is in valid_result_tokens.
+
+        :param list valid_result_tokens: Valid token matches
+        :param str token_type: The token's type
+        :return: Whether or not token_type is in valid_result_tokens
+        """
+        for t in valid_result_tokens:
+            if t.token_type == token_type:
+                return True
+        return False
+
+    def _get_instance_type_token(self, valid_result_tokens, instance_type):
+        """Return the tokens for a given instance type.
+
+        :param list valid_result_tokens: A list of valid tokens for the input
+            string
+        :param Token instance_type: The instance type to check
+        :return: Token for a given instance type
+        """
+        for t in valid_result_tokens:
+            if isinstance(t, instance_type):
+                return t
+        return None
+
+    def _get_molecule_context(self, reference_sequence):
+        """Get molecule context for a token.
+
+        :param str reference_sequence: The token's reference sequence
+        """
+        molecule_context = None
+        if reference_sequence == 'c':
+            molecule_context = 'transcript'
+        elif reference_sequence == 'g':
+            molecule_context = 'genomic'
+        elif reference_sequence == 'p':
+            molecule_context = 'protein'
+        return molecule_context

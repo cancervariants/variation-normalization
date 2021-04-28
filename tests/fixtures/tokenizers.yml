@@ -89,8 +89,144 @@ silent_mutation:
 hgvs:
   should_match:
     - token: NC_000007.13:g.36561662C>T
-    - token: LRG_199p1:p.Trp24Cys
     - token: NM_01234.5:c.22+1A>T
     - token: NP_000918.2:p.Ile1145=
   should_not_match:
     - token: NP004324.2
+    - token: ERBB2:c.2326_2327delinsCT
+
+coding_dna_substitution:
+  should_match:
+    - token: (c.292T>C)
+    - token: c.292T>C
+    - token: (c.233A>G)
+    - token: c.509T>A
+    - token: c.54G>H
+  should_not_match:
+    - token: (c.292T>C
+    - token: g.292T>C
+    - token: c.292T<C
+    - token: c.292Z>C
+    - token: c.j324T<C
+    - token: 292T<C
+    - token: c.509T>
+    - token: c.509>A
+    - token: c.T>A
+
+genomic_substition:
+  should_match:
+    - token: (g.292T>C)
+    - token: g.292T>C
+    - token: (g.233A>G)
+    - token: g.509T>A
+    - token: g.54G>H
+  should_not_match:
+    - token: (g.292T>C
+    - token: c.292T>C
+    - token: g.292T<C
+    - token: g.292Z>C
+    - token: g.j324T<C
+    - token: 292T<C
+    - token: g.509T>
+    - token: g.509>A
+    - token: g.T>A
+
+coding_dna_silent_mutation:
+  should_match:
+    - token: c.123=
+    - token: (c.123=)
+  should_not_match:
+    - token: c.292T>C
+    - token: g.292T>C
+    - token: g.123
+    - token: (c.123=
+    - token: c.123=)
+    - token: c.123
+    - token: c.123==
+
+genomic_silent_mutation:
+  should_match:
+    - token: g.123=
+    - token: (g.123=)
+  should_not_match:
+    - token: c.292T>C
+    - token: c.292T>C
+    - token: c.123
+    - token: (g.123=
+    - token: g.123=)
+    - token: g.123
+    - token: g.123==
+
+
+coding_dna_delins:
+  should_match:
+    - token: c.32386323delinsGA
+    - token: c.6775_6777delinsC
+    - token: c.145_147delinsTGG
+    - token: c.9002_9009delinsTTT
+    - token: c.850_901delinsTTCCTCGATGCCTG
+#    - token: c.42522624_42522669delins42536337_42536382
+#    - token: c.812_829delins908_925
+    - token: (c.301_302delinsGG)
+    - token: c.615delinsAA
+  should_not_match:
+    - token: c.150_147delinsTGG
+    - token: 32386323delinsGA
+    - token: c.145_147delinsTGGS
+    - token: c.145_147delTGG
+    - token: g.32386323delinsGA
+    - token: NM_000797.3:c.812_829delins908_
+    - token: c.42522624_42522669delins_42536382
+    - token: c.delinsGA
+    - token: c.32386323delins
+    - token: (c.301_302delinsGG
+    - token: c.delins
+    - token: delins
+    - token: c._147delinsTGG
+    - token: c.145_delinsTGG
+    - token: c.delinsTGG
+    - token: c.d_delinsTG
+
+
+genomic_delins:
+  should_match:
+    - token: g.32386323delinsGA
+    - token: g.6775_6777delinsC
+    - token: g.145_147delinsTGG
+    - token: g.9002_9009delinsTTT
+    - token: g.850_901delinsTTCCTCGATGCCTG
+#    - token: g.42522624_42522669delins42536337_42536382
+#    - token: g.812_829delins908_925
+    - token: (g.301_302delinsGG)
+    - token: g.10149938delinsAA
+  should_not_match:
+    - token: g.150_147delinsTGG
+    - token: 32386323delinsGA
+    - token: g.145_147delinsTGGS
+    - token: g.145_147delTGG
+    - token: c.32386323delinsGA
+    - token: NM_000797.3:g.812_829delins908_
+    - token: g.42522624_42522669delins_42536382
+    - token: g.delinsGA
+    - token: g.32386323delins
+    - token: (g.301_302delinsGG
+    - token: g.delins
+    - token: delins
+    - token: g._147delinsTGG
+    - token: g.145_delinsTGG
+    - token: g.delinsTGG
+    - token: g.d_delinsTG
+
+locus_reference_genomic:
+  should_match:
+    - token: LRG_199
+    - token: LRG_199t1
+    - token: LRG_199p1
+  should_not_match:
+    - token: LRG_199t1p1
+    - token: LRG_199p1t1
+    - token: LRG_
+    - token: LRG_t1
+    - token: LRG_p1
+    - token: LRGt1
+    - token: LRGp1

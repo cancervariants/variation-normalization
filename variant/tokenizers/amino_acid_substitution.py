@@ -15,6 +15,9 @@ class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
         :return: A AminoAcidSubstitutionToken if a match exists.
             Otherwise, None.
         """
+        if input_string is None:
+            return None
+
         input_string = str(input_string).lower()
 
         psub_parts = None
@@ -23,9 +26,6 @@ class AminoAcidSubstitution(PolypeptideSequenceVariantBase):
             'position': None,
             'new_amino_acid': None
         }
-
-        if input_string is None:
-            return None
 
         if '.' in input_string:
             if not input_string.startswith('p.'):
