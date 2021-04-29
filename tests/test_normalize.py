@@ -732,8 +732,7 @@ def test_no_matches(test_normalize):
         "NP_004324.2:p.Glu600Val", "NP_004324.2:p.Glu600Gal",
         "NP_004324.2839:p.Glu600Val", "NP_004324.2:t.Glu600Val",
         "this:c.54G>H", "NC_000007.13:g.4T<A", "NC_000023.11:g.32386323del",
-        "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter",
-        "EGFR c.1799T>A"
+        "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter"
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
