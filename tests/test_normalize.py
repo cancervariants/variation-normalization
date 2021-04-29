@@ -726,17 +726,18 @@ def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
 
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
-    resp = test_normalize.normalize('')
-    assert resp is None
-
-    resp = test_normalize.normalize('braf')
-    assert resp is None
-
-    resp = test_normalize.normalize('braf v600000932092039e')
-    assert resp is None
-
-    resp = test_normalize.normalize('NP_000213.1:cp.Leu862=')
-    assert resp is None
+    queries = [
+        "", "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
+        "MAPK1 E278E", "NP_000213.1:cp.Leu862", "BRAF V600E 33",
+        "NP_004324.2:p.Glu600Val", "NP_004324.2:p.Glu600Gal",
+        "NP_004324.2839:p.Glu600Val", "NP_004324.2:t.Glu600Val",
+        "this:c.54G>H", "NC_000007.13:g.4T<A", "NC_000023.11:g.32386323del",
+        "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter",
+        "EGFR c.1799T>A"
+    ]
+    for q in queries:
+        resp = test_normalize.normalize(q)
+        assert resp is None
 
 
 def test_service_meta():
