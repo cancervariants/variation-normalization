@@ -193,6 +193,10 @@ class PolypeptideSequenceVariantBase(Validator):
                         allele = self.get_allele_from_transcript(hgvs_expr, t,
                                                                  errors)
 
+                if not allele:
+                    errors.append("Unable to find allele.")
+                    valid = False
+
                 if allele and len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
                         self._amino_acid_cache.convert_three_to_one(
