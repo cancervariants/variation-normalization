@@ -11,6 +11,7 @@ from .coding_dna_substitution import CodingDNASubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
 from .genomic_substitution import GenomicSubstitution
+from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from typing import List
@@ -39,6 +40,8 @@ class Validate:
                                     gene_symbol),
             GenomicSilentMutation(seq_repo_client, transcript_mappings,
                                   gene_symbol),
+            AminoAcidDelIns(seq_repo_client, transcript_mappings, gene_symbol,
+                            amino_acid_cache),
             CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol),
             GenomicDelIns(seq_repo_client, transcript_mappings, gene_symbol)
         ]
