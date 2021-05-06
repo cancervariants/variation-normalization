@@ -125,6 +125,8 @@ amino_acid_delins:
       confidence: ConfidenceRating.EXACT
     - query: NP_005219.2:p.Glu746_Thr751delinsValAla
       confidence: ConfidenceRating.EXACT
+    - query: NP_005219.2:p.G776delinsVC
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: N:p.Leu747_Thr751delinsPro
 
