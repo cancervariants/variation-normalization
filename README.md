@@ -19,6 +19,16 @@ seqrepo_date_dir=$(ls -d */)
 sudo mv $seqrepo_date_dir latest
 ```
 
+Variant Normalizer also uses [uta](https://github.com/biocommons/uta).
+
+To install:
+```
+uta_v=uta_20180821
+docker pull biocommons/uta:$uta_v
+docker-compose up
+export UTA_DB_URL=postgresql://anonymous@localhost:5432/uta/uta_20180821
+```
+
 ### Data
 Variant Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to retrieve `variant/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
 
