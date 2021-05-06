@@ -131,7 +131,7 @@ class AminoAcidDelIns(Validator):
                             }
 
                         allele = self.get_allele_from_transcript(
-                            classification, hgvs_expr, t, errors
+                            classification, t, s, errors
                         )
 
                 if not allele:
