@@ -487,7 +487,7 @@ class Validator(ABC):
                     if 'hgvsMatchingTranscriptVariant' in amino_acid_allele.keys():  # noqa: E501
                         if len(amino_acid_allele['hgvsMatchingTranscriptVariant']) > 0:  # noqa: E501
                             for t in amino_acid_allele['hgvsMatchingTranscriptVariant']:  # noqa: E501
-                                if '>' in t and '[' not in t:
+                                if '[' not in t:
                                     # Temp condition since variant norm
                                     # cannot handle multiple possible variants
                                     return self.get_mane_transcript(

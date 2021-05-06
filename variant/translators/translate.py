@@ -9,6 +9,7 @@ from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
+from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from typing import List, Optional
@@ -27,6 +28,7 @@ class Translate:
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
+            AminoAcidDelIns(),
             CodingDNADelIns(),
             GenomicDelIns()
         ]
