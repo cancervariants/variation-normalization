@@ -10,8 +10,6 @@ from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify
 import logging
 
 logger = logging.getLogger('variant')
@@ -78,32 +76,6 @@ class PolypeptideSequenceVariantBase(Validator):
         self.get_valid_invalid_results(classification_tokens, transcripts,
                                        classification, results, gene_tokens)
         return results
-
-    def get_vrs_allele(self, sequence_id, s) -> dict:
-        """Return VRS Allele object.
-
-        :param str sequence_id: Sequence containing the sequence to be located
-        :param Token s: A token
-        :return: A VRS Allele object as a dictionary
-        """
-        seq_location = models.SequenceLocation(
-            sequence_id=sequence_id,
-            interval=models.SimpleInterval(
-                start=s.position - 1,
-                end=s.position
-            )
-        )
-
-        state = models.SequenceState(sequence=s.alt_protein.upper())
-        state_dict = state.as_dict()
-        if len(state_dict['sequence']) == 3:
-            state.sequence = self._amino_acid_cache.convert_three_to_one(
-                state_dict['sequence'])
-
-        allele = models.Allele(location=seq_location,
-                               state=state)
-        allele['_id'] = ga4gh_identify(allele)
-        return allele.as_dict()
 
     def get_hgvs_expr(self, classification) -> str:
         """Return HGVS expression for a classification.
@@ -238,47 +210,7 @@ class PolypeptideSequenceVariantBase(Validator):
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
-        gene_tokens = [t for t in classification.all_tokens
-                       if t.token_type == 'GeneSymbol']
-        if not gene_tokens:
-            # Convert refseq to gene symbol
-            refseq = \
-                ([t.token for t in classification.all_tokens if
-                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
-
-            if not refseq:
-                return []
-
-            if ':' in refseq:
-                refseq = refseq.split(':')[0]
-
-            res = self.seqrepo_access.aliases(refseq)
-            aliases = [a.split('ensembl:')[1] for a
-                       in res if a.startswith('ensembl')]
-
-            gene_symbols = list()
-            if aliases:
-                for alias in aliases:
-                    gene_symbol = \
-                        self.transcript_mappings.get_gene_symbol_from_ensembl_protein(alias)  # noqa: E501
-
-                    if gene_symbol:
-                        if gene_symbol not in gene_symbols:
-                            gene_symbols.append(gene_symbol)
-                            gene_tokens.append(
-                                self._gene_matcher.match(gene_symbol))
-                    else:
-                        logger.warning(f"No gene symbol found for Protein "
-                                       f"{alias} in transcript_mappings.tsv")
-            else:
-                gene_symbol = \
-                    self.transcript_mappings.get_gene_symbol_from_refeq_protein(refseq)  # noqa: E501
-                if gene_symbol:
-                    if gene_symbol not in gene_symbols:
-                        gene_symbols.append(gene_symbol)
-                        gene_tokens.append(self._gene_matcher.match(
-                            gene_symbol))
-        return gene_tokens
+        return self.get_protein_gene_symbol_tokens(classification)
 
     def concise_description(self, transcript, token) -> str:
         """Return a description of the identified variant."""
