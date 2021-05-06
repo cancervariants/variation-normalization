@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  uta:
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+    image: biocommons/uta:uta_20180821
+    volumes:
+      - ./variant/data/uta_20180821:/var/lib/postgresql/data
+
+volumes:
+  uta_vol:
+    external: true
