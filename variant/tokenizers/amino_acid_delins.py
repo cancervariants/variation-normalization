@@ -28,15 +28,17 @@ class AminoAcidDelIns(Tokenizer):
 
         input_string = str(input_string).lower()
 
-        if 'delins' not in input_string or not input_string.startswith('p.'):
+        if 'delins' not in input_string:
             return None
 
-        input_string = input_string[2:]
+        if input_string.startswith('p.'):
+            input_string = input_string[2:]
 
         if input_string.startswith('(') and input_string.endswith(')'):
             input_string = input_string[1:-1]
 
         self.parts = {
+            'used_one_letter': False,
             'token': input_string,
             'input_string': input_string,
             'match_type': TokenMatchType.UNSPECIFIED.value,
@@ -76,8 +78,10 @@ class AminoAcidDelIns(Tokenizer):
                     not aa_pos_range[0] or not aa_pos_range[1]:
                 return None
 
-            start_aa_pos_del = self._get_amino_acid_and_pos(aa_pos_range[0])
-            end_aa_pos_del = self._get_amino_acid_and_pos(aa_pos_range[1])
+            start_aa_pos_del = \
+                self._get_amino_acid_and_pos(aa_pos_range[0])
+            end_aa_pos_del = \
+                self._get_amino_acid_and_pos(aa_pos_range[1])
 
             if start_aa_pos_del and end_aa_pos_del:
                 self.parts['start_aa_del'] = start_aa_pos_del[0]
@@ -86,7 +90,8 @@ class AminoAcidDelIns(Tokenizer):
                 self.parts['end_pos_del'] = end_aa_pos_del[1]
 
         else:
-            aa_and_pos = self._get_amino_acid_and_pos(parts[0])
+            aa_and_pos = \
+                self._get_amino_acid_and_pos(parts[0])
             if aa_and_pos:
                 self.parts['start_aa_del'] = aa_and_pos[0]
                 self.parts['start_pos_del'] = aa_and_pos[1]
@@ -102,23 +107,41 @@ class AminoAcidDelIns(Tokenizer):
             return None
 
         aa_del = char_and_digits[0]
+        if len(aa_del) == 1:
+            if not self.parts['used_one_letter']:
+                self.parts['used_one_letter'] = True
+            aa_del = self.amino_acid_cache.amino_acid_code_conversion[aa_del.upper()]  # noqa: E501
         pos_del = char_and_digits[1]
 
         if not self.amino_acid_cache.__contains__(aa_del) \
                 or not pos_del.isdigit():
             return None
-
         return aa_del.capitalize(), pos_del
 
     def _get_inserted_sequence(self, parts):
         """Return inserted sequence."""
         # Check inserted sequences
         inserted_sequence = ""
-        for i in range(0, len(parts[1]), 3):
-            aa = parts[1][i:i + 3]
-            if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
-                if aa != 'ter':
+        if self.parts['used_one_letter']:
+            for i in range(len(parts[1])):
+                aa = parts[1][i:i + 1]
+                if len(aa) != 1:
                     return None
-            inserted_sequence += aa.capitalize()
+                try:
+                    aa = self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]  # noqa: E501
+                except KeyError:
+                    return None
+                else:
+                    inserted_sequence += aa
 
+        else:
+            for i in range(0, len(parts[1]), 3):
+                aa = parts[1][i:i + 3]
+                if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
+                    if aa != 'ter':
+                        return None
+                inserted_sequence += aa.capitalize()
+
+        if inserted_sequence == '':
+            return None
         self.parts['inserted_sequence'] = inserted_sequence
