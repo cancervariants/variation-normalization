@@ -10,8 +10,8 @@ from variant.classifiers import ComplexClassifier, ExpressionClassifier, \
     AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
     SilentMutationClassifier, CodingDNASubstitutionClassifier,\
     GenomicSubstitutionClassifier, CodingDNASilentMutationClassifier, \
-    GenomicSilentMutationClassifier, CodingDNADelInsClassifier,\
-    GenomicDelInsClassifier, Classifier
+    GenomicSilentMutationClassifier, AminoAcidDelInsClassifier, \
+    CodingDNADelInsClassifier, GenomicDelInsClassifier, Classifier
 
 
 class Classify:
@@ -35,6 +35,7 @@ class Classify:
             GenomicSubstitutionClassifier(),
             CodingDNASilentMutationClassifier(),
             GenomicSilentMutationClassifier(),
+            AminoAcidDelInsClassifier(),
             CodingDNADelInsClassifier(),
             GenomicDelInsClassifier()
         ]
