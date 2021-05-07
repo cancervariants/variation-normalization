@@ -5,7 +5,7 @@ from .tokenizer_base import TokenizerBase
 from variant.tokenizers.caches import AminoAcidCache
 
 
-class TestAminoAcidTokenizer(TokenizerBase, unittest.TestCase):
+class TestAminoAcidDelInsTokenizer(TokenizerBase, unittest.TestCase):
     """A class for testing Amino Acid DelIns Tokenization."""
 
     def tokenizer_instance(self):

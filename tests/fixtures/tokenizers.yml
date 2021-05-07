@@ -251,3 +251,28 @@ locus_reference_genomic:
     - token: LRG_p1
     - token: LRGt1
     - token: LRGp1
+
+amino_acid_deletion:
+  should_match:
+    - token: p.Val7del
+    - token: Val7del
+    - token: p.(Val7del)
+    - token: (Val7del)
+    - token: p.V7del
+    - token: V7del
+    - token: p.(V7del)
+    - token: (V7del)
+    - token: Lys23_Val25del
+    - token: p.Lys23_Val25del
+    - token: p.(Lys23_Val25del)
+    - token: (Lys23_Val25del)
+  should_not_match:
+    - token: Val7deletion
+    - token: (Val7deletion)
+    - token: p.Val7deletion
+    - token: c.Val7del
+    - token: ValSup7del
+    - token: delVal7
+    - token: 7Valdel
+    - token: Val7_Glydel
+    - token: Val_Gly7del
