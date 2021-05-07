@@ -70,7 +70,10 @@ class AminoAcidDelIns(Tokenizer):
         self._get_inserted_sequence(parts)
 
     def _get_positions_deleted(self, parts):
-        """Return position(s) deleted."""
+        """Set position(s) deleted.
+
+        :param list parts: Tokenized input string
+        """
         # Check positions deleted
         if '_' in parts[0] and parts[0].count('_') == 1:
             aa_pos_range = parts[0].split('_')
@@ -97,6 +100,10 @@ class AminoAcidDelIns(Tokenizer):
                 self.parts['start_pos_del'] = aa_and_pos[1]
 
     def _get_amino_acid_and_pos(self, part):
+        """Return amino acid and position deleted.
+
+        :param list part: Tokenized input string
+        """
         try:
             char_and_digits = self.splitter_char_digit.match(part).groups()
         except AttributeError:
@@ -119,7 +126,10 @@ class AminoAcidDelIns(Tokenizer):
         return aa_del.capitalize(), pos_del
 
     def _get_inserted_sequence(self, parts):
-        """Return inserted sequence."""
+        """Return inserted sequence.
+
+        :param list parts: Tokenized input string
+        """
         # Check inserted sequences
         inserted_sequence = ""
         if self.parts['used_one_letter']:
