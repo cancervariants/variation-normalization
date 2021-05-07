@@ -354,3 +354,26 @@ class LocusReferenceGenomicToken(Token):
     t: Optional[int]
     p: Optional[int]
     token_type = 'LocusReferenceGenomic'
+
+
+class Deletion(Token):
+    """The point at which one or more contiguous nucleotides were excised.
+    - Sequence Ontology
+    """
+
+    start_pos_del: int
+    end_pos_del: Optional[int]
+    reference_sequence: ReferenceSequence
+    token_type: str
+
+
+class AminoAcidDeletionToken(Deletion):
+    """A sequence change between the translation initiation (start) and
+    termination (stop) codon where, compared to a reference sequence, one or
+    more amino acids are not present (deleted) - HGVS Nomenclature
+    """
+
+    start_aa_del: str
+    end_aa_del: Optional[str]
+    reference_sequence = ReferenceSequence.PROTEIN
+    token_type = 'AminoAcidDeletion'
