@@ -122,33 +122,12 @@ class AminoAcidDelIns(Validator):
 
                 # Check ref start/end protein matches expected
                 if not errors:
-                    ref_start_aa_del = \
-                        self.seqrepo_access.sequence_at_position(t, s.start_pos_del)  # noqa: E501
-                    if ref_start_aa_del and len(ref_start_aa_del) == 1 \
-                            and len(s.start_aa_del):
-                        ref_start_aa_del = \
-                            self._amino_acid_cache.amino_acid_code_conversion[ref_start_aa_del]  # noqa: E501
-
-                    if ref_start_aa_del != s.start_aa_del:
-                        errors.append(f"Needed to find {s.start_aa_del} at "
-                                      f"position {s.start_pos_del} on {t} "
-                                      f"but found {ref_start_aa_del}")
+                    self.check_ref_aa(t, s.start_aa_del,
+                                      s.start_pos_del, errors)
 
                     if not errors and s.end_aa_del:
-                        ref_end_aa_del = \
-                            self.seqrepo_access.sequence_at_position(
-                                t, s.end_pos_del
-                            )
-
-                        if ref_end_aa_del and len(ref_end_aa_del) == 1 \
-                                and len(s.end_aa_del):
-                            ref_end_aa_del = \
-                                self._amino_acid_cache.amino_acid_code_conversion[ref_end_aa_del]  # noqa: E501
-
-                        if ref_end_aa_del != s.end_aa_del:
-                            errors.append(f"Needed to find {s.end_aa_del} "
-                                          f"at position {s.end_pos_del} on "
-                                          f"{t} but found {ref_end_aa_del}")
+                        self.check_ref_aa(t, s.end_aa_del,
+                                          s.end_pos_del, errors)
 
                 if not errors and allele not in valid_alleles:
                     results.append(self.get_validation_result(
@@ -166,6 +145,27 @@ class AminoAcidDelIns(Validator):
         # Now add MANE transcripts to result
         self.add_mane_transcript(classification, results, gene_tokens,
                                  mane_transcripts_dict)
+
+    def check_ref_aa(self, t, aa, pos, errors):
+        """Check that reference amino acid matches actual amino acid.
+
+        :param string t: Transcript
+        :param str aa: Expected Amino Acid
+        :param str pos: Expected position
+        :param list errors: List of errors
+        """
+        ref_aa_del = \
+            self.seqrepo_access.sequence_at_position(t, pos)
+        if ref_aa_del and len(ref_aa_del) == 1 \
+                and len(aa) == 3:
+            ref_aa_del = \
+                self._amino_acid_cache.amino_acid_code_conversion[
+                    ref_aa_del]  # noqa: E501
+
+        if ref_aa_del != aa:
+            errors.append(f"Needed to find {aa} at "
+                          f"position {pos} on {t} "
+                          f"but found {ref_aa_del}")
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
         """Return HGVS expression and whether or not it's an Ensembl transcript
