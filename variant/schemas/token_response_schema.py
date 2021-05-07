@@ -261,6 +261,7 @@ class ReferenceSequence(str, Enum):
 
     CODING_DNA = 'c'
     LINEAR_GENOMIC = 'g'
+    PROTEIN = 'p'
 
 
 class SingleNucleotideVariant(Token):
@@ -316,6 +317,18 @@ class DelIns(Token):
     inserted_sequence2: Optional[str]
     token_type: str
     reference_sequence: ReferenceSequence
+
+
+class AminoAcidDelInsToken(Token):
+    """DelIns at the protein reference sequence."""
+
+    start_aa_del: str
+    start_pos_del: int
+    end_aa_del: Optional[str]
+    end_pos_del: Optional[int]
+    inserted_sequence: str
+    reference_sequence = ReferenceSequence.PROTEIN
+    token_type = 'AminoAcidDelIns'
 
 
 class CodingDNADelInsToken(DelIns):

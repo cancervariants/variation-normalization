@@ -110,6 +110,55 @@ class Validator(ABC):
         return [t for t in classification.all_tokens
                 if t.token_type == 'GeneSymbol']
 
+    def get_protein_gene_symbol_tokens(self, classification)\
+            -> List[GeneMatchToken]:
+        """Return gene tokens for a classification.
+
+        :param Classification classification: The classification for tokens
+        :return: A list of Gene Match Tokens in the classification
+        """
+        gene_tokens = [t for t in classification.all_tokens
+                       if t.token_type == 'GeneSymbol']
+        if not gene_tokens:
+            # Convert refseq to gene symbol
+            refseq = \
+                ([t.token for t in classification.all_tokens if
+                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
+
+            if not refseq:
+                return []
+
+            if ':' in refseq:
+                refseq = refseq.split(':')[0]
+
+            res = self.seqrepo_access.aliases(refseq)
+            aliases = [a.split('ensembl:')[1] for a
+                       in res if a.startswith('ensembl')]
+
+            gene_symbols = list()
+            if aliases:
+                for alias in aliases:
+                    gene_symbol = \
+                        self.transcript_mappings.get_gene_symbol_from_ensembl_protein(alias)  # noqa: E501
+
+                    if gene_symbol:
+                        if gene_symbol not in gene_symbols:
+                            gene_symbols.append(gene_symbol)
+                            gene_tokens.append(
+                                self._gene_matcher.match(gene_symbol))
+                    else:
+                        logger.warning(f"No gene symbol found for Protein "
+                                       f"{alias} in transcript_mappings.tsv")
+            else:
+                gene_symbol = \
+                    self.transcript_mappings.get_gene_symbol_from_refeq_protein(refseq)  # noqa: E501
+                if gene_symbol:
+                    if gene_symbol not in gene_symbols:
+                        gene_symbols.append(gene_symbol)
+                        gene_tokens.append(self._gene_matcher.match(
+                            gene_symbol))
+        return gene_tokens
+
     def get_coding_dna_gene_symbol_tokens(self, classification):
         """Return gene symbol tokens for coding dna classifications.
 
@@ -438,7 +487,7 @@ class Validator(ABC):
                     if 'hgvsMatchingTranscriptVariant' in amino_acid_allele.keys():  # noqa: E501
                         if len(amino_acid_allele['hgvsMatchingTranscriptVariant']) > 0:  # noqa: E501
                             for t in amino_acid_allele['hgvsMatchingTranscriptVariant']:  # noqa: E501
-                                if '>' in t and '[' not in t:
+                                if '[' not in t:
                                     # Temp condition since variant norm
                                     # cannot handle multiple possible variants
                                     return self.get_mane_transcript(

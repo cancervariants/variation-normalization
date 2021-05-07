@@ -1,7 +1,7 @@
 """Module for Variant Normalization."""
 from typing import Tuple, Optional
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
-    SingleNucleotideVariant, DelIns
+    SingleNucleotideVariant, DelIns, AminoAcidDelInsToken
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from variant.data_sources import SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
@@ -149,8 +149,12 @@ class Normalize:
             self._get_instance_type_token(valid_result_tokens,
                                           SingleNucleotideVariant)
 
+        # Genomic and transcript
         delins_token = self._get_instance_type_token(valid_result_tokens,
                                                      DelIns)
+
+        aa_delins_token = self._get_instance_type_token(valid_result_tokens,
+                                                        AminoAcidDelInsToken)
 
         if polypeptide_sequence_variant_token and not \
                 dna_sequence_variant_token:
@@ -195,10 +199,15 @@ class Normalize:
             else:
                 structural_type = None
                 ref_allele_seq = None
-        elif delins_token:
-            molecule_context = self._get_molecule_context(
-                delins_token.reference_sequence
-            )
+        elif delins_token or aa_delins_token:
+            if delins_token:
+                molecule_context = self._get_molecule_context(
+                    delins_token.reference_sequence
+                )
+            else:
+                molecule_context = self._get_molecule_context(
+                    aa_delins_token.reference_sequence
+                )
             structural_type = 'SO:1000032'
             ref_allele_seq = self.get_delins_ref_allele_seq(allele,
                                                             label)

@@ -157,6 +157,27 @@ genomic_silent_mutation:
     - token: g.123
     - token: g.123==
 
+amino_acid_delins:
+  should_match:
+    - token: p.Cys28delinsTrpVal
+    - token: Cys28delinsTrpVal
+    - token: p.Cys28_Lys29delinsTrp
+    - token: p.(Pro578_Lys579delinsLeuTer)
+    - token: p.Leu747_Thr751delinsPro
+    - token: p.Glu746_Thr751delinsValAla
+    - token: G776delinsVC
+  should_not_match:
+    - token: p.Cys28delinsTrpVals
+    - token: p.Cys28delinsTrpValSup
+    - token: p.Cys28Lys29delinsTrp
+    - token: p._Lys29delinsTrp
+    - token: p.Cys28_delinsTrp
+    - token: p.Cys28_Lys29delinsTrpPrt
+    - token: p.12314delinsArg
+    - token: 32386323delinsGA
+    - token: Cys28delins
+    - token: delinsTrpVals
+    - token: Glu776delinsVC
 
 coding_dna_delins:
   should_match:

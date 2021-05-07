@@ -1,8 +1,6 @@
 """The module for DelIns Validation."""
 from abc import abstractmethod
 from variant.validators.validator import Validator
-from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify
 import logging
 
 logger = logging.getLogger('variant')
@@ -27,26 +25,6 @@ class DelInsBase(Validator):
 
         hgvs_expr, _ = self.get_hgvs_expr(classification, t, s, False)
         return self.get_allele_from_hgvs(hgvs_expr, errors)
-
-    def get_vrs_allele(self, sequence_id, s) -> dict:
-        """Return VRS Allele object.
-
-        :param str sequence_id: Sequence containing the sequence to be located
-        :param Token s: A Classification token
-        :return: A VRS Allele object as a dictionary
-        """
-        seq_location = models.SequenceLocation(
-            sequence_id=sequence_id,
-            interval=models.SimpleInterval(
-                start=int(s.start_pos_del) - 1,
-                end=int(s.end_pos_del)
-            )
-        )
-
-        state = models.SequenceState(sequence=s.reference_sequence.upper())
-        allele = models.Allele(location=seq_location, state=state)
-        allele['_id'] = ga4gh_identify(allele)
-        return allele.as_dict()
 
     @abstractmethod
     def get_hgvs_expr(self, classification, t, s, is_hgvs):

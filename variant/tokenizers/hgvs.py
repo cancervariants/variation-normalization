@@ -44,5 +44,5 @@ class HGVS(Tokenizer):
                     input_string=input_string,
                     match_type=TokenMatchType.UNSPECIFIED
                 )
-        except (HGVSParseError, HGVSInvalidVariantError):
+        except (HGVSParseError, HGVSInvalidVariantError, AttributeError):
             return None

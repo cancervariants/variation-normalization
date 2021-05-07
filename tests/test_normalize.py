@@ -501,6 +501,99 @@ def nc_000007_silent_mutation():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def amino_acid_delins():
+    """Create test fixture for amino acid delins."""
+    params = {
+        "id": 'normalize.variant:NP_001333827.1%3Ap.Leu747_Thr751delinsPro',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.drLuUW5T542RCeDlVo4zbQ-_tcAiEnb6",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 751,
+                    "start": 746,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "P",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NP_005219.2:p.Leu747_Thr751delinsPro",
+        "molecule_context": "protein",
+        "structural_type": "SO:1000032",
+        "ref_allele_seq": "LREAT",
+        "gene_context": {
+            "id": "normalize.gene:EGFR",
+            "type": "GeneDescriptor",
+            "label": "EGFR",
+            "value": {
+                "id": "hgnc:3236",
+                "type": "Gene"
+            },
+            "xrefs": [
+                "ncbigene:1956",
+                "ensembl:ENSG00000146648"
+            ],
+            "alternate_labels": [
+                "ERBB1",
+                "ERRP",
+                "ERBB",
+                "epidermal growth factor receptor"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "vega:OTTHUMG00000023661",
+                        "ucsc:uc003tqk.4",
+                        "ccds:CCDS87507",
+                        "ccds:CCDS47587",
+                        "ccds:CCDS87506",
+                        "ccds:CCDS5514",
+                        "ccds:CCDS5515",
+                        "ccds:CCDS5516",
+                        "uniprot:P00533",
+                        "pubmed:1505215",
+                        "cosmic:EGFR",
+                        "omim:131550",
+                        "orphanet:121311",
+                        "iuphar:1797",
+                        "refseq:NM_005228"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "_id": "ga4gh:VCL.wgFi9e72ZIIJaOfLx5gaOeGrwP_IZoQ2",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "p11.2",
+                            "start": "p11.2",
+                            "type": "CytobandInterval"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -724,6 +817,27 @@ def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
     assertion_checks(resp, nm_000551)
 
 
+def test_amino_acid_delins(test_normalize, amino_acid_delins):
+    """Test that Amnio Acid DelIns normalizes correctly."""
+    resp = test_normalize.normalize('NP_001333827.1:p.Leu747_Thr751delinsPro')
+    assertion_checks(resp, amino_acid_delins)
+
+    resp = test_normalize.normalize('EGFR p.Leu747_Thr751delinsPro')
+    assert resp.id == 'normalize.variant:EGFR%20p.Leu747_Thr751delinsPro'
+    resp.id = 'normalize.variant:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
+    assertion_checks(resp, amino_acid_delins)
+
+    resp = test_normalize.normalize('EGFR Leu747_Thr751delinsPro')
+    assert resp.id == 'normalize.variant:EGFR%20Leu747_Thr751delinsPro'
+    resp.id = 'normalize.variant:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
+    assertion_checks(resp, amino_acid_delins)
+
+    resp = test_normalize.normalize('EGFR L747_T751delinsP')
+    assert resp.id == 'normalize.variant:EGFR%20L747_T751delinsP'
+    resp.id = 'normalize.variant:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
+    assertion_checks(resp, amino_acid_delins)
+
+
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
@@ -732,7 +846,10 @@ def test_no_matches(test_normalize):
         "NP_004324.2:p.Glu600Val", "NP_004324.2:p.Glu600Gal",
         "NP_004324.2839:p.Glu600Val", "NP_004324.2:t.Glu600Val",
         "this:c.54G>H", "NC_000007.13:g.4T<A", "NC_000023.11:g.32386323del",
-        "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter"
+        "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter",
+        "ERBB2 G776delinsVCZ", "NP005219.2:p.Glu746_Thr751delinsValAla",
+        "NP_005219.2:p.Glu746Thr751delinsValAla", "EGFR L747_L474delinsP",
+        "NP_005219.2:p.Glu746_Thr751delinssValAla", "EGFR delins"
     ]
     for q in queries:
         resp = test_normalize.normalize(q)

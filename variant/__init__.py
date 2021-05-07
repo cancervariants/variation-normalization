@@ -5,7 +5,7 @@ import logging
 from ftplib import FTP
 from os import environ
 
-__version__ = "0.1.14"
+__version__ = "0.2.0"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 

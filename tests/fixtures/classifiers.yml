@@ -117,6 +117,19 @@ genomic_silent_mutation:
     - query: GENOMIC_:g.123=
     - query: c.123=
 
+amino_acid_delins:
+  should_match:
+    - query: NP_001333827.1:p.Leu747_Thr751delinsPro
+      confidence: ConfidenceRating.EXACT
+    - query: NP_001333827.1:p.Leu747delinsProArg
+      confidence: ConfidenceRating.EXACT
+    - query: NP_005219.2:p.Glu746_Thr751delinsValAla
+      confidence: ConfidenceRating.EXACT
+    - query: NP_005219.2:p.G776delinsVC
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: N:p.Leu747_Thr751delinsPro
+
 coding_dna_delins:
   should_match:
     - query: NM_005157.6:c.1423_1424delinsGT
