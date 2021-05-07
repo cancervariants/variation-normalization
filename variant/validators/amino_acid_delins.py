@@ -101,42 +101,20 @@ class AminoAcidDelIns(Validator):
                         'ReferenceSequence' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    if allele:
-                        t = hgvs_expr.split(':')[0]
-                        # MANE Select Transcript for HGVS expressions
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t
-                        }
+                    t = hgvs_expr.split(':')[0]
                 else:
-                    refseq = ([a for a in self.seqrepo_access.aliases(t)
-                               if a.startswith('refseq:NP_')] or [None])[0]
-
-                    if not refseq:
-                        allele = None
-                    else:
-                        dels = f"{s.start_aa_del}{s.start_pos_del}"
-                        if s.start_pos_del is not None and \
-                                s.end_pos_del is not None:
-                            dels += f"_{s.end_aa_del}{s.end_pos_del}"
-                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                    f"{dels}delins{s.inserted_sequence}"
-
-                        # MANE Select Transcript for Gene Name + Variation
-                        # (ex: BRAF V600E)
-                        if hgvs_expr not in mane_transcripts_dict.keys():
-                            mane_transcripts_dict[hgvs_expr] = {
-                                'classification_token': s,
-                                'transcript_token': t
-                            }
-
-                        allele = self.get_allele_from_transcript(
-                            classification, t, s, errors
-                        )
+                    hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
+                    # MANE Select Transcript
+                    if hgvs_expr not in mane_transcripts_dict.keys():
+                        mane_transcripts_dict[hgvs_expr] = {
+                            'classification_token': s,
+                            'transcript_token': t
+                        }
                     if len(allele['state']['sequence']) == 3:
                         allele['state']['sequence'] = \
                             self._amino_acid_cache.convert_three_to_one(
@@ -188,18 +166,6 @@ class AminoAcidDelIns(Validator):
         # Now add MANE transcripts to result
         self.add_mane_transcript(classification, results, gene_tokens,
                                  mane_transcripts_dict)
-
-    def get_allele_from_transcript(self, classification, t, s, errors):
-        """Return allele from a given transcript.
-
-        :param Classification classification: The classification for input str
-        :param Classification s: Classification token
-        :param str t: Transcript
-        :param list errors: List of errors
-        :return: Allele as a dictionary
-        """
-        hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
-        return self.get_allele_from_hgvs(hgvs_expr, errors)
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
         """Return HGVS expression and whether or not it's an Ensembl transcript
