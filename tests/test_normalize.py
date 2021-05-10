@@ -151,6 +151,74 @@ def vhl_gene_context():
     }
 
 
+@pytest.fixture(scope='module')
+def erbb2_context():
+    """Create test fixture for ERBB2 Gene Context."""
+    return {
+        "id": "normalize.gene:ERBB2",
+        "type": "GeneDescriptor",
+        "label": "ERBB2",
+        "value": {
+            "id": "hgnc:3430",
+            "type": "Gene"
+        },
+        "xrefs": [
+            "ncbigene:2064",
+            "ensembl:ENSG00000141736"
+        ],
+        "alternate_labels": [
+            "NEU",
+            "HER-2",
+            "HER2",
+            "CD340",
+            "erb-b2 receptor tyrosine kinase 2",
+            "NGL"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "vega:OTTHUMG00000179300",
+                    "ucsc:uc002hso.4",
+                    "ccds:CCDS77016",
+                    "ccds:CCDS74052",
+                    "ccds:CCDS45667",
+                    "ccds:CCDS32642",
+                    "ccds:CCDS77017",
+                    "uniprot:P04626",
+                    "cosmic:ERBB2",
+                    "omim:164870",
+                    "iuphar:2019",
+                    "hcdmdb:CD340",
+                    "ena.embl:X03363",
+                    "refseq:NM_004448"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "17",
+                    "interval": {
+                        "end": "q12",
+                        "start": "q12",
+                        "type": "CytobandInterval"
+                    }
+                }
+            }
+        ]
+    }
+
+
 @pytest.fixture(scope="module")
 def braf_v600e(braf_gene_context):
     """Create BRAF V600E protein test fixture."""
@@ -280,7 +348,7 @@ def braf_v600e_nucleotide(braf_gene_context):
 
 
 @pytest.fixture(scope='module')
-def nm_004448_coding_dna_delins():
+def nm_004448_coding_dna_delins(erbb2_context):
     """Create test fixture for NM_004448.4:c.2326_2327delinsCT."""
     params = {
         "id": "normalize.variant:NM_004448.4%3Ac.2326_2327delinsCT",
@@ -306,69 +374,7 @@ def nm_004448_coding_dna_delins():
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "GA",
-        "gene_context": {
-            "id": "normalize.gene:ERBB2",
-            "type": "GeneDescriptor",
-            "label": "ERBB2",
-            "value": {
-                "id": "hgnc:3430",
-                "type": "Gene"
-            },
-            "xrefs": [
-                "ncbigene:2064",
-                "ensembl:ENSG00000141736"
-            ],
-            "alternate_labels": [
-                "NEU",
-                "HER-2",
-                "HER2",
-                "CD340",
-                "erb-b2 receptor tyrosine kinase 2",
-                "NGL"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000179300",
-                        "ucsc:uc002hso.4",
-                        "ccds:CCDS77016",
-                        "ccds:CCDS74052",
-                        "ccds:CCDS45667",
-                        "ccds:CCDS32642",
-                        "ccds:CCDS77017",
-                        "uniprot:P04626",
-                        "cosmic:ERBB2",
-                        "omim:164870",
-                        "iuphar:2019",
-                        "hcdmdb:CD340",
-                        "ena.embl:X03363",
-                        "refseq:NM_004448"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "17",
-                        "interval": {
-                            "end": "q12",
-                            "start": "q12",
-                            "type": "CytobandInterval"
-                        }
-                    }
-                }
-            ]
-        }
+        "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
 
@@ -590,6 +596,40 @@ def amino_acid_delins():
                 }
             ]
         }
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def amino_acid_deletion_np_range(erbb2_context):
+    """Create test fixture for amino acid deletion using NP accession and
+    range for deletion.
+    """
+    params = {
+        "id": 'normalize.variant:NP_004439.2%3Ap.Leu755_Thr759del',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.Kzk2XquE5w5Ujd_tPBLVOZcylXMP8xbW",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 759,
+                    "start": 754,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NP_004439.2:p.Leu755_Thr759del",
+        "molecule_context": "protein",
+        "structural_type": "SO:0001604",
+        "ref_allele_seq": "LRENT",
+        "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
 
@@ -836,6 +876,18 @@ def test_amino_acid_delins(test_normalize, amino_acid_delins):
     assert resp.id == 'normalize.variant:EGFR%20L747_T751delinsP'
     resp.id = 'normalize.variant:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
     assertion_checks(resp, amino_acid_delins)
+
+
+def test_amino_acid_deletion(test_normalize, amino_acid_deletion_np_range):
+    """Test that Amino Acid Deletion normalizes correctly."""
+    resp = test_normalize.normalize('NP_004439.2:p.Leu755_Thr759del')
+    assertion_checks(resp, amino_acid_deletion_np_range)
+
+    resp = test_normalize.normalize('ERBB2 p.Leu755_Thr759del')
+    assert resp.id == 'normalize.variant:ERBB2%20p.Leu755_Thr759del'
+
+    resp = test_normalize.normalize('ERBB2 Leu755_Thr759del')
+    assert resp.id == 'normalize.variant:ERBB2%20Leu755_Thr759del'
 
 
 def test_no_matches(test_normalize):
