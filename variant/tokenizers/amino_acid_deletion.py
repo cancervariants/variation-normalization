@@ -28,6 +28,9 @@ class AminoAcidDeletion(Tokenizer):
 
         input_string = str(input_string).lower()
 
+        if 'c.' in input_string or 'g.' in input_string:
+            return None
+
         if input_string.startswith('p.'):
             input_string = input_string[2:]
 
@@ -53,8 +56,7 @@ class AminoAcidDeletion(Tokenizer):
 
         try:
             return AminoAcidDeletionToken(**self.parts)
-        except ValidationError as e:
-            print(e)
+        except ValidationError:
             return None
 
     def _get_parts(self, parts):

@@ -266,6 +266,7 @@ amino_acid_deletion:
     - token: p.Lys23_Val25del
     - token: p.(Lys23_Val25del)
     - token: (Lys23_Val25del)
+    - token: p.Phe76del
   should_not_match:
     - token: Val7deletion
     - token: (Val7deletion)
