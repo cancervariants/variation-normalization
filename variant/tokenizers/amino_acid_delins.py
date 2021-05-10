@@ -63,7 +63,7 @@ class AminoAcidDelIns(Tokenizer):
         :param list parts: Parts of input string
         """
         if len(parts) != 2:
-            return
+            return None
 
         # Get reference sequence
         self._get_positions_deleted(parts)
