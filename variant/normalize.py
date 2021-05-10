@@ -1,7 +1,6 @@
 """Module for Variant Normalization."""
-from typing import Tuple, Optional
-from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
-    SingleNucleotideVariant, DelIns
+from typing import Optional
+from variant.schemas.token_response_schema import PolypeptideSequenceVariant
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from variant.data_sources import SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
@@ -47,9 +46,21 @@ class Normalize:
             valid_result_tokens = valid_result.classification.all_tokens
             allele = valid_result.allele
             allele_id = allele.pop('_id')
-            molecule_context, structural_type, ref_allele_seq = \
-                self._get_molecule_context_structural_type_ref_allele_seq(
-                    valid_result_tokens, amino_acid_cache, label, allele)
+            variant_token = None
+            molecule_context = None
+            structural_type = None
+
+            for token in valid_result_tokens:
+                try:
+                    molecule_context = token.molecule_context
+                    structural_type = token.so_id
+                    variant_token = token
+                except AttributeError:
+                    continue
+
+            ref_allele_seq = self._get_ref_allele_seq(
+                variant_token, amino_acid_cache, label, allele
+            )
 
             if valid_result.gene_tokens:
                 gene_token = valid_result.gene_tokens[0]
@@ -133,80 +144,27 @@ class Normalize:
             'value': value
         })
 
-    def _get_molecule_context_structural_type_ref_allele_seq(self,
-                                                             valid_result_tokens,  # noqa: E501
-                                                             amino_acid_cache,
-                                                             label, allele)\
-            -> Tuple[str, str, str]:
-        """Return sequence data for a variant.
+    def _get_ref_allele_seq(self, variant_token, amino_acid_cache,
+                            label, allele) -> str:
+        """Return ref_allele_seq for a variant.
 
-        :return: Tuple[molecule_context, structural_type, ref_allele_seq]
+        :return: ref_allele_seq
         """
-        polypeptide_sequence_variant_token = \
-            self._get_instance_type_token(valid_result_tokens,
-                                          PolypeptideSequenceVariant)
-        dna_sequence_variant_token = \
-            self._get_instance_type_token(valid_result_tokens,
-                                          SingleNucleotideVariant)
-
-        delins_token = self._get_instance_type_token(valid_result_tokens,
-                                                     DelIns)
-
-        if polypeptide_sequence_variant_token and not \
-                dna_sequence_variant_token:
-            molecule_context = 'protein'
-
-            if self._is_token_type(valid_result_tokens,
-                                   'AminoAcidSubstitution'):
-                structural_type = 'SO:0001606'
-            elif self._is_token_type(valid_result_tokens,
-                                     'PolypeptideTruncation'):
-                structural_type = 'SO:0001617'
-            elif self._is_token_type(valid_result_tokens,
-                                     'SilentMutation'):
-                structural_type = 'SO:0001017'
-            else:
-                structural_type = None
-
+        if variant_token.token_type == PolypeptideSequenceVariant:
             # convert 3 letter to 1 letter amino acid code
-            if len(polypeptide_sequence_variant_token.ref_protein) == 3:
+            if len(variant_token.ref_protein) == 3:
                 for one, three in \
                         amino_acid_cache.amino_acid_code_conversion.items():
-                    if three == polypeptide_sequence_variant_token.ref_protein:
-                        polypeptide_sequence_variant_token.ref_protein = one
-            ref_allele_seq = polypeptide_sequence_variant_token.ref_protein
-        elif dna_sequence_variant_token:
-            molecule_context = self._get_molecule_context(
-                dna_sequence_variant_token.reference_sequence
-            )
-            if self._is_token_type(valid_result_tokens,
-                                   'CodingDNASubstitution') or \
-                    self._is_token_type(valid_result_tokens,
-                                        'GenomicSubstitution'):
-                structural_type = 'SO:0001483'
-                ref_allele_seq = dna_sequence_variant_token.ref_nucleotide
-            elif self._is_token_type(valid_result_tokens,
-                                     'CodingDNASilentMutation') or \
-                    self._is_token_type(valid_result_tokens,
-                                        'GenomicSilentMutation'):
-                structural_type = 'SO:0002073'
-                ref_allele_seq = self.get_delins_ref_allele_seq(allele,
-                                                                label)
-            else:
-                structural_type = None
-                ref_allele_seq = None
-        elif delins_token:
-            molecule_context = self._get_molecule_context(
-                delins_token.reference_sequence
-            )
-            structural_type = 'SO:1000032'
-            ref_allele_seq = self.get_delins_ref_allele_seq(allele,
-                                                            label)
+                    if three == variant_token.ref_protein:
+                        variant_token.ref_protein = one
+            ref_allele_seq = variant_token.ref_protein
         else:
-            molecule_context = None
-            structural_type = None
-            ref_allele_seq = None
-        return molecule_context, structural_type, ref_allele_seq
+            if variant_token.token_type in ['CodingDNASubstitution',
+                                            'GenomicSubstitution']:
+                ref_allele_seq = variant_token.ref_nucleotide
+            else:
+                ref_allele_seq = self.get_delins_ref_allele_seq(allele, label)
+        return ref_allele_seq
 
     def get_delins_ref_allele_seq(self, allele, label) -> Optional[str]:
         """Return ref allele seq for transcript.
@@ -257,17 +215,3 @@ class Normalize:
             if isinstance(t, instance_type):
                 return t
         return None
-
-    def _get_molecule_context(self, reference_sequence):
-        """Get molecule context for a token.
-
-        :param str reference_sequence: The token's reference sequence
-        """
-        molecule_context = None
-        if reference_sequence == 'c':
-            molecule_context = 'transcript'
-        elif reference_sequence == 'g':
-            molecule_context = 'genomic'
-        elif reference_sequence == 'p':
-            molecule_context = 'protein'
-        return molecule_context

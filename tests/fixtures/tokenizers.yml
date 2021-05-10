@@ -157,6 +157,27 @@ genomic_silent_mutation:
     - token: g.123
     - token: g.123==
 
+amino_acid_delins:
+  should_match:
+    - token: p.Cys28delinsTrpVal
+    - token: Cys28delinsTrpVal
+    - token: p.Cys28_Lys29delinsTrp
+    - token: p.(Pro578_Lys579delinsLeuTer)
+    - token: p.Leu747_Thr751delinsPro
+    - token: p.Glu746_Thr751delinsValAla
+    - token: G776delinsVC
+  should_not_match:
+    - token: p.Cys28delinsTrpVals
+    - token: p.Cys28delinsTrpValSup
+    - token: p.Cys28Lys29delinsTrp
+    - token: p._Lys29delinsTrp
+    - token: p.Cys28_delinsTrp
+    - token: p.Cys28_Lys29delinsTrpPrt
+    - token: p.12314delinsArg
+    - token: 32386323delinsGA
+    - token: Cys28delins
+    - token: delinsTrpVals
+    - token: Glu776delinsVC
 
 coding_dna_delins:
   should_match:
@@ -230,3 +251,29 @@ locus_reference_genomic:
     - token: LRG_p1
     - token: LRGt1
     - token: LRGp1
+
+amino_acid_deletion:
+  should_match:
+    - token: p.Val7del
+    - token: Val7del
+    - token: p.(Val7del)
+    - token: (Val7del)
+    - token: p.V7del
+    - token: V7del
+    - token: p.(V7del)
+    - token: (V7del)
+    - token: Lys23_Val25del
+    - token: p.Lys23_Val25del
+    - token: p.(Lys23_Val25del)
+    - token: (Lys23_Val25del)
+    - token: p.Phe76del
+  should_not_match:
+    - token: Val7deletion
+    - token: (Val7deletion)
+    - token: p.Val7deletion
+    - token: c.Val7del
+    - token: ValSup7del
+    - token: delVal7
+    - token: 7Valdel
+    - token: Val7_Glydel
+    - token: Val_Gly7del

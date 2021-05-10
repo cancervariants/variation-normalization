@@ -68,6 +68,17 @@ genomic_silent_mutation:
     - query: NC_000007.13:g.55259515=
   should_not_match:
     - query: NC_000007.13:g.159138664=
+    - query: NP_005219.2:p.Glu746_Thr751delinsValAla
+
+amino_acid_delins:
+  should_match:
+    - query: NP_001333827.1:p.Leu747_Thr751delinsPro
+    - query: NP_000542.1:p.Gln96_Pro97delinsHis
+    - query: NP_005219.2:p.Glu746_Thr751delinsValAla
+    - query: ERBB2 G776delinsVC
+    - query: KIT P577_W582delinsPYD
+  should_not_match:
+    - query: EGFR E709_G719delins11
 
 coding_dna_delins:
   should_match:
@@ -94,3 +105,22 @@ genomic_delins:
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
     - query: NC_000023.11:g.3238646549879323delinsGA
+
+amino_acid_deletion:
+  should_match:
+    - query: NP_003997.1:p.Lys23_Val25del
+    - query: NP_003997.1:p.(Lys23_Val25del)
+    - query: NP_000542.1:p.Glu186del
+    - query: NP_000542.1:p.(Glu186del)
+    - query: NP_000542.1:p.Arg82_Val84del
+    - query: ENSP00000256474.2:p.Phe76del
+    - query: KIT D419del
+    - query: KIT E554_V559del
+    - query: LRG_322p1:p.Leu128del
+    - query: LRG_199p1:p.Val7del
+    - query: LRG_199p1:p.(Val7del)
+    - query: LRG_199p1:p.Trp4del
+    - query: LRG_232p1:p.(Pro458_Gly460del)
+  should_not_match:
+    - query: LRG_199p1:p.Ala7del
+    - query: LRG_199p1:p.Val78848498879del
