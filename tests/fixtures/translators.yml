@@ -1272,3 +1272,46 @@ genomic_delins:
           "type": "Allele"
         }
       ]
+
+amino_acid_deletion:
+  tests:
+    - query: NP_000542.1:p.Phe76del
+      variants: [
+        {
+          "id": "ga4gh:VA.P6K_G0ZM2KZdvCfG0U0P_OtHgGxZfdd9",
+          "location": {
+            "interval": {
+              "end": 76,
+              "start": 75,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: NP_000542.1:p.Arg82_Val84del
+      variants: [
+        {
+          "id": "ga4gh:VA.1ZjAyIGY2Uwb4_ItKPII33nGbvrtAQmL",
+          "location": {
+            "interval": {
+              "end": 84,
+              "start": 81,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
