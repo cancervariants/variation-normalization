@@ -10,6 +10,7 @@ from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from variant.mane_transcript import MANETranscript
 import logging
 
 logger = logging.getLogger('variant')
@@ -32,6 +33,7 @@ class PolypeptideSequenceVariantBase(Validator):
         """
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
+        self.mane_transcript = MANETranscript()
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -132,40 +134,25 @@ class PolypeptideSequenceVariantBase(Validator):
                 valid = True
                 errors = list()
 
+                self.mane_transcript.protein_to_transcript(s)
+
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
                     t = hgvs_expr.split(':')[0]
-
-                    if allele:
-                        # MANE Select Transcript for HGVS expressions
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t
-                        }
                 else:
-                    refseq = ([a for a in self.seqrepo_access.aliases(t)
-                               if a.startswith('refseq:NP_')] or [None])[0]
+                    hgvs_expr = \
+                        f"{t}:p.{s.ref_protein}{s.position}{s.alt_protein}"
+                    allele = self.get_allele_from_transcript(
+                        hgvs_expr, t, errors
+                    )
 
-                    if not refseq:
-                        allele = None
-                    else:
-                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                    f"{s.ref_protein}{s.position}" \
-                                    f"{s.alt_protein}"
-
-                        # MANE Select Transcript for Gene Name + Variation
-                        # (ex: BRAF V600E)
-                        if hgvs_expr not in mane_transcripts_dict.keys():
-                            mane_transcripts_dict[hgvs_expr] = {
-                                'classification_token': s,
-                                'transcript_token': t
-                            }
-
-                        allele = self.get_allele_from_transcript(hgvs_expr, t,
-                                                                 errors)
-
-                if not allele:
+                if allele:
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t
+                    }
+                else:
                     errors.append("Unable to find allele.")
                     valid = False
 
