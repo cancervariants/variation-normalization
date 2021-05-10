@@ -117,6 +117,19 @@ genomic_silent_mutation:
     - query: GENOMIC_:g.123=
     - query: c.123=
 
+amino_acid_delins:
+  should_match:
+    - query: NP_001333827.1:p.Leu747_Thr751delinsPro
+      confidence: ConfidenceRating.EXACT
+    - query: NP_001333827.1:p.Leu747delinsProArg
+      confidence: ConfidenceRating.EXACT
+    - query: NP_005219.2:p.Glu746_Thr751delinsValAla
+      confidence: ConfidenceRating.EXACT
+    - query: NP_005219.2:p.G776delinsVC
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: N:p.Leu747_Thr751delinsPro
+
 coding_dna_delins:
   should_match:
     - query: NM_005157.6:c.1423_1424delinsGT
@@ -156,3 +169,30 @@ genomic_delins:
   should_not_match:
     - query:  N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX
+
+
+amino_acid_deletion:
+  should_match:
+    - query: NP_004439.2:p.Leu755_Thr759del
+      confidence: ConfidenceRating.EXACT
+    - query: NP_000213.1:p.Val560del
+      confidence: ConfidenceRating.EXACT
+    - query: NP_000213.1:p.Lys550_Lys558del
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199p1:p.Val7del
+      confidence: ConfidenceRating.EXACT
+    - query: LRG_199p1:p.(Val7del)
+      confidence: ConfidenceRating.EXACT
+    - query: KIT D419del
+      confidence: ConfidenceRating.EXACT
+    - query: KIT E554_V559del
+      confidence: ConfidenceRating.EXACT
+    - query: CTNNB1 Y30_I35del
+      confidence: ConfidenceRating.EXACT
+    - query: ENSP00000256474.2:p.Phe76del
+      confidence: ConfidenceRating.EXACT
+    - query: NP_004439.2:c.Leu755_Thr759del
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: fakegene Leu755_Thr759del
+    - query: GENE c.L755del

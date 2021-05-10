@@ -16,6 +16,8 @@ from .coding_dna_substitution_classifier import CodingDNASubstitutionClassifier 
 from .genomic_substitution_classifier import GenomicSubstitutionClassifier  # noqa: F401, E501
 from .coding_dna_silent_mutation_classifier import CodingDNASilentMutationClassifier  # noqa: F401, E501
 from .genomic_silent_mutation_classifier import GenomicSilentMutationClassifier  # noqa: F401, E501
+from .amino_acid_delins_classifier import AminoAcidDelInsClassifier  # noqa: F401, E501
 from .coding_dna_delins_classifier import CodingDNADelInsClassifier  # noqa: F401, E501
 from .genomic_delins_classifier import GenomicDelInsClassifier  # noqa: F401
+from .amino_acid_deletion_classifier import AminoAcidDeletionClassifier  # noqa: F401, E501
 from .classify import Classify  # noqa: F401

@@ -22,17 +22,16 @@ from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
+from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
 from .locus_reference_genomic import LocusReferenceGenomic
+from .amino_acid_deletion import AminoAcidDeletion
 from variant.schemas.token_response_schema import Token, TokenMatchType
-
-
-from .caches import GeneSymbolCache
-from .caches import AminoAcidCache
+from .caches import GeneSymbolCache, AminoAcidCache
 from variant import HGNC_GENE_SYMBOL_PATH
 
 
@@ -69,8 +68,10 @@ class Tokenize:
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
+            AminoAcidDelIns(amino_acid_cache),
             CodingDNADelIns(),
             GenomicDelIns(),
+            AminoAcidDeletion(amino_acid_cache),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),

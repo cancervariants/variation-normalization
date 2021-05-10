@@ -113,6 +113,14 @@ class GenePairMatchToken(Token):
             }
 
 
+class ReferenceSequence(str, Enum):
+    """Define constraints for reference sequence."""
+
+    CODING_DNA = 'c'
+    LINEAR_GENOMIC = 'g'
+    PROTEIN = 'p'
+
+
 class PolypeptideSequenceVariant(Token):
     """Polypeptide Sequence Variant Token Class."""
 
@@ -120,6 +128,9 @@ class PolypeptideSequenceVariant(Token):
     alt_protein: str
     position: int
     token_type: str
+    reference_sequence = ReferenceSequence.PROTEIN
+    so_id: str
+    molecule_context = 'protein'
 
 
 class PolypeptideTruncationToken(PolypeptideSequenceVariant):
@@ -129,6 +140,7 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariant):
 
     alt_protein = 'Ter'
     token_type = 'PolypeptideTruncation'
+    so_id = 'SO:0001617'
 
     class Config:
         """Configure model."""
@@ -159,6 +171,7 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariant):
     """
 
     token_type = 'AminoAcidSubstitution'
+    so_id = 'SO:0001606'
 
     class Config:
         """Configure model."""
@@ -188,6 +201,7 @@ class SilentMutationToken(PolypeptideSequenceVariant):
 
     alt_protein = '='
     token_type = 'SilentMutation'
+    so_id = 'SO:0001017'
 
     class Config:
         """Configure model."""
@@ -256,13 +270,6 @@ class TokenResponseSchema(BaseModel):
             }
 
 
-class ReferenceSequence(str, Enum):
-    """Define constraints for reference sequence."""
-
-    CODING_DNA = 'c'
-    LINEAR_GENOMIC = 'g'
-
-
 class SingleNucleotideVariant(Token):
     """Single nucleotide positions in genomic DNA at which different
     sequence alternatives exist.
@@ -273,6 +280,8 @@ class SingleNucleotideVariant(Token):
     new_nucleotide: str
     token_type: str
     reference_sequence: ReferenceSequence
+    so_id: str
+    molecule_context: str
 
 
 class CodingDNASubstitutionToken(SingleNucleotideVariant):
@@ -280,6 +289,8 @@ class CodingDNASubstitutionToken(SingleNucleotideVariant):
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'
+    so_id = 'SO:0001483'
+    molecule_context = 'transcript'
 
 
 class CodingDNASilentMutationToken(SingleNucleotideVariant):
@@ -288,6 +299,8 @@ class CodingDNASilentMutationToken(SingleNucleotideVariant):
     reference_sequence = ReferenceSequence.CODING_DNA
     new_nucleotide = '='
     token_type = 'CodingDNASilentMutation'
+    so_id = 'SO:0002073'
+    molecule_context = 'transcript'
 
 
 class GenomicSubstitutionToken(SingleNucleotideVariant):
@@ -295,6 +308,8 @@ class GenomicSubstitutionToken(SingleNucleotideVariant):
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicSubstitution'
+    so_id = 'SO:0001483'
+    molecule_context = 'genomic'
 
 
 class GenomicSilentMutationToken(SingleNucleotideVariant):
@@ -303,6 +318,8 @@ class GenomicSilentMutationToken(SingleNucleotideVariant):
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     new_nucleotide = '='
     token_type = 'GenomicSilentMutation'
+    so_id = 'SO:0002073'
+    molecule_context = 'genomic'
 
 
 class DelIns(Token):
@@ -316,6 +333,22 @@ class DelIns(Token):
     inserted_sequence2: Optional[str]
     token_type: str
     reference_sequence: ReferenceSequence
+    so_id = 'SO:1000032'
+    molecule_context: str
+
+
+class AminoAcidDelInsToken(Token):
+    """DelIns at the protein reference sequence."""
+
+    start_aa_del: str
+    start_pos_del: int
+    end_aa_del: Optional[str]
+    end_pos_del: Optional[int]
+    inserted_sequence: str
+    reference_sequence = ReferenceSequence.PROTEIN
+    so_id = 'SO:1000032'
+    molecule_context = 'protein'
+    token_type = 'AminoAcidDelIns'
 
 
 class CodingDNADelInsToken(DelIns):
@@ -323,6 +356,7 @@ class CodingDNADelInsToken(DelIns):
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNADelIns'
+    molecule_context = 'transcript'
 
 
 class GenomicDelInsToken(DelIns):
@@ -330,6 +364,7 @@ class GenomicDelInsToken(DelIns):
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicDelIns'
+    molecule_context = 'genomic'
 
 
 class LocusReferenceGenomicToken(Token):
@@ -341,3 +376,30 @@ class LocusReferenceGenomicToken(Token):
     t: Optional[int]
     p: Optional[int]
     token_type = 'LocusReferenceGenomic'
+
+
+class Deletion(Token):
+    """The point at which one or more contiguous nucleotides were excised.
+    - Sequence Ontology
+    """
+
+    start_pos_del: int
+    end_pos_del: Optional[int]
+    reference_sequence: ReferenceSequence
+    token_type: str
+    so_id: str
+    molecule_context: str
+
+
+class AminoAcidDeletionToken(Deletion):
+    """A sequence change between the translation initiation (start) and
+    termination (stop) codon where, compared to a reference sequence, one or
+    more amino acids are not present (deleted) - HGVS Nomenclature
+    """
+
+    start_aa_del: str
+    end_aa_del: Optional[str]
+    reference_sequence = ReferenceSequence.PROTEIN
+    token_type = 'AminoAcidDeletion'
+    so_id = 'SO:0001604'
+    molecule_context = 'protein'
