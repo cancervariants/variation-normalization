@@ -12,6 +12,7 @@ from .genomic_silent_mutation import GenomicSilentMutation
 from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
+from .amino_acid_deletion import AminoAcidDeletion
 from typing import List, Optional
 
 
@@ -30,7 +31,8 @@ class Translate:
             GenomicSilentMutation(),
             AminoAcidDelIns(),
             CodingDNADelIns(),
-            GenomicDelIns()
+            GenomicDelIns(),
+            AminoAcidDeletion()
         ]
 
     def perform(self, res: ValidationResult) \
