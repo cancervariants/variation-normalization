@@ -1,10 +1,10 @@
 """Module for Variant Normalization."""
 from typing import Tuple, Optional
+from variant import GENE_NORMALIZER
 from variant.schemas.token_response_schema import PolypeptideSequenceVariant,\
     SingleNucleotideVariant, DelIns, AminoAcidDelInsToken
 from variant.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
 from variant.data_sources import SeqRepoAccess
-from gene.query import QueryHandler as GeneQueryHandler
 from urllib.parse import quote
 from variant import logger
 
@@ -14,7 +14,6 @@ class Normalize:
 
     def __init__(self):
         """Initialize Normalize class."""
-        self.gene_query_handler = GeneQueryHandler()
         self.seqrepo_access = SeqRepoAccess()
         self.warnings = list()
 
@@ -84,8 +83,7 @@ class Normalize:
             gene-normalizer.
         """
         gene_symbol = gene_token.matched_value
-        response = self.gene_query_handler.search_sources(gene_symbol,
-                                                          incl='hgnc')
+        response = GENE_NORMALIZER.search_sources(gene_symbol, incl='hgnc')
         if response['source_matches'][0]['records']:
             record = response['source_matches'][0]['records'][0]
             record_location = record.locations[0] if record.locations else None

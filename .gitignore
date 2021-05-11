@@ -38,3 +38,4 @@ pyproject.toml
 *.zip
 
 build/
+dynamodb_local_latest/
