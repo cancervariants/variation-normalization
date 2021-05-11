@@ -1,5 +1,5 @@
 """Module for Genomic Validation methods."""
-from gene.query import QueryHandler as GeneQueryHandler
+from variant import GENE_NORMALIZER
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 import logging
 
@@ -29,9 +29,8 @@ class GenomicBase:
             gene_tokens = [t for t in classification.all_tokens
                            if t.token_type == 'GeneSymbol']
             if gene_tokens and len(gene_tokens) == 1:
-                gene_query_handler = GeneQueryHandler()
-                resp = gene_query_handler.search_sources(gene_tokens[0].token,
-                                                         incl='hgnc')
+                resp = GENE_NORMALIZER.search_sources(gene_tokens[0].token,
+                                                      incl='hgnc')
                 if resp['source_matches'][0]['records']:
                     record = resp['source_matches'][0]['records'][0]
                     loc = record.locations[0] if record.locations else None

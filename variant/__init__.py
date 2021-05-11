@@ -4,6 +4,7 @@ import os
 import logging
 from ftplib import FTP
 from os import environ
+from gene.query import QueryHandler as GeneQueryHandler
 
 __version__ = "0.2.0"
 
@@ -15,6 +16,8 @@ if 'VARIANT_NORM_EB_PROD' in os.environ:
     environ['GENE_NORM_EB_PROD'] = "true"
 else:
     LOG_FN = f'{APP_ROOT}/variant/variant.log'
+
+GENE_NORMALIZER = GeneQueryHandler()
 
 logger = logging.getLogger('variant')
 if Path(LOG_FN).exists():
