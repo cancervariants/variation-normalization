@@ -32,6 +32,8 @@ class ClassificationType(IntEnum):
     CODING_DNA_DELINS = 19
     GENOMIC_DELINS = 20
     AMINO_ACID_DELETION = 21
+    CODING_DNA_DELETION = 22
+    GENOMIC_DELETION = 23
 
 
 class ConfidenceRating(IntEnum):
