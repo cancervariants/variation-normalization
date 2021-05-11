@@ -15,6 +15,8 @@ from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from .amino_acid_deletion import AminoAcidDeletion
+from .coding_dna_deletion import CodingDNADeletion
+from .genomic_deletion import GenomicDeletion
 from typing import List
 
 
@@ -46,7 +48,10 @@ class Validate:
             CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol),
             GenomicDelIns(seq_repo_client, transcript_mappings, gene_symbol),
             AminoAcidDeletion(seq_repo_client, transcript_mappings,
-                              gene_symbol, amino_acid_cache)
+                              gene_symbol, amino_acid_cache),
+            CodingDNADeletion(seq_repo_client, transcript_mappings,
+                              gene_symbol),
+            GenomicDeletion(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \
