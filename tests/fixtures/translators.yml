@@ -1193,6 +1193,40 @@ coding_dna_delins:
             "type": "SequenceState"
           },
           "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.ZEi2I_lEtXSGqQWsUX0ZSPPFHLoBSajx",
+          "location": {
+            "interval": {
+              "start": 900,
+              "end": 901,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.CMHotHdJwhFah2_gNdlwU7DTT4yv-x_1",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "C",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.I5hyMcbe5HIraTCswrEUVNwJ7nIfTcKx",
+          "location": {
+            "interval": {
+              "start": 900,
+              "end": 901,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.xpx15sumYFV5iNvkVnWPR4YQFIzHqXj9",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "C",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
         }
       ]
 
