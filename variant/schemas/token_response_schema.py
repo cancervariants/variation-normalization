@@ -403,3 +403,25 @@ class AminoAcidDeletionToken(Deletion):
     token_type = 'AminoAcidDeletion'
     so_id = 'SO:0001604'
     molecule_context = 'protein'
+
+
+class CodingDNADeletionToken(Deletion):
+    """A sequence change where, compared to a reference sequence, one or
+    more nucleotides are not present (deleted). - HGVS Nomenclature
+    """
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    token_type = 'CodingDNADeletion'
+    so_id = 'SO:0000159'
+    molecule_context = 'transcript'
+
+
+class GenomicDeletionToken(Deletion):
+    """A sequence change where, compared to a reference sequence, one or
+    more nucleotides are not present (deleted). - HGVS Nomenclature
+    """
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    token_type = 'GenomicDeletion'
+    so_id = 'SO:0000159'
+    molecule_context = 'genomic'
