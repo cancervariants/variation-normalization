@@ -3,7 +3,6 @@ import csv
 from typing import Dict, List, Optional
 from variant.schemas.validation_response_schema import LookupType
 from variant import TRANSCRIPT_MAPPINGS_PATH, REFSEQ_GENE_SYMBOL_PATH
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TranscriptMappings:
@@ -38,8 +37,6 @@ class TranscriptMappings:
         # LRG <-> Gene Symbol
         self.refseq_lrg_for_gene_symbol: Dict[str, List[str]] = {}
         self.refseq_lrg_to_gene_symbol: Dict[str, str] = {}
-
-        self.gene_query_handler = GeneQueryHandler()
 
         self._load_transcript_mappings_data(transcript_file_path)
         self._load_refseq_gene_symbol_data(refseq_file_path)
