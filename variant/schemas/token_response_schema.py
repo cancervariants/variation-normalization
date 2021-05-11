@@ -411,6 +411,7 @@ class CodingDNADeletionToken(Deletion):
     """
 
     reference_sequence = ReferenceSequence.CODING_DNA
+    deleted_sequence: Optional[str]
     token_type = 'CodingDNADeletion'
     so_id = 'SO:0000159'
     molecule_context = 'transcript'
@@ -422,6 +423,7 @@ class GenomicDeletionToken(Deletion):
     """
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    deleted_sequence: Optional[str]
     token_type = 'GenomicDeletion'
     so_id = 'SO:0000159'
     molecule_context = 'genomic'

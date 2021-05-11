@@ -25,13 +25,19 @@ class DeletionBase(Tokenizer):
             'match_type': TokenMatchType.UNSPECIFIED.value,
             'start_pos_del': None,
             'end_pos_del': None,
+            'deleted_sequence': None,
             'reference_sequence': None
         }
 
         input_string = str(input_string).lower()
-        if (not input_string.endswith('del')) or (
-                (not input_string.startswith('c.') and (not
-                 input_string.startswith('g.')))):
+        conditions = (
+            'del' in input_string,
+            'ins' not in input_string,
+            'delins' not in input_string,
+            not input_string.startswith('c.'),
+            not input_string.startswith('g.')
+        )
+        if all(conditions):
             return None
 
         parts = self.splitter.split(input_string)
@@ -43,7 +49,7 @@ class DeletionBase(Tokenizer):
 
         :param list parts: Parts of input string
         """
-        if len(parts) != 2 or parts[1] != '':
+        if len(parts) != 2:
             return
 
         # Get reference sequence
@@ -53,6 +59,10 @@ class DeletionBase(Tokenizer):
         positions_deleted = self._get_positions_deleted(parts)
         if not positions_deleted:
             return
+
+        if parts[1]:
+            self.parts['deleted_sequence'] = \
+                self._get_deleted_sequence(parts[1])
 
         self.parts['start_pos_del'] = positions_deleted[0]
         self.parts['end_pos_del'] = positions_deleted[1]
@@ -83,6 +93,14 @@ class DeletionBase(Tokenizer):
         if not digit1.isdigit() or not digit2.isdigit():
             return None
         return digit1, digit2
+
+    def _get_deleted_sequence(self, part):
+        """Return deleted sequence."""
+        nucleotides = ['a', 'c', 't', 'g']
+        for char in part:
+            if char not in nucleotides:
+                return
+        return part.upper()
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]):
