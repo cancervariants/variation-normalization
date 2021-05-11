@@ -32,12 +32,10 @@ class DeletionBase(Tokenizer):
         input_string = str(input_string).lower()
         conditions = (
             'del' in input_string,
-            'ins' not in input_string,
-            'delins' not in input_string,
-            not input_string.startswith('c.'),
-            not input_string.startswith('g.')
+            'ins' not in input_string and 'delins' not in input_string,
+            input_string.startswith('c.') or input_string.startswith('g.')
         )
-        if all(conditions):
+        if not all(conditions):
             return None
 
         parts = self.splitter.split(input_string)

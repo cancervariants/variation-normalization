@@ -170,7 +170,6 @@ genomic_delins:
     - query:  N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX
 
-
 amino_acid_deletion:
   should_match:
     - query: NP_004439.2:p.Leu755_Thr759del
@@ -196,3 +195,39 @@ amino_acid_deletion:
   should_not_match:
     - query: fakegene Leu755_Thr759delLeu
     - query: GENE c.L755del
+
+coding_dna_deletion:
+  should_match:
+    - query: ENST00000269571.5:c.2263_2277del
+      confidence: ConfidenceRating.EXACT
+    - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000535.6:c.2117delA
+      confidence: ConfidenceRating.EXACT
+    - query: ENST00000256474.2:c.163delG
+      confidence: ConfidenceRating.EXACT
+    - query: NM_004333.4:c.1799_1800delTGinsAT
+      confidence: ConfidenceRating.INTERSECTION
+    - query: ENST00000257290.5:c.2524_2525delinsAT
+      confidence: ConfidenceRating.INTERSECTION
+    - query: MLH1 c.1852_1854delAAG
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: GENE c.1799_1800delTGinsAT
+    - query: GENE c.2524_2525delinsAT
+
+genomic_deletion:
+  should_match:
+    - query: NC_000017.10:g.37880219_37880233del
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000004.11:g.55593610_55593615delTTGTTG
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000003.11:g.10183645del
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000003.11:g.10188302delG
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000006.11:g.152419920_152419921delinsAG
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: GENE g.152419920_152419921delinsAG
+    - query: GENE g.152419920_152419921delAinsG
