@@ -241,48 +241,11 @@ class Validator(ABC):
                           f"identifier: {hgvs_expr}.")
         except ValueError:
             errors.append(f"Unable to parse {hgvs_expr} as hgvs variation")
+        except:  # noqa
+            errors.append("Unable to get VRS Allele.")
         else:
             allele = allele.as_dict()
         return allele
-
-    def _add_hgvs_to_mane_transcripts_dict(self, classification,
-                                           mane_transcripts_dict, s, t,
-                                           gene_tokens):
-        """Add HGVS expressions to mane transcript dictionary.
-
-        :param Classification classification: Classification for tokens
-        :param mane_transcripts_dict: Stores possible mane transcript strings
-            with classification token, transcript token, and whether or not
-            the mane transcript should be respresented as ensembl or refseq
-            hgvs
-        :param Token s: The classification token
-        :param string t: Transcript
-        :param list gene_tokens: List of GeneMatchTokens
-        """
-        refseq = ([a for a in self.seqrepo_access.aliases(t)
-                   if a.startswith('refseq:')] or [None])[0]
-
-        if refseq:
-            if gene_tokens:
-                is_ensembl_transcript = True
-            else:
-                is_ensembl_transcript = False
-            matching_tokens = classification.matching_tokens
-
-            if 'CodingDNASubstitution' in matching_tokens or\
-                    'GenomicSubstitution' in matching_tokens:
-                hgvs_expr = f"{refseq.split('refseq:')[-1]}:" \
-                            f"{s.reference_sequence}.{s.position}" \
-                            f"{s.ref_nucleotide}" \
-                            f">{s.new_nucleotide}"
-                if hgvs_expr not in \
-                        mane_transcripts_dict.keys():
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript':
-                            is_ensembl_transcript
-                    }
 
     def add_validation_result(self, allele, valid_alleles, results,
                               classification, s, t, gene_tokens, errors,

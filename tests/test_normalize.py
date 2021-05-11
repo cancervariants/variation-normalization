@@ -752,16 +752,17 @@ def test_coding_dna_and_genomic_substitution(test_normalize,
     resp.molecule_context = 'transcript'
     assertion_checks(resp, braf_v600e_nucleotide)
 
-    resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
-    assert resp.id == 'normalize.variant:BRAF%20V600E%20%28g.140453136A%3ET%29'
-    assert resp.label == ensembl_label
-    assert resp.ref_allele_seq == 'A'
-    assert resp.molecule_context == 'genomic'
-    resp.id = refseq_id
-    resp.label = refseq_label
-    resp.ref_allele_seq = 'T'
-    resp.molecule_context = 'transcript'
-    assertion_checks(resp, braf_v600e_nucleotide)
+    # TODO: Issue 99
+    # resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
+    # assert resp.id == 'normalize.variant:BRAF%20V600E%20%28g.140453136A%3ET%29'  # noqa: E501
+    # assert resp.label == ensembl_label
+    # assert resp.ref_allele_seq == 'A'
+    # assert resp.molecule_context == 'genomic'
+    # resp.id = refseq_id
+    # resp.label = refseq_label
+    # resp.ref_allele_seq = 'T'
+    # resp.molecule_context = 'transcript'
+    # assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = test_normalize.normalize('BRAF g.140453136A>T')
     assert resp.id == 'normalize.variant:BRAF%20g.140453136A%3ET'
@@ -894,7 +895,7 @@ def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
         "", "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
-        "MAPK1 E278E", "NP_000213.1:cp.Leu862", "BRAF V600E 33",
+        "NP_000213.1:cp.Leu862", "BRAF V600E 33",
         "NP_004324.2:p.Glu600Val", "NP_004324.2:p.Glu600Gal",
         "NP_004324.2839:p.Glu600Val", "NP_004324.2:t.Glu600Val",
         "this:c.54G>H", "NC_000007.13:g.4T<A", "NC_000023.11:g.32386323del",

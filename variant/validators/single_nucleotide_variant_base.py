@@ -91,16 +91,6 @@ class SingleNucleotideVariantBase(Validator):
         """
         raise NotImplementedError
 
-    def get_allele_from_transcript(self, classification, t, s, errors):
-        """Return allele from a given transcript.
-        :param Classification s: Classification token
-        :param str t: Transcript
-        :param list errors: List of errors
-        :return: Allele as a dictionary
-        """
-        hgvs_expr, _ = self.get_hgvs_expr(classification, t, s, False)
-        return self.get_allele_from_hgvs(hgvs_expr, errors)
-
     def check_ref_nucleotide(self, ref_nuc, s, t, errors):
         """Assert that ref_nuc matches s.ref_nucleotide."""
         if ref_nuc != s.ref_nucleotide:

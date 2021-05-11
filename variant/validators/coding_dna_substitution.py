@@ -87,7 +87,7 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             hgvs_expr = hgvs_token.input_string
 
-            if hgvs_expr.startswith('ENST'):
+            if hgvs_expr.startswith('EN'):
                 is_ensembl_transcript = True
                 hgvs_expr = hgvs_from_transcript
             else:
@@ -122,29 +122,24 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                     #  and return one match
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
                     t = hgvs_expr.split(':')[0]
-                    if allele:
-                        # MANE Select Transcript for HGVS expressions
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t,
-                            'is_ensembl_transcript': is_ensembl_transcript
-                        }
                 else:
-                    allele = self.get_allele_from_transcript(classification,
-                                                             t, s, errors)
-                    if allele:
-                        # MANE Select Transcript for Gene Name + Variation
-                        # (ex: BRAF V600E)
-                        self._add_hgvs_to_mane_transcripts_dict(
-                            classification, mane_transcripts_dict, s, t,
-                            gene_tokens
-                        )
+                    hgvs_expr, is_ensembl_transcript = \
+                        self.get_hgvs_expr(classification, t, s, False)
 
-                ref_nuc = \
-                    self.seqrepo_access.sequence_at_position(t, s.position)
-                self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+
+                if allele:
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'is_ensembl_transcript': is_ensembl_transcript
+                    }
+
+                    ref_nuc = \
+                        self.seqrepo_access.sequence_at_position(t, s.position)
+                    self.check_ref_nucleotide(ref_nuc, s, t, errors)
+
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
