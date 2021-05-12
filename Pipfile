@@ -16,6 +16,7 @@ variant-normalization = {editable = true, path = "."}
 pyyaml = "*"
 jupyter = "*"
 ipykernel = "*"
+twine = "*"
 
 [packages]
 hgvs = "*"
