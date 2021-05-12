@@ -33,6 +33,27 @@ class SeqRepoAccess:
         except KeyError:
             return None
 
+    def get_sequence(self, transcript: str, start: int, end: int)\
+            -> Optional[str]:
+        """Return sequence from start and end position for a transcript.
+
+        :param str transcript: Transcript accession
+        :param int start: Start position
+        :param int end: End position
+        """
+        try:
+            sequence = self.seq_repo_client.fetch(transcript)
+            len_of_sequence = len(sequence)
+            if len_of_sequence < start - 1 or len_of_sequence < end:
+                return None
+            else:
+                try:
+                    return sequence[start - 1:end]
+                except IndexError:
+                    return None
+        except KeyError:
+            return None
+
     def len_of_sequence(self, transcript: str) -> int:
         """Return the length of a transcript's sequence.
 
