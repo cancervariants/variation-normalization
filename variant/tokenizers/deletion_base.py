@@ -62,8 +62,17 @@ class DeletionBase(Tokenizer):
             self.parts['deleted_sequence'] = \
                 self._get_deleted_sequence(parts[1])
 
-        self.parts['start_pos_del'] = positions_deleted[0]
-        self.parts['end_pos_del'] = positions_deleted[1]
+        if positions_deleted[0]:
+            start_pos_del = int(positions_deleted[0])
+        else:
+            start_pos_del = None
+        if positions_deleted[1]:
+            end_pos_del = int(positions_deleted[1])
+        else:
+            end_pos_del = None
+
+        self.parts['start_pos_del'] = start_pos_del
+        self.parts['end_pos_del'] = end_pos_del
         self.parts['reference_sequence'] = reference_sequence
 
     def _get_positions_deleted(self, parts):

@@ -134,7 +134,7 @@ coding_dna_deletion:
     - query: NM_000535.6:c.2117del
   should_not_match:
     - query: NM_000535.6:c.2117delT
-    - query: NO_000535.6:c.2117delA
+    - query: NM_000535.6:c.21145457delA
 
 genomic_deletion:
   should_match:
@@ -144,4 +144,4 @@ genomic_deletion:
     - query: NC_000003.11:g.10191495delT
   should_not_match:
     - query: NC_000003.11:g.10188302delT
-    - query: NO_000003.11:g.10188302delG
+    - query: NC_000003.11:g.10191454654654654495delT

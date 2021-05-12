@@ -135,12 +135,12 @@ class CodingDNADeletion(DeletionBase):
                         'is_ensembl_transcript': is_ensembl_transcript
                     }
 
-                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
-                    is_len_lt_start = len_of_seq < int(s.start_pos_del) - 1
-                    is_len_lt_end = \
-                        s.end_pos_del and len_of_seq < int(s.end_pos_del) - 1
-                    if is_len_lt_end or is_len_lt_start:
-                        errors.append('Sequence index out of range.')
+                    ref_sequence = self.get_reference_sequence(t, s, errors)
+
+                    if ref_sequence and s.deleted_sequence:
+                        self.check_reference_sequence(
+                            ref_sequence, s.deleted_sequence, errors
+                        )
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
