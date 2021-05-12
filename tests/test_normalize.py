@@ -634,6 +634,72 @@ def amino_acid_deletion_np_range(erbb2_context):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def coding_dna_deletion(erbb2_context):
+    """Create test fixture for coding dna deletion range with deleted
+    sequence.
+    """
+    params = {
+        "id": 'normalize.variant:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.g_DrfzkfKKB1p8LTPvYLn3pIDBgrPV0K",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 2278,
+                    "start": 2263,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_004448.4:c.2264_2278del",
+        "molecule_context": "transcript",
+        "structural_type": "SO:0000159",
+        "ref_allele_seq": "GTGGAGCCGCTGACA",
+        "gene_context": erbb2_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_deletion(vhl_gene_context):
+    """Create test fixture for genomic deletion range."""
+    params = {
+        "id": 'normalize.variant:NC_000003.11%3Ag.10188279_10188297del',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.s_HhEqbHB3MRwvmlgvAtBOPFFsSLUAyA",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 441,
+                    "start": 421,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "C",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_000551.4:c.422_440del",
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "ref_allele_seq": "CTCTTCAGAGATGCAGGGAC",
+        "gene_context": vhl_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -891,18 +957,49 @@ def test_amino_acid_deletion(test_normalize, amino_acid_deletion_np_range):
     assert resp.id == 'normalize.variant:ERBB2%20Leu755_Thr759del'
 
 
+def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
+    """Test that coding dna deletion normalizes correctly."""
+    resp = \
+        test_normalize.normalize('NM_004448.3:c.2263_2277delTTGAGGGAAAACACA')
+    assertion_checks(resp, coding_dna_deletion)
+
+    resp = test_normalize.normalize('ERBB2 c.2263_2277delTTGAGGGAAAACACA')
+    assert resp.id == 'normalize.variant:ERBB2%20c.2263_2277delTTGAGGGAAAACACA'
+    resp.id = 'normalize.variant:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA'
+    assert resp.label == 'ENST00000269571.10:c.2264_2278del'
+    resp.label = 'NM_004448.4:c.2264_2278del'
+    assert resp.ref_allele_seq is None  # seqrepo can't find enst transcript
+    resp.ref_allele_seq = 'GTGGAGCCGCTGACA'
+    assertion_checks(resp, coding_dna_deletion)
+
+
+def test_genomic_deletion(test_normalize, genomic_deletion):
+    """Test that genomic deletion normalizes correctly."""
+    resp = test_normalize.normalize('NC_000003.11:g.10188279_10188297del')
+    assertion_checks(resp, genomic_deletion)
+
+    resp = test_normalize.normalize('VHL g.10188279_10188297del')
+    assert resp.id == 'normalize.variant:VHL%20g.10188279_10188297del'
+    resp.id = 'normalize.variant:NC_000003.11%3Ag.10188279_10188297del'
+    assert resp.label == 'ENST00000256474.3:c.422_440del'
+    resp.label = 'NM_000551.4:c.422_440del'
+    assert resp.ref_allele_seq is None  # seqrepo can't find enst transcript
+    resp.ref_allele_seq = 'CTCTTCAGAGATGCAGGGAC'
+    assertion_checks(resp, genomic_deletion)
+
+
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
         "", "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
-        "NP_000213.1:cp.Leu862", "BRAF V600E 33",
-        "NP_004324.2:p.Glu600Val", "NP_004324.2:p.Glu600Gal",
-        "NP_004324.2839:p.Glu600Val", "NP_004324.2:t.Glu600Val",
-        "this:c.54G>H", "NC_000007.13:g.4T<A", "NC_000023.11:g.32386323del",
+        "NP_000213.1:cp.Leu862", "BRAF V600E 33", "NP_004324.2:p.Glu600Val",
+        "NP_004324.2:p.Glu600Gal", "NP_004324.2839:p.Glu600Val",
+        "NP_004324.2:t.Glu600Val", "this:c.54G>H", "NC_000007.13:g.4T<A",
         "test", "131", "braf z600e", "braf e600z", "Thr790Met", "p.Tyr365Ter",
         "ERBB2 G776delinsVCZ", "NP005219.2:p.Glu746_Thr751delinsValAla",
         "NP_005219.2:p.Glu746Thr751delinsValAla", "EGFR L747_L474delinsP",
-        "NP_005219.2:p.Glu746_Thr751delinssValAla", "EGFR delins"
+        "NP_005219.2:p.Glu746_Thr751delinssValAla", "EGFR delins",
+        "NM_004333.4:c.1799_1800delTGinsAT"
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
