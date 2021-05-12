@@ -13,6 +13,8 @@ from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from .amino_acid_deletion import AminoAcidDeletion
+from .coding_dna_deletion import CodingDNADeletion
+from .genomic_deletion import GenomicDeletion
 from typing import List, Optional
 
 
@@ -32,7 +34,9 @@ class Translate:
             AminoAcidDelIns(),
             CodingDNADelIns(),
             GenomicDelIns(),
-            AminoAcidDeletion()
+            AminoAcidDeletion(),
+            CodingDNADeletion(),
+            GenomicDeletion()
         ]
 
     def perform(self, res: ValidationResult) \

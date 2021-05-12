@@ -1349,3 +1349,66 @@ amino_acid_deletion:
           "type": "Allele"
         }
       ]
+
+coding_dna_deletion:
+  tests:
+    - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
+      variants: [
+        {
+          "id": "ga4gh:VA.g_DrfzkfKKB1p8LTPvYLn3pIDBgrPV0K",
+          "location": {
+            "interval": {
+              "end": 2278,
+              "start": 2263,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+
+genomic_deletion:
+  tests:
+    - query: NC_000003.11:g.10191486_10191487delAG
+      variants: [
+        {
+          "id": "ga4gh:VA.IgGURw7vLMl10__vUKN876XOXpsgGOxt",
+          "location": {
+            "interval": {
+              "end": 481,
+              "start": 477,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "TG",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.3A2p6mLNdf82X5TKu7zoXvqBeNO9hpRV",
+          "location": {
+            "interval": {
+              "end": 10191487,
+              "start": 10191483,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "AG",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
