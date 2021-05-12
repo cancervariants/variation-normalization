@@ -129,6 +129,7 @@ coding_dna_deletion:
   should_match:
     - query: ENST00000269571.5:c.2263_2277del
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
+    - query: ERBB2 c.2263_2277delTTGAGGGAAAACACA
     - query: NM_004448.3:c.2263_2277del
     - query: NM_000535.6:c.2117delA
     - query: NM_000535.6:c.2117del
@@ -142,6 +143,7 @@ genomic_deletion:
     - query: NC_000003.11:g.10191486_10191487delAG
     - query: NC_000003.12:g.10146527_10146528del
     - query: NC_000003.11:g.10191495delT
+    - query: VHL g.10188279_10188297del
   should_not_match:
     - query: NC_000003.11:g.10188302delT
     - query: NC_000003.11:g.10191454654654654495delT

@@ -5,7 +5,7 @@ from variant.schemas.token_response_schema import GenomicDelInsToken
 
 
 class GenomicDelIns(Translator):
-    """The Genomic Substitution Translator class."""
+    """The Genomic DelIns Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
         """Return if classification type is Genomic DelIns."""
