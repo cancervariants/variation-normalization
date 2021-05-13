@@ -32,6 +32,7 @@ from .locus_reference_genomic import LocusReferenceGenomic
 from .amino_acid_deletion import AminoAcidDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
+from .amino_acid_insertion import AminoAcidInsertion
 from variant.schemas.token_response_schema import Token, TokenMatchType
 from .caches import GeneSymbolCache, AminoAcidCache
 from variant import HGNC_GENE_SYMBOL_PATH
@@ -76,6 +77,7 @@ class Tokenize:
             AminoAcidDeletion(amino_acid_cache),
             CodingDNADeletion(),
             GenomicDeletion(),
+            AminoAcidInsertion(amino_acid_cache),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),
