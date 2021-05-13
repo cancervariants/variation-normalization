@@ -308,3 +308,17 @@ genomic_deletion:
     - token: g._37880233del
     - token: g._37880233del
     - token: g.37880219
+
+amino_acid_insertion:
+  should_match:
+    - token: p.(Lys23_Leu24insArgSerGln)
+    - token: p.His4_Gln5insAla
+    - token: p.Lys2_Gly3insGlnSerLys
+    - token: p.(Met3_His4insGlyTer)
+#    - token: p.Arg78_Gly79ins23
+    - token: T599_V600insV
+    - token: A763_Y764insFQEA
+  should_not_match:
+    - token: p.Lys23insAsp
+    - token: Lys23insAsp
+    - token: p.His4_Gln5insAlaG
