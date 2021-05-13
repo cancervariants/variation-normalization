@@ -129,13 +129,13 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
 
                 allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
-                if allele:
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
-                    }
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
+                if allele:
                     ref_nuc = \
                         self.seqrepo_access.sequence_at_position(t, s.position)
                     self.check_ref_nucleotide(ref_nuc, s, t, errors)

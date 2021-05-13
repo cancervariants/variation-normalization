@@ -1,7 +1,6 @@
 """The module for Deletion Validation."""
-from abc import abstractmethod
-from typing import Optional
-
+from typing import Optional, Tuple
+from variant.schemas.token_response_schema import Token
 from variant.validators.validator import Validator
 import logging
 
@@ -12,15 +11,36 @@ logger.setLevel(logging.DEBUG)
 class DeletionBase(Validator):
     """The Deletion Validator Base class."""
 
-    @abstractmethod
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
-        """Return a HGVS expression.
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
+        """Return HGVS expression and whether or not it's an Ensembl transcript
 
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: A tuple containing the hgvs expression and whether or not
+            it's an Ensembl Transcript
         """
-        raise NotImplementedError
+        if not is_hgvs:
+            prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
+            if s.end_pos_del:
+                prefix += f"_{s.end_pos_del}"
+            hgvs_expr = f"{prefix}del"
+            if s.deleted_sequence:
+                hgvs_expr += f"{s.deleted_sequence}"
+        else:
+            hgvs_token = [t for t in classification.all_tokens if
+                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+            hgvs_expr = hgvs_token.input_string
+
+        gene_token = [t for t in classification.all_tokens
+                      if t.token_type == 'GeneSymbol']
+        if gene_token:
+            is_ensembl_transcript = True
+        else:
+            is_ensembl_transcript = False
+        return hgvs_expr, is_ensembl_transcript
 
     def get_reference_sequence(self, t, s, errors) -> Optional[str]:
         """Get deleted reference sequence.

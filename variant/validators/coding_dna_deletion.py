@@ -4,11 +4,10 @@ from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import CodingDNADeletionToken
 from variant.schemas.validation_response_schema import LookupType
-from typing import List, Tuple
+from typing import List
 from variant.schemas.classification_response_schema import Classification
 from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.validation_response_schema import ValidationResult
-from variant.schemas.token_response_schema import Token
 import logging
 
 
@@ -63,36 +62,6 @@ class CodingDNADeletion(DeletionBase):
                                        classification, results, gene_tokens)
         return results
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
-        """Return HGVS expression and whether or not it's an Ensembl transcript
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
-        """
-        if not is_hgvs:
-            prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
-            if s.end_pos_del:
-                prefix += f"_{s.end_pos_del}"
-            hgvs_expr = f"{prefix}del"
-            if s.deleted_sequence:
-                hgvs_expr += f"{s.deleted_sequence}"
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
-            hgvs_expr = hgvs_token.input_string
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token:
-            is_ensembl_transcript = True
-        else:
-            is_ensembl_transcript = False
-        return hgvs_expr, is_ensembl_transcript
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
             -> None:
@@ -128,13 +97,13 @@ class CodingDNADeletion(DeletionBase):
                     )
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
-                if allele:
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
-                    }
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
+                if allele:
                     ref_sequence = self.get_reference_sequence(t, s, errors)
 
                     if ref_sequence and s.deleted_sequence:

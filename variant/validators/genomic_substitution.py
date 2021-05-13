@@ -107,12 +107,11 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
                         self.get_hgvs_expr(classification, t, s, False)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
-                if allele:
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
-                    }
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
                 self.check_ref_nucleotide(ref_nuc, s, t, errors)
                 self.add_validation_result(

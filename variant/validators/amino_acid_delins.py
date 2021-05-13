@@ -106,15 +106,16 @@ class AminoAcidDelIns(Validator):
                     hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
+                # MANE Select Transcript
+                if hgvs_expr not in mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t
+                    }
+
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
-                    # MANE Select Transcript
-                    if hgvs_expr not in mane_transcripts_dict.keys():
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t
-                        }
                     if len(allele['state']['sequence']) == 3:
                         allele['state']['sequence'] = \
                             self._amino_acid_cache.convert_three_to_one(
@@ -151,7 +152,7 @@ class AminoAcidDelIns(Validator):
 
         :param string t: Transcript
         :param str aa: Expected Amino Acid
-        :param str pos: Expected position
+        :param int pos: Expected position
         :param list errors: List of errors
         """
         ref_aa_del = \

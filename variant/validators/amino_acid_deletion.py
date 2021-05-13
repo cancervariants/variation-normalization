@@ -54,10 +54,11 @@ class AminoAcidDeletion(Validator):
             errors.append(f"Non matching tokens found for "
                           f"{self.variant_name()}.")
 
-        if len(gene_tokens) == 0:
-            errors.append(f'No gene tokens for a {self.variant_name()}.')
+        len_gene_tokens = len(gene_tokens)
 
-        if len(gene_tokens) > 1:
+        if len_gene_tokens == 0:
+            errors.append(f'No gene tokens for a {self.variant_name()}.')
+        elif len_gene_tokens > 1:
             errors.append('More than one gene symbol found for a single'
                           f' {self.variant_name()}')
 
@@ -106,15 +107,16 @@ class AminoAcidDeletion(Validator):
                     hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
+                # MANE Select Transcript
+                if hgvs_expr not in mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t
+                    }
+
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
-                    # MANE Select Transcript
-                    if hgvs_expr not in mane_transcripts_dict.keys():
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t
-                        }
                     if len(allele['state']['sequence']) == 3:
                         allele['state']['sequence'] = \
                             self._amino_acid_cache.convert_three_to_one(
@@ -151,7 +153,7 @@ class AminoAcidDeletion(Validator):
 
         :param string t: Transcript
         :param str aa: Expected Amino Acid
-        :param str pos: Expected position
+        :param int pos: Expected position
         :param list errors: List of errors
         """
         ref_aa_del = \
@@ -174,9 +176,9 @@ class AminoAcidDeletion(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: HGVS expression for the variant
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}."
