@@ -66,7 +66,17 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             hgvs_expr = hgvs_token.input_string
 
-        return hgvs_expr, False
+        if hgvs_expr.startswith('EN'):
+            is_ensembl_transcript = True
+        else:
+            is_ensembl_transcript = False
+
+        gene_token = [t for t in classification.all_tokens
+                      if t.token_type == 'GeneSymbol']
+        if gene_token:
+            is_ensembl_transcript = True
+
+        return hgvs_expr, is_ensembl_transcript
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results,
@@ -92,20 +102,16 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    if allele:
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t,
-                            'is_ensembl_transcript': is_ensembl_transcript
-                        }
                 else:
-                    allele = self.get_allele_from_transcript(classification,
-                                                             t, s, errors)
-                    if allele:
-                        self._add_hgvs_to_mane_transcripts_dict(
-                            classification, mane_transcripts_dict, s, t,
-                            gene_tokens
-                        )
+                    hgvs_expr, is_ensembl_transcript = \
+                        self.get_hgvs_expr(classification, t, s, False)
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
                 self.check_ref_nucleotide(ref_nuc, s, t, errors)
                 self.add_validation_result(

@@ -123,7 +123,8 @@ class Validator(ABC):
             # Convert refseq to gene symbol
             refseq = \
                 ([t.token for t in classification.all_tokens if
-                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
+                 t.token_type in ['HGVS', 'ReferenceSequence',
+                                  'LocusReferenceGenomic']] or [None])[0]
 
             if not refseq:
                 return []
@@ -131,33 +132,34 @@ class Validator(ABC):
             if ':' in refseq:
                 refseq = refseq.split(':')[0]
 
-            res = self.seqrepo_access.aliases(refseq)
-            aliases = [a.split('ensembl:')[1] for a
-                       in res if a.startswith('ensembl')]
-
             gene_symbols = list()
-            if aliases:
-                for alias in aliases:
-                    gene_symbol = \
-                        self.transcript_mappings.get_gene_symbol_from_ensembl_protein(alias)  # noqa: E501
 
-                    if gene_symbol:
-                        if gene_symbol not in gene_symbols:
-                            gene_symbols.append(gene_symbol)
-                            gene_tokens.append(
-                                self._gene_matcher.match(gene_symbol))
-                    else:
-                        logger.warning(f"No gene symbol found for Protein "
-                                       f"{alias} in transcript_mappings.tsv")
-            else:
-                gene_symbol = \
-                    self.transcript_mappings.get_gene_symbol_from_refeq_protein(refseq)  # noqa: E501
-                if gene_symbol:
-                    if gene_symbol not in gene_symbols:
-                        gene_symbols.append(gene_symbol)
-                        gene_tokens.append(self._gene_matcher.match(
-                            gene_symbol))
+            for mapping in [
+                self.transcript_mappings.get_gene_symbol_from_ensembl_protein,
+                self.transcript_mappings.get_gene_symbol_from_refeq_protein,
+                self.transcript_mappings.get_gene_symbol_from_lrg
+            ]:
+                gene_symbol = mapping(refseq)
+                self._add_gene_symbol_to_tokens(
+                    gene_symbol, gene_symbols, gene_tokens
+                )
+                if gene_tokens:
+                    break
+
         return gene_tokens
+
+    def _add_gene_symbol_to_tokens(self, gene_symbol, gene_symbols,
+                                   gene_tokens):
+        """Add a gene symbol to list of gene match tokens.
+
+        :param str gene_symbol: Gene symbol
+        :param list gene_symbols: List of gene symbols matched
+        :param list gene_tokens: List of GeneMatchTokens
+        """
+        if gene_symbol and gene_symbol not in gene_symbols:
+            gene_symbols.append(gene_symbol)
+            gene_tokens.append(self._gene_matcher.match(
+                gene_symbol))
 
     def get_coding_dna_gene_symbol_tokens(self, classification):
         """Return gene symbol tokens for coding dna classifications.
@@ -170,63 +172,26 @@ class Validator(ABC):
             # Convert refseq to gene symbol
             refseq = \
                 ([t.token for t in classification.all_tokens if
-                 t.token_type in ['HGVS', 'ReferenceSequence']] or [None])[0]
-
+                 t.token_type in ['HGVS', 'ReferenceSequence',
+                                  'LocusReferenceGenomic']] or [None])[0]
             if not refseq:
-                lrg_token = None
-                for t in classification.all_tokens:
-                    if t.token_type == 'LocusReferenceGenomic':
-                        lrg_token = t.token
-                        if ':' in lrg_token:
-                            lrg_token = lrg_token.split(':')[0]
-                        break
+                return []
 
-                if not lrg_token:
-                    return []
-                gene_symbol = \
-                    self.transcript_mappings.get_gene_symbol_from_lrg(
-                        lrg_token
-                    )
+            if ':' in refseq:
+                refseq = refseq.split(':')[0]
 
-                if gene_symbol:
-                    gene_tokens.append(
-                        self._gene_matcher.match(gene_symbol)
-                    )
-                else:
-                    logger.warning(f"No gene symbol found for LRG "
-                                   f"{lrg_token} in transcript_mappings.tsv")
-
-            else:
-                if ':' in refseq:
-                    refseq = refseq.split(':')[0]
-
-                res = self.seqrepo_access.aliases(refseq)
-                aliases = [a.split('refseq:')[1] for a
-                           in res if a.startswith('refseq')]
-
-                if not aliases:
-                    aliases = [refseq]
-
-                gene_symbols = list()
-                if aliases:
-                    for alias in aliases:
-                        gene_symbol = \
-                            self.transcript_mappings.get_gene_symbol_from_refseq_rna(alias)  # noqa: E501
-
-                        if not gene_symbol:
-                            gene_symbol = \
-                                self.transcript_mappings.get_gene_symbol_from_ensembl_transcript(alias)  # noqa: E501
-
-                        if gene_symbol:
-                            if gene_symbol not in gene_symbols:
-                                gene_symbols.append(gene_symbol)
-                                gene_tokens.append(
-                                    self._gene_matcher.match(gene_symbol)
-                                )
-                        else:
-                            logger.warning(f"No gene symbol found "
-                                           f"for rna {alias} in "
-                                           f"transcript_mappings.tsv")
+            gene_symbols = list()
+            for mapping in [
+                self.transcript_mappings.get_gene_symbol_from_refseq_rna,
+                self.transcript_mappings.get_gene_symbol_from_ensembl_transcript,  # noqa: E501
+                self.transcript_mappings.get_gene_symbol_from_lrg
+            ]:
+                gene_symbol = mapping(refseq)
+                self._add_gene_symbol_to_tokens(
+                    gene_symbol, gene_symbols, gene_tokens
+                )
+                if gene_tokens:
+                    break
         return gene_tokens
 
     def get_validation_result(self, classification, is_valid, confidence_score,
@@ -276,48 +241,11 @@ class Validator(ABC):
                           f"identifier: {hgvs_expr}.")
         except ValueError:
             errors.append(f"Unable to parse {hgvs_expr} as hgvs variation")
+        except:  # noqa
+            errors.append("Unable to get VRS Allele.")
         else:
             allele = allele.as_dict()
         return allele
-
-    def _add_hgvs_to_mane_transcripts_dict(self, classification,
-                                           mane_transcripts_dict, s, t,
-                                           gene_tokens):
-        """Add HGVS expressions to mane transcript dictionary.
-
-        :param Classification classification: Classification for tokens
-        :param mane_transcripts_dict: Stores possible mane transcript strings
-            with classification token, transcript token, and whether or not
-            the mane transcript should be respresented as ensembl or refseq
-            hgvs
-        :param Token s: The classification token
-        :param string t: Transcript
-        :param list gene_tokens: List of GeneMatchTokens
-        """
-        refseq = ([a for a in self.seqrepo_access.aliases(t)
-                   if a.startswith('refseq:')] or [None])[0]
-
-        if refseq:
-            if gene_tokens:
-                is_ensembl_transcript = True
-            else:
-                is_ensembl_transcript = False
-            matching_tokens = classification.matching_tokens
-
-            if 'CodingDNASubstitution' in matching_tokens or\
-                    'GenomicSubstitution' in matching_tokens:
-                hgvs_expr = f"{refseq.split('refseq:')[-1]}:" \
-                            f"{s.reference_sequence}.{s.position}" \
-                            f"{s.ref_nucleotide}" \
-                            f">{s.new_nucleotide}"
-                if hgvs_expr not in \
-                        mane_transcripts_dict.keys():
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript':
-                            is_ensembl_transcript
-                    }
 
     def add_validation_result(self, allele, valid_alleles, results,
                               classification, s, t, gene_tokens, errors,

@@ -105,3 +105,45 @@ genomic_delins:
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
     - query: NC_000023.11:g.3238646549879323delinsGA
+
+amino_acid_deletion:
+  should_match:
+    - query: NP_003997.1:p.Lys23_Val25del
+    - query: NP_003997.1:p.(Lys23_Val25del)
+    - query: NP_000542.1:p.Glu186del
+    - query: NP_000542.1:p.(Glu186del)
+    - query: NP_000542.1:p.Arg82_Val84del
+    - query: ENSP00000256474.2:p.Phe76del
+    - query: KIT D419del
+    - query: KIT E554_V559del
+    - query: LRG_322p1:p.Leu128del
+    - query: LRG_199p1:p.Val7del
+    - query: LRG_199p1:p.(Val7del)
+    - query: LRG_199p1:p.Trp4del
+    - query: LRG_232p1:p.(Pro458_Gly460del)
+  should_not_match:
+    - query: LRG_199p1:p.Ala7del
+    - query: LRG_199p1:p.Val78848498879del
+
+coding_dna_deletion:
+  should_match:
+    - query: ENST00000269571.5:c.2263_2277del
+    - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
+    - query: ERBB2 c.2263_2277delTTGAGGGAAAACACA
+    - query: NM_004448.3:c.2263_2277del
+    - query: NM_000535.6:c.2117delA
+    - query: NM_000535.6:c.2117del
+  should_not_match:
+    - query: NM_000535.6:c.2117delT
+    - query: NM_000535.6:c.21145457delA
+
+genomic_deletion:
+  should_match:
+    - query: NC_000003.11:g.10188279_10188297del
+    - query: NC_000003.11:g.10191486_10191487delAG
+    - query: NC_000003.12:g.10146527_10146528del
+    - query: NC_000003.11:g.10191495delT
+    - query: VHL g.10188279_10188297del
+  should_not_match:
+    - query: NC_000003.11:g.10188302delT
+    - query: NC_000003.11:g.10191454654654654495delT

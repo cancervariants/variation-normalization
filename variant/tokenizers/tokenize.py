@@ -29,6 +29,9 @@ from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
 from .locus_reference_genomic import LocusReferenceGenomic
+from .amino_acid_deletion import AminoAcidDeletion
+from .coding_dna_deletion import CodingDNADeletion
+from .genomic_deletion import GenomicDeletion
 from variant.schemas.token_response_schema import Token, TokenMatchType
 from .caches import GeneSymbolCache, AminoAcidCache
 from variant import HGNC_GENE_SYMBOL_PATH
@@ -70,12 +73,15 @@ class Tokenize:
             AminoAcidDelIns(amino_acid_cache),
             CodingDNADelIns(),
             GenomicDelIns(),
+            AminoAcidDeletion(amino_acid_cache),
+            CodingDNADeletion(),
+            GenomicDeletion(),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),
             HGVS(),
             ReferenceSequence(),
-            LocusReferenceGenomic()
+            LocusReferenceGenomic(),
         )
 
     def perform(self, search_string: str) -> Iterable[Token]:

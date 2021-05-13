@@ -1,4 +1,4 @@
 """Module for package and distribution."""
 import setuptools
 
-setuptools.setup(version="0.2.1")
+setuptools.setup(version="0.2.2")
