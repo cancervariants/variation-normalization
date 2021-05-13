@@ -99,20 +99,6 @@ class PolypeptideSequenceVariantBase(Validator):
             hgvs_expr = hgvs_expr.replace('=', three_letter)
         return hgvs_expr
 
-    def get_allele_from_transcript(self, hgvs_expr, t, errors):
-        """Return allele from a given transcript.
-
-        :param Classification s: Classification token
-        :param str t: Transcript
-        :param list errors: List of errors
-        :return: Allele as a dictionary
-        """
-        allele = None
-        if t.startswith('ENST'):
-            return allele
-
-        return self.get_allele_from_hgvs(hgvs_expr, errors)
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
             -> None:
@@ -129,55 +115,31 @@ class PolypeptideSequenceVariantBase(Validator):
         mane_transcripts_dict = dict()
         for s in classification_tokens:
             for t in transcripts:
-                valid = True
                 errors = list()
 
                 if 'HGVS' in classification.matching_tokens:
                     hgvs_expr = self.get_hgvs_expr(classification)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
                     t = hgvs_expr.split(':')[0]
-
-                    if allele:
-                        # MANE Select Transcript for HGVS expressions
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t
-                        }
                 else:
-                    refseq = ([a for a in self.seqrepo_access.aliases(t)
-                               if a.startswith('refseq:NP_')] or [None])[0]
+                    hgvs_expr = f"{t}:p.{s.ref_protein}{s.position}" \
+                                f"{s.alt_protein}"
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
-                    if not refseq:
-                        allele = None
-                    else:
-                        hgvs_expr = f"{refseq.split('refseq:')[-1]}:p." \
-                                    f"{s.ref_protein}{s.position}" \
-                                    f"{s.alt_protein}"
-
-                        # MANE Select Transcript for Gene Name + Variation
-                        # (ex: BRAF V600E)
-                        if hgvs_expr not in mane_transcripts_dict.keys():
-                            mane_transcripts_dict[hgvs_expr] = {
-                                'classification_token': s,
-                                'transcript_token': t
-                            }
-
-                        allele = self.get_allele_from_transcript(hgvs_expr, t,
-                                                                 errors)
-
-                if not allele:
-                    errors.append("Unable to find allele.")
-                    valid = False
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t
+                }
 
                 if allele and len(allele['state']['sequence']) == 3:
                     allele['state']['sequence'] = \
                         self._amino_acid_cache.convert_three_to_one(
                             allele['state']['sequence'])
 
-                ref_protein = \
-                    self.seqrepo_access.sequence_at_position(t, s.position)
-
                 if not errors:
+                    ref_protein = \
+                        self.seqrepo_access.sequence_at_position(t, s.position)
+
                     if ref_protein and len(ref_protein) == 1 \
                             and len(s.ref_protein) == 3:
                         ref_protein = self._amino_acid_cache.amino_acid_code_conversion[ref_protein]  # noqa: E501
@@ -185,9 +147,8 @@ class PolypeptideSequenceVariantBase(Validator):
                         errors.append(f'Needed to find {s.ref_protein} at'
                                       f' position {s.position} on {t}'
                                       f' but found {ref_protein}')
-                        valid = False
 
-                if valid and allele not in valid_alleles:
+                if not errors and allele not in valid_alleles:
                     results.append(self.get_validation_result(
                         classification, True, 1, allele,
                         self.human_description(t, s),

@@ -1,7 +1,7 @@
-"""The module for Amino Acid DelIns Validation."""
+"""The module for Amino Acid Deletion Validation."""
 from variant.schemas.classification_response_schema import \
     ClassificationType
-from variant.schemas.token_response_schema import AminoAcidDelInsToken
+from variant.schemas.token_response_schema import AminoAcidDeletionToken
 from variant.schemas.validation_response_schema import LookupType
 from typing import List
 from variant.validators.validator import Validator
@@ -19,8 +19,8 @@ logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
 
-class AminoAcidDelIns(Validator):
-    """The Amino Acid DelIns Validator class."""
+class AminoAcidDeletion(Validator):
+    """The Amino Acid Deletion Validator class."""
 
     def __init__(self, seq_repo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
@@ -54,10 +54,11 @@ class AminoAcidDelIns(Validator):
             errors.append(f"Non matching tokens found for "
                           f"{self.variant_name()}.")
 
-        if len(gene_tokens) == 0:
-            errors.append(f'No gene tokens for a {self.variant_name()}.')
+        len_gene_tokens = len(gene_tokens)
 
-        if len(gene_tokens) > 1:
+        if len_gene_tokens == 0:
+            errors.append(f'No gene tokens for a {self.variant_name()}.')
+        elif len_gene_tokens > 1:
             errors.append('More than one gene symbol found for a single'
                           f' {self.variant_name()}')
 
@@ -157,6 +158,7 @@ class AminoAcidDelIns(Validator):
         """
         ref_aa_del = \
             self.seqrepo_access.sequence_at_position(t, pos)
+
         if ref_aa_del and len(ref_aa_del) == 1 \
                 and len(aa) == 3:
             ref_aa_del = \
@@ -174,16 +176,16 @@ class AminoAcidDelIns(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: HGVS expression for the variant
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}."
             dels = f"{s.start_aa_del}{s.start_pos_del}"
             if s.start_pos_del is not None and s.end_pos_del is not None:
                 dels += f"_{s.end_aa_del}{s.end_pos_del}"
-            hgvs_expr = f"{prefix}{dels}delins{s.inserted_sequence}"
+            hgvs_expr = f"{prefix}{dels}del"
         else:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type == 'HGVS']
@@ -205,19 +207,19 @@ class AminoAcidDelIns(Validator):
 
     def variant_name(self):
         """Return the variant name."""
-        return 'amino acid delins'
+        return 'amino acid deletion'
 
     def is_token_instance(self, t):
         """Check that token is Amino Acid DelIns."""
-        return t.token_type == 'AminoAcidDelIns'
+        return t.token_type == 'AminoAcidDeletion'
 
     def validates_classification_type(
             self,
             classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is
-        Amino Acid DelIns.
+        Amino Acid Deletion.
         """
-        return classification_type == ClassificationType.AMINO_ACID_DELINS
+        return classification_type == ClassificationType.AMINO_ACID_DELETION
 
     def concise_description(self, transcript, token) -> str:
         """Return a description of the identified variant."""
@@ -225,14 +227,14 @@ class AminoAcidDelIns(Validator):
         if token.start_pos_del is not None and token.end_pos_del is not None:
             dels += f"_{token.end_aa_del}{token.end_pos_del}"
 
-        return f'{transcript}:p.{dels}delins{token.inserted_sequence}'
+        return f'{transcript}:p.{dels}del'
 
     def human_description(self, transcript,
-                          token: AminoAcidDelInsToken) -> str:
+                          token: AminoAcidDeletionToken) -> str:
         """Return a human description of the identified variant."""
         position = f"{token.start_aa_del}{token.start_pos_del}"
         if token.start_pos_del is not None and token.end_pos_del is not None:
             position += f"to {token.end_aa_del}{token.end_pos_del}"
 
-        return f"An Amino Acid DelIns deletion of {position} replaced by " \
-               f"{token.input_string} on transcript {transcript}"
+        return f"An Amino Acid Deletion deletion of {position} on " \
+               f"transcript {transcript}"

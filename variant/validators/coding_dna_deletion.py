@@ -1,26 +1,22 @@
-"""The module for Coding DNA Substitution Validation."""
-from .single_nucleotide_variant_base import SingleNucleotideVariantBase
+"""The module for Coding DNA Deletion Validation."""
+from variant.validators.deletion_base import DeletionBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
-from variant.schemas.token_response_schema import CodingDNASubstitutionToken
+from variant.schemas.token_response_schema import CodingDNADeletionToken
 from variant.schemas.validation_response_schema import LookupType
 from typing import List
 from variant.schemas.classification_response_schema import Classification
 from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.validation_response_schema import ValidationResult
-from variant.schemas.token_response_schema import Token
 import logging
-
-# TODO:
-#  LRG_ (LRG_199t1:c)
 
 
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
 
-class CodingDNASubstitution(SingleNucleotideVariantBase):
-    """The Coding DNA Substitution Validator class."""
+class CodingDNADeletion(DeletionBase):
+    """The Coding DNA Deletion Validator class."""
 
     def validate(self, classification: Classification) \
             -> List[ValidationResult]:
@@ -66,39 +62,6 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                                        classification, results, gene_tokens)
         return results
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> tuple:
-        """Return HGVS expression and whether or not it's an Ensembl transcript
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
-        """
-        hgvs_from_transcript = f"{t}:{s.reference_sequence.lower()}." \
-                               f"{s.position}{s.ref_nucleotide}" \
-                               f">{s.new_nucleotide}"
-        if not is_hgvs:
-            hgvs_expr = hgvs_from_transcript
-            is_ensembl_transcript = True
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
-            hgvs_expr = hgvs_token.input_string
-
-            if hgvs_expr.startswith('EN'):
-                is_ensembl_transcript = True
-                hgvs_expr = hgvs_from_transcript
-            else:
-                is_ensembl_transcript = False
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token:
-            is_ensembl_transcript = True
-        return hgvs_expr, is_ensembl_transcript
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
             -> None:
@@ -118,16 +81,21 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                 errors = list()
 
                 if 'HGVS' in classification.matching_tokens:
-                    # TODO: How to convert ENST_ to NM_ versioned
-                    #  and return one match
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
-                    t = hgvs_expr.split(':')[0]
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                    if allele:
+                        t = hgvs_expr.split(':')[0]
+                    else:
+                        errors = list()
+                        hgvs_expr, is_ensembl_transcript = \
+                            self.get_hgvs_expr(classification, t, s, False)
+                        allele = self.get_allele_from_hgvs(hgvs_expr, errors)
                 else:
-                    hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t, s, False)
-
-                allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                    hgvs_expr, is_ensembl_transcript = self.get_hgvs_expr(
+                        classification, t, s, False
+                    )
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
                 mane_transcripts_dict[hgvs_expr] = {
                     'classification_token': s,
@@ -136,9 +104,12 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                 }
 
                 if allele:
-                    ref_nuc = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
-                    self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                    ref_sequence = self.get_reference_sequence(t, s, errors)
+
+                    if ref_sequence and s.deleted_sequence:
+                        self.check_reference_sequence(
+                            ref_sequence, s.deleted_sequence, errors
+                        )
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
@@ -159,23 +130,30 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
 
     def variant_name(self):
         """Return the variant name."""
-        return 'coding dna substitution'
+        return 'coding dna deletion'
 
     def is_token_instance(self, t):
-        """Check that token is Coding DNA Substitution."""
-        return t.token_type == 'CodingDNASubstitution'
+        """Check that token is Coding DNA Deletion."""
+        return t.token_type == 'CodingDNADeletion'
 
     def validates_classification_type(
             self,
             classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is coding dna
-        substitution.
+        """Return whether or not the classification type is
+        Coding DNA Deletion.
         """
-        return classification_type == ClassificationType.CODING_DNA_SUBSTITUTION  # noqa: E501
+        return classification_type == ClassificationType.CODING_DNA_DELETION
 
     def human_description(self, transcript,
-                          token: CodingDNASubstitutionToken) -> str:
+                          token: CodingDNADeletionToken) -> str:
         """Return a human description of the identified variant."""
-        return f'A coding DNA substitution from {token.ref_nucleotide}' \
-               f' to {token.new_nucleotide} at position ' \
-               f'{token.position} on transcript {transcript}'
+        if token.start_pos_del is not None and token.end_pos_del is not None:
+            position = f"{token.start_pos_del} to {token.end_pos_del}"
+        else:
+            position = token.start_pos_del
+
+        descr = "A Coding DNA "
+        if token.deleted_sequence:
+            descr += f"{token.deleted_sequence} "
+        descr += f"Deletion from {position} on transcript {transcript}"
+        return descr

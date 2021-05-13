@@ -11,3 +11,6 @@ from .genomic_silent_mutation import GenomicSilentMutation  # noqa: F401
 from .amino_acid_delins import AminoAcidDelIns  # noqa: F401
 from .coding_dna_delins import CodingDNADelIns  # noqa: F401
 from .genomic_delins import GenomicDelIns  # noqa: F401
+from .amino_acid_deletion import AminoAcidDeletion  # noqa: F401
+from .coding_dna_deletion import CodingDNADeletion  # noqa: F401
+from .genomic_deletion import GenomicDeletion  # noqa: F401

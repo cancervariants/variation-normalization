@@ -251,3 +251,60 @@ locus_reference_genomic:
     - token: LRG_p1
     - token: LRGt1
     - token: LRGp1
+
+amino_acid_deletion:
+  should_match:
+    - token: p.Val7del
+    - token: Val7del
+    - token: p.(Val7del)
+    - token: (Val7del)
+    - token: p.V7del
+    - token: V7del
+    - token: p.(V7del)
+    - token: (V7del)
+    - token: Lys23_Val25del
+    - token: p.Lys23_Val25del
+    - token: p.(Lys23_Val25del)
+    - token: (Lys23_Val25del)
+    - token: p.Phe76del
+  should_not_match:
+    - token: Val7deletion
+    - token: (Val7deletion)
+    - token: p.Val7deletion
+    - token: c.Val7del
+    - token: ValSup7del
+    - token: delVal7
+    - token: 7Valdel
+    - token: Val7_Glydel
+    - token: Val_Gly7del
+
+coding_dna_deletion:
+  should_match:
+    - token: c.2263_2277del
+    - token: c.1608del
+    - token: c.2263_2277delTTGAGGGAAAACACA
+    - token: c.163delG
+    - token: c.435_436delGC
+  should_not_match:
+    - token: g.2263_2277del
+    - token: g.1608del
+    - token: c.del
+    - token: 2263_2277del
+    - token: c._2277del
+    - token: c.2263_del
+    - token: c.2263
+
+genomic_deletion:
+  should_match:
+    - token: g.37880219_37880233del
+    - token: g.139390650del
+    - token: g.55593610_55593615delTTGTTG
+    - token: g.10191495delT
+  should_not_match:
+    - token: c.37880219_37880233del
+    - token: c.139390650del
+    - token: g.del
+    - token: 37880219_37880233del
+    - token: g._37880233del
+    - token: g._37880233del
+    - token: g.37880219

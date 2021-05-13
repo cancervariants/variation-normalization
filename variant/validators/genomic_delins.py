@@ -119,26 +119,17 @@ class GenomicDelIns(DelInsBase):
                     hgvs_expr, is_ensembl_transcript = \
                         self.get_hgvs_expr(classification, t, s, True)
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
                     t = hgvs_expr.split(':')[0]
-
-                    if allele:
-                        # MANE Select Transcript for HGVS expressions
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t,
-                            'is_ensembl_transcript': is_ensembl_transcript
-                        }
                 else:
-                    allele = self.get_allele_from_transcript(classification,
-                                                             t, s, errors)
-                    if allele:
-                        # MANE Select Transcript for Gene Name + Variation
-                        # (ex: BRAF V600E)
-                        self._add_hgvs_to_mane_transcripts_dict(
-                            classification, mane_transcripts_dict, s, t,
-                            gene_tokens
-                        )
+                    hgvs_expr, is_ensembl_transcript = \
+                        self.get_hgvs_expr(classification, t, s, False)
+                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
                 if allele:
                     len_of_seq = self.seqrepo_access.len_of_sequence(t)
@@ -168,7 +159,7 @@ class GenomicDelIns(DelInsBase):
 
     def variant_name(self):
         """Return the variant name."""
-        return 'genomimc delins'
+        return 'genomic delins'
 
     def is_token_instance(self, t):
         """Check that token is Genomic DelIns."""

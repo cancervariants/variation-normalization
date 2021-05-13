@@ -1,34 +1,34 @@
-"""A module for Amino Acid DelIns Tokenization Class."""
+"""A module for Amino Acid Deletion Tokenization Class."""
 import re
 from typing import Optional
 from pydantic.error_wrappers import ValidationError
 from .caches import AminoAcidCache
 from .tokenizer import Tokenizer
-from variant.schemas.token_response_schema import AminoAcidDelInsToken, \
+from variant.schemas.token_response_schema import AminoAcidDeletionToken, \
     TokenMatchType
 
 
-class AminoAcidDelIns(Tokenizer):
-    """Class for tokenizing DelIns on the protein reference sequence."""
+class AminoAcidDeletion(Tokenizer):
+    """Class for tokenizing Deletions on the protein reference sequence."""
 
     def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the DelIns Base Class.
+        """Initialize the Amino Acid Deletion Class.
 
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
         """
         self.amino_acid_cache = amino_acid_cache
-        self.splitter = re.compile(r'delins')
+        self.splitter = re.compile('del')
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
         self.parts = None
 
-    def match(self, input_string: str) -> Optional[AminoAcidDelInsToken]:
+    def match(self, input_string: str) -> Optional[AminoAcidDeletionToken]:
         """Return token that match the input string."""
         if input_string is None:
             return None
 
         input_string = str(input_string).lower()
 
-        if 'delins' not in input_string:
+        if 'c.' in input_string or 'g.' in input_string:
             return None
 
         if input_string.startswith('p.'):
@@ -36,6 +36,9 @@ class AminoAcidDelIns(Tokenizer):
 
         if input_string.startswith('(') and input_string.endswith(')'):
             input_string = input_string[1:-1]
+
+        if not input_string.endswith('del'):
+            return None
 
         self.parts = {
             'used_one_letter': False,
@@ -45,29 +48,27 @@ class AminoAcidDelIns(Tokenizer):
             'start_aa_del': None,
             'start_pos_del': None,
             'end_aa_del': None,
-            'end_pos_del': None,
-            'inserted_sequence': None
+            'end_pos_del': None
         }
 
         parts = self.splitter.split(input_string)
         self._get_parts(parts)
 
         try:
-            return AminoAcidDelInsToken(**self.parts)
+            return AminoAcidDeletionToken(**self.parts)
         except ValidationError:
             return None
 
     def _get_parts(self, parts):
-        """Get parts for DelIns.
+        """Get parts for Amino Acid Deletion.
 
         :param list parts: Parts of input string
         """
         if len(parts) != 2:
-            return None
+            return
 
         # Get reference sequence
         self._get_positions_deleted(parts)
-        self._get_inserted_sequence(parts)
 
     def _get_positions_deleted(self, parts):
         """Set position(s) deleted.
@@ -124,34 +125,3 @@ class AminoAcidDelIns(Tokenizer):
                 or not pos_del.isdigit():
             return None
         return aa_del.capitalize(), pos_del
-
-    def _get_inserted_sequence(self, parts):
-        """Return inserted sequence.
-
-        :param list parts: Tokenized input string
-        """
-        # Check inserted sequences
-        inserted_sequence = ""
-        if self.parts['used_one_letter']:
-            for i in range(len(parts[1])):
-                aa = parts[1][i:i + 1]
-                if len(aa) != 1:
-                    return None
-                try:
-                    aa = self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]  # noqa: E501
-                except KeyError:
-                    return None
-                else:
-                    inserted_sequence += aa
-
-        else:
-            for i in range(0, len(parts[1]), 3):
-                aa = parts[1][i:i + 3]
-                if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
-                    if aa != 'ter':
-                        return None
-                inserted_sequence += aa.capitalize()
-
-        if inserted_sequence == '':
-            return None
-        self.parts['inserted_sequence'] = inserted_sequence
