@@ -6,7 +6,7 @@ from ftplib import FTP
 from os import environ
 from gene.query import QueryHandler as GeneQueryHandler
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
