@@ -135,13 +135,13 @@ class CodingDNADelIns(DelInsBase):
                     )
                     allele = self.get_allele_from_hgvs(hgvs_expr, errors)
 
-                if allele:
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
-                    }
+                mane_transcripts_dict[hgvs_expr] = {
+                    'classification_token': s,
+                    'transcript_token': t,
+                    'is_ensembl_transcript': is_ensembl_transcript
+                }
 
+                if allele:
                     len_of_seq = self.seqrepo_access.len_of_sequence(t)
                     is_len_lt_end = len_of_seq < int(s.end_pos_del) - 1
                     is_len_lt_start = \

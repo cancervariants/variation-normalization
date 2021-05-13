@@ -17,7 +17,7 @@ class AminoAcidDeletion(Tokenizer):
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
         """
         self.amino_acid_cache = amino_acid_cache
-        self.splitter = re.compile(r'del')
+        self.splitter = re.compile('del')
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
         self.parts = None
 
