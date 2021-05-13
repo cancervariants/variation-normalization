@@ -29,7 +29,7 @@ class ClassifierBase:
     def test_matches(self):
         """Test that classifier matches correctly."""
         for x in self.fixtures['should_match']:
-            tokens = self.tokenizer.perform(x['query'])
+            tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             self.assertIsNotNone(classification, msg=x)
             self.assertEqual(x['confidence'],
@@ -39,6 +39,6 @@ class ClassifierBase:
     def test_not_matches(self):
         """Test that classifier matches correctly."""
         for x in self.fixtures['should_not_match']:
-            tokens = self.tokenizer.perform(x['query'])
+            tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             self.assertIsNone(classification, msg=x)

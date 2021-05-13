@@ -16,16 +16,16 @@ class Normalize:
         self.seqrepo_access = SeqRepoAccess()
         self.warnings = list()
 
-    def normalize(self, q, validations, amino_acid_cache):
+    def normalize(self, q, validations, amino_acid_cache, warnings):
         """Normalize a given variant.
 
         :param str q: The variant to normalize
         :param ValidationSummary validations: Invalid and valid results
         :param AminoAcidCache amino_acid_cache: Amino Acid Code and Conversion
+        :param list warnings: List of warnings
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
         """
-        warnings = list()
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
@@ -80,8 +80,9 @@ class Normalize:
         else:
             variation_descriptor = None
             warning = f"Unable to normalize {q}."
+            if not warnings:
+                warnings.append(warning)
             logger.warning(warning)
-            warnings.append(warning)
 
         self.warnings = warnings
         return variation_descriptor
