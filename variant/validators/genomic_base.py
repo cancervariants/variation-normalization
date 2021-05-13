@@ -53,7 +53,7 @@ class GenomicBase:
                 if a.startswith('GRCh3'):
                     assembly = a
                     break
-        except KeyError:
+        except (KeyError, ValueError):
             pass
         else:
             if assembly:
