@@ -85,7 +85,6 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
-                print(errors)
 
         # Now add Mane transcripts to results
         self.add_mane_transcript(classification, results, gene_tokens,
