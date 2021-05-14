@@ -7,6 +7,7 @@ from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from .amino_acid_base import AminoAcidBase
 import logging
 
 logger = logging.getLogger('variant')
@@ -29,6 +30,7 @@ class PolypeptideSequenceVariantBase(Validator):
         """
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
+        self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
 
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
@@ -100,16 +102,9 @@ class PolypeptideSequenceVariantBase(Validator):
                             allele['state']['sequence'])
 
                 if not errors:
-                    ref_protein = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
-
-                    if ref_protein and len(ref_protein) == 1 \
-                            and len(s.ref_protein) == 3:
-                        ref_protein = self._amino_acid_cache.amino_acid_code_conversion[ref_protein]  # noqa: E501
-                    if ref_protein != s.ref_protein:
-                        errors.append(f'Needed to find {s.ref_protein} at'
-                                      f' position {s.position} on {t}'
-                                      f' but found {ref_protein}')
+                    self.amino_acid_base.check_ref_aa(
+                        t, s.ref_protein, s.position, errors
+                    )
 
                 if not errors and allele not in valid_alleles:
                     results.append(self.get_validation_result(
