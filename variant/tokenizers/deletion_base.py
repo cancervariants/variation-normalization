@@ -3,16 +3,24 @@ import re
 from abc import abstractmethod
 from typing import Optional, Dict
 from .tokenizer import Tokenizer
+from .caches import AminoAcidCache, NucleotideCache
+from .tokenize_base import TokenizeBase
 from variant.schemas.token_response_schema import Deletion, TokenMatchType
 
 
 class DeletionBase(Tokenizer):
     """Class for tokenizing Deletions."""
 
-    def __init__(self) -> None:
-        """Initialize the Deletion Base Class."""
-        self.splitter = re.compile(r'del')
+    def __init__(self, amino_acid_cache: AminoAcidCache,
+                 nucleotide_cache: NucleotideCache) -> None:
+        """Initialize the Deletion Base Class.
+
+        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
+        :param NucleotideCache nucleotide_cache: Valid nucleotides
+        """
+        self.splitter = re.compile('del')
         self.parts = None
+        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[Deletion]:
         """Return tokens that match the input string."""
@@ -54,13 +62,13 @@ class DeletionBase(Tokenizer):
         reference_sequence = parts[0][:1]
         parts[0] = parts[0][2:]
 
-        positions_deleted = self._get_positions_deleted(parts)
+        positions_deleted = self.tokenize_base.get_positions_deleted(parts)
         if not positions_deleted:
             return
 
         if parts[1]:
             self.parts['deleted_sequence'] = \
-                self._get_deleted_sequence(parts[1])
+                self.tokenize_base.get_sequence(parts[1])
 
         if positions_deleted[0]:
             start_pos_del = int(positions_deleted[0])
@@ -74,40 +82,6 @@ class DeletionBase(Tokenizer):
         self.parts['start_pos_del'] = start_pos_del
         self.parts['end_pos_del'] = end_pos_del
         self.parts['reference_sequence'] = reference_sequence
-
-    def _get_positions_deleted(self, parts):
-        """Return position(s) deleted."""
-        # Check positions deleted
-        if '_' in parts[0] and parts[0].count('_') == 1:
-            positions = self._get_valid_digits(parts[0])
-            if not positions:
-                return
-            start_pos_del, end_pos_del = positions
-            if start_pos_del > end_pos_del:
-                return
-        else:
-            start_pos_del = parts[0]
-            end_pos_del = None
-            if not start_pos_del.isdigit():
-                return None
-        return start_pos_del, end_pos_del
-
-    def _get_valid_digits(self, part):
-        """Return valid digits after splitting on `_`."""
-        digits = part.split('_')
-        digit1 = digits[0]
-        digit2 = digits[1]
-        if not digit1.isdigit() or not digit2.isdigit():
-            return None
-        return digit1, digit2
-
-    def _get_deleted_sequence(self, part):
-        """Return deleted sequence."""
-        nucleotides = ['a', 'c', 't', 'g']
-        for char in part:
-            if char not in nucleotides:
-                return
-        return part.upper()
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]):

@@ -1,18 +1,20 @@
-"""Module for Amino Acid commonly used methods during tokenization."""
-from typing import Optional, Tuple
-
-from .caches import AminoAcidCache
+"""Module for commonly used tokenization methods."""
+from typing import Tuple, Optional, Union
+from variant.tokenizers.caches import NucleotideCache, AminoAcidCache
 import re
 
 
-class AminoAcidBase:
-    """The Amino Acid Base Class."""
+class TokenizeBase:
+    """Class for Tokenize methods."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the DelIns Base Class.
+    def __init__(self, amino_acid_cache: AminoAcidCache,
+                 nucleotide_cache: NucleotideCache) -> None:
+        """Initialize Token Base class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
+        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
+        :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
+        self.nucleotide_cache = nucleotide_cache
         self.amino_acid_cache = amino_acid_cache
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
 
@@ -47,8 +49,9 @@ class AminoAcidBase:
             return None
         return aa.capitalize(), pos, used_one_letter
 
-    def get_inserted_sequence(self, parts, used_one_letter) -> Optional[str]:
-        """Return inserted sequence.
+    def get_protein_inserted_sequence(self, parts, used_one_letter)\
+            -> Optional[str]:
+        """Return inserted sequence for protein reference sequence.
 
         :param list parts: Tokenized input string
         :param bool used_one_letter: `True` if used 1 letter AA code.
@@ -68,7 +71,6 @@ class AminoAcidBase:
                     return None
                 else:
                     inserted_sequence += aa
-
         else:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
@@ -81,9 +83,9 @@ class AminoAcidBase:
             return None
         return inserted_sequence
 
-    def get_possible_range(self, parts)\
+    def get_aa_pos_range(self, parts)\
             -> Optional[Tuple[str, str, str, int, bool]]:
-        """Get amino acid(s) and positions(s).
+        """Get amino acid(s) and positions(s) for protein reference sequence.
 
         :param list parts: Tokenized input string
         :return: Beginning AA, End AA,  Beginning position, End position,
@@ -132,3 +134,69 @@ class AminoAcidBase:
                 used_one_letter = aa_and_pos[2]
 
         return aa_start, aa_end, pos_start, pos_end, used_one_letter
+
+    def get_positions_deleted(self, parts) -> Optional[Tuple[str, str]]:
+        """Return position(s) deleted for transcript and genomic references.
+
+        :param list parts: Tokenized input string
+        :return: Start position deleted and end position deleted
+        """
+        if '_' in parts[0] and parts[0].count('_') == 1:
+            positions = self.get_valid_digits(parts[0])
+            if not positions:
+                return None
+            start_pos_del, end_pos_del = positions
+            if start_pos_del > end_pos_del:
+                return None
+        else:
+            start_pos_del = parts[0]
+            end_pos_del = None
+            if not start_pos_del.isdigit():
+                return None
+        return start_pos_del, end_pos_del
+
+    def get_transcript_genomic_inserted_sequence(self, parts) -> \
+            Optional[Tuple[Union[str, int], Union[str, int]]]:
+        """Return inserted sequence for transcript and genomic references.
+
+        :param list parts: Tokenized input string
+        :return: Start inserted sequence and end inserted sequence
+        """
+        # Check inserted sequences
+        if '_' in parts[1] and parts[1].count('_') == 1:
+            # Replaced by sequence positions
+            inserted_sequences = self.get_valid_digits(parts[1])
+            if not inserted_sequences:
+                return None
+            inserted_sequence1, inserted_sequence2 = inserted_sequences
+            if inserted_sequence1 > inserted_sequence2:
+                return None
+        else:
+            # Replaced by nucleotides
+            inserted_sequence1 = self.get_sequence(parts[1])
+            inserted_sequence2 = None
+        return inserted_sequence1, inserted_sequence2
+
+    def get_sequence(self, part) -> Optional[str]:
+        """Return validated sequence for transcript and genomic references.
+
+        :param str part: Sequence to validate
+        :return: Sequence of nucleotides
+        """
+        for char in part:
+            if char.upper() not in self.nucleotide_cache.base_nucleotides:
+                return None
+        return part.upper()
+
+    def get_valid_digits(self, part) -> Optional[Tuple[str, str]]:
+        """Return valid digits after splitting on `_`.
+
+        :param str part: Range of digits
+        :return: Digits represented as strings
+        """
+        digits = part.split('_')
+        digit1 = digits[0]
+        digit2 = digits[1]
+        if not digit1.isdigit() or not digit2.isdigit():
+            return None
+        return digit1, digit2

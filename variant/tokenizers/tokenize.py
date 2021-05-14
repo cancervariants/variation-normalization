@@ -34,7 +34,7 @@ from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
 from .amino_acid_insertion import AminoAcidInsertion
 from variant.schemas.token_response_schema import Token, TokenMatchType
-from .caches import GeneSymbolCache, AminoAcidCache
+from .caches import GeneSymbolCache, AminoAcidCache, NucleotideCache
 from variant import HGNC_GENE_SYMBOL_PATH
 
 
@@ -48,6 +48,7 @@ class Tokenize:
         """
         gene_cache = GeneSymbolCache(gene_file_path)
         amino_acid_cache = AminoAcidCache()
+        nucleotide_cache = NucleotideCache()
 
         self.search_term_splitter = re.compile(r'\s+')
 
@@ -71,13 +72,13 @@ class Tokenize:
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
-            AminoAcidDelIns(amino_acid_cache),
-            CodingDNADelIns(),
-            GenomicDelIns(),
-            AminoAcidDeletion(amino_acid_cache),
-            CodingDNADeletion(),
-            GenomicDeletion(),
-            AminoAcidInsertion(amino_acid_cache),
+            AminoAcidDelIns(amino_acid_cache, nucleotide_cache),
+            CodingDNADelIns(amino_acid_cache, nucleotide_cache),
+            GenomicDelIns(amino_acid_cache, nucleotide_cache),
+            AminoAcidDeletion(amino_acid_cache, nucleotide_cache),
+            CodingDNADeletion(amino_acid_cache, nucleotide_cache),
+            GenomicDeletion(amino_acid_cache, nucleotide_cache),
+            AminoAcidInsertion(amino_acid_cache, nucleotide_cache),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),

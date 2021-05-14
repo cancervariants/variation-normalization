@@ -2,7 +2,7 @@
 import unittest
 from variant.tokenizers import AminoAcidInsertion
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache
+from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestAminoAcidInsertionTokenizer(TokenizerBase, unittest.TestCase):
@@ -10,7 +10,7 @@ class TestAminoAcidInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Amino Acid Insertion instance."""
-        return AminoAcidInsertion(AminoAcidCache())
+        return AminoAcidInsertion(AminoAcidCache(), NucleotideCache())
 
     def token_type(self):
         """Return amino acid insertion token type."""

@@ -2,6 +2,7 @@
 import unittest
 from variant.tokenizers import CodingDNADeletion
 from .tokenizer_base import TokenizerBase
+from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestCodingDNADeletionTokenizer(TokenizerBase, unittest.TestCase):
@@ -9,7 +10,7 @@ class TestCodingDNADeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Coding DNA Deletion instance."""
-        return CodingDNADeletion()
+        return CodingDNADeletion(AminoAcidCache(), NucleotideCache())
 
     def token_type(self):
         """Return Coding DNA deletion token type."""
