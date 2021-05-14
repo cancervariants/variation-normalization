@@ -1,11 +1,8 @@
 """The module for Polypeptide Sequence Variant Validation."""
-from typing import List
+from typing import List, Tuple, Optional
 from abc import abstractmethod
 from .validator import Validator
-from variant.schemas.classification_response_schema import Classification
 from variant.schemas.token_response_schema import GeneMatchToken
-from variant.schemas.validation_response_schema import ValidationResult, \
-    LookupType
 from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
@@ -33,71 +30,43 @@ class PolypeptideSequenceVariantBase(Validator):
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
 
-    def validate(self, classification: Classification) \
-            -> List[ValidationResult]:
-        """Validate a given classification.
+    def get_transcripts(self, gene_tokens, classification, errors)\
+            -> Optional[List[str]]:
+        """Get transcript accessions for a given classification.
 
+        :param list gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :return: A list of validation results
+        :param list errors: List of errors
+        :return: List of transcript accessions
         """
-        results = list()
-        errors = list()
+        return self.get_protein_transcripts(gene_tokens, errors)
 
-        classification_tokens = [t for t in classification.all_tokens if self.is_token_instance(t)]  # noqa: E501
-        gene_tokens = self.get_gene_tokens(classification)
-
-        if len(classification.non_matching_tokens) > 0:
-            errors.append(f"Non matching tokens found for "
-                          f"{self.variant_name()}.")
-
-        if len(gene_tokens) == 0:
-            errors.append(f'No gene tokens for a {self.variant_name()}.')
-
-        if len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variant_name()}')
-
-        if len(errors) > 0:
-            return [self.get_validation_result(
-                    classification, False, 0, None,
-                    '', '', errors, gene_tokens)]
-
-        transcripts = self.transcript_mappings.protein_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
-
-        if not transcripts:
-            errors.append(f'No transcripts found for gene symbol '
-                          f'{gene_tokens[0].token}')
-            return [self.get_validation_result(
-                    classification, False, 0, None,
-                    '', '', errors, gene_tokens)]
-
-        self.get_valid_invalid_results(classification_tokens, transcripts,
-                                       classification, results, gene_tokens)
-        return results
-
-    def get_hgvs_expr(self, classification) -> str:
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, None]:
         """Return HGVS expression for a classification.
 
         :param Classification classification: A classification for a list of
             tokens
         :return: The classification's HGVS expression as a string
         """
-        # Replace `=` in silent mutation with 3 letter amino acid code
-        hgvs_token = \
-            [t for t in classification.all_tokens if
-             isinstance(t, Token) and t.token_type == 'HGVS'][0]
-        hgvs_expr = hgvs_token.input_string
+        if not is_hgvs:
+            hgvs_expr = f"{t}:p.{s.ref_protein}{s.position}" \
+                        f"{s.alt_protein}"
+        else:
+            # Replace `=` in silent mutation with 3 letter amino acid code
+            hgvs_token = \
+                [t for t in classification.all_tokens if
+                 isinstance(t, Token) and t.token_type == 'HGVS'][0]
+            hgvs_expr = hgvs_token.input_string
 
-        if '=' in hgvs_expr:
-            hgvs_parsed = \
-                self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
-            alt_amino = hgvs_parsed.posedit.pos.end.aa
-            three_letter = \
-                self._amino_acid_cache.amino_acid_code_conversion[alt_amino]
-            hgvs_expr = hgvs_expr.replace('=', three_letter)
-        return hgvs_expr
+            if '=' in hgvs_expr:
+                hgvs_parsed = \
+                    self.hgvs_parser.parse_hgvs_variant(hgvs_expr)
+                alt_amino = hgvs_parsed.posedit.pos.end.aa
+                three_letter = \
+                    self._amino_acid_cache.amino_acid_code_conversion[alt_amino]  # noqa: E501
+                hgvs_expr = hgvs_expr.replace('=', three_letter)
+        return hgvs_expr, None
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -117,14 +86,8 @@ class PolypeptideSequenceVariantBase(Validator):
             for t in transcripts:
                 errors = list()
 
-                if 'HGVS' in classification.matching_tokens:
-                    hgvs_expr = self.get_hgvs_expr(classification)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    t = hgvs_expr.split(':')[0]
-                else:
-                    hgvs_expr = f"{t}:p.{s.ref_protein}{s.position}" \
-                                f"{s.alt_protein}"
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                allele, t, hgvs_expr, is_ensembl_transcript = \
+                    self.get_allele_with_context(classification, t, s, errors)
 
                 mane_transcripts_dict[hgvs_expr] = {
                     'classification_token': s,
