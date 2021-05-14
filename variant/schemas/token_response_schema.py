@@ -327,8 +327,8 @@ class DelIns(Token):
     affecting 2 or more bases.
     """
 
-    start_pos_del: Optional[str]
-    end_pos_del: str
+    start_pos_del: str
+    end_pos_del: Optional[str]
     inserted_sequence1: str
     inserted_sequence2: Optional[str]
     token_type: str

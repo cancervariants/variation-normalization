@@ -36,3 +36,18 @@ class DelInsBase(Validator):
 
         return f'{transcript}:{token.reference_sequence}.' \
                f'{position}delins{sequence}'
+
+    def check_pos_index(self, t, s, errors):
+        """Check that position exists on transcript.
+
+        :param str t: Transcript accession
+        :param Token s: Classification token
+        :param list errors: List of errors
+        """
+        len_of_seq = self.seqrepo_access.len_of_sequence(t)
+        is_len_lte_start = len_of_seq <= int(s.start_pos_del)
+        is_len_lte_end = \
+            s.end_pos_del and (len_of_seq <= int(s.end_pos_del))
+
+        if is_len_lte_end or is_len_lte_start:
+            errors.append('Sequence index error')

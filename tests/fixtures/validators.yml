@@ -84,6 +84,7 @@ coding_dna_delins:
   should_match:
     - query: NM_001289937.1:c.2326_2327delinsCT
     - query: NM_000551.3:c.615delinsAA
+    - query: NM_000551.3:c.4559delinsAA
     - query: ENST00000440973.1:c.1607_1608delinsAG
       # TODO: Find this gene symbol
 #    - query: ENST00000277541.6:c.7330delinsACA
@@ -96,14 +97,21 @@ coding_dna_delins:
   should_not_match:
     - query: NM_005228:c.2237_2253delinsTTGCT
     - query: ENST00000277541.6:c.7330479587395delinsACA
+    - query: NM_000551.3:c.4560delinsAA
+    - query: NM_000551.3:c.4559_4560delinsAA
+    - query: NM_000551.3:c.4560_4561delinsAA
 
 genomic_delins:
   should_match:
     - query: NC_000007.13:g.140453135_140453136delinsAT
+    - query: NC_000007.13:g.159138662delinsAT
     - query: NC_000023.11:g.32386323delinsGA
     - query: NC_000003.12:g.10149938delinsAA
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
+    - query: NC_000007.13:g.159138663delinsAT
+    - query: NC_000007.13:g.140453135_159138663delinsAT
+    - query: NC_000007.13:g.159138663_159138664delinsAT
     - query: NC_000023.11:g.3238646549879323delinsGA
 
 amino_acid_deletion:
