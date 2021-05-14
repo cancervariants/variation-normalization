@@ -9,6 +9,7 @@ from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
+from .amino_acid_base import AminoAcidBase
 import logging
 
 
@@ -32,6 +33,7 @@ class AminoAcidInsertion(Validator):
         """
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
+        self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
 
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
@@ -81,12 +83,14 @@ class AminoAcidInsertion(Validator):
 
                 # Check ref start/end protein matches expected
                 if not errors:
-                    self.check_ref_aa(t, s.start_aa_flank,
-                                      s.start_pos_flank, errors)
+                    self.amino_acid_base.check_ref_aa(
+                        t, s.start_aa_flank, s.start_pos_flank, errors
+                    )
 
                     if not errors:
-                        self.check_ref_aa(t, s.end_aa_flank,
-                                          s.end_pos_flank, errors)
+                        self.amino_acid_base.check_ref_aa(
+                            t, s.end_aa_flank, s.end_pos_flank, errors
+                        )
 
                 if not errors and allele not in valid_alleles:
                     results.append(self.get_validation_result(
@@ -104,27 +108,6 @@ class AminoAcidInsertion(Validator):
         # Now add MANE transcripts to result
         self.add_mane_transcript(classification, results, gene_tokens,
                                  mane_transcripts_dict)
-
-    def check_ref_aa(self, t, aa, pos, errors):
-        """Check that reference amino acid matches actual amino acid.
-
-        :param string t: Transcript
-        :param str aa: Expected Amino Acid
-        :param str pos: Expected position
-        :param list errors: List of errors
-        """
-        ref_aa_flank = \
-            self.seqrepo_access.sequence_at_position(t, pos)
-        if ref_aa_flank and len(ref_aa_flank) == 1 \
-                and len(aa) == 3:
-            ref_aa_flank = \
-                self._amino_acid_cache.amino_acid_code_conversion[
-                    ref_aa_flank]
-
-        if ref_aa_flank != aa:
-            errors.append(f"Needed to find {aa} at "
-                          f"position {pos} on {t} "
-                          f"but found {ref_aa_flank}")
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, None]:
         """Return HGVS expression and whether or not it's an Ensembl transcript
