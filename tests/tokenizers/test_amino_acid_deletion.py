@@ -2,7 +2,7 @@
 import unittest
 from variant.tokenizers import AminoAcidDeletion
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache
+from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestAminoAcidDeletionTokenizer(TokenizerBase, unittest.TestCase):
@@ -10,7 +10,7 @@ class TestAminoAcidDeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return AminoAcid Deletion instance."""
-        return AminoAcidDeletion(AminoAcidCache())
+        return AminoAcidDeletion(AminoAcidCache(), NucleotideCache())
 
     def token_type(self):
         """Return amino acid deletion token type."""

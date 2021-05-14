@@ -2,25 +2,26 @@
 import re
 from typing import Optional
 from pydantic.error_wrappers import ValidationError
-from .caches import AminoAcidCache
+from .caches import AminoAcidCache, NucleotideCache
 from .tokenizer import Tokenizer
 from variant.schemas.token_response_schema import AminoAcidDeletionToken, \
     TokenMatchType
-from .amino_acid_base import AminoAcidBase
+from .tokenize_base import TokenizeBase
 
 
 class AminoAcidDeletion(Tokenizer):
     """Class for tokenizing Deletions on the protein reference sequence."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
+    def __init__(self, amino_acid_cache: AminoAcidCache,
+                 nucleotide_cache: NucleotideCache) -> None:
         """Initialize the Amino Acid Deletion Class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
+        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
+        :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile(r'del')
-        self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
+        self.splitter = re.compile('del')
         self.parts = None
-        self.amino_acid_base = AminoAcidBase(amino_acid_cache)
+        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[AminoAcidDeletionToken]:
         """Return token that match the input string."""
@@ -68,7 +69,7 @@ class AminoAcidDeletion(Tokenizer):
         if len(parts) != 2:
             return
 
-        range_aa_pos = self.amino_acid_base.get_possible_range(parts)
+        range_aa_pos = self.tokenize_base.get_aa_pos_range(parts)
         if range_aa_pos:
             self.parts['start_aa_del'] = range_aa_pos[0]
             self.parts['end_aa_del'] = range_aa_pos[1]

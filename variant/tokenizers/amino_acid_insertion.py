@@ -2,9 +2,9 @@
 import re
 from typing import Optional
 from pydantic.error_wrappers import ValidationError
-from .caches import AminoAcidCache
+from .caches import AminoAcidCache, NucleotideCache
 from .tokenizer import Tokenizer
-from .amino_acid_base import AminoAcidBase
+from .tokenize_base import TokenizeBase
 from variant.schemas.token_response_schema import AminoAcidInsertionToken, \
     TokenMatchType
 
@@ -12,15 +12,16 @@ from variant.schemas.token_response_schema import AminoAcidInsertionToken, \
 class AminoAcidInsertion(Tokenizer):
     """Class for tokenizing Insertions on the protein reference sequence."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the Amino Acid Deletion Class.
+    def __init__(self, amino_acid_cache: AminoAcidCache,
+                 nucleotide_cache: NucleotideCache) -> None:
+        """Initialize the Amino Acid Insertion Class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
+        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
+        :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile(r'ins')
-        self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
+        self.splitter = re.compile('ins')
         self.parts = None
-        self.amino_acid_base = AminoAcidBase(amino_acid_cache)
+        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[AminoAcidInsertionToken]:
         """Return token that match the input string."""
@@ -68,7 +69,7 @@ class AminoAcidInsertion(Tokenizer):
         if len(parts) != 2:
             return
 
-        range_aa_pos = self.amino_acid_base.get_possible_range(parts)
+        range_aa_pos = self.tokenize_base.get_aa_pos_range(parts)
         if range_aa_pos:
             self.parts['start_aa_flank'] = range_aa_pos[0]
             self.parts['end_aa_flank'] = range_aa_pos[1]
@@ -76,5 +77,5 @@ class AminoAcidInsertion(Tokenizer):
             self.parts['end_pos_flank'] = range_aa_pos[3]
             self.parts['used_one_letter'] = range_aa_pos[4]
         self.parts['inserted_sequence'] = \
-            self.amino_acid_base.get_inserted_sequence(
+            self.tokenize_base.get_protein_inserted_sequence(
                 parts, self.parts['used_one_letter'])
