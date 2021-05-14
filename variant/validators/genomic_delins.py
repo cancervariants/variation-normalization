@@ -75,7 +75,7 @@ class GenomicDelIns(DelInsBase):
             if s.start_pos_del is not None and s.end_pos_del is not None:
                 pos_del = f"{s.start_pos_del}_{s.end_pos_del}"
             else:
-                pos_del = s.end_pos_del
+                pos_del = s.start_pos_del
 
             if s.inserted_sequence1 is not None and \
                     s.inserted_sequence2 is not None:
@@ -132,13 +132,7 @@ class GenomicDelIns(DelInsBase):
                         'is_ensembl_transcript': is_ensembl_transcript
                     }
 
-                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
-                    is_len_lt_end = len_of_seq < int(s.end_pos_del) - 1
-                    is_len_lt_start = \
-                        s.start_pos_del and len_of_seq < int(s.start_pos_del) - 1  # noqa: E501
-
-                    if is_len_lt_end or is_len_lt_start:
-                        errors.append('Sequence index error')
+                    self.check_pos_index(t, s, errors)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
