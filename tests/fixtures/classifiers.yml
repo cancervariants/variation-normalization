@@ -231,3 +231,19 @@ genomic_deletion:
   should_not_match:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG
+
+amino_acid_insertion:
+  should_match:
+    - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
+      confidence: ConfidenceRating.EXACT
+    - query: NP_001333827.1:p.Ala763_Tyr764insPheGlnGluAla
+      confidence: ConfidenceRating.EXACT
+    - query: BRAF T599_V600insV
+      confidence: ConfidenceRating.EXACT
+    - query: EGFR A763_Y764insFQEA
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: GENE p.Lys23insAsp
+    - query: GENE Lys23insAsp
+    - query: GENE p.His4_Gln5insAlaG
+    - query: ACCESSION_23042.2:p.His4_Gln5insAla

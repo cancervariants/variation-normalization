@@ -429,7 +429,7 @@ class GenomicDeletionToken(Deletion):
     molecule_context = 'genomic'
 
 
-class Insertion(BaseModel):
+class Insertion(Token):
     """a sequence change between the translation initiation (start) and
     termination (stop) codon where, compared to the reference sequence,
     one or more amino acids are inserted, which is not a frame shift and
