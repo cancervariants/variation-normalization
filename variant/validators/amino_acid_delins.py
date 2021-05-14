@@ -2,12 +2,9 @@
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import AminoAcidDelInsToken
-from variant.schemas.validation_response_schema import LookupType
-from typing import List
+from typing import List, Optional
 from variant.validators.validator import Validator
-from variant.schemas.classification_response_schema import Classification
 from variant.schemas.token_response_schema import GeneMatchToken
-from variant.schemas.validation_response_schema import ValidationResult
 from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
@@ -36,49 +33,17 @@ class AminoAcidDelIns(Validator):
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
 
-    def validate(self, classification: Classification) \
-            -> List[ValidationResult]:
-        """Validate a given classification.
+    def get_transcripts(self, gene_tokens, classification, errors)\
+            -> Optional[List[str]]:
+        """Get transcript accessions for a given classification.
 
+        :param list gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :return: A list of validation results
+        :param list errors: List of errors
+        :return: List of transcript accessions
         """
-        results = list()
-        errors = list()
-
-        classification_tokens = [t for t in classification.all_tokens if self.is_token_instance(t)]  # noqa: E501
-        gene_tokens = self.get_gene_tokens(classification)
-
-        if len(classification.non_matching_tokens) > 0:
-            errors.append(f"Non matching tokens found for "
-                          f"{self.variant_name()}.")
-
-        if len(gene_tokens) == 0:
-            errors.append(f'No gene tokens for a {self.variant_name()}.')
-
-        if len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variant_name()}')
-
-        if len(errors) > 0:
-            return [self.get_validation_result(
-                    classification, False, 0, None,
-                    '', '', errors, gene_tokens)]
-
-        transcripts = self.transcript_mappings.protein_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
-
-        if not transcripts:
-            errors.append(f'No transcripts found for gene symbol '
-                          f'{gene_tokens[0].token}')
-            return [self.get_validation_result(
-                    classification, False, 0, None,
-                    '', '', errors, gene_tokens)]
-
-        self.get_valid_invalid_results(classification_tokens, transcripts,
-                                       classification, results, gene_tokens)
-        return results
+        return self.get_protein_transcripts(gene_tokens, errors)
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -97,14 +62,8 @@ class AminoAcidDelIns(Validator):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                if 'HGVS' in classification.matching_tokens or \
-                        'ReferenceSequence' in classification.matching_tokens:
-                    hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    t = hgvs_expr.split(':')[0]
-                else:
-                    hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                allele, t, hgvs_expr, _ = \
+                    self.get_allele_with_context(classification, t, s, errors)
 
                 if not allele:
                     errors.append("Unable to find allele.")
@@ -192,7 +151,7 @@ class AminoAcidDelIns(Validator):
                      isinstance(t, Token) and t.token_type == 'ReferenceSequence']  # noqa: E501
             hgvs_token = hgvs_token[0]
             hgvs_expr = hgvs_token.input_string
-        return hgvs_expr
+        return hgvs_expr, None
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.

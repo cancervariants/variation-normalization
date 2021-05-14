@@ -1,14 +1,12 @@
 """The module for Genomic Silent Mutation Validation."""
+from typing import Optional, List
+
 from .single_nucleotide_variant_base import SingleNucleotideVariantBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import GenomicSilentMutationToken
-from typing import List
-from variant.schemas.classification_response_schema import Classification
-from variant.schemas.validation_response_schema import ValidationResult
 import logging
 from variant.schemas.token_response_schema import Token
-from .genomic_base import GenomicBase
 
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
@@ -19,42 +17,17 @@ logger.setLevel(logging.DEBUG)
 class GenomicSilentMutation(SingleNucleotideVariantBase):
     """The Genomic Silent Mutation Validator class."""
 
-    def validate(self, classification: Classification) \
-            -> List[ValidationResult]:
-        """Validate a given classification.
+    def get_transcripts(self, gene_tokens, classification, errors)\
+            -> Optional[List[str]]:
+        """Get transcript accessions for a given classification.
 
+        :param list gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :return: A list of validation results
+        :param list errors: List of errors
+        :return: List of transcript accessions
         """
-        results = list()
-        errors = list()
-
-        classification_tokens = self.get_classification_tokens(classification)
-        gene_tokens = self.get_gene_tokens(classification)
-
-        if gene_tokens and len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variant_name()}')
-
-        if len(classification.non_matching_tokens) > 0:
-            errors.append(f"Non matching tokens found for "
-                          f"{self.variant_name()}.")
-
-        genomic_base = GenomicBase(self.dp)
-        nc_accessions = genomic_base.get_nc_accessions(classification)
-        if not nc_accessions:
-            errors.append('Could not find NC_ accession for '
-                          f'{self.variant_name()}')
-
-        if len(errors) > 0:
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
-
-        self.get_valid_invalid_results(classification_tokens, nc_accessions,
-                                       classification, results, gene_tokens)
-        return results
+        return self.get_genomic_transcripts(classification, errors)
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs):
         """Get HGVS expression."""
