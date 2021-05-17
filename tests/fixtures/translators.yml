@@ -1412,3 +1412,97 @@ genomic_deletion:
           "type": "Allele"
         }
       ]
+
+amino_acid_insertion:
+  tests:
+    - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
+      variants: [
+        {
+          "id": "ga4gh:VA.d3dLtsYaLYE2Yh_GENvPUtTVZWlwLnJw",
+          "location": {
+            "interval": {
+              "end": 770,
+              "start": 770,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "GL",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
+    - query: BRAF T599_V600insV
+      variants: [
+        {
+          "id": "ga4gh:VA.vYbwb3dHIv-W42hpCEoST-xZ8kCnA9Wh",
+          "location": {
+            "interval": {
+              "end": 600,
+              "start": 599,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "VV",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.JIydJUdKHeViBxtdpGRnJjY6O6iP-B2h",
+          "location": {
+            "interval": {
+              "end": 600,
+              "start": 599,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "VV",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.aueh1WPw5tborZe_uOxocslI8ABdhGcP",
+          "location": {
+            "interval": {
+              "end": 600,
+              "start": 599,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "VV",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.tHKwuQkyozKBytcTNGPXdW_7cxgLzDFf",
+          "location": {
+            "interval": {
+              "end": 600,
+              "start": 599,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "VV",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        }
+      ]
