@@ -17,6 +17,9 @@ class DelInsBase(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
         """
         raise NotImplementedError
 

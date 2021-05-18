@@ -52,11 +52,9 @@ class SingleNucleotideVariantBase(Validator):
 
                 if 'HGVS' in classification.matching_tokens:
                     # TODO: How to convert ENST_ to NM_ versioned
-                    hgvs_expr, _ = self.get_hgvs_expr(classification,
-                                                      t, s, True)
+                    hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
                 else:
-                    hgvs_expr, _ = self.get_hgvs_expr(classification, t, s,
-                                                      False)
+                    hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
                 t = hgvs_expr.split(':')[0]
                 allele = None
                 try:
@@ -88,6 +86,9 @@ class SingleNucleotideVariantBase(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
         """
         raise NotImplementedError
 

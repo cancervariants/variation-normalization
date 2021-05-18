@@ -3,7 +3,7 @@ from variant.validators.deletion_base import DeletionBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import CodingDNADeletionToken
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.token_response_schema import Token
 import logging
@@ -28,15 +28,15 @@ class CodingDNADeletion(DeletionBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
-        """Return HGVS expression and whether or not it's an Ensembl transcript
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression
 
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: hgvs expression
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
@@ -49,14 +49,7 @@ class CodingDNADeletion(DeletionBase):
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             hgvs_expr = hgvs_token.input_string
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token:
-            is_ensembl_transcript = True
-        else:
-            is_ensembl_transcript = False
-        return hgvs_expr, is_ensembl_transcript
+        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -75,30 +68,16 @@ class CodingDNADeletion(DeletionBase):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
+                allele, t, hgvs_expr, is_ensembl = \
+                    self.get_allele_with_context(classification, t, s, errors)
 
-                if 'HGVS' in classification.matching_tokens:
-                    hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    if allele:
-                        t = hgvs_expr.split(':')[0]
-                    else:
-                        # ENST identifiers sometimes not in seqrepo
-                        errors = list()
-                        hgvs_expr, is_ensembl_transcript = \
-                            self.get_hgvs_expr(classification, t, s, False)
-                        allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                if not allele:
+                    errors.append("Unable to find allele.")
                 else:
-                    hgvs_expr, is_ensembl_transcript = self.get_hgvs_expr(
-                        classification, t, s, False
-                    )
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
-                if allele:
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
+                        'nucleotide': is_ensembl
                     }
 
                     ref_sequence = self.get_reference_sequence(t, s, errors)

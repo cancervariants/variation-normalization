@@ -1,5 +1,5 @@
 """The module for Polypeptide Sequence Variant Validation."""
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from abc import abstractmethod
 from .validator import Validator
 from variant.schemas.token_response_schema import GeneMatchToken
@@ -44,12 +44,15 @@ class PolypeptideSequenceVariantBase(Validator):
         """
         return self.get_protein_transcripts(gene_tokens, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, None]:
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
         """Return HGVS expression for a classification.
 
         :param Classification classification: A classification for a list of
             tokens
-        :return: The classification's HGVS expression as a string
+        :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
         """
         if not is_hgvs:
             hgvs_expr = f"{t}:p.{s.ref_protein}{s.position}" \
@@ -68,7 +71,7 @@ class PolypeptideSequenceVariantBase(Validator):
                 three_letter = \
                     self._amino_acid_cache.amino_acid_code_conversion[alt_amino]  # noqa: E501
                 hgvs_expr = hgvs_expr.replace('=', three_letter)
-        return hgvs_expr, None
+        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -87,21 +90,23 @@ class PolypeptideSequenceVariantBase(Validator):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-
-                allele, t, hgvs_expr, is_ensembl_transcript = \
+                allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane_transcripts_dict[hgvs_expr] = {
-                    'classification_token': s,
-                    'transcript_token': t
-                }
+                if not allele:
+                    errors.append("Unable to find allele.")
+                else:
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'protein': is_ensembl
+                    }
 
-                if allele and len(allele['state']['sequence']) == 3:
-                    allele['state']['sequence'] = \
-                        self._amino_acid_cache.convert_three_to_one(
-                            allele['state']['sequence'])
+                    if len(allele['state']['sequence']) == 3:
+                        allele['state']['sequence'] = \
+                            self._amino_acid_cache.convert_three_to_one(
+                                allele['state']['sequence'])
 
-                if not errors:
                     self.amino_acid_base.check_ref_aa(
                         t, s.ref_protein, s.position, errors
                     )

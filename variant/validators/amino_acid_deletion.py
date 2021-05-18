@@ -2,7 +2,7 @@
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import AminoAcidDeletionToken
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from variant.validators.validator import Validator
 from variant.schemas.token_response_schema import GeneMatchToken
 from variant.schemas.token_response_schema import Token
@@ -64,7 +64,7 @@ class AminoAcidDeletion(Validator):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                allele, t, hgvs_expr, _ = \
+                allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
                 if not allele:
@@ -74,7 +74,8 @@ class AminoAcidDeletion(Validator):
                     if hgvs_expr not in mane_transcripts_dict.keys():
                         mane_transcripts_dict[hgvs_expr] = {
                             'classification_token': s,
-                            'transcript_token': t
+                            'transcript_token': t,
+                            'protein': is_ensembl
                         }
                     if len(allele['state']['sequence']) == 3:
                         allele['state']['sequence'] = \
@@ -109,15 +110,15 @@ class AminoAcidDeletion(Validator):
         self.add_mane_transcript(classification, results, gene_tokens,
                                  mane_transcripts_dict)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, None]:
-        """Return HGVS expression and whether or not it's an Ensembl transcript
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression
 
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: HGVS expression
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}."
@@ -134,7 +135,7 @@ class AminoAcidDeletion(Validator):
                      isinstance(t, Token) and t.token_type == 'ReferenceSequence']  # noqa: E501
             hgvs_token = hgvs_token[0]
             hgvs_expr = hgvs_token.input_string
-        return hgvs_expr, None
+        return hgvs_expr
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
