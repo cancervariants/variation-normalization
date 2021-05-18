@@ -62,12 +62,15 @@ class Validate:
             GenomicInsertion(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
-    def perform(self, classifications: List[Classification]) \
+    def perform(self, classifications: List[Classification], warnings=None) \
             -> ValidationSummary:
         """Validate a list of classifications."""
         valid_possibilities = list()
         invalid_possibilities = list()
+        if not warnings:
+            warnings = list()
 
+        found_classification = False
         for classification in classifications:
             for validator in self.validators:
                 if validator.validates_classification_type(
@@ -75,11 +78,19 @@ class Validate:
                     results = validator.validate(classification)
                     for res in results:
                         if res.is_valid:
+                            found_classification = True
                             valid_possibilities.append(res)
                         else:
                             invalid_possibilities.append(res)
 
+                if found_classification:
+                    break
+
+        if not found_classification and not warnings:
+            warnings.append("Unable find a classification")
+
         return ValidationSummary(
             valid_results=valid_possibilities,
-            invalid_results=invalid_possibilities
+            invalid_results=invalid_possibilities,
+            warnings=warnings
         )

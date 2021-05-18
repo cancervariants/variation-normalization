@@ -1,6 +1,6 @@
 """Module for Translation Response Schema."""
 from pydantic import BaseModel
-from typing import List, Dict, Type, Any
+from typing import List, Dict, Type, Any, Optional
 from variant.schemas.ga4gh_vrs import Allele
 from variant.schemas.normalize_response_schema import ServiceMeta
 
@@ -9,6 +9,7 @@ class ToVRSService(BaseModel):
     """Define model for translation response."""
 
     search_term: str
+    warnings: Optional[List[str]]
     variants: List[Allele]
     service_meta_: ServiceMeta
 
