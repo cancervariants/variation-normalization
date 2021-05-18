@@ -1506,3 +1506,27 @@ amino_acid_insertion:
           "type": "Allele"
         }
       ]
+
+coding_dna_insertion:
+  tests:
+    - query: NM_007294.3:c.2902_2903insTC
+      variants: [
+        {
+          "id": "ga4gh:VA.KoD6uOCTwkhOFaaT9eWzi_C1NHz12xWe",
+          "location": {
+            "interval": {
+              "end": 2904,
+              "start": 2902,
+              "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.jj1RAXMGdOU-D39IRYnDX_fXcM7LQvb6",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "TCTC",
+            "type": "SequenceState"
+          },
+          "type": "Allele"
+        },
+
+      ]
