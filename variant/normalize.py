@@ -31,7 +31,7 @@ class Normalize:
             valid_result = None
             label = None
             for r in validations.valid_results:
-                if r.mane_transcript:
+                if r.mane_transcript and r.allele:
                     valid_result = r
                     label = valid_result.mane_transcript.strip()
                     break
@@ -173,8 +173,13 @@ class Normalize:
         """
         label = label.split(':')[0]
         interval = allele['location']['interval']
-        start = interval['start'] + 1
-        end = interval['end']
+        # TODO: Is this correct?
+        if interval['start'] != interval['end']:
+            start = interval['start'] + 1
+            end = interval['end']
+        else:
+            start = interval['start'] + 1
+            end = interval['end'] + 1
 
         if start and end:
             refseq_list = list()
