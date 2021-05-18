@@ -67,16 +67,16 @@ class AminoAcidInsertion(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
+                if hgvs_expr not in mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'protein': is_ensembl
+                    }
+
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
-                    # MANE Select Transcript
-                    if hgvs_expr not in mane_transcripts_dict.keys():
-                        mane_transcripts_dict[hgvs_expr] = {
-                            'classification_token': s,
-                            'transcript_token': t,
-                            'protein': is_ensembl
-                        }
                     if len(allele['state']['sequence']) == 3:
                         allele['state']['sequence'] = \
                             self._amino_acid_cache.convert_three_to_one(

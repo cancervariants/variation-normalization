@@ -71,15 +71,16 @@ class CodingDNADeletion(DeletionBase):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                else:
+                if hgvs_expr not in mane_transcripts_dict.keys():
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
                         'nucleotide': is_ensembl
                     }
 
+                if not allele:
+                    errors.append("Unable to find allele.")
+                else:
                     ref_sequence = self.get_reference_sequence(t, s, errors)
 
                     if ref_sequence and s.deleted_sequence:

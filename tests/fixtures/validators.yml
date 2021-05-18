@@ -171,7 +171,17 @@ coding_dna_insertion:
   should_match:
     - query: ENST00000000442.11:c.426_500insT
     - query: NM_007294.3:c.2902_2903insTC
+    - query: NM_004006.2:c.849_850ins858_895
     - query: LIMK2 c.2049_2050insA
   should_not_match:
     - query: NM_007294.3:c.7224_7225insTC
     - query: LIMK2 c.486488_486490insA
+
+genomic_insertion:
+  should_match:
+    - query: NC_000022.10:g.30051593_30051594insT
+    - query: NC_000017.10:g.37880993_37880994insGCTTACGTGATG
+    - query: ERRB2 g.37880993_37880994insGCTTACGTGATG
+  should_not_match:
+    - query: NC_000022.10:g.51304566_51304567insT
+    - query: NC_000022.10:g.51304565_51304566insT

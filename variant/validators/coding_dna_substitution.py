@@ -72,15 +72,16 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                else:
+                if hgvs_expr not in mane_transcripts_dict.keys():
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
                         'nucleotide': is_ensembl
                     }
 
+                if not allele:
+                    errors.append("Unable to find allele.")
+                else:
                     ref_nuc = \
                         self.seqrepo_access.sequence_at_position(t, s.position)
                     self.check_ref_nucleotide(ref_nuc, s, t, errors)
