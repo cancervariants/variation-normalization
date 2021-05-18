@@ -78,15 +78,16 @@ class CodingDNADelIns(DelInsBase):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                else:
+                if hgvs_expr not in mane_transcripts_dict.keys():
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
                         'nucleotide': is_ensembl
                     }
 
+                if not allele:
+                    errors.append("Unable to find allele.")
+                else:
                     self.check_pos_index(t, s, errors)
 
                 self.add_validation_result(

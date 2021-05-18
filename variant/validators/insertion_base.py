@@ -31,16 +31,15 @@ class InsertionBase(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if allele:
+                if hgvs_expr not in mane_transcripts_dict.keys():
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
                         'nucleotide': is_ensembl
                     }
 
+                if allele:
                     self.check_pos_index(t, s, errors)
-
-                print(errors)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
@@ -73,7 +72,8 @@ class InsertionBase(Validator):
             hgvs_expr = f"{prefix}{position}ins{inserted_sequence}"
         else:
             hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+                          isinstance(t, Token) and t.token_type
+                          in ['HGVS', 'ReferenceSequence']][0]
             hgvs_expr = hgvs_token.input_string
         return hgvs_expr
 
