@@ -135,11 +135,11 @@ class TranscriptMappings:
         if lookup_type == LookupType.GENE_SYMBOL:
             protein_transcripts += \
                 self.ensembl_protein_version_for_gene_symbol.get(
-                    identifier)
+                    identifier, '')
             protein_transcripts += \
-                self.ensembl_protein_for_gene_symbol.get(identifier)
+                self.ensembl_protein_for_gene_symbol.get(identifier, '')
             protein_transcripts += \
-                self.refseq_protein_for_gene_symbol.get(identifier)
+                self.refseq_protein_for_gene_symbol.get(identifier, '')
             return list(set(protein_transcripts))
         else:
             return []
@@ -150,11 +150,12 @@ class TranscriptMappings:
         genomic_transcripts = list()
         if lookup_type == LookupType.GENE_SYMBOL:
             genomic_transcripts += \
-                self.ensembl_transcript_version_for_gene_symbol.get(identifier)
+                self.ensembl_transcript_version_for_gene_symbol.get(identifier,
+                                                                    '')
             genomic_transcripts += \
-                self.refseq_rna_version_for_gene_symbol.get(identifier)
+                self.refseq_rna_version_for_gene_symbol.get(identifier, '')
             genomic_transcripts += \
-                self.refseq_rna_version_for_gene_symbol.get(identifier)
+                self.refseq_rna_version_for_gene_symbol.get(identifier, '')
             return list(set(genomic_transcripts))
         else:
             return []

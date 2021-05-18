@@ -1087,7 +1087,8 @@ def test_no_matches(test_normalize):
         "ERBB2 G776delinsVCZ", "NP005219.2:p.Glu746_Thr751delinsValAla",
         "NP_005219.2:p.Glu746Thr751delinsValAla", "EGFR L747_L474delinsP",
         "NP_005219.2:p.Glu746_Thr751delinssValAla", "EGFR delins",
-        "NM_004333.4:c.1799_1800delTGinsAT"
+        "NM_004333.4:c.1799_1800delTGinsAT",
+        "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)"
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
