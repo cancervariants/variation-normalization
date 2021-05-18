@@ -91,28 +91,31 @@ class Tokenize:
             LocusReferenceGenomic(),
         )
 
-    def perform(self, search_string: str) -> Iterable[Token]:
+    def perform(self, search_string: str, warnings: List[str])\
+            -> Iterable[Token]:
         """Return an iterable of tokens for a given search string.
 
         :param str search_string: The input string to search on
+        :param list warnings: List of warnings
         :return: An Iterable of Tokens
         """
         tokens: List[Token] = list()
         terms = self.search_term_splitter.split(search_string)
-        self._add_tokens(tokens, terms, search_string)
+        self._add_tokens(tokens, terms, search_string, warnings)
 
         # If reference sequence: Check description
         if list(map(lambda t: t.token_type, tokens)) == ['ReferenceSequence']:
             self._add_tokens(tokens,
                              [search_string.split(':')[1]],
-                             search_string)
+                             search_string, warnings)
         return tokens
 
-    def _add_tokens(self, tokens, terms, search_string):
+    def _add_tokens(self, tokens, terms, search_string, warnings):
         """Add tokens to a list for a given search string.
 
         :param list tokens: A list of tokens
         :param str search_string: The input string to search on
+        :param list warnings: List of warnings
         """
         for term in terms:
             if not term:
@@ -128,12 +131,13 @@ class Tokenize:
                         if len(tokens) == 1:
                             self._add_tokens(tokens,
                                              [search_string.split(':')[1]],
-                                             search_string)
+                                             search_string, warnings)
                     matched = True
                     break
                 else:
                     continue
             if not matched:
+                warnings.append(f"Unable to tokenize {term}")
                 tokens.append(Token(
                     token='',
                     token_type='Unknown',
