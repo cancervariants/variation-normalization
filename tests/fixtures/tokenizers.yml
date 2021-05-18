@@ -322,3 +322,29 @@ amino_acid_insertion:
     - token: p.Lys23insAsp
     - token: Lys23insAsp
     - token: p.His4_Gln5insAlaG
+
+coding_dna_insertion:
+  should_match:
+    - token: c.849_850ins858_895
+    - token: c.169_170insA
+    - token: c.240_241insAGG
+  should_not_match:
+    - token: p.His4_Gln5insAla
+    - token: c.His4_Gln5insAla
+    - token: 849_850ins858_895
+    - token: p.849_850ins858_
+    - token: p.849_850ins_895
+    - token: p.169_insA
+    - token: p._170insA
+    - token: p.849_850ins858_895
+
+genomic_insertion:
+  should_match:
+    - token: g.123_124insAGC
+    - token: g.32867861_32867862insT
+    - token: g.37881011_37881012insGGCTCCCCA
+  should_not_match:
+    - token: g.123_124insAGCX
+    - token: c.169_170insAla
+    - token: g.32867861_32867862delinsT
+    - token: 123_124insAGCX

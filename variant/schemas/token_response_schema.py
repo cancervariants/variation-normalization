@@ -455,3 +455,23 @@ class AminoAcidInsertionToken(Insertion):
     token_type = 'AminoAcidInsertion'
     so_id = 'SO:0001605'
     molecule_context = 'protein'
+
+
+class CodingDNAInsertionToken(Insertion):
+    """Coding DNA Insertion."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    inserted_sequence2: Optional[str]
+    token_type = 'CodingDNAInsertion'
+    so_id = 'SO:0000667'
+    molecule_context = 'transcript'
+
+
+class GenomicInsertionToken(Insertion):
+    """Genomic Insertion."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    inserted_sequence2: Optional[str]
+    token_type = 'GenomicInsertion'
+    so_id = 'SO:0000667'
+    molecule_context = 'genomic'
