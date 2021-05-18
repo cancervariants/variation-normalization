@@ -18,6 +18,8 @@ from .amino_acid_deletion import AminoAcidDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
 from .amino_acid_insertion import AminoAcidInsertion
+from .coding_dna_insertion import CodingDNAInsertion
+from .genomic_insertion import GenomicInsertion
 from typing import List
 
 
@@ -54,7 +56,10 @@ class Validate:
                               gene_symbol),
             GenomicDeletion(seq_repo_client, transcript_mappings, gene_symbol),
             AminoAcidInsertion(seq_repo_client, transcript_mappings,
-                               gene_symbol, amino_acid_cache)
+                               gene_symbol, amino_acid_cache),
+            CodingDNAInsertion(seq_repo_client, transcript_mappings,
+                               gene_symbol),
+            GenomicInsertion(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
     def perform(self, classifications: List[Classification]) \

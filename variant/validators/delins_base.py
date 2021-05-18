@@ -26,13 +26,13 @@ class DelInsBase(Validator):
     def concise_description(self, transcript, token) -> str:
         """Return a description of the identified variant."""
         if token.start_pos_del is not None and token.end_pos_del is not None:
-            position = f"{token.start_pos_del} to {token.end_pos_del}"
+            position = f"{token.start_pos_del}_{token.end_pos_del}"
         else:
             position = token.start_pos_del
 
         if token.inserted_sequence1 is not None and \
                 token.inserted_sequence2 is not None:
-            sequence = f"{token.inserted_sequence1} to " \
+            sequence = f"{token.inserted_sequence1}_" \
                        f"{token.inserted_sequence2}"
         else:
             sequence = token.inserted_sequence1
