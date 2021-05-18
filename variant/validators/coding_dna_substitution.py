@@ -48,7 +48,8 @@ class CodingDNASubstitution(SingleNucleotideVariantBase):
             hgvs_expr = hgvs_from_transcript
         else:
             hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+                          isinstance(t, Token) and t.token_type
+                          in ['HGVS', 'ReferenceSequence']][0]
             hgvs_expr = hgvs_token.input_string
         return hgvs_expr
 
