@@ -29,16 +29,21 @@ class GenomicSilentMutation(SingleNucleotideVariantBase):
         """
         return self.get_genomic_transcripts(classification, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
-        """Get HGVS expression."""
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
+        """
         if is_hgvs:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             t = hgvs_token.input_string.split(':')[0]
-
-        hgvs_expr = f"{t}:{s.reference_sequence.lower()}.{s.position}="
-
-        return hgvs_expr, None
+        return f"{t}:{s.reference_sequence.lower()}.{s.position}="
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results,

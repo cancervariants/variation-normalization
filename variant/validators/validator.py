@@ -89,7 +89,7 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
         """Return HGVS expression for a classification token.
 
         :param Classification classification: A classification for a list of
@@ -367,19 +367,24 @@ class Validator(ABC):
         :param Token s: The classification token
         :param list errors: List of errors
         :return: Tuple[VRS allele, transcript accession, hgvs_expression,
-            `True` if MANE transcript should use Ensembl accession.
-            `False` if MANE transcript should use RefSeq accession]
+            `True` if MANE should use Ensembl accession.
+            `False` if MANE should use RefSeq accession]
         """
         if 'HGVS' in classification.matching_tokens or \
                 'ReferenceSequence' in classification.matching_tokens:
-            hgvs_expr, is_ensembl_transcript = \
-                self.get_hgvs_expr(classification, t, s, True)
+            hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
             t = hgvs_expr.split(':')[0]
         else:
-            hgvs_expr, is_ensembl_transcript = \
-                self.get_hgvs_expr(classification, t, s, False)
+            hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
         allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-        return allele, t, hgvs_expr, is_ensembl_transcript
+
+        gene_token = [t for t in classification.all_tokens
+                      if t.token_type == 'GeneSymbol']
+        if gene_token or hgvs_expr.startswith('EN'):
+            is_ensembl = True
+        else:
+            is_ensembl = False
+        return allele, t, hgvs_expr, is_ensembl
 
     def get_allele_from_hgvs(self, hgvs_expr, errors) -> Optional[dict]:
         """Return allele given a HGVS expression.
@@ -472,21 +477,23 @@ class Validator(ABC):
             return
 
         for el in mane_transcripts:
-            hgvs_expr = el[0]
-            ensembl_transcript = el[1]
-            refseq_transcript = el[2]
-            refseq_protein = el[3]
+            (hgvs_expr, ensembl_nuc, refseq_nuc,
+             ensembl_protein, refseq_protein) = el
 
-            if 'is_ensembl_transcript' in \
-                    mane_transcripts_dict[hgvs_expr].keys():
-                allele = self.get_allele_from_hgvs(refseq_transcript, errors)
-                if mane_transcripts_dict[hgvs_expr]['is_ensembl_transcript']:
-                    transcript = ensembl_transcript
+            keys = mane_transcripts_dict[hgvs_expr].keys()
+
+            if 'protein' in keys:
+                allele = self.get_allele_from_hgvs(refseq_protein, errors)
+                if mane_transcripts_dict[hgvs_expr]['protein']:
+                    transcript = ensembl_protein
                 else:
-                    transcript = refseq_transcript
+                    transcript = refseq_protein
             else:
-                transcript = refseq_protein
-                allele = self.get_allele_from_hgvs(transcript, errors)
+                allele = self.get_allele_from_hgvs(refseq_nuc, errors)
+                if mane_transcripts_dict[hgvs_expr]['nucleotide']:
+                    transcript = ensembl_nuc
+                else:
+                    transcript = refseq_nuc
 
             self.add_validation_result(
                 allele, [], results, classification,
@@ -526,23 +533,28 @@ class Validator(ABC):
         mane_transcript_tuple = self.get_mane_transcript(hgvs_expr,
                                                          gene_tokens)
         if mane_transcript_tuple:
-            ensembl, refseq, refseq_protein = mane_transcript_tuple
+            ensembl_nuc, refseq_nuc, ensembl_protein, refseq_protein =\
+                mane_transcript_tuple
 
-            if ensembl and refseq:
-                if (ensembl, refseq) not in found_mane_transcripts:
-                    found_mane_transcripts.append((ensembl, refseq,
-                                                   refseq_protein))
-                    mane_transcripts.append((hgvs_expr, ensembl, refseq,
-                                             refseq_protein))
+            if ensembl_nuc and refseq_nuc:
+                if (ensembl_nuc, refseq_nuc) not in found_mane_transcripts:
+                    found_mane_transcripts.append(
+                        (ensembl_nuc, refseq_nuc,
+                         ensembl_protein, refseq_protein)
+                    )
+                    mane_transcripts.append(
+                        (hgvs_expr, ensembl_nuc, refseq_nuc,
+                         ensembl_protein, refseq_protein)
+                    )
 
     def get_mane_transcript(self, hgvs_expr, gene_tokens)\
-            -> Optional[Tuple[str, str, str]]:
+            -> Optional[Tuple[str, str, str, str]]:
         """Return MANE Select Transcript from ClinGene Allele Registry API.
 
         :param str hgvs_expr: The HGVS expression to query
         :param list gene_tokens: List of GeneMatchTokens
         :return: Tuple[nucleotide Ensembl HGVS expr, nucleotide RefSeq hgvs
-            expr, protein RefSeq hgvs expr]
+            expr, protein Ensembl hgvs expr, protein RefSeq hgvs expr]
         """
         request = requests.get(
             f"https://reg.genome.network/allele?hgvs={hgvs_expr}")
@@ -567,6 +579,7 @@ class Validator(ABC):
                         return (
                             mane_transcript['nucleotide']['Ensembl']['hgvs'],
                             mane_transcript['nucleotide']['RefSeq']['hgvs'],
+                            mane_transcript['protein']['Ensembl']['hgvs'],
                             mane_transcript['protein']['RefSeq']['hgvs']
                         )
             else:

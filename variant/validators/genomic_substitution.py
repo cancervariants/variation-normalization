@@ -28,8 +28,16 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
         """
         return self.get_genomic_transcripts(classification, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
-        """Get HGVS expression."""
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression.
+
+        :param Classification classification: A classification for a list of
+            tokens
+        :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
+        """
         if not is_hgvs:
             hgvs_expr = f"{t}:{s.reference_sequence.lower()}.{s.position}" \
                         f"{s.ref_nucleotide}>{s.new_nucleotide}"
@@ -37,18 +45,7 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             hgvs_expr = hgvs_token.input_string
-
-        if hgvs_expr.startswith('EN'):
-            is_ensembl_transcript = True
-        else:
-            is_ensembl_transcript = False
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token:
-            is_ensembl_transcript = True
-
-        return hgvs_expr, is_ensembl_transcript
+        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results,
@@ -70,14 +67,14 @@ class GenomicSubstitution(SingleNucleotideVariantBase):
                 ref_nuc = \
                     self.seqrepo_access.sequence_at_position(t, s.position)
 
-                allele, t, hgvs_expr, is_ensembl_transcript = \
+                allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
                 if allele:
                     mane_transcripts_dict[hgvs_expr] = {
                         'classification_token': s,
                         'transcript_token': t,
-                        'is_ensembl_transcript': is_ensembl_transcript
+                        'nucleotide': is_ensembl
                     }
 
                 self.check_ref_nucleotide(ref_nuc, s, t, errors)
