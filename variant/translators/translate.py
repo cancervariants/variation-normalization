@@ -16,6 +16,8 @@ from .amino_acid_deletion import AminoAcidDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
 from .amino_acid_insertion import AminoAcidInsertion
+from .coding_dna_insertion import CodingDNAInsertion
+from .genomic_insertion import GenomicInsertion
 from typing import List, Optional
 
 
@@ -38,7 +40,9 @@ class Translate:
             AminoAcidDeletion(),
             CodingDNADeletion(),
             GenomicDeletion(),
-            AminoAcidInsertion()
+            AminoAcidInsertion(),
+            CodingDNAInsertion(),
+            GenomicInsertion()
         ]
 
     def perform(self, res: ValidationResult) \
