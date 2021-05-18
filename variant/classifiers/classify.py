@@ -13,7 +13,8 @@ from variant.classifiers import ComplexClassifier, ExpressionClassifier, \
     GenomicSilentMutationClassifier, AminoAcidDelInsClassifier, \
     CodingDNADelInsClassifier, GenomicDelInsClassifier, \
     AminoAcidDeletionClassifier, CodingDNADeletionClassifier, \
-    GenomicDeletionClassifier, AminoAcidInsertionClassifier, Classifier
+    GenomicDeletionClassifier, AminoAcidInsertionClassifier, \
+    CodingDNAInsertionClassifier, GenomicInsertionClassifier, Classifier
 
 
 class Classify:
@@ -43,7 +44,9 @@ class Classify:
             AminoAcidDeletionClassifier(),
             CodingDNADeletionClassifier(),
             GenomicDeletionClassifier(),
-            AminoAcidInsertionClassifier()
+            AminoAcidInsertionClassifier(),
+            CodingDNAInsertionClassifier(),
+            GenomicInsertionClassifier()
         ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
