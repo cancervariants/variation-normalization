@@ -15,3 +15,5 @@ from .amino_acid_deletion import AminoAcidDeletion  # noqa: F401
 from .coding_dna_deletion import CodingDNADeletion  # noqa: F401
 from .genomic_deletion import GenomicDeletion  # noqa: F401
 from .amino_acid_insertion import AminoAcidInsertion  # noqa: F401
+from .coding_dna_insertion import CodingDNAInsertion  # noqa: F401
+from .genomic_insertion import GenomicInsertion  # noqa: F401
