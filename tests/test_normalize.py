@@ -18,9 +18,10 @@ def test_normalize():
             self.test_normalize = Normalize()
 
         def normalize(self, q):
-            resp = self.test_normalize.normalize(q,
-                                                 self.to_vrs.get_validations(q),  # noqa: E501
-                                                 self.to_vrs.amino_acid_cache)
+            resp = \
+                self.test_normalize.normalize(q,
+                                              self.to_vrs.get_validations(q),
+                                              self.to_vrs.amino_acid_cache, [])
             return resp
 
     return TestNormalize()
