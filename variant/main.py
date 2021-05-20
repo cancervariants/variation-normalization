@@ -4,7 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from variant.to_vrs import ToVRS
 from variant.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variant.normalize import Normalize
-from variant import __version__
+from .version import __version__
 from datetime import datetime
 import html
 

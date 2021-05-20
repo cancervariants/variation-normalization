@@ -1,4 +1,5 @@
 """Module for package and distribution."""
 import setuptools
 
-setuptools.setup(version="0.2.3")
+exec(open('variant/version.py').read())
+setuptools.setup(version=__version__)  # noqa: F821
