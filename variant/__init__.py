@@ -1,4 +1,5 @@
 """The Variant Normalization package."""
+from .version import __version__  # noqa: F401
 from pathlib import Path
 import os
 import logging
@@ -6,7 +7,6 @@ from ftplib import FTP
 from os import environ
 from gene.query import QueryHandler as GeneQueryHandler
 
-__version__ = "0.2.3"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
@@ -19,12 +19,10 @@ else:
 
 GENE_NORMALIZER = GeneQueryHandler()
 
+logging.basicConfig(
+    filename='variant.log',
+    format='[%(asctime)s] - %(name)s - %(levelname)s : %(message)s')
 logger = logging.getLogger('variant')
-if Path(LOG_FN).exists():
-    fhandler = logging.FileHandler(filename=LOG_FN)
-    formatter = logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s : %(message)s')  # noqa: E501
-    fhandler.setFormatter(formatter)
-    logger.addHandler(fhandler)
 logger.setLevel(logging.DEBUG)
 
 
