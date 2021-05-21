@@ -1,6 +1,7 @@
 """Module for Validation."""
 from typing import List, Tuple, Optional
 from abc import ABC, abstractmethod
+from variant import SEQREPO_REST_SERVICE_URL
 from variant.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variant.schemas.token_response_schema import GeneMatchToken
@@ -8,7 +9,7 @@ from variant.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variant.tokenizers import GeneSymbol
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
 import requests
@@ -25,18 +26,20 @@ class Validator(ABC):
 
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol) -> None:
+                 gene_symbol: GeneSymbol,
+                 seqrepo_rest_service_url=SEQREPO_REST_SERVICE_URL) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings to/from gene symbols
         :param GeneSymbol gene_symbol: GeneSymbol tokenizer
+        :param str seqrepo_rest_service_url: URL to seqrepo rest service
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self._gene_matcher = gene_symbol
-        self.dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        self.dp = SeqRepoRESTDataProxy(seqrepo_rest_service_url)
         self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_parser = hgvs.parser.Parser()
         self.genomic_base = GenomicBase(self.dp)
@@ -419,6 +422,10 @@ class Validator(ABC):
             errors.append("Unable to get VRS Allele.")
         else:
             allele = allele.as_dict()
+            allele_seq_id = allele['location']['sequence_id']
+            if allele_seq_id.startswith('ga4gh:GS.'):
+                allele['location']['sequence_id'] = \
+                    allele_seq_id.replace('ga4gh:GS.', 'ga4gh:SQ.')
         return allele
 
     def add_validation_result(self, allele, valid_alleles, results,

@@ -17,13 +17,16 @@ if 'VARIANT_NORM_EB_PROD' in os.environ:
 else:
     LOG_FN = f'{APP_ROOT}/variant/variant.log'
 
-GENE_NORMALIZER = GeneQueryHandler()
-
 logging.basicConfig(
     filename='variant.log',
     format='[%(asctime)s] - %(name)s - %(levelname)s : %(message)s')
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
+
+
+# Default DynamoDB url is http://localhost:8002
+# To use a different connection, set `GENE_NORM_DB_URL`
+GENE_NORMALIZER = GeneQueryHandler()
 
 
 def data_download(path, domain, dir, fn):
@@ -51,3 +54,4 @@ data_download(HGNC_GENE_SYMBOL_PATH, 'ftp.ebi.ac.uk',
 REFSEQ_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/refseq_gene_symbols.txt"
 data_download(REFSEQ_GENE_SYMBOL_PATH, 'ftp.ncbi.nih.gov',
               'refseq/H_sapiens/RefSeqGene/', 'LRG_RefSeqGene')
+SEQREPO_REST_SERVICE_URL = "http://localhost:5000/seqrepo"

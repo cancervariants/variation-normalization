@@ -30,7 +30,12 @@ class SingleNucleotideVariantBase(Validator):
         state = models.SequenceState(sequence=s.new_nucleotide)
         allele = models.Allele(location=seq_location, state=state)
         allele['_id'] = ga4gh_identify(allele)
-        return allele.as_dict()
+        allele = allele.as_dict()
+        allele_seq_id = allele['location']['sequence_id']
+        if allele_seq_id.startswith('ga4gh:GS.'):
+            allele['location']['sequence_id'] = \
+                allele_seq_id.replace('ga4gh:GS.', 'ga4gh:SQ.')
+        return allele
 
     def silent_mutation_valid_invalid_results(self, classification_tokens,
                                               transcripts, classification,
