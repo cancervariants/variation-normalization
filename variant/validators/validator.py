@@ -373,11 +373,9 @@ class Validator(ABC):
             `True` if MANE should use Ensembl accession.
             `False` if MANE should use RefSeq accession]
         """
-        is_hgvs = False
         if 'HGVS' in classification.matching_tokens or \
                 'ReferenceSequence' in classification.matching_tokens:
             hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
-            is_hgvs = True
         else:
             hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
         allele = self.get_allele_from_hgvs(hgvs_expr, errors)
@@ -388,17 +386,6 @@ class Validator(ABC):
             is_ensembl = True
         else:
             is_ensembl = False
-
-        # TODO: Is this okay to do or should we be ok with not being
-        #  able to normalize Ensembl Accessions (seqrepo issue)
-        #  Maybe we should just manually convert Ensembl accessions to
-        #  Refseq using transcript_mappings / refseq_gene_symbols
-        if is_hgvs and allele:
-            t = hgvs_expr.split(':')[0]
-        elif is_hgvs and not allele and hgvs_expr.startswith('EN'):
-            hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
-            allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
         return allele, t, hgvs_expr, is_ensembl
 
     def get_allele_from_hgvs(self, hgvs_expr, errors) -> Optional[dict]:
