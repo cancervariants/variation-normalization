@@ -22,9 +22,7 @@ class GenomicBase:
                 t.token_type in ['HGVS', 'ReferenceSequence']]
         nc_accessions = []
         if hgvs:
-            nc_accession = hgvs[0].split(':')[0]
-            nc_accessions = \
-                self.get_nc_accessions_from_nc_accession(nc_accession)
+            nc_accessions = [hgvs[0].split(':')[0]]
         else:
             gene_tokens = [t for t in classification.all_tokens
                            if t.token_type == 'GeneSymbol']
@@ -44,32 +42,6 @@ class GenomicBase:
                                 nc_accessions.append(nc_accession)
         return list(set(nc_accessions))
 
-    def get_nc_accessions_from_nc_accession(self, nc_accession):
-        """Given NC accession, find other version from other assembly."""
-        nc_accessions = [nc_accession]
-        try:
-            assembly = None
-            for a in self.dp.get_metadata(nc_accession)['aliases']:
-                if a.startswith('GRCh3'):
-                    assembly = a
-                    break
-        except (KeyError, ValueError):
-            pass
-        else:
-            if assembly:
-                if assembly.startswith('GRCh38'):
-                    nc_accession = \
-                        self.get_nc_accession(f"GRCh37:"
-                                              f"{assembly.split(':')[1]}")
-                    if nc_accession:
-                        nc_accessions.append(nc_accession)
-                elif assembly.startswith('GRCh37'):
-                    nc_accession = self.get_nc_accession(
-                        f"GRCh38:{assembly.split(':')[1]}")
-                    if nc_accession:
-                        nc_accessions.append(nc_accession)
-        return nc_accessions
-
     def get_nc_accession(self, identifier):
         """Given an identifier (assembly+chr), return nc accession."""
         nc_accession = None
@@ -78,7 +50,7 @@ class GenomicBase:
                 self.dp.get_metadata(identifier)
         except KeyError:
             logger.warning('Data Proxy unable to get metadata'
-                           f'for GRCh38:{identifier}')
+                           f'for {identifier}')
         else:
             aliases = [a for a in metadata['aliases'] if
                        a.startswith('refseq:NC_')]
