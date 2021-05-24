@@ -70,6 +70,12 @@ pytest tests/
 ```
 
 ### Starting the Variant Normalization Service
+
+`gene-normalizer`s dynamodb must be running and run the following:
+```
+docker-compose -f docker-compose.yml up
+```
+
 From the _root_ directory of the repository:
 ```
 uvicorn variant.main:app --reload
