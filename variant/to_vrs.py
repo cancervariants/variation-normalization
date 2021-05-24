@@ -52,10 +52,10 @@ class ToVRS:
         :return: A list of unique translations from valid results
         """
         translations = []
-        if not warnings:
-            warnings.append("Unable to validate variant")
         for valid_variant in validations.valid_results:
             result = self.translator.perform(valid_variant)
             if result not in translations:
                 translations.append(result)
+        if not translations and not warnings:
+            warnings.append("Unable to validate variant")
         return translations, warnings
