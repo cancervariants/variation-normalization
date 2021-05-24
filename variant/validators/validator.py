@@ -376,6 +376,7 @@ class Validator(ABC):
         if 'HGVS' in classification.matching_tokens or \
                 'ReferenceSequence' in classification.matching_tokens:
             hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
+            t = hgvs_expr.split(':')[0]
         else:
             hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
         allele = self.get_allele_from_hgvs(hgvs_expr, errors)
