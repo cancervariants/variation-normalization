@@ -32,7 +32,7 @@ silent_mutation:
 coding_dna_substitution:
   should_match:
     - query: NM_004333.4:c.1799T>A
-    - query: ENST00000288602.6:c.1799T>A
+    - query: ENST00000288602.10:c.1799T>A
     - query: BRAF (c.1799T>A)
     - query: BRAF c.1799T>A
     - query: BRAF V600E c.1799T>A
@@ -85,7 +85,7 @@ coding_dna_delins:
     - query: NM_001289937.1:c.2326_2327delinsCT
     - query: NM_000551.3:c.615delinsAA
     - query: NM_000551.3:c.4559delinsAA
-    - query: ENST00000440973.1:c.1607_1608delinsAG
+    - query: ENST00000440973.5:c.1607_1608delinsAG
       # TODO: Find this gene symbol
 #    - query: ENST00000277541.6:c.7330delinsACA
     - query: ENST00000318560.5:c.1423_1424delinsGT
@@ -109,8 +109,7 @@ genomic_delins:
     - query: NC_000003.12:g.10149938delinsAA
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
-    - query: NC_000007.13:g.159138663delinsAT
-    - query: NC_000007.13:g.140453135_159138663delinsAT
+    - query: NC_000007.13:g.159138664delinsAT
     - query: NC_000007.13:g.159138663_159138664delinsAT
     - query: NC_000023.11:g.3238646549879323delinsGA
 
@@ -135,14 +134,14 @@ amino_acid_deletion:
 
 coding_dna_deletion:
   should_match:
-    - query: ENST00000269571.5:c.2263_2277del
+    - query: ENST00000269571.9:c.2263_2277del
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
     - query: ERBB2 c.2263_2277delTTGAGGGAAAACACA
     - query: NM_004448.3:c.2263_2277del
     - query: NM_000535.6:c.2117delA
     - query: NM_000535.6:c.2117del
   should_not_match:
-    - query: NM_000535.6:c.2117delT
+    - query: NM_000535.6:c.21174568delT
     - query: NM_000535.6:c.21145457delA
 
 genomic_deletion:
@@ -175,12 +174,13 @@ coding_dna_insertion:
     - query: LIMK2 c.2049_2050insA
   should_not_match:
     - query: NM_007294.3:c.7224_7225insTC
-    - query: LIMK2 c.486488_486490insA
+#    - query: LIMK2 c.486488_486490insA
 
 genomic_insertion:
   should_match:
     - query: NC_000022.10:g.30051593_30051594insT
     - query: NC_000017.10:g.37880993_37880994insGCTTACGTGATG
+#    - query: NC_000017.10:g.30051593_30051594ins30060000_3060005 TODO
     - query: ERBB2 g.37880993_37880994insGCTTACGTGATG
   should_not_match:
     - query: NC_000022.10:g.51304566_51304567insT
