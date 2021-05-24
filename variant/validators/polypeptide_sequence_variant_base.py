@@ -112,18 +112,9 @@ class PolypeptideSequenceVariantBase(Validator):
                         t, s.ref_protein, s.position, errors
                     )
 
-                if not errors and allele not in valid_alleles:
-                    results.append(self.get_validation_result(
-                        classification, True, 1, allele,
-                        self.human_description(t, s),
-                        self.concise_description(t, s), [], gene_tokens))
-
-                    valid_alleles.append(allele)
-                else:
-                    results.append(self.get_validation_result(
-                        classification, False, 1, allele,
-                        self.human_description(t, s),
-                        self.concise_description(t, s), errors, gene_tokens))
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens,
+                                           errors)
 
         # Now add Mane transcripts to results
         self.add_mane_transcript(classification, results, gene_tokens,
