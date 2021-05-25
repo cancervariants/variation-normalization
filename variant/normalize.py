@@ -162,10 +162,10 @@ class Normalize:
                                             'GenomicSubstitution']:
                 ref_allele_seq = variant_token.ref_nucleotide
             else:
-                ref_allele_seq = self.get_delins_ref_allele_seq(allele, label)
+                ref_allele_seq = self.get_ref_allele_seq(allele, label)
         return ref_allele_seq
 
-    def get_delins_ref_allele_seq(self, allele, label) -> Optional[str]:
+    def get_ref_allele_seq(self, allele, label) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
@@ -174,7 +174,6 @@ class Normalize:
         """
         label = label.split(':')[0]
         interval = allele['location']['interval']
-        # TODO: Is this correct?
         if interval['start'] != interval['end']:
             start = interval['start'] + 1
             end = interval['end']
