@@ -794,7 +794,6 @@ def amino_acid_insertion(egfr_context):
         "label": "NP_005219.2:p.Asp770_Asn771insGlyLeu",
         "molecule_context": "protein",
         "structural_type": "SO:0001605",
-        "ref_allele_seq": "N",
         "gene_context": egfr_context
     }
     return VariationDescriptor(**params)
