@@ -24,7 +24,7 @@ logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
 
 
-# Default DynamoDB url is http://localhost:8002
+# Default DynamoDB url is http://localhost:8000
 # To use a different connection, set `GENE_NORM_DB_URL`
 GENE_NORMALIZER = GeneQueryHandler()
 
