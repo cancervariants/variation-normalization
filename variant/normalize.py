@@ -178,8 +178,7 @@ class Normalize:
             start = interval['start'] + 1
             end = interval['end']
         else:
-            start = interval['start'] + 1
-            end = interval['end'] + 1
+            return None
 
         if start and end:
             refseq_list = list()
