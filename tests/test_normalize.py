@@ -18,10 +18,12 @@ def test_normalize():
             self.test_normalize = Normalize()
 
         def normalize(self, q):
+            validations, warnings = self.to_vrs.get_validations(q)
             resp = \
                 self.test_normalize.normalize(q,
-                                              self.to_vrs.get_validations(q),
-                                              self.to_vrs.amino_acid_cache, [])
+                                              validations,
+                                              self.to_vrs.amino_acid_cache,
+                                              warnings)
             return resp
 
     return TestNormalize()
@@ -279,6 +281,65 @@ def egfr_context():
                     "interval": {
                         "end": "p11.2",
                         "start": "p11.2",
+                        "type": "CytobandInterval"
+                    }
+                }
+            }
+        ]
+    }
+
+
+@pytest.fixture(scope='module')
+def limk2_gene_context():
+    """Create LIMK2 gene context test fixture."""
+    return {
+        "id": "normalize.gene:LIMK2",
+        "type": "GeneDescriptor",
+        "label": "LIMK2",
+        "value": {
+            "id": "hgnc:6614",
+            "type": "Gene"
+        },
+        "xrefs": [
+            "ncbigene:3985",
+            "ensembl:ENSG00000182541"
+        ],
+        "alternate_labels": ["LIM domain kinase 2"],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "vega:OTTHUMG00000151251",
+                    "ucsc:uc003akh.4",
+                    "ccds:CCDS13892",
+                    "ccds:CCDS13891",
+                    "ccds:CCDS33637",
+                    "uniprot:P53671",
+                    "pubmed:8537403",
+                    "pubmed:10591208",
+                    "omim:601988",
+                    "iuphar:2055",
+                    "ena.embl:D45906",
+                    "refseq:NM_016733"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "22",
+                    "interval": {
+                        "end": "q12.2",
+                        "start": "q12.2",
                         "type": "CytobandInterval"
                     }
                 }
@@ -739,6 +800,70 @@ def amino_acid_insertion(egfr_context):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def coding_dna_insertion(limk2_gene_context):
+    """Create test fixture for coding DNA insertion."""
+    params = {
+        "id": 'normalize.variant:ENST00000331728.9%3Ac.2049_2050insA',
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.k1n2iF9CBTALeZFcXP8bIFMUXowcxr7T",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 132,
+                    "start": 130,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.7_mlQyDN-uWH0RlxTQFvFEv6ykd2D-xF",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "AAA",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "ENST00000331728.9:c.*132_*133insA",
+        "molecule_context": "transcript",
+        "structural_type": "SO:0000667",
+        "ref_allele_seq": "AA",
+        "gene_context": limk2_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_insertion(erbb2_context):
+    """Create a gene insertion test fixture."""
+    params = {
+        "id": 'normalize.variant:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
+        "type": "VariationDescriptor",
+        "value_id": "ga4gh:VA.lXgvYx4IjSu128OQhDFCzsGNQXT5uw3r",
+        "value": {
+            "location": {
+                "interval": {
+                    "end": 2327,
+                    "start": 2313,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "GATCCTGAAAGAGATCCTGAAAGAGA",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "label": "NM_004448.4:c.2314_2325dup",
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000667",
+        "ref_allele_seq": "GATCCTGAAAGAGA",
+        "gene_context": erbb2_context
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variant):
     """Check that normalize_response and variant_query are equal."""
     assert normalize_response.id == test_variant.id
@@ -1075,6 +1200,34 @@ def test_amino_acid_insertion(test_normalize, amino_acid_insertion):
     assert resp.id == 'normalize.variant:EGFR%20p.Cys770_Gly771insGlyLeu'
     change_resp(resp)
     assertion_checks(resp, amino_acid_insertion)
+
+
+def test_coding_dna_insertion(test_normalize, coding_dna_insertion):
+    """Test that coding dna insertion normalizes correctly."""
+    resp = test_normalize.normalize('ENST00000331728.9:c.2049_2050insA')
+    assertion_checks(resp, coding_dna_insertion)
+
+    resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
+    assert resp.id == 'normalize.variant:LIMK2%20c.2049_2050insA'
+    resp.id = 'normalize.variant:ENST00000331728.9%3Ac.2049_2050insA'
+    assertion_checks(resp, coding_dna_insertion)
+
+
+def test_genomic_insertion(test_normalize, genomic_insertion):
+    """Test that genomic insertion normalizes correctly."""
+    resp = test_normalize.normalize('NC_000017.10:g.37880993_37880994insGCTTACGTGATG')  # noqa: E501
+    assertion_checks(resp, genomic_insertion)
+
+    resp = test_normalize.normalize('ERBB2 g.37880993_37880994insGCTTACGTGATG')
+    assert resp.id ==\
+           'normalize.variant:ERBB2%20g.37880993_37880994insGCTTACGTGATG'
+    resp.id = \
+        'normalize.variant:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG'
+    assert resp.label == 'ENST00000269571.10:c.2314_2325dup'
+    resp.label = 'NM_004448.4:c.2314_2325dup'
+    assert resp.ref_allele_seq is None
+    resp.ref_allele_seq = 'GATCCTGAAAGAGA'
+    assertion_checks(resp, genomic_insertion)
 
 
 def test_no_matches(test_normalize):
