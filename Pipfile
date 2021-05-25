@@ -17,6 +17,7 @@ pyyaml = "*"
 jupyter = "*"
 ipykernel = "*"
 twine = "*"
+matplotlib = "*"
 
 [packages]
 hgvs = "*"
