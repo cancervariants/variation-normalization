@@ -2,6 +2,7 @@
 import unittest
 from variant.tokenizers import GenomicDelIns
 from .tokenizer_base import TokenizerBase
+from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestGenomicDelInsTokenizer(TokenizerBase, unittest.TestCase):
@@ -9,7 +10,7 @@ class TestGenomicDelInsTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Genomic DelIns instance."""
-        return GenomicDelIns()
+        return GenomicDelIns(AminoAcidCache(), NucleotideCache())
 
     def token_type(self):
         """Return genomic delins token type."""

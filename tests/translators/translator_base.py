@@ -39,7 +39,7 @@ class TranslatorBase:
     def test_translator(self):
         """Test that translator matches correctly."""
         for x in self.fixtures['tests']:
-            tokens = self.tokenizer.perform(x['query'])
+            tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
             num_valid = 0

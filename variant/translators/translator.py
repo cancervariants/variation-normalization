@@ -22,8 +22,19 @@ class Translator(ABC):
         """Translate to VRS representation."""
         instance_tokens = [t for t in res.classification.all_tokens if
                            self.is_token_instance(t)]
+        len_instance_tokens = len(instance_tokens)
 
-        if len(instance_tokens) > 1:
+        if len_instance_tokens > 1:
+            if len_instance_tokens == 2:
+                if {t.token_type for t in instance_tokens} \
+                        == {'PolypeptideTruncation'}:
+                    tokens = sorted([t.token.lower() for t in instance_tokens],
+                                    key=len)
+                    if len(tokens[1]) > len(tokens[0]):
+                        t = f"{tokens[0]} ({tokens[0].replace('ter', '*')})"
+                        if t.lower() == tokens[1].lower():
+                            return Allele(**res.allele)
+
             raise Exception(f'Should not have more than one '
                             f'{self.__class__.__name__} '
                             f'token if the result is valid')

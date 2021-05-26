@@ -16,22 +16,22 @@ class Normalize:
         self.seqrepo_access = SeqRepoAccess()
         self.warnings = list()
 
-    def normalize(self, q, validations, amino_acid_cache):
+    def normalize(self, q, validations, amino_acid_cache, warnings):
         """Normalize a given variant.
 
         :param str q: The variant to normalize
         :param ValidationSummary validations: Invalid and valid results
         :param AminoAcidCache amino_acid_cache: Amino Acid Code and Conversion
+        :param list warnings: List of warnings
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
         """
-        warnings = list()
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
             label = None
             for r in validations.valid_results:
-                if r.mane_transcript:
+                if r.mane_transcript and r.allele:
                     valid_result = r
                     label = valid_result.mane_transcript.strip()
                     break
@@ -80,8 +80,9 @@ class Normalize:
         else:
             variation_descriptor = None
             warning = f"Unable to normalize {q}."
+            if not warnings:
+                warnings.append(warning)
             logger.warning(warning)
-            warnings.append(warning)
 
         self.warnings = warnings
         return variation_descriptor
@@ -161,10 +162,10 @@ class Normalize:
                                             'GenomicSubstitution']:
                 ref_allele_seq = variant_token.ref_nucleotide
             else:
-                ref_allele_seq = self.get_delins_ref_allele_seq(allele, label)
+                ref_allele_seq = self.get_ref_allele_seq(allele, label)
         return ref_allele_seq
 
-    def get_delins_ref_allele_seq(self, allele, label) -> Optional[str]:
+    def get_ref_allele_seq(self, allele, label) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
@@ -173,8 +174,11 @@ class Normalize:
         """
         label = label.split(':')[0]
         interval = allele['location']['interval']
-        start = interval['start'] + 1
-        end = interval['end']
+        if interval['start'] != interval['end']:
+            start = interval['start'] + 1
+            end = interval['end']
+        else:
+            return None
 
         if start and end:
             refseq_list = list()

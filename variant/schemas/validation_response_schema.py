@@ -32,6 +32,7 @@ class ValidationSummary(BaseModel):
 
     valid_results: List[ValidationResult]
     invalid_results: List[ValidationResult]
+    warnings: Optional[List[str]]
 
 
 class ValidationResponseSchema(BaseModel):
