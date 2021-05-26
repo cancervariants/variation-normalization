@@ -3,11 +3,8 @@ from variant.validators.delins_base import DelInsBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import CodingDNADelInsToken
-from variant.schemas.validation_response_schema import LookupType
-from typing import List, Tuple
-from variant.schemas.classification_response_schema import Classification
+from typing import List, Optional
 from variant.schemas.token_response_schema import GeneMatchToken
-from variant.schemas.validation_response_schema import ValidationResult
 from variant.schemas.token_response_schema import Token
 import logging
 
@@ -19,66 +16,34 @@ logger.setLevel(logging.DEBUG)
 class CodingDNADelIns(DelInsBase):
     """The Coding DNA DelIns Validator class."""
 
-    def validate(self, classification: Classification) \
-            -> List[ValidationResult]:
-        """Validate a given classification.
+    def get_transcripts(self, gene_tokens, classification, errors)\
+            -> Optional[List[str]]:
+        """Get transcript accessions for a given classification.
 
+        :param list gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :return: A list of validation results
+        :param list errors: List of errors
+        :return: List of transcript accessions
         """
-        results = list()
-        errors = list()
+        return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-        classification_tokens = self.get_classification_tokens(classification)
-        gene_tokens = self.get_gene_tokens(classification)
-
-        if len(classification.non_matching_tokens) > 0:
-            errors.append(f"Non matching tokens found for "
-                          f"{self.variant_name()}.")
-
-        if len(gene_tokens) == 0:
-            errors.append(f'No gene tokens for a {self.variant_name()}.')
-
-        if len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variant_name()}')
-
-        if len(errors) > 0:
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
-
-        transcripts = self.transcript_mappings.coding_dna_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
-
-        if not transcripts:
-            errors.append(f'No transcripts found for gene symbol '
-                          f'{gene_tokens[0].token}')
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
-
-        self.get_valid_invalid_results(classification_tokens, transcripts,
-                                       classification, results, gene_tokens)
-        return results
-
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> Tuple[str, bool]:
-        """Return HGVS expression and whether or not it's an Ensembl transcript
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression
 
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: hgvs expression
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}."
             if s.start_pos_del is not None and s.end_pos_del is not None:
                 pos_del = f"{s.start_pos_del}_{s.end_pos_del}"
             else:
-                pos_del = s.end_pos_del
+                pos_del = s.start_pos_del
 
             if s.inserted_sequence1 is not None and \
                     s.inserted_sequence2 is not None:
@@ -89,16 +54,10 @@ class CodingDNADelIns(DelInsBase):
             hgvs_expr = f"{prefix}{pos_del}delins{inserted_seq}"
         else:
             hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+                          isinstance(t, Token) and t.token_type
+                          in ['HGVS', 'ReferenceSequence']][0]
             hgvs_expr = hgvs_token.input_string
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token:
-            is_ensembl_transcript = True
-        else:
-            is_ensembl_transcript = False
-        return hgvs_expr, is_ensembl_transcript
+        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -117,38 +76,20 @@ class CodingDNADelIns(DelInsBase):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
+                allele, t, hgvs_expr, is_ensembl = \
+                    self.get_allele_with_context(classification, t, s, errors)
 
-                if 'HGVS' in classification.matching_tokens:
-                    hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    if allele:
-                        t = hgvs_expr.split(':')[0]
-                    else:
-                        errors = list()
-                        hgvs_expr, is_ensembl_transcript = \
-                            self.get_hgvs_expr(classification, t, s, False)
-                        allele = self.get_allele_from_hgvs(hgvs_expr, errors)
+                if hgvs_expr not in mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'nucleotide': is_ensembl
+                    }
+
+                if not allele:
+                    errors.append("Unable to find allele.")
                 else:
-                    hgvs_expr, is_ensembl_transcript = self.get_hgvs_expr(
-                        classification, t, s, False
-                    )
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
-                mane_transcripts_dict[hgvs_expr] = {
-                    'classification_token': s,
-                    'transcript_token': t,
-                    'is_ensembl_transcript': is_ensembl_transcript
-                }
-
-                if allele:
-                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
-                    is_len_lt_end = len_of_seq < int(s.end_pos_del) - 1
-                    is_len_lt_start = \
-                        s.start_pos_del and len_of_seq < int(s.start_pos_del) - 1  # noqa: E501
-
-                    if is_len_lt_end or is_len_lt_start:
-                        errors.append('Sequence index out of range.')
+                    self.check_pos_index(t, s, errors)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

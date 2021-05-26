@@ -32,8 +32,11 @@ from .locus_reference_genomic import LocusReferenceGenomic
 from .amino_acid_deletion import AminoAcidDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
+from .amino_acid_insertion import AminoAcidInsertion
+from .coding_dna_insertion import CodingDNAInsertion
+from .genomic_insertion import GenomicInsertion
 from variant.schemas.token_response_schema import Token, TokenMatchType
-from .caches import GeneSymbolCache, AminoAcidCache
+from .caches import GeneSymbolCache, AminoAcidCache, NucleotideCache
 from variant import HGNC_GENE_SYMBOL_PATH
 
 
@@ -47,6 +50,7 @@ class Tokenize:
         """
         gene_cache = GeneSymbolCache(gene_file_path)
         amino_acid_cache = AminoAcidCache()
+        nucleotide_cache = NucleotideCache()
 
         self.search_term_splitter = re.compile(r'\s+')
 
@@ -70,12 +74,15 @@ class Tokenize:
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
-            AminoAcidDelIns(amino_acid_cache),
-            CodingDNADelIns(),
-            GenomicDelIns(),
-            AminoAcidDeletion(amino_acid_cache),
-            CodingDNADeletion(),
-            GenomicDeletion(),
+            AminoAcidDelIns(amino_acid_cache, nucleotide_cache),
+            CodingDNADelIns(amino_acid_cache, nucleotide_cache),
+            GenomicDelIns(amino_acid_cache, nucleotide_cache),
+            AminoAcidDeletion(amino_acid_cache, nucleotide_cache),
+            CodingDNADeletion(amino_acid_cache, nucleotide_cache),
+            GenomicDeletion(amino_acid_cache, nucleotide_cache),
+            AminoAcidInsertion(amino_acid_cache, nucleotide_cache),
+            CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
+            GenomicInsertion(amino_acid_cache, nucleotide_cache),
             ProteinTermination(amino_acid_cache),
             UnderExpression(),
             WildType(),
@@ -84,28 +91,31 @@ class Tokenize:
             LocusReferenceGenomic(),
         )
 
-    def perform(self, search_string: str) -> Iterable[Token]:
+    def perform(self, search_string: str, warnings: List[str])\
+            -> Iterable[Token]:
         """Return an iterable of tokens for a given search string.
 
         :param str search_string: The input string to search on
+        :param list warnings: List of warnings
         :return: An Iterable of Tokens
         """
         tokens: List[Token] = list()
         terms = self.search_term_splitter.split(search_string)
-        self._add_tokens(tokens, terms, search_string)
+        self._add_tokens(tokens, terms, search_string, warnings)
 
         # If reference sequence: Check description
         if list(map(lambda t: t.token_type, tokens)) == ['ReferenceSequence']:
             self._add_tokens(tokens,
                              [search_string.split(':')[1]],
-                             search_string)
+                             search_string, warnings)
         return tokens
 
-    def _add_tokens(self, tokens, terms, search_string):
+    def _add_tokens(self, tokens, terms, search_string, warnings):
         """Add tokens to a list for a given search string.
 
         :param list tokens: A list of tokens
         :param str search_string: The input string to search on
+        :param list warnings: List of warnings
         """
         for term in terms:
             if not term:
@@ -121,12 +131,13 @@ class Tokenize:
                         if len(tokens) == 1:
                             self._add_tokens(tokens,
                                              [search_string.split(':')[1]],
-                                             search_string)
+                                             search_string, warnings)
                     matched = True
                     break
                 else:
                     continue
             if not matched:
+                warnings.append(f"Unable to tokenize {term}")
                 tokens.append(Token(
                     token='',
                     token_type='Unknown',

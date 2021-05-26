@@ -19,8 +19,7 @@ class DeletionBase(Validator):
         :param str t: Transcript retrieved from transcript mapping
         :param Token s: The classification token
         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: A tuple containing the hgvs expression and whether or not
-            it's an Ensembl Transcript
+        :return: hgvs expression
         """
         if not is_hgvs:
             prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
@@ -79,7 +78,12 @@ class DeletionBase(Validator):
                           f"but got {deleted_sequence}")
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         position = f"{token.start_pos_del}"
         if token.end_pos_del is not None:
             position += f"_{token.end_pos_del}"

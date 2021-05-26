@@ -1,4 +1,7 @@
 """Module for to VRS translation."""
+from typing import Tuple, Optional, List
+from variant.schemas.ga4gh_vrs import Allele
+from variant.schemas.validation_response_schema import ValidationSummary
 from variant.classifiers import Classify
 from variant.tokenizers import Tokenize
 from variant.validators import Validate
@@ -25,21 +28,27 @@ class ToVRS:
                                   self.amino_acid_cache)
         self.translator = Translate()
 
-    def get_validations(self, q):
+    def get_validations(self, q)\
+            -> Tuple[ValidationSummary, Optional[List[str]]]:
         """Return validation results for a given variant.
 
         :param str q: Variant to get validation results for
-        :return: ValidationSummary for the variant
+        :return: ValidationSummary for the variant and list of warnings
         """
-        tokens = self.tokenizer.perform(unquote(q.strip()))
+        warnings = list()
+        tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         classifications = self.classifier.perform(tokens)
-        validations = self.validator.perform(classifications)
-        return validations
+        validations = self.validator.perform(classifications, warnings)
+        if not warnings:
+            warnings = validations.warnings
+        return validations, warnings
 
-    def get_translations(self, validations):
+    def get_translations(self, validations, warnings)\
+            -> Tuple[Optional[List[Allele]], Optional[List[str]]]:
         """Return a list translations from a ValidationSummary.
 
         :param ValidationSummary validations: Valid and Invalid results
+        :param list warnings: List of warnings
         :return: A list of unique translations from valid results
         """
         translations = []
@@ -47,4 +56,6 @@ class ToVRS:
             result = self.translator.perform(valid_variant)
             if result not in translations:
                 translations.append(result)
-        return translations
+        if not translations and not warnings:
+            warnings.append("Unable to validate variant")
+        return translations, warnings

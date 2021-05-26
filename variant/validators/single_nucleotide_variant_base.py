@@ -30,7 +30,12 @@ class SingleNucleotideVariantBase(Validator):
         state = models.SequenceState(sequence=s.new_nucleotide)
         allele = models.Allele(location=seq_location, state=state)
         allele['_id'] = ga4gh_identify(allele)
-        return allele.as_dict()
+        allele = allele.as_dict()
+        allele_seq_id = allele['location']['sequence_id']
+        if allele_seq_id.startswith('ga4gh:GS.'):
+            allele['location']['sequence_id'] = \
+                allele_seq_id.replace('ga4gh:GS.', 'ga4gh:SQ.')
+        return allele
 
     def silent_mutation_valid_invalid_results(self, classification_tokens,
                                               transcripts, classification,
@@ -52,11 +57,9 @@ class SingleNucleotideVariantBase(Validator):
 
                 if 'HGVS' in classification.matching_tokens:
                     # TODO: How to convert ENST_ to NM_ versioned
-                    hgvs_expr, _ = self.get_hgvs_expr(classification,
-                                                      t, s, True)
+                    hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
                 else:
-                    hgvs_expr, _ = self.get_hgvs_expr(classification, t, s,
-                                                      False)
+                    hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
                 t = hgvs_expr.split(':')[0]
                 allele = None
                 try:
@@ -88,6 +91,9 @@ class SingleNucleotideVariantBase(Validator):
         :param Classification classification: A classification for a list of
             tokens
         :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
         """
         raise NotImplementedError
 
@@ -99,7 +105,12 @@ class SingleNucleotideVariantBase(Validator):
                           f' but found {ref_nuc}')
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         prefix = f'{transcript}:{token.reference_sequence}.{token.position}'
         if token.new_nucleotide == '=':
             change = "="

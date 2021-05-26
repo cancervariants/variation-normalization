@@ -327,8 +327,8 @@ class DelIns(Token):
     affecting 2 or more bases.
     """
 
-    start_pos_del: Optional[str]
-    end_pos_del: str
+    start_pos_del: str
+    end_pos_del: Optional[str]
     inserted_sequence1: str
     inserted_sequence2: Optional[str]
     token_type: str
@@ -394,7 +394,7 @@ class Deletion(Token):
 class AminoAcidDeletionToken(Deletion):
     """A sequence change between the translation initiation (start) and
     termination (stop) codon where, compared to a reference sequence, one or
-    more amino acids are not present (deleted) - HGVS Nomenclature
+    more amino acids are not present (deleted) - varnomen.hgvs.org
     """
 
     start_aa_del: str
@@ -407,7 +407,7 @@ class AminoAcidDeletionToken(Deletion):
 
 class CodingDNADeletionToken(Deletion):
     """A sequence change where, compared to a reference sequence, one or
-    more nucleotides are not present (deleted). - HGVS Nomenclature
+    more nucleotides are not present (deleted). - varnomen.hgvs.org
     """
 
     reference_sequence = ReferenceSequence.CODING_DNA
@@ -419,11 +419,59 @@ class CodingDNADeletionToken(Deletion):
 
 class GenomicDeletionToken(Deletion):
     """A sequence change where, compared to a reference sequence, one or
-    more nucleotides are not present (deleted). - HGVS Nomenclature
+    more nucleotides are not present (deleted). - varnomen.hgvs.org
     """
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     deleted_sequence: Optional[str]
     token_type = 'GenomicDeletion'
     so_id = 'SO:0000159'
+    molecule_context = 'genomic'
+
+
+class Insertion(Token):
+    """a sequence change between the translation initiation (start) and
+    termination (stop) codon where, compared to the reference sequence,
+    one or more amino acids are inserted, which is not a frame shift and
+    where the insertion is not a copy of a sequence immediately N-terminal
+    (5') - varnomen.hgvs.org
+    """
+
+    start_pos_flank: int
+    end_pos_flank: int
+    inserted_sequence: str
+    reference_sequence: ReferenceSequence
+    token_type: str
+    so_id: str
+    molecule_context: str
+
+
+class AminoAcidInsertionToken(Insertion):
+    """Amino Acid Insertion."""
+
+    start_aa_flank: str
+    end_aa_flank: str
+    reference_sequence = ReferenceSequence.PROTEIN
+    token_type = 'AminoAcidInsertion'
+    so_id = 'SO:0001605'
+    molecule_context = 'protein'
+
+
+class CodingDNAInsertionToken(Insertion):
+    """Coding DNA Insertion."""
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    inserted_sequence2: Optional[str]
+    token_type = 'CodingDNAInsertion'
+    so_id = 'SO:0000667'
+    molecule_context = 'transcript'
+
+
+class GenomicInsertionToken(Insertion):
+    """Genomic Insertion."""
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    inserted_sequence2: Optional[str]
+    token_type = 'GenomicInsertion'
+    so_id = 'SO:0000667'
     molecule_context = 'genomic'

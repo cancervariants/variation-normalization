@@ -231,3 +231,47 @@ genomic_deletion:
   should_not_match:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG
+
+amino_acid_insertion:
+  should_match:
+    - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
+      confidence: ConfidenceRating.EXACT
+    - query: NP_001333827.1:p.Ala763_Tyr764insPheGlnGluAla
+      confidence: ConfidenceRating.EXACT
+    - query: BRAF T599_V600insV
+      confidence: ConfidenceRating.EXACT
+    - query: EGFR A763_Y764insFQEA
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: GENE p.Lys23insAsp
+    - query: GENE Lys23insAsp
+    - query: GENE p.His4_Gln5insAlaG
+    - query: ACCESSION_23042.2:p.His4_Gln5insAla
+
+coding_dna_insertion:
+  should_match:
+    - query: NM_004006.2:c.849_850ins858_895
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000551.3:c.230_231insTCT
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000551.3:c.358_359insAC
+      confidence: ConfidenceRating.EXACT
+    - query: NM_000551.3:c.358_359insAC foo
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: GENE 358_359insAC
+    - query: accession:c.358_359insAC
+
+genomic_insertion:
+  should_match:
+    - query: NC_000023.10:g.32867861_32867862insT
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000023.10:g.32862923_32862924insCCT
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000009.11:g.5070053_5070054insG
+      confidence: ConfidenceRating.EXACT
+    - query: NC_000023.10:g.32867861_32867862insT foo
+      confidence: ConfidenceRating.INTERSECTION
+  should_not_match:
+    - query: GENE 32867861_32867862insT
+    - query: accession:g.32867861_32867862insT

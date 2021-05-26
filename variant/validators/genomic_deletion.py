@@ -3,11 +3,9 @@ from variant.validators.deletion_base import DeletionBase
 from variant.schemas.classification_response_schema import \
     ClassificationType
 from variant.schemas.token_response_schema import GenomicDeletionToken
-from .genomic_base import GenomicBase
-from typing import List
-from variant.schemas.classification_response_schema import Classification
+from typing import List, Optional
 from variant.schemas.token_response_schema import GeneMatchToken
-from variant.schemas.validation_response_schema import ValidationResult
+from variant.schemas.token_response_schema import Token
 import logging
 
 
@@ -18,42 +16,40 @@ logger.setLevel(logging.DEBUG)
 class GenomicDeletion(DeletionBase):
     """The Genomic Deletion Validator class."""
 
-    def validate(self, classification: Classification) \
-            -> List[ValidationResult]:
-        """Validate a given classification.
+    def get_transcripts(self, gene_tokens, classification, errors)\
+            -> Optional[List[str]]:
+        """Get transcript accessions for a given classification.
+
+        :param list gene_tokens: A list of gene tokens
+        :param Classification classification: A classification for a list of
+            tokens
+        :param list errors: List of errors
+        :return: List of transcript accessions
+        """
+        return self.get_genomic_transcripts(classification, errors)
+
+    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
+        """Return HGVS expression
 
         :param Classification classification: A classification for a list of
             tokens
-        :return: A list of validation results
+        :param str t: Transcript retrieved from transcript mapping
+        :param Token s: The classification token
+        :param bool is_hgvs: Whether or not classification is HGVS token
+        :return: hgvs expression
         """
-        results = list()
-        errors = list()
-
-        classification_tokens = self.get_classification_tokens(classification)
-        gene_tokens = self.get_gene_tokens(classification)
-
-        if gene_tokens and len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variant_name()}')
-
-        if len(classification.non_matching_tokens) > 0:
-            errors.append(f"Non matching tokens found for "
-                          f"{self.variant_name()}.")
-
-        genomic_base = GenomicBase(self.dp)
-        nc_accessions = genomic_base.get_nc_accessions(classification)
-        if not nc_accessions:
-            errors.append('Could not find NC_ accession for '
-                          f'{self.variant_name()}')
-
-        if len(errors) > 0:
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
-
-        self.get_valid_invalid_results(classification_tokens, nc_accessions,
-                                       classification, results, gene_tokens)
-        return results
+        if not is_hgvs:
+            prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
+            if s.end_pos_del:
+                prefix += f"_{s.end_pos_del}"
+            hgvs_expr = f"{prefix}del"
+            if s.deleted_sequence:
+                hgvs_expr += f"{s.deleted_sequence}"
+        else:
+            hgvs_token = [t for t in classification.all_tokens if
+                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
+            hgvs_expr = hgvs_token.input_string
+        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens) \
@@ -72,22 +68,15 @@ class GenomicDeletion(DeletionBase):
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
+                allele, t, hgvs_expr, is_ensembl = \
+                    self.get_allele_with_context(classification, t, s, errors)
 
-                if 'HGVS' in classification.matching_tokens:
-                    hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t, s, True)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-                    t = hgvs_expr.split(':')[0]
-                else:
-                    hgvs_expr, is_ensembl_transcript = \
-                        self.get_hgvs_expr(classification, t, s, False)
-                    allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
-                mane_transcripts_dict[hgvs_expr] = {
-                    'classification_token': s,
-                    'transcript_token': t,
-                    'is_ensembl_transcript': is_ensembl_transcript
-                }
+                if hgvs_expr not in mane_transcripts_dict.keys():
+                    mane_transcripts_dict[hgvs_expr] = {
+                        'classification_token': s,
+                        'transcript_token': t,
+                        'nucleotide': is_ensembl
+                    }
 
                 if allele:
                     ref_sequence = self.get_reference_sequence(t, s, errors)

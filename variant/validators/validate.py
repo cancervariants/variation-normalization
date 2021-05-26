@@ -17,6 +17,9 @@ from .genomic_delins import GenomicDelIns
 from .amino_acid_deletion import AminoAcidDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
+from .amino_acid_insertion import AminoAcidInsertion
+from .coding_dna_insertion import CodingDNAInsertion
+from .genomic_insertion import GenomicInsertion
 from typing import List
 
 
@@ -51,15 +54,23 @@ class Validate:
                               gene_symbol, amino_acid_cache),
             CodingDNADeletion(seq_repo_client, transcript_mappings,
                               gene_symbol),
-            GenomicDeletion(seq_repo_client, transcript_mappings, gene_symbol)
+            GenomicDeletion(seq_repo_client, transcript_mappings, gene_symbol),
+            AminoAcidInsertion(seq_repo_client, transcript_mappings,
+                               gene_symbol, amino_acid_cache),
+            CodingDNAInsertion(seq_repo_client, transcript_mappings,
+                               gene_symbol),
+            GenomicInsertion(seq_repo_client, transcript_mappings, gene_symbol)
         ]
 
-    def perform(self, classifications: List[Classification]) \
+    def perform(self, classifications: List[Classification], warnings=None) \
             -> ValidationSummary:
         """Validate a list of classifications."""
         valid_possibilities = list()
         invalid_possibilities = list()
+        if not warnings:
+            warnings = list()
 
+        found_classification = False
         for classification in classifications:
             for validator in self.validators:
                 if validator.validates_classification_type(
@@ -67,11 +78,19 @@ class Validate:
                     results = validator.validate(classification)
                     for res in results:
                         if res.is_valid:
+                            found_classification = True
                             valid_possibilities.append(res)
                         else:
                             invalid_possibilities.append(res)
 
+                if found_classification:
+                    break
+
+        if not found_classification and not warnings:
+            warnings.append("Unable find a classification")
+
         return ValidationSummary(
             valid_results=valid_possibilities,
-            invalid_results=invalid_possibilities
+            invalid_results=invalid_possibilities,
+            warnings=warnings
         )

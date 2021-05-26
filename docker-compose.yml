@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  seqrepo-rest-service:
+    # Test: curl http://localhost:5000/seqrepo/1/sequence/refseq:NM_000551.3
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+    image: biocommons/seqrepo-rest-service:latest
+    volumes:
+      - ./variant/data/seqrepo:/usr/local/share/seqrepo
+
+  uta:
+    # Test:
+    # psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from transcript'
+    # 249909
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+    image: biocommons/uta:uta_20180821
+    volumes:
+      - ./variant/data/uta_20180821:/var/lib/postgresql/data
+
+volumes:
+  seqrepo_vol:
+    external: true
+  uta_vol:
+    external: true
