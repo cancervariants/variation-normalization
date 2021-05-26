@@ -105,7 +105,12 @@ class SingleNucleotideVariantBase(Validator):
                           f' but found {ref_nuc}')
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         prefix = f'{transcript}:{token.reference_sequence}.{token.position}'
         if token.new_nucleotide == '=':
             change = "="

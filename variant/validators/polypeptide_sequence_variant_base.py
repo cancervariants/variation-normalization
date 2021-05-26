@@ -129,7 +129,12 @@ class PolypeptideSequenceVariantBase(Validator):
         return self.get_protein_gene_symbol_tokens(classification)
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         return f'{transcript} {token.ref_protein}' \
                f'{token.position}{token.alt_protein}'
 

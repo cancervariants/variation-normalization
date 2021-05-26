@@ -151,7 +151,12 @@ class AminoAcidInsertion(Validator):
         return classification_type == ClassificationType.AMINO_ACID_INSERTION
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         return f'{transcript}:p.' \
                f'{token.start_aa_flank}{token.start_pos_flank}_' \
                f'{token.end_aa_flank}{token.end_pos_flank}' \

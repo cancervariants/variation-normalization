@@ -78,7 +78,12 @@ class DeletionBase(Validator):
                           f"but got {deleted_sequence}")
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         position = f"{token.start_pos_del}"
         if token.end_pos_del is not None:
             position += f"_{token.end_pos_del}"

@@ -24,7 +24,12 @@ class DelInsBase(Validator):
         raise NotImplementedError
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         if token.start_pos_del is not None and token.end_pos_del is not None:
             position = f"{token.start_pos_del}_{token.end_pos_del}"
         else:

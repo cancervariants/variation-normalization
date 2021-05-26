@@ -78,7 +78,12 @@ class InsertionBase(Validator):
         return hgvs_expr
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         position = f"{token.start_pos_flank}_{token.end_pos_flank}"
         if token.inserted_sequence2 is not None:
             inserted_sequence = \
