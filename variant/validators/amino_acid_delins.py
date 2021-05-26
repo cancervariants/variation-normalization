@@ -153,7 +153,12 @@ class AminoAcidDelIns(Validator):
         return classification_type == ClassificationType.AMINO_ACID_DELINS
 
     def concise_description(self, transcript, token) -> str:
-        """Return a description of the identified variant."""
+        """Return a HGVS description of the identified variant.
+
+        :param str transcript: Transcript accession
+        :param Token token: Classification token
+        :return: HGVS expression
+        """
         dels = f"{token.start_aa_del}{token.start_pos_del}"
         if token.start_pos_del is not None and token.end_pos_del is not None:
             dels += f"_{token.end_aa_del}{token.end_pos_del}"

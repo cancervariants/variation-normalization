@@ -73,11 +73,11 @@ class Validator(ABC):
 
     @abstractmethod
     def concise_description(self, transcript, token) -> str:
-        """Return a concise description of the identified variant.
+        """Return a HGVS description of the identified variant.
 
         :param str transcript: Transcript accession
         :param Token token: Classification token
-        :return: HGVS expression for variant
+        :return: HGVS expression
         """
         raise NotImplementedError
 
