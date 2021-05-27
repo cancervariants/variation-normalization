@@ -1,12 +1,13 @@
 """The Variant Normalization package."""
+from .version import __version__  # noqa: F401
 from pathlib import Path
 import logging
 from ftplib import FTP
 from os import environ, remove
 import gzip
 import shutil
+from gene.query import QueryHandler as GeneQueryHandler
 
-__version__ = "0.2.0"
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/uta_20180821'  # noqa: E501
@@ -18,13 +19,16 @@ if 'VARIANT_NORM_EB_PROD' in environ:
 else:
     LOG_FN = f'{APP_ROOT}/variant/variant.log'
 
+logging.basicConfig(
+    filename='variant.log',
+    format='[%(asctime)s] - %(name)s - %(levelname)s : %(message)s')
 logger = logging.getLogger('variant')
-if Path(LOG_FN).exists():
-    fhandler = logging.FileHandler(filename=LOG_FN)
-    formatter = logging.Formatter('[%(asctime)s] %(name)s - %(levelname)s : %(message)s')  # noqa: E501
-    fhandler.setFormatter(formatter)
-    logger.addHandler(fhandler)
 logger.setLevel(logging.DEBUG)
+
+
+# Default DynamoDB url is http://localhost:8000
+# To use a different connection, set `GENE_NORM_DB_URL`
+GENE_NORMALIZER = GeneQueryHandler()
 
 
 def data_download(path, domain, dir, fn):
@@ -61,3 +65,4 @@ REFSEQ_MANE_PATH = f"{APP_ROOT}/data/MANE.GRCh38.v0.93.summary.txt"
 data_download(REFSEQ_MANE_PATH, 'ftp.ncbi.nlm.nih.gov',
               'refseq/MANE/MANE_human/release_0.93/',
               'MANE.GRCh38.v0.93.summary.txt.gz')
+SEQREPO_REST_SERVICE_URL = "http://localhost:5000/seqrepo"

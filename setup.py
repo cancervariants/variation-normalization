@@ -1,5 +1,5 @@
 """Module for package and distribution."""
-from setuptools import setup
-from variant import __version__
+import setuptools
 
-setup(version=__version__)
+exec(open('variant/version.py').read())
+setuptools.setup(version=__version__)  # noqa: F821

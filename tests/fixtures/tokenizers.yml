@@ -277,3 +277,74 @@ amino_acid_deletion:
     - token: 7Valdel
     - token: Val7_Glydel
     - token: Val_Gly7del
+
+coding_dna_deletion:
+  should_match:
+    - token: c.2263_2277del
+    - token: c.1608del
+    - token: c.2263_2277delTTGAGGGAAAACACA
+    - token: c.163delG
+    - token: c.435_436delGC
+  should_not_match:
+    - token: g.2263_2277del
+    - token: g.1608del
+    - token: c.del
+    - token: 2263_2277del
+    - token: c._2277del
+    - token: c.2263_del
+    - token: c.2263
+
+genomic_deletion:
+  should_match:
+    - token: g.37880219_37880233del
+    - token: g.139390650del
+    - token: g.55593610_55593615delTTGTTG
+    - token: g.10191495delT
+  should_not_match:
+    - token: c.37880219_37880233del
+    - token: c.139390650del
+    - token: g.del
+    - token: 37880219_37880233del
+    - token: g._37880233del
+    - token: g._37880233del
+    - token: g.37880219
+
+amino_acid_insertion:
+  should_match:
+    - token: p.(Lys23_Leu24insArgSerGln)
+    - token: p.His4_Gln5insAla
+    - token: p.Lys2_Gly3insGlnSerLys
+    - token: p.(Met3_His4insGlyTer)
+#    - token: p.Arg78_Gly79ins23
+    - token: T599_V600insV
+    - token: A763_Y764insFQEA
+  should_not_match:
+    - token: p.Lys23insAsp
+    - token: Lys23insAsp
+    - token: p.His4_Gln5insAlaG
+
+coding_dna_insertion:
+  should_match:
+    - token: c.849_850ins858_895
+    - token: c.169_170insA
+    - token: c.240_241insAGG
+  should_not_match:
+    - token: p.His4_Gln5insAla
+    - token: c.His4_Gln5insAla
+    - token: 849_850ins858_895
+    - token: p.849_850ins858_
+    - token: p.849_850ins_895
+    - token: p.169_insA
+    - token: p._170insA
+    - token: p.849_850ins858_895
+
+genomic_insertion:
+  should_match:
+    - token: g.123_124insAGC
+    - token: g.32867861_32867862insT
+    - token: g.37881011_37881012insGGCTCCCCA
+  should_not_match:
+    - token: g.123_124insAGCX
+    - token: c.169_170insAla
+    - token: g.32867861_32867862delinsT
+    - token: 123_124insAGCX

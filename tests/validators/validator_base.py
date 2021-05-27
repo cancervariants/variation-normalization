@@ -34,7 +34,7 @@ class ValidatorBase:
     def test_matches(self):
         """Test that validator matches correctly."""
         for x in self.fixtures['should_match']:
-            tokens = self.tokenizer.perform(x['query'])
+            tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
             is_valid = False
@@ -48,7 +48,7 @@ class ValidatorBase:
     def test_not_matches(self):
         """Test that validator matches correctly."""
         for x in self.fixtures['should_not_match']:
-            tokens = self.tokenizer.perform(x['query'])
+            tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(classification)
             is_valid = False

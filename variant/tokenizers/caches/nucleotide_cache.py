@@ -8,6 +8,7 @@ class NucleotideCache:
         """Initialize NucleotideCache class.
         https://varnomen.hgvs.org/bg-material/standards/
         """
+        self.base_nucleotides = {'A', 'C', 'T', 'G'}
         self.nucleotides = {
             'A': ['A'],
             'C': ['C'],
