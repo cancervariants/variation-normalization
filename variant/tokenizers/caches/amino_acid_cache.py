@@ -28,7 +28,7 @@ class AminoAcidCache:
             for row in data:
                 self.amino_acid_code_conversion[row[2]] = row[1]
 
-        return ({item.upper() for sublist in data for item in sublist})
+        return {item.upper() for sublist in data for item in sublist}
 
     def convert_three_to_one(self, three_letter_amino_acid):
         """Convert a 3 letter amino acid code to a 1 letter amino acid code.

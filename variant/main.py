@@ -4,7 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from variant.to_vrs import ToVRS
 from variant.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variant.normalize import Normalize
-from variant import __version__
+from .version import __version__
 from datetime import datetime
 import html
 
@@ -53,8 +53,8 @@ def translate(q: str = Query(..., description=q_description)):
     :param str q: The variant to search on
     :return: TranslationResponseSchema for variant
     """
-    validations = to_vrs.get_validations(html.unescape(q))
-    translations = to_vrs.get_translations(validations)
+    validations, warnings = to_vrs.get_validations(html.unescape(q))
+    translations, warnings = to_vrs.get_translations(validations, warnings)
 
     return ToVRSService(
         search_term=q,
@@ -62,7 +62,8 @@ def translate(q: str = Query(..., description=q_description)):
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
-        )
+        ),
+        warnings=warnings
     )
 
 
@@ -85,9 +86,11 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variant to normalize
     :return: NormalizeService for variant
     """
+    validations, warnings = to_vrs.get_validations(q)
     normalize_resp = normalizer.normalize(html.unescape(q),
-                                          to_vrs.get_validations(q),
-                                          to_vrs.amino_acid_cache)
+                                          validations,
+                                          to_vrs.amino_acid_cache,
+                                          warnings)
 
     return NormalizeService(
         variant_query=q,

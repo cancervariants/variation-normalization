@@ -25,8 +25,8 @@ To install:
 ```
 uta_v=uta_20180821
 docker pull biocommons/uta:$uta_v
-docker-compose up
 export UTA_DB_URL=postgresql://anonymous@localhost:5432/uta/uta_20180821
+docker-compose -f docker-compose.yml up
 ```
 
 ### Data
@@ -70,6 +70,12 @@ pytest tests/
 ```
 
 ### Starting the Variant Normalization Service
+
+`gene-normalizer`s dynamodb must be running and run the following:
+```
+docker-compose -f docker-compose.yml up
+```
+
 From the _root_ directory of the repository:
 ```
 uvicorn variant.main:app --reload

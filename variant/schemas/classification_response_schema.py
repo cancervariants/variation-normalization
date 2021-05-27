@@ -1,11 +1,8 @@
 """Module for Classification schema."""
 from pydantic import BaseModel
-from typing import List, Union
+from typing import List
 from enum import IntEnum
-from variant.schemas.token_response_schema import Token, \
-    GeneMatchToken, GenePairMatchToken, AminoAcidSubstitutionToken, \
-    PolypeptideTruncationToken, SilentMutationToken, \
-    CodingDNASubstitutionToken, GenomicSubstitutionToken
+from variant.schemas.token_response_schema import Token
 
 
 class ClassificationType(IntEnum):
@@ -32,6 +29,11 @@ class ClassificationType(IntEnum):
     CODING_DNA_DELINS = 19
     GENOMIC_DELINS = 20
     AMINO_ACID_DELETION = 21
+    CODING_DNA_DELETION = 22
+    GENOMIC_DELETION = 23
+    AMINO_ACID_INSERTION = 24
+    CODING_DNA_INSERTION = 25
+    GENOMIC_INSERTION = 26
 
 
 class ConfidenceRating(IntEnum):
@@ -49,11 +51,7 @@ class Classification(BaseModel):
     classification_type: ClassificationType
     matching_tokens: List[str]
     non_matching_tokens: List[str]
-    all_tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                           AminoAcidSubstitutionToken,
-                           PolypeptideTruncationToken,
-                           SilentMutationToken, CodingDNASubstitutionToken,
-                           GenomicSubstitutionToken, Token]]
+    all_tokens: List[Token]
     confidence: ConfidenceRating
 
 
