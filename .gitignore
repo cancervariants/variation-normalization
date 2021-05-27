@@ -18,7 +18,7 @@ dist/
 
 
 variant/data/seqrepo/
-variant/data/uta_20180821/
+variant/data/uta_*
 variant/data/notebooks
 variant/data/*.txt
 

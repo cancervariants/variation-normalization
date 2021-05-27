@@ -23,9 +23,8 @@ Variant Normalizer also uses [uta](https://github.com/biocommons/uta).
 
 To install:
 ```
-uta_v=uta_20180821
-docker pull biocommons/uta:$uta_v
-export UTA_DB_URL=postgresql://anonymous@localhost:5432/uta/uta_20180821
+docker pull biocommons/uta:latest
+export UTA_DB_URL=postgresql://anonymous@localhost:5432/uta/latest
 docker-compose -f docker-compose.yml up
 ```
 
