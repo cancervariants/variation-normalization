@@ -10,7 +10,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 
 
 APP_ROOT = Path(__file__).resolve().parents[0]
-environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/uta_20180821'  # noqa: E501
+environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/latest'  # noqa: E501
 
 if 'VARIANT_NORM_EB_PROD' in environ:
     # Elastic beanstalk

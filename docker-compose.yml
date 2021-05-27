@@ -22,9 +22,9 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=user
-    image: biocommons/uta:uta_20180821
+    image: biocommons/uta:latest
     volumes:
-      - ./variant/data/uta_20180821:/var/lib/postgresql/data
+      - ./variant/data/uta_latest:/var/lib/postgresql/data
 
 volumes:
   seqrepo_vol:
