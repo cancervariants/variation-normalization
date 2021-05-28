@@ -38,6 +38,7 @@ class MANETranscript:
             logger.debug(f"{token} does not have a "
                          f"protein reference sequence.")
 
+        # TODO: Check version mappings 1 to 1 relationship
         if transcript.startswith('NP_'):
             ac = self.transcript_mappings.np_to_nm[transcript.split(':')[0]]
         elif transcript.startswith('ENSP'):
@@ -46,9 +47,17 @@ class MANETranscript:
         else:
             return None
 
-        pos = token.position * 3 - 1
+        pos_mod_3 = token.position % 3
+        pos = token.position * 3
+        if pos_mod_3 == 0:
+            pos -= 1
+        elif pos_mod_3 == 1:
+            pos += 1
+
         hgvs_c = f"{ac}:c.{pos}"
         ref, alt = self._get_proteins(token)
+        if alt == '=':
+            alt = ref
         ref_aa_codons, alt_aa_codons = self._get_codons(ref, alt)
         change = self._c_change(ref_aa_codons, alt_aa_codons, ref, alt)
 
