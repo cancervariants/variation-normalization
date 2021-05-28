@@ -6,28 +6,23 @@ from ftplib import FTP
 from os import environ, remove
 import gzip
 import shutil
-from gene.query import QueryHandler as GeneQueryHandler
-
-
-APP_ROOT = Path(__file__).resolve().parents[0]
-environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/latest'  # noqa: E501
-
-if 'VARIANT_NORM_EB_PROD' in environ:
-    # Elastic beanstalk
-    LOG_FN = '/tmp/sample-app.log'
-    environ['GENE_NORM_EB_PROD'] = "true"
-else:
-    LOG_FN = f'{APP_ROOT}/variant/variant.log'
 
 logging.basicConfig(
     filename='variant.log',
     format='[%(asctime)s] - %(name)s - %(levelname)s : %(message)s')
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
+logger.handlers = []
 
+APP_ROOT = Path(__file__).resolve().parents[0]
+environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/latest'  # noqa: E501
+
+if 'VARIANT_NORM_EB_PROD' in environ:
+    environ['GENE_NORM_EB_PROD'] = "true"
 
 # Default DynamoDB url is http://localhost:8000
 # To use a different connection, set `GENE_NORM_DB_URL`
+from gene.query import QueryHandler as GeneQueryHandler  # noqa: E402
 GENE_NORMALIZER = GeneQueryHandler()
 
 
