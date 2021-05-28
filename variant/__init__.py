@@ -60,4 +60,3 @@ REFSEQ_MANE_PATH = f"{APP_ROOT}/data/MANE.GRCh38.v0.93.summary.txt"
 data_download(REFSEQ_MANE_PATH, 'ftp.ncbi.nlm.nih.gov',
               'refseq/MANE/MANE_human/release_0.93/',
               'MANE.GRCh38.v0.93.summary.txt.gz')
-SEQREPO_REST_SERVICE_URL = "http://localhost:5000/seqrepo"

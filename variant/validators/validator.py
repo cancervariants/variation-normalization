@@ -1,7 +1,6 @@
 """Module for Validation."""
 from typing import List, Tuple, Optional
 from abc import ABC, abstractmethod
-from variant import SEQREPO_REST_SERVICE_URL
 from variant.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variant.schemas.token_response_schema import GeneMatchToken
@@ -26,15 +25,13 @@ class Validator(ABC):
 
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 seqrepo_rest_service_url=SEQREPO_REST_SERVICE_URL) -> None:
+                 gene_symbol: GeneSymbol) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings to/from gene symbols
         :param GeneSymbol gene_symbol: GeneSymbol tokenizer
-        :param str seqrepo_rest_service_url: URL to seqrepo rest service
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
