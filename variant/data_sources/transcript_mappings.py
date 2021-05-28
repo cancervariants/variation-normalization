@@ -38,6 +38,9 @@ class TranscriptMappings:
         self.refseq_lrg_for_gene_symbol: Dict[str, List[str]] = {}
         self.refseq_lrg_to_gene_symbol: Dict[str, str] = {}
 
+        # NP -> NM
+        self.np_to_nm: Dict[str, str] = {}
+
         self._load_transcript_mappings_data(transcript_file_path)
         self._load_refseq_gene_symbol_data(refseq_file_path)
 
@@ -101,12 +104,14 @@ class TranscriptMappings:
                         self.refseq_rna_version_to_gene_symbol[
                             rna_transcript] = gene
                         if '.' in rna_transcript:
-                            rna_transcript = rna_transcript.split('.')[0]
+                            rna_t = rna_transcript.split('.')[0]
                             self.refseq_rna_for_gene_symbol.\
                                 setdefault(gene, []).\
-                                append(rna_transcript)
+                                append(rna_t)
                             self.refseq_rna_to_gene_symbol[
-                                rna_transcript] = gene
+                                rna_t] = gene
+                    if refseq_transcript and rna_transcript:
+                        self.np_to_nm[refseq_transcript] = rna_transcript
                     lrg = row['LRG']
                     if lrg:
                         self.refseq_lrg_for_gene_symbol.\
