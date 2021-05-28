@@ -1,16 +1,18 @@
 """Module for Codon Table."""
 from typing import Dict, List
-
 from variant.tokenizers.caches import AminoAcidCache
+
+
+MULTIPLE_CODONS = {'Leu', 'Ser', 'Arg'}
 
 
 class CodonTable:
     """Class for codon table data."""
 
-    def __init__(self):
+    def __init__(self, amino_acid_cache: AminoAcidCache):
         """Initialize codon table class."""
         self.codon_table = self._set_codon_table()
-        self.amino_acid_cache = AminoAcidCache()
+        self.amino_acid_cache = amino_acid_cache
 
     @staticmethod
     def _set_codon_table() -> Dict[str, str]:
@@ -37,7 +39,7 @@ class CodonTable:
             'TGC': 'C', 'TGT': 'C', 'TGA': '_', 'TGG': 'W',
         }
 
-    def _get_codons(self, amino_acid) -> List[str]:
+    def get_codons(self, amino_acid) -> List[str]:
         """Return a list of codons for an amino acid.
 
         :param str amino_acid: Amino acid to get codons for
