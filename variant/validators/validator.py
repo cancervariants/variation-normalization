@@ -9,7 +9,7 @@ from variant.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variant.tokenizers import GeneSymbol
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
 import requests
@@ -39,7 +39,7 @@ class Validator(ABC):
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self._gene_matcher = gene_symbol
-        self.dp = SeqRepoRESTDataProxy(seqrepo_rest_service_url)
+        self.dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
         self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_parser = hgvs.parser.Parser()
         self.genomic_base = GenomicBase(self.dp)

@@ -1,6 +1,6 @@
 """Module for Genomic Validation methods."""
 from variant import GENE_NORMALIZER
-from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 import logging
 
 
@@ -11,7 +11,7 @@ logger.setLevel(logging.DEBUG)
 class GenomicBase:
     """Genomic Base class for validation methods."""
 
-    def __init__(self, dp: SeqRepoRESTDataProxy):
+    def __init__(self, dp: SeqRepoDataProxy):
         """Initialize the Genomic base class."""
         self.dp = dp
 
