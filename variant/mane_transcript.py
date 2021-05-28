@@ -1,6 +1,7 @@
 """Module for retrieving MANE transcript."""
 from typing import Optional, Tuple, List
-from variant.schemas.token_response_schema import ReferenceSequence
+from variant.schemas.token_response_schema import ReferenceSequence, \
+    PolypeptideSequenceVariant
 from variant.data_sources import CodonTable
 from variant.data_sources.codon_table import MULTIPLE_CODONS
 import hgvs.parser
@@ -65,7 +66,7 @@ class MANETranscript:
         """
         ref = None
         alt = None
-        if token.token_type == 'AminoAcidSubstitution':
+        if isinstance(token, PolypeptideSequenceVariant):
             ref = token.ref_protein
             alt = token.alt_protein
         return ref, alt
