@@ -78,30 +78,38 @@ def test_p_to_c(test_mane_transcript, p_braf_v600e, p_egfr_l858r,
                 p_vhl_tyr185ter, p_vhl_p61p):
     """Test that p_to_c method works correctly."""
     # Amino Acid Substitution
-    resp = test_mane_transcript.p_to_c('NP_004324.2:p.Val600Glu', p_braf_v600e)
-    assert resp == 'NM_004333.4:c.1799T>A'
+    ac, pos = test_mane_transcript.p_to_c('NP_004324.2:p.Val600Glu',
+                                          p_braf_v600e)
+    assert ac == 'NM_004333.4'
+    assert pos == 1799
 
-    resp = test_mane_transcript.p_to_c('ENSP00000288602.7:p.Val600Glu',
-                                       p_braf_v600e)
-    assert resp == 'ENST00000288602.11:c.1799T>A'
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000288602.7:p.Val600Glu',
+                                          p_braf_v600e)
+    assert ac == 'ENST00000288602.11'
+    assert pos == 1799
 
-    resp = test_mane_transcript.p_to_c('NP_005219.2:p.Leu858Arg',
-                                       p_egfr_l858r)
-    assert resp == 'NM_005228.3:c.2573T>G'
+    ac, pos = test_mane_transcript.p_to_c('NP_005219.2:p.Leu858Arg',
+                                          p_egfr_l858r)
+    assert ac == 'NM_005228.3'
+    assert pos == 2573
 
-    resp = test_mane_transcript.p_to_c('ENSP00000275493.2:p.Leu858Arg',
-                                       p_egfr_l858r)
-    assert resp == 'ENST00000275493.7:c.2573T>G'
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000275493.2:p.Leu858Arg',
+                                          p_egfr_l858r)
+    assert ac == 'ENST00000275493.7'
+    assert pos == 2573
 
     # Polypeptide Truncation
-    resp = test_mane_transcript.p_to_c('NP_000542.1:p.Tyr185Ter',
-                                       p_vhl_tyr185ter)
-    assert resp == 'NM_000551.3:c.555C>A'
+    ac, pos = test_mane_transcript.p_to_c('NP_000542.1:p.Tyr185Ter',
+                                          p_vhl_tyr185ter)
+    assert ac == 'NM_000551.3'
+    assert pos == 555
 
-    resp = test_mane_transcript.p_to_c('ENSP00000256474.3:p.Tyr185Ter',
-                                       p_vhl_tyr185ter)
-    assert resp == 'ENST00000256474.3:c.555C>A '
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000256474.3:p.Tyr185Ter',
+                                          p_vhl_tyr185ter)
+    assert ac == 'ENST00000256474.3'
+    assert pos == 555
 
     # Silent Mutation
-    resp = test_mane_transcript.p_to_c('NP_000542.1:p.Pro61=', p_vhl_p61p)
-    assert resp == 'NM_000551.3:c.183C>G'
+    ac, pos = test_mane_transcript.p_to_c('NP_000542.1:p.Pro61=', p_vhl_p61p)
+    assert ac == 'NM_000551.3'
+    assert pos == 183

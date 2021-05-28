@@ -7,7 +7,6 @@ from variant.schemas.token_response_schema import Token
 from variant.tokenizers import GeneSymbol
 from variant.tokenizers.caches import AminoAcidCache
 from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant.mane_transcript import MANETranscript
 from .amino_acid_base import AminoAcidBase
 import logging
 
@@ -31,7 +30,6 @@ class PolypeptideSequenceVariantBase(Validator):
         """
         super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
         self._amino_acid_cache = amino_acid_cache
-        self.mane_transcript = MANETranscript()
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
 
     def get_transcripts(self, gene_tokens, classification, errors)\
@@ -94,8 +92,6 @@ class PolypeptideSequenceVariantBase(Validator):
                 errors = list()
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
-
-                self.mane_transcript.protein_to_transcript(s)
 
                 if hgvs_expr not in mane_transcripts_dict.keys():
                     mane_transcripts_dict[hgvs_expr] = {
