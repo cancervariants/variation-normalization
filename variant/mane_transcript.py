@@ -25,28 +25,38 @@ class MANETranscript:
         self.transcript_mappings = transcript_mappings
         self.codon_table = CodonTable(amino_acid_cache)
 
-    def p_to_c(self, transcript, token) -> Optional[Tuple[str, int]]:
-        """Convert protein (p.) to annotation to cDNA (c.) annotation.
+    def p_to_c(self, ac, token) -> Optional[Tuple[str, int, int]]:
+        """Convert protein (p.) annotation to cDNA (c.) annotation.
 
-        :param str transcript: Transcript accession
+        :param str ac: Transcript accession
         :param Token token: Classification token
-        :return: [cDNA transcript accession, cDNA position]
+        :return: [cDNA transcript accession, cDNA position, reading frame]
         """
         if token.reference_sequence != ReferenceSequence.PROTEIN:
             logger.debug(f"{token} does not have a "
                          f"protein reference sequence.")
 
         # TODO: Check version mappings 1 to 1 relationship
-        if transcript.startswith('NP_'):
-            ac = self.transcript_mappings.np_to_nm[transcript.split(':')[0]]
-        elif transcript.startswith('ENSP'):
+        if ac.startswith('NP_'):
+            ac = self.transcript_mappings.np_to_nm[ac.split(':')[0]]
+        elif ac.startswith('ENSP'):
             ac = \
-                self.transcript_mappings.ensp_to_enst[transcript.split(':')[0]]
+                self.transcript_mappings.ensp_to_enst[ac.split(':')[0]]
         else:
             return None
 
         pos = self._p_to_c_pos(token.position)
-        return ac, pos
+        rf = self._get_reading_frame(token.position)
+        return ac, pos, rf
+
+    def _get_reading_frame(self, pos) -> int:
+        """Return reading frame number.
+
+        :param int pos: Position
+        :return: Reading frame
+        """
+        pos_mod_3 = (pos - 1) % 3
+        return pos_mod_3 + 1
 
     def _p_to_c_pos(self, p_pos) -> int:
         """Return cDNA position given a protein position.
