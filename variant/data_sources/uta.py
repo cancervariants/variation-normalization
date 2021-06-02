@@ -92,12 +92,16 @@ class UTA:
         self.cursor.execute(query)
         result = self.cursor.fetchone()
         if result and result[0]:
-            descr = self.cursor.fetchone()[0].split(',')
+            descr = result[0].split(',')
             chromosome = f"chr{descr[0].split()[-1]}"
             assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
 
+            # Get most recent assembly version position
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-            lo.convert_coordinate(chromosome, )
+            alt_pos_range = \
+                (lo.convert_coordinate(chromosome, alt_pos_range[0]),
+                 lo.convert_coordinate(chromosome, alt_pos_range[1]))
+        return nc_accession, alt_pos_range
 
 
 class ParseResult(urlparse.ParseResult):
