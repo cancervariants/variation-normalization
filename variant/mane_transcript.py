@@ -1,6 +1,5 @@
 """Module for retrieving MANE transcript."""
 from typing import Optional, Tuple
-from variant.schemas.token_response_schema import ReferenceSequence
 from variant.data_sources import CodonTable
 import hgvs.parser
 import logging
@@ -25,29 +24,24 @@ class MANETranscript:
         self.transcript_mappings = transcript_mappings
         self.codon_table = CodonTable(amino_acid_cache)
 
-    def p_to_c(self, ac, token) -> Optional[Tuple[str, int, int]]:
+    def p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
         """Convert protein (p.) annotation to cDNA (c.) annotation.
 
         :param str ac: Transcript accession
-        :param Token token: Classification token
-        :return: [cDNA transcript accession, cDNA position, reading frame]
+        :param int pos: Protein position where change occurred
+        :return: [cDNA transcript accession, cDNA pos start, cDNA pos end]
         """
-        if token.reference_sequence != ReferenceSequence.PROTEIN:
-            logger.debug(f"{token} does not have a "
-                         f"protein reference sequence.")
-
         # TODO: Check version mappings 1 to 1 relationship
         if ac.startswith('NP_'):
-            ac = self.transcript_mappings.np_to_nm[ac.split(':')[0]]
+            ac = self.transcript_mappings.np_to_nm[ac]
         elif ac.startswith('ENSP'):
             ac = \
-                self.transcript_mappings.ensp_to_enst[ac.split(':')[0]]
+                self.transcript_mappings.ensp_to_enst[ac]
         else:
             return None
 
-        pos = self._p_to_c_pos(token.position)
-        rf = self._get_reading_frame(token.position)
-        return ac, pos, rf
+        pos = self._p_to_c_pos(pos)
+        return ac, pos
 
     def _get_reading_frame(self, pos) -> int:
         """Return reading frame number.
@@ -56,9 +50,9 @@ class MANETranscript:
         :return: Reading frame
         """
         pos_mod_3 = (pos - 1) % 3
-        return pos_mod_3 + 1
+        return pos_mod_3
 
-    def _p_to_c_pos(self, p_pos) -> int:
+    def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
         """Return cDNA position given a protein position.
 
         :param int p_pos: Protein position
@@ -68,4 +62,4 @@ class MANETranscript:
         pos = p_pos * 3
         if pos_mod_3 == 0:
             pos -= 1
-        return pos
+        return pos - 1, pos + 1
