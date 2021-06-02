@@ -1,12 +1,21 @@
 """Module for accessing UTA database."""
 from typing import Dict
 import psycopg2
+import psycopg2.extras
 from six.moves.urllib import parse as urlparse
 import logging
 from variant import UTA_DB_URL
+from pyliftover import LiftOver
 
 logger = logging.getLogger('variant')
 logger.setLevel(logging.DEBUG)
+
+
+GRCH_TO_HG = {
+    'GRCh36': 'hg18',
+    'GRCh37': 'hg19',
+    'GRCh38': 'hg38'
+}
 
 
 class UTA:
@@ -20,6 +29,8 @@ class UTA:
         self.db_url = db_url
         self.conn = psycopg2.connect(**self._get_conn_args())
         self.conn.autocommit = True
+        self.cursor = \
+            self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def _get_conn_args(self) -> Dict:
         """Return connection arguments.
@@ -35,6 +46,50 @@ class UTA:
             password=url.password,
             application_name='variant',
         )
+
+    def c_to_g(self, ac, pos):
+        """Get g. annotation from c. annotation.
+
+        :param str ac: cDNA accession
+        :param tuple pos: [cDNA pos start, cDNA pos end]
+        """
+        # Get NC accession
+        query = (
+            f"""
+            SELECT *
+            FROM tx_exon_aln_v
+            WHERE tx_ac='{ac}'
+            AND alt_ac LIKE 'NC_00%'
+            AND {pos[0]} BETWEEN tx_start_i AND tx_end_i
+            AND {pos[1]} BETWEEN tx_start_i AND tx_end_i
+            ORDER BY ord, alt_ac;
+            """
+        )
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        if not results:
+            return None
+        result = results[-1]
+        nc_accession = result[2]
+        pos_range = result[8], result[9]  # noqa: F841
+
+        # Get Chromosome and Assembly
+        query = (
+            f"""
+            SELECT descr
+            FROM _seq_anno_most_recent
+            WHERE ac = '{nc_accession}'
+            """
+        )
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        if result and result[0]:
+            descr = self.cursor.fetchone()[0].split(',')
+            chromosome = f"chr{descr[0].split()[-1]}"
+            assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
+
+            lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
+            lo.convert_coordinate(chromosome, )
 
 
 class ParseResult(urlparse.ParseResult):
