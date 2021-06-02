@@ -71,7 +71,15 @@ class UTA:
             return None
         result = results[-1]
         nc_accession = result[2]
-        pos_range = result[8], result[9]  # noqa: F841
+        tx_pos_range = result[6], result[7]
+        alt_pos_range = result[8], result[9]
+
+        if (tx_pos_range[1] - tx_pos_range[0]) != \
+                (alt_pos_range[1] - alt_pos_range[0]):
+            logger.warning(f"{nc_accession} tx_pos_range {tx_pos_range} "
+                           f"is not the same length as alt_pos_range "
+                           f"{alt_pos_range}.")
+            return None
 
         # Get Chromosome and Assembly
         query = (
