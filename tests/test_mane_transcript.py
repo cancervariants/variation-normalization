@@ -3,8 +3,6 @@ import pytest
 from variant.mane_transcript import MANETranscript
 from variant.data_sources import TranscriptMappings
 from variant.tokenizers.caches import AminoAcidCache
-from variant.schemas.token_response_schema import AminoAcidSubstitutionToken,\
-    PolypeptideTruncationToken, SilentMutationToken
 import hgvs.parser
 
 
@@ -23,109 +21,39 @@ def test_mane_transcript():
     return TestMANETranscript()
 
 
-@pytest.fixture(scope='module')
-def p_braf_v600e():
-    """Create test fixture for BRAF V600E Amino Acid Substitution Token."""
-    return AminoAcidSubstitutionToken(
-        token='Val600E',
-        match_type=5,
-        input_string='BRAF V600E',
-        ref_protein='Val',
-        alt_protein='Glu',
-        position=600
-    )
-
-
-@pytest.fixture(scope='module')
-def p_egfr_l858r():
-    """Create test fixture for EGFR L858R Amino Acid Substitution Token."""
-    return AminoAcidSubstitutionToken(
-        token='Leu858Arg',
-        match_type=5,
-        input_string='EGFR L858R',
-        ref_protein='Leu',
-        alt_protein='Arg',
-        position=858
-    )
-
-
-@pytest.fixture(scope='module')
-def p_vhl_tyr185ter():
-    """Create test fixture for VHL Y185* Polypeptide Truncation Token."""
-    return PolypeptideTruncationToken(
-        token='Tyr185Ter',
-        match_type=5,
-        input_string='VHL Y185*',
-        ref_protein='Tyr',
-        alt_protein='Ter',
-        position=185
-    )
-
-
-@pytest.fixture(scope='module')
-def p_vhl_p61p():
-    """Create test fixture for VHL Pro61= Silent Mutation Token."""
-    return SilentMutationToken(
-        token='Pro61=',
-        match_type=5,
-        input_string='VHL Pro61=',
-        ref_protein='Pro',
-        position=61
-    )
-
-
-def test_p_to_c(test_mane_transcript, p_braf_v600e, p_egfr_l858r,
-                p_vhl_tyr185ter, p_vhl_p61p):
+def test_p_to_c(test_mane_transcript):
     """Test that p_to_c method works correctly."""
     # Amino Acid Substitution
-    expected_pos = 1799
-    expected_rf = 3
-    ac, pos, rf = test_mane_transcript.p_to_c('NP_004324.2:p.Val600Glu',
-                                              p_braf_v600e)
+    expected_pos = 1798, 1800
+    ac, pos = test_mane_transcript.p_to_c('NP_004324.2', 600)
     assert ac == 'NM_004333.4'
     assert pos == expected_pos
-    assert rf == expected_rf
 
-    ac, pos, rf = test_mane_transcript.p_to_c('ENSP00000288602.7:p.Val600Glu',
-                                              p_braf_v600e)
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000288602.7', 600)
     assert ac == 'ENST00000288602.11'
     assert pos == expected_pos
-    assert rf == expected_rf
 
-    expected_pos = 2573
-    expected_rf = 3
-    ac, pos, rf = test_mane_transcript.p_to_c('NP_005219.2:p.Leu858Arg',
-                                              p_egfr_l858r)
+    expected_pos = 2572, 2574
+    ac, pos = test_mane_transcript.p_to_c('NP_005219.2', 858)
     assert ac == 'NM_005228.3'
     assert pos == expected_pos
-    assert rf == expected_rf
 
-    ac, pos, rf = test_mane_transcript.p_to_c('ENSP00000275493.2:p.Leu858Arg',
-                                              p_egfr_l858r)
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000275493.2', 858)
     assert ac == 'ENST00000275493.7'
     assert pos == expected_pos
-    assert rf == expected_rf
 
     # Polypeptide Truncation
-    expected_pos = 555
-    expected_rf = 2
-    ac, pos, rf = test_mane_transcript.p_to_c('NP_000542.1:p.Tyr185Ter',
-                                              p_vhl_tyr185ter)
+    expected_pos = 554, 556
+    ac, pos = test_mane_transcript.p_to_c('NP_000542.1', 185)
     assert ac == 'NM_000551.3'
     assert pos == expected_pos
-    assert rf == expected_rf
 
-    ac, pos, rf = test_mane_transcript.p_to_c('ENSP00000256474.3:p.Tyr185Ter',
-                                              p_vhl_tyr185ter)
+    ac, pos = test_mane_transcript.p_to_c('ENSP00000256474.3', 185)
     assert ac == 'ENST00000256474.3'
     assert pos == expected_pos
-    assert rf == expected_rf
 
     # Silent Mutation
-    expected_pos = 183
-    expected_rf = 1
-    ac, pos, rf = test_mane_transcript.p_to_c('NP_000542.1:p.Pro61=',
-                                              p_vhl_p61p)
+    expected_pos = 182, 184
+    ac, pos = test_mane_transcript.p_to_c('NP_000542.1', 61)
     assert ac == 'NM_000551.3'
     assert pos == expected_pos
-    assert rf == expected_rf
