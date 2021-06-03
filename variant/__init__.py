@@ -15,7 +15,6 @@ logger.setLevel(logging.DEBUG)
 logger.handlers = []
 
 APP_ROOT = Path(__file__).resolve().parents[0]
-environ['UTA_DB_URL'] = 'postgresql://anonymous@localhost:5432/uta/latest'  # noqa: E501
 
 if 'VARIANT_NORM_EB_PROD' in environ:
     environ['GENE_NORM_EB_PROD'] = "true"
