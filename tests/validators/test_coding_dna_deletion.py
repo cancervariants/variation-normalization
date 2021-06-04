@@ -1,12 +1,12 @@
 """Module for testing Coding DNA Deletion Validator."""
 import unittest
-from variant.validators import CodingDNADeletion
-from variant.classifiers import CodingDNADeletionClassifier
+from variation.validators import CodingDNADeletion
+from variation.classifiers import CodingDNADeletionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestCodingDNADeletionValidator(ValidatorBase, unittest.TestCase):

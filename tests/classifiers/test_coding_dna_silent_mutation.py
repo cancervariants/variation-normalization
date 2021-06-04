@@ -1,6 +1,6 @@
 """Module for testing Coding DNA Silent Mutation Classifier."""
 import unittest
-from variant.classifiers import CodingDNASilentMutationClassifier
+from variation.classifiers import CodingDNASilentMutationClassifier
 from .classifier_base import ClassifierBase
 
 

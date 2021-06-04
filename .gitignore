@@ -17,10 +17,10 @@ dist/
 .mypy_cache/
 
 
-variant/data/seqrepo/
-variant/data/uta_20180821
-variant/data/notebooks
-variant/data/*.txt
+variation/data/seqrepo/
+variation/data/uta_20180821
+variation/data/notebooks
+variation/data/*.txt
 
 Pipfile.lock
 

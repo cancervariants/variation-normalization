@@ -1,6 +1,6 @@
 """Module for testing Amino Acid Deletion Classifier."""
 import unittest
-from variant.classifiers import AminoAcidDeletionClassifier
+from variation.classifiers import AminoAcidDeletionClassifier
 from .classifier_base import ClassifierBase
 
 

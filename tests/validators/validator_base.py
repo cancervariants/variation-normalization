@@ -1,7 +1,7 @@
 """A module for testing validator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variant.tokenizers import Tokenize
+from variation.tokenizers import Tokenize
 
 
 class ValidatorBase:

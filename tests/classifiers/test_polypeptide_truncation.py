@@ -1,6 +1,6 @@
 """Module for testing Polypeptide Truncation Classifier."""
 import unittest
-from variant.classifiers import PolypeptideTruncationClassifier
+from variation.classifiers import PolypeptideTruncationClassifier
 from .classifier_base import ClassifierBase
 
 

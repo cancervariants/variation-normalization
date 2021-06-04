@@ -1,6 +1,6 @@
 """Module for testing Silent Mutation Classifier."""
 import unittest
-from variant.classifiers import SilentMutationClassifier
+from variation.classifiers import SilentMutationClassifier
 from .classifier_base import ClassifierBase
 
 

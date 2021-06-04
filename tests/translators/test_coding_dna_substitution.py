@@ -1,13 +1,13 @@
 """Module for testing Coding DNA Substitution Translator."""
 import unittest
-from variant.classifiers import CodingDNASubstitutionClassifier
-from variant.translators import CodingDNASubstitution
-from variant.validators import CodingDNASubstitution as CDNASUB_V
+from variation.classifiers import CodingDNASubstitutionClassifier
+from variation.translators import CodingDNASubstitution
+from variation.validators import CodingDNASubstitution as CDNASUB_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestCodingDNASubstitutionTranslator(TranslatorBase, unittest.TestCase):

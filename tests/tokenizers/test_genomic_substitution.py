@@ -1,6 +1,6 @@
 """A module for testing Genomic Substitution tokenization."""
 import unittest
-from variant.tokenizers import GenomicSubstitution
+from variation.tokenizers import GenomicSubstitution
 from .tokenizer_base import TokenizerBase
 
 

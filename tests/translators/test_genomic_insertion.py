@@ -1,13 +1,13 @@
 """Module for testing Genomic Insertion Translator."""
 import unittest
-from variant.classifiers import GenomicInsertionClassifier
-from variant.translators import GenomicInsertion
-from variant.validators import GenomicInsertion as GD_V
+from variation.classifiers import GenomicInsertionClassifier
+from variation.translators import GenomicInsertion
+from variation.validators import GenomicInsertion as GD_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestGenomicInsertionTranslator(TranslatorBase, unittest.TestCase):
