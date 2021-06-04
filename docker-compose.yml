@@ -22,7 +22,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=user
-    image: biocommons/uta:latest
+    image: biocommons/uta:uta_20180821
     volumes:
       - ./variation/data/uta_20180821:/var/lib/postgresql/data
 
