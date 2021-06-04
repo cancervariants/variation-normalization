@@ -1,7 +1,7 @@
 """Module for testing Codon Table class."""
 import pytest
-from variant.data_sources.codon_table import CodonTable
-from variant.tokenizers.caches import AminoAcidCache
+from variation.data_sources.codon_table import CodonTable
+from variation.tokenizers.caches import AminoAcidCache
 
 
 @pytest.fixture(scope='module')

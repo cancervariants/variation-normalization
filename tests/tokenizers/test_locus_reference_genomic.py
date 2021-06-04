@@ -1,6 +1,6 @@
 """A module for testing LRG tokenization."""
 import unittest
-from variant.tokenizers import LocusReferenceGenomic
+from variation.tokenizers import LocusReferenceGenomic
 from .tokenizer_base import TokenizerBase
 
 

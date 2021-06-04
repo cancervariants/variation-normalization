@@ -1,6 +1,6 @@
 """Module for testing fusion tokenization."""
 import unittest
-from variant.tokenizers import Fusion
+from variation.tokenizers import Fusion
 from .tokenizer_base import TokenizerBase
 
 

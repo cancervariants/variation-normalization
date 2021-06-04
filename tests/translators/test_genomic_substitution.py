@@ -1,13 +1,13 @@
 """Module for testing Genomic Substitution Translator."""
 import unittest
-from variant.classifiers import GenomicSubstitutionClassifier
-from variant.translators import GenomicSubstitution
-from variant.validators import GenomicSubstitution as GSUB_V
+from variation.classifiers import GenomicSubstitutionClassifier
+from variation.translators import GenomicSubstitution
+from variation.validators import GenomicSubstitution as GSUB_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestGenomicSubstitutionTranslator(TranslatorBase, unittest.TestCase):

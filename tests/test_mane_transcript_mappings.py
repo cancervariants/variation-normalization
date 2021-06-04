@@ -1,6 +1,6 @@
 """Module for testing MANE Transcript Mapping class."""
 import pytest
-from variant.data_sources import MANETranscriptMappings
+from variation.data_sources import MANETranscriptMappings
 
 
 @pytest.fixture(scope='module')

@@ -1,1 +1,1 @@
-web: gunicorn -k uvicorn.workers.UvicornWorker variant.main:app --timeout 1000 --log-level debug
+web: gunicorn -k uvicorn.workers.UvicornWorker variation.main:app --timeout 1000 --log-level debug

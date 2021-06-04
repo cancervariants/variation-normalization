@@ -1,12 +1,12 @@
 """Module for testing Coding DNA DelIns Validator."""
 import unittest
-from variant.validators import CodingDNADelIns
-from variant.classifiers import CodingDNADelInsClassifier
+from variation.validators import CodingDNADelIns
+from variation.classifiers import CodingDNADelInsClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestCodingDNADelInsValidator(ValidatorBase, unittest.TestCase):

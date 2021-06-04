@@ -1,12 +1,12 @@
 """Module for testing Coding DNA Insertion Validator."""
 import unittest
-from variant.validators import CodingDNAInsertion
-from variant.classifiers import CodingDNAInsertionClassifier
+from variation.validators import CodingDNAInsertion
+from variation.classifiers import CodingDNAInsertionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestCodingDNAInsertionValidator(ValidatorBase, unittest.TestCase):

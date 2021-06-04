@@ -1,6 +1,6 @@
 """A module for testing classifier classes."""
 import yaml
-from variant.tokenizers import Tokenize
+from variation.tokenizers import Tokenize
 from tests import PROJECT_ROOT
 
 

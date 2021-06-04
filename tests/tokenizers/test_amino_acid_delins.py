@@ -1,8 +1,8 @@
 """A module for testing Amino Acid DelIns tokenization."""
 import unittest
-from variant.tokenizers import AminoAcidDelIns
+from variation.tokenizers import AminoAcidDelIns
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestAminoAcidDelInsTokenizer(TokenizerBase, unittest.TestCase):

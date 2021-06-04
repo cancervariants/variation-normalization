@@ -1,13 +1,13 @@
 """Module for testing Silent Mutation Translator."""
 import unittest
-from variant.classifiers import SilentMutationClassifier
-from variant.translators import SilentMutation
-from variant.validators import SilentMutation as SM_V
+from variation.classifiers import SilentMutationClassifier
+from variation.translators import SilentMutation
+from variation.validators import SilentMutation as SM_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestSilentMutationTranslator(TranslatorBase, unittest.TestCase):

@@ -1,7 +1,7 @@
 """A module for testing translator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variant.tokenizers import Tokenize
+from variation.tokenizers import Tokenize
 
 
 class TranslatorBase:
@@ -50,5 +50,5 @@ class TranslatorBase:
                     if loc not in found:
                         found.append(loc)
                         num_valid += 1
-                        self.assertIn(loc, x['variants'], msg=x['query'])
-            self.assertEqual(len(x['variants']), num_valid, msg=x['query'])
+                        self.assertIn(loc, x['variations'], msg=x['query'])
+            self.assertEqual(len(x['variations']), num_valid, msg=x['query'])

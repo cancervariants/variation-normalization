@@ -1,6 +1,6 @@
 """A module for testing Coding DNA Substitution tokenization."""
 import unittest
-from variant.tokenizers import CodingDNASubstitution
+from variation.tokenizers import CodingDNASubstitution
 from .tokenizer_base import TokenizerBase
 
 
