@@ -12,7 +12,7 @@ coveralls = "*"
 coverage = "*"
 flake8-docstrings = "*"
 pre-commit = "*"
-variant-normalization = {editable = true, path = "."}
+variation-normalization = {editable = true, path = "."}
 pyyaml = "*"
 jupyter = "*"
 ipykernel = "*"

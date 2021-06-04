@@ -1,13 +1,13 @@
 """Module for testing Coding DNA Silent Mutation Translator."""
 import unittest
-from variant.classifiers import CodingDNASilentMutationClassifier
-from variant.translators import CodingDNASilentMutation
-from variant.validators import CodingDNASilentMutation as CDNASM_V
+from variation.classifiers import CodingDNASilentMutationClassifier
+from variation.translators import CodingDNASilentMutation
+from variation.validators import CodingDNASilentMutation as CDNASM_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):

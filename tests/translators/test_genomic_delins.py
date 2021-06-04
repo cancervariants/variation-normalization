@@ -1,13 +1,13 @@
 """Module for testing Genomic DelIns Translator."""
 import unittest
-from variant.classifiers import GenomicDelInsClassifier
-from variant.translators import GenomicDelIns
-from variant.validators import GenomicDelIns as GENOMICDELINS_V
+from variation.classifiers import GenomicDelInsClassifier
+from variation.translators import GenomicDelIns
+from variation.validators import GenomicDelIns as GENOMICDELINS_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestGenomicDelInsTranslator(TranslatorBase, unittest.TestCase):

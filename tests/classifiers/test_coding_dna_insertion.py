@@ -1,6 +1,6 @@
 """Module for testing Coding DNA Insertion Classifier."""
 import unittest
-from variant.classifiers import CodingDNAInsertionClassifier
+from variation.classifiers import CodingDNAInsertionClassifier
 from .classifier_base import ClassifierBase
 
 

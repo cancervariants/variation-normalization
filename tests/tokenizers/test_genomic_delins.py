@@ -1,8 +1,8 @@
 """A module for testing Genomic DelIns tokenization."""
 import unittest
-from variant.tokenizers import GenomicDelIns
+from variation.tokenizers import GenomicDelIns
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestGenomicDelInsTokenizer(TokenizerBase, unittest.TestCase):

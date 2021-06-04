@@ -1,12 +1,12 @@
 """Module for testing Amino Acid Deletion Validator."""
 import unittest
-from variant.validators import AminoAcidDeletion
-from variant.classifiers import AminoAcidDeletionClassifier
+from variation.validators import AminoAcidDeletion
+from variation.classifiers import AminoAcidDeletionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestAminoAcidDeletionValidator(ValidatorBase, unittest.TestCase):

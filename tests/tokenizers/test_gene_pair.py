@@ -1,7 +1,7 @@
 """Module for testing gene pair tokenization."""
 import unittest
-from variant.tokenizers import GenePair
-from variant.tokenizers.caches import GeneSymbolCache
+from variation.tokenizers import GenePair
+from variation.tokenizers.caches import GeneSymbolCache
 from .tokenizer_base import TokenizerBase
 
 

@@ -1,8 +1,8 @@
 """A module for testing Coding DNA Insertion Tokenization."""
 import unittest
-from variant.tokenizers import CodingDNAInsertion
+from variation.tokenizers import CodingDNAInsertion
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestCodingDNAInsertionTokenizer(TokenizerBase, unittest.TestCase):

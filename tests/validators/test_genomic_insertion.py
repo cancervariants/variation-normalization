@@ -1,12 +1,12 @@
 """Module for testing Genomic Insertion Validator."""
 import unittest
-from variant.validators import GenomicInsertion
-from variant.classifiers import GenomicInsertionClassifier
+from variation.validators import GenomicInsertion
+from variation.classifiers import GenomicInsertionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestGenomicInsertionValidator(ValidatorBase, unittest.TestCase):

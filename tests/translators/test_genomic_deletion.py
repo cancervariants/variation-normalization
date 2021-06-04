@@ -1,13 +1,13 @@
 """Module for testing Genomic Deletion Translator."""
 import unittest
-from variant.classifiers import GenomicDeletionClassifier
-from variant.translators import GenomicDeletion
-from variant.validators import GenomicDeletion as GD_V
+from variation.classifiers import GenomicDeletionClassifier
+from variation.translators import GenomicDeletion
+from variation.validators import GenomicDeletion as GD_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestGenomicDeletionTranslator(TranslatorBase, unittest.TestCase):

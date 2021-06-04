@@ -1,12 +1,12 @@
 """Module for testing Amino Acid Substitution Validator."""
 import unittest
-from variant.validators import AminoAcidSubstitution
-from variant.classifiers import AminoAcidSubstitutionClassifier
+from variation.validators import AminoAcidSubstitution
+from variation.classifiers import AminoAcidSubstitutionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestAminoAcidSubstitutionValidator(ValidatorBase, unittest.TestCase):

@@ -4,8 +4,8 @@ import time
 elasticbeanstalk = boto3.client('elasticbeanstalk')
 servicecatalog = boto3.client('servicecatalog')
 terminate_time = 12
-eb_app_name = "VariantNormalization"
-eb_env_name = "VariantNormalization-staging-env"
+eb_app_name = "VariationNormalization"
+eb_env_name = "VariationNormalization-staging-env"
 sc_product_id = "prod-mmw6ymv2ntzl2"
 print(f'Launching new Service Catalog Product for staging environment: '
       f'{eb_app_name}')
