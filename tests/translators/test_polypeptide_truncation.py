@@ -1,13 +1,13 @@
 """Module for testing polypeptide truncation Translator."""
 import unittest
-from variant.classifiers import PolypeptideTruncationClassifier
-from variant.translators import PolypeptideTruncation
-from variant.validators import PolypeptideTruncation as PT_V
+from variation.classifiers import PolypeptideTruncationClassifier
+from variation.translators import PolypeptideTruncation
+from variation.validators import PolypeptideTruncation as PT_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestPolypeptideTruncationTranslator(TranslatorBase, unittest.TestCase):

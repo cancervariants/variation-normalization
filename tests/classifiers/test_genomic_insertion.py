@@ -1,6 +1,6 @@
 """Module for testing Genomic Insertion Classifier."""
 import unittest
-from variant.classifiers import GenomicInsertionClassifier
+from variation.classifiers import GenomicInsertionClassifier
 from .classifier_base import ClassifierBase
 
 

@@ -9,7 +9,7 @@ services:
       - 5000:5000
     image: biocommons/seqrepo-rest-service:latest
     volumes:
-      - ./variant/data/seqrepo:/usr/local/share/seqrepo
+      - ./variation/data/seqrepo:/usr/local/share/seqrepo
 
   uta:
     # Test:
@@ -24,7 +24,7 @@ services:
       - POSTGRES_USER=user
     image: biocommons/uta:latest
     volumes:
-      - ./variant/data/uta_latest:/var/lib/postgresql/data
+      - ./variation/data/uta_20180821:/var/lib/postgresql/data
 
 volumes:
   seqrepo_vol:

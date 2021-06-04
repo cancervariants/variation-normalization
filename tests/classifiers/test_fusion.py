@@ -1,6 +1,6 @@
 """Module for testing Fusion classification."""
 import unittest
-from variant.classifiers import FusionClassifier
+from variation.classifiers import FusionClassifier
 from .classifier_base import ClassifierBase
 
 

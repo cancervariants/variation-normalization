@@ -1,6 +1,6 @@
 """A module for testing Coding DNA Silent Mutation tokenization."""
 import unittest
-from variant.tokenizers import CodingDNASilentMutation
+from variation.tokenizers import CodingDNASilentMutation
 from .tokenizer_base import TokenizerBase
 
 

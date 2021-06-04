@@ -1,13 +1,13 @@
 """Module for testing amino acid Substitution Translator."""
 import unittest
-from variant.classifiers import AminoAcidSubstitutionClassifier
-from variant.translators import AminoAcidSubstitution
-from variant.validators import AminoAcidSubstitution as AASUB_V
+from variation.classifiers import AminoAcidSubstitutionClassifier
+from variation.translators import AminoAcidSubstitution
+from variation.validators import AminoAcidSubstitution as AASUB_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
 
 
 class TestAminoAcidSubstitutionTranslator(TranslatorBase, unittest.TestCase):

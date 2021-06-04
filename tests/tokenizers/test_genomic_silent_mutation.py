@@ -1,6 +1,6 @@
 """A module for testing Genomic Silent Mutation tokenization."""
 import unittest
-from variant.tokenizers import GenomicSilentMutation
+from variation.tokenizers import GenomicSilentMutation
 from .tokenizer_base import TokenizerBase
 
 

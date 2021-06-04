@@ -1,8 +1,8 @@
 """Module for testing MANE Transcript class."""
 import pytest
-from variant.mane_transcript import MANETranscript
-from variant.data_sources import TranscriptMappings
-from variant.tokenizers.caches import AminoAcidCache
+from variation.mane_transcript import MANETranscript
+from variation.data_sources import TranscriptMappings
+from variation.tokenizers.caches import AminoAcidCache
 import hgvs.parser
 
 
