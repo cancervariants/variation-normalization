@@ -11,7 +11,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 
 APP_ROOT = Path(__file__).resolve().parents[0]
 
-if 'VARIATION_NORM_EB_PROD' in os.environ:
+if 'VARIATION_NORM_EB_PROD' in environ:
     # Elastic beanstalk
     LOG_FN = '/tmp/sample-app.log'
     environ['GENE_NORM_EB_PROD'] = "true"
