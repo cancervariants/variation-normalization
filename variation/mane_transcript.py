@@ -33,6 +33,7 @@ class MANETranscript:
         :param str gene_symbol: Gene symbol
         :return: MANE transcript data
         """
+        # TODO: If MANE Transcript not found, select longest transcript
         return self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
 
     def _p_to_g(self, ac, pos) -> Optional[Tuple[str, str, Tuple[int, int]]]:
