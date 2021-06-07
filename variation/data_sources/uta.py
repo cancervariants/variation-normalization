@@ -54,7 +54,7 @@ class UTA:
         :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
         :return: [Gene, NC accession,
-            [Altered transcript start, Altered transcript end]]
+            [Genomic change pos start, Genomic change pos end]]
         """
         query = (
             f"""
@@ -85,7 +85,11 @@ class UTA:
                            f"{alt_pos_range}.")
             return None
 
-        return gene, nc_accession, alt_pos_range
+        tx_pos_change = pos[0] - tx_pos_range[0], tx_pos_range[1] - pos[1]
+        alt_pos = (alt_pos_range[0] + tx_pos_change[0],
+                   alt_pos_range[1] - tx_pos_change[1])
+
+        return gene, nc_accession, alt_pos
 
     def liftover_to_38(self, nc_accession, alt_pos_range) -> Tuple[int, int]:
         """Liftover NC accession to GRCh38 version.
