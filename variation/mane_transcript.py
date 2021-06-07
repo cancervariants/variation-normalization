@@ -1,6 +1,6 @@
 """Module for retrieving MANE transcript."""
-from typing import Optional, Tuple
-from variation.data_sources import CodonTable
+from typing import Optional, Tuple, Dict
+from variation.data_sources import CodonTable, MANETranscriptMappings
 import hgvs.parser
 import logging
 
@@ -12,7 +12,8 @@ logger.setLevel(logging.DEBUG)
 class MANETranscript:
     """Class for retrieving MANE transcripts."""
 
-    def __init__(self, transcript_mappings, amino_acid_cache) -> None:
+    def __init__(self, transcript_mappings, amino_acid_cache,
+                 mane_transcript_mappings, uta) -> None:
         """Initialize the MANETranscript class.
 
         :param TranscriptMappings transcript_mappings: Access to transcript
@@ -23,8 +24,33 @@ class MANETranscript:
         self.hgvs_parser = hgvs.parser.Parser()
         self.transcript_mappings = transcript_mappings
         self.codon_table = CodonTable(amino_acid_cache)
+        self.mane_transcript_mappings = mane_transcript_mappings
+        self.uta = uta
 
-    def p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
+    def _get_preferred_annotation(self, gene_symbol) -> Dict:
+        """Get preferred annotation for a gene symbol.
+
+        :param str gene_symbol: Gene symbol
+        :return: MANE transcript data
+        """
+        return self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
+
+    def _p_to_g(self, ac, pos) -> Optional[Tuple[str, str, Tuple[int, int]]]:
+        """Convert protein annotation to genomic annotation.
+
+        :param str ac: Protein accession
+        :param int pos: Protein change position
+        :return:
+            [Gene Symbol, NC accession, [Genomic start pos, Genomic end pos]]
+        """
+        c = self._p_to_c(ac, pos)
+        if not c:
+            return None
+        c_ac, pos = c
+
+        return self._c_to_g(c_ac, pos)
+
+    def _p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
         """Convert protein (p.) annotation to cDNA (c.) annotation.
 
         :param str ac: Transcript accession
@@ -38,19 +64,11 @@ class MANETranscript:
             ac = \
                 self.transcript_mappings.ensp_to_enst[ac]
         else:
+            logger.warning(f"{ac} is an invalid accession")
             return None
 
         pos = self._p_to_c_pos(pos)
         return ac, pos
-
-    def _get_reading_frame(self, pos) -> int:
-        """Return reading frame number.
-
-        :param int pos: Position
-        :return: Reading frame
-        """
-        pos_mod_3 = (pos - 1) % 3
-        return pos_mod_3
 
     def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
         """Return cDNA position given a protein position.
@@ -63,3 +81,26 @@ class MANETranscript:
         if pos_mod_3 == 0:
             pos -= 1
         return pos - 1, pos + 1
+
+    def _c_to_g(self, ac, pos):
+        """Get g. annotation from c. annotation.
+
+        :param str ac: cDNA accession
+        :param tuple pos: [cDNA pos start, cDNA pos end]
+        """
+        alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
+        if not alt_tx_data:
+            return None
+
+        gene_symbol, nc_ac, alt_pos = alt_tx_data
+        alt_pos = self.uta.liftover_to_38(nc_ac, alt_pos)
+        return gene_symbol, nc_ac, alt_pos
+
+    def _get_reading_frame(self, pos) -> int:
+        """Return reading frame number.
+
+        :param int pos: Position
+        :return: Reading frame
+        """
+        pos_mod_3 = (pos - 1) % 3
+        return pos_mod_3

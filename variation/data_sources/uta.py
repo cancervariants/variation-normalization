@@ -1,5 +1,5 @@
 """Module for accessing UTA database."""
-from typing import Dict
+from typing import Dict, Optional, Tuple
 import psycopg2
 import psycopg2.extras
 from six.moves.urllib import parse as urlparse
@@ -47,13 +47,15 @@ class UTA:
             application_name='variation',
         )
 
-    def c_to_g(self, ac, pos):
-        """Get g. annotation from c. annotation.
+    def get_alt_tx_data(self, ac, pos) -> \
+            Optional[Tuple[str, str, Tuple[int, int]]]:
+        """Get altered transcript data given transcript data.
 
-        :param str ac: cDNA accession
+        :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
+        :return: [Gene, NC accession,
+            [Altered transcript start, Altered transcript end]]
         """
-        # Get NC accession
         query = (
             f"""
             SELECT *
@@ -68,8 +70,10 @@ class UTA:
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         if not results:
+            logger.warning(f"Unable to find transcript alignment for {ac}")
             return None
         result = results[-1]
+        gene = result[0]
         nc_accession = result[2]
         tx_pos_range = result[6], result[7]
         alt_pos_range = result[8], result[9]
@@ -81,7 +85,17 @@ class UTA:
                            f"{alt_pos_range}.")
             return None
 
-        # Get Chromosome and Assembly
+        return gene, nc_accession, alt_pos_range
+
+    def liftover_to_38(self, nc_accession, alt_pos_range) -> Tuple[int, int]:
+        """Liftover NC accession to GRCh38 version.
+
+        :param str nc_accession: NC Accession
+        :param tuple alt_pos_range:
+            [Altered transcript pos start, Altered transcript pos end]
+        :return: [Altered transcript pos start, Altered transcript pos end]
+            for GRCh38
+        """
         query = (
             f"""
             SELECT descr
@@ -101,7 +115,8 @@ class UTA:
             alt_pos_range = \
                 (lo.convert_coordinate(chromosome, alt_pos_range[0]),
                  lo.convert_coordinate(chromosome, alt_pos_range[1]))
-        return nc_accession, alt_pos_range
+
+        return alt_pos_range
 
 
 class ParseResult(urlparse.ParseResult):
