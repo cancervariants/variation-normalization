@@ -589,9 +589,9 @@ class Validator(ABC):
             else:
                 if 'aminoAcidAlleles' in resp.keys() and len(resp['aminoAcidAlleles']) > 0:  # noqa: E501
                     amino_acid_allele = resp['aminoAcidAlleles'][0]
-                    if 'hgvsMatchingTranscriptVariation' in amino_acid_allele.keys():  # noqa: E501
-                        if len(amino_acid_allele['hgvsMatchingTranscriptVariation']) > 0:  # noqa: E501
-                            for t in amino_acid_allele['hgvsMatchingTranscriptVariation']:  # noqa: E501
+                    if 'hgvsMatchingTranscriptVariant' in amino_acid_allele.keys():  # noqa: E501
+                        if len(amino_acid_allele['hgvsMatchingTranscriptVariant']) > 0:  # noqa: E501
+                            for t in amino_acid_allele['hgvsMatchingTranscriptVariant']:  # noqa: E501
                                 if '[' not in t:
                                     # Temp condition since variation norm
                                     # cant handle multiple possible variations
