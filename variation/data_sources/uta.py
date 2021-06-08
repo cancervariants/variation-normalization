@@ -27,6 +27,23 @@ class UTA:
 
         :param str db_url: UTA DB url
         """
+        self.db_url = self._update_db_url(db_pwd, db_url)
+        self.url = _parse_url(self.db_url)
+        self.schema = self.url.schema
+        self.args = self._get_conn_args()
+        self.conn = psycopg2.connect(**self.args)
+        self.conn.autocommit = True
+        self.cursor = \
+            self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    @staticmethod
+    def _update_db_url(db_pwd, db_url) -> Optional[str]:
+        """Return new db_url containing password.
+
+        :param str db_pwd: uta_admin's user password
+        :param str db_url: PostgreSQL db url
+        :return: PostgreSQL db url with password included
+        """
         if not db_pwd and 'UTA_PASSWORD' not in environ:
             raise Exception('Environment variable UTA_PASSWORD '
                             'or `db_pwd` param must be set')
@@ -41,16 +58,7 @@ class UTA:
             else:
                 if uta_password_in_environ and not db_pwd:
                     db_pwd = environ['UTA_PASSWORD']
-            db_url = f"{db_url[0]}:{db_pwd}@{db_url[1]}"
-
-        self.db_url = db_url
-        self.url = _parse_url(self.db_url)
-        self.schema = self.url.schema
-        self.args = self._get_conn_args()
-        self.conn = psycopg2.connect(**self.args)
-        self.conn.autocommit = True
-        self.cursor = \
-            self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            return f"{db_url[0]}:{db_pwd}@{db_url[1]}"
 
     def _get_conn_args(self) -> Dict:
         """Return connection arguments.
