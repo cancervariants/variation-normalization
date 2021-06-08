@@ -6,6 +6,7 @@ from six.moves.urllib import parse as urlparse
 import logging
 from variation import UTA_DB_URL
 from pyliftover import LiftOver
+from os import environ
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -21,13 +22,32 @@ GRCH_TO_HG = {
 class UTA:
     """Class for accessing UTA database."""
 
-    def __init__(self, db_url=UTA_DB_URL) -> None:
+    def __init__(self, db_url=UTA_DB_URL, db_pwd=None) -> None:
         """Initialize UTA class.
 
         :param str db_url: UTA DB url
         """
+        if not db_pwd and 'UTA_PASSWORD' not in environ:
+            raise Exception('Environment variable UTA_PASSWORD '
+                            'or `db_pwd` param must be set')
+        else:
+            uta_password_in_environ = 'UTA_PASSWORD' in environ
+            db_url = db_url.split('@')
+            if uta_password_in_environ and db_pwd:
+                if db_pwd != environ['UTA_PASSWORD']:
+                    raise Exception('If both environment variable UTA_'
+                                    'PASSWORD and param db_pwd is set, '
+                                    'they must both be the same')
+            else:
+                if uta_password_in_environ and not db_pwd:
+                    db_pwd = environ['UTA_PASSWORD']
+            db_url = f"{db_url[0]}:{db_pwd}@{db_url[1]}"
+
         self.db_url = db_url
-        self.conn = psycopg2.connect(**self._get_conn_args())
+        self.url = _parse_url(self.db_url)
+        self.schema = self.url.schema
+        self.args = self._get_conn_args()
+        self.conn = psycopg2.connect(**self.args)
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -37,13 +57,12 @@ class UTA:
 
         :return: A dictionary containing db credentials
         """
-        url = _parse_url(self.db_url)
         return dict(
-            host=url.hostname,
-            port=url.port,
-            database=url.database,
-            user=url.username,
-            password=url.password,
+            host=self.url.hostname,
+            port=self.url.port,
+            database=self.url.database,
+            user=self.url.username,
+            password=self.url.password,
             application_name='variation',
         )
 
@@ -59,7 +78,7 @@ class UTA:
         query = (
             f"""
             SELECT *
-            FROM tx_exon_aln_v
+            FROM {self.schema}.tx_exon_aln_v
             WHERE tx_ac='{ac}'
             AND alt_ac LIKE 'NC_00%'
             AND {pos[0]} BETWEEN tx_start_i AND tx_end_i
@@ -103,7 +122,7 @@ class UTA:
         query = (
             f"""
             SELECT descr
-            FROM _seq_anno_most_recent
+            FROM {self.schema}._seq_anno_most_recent
             WHERE ac = '{nc_accession}'
             """
         )
