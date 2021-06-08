@@ -6,7 +6,6 @@ from ftplib import FTP
 from os import environ, remove
 import gzip
 import shutil
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 APP_ROOT = Path(__file__).resolve().parents[0]
@@ -28,7 +27,7 @@ logger.handlers = []
 
 # Default DynamoDB url is http://localhost:8000
 # To use a different connection, set `GENE_NORM_DB_URL`
-from gene.query import QueryHandler as GeneQueryHandler  # noqa: E402
+from gene.query import QueryHandler as GeneQueryHandler  # noqa: E402, F811
 GENE_NORMALIZER = GeneQueryHandler()
 
 
@@ -66,4 +65,4 @@ REFSEQ_MANE_PATH = f"{APP_ROOT}/data/MANE.GRCh38.v0.93.summary.txt"
 data_download(REFSEQ_MANE_PATH, 'ftp.ncbi.nlm.nih.gov',
               'refseq/MANE/MANE_human/release_0.93/',
               'MANE.GRCh38.v0.93.summary.txt.gz')
-UTA_DB_URL = 'postgresql://anonymous@localhost:5432/uta/uta_20180821'
+UTA_DB_URL = 'postgresql://uta_admin@localhost:5433/uta/uta_20210129'
