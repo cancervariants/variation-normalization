@@ -24,11 +24,21 @@ sudo mv $seqrepo_date_dir latest
 
 Variation Normalizer also uses [uta](https://github.com/biocommons/uta).
 
-To install:
+_The following commands will likely need modification appropriate for the installation environment._
+1. Install [PostgreSQL](https://www.postgresql.org/)
+2. Create user and database.
+
+    ```
+    $ createuser -U postgres uta_admin
+    $ createuser -U postgres anonymous
+    $ createdb -U postgres -O uta_admin uta
+    ```
+
+3. To install locally, from the _variation/data_ directory:
 ```
-uta_v=uta_20180821
-docker pull biocommons/uta:$uta_v
-docker-compose -f docker-compose.yml up
+UTA_VERSION = uta_20210129.pgd.gz
+curl -O http://dl.biocommons.org/uta/$UTA_VERSION
+gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5433
 ```
 
 ### Data
