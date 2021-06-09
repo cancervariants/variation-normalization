@@ -1,6 +1,5 @@
 """Module for retrieving MANE transcript."""
 from typing import Optional, Tuple, Dict
-from variation.data_sources import CodonTable, MANETranscriptMappings
 import hgvs.parser
 import logging
 
@@ -23,7 +22,6 @@ class MANETranscript:
         """
         self.hgvs_parser = hgvs.parser.Parser()
         self.transcript_mappings = transcript_mappings
-        self.codon_table = CodonTable(amino_acid_cache)
         self.mane_transcript_mappings = mane_transcript_mappings
         self.uta = uta
 
@@ -93,9 +91,10 @@ class MANETranscript:
         if not alt_tx_data:
             return None
 
-        gene_symbol, nc_ac, alt_pos = alt_tx_data
-        alt_pos = self.uta.liftover_to_38(nc_ac, alt_pos)
-        return gene_symbol, nc_ac, alt_pos
+        gene_symbol, nc_ac, alt_pos, strand = alt_tx_data
+        alt_pos, strand = self.uta.liftover_to_38(nc_ac, alt_pos,
+                                                  strand=strand)
+        return gene_symbol, nc_ac, alt_pos, strand
 
     def _get_reading_frame(self, pos) -> int:
         """Return reading frame number.

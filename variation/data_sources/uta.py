@@ -75,7 +75,7 @@ class UTA:
         )
 
     def get_alt_tx_data(self, ac, pos) -> \
-            Optional[Tuple[str, str, Tuple[int, int]]]:
+            Optional[Tuple[str, str, Tuple[int, int], str]]:
         """Get altered transcript data given transcript data.
 
         :param str ac: cDNA transcript
@@ -102,6 +102,10 @@ class UTA:
         result = results[-1]
         gene = result[0]
         nc_accession = result[2]
+        if result[4] == -1:
+            strand = '-'
+        else:
+            strand = '+'
         tx_pos_range = result[6], result[7]
         alt_pos_range = result[8], result[9]
 
@@ -116,14 +120,16 @@ class UTA:
         alt_pos = (alt_pos_range[0] + tx_pos_change[0],
                    alt_pos_range[1] - tx_pos_change[1])
 
-        return gene, nc_accession, alt_pos
+        return gene, nc_accession, alt_pos, strand
 
-    def liftover_to_38(self, nc_accession, alt_pos_range) -> Tuple[int, int]:
+    def liftover_to_38(self, nc_accession, alt_pos_range, strand=None) \
+            -> Optional[Tuple[int, int], str]:
         """Liftover NC accession to GRCh38 version.
 
         :param str nc_accession: NC Accession
         :param tuple alt_pos_range:
             [Altered transcript pos start, Altered transcript pos end]
+        :param str strand: Strand
         :return: [Altered transcript pos start, Altered transcript pos end]
             for GRCh38
         """
@@ -143,11 +149,28 @@ class UTA:
 
             # Get most recent assembly version position
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-            alt_pos_range = \
-                (lo.convert_coordinate(chromosome, alt_pos_range[0]),
-                 lo.convert_coordinate(chromosome, alt_pos_range[1]))
+            liftover_start_i = \
+                self._get_liftover(lo, chromosome, alt_pos_range[0])
+            liftover_end_i = \
+                self._get_liftover(lo, chromosome, alt_pos_range[1])
+            if liftover_start_i is None or liftover_end_i is None:
+                return None
 
-        return alt_pos_range
+            alt_pos_range = liftover_start_i[1], liftover_end_i[1]
+            if liftover_start_i[2] != liftover_end_i[2]:
+                logger.warning("Strand must be the same.")
+            strand = liftover_start_i[2]
+
+        return alt_pos_range, strand
+
+    @staticmethod
+    def _get_liftover(lo, chromosome, pos):
+        liftover = lo.convert_coordinate(chromosome, pos)
+        if liftover is None or len(liftover) == 0:
+            logger.warning(f"{pos} does not exist on {chromosome}")
+            return None
+        else:
+            return liftover[0]
 
 
 class ParseResult(urlparse.ParseResult):
