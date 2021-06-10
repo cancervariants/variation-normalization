@@ -33,8 +33,35 @@ class MANETranscript:
         # TODO: If MANE Transcript not found, select longest transcript
         return self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
 
+    def p_to_mane_p(self, ac, pos) -> Dict:
+        """Return MANE Transcript on the p. coordinate.
+
+        :param str ac: Protein accession
+        :param int pos: Protein change position
+        :return: MANE transcripts with position change on p. coordinate
+        """
+        g = self._p_to_g(ac, pos)
+        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
+        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
+                                   g['alt_pos_range'], g, mane_data)
+        return self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+
+    def _mane_c_to_mane_p(self, mane_data, mane_c_pos_range):
+        """Translate MANE Transcript c. annotation to p. annotation
+
+        :param dict mane_data: MANE Transcript data
+        :param tuple[int, int] mane_c_pos_range: Position change range
+            on MANE Transcript c. coordinate
+        :return: MANE transcripts with position change on p. coordinate
+        """
+        return dict(
+            refseq=mane_data['RefSeq_prot'],
+            ensembl=mane_data['Ensembl_prot'],
+            pos=int(mane_c_pos_range[1] / 3)
+        )
+
     def _g_to_mane_c(self, nc_ac, mane_c_ac, genomic_change_range,
-                     alt_tx_data):
+                     alt_tx_data, mane_data):
         """Get MANE Transcript c. annotation from g. annotation.
 
         :param str nc_ac: NC accession
@@ -57,7 +84,11 @@ class MANETranscript:
             mane_tx_pos_range[0] + alt_tx_data['pos_change'][0],
             mane_tx_pos_range[1] - alt_tx_data['pos_change'][1]
         )
-        return mane_c_pos_change
+        return dict(
+            refseq=mane_data['RefSeq_nuc'],
+            ensembl=mane_data['Ensembl_nuc'],
+            pos=mane_c_pos_change
+        )
 
     def _p_to_g(self, ac, pos):
         """Convert protein annotation to genomic annotation.
