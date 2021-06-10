@@ -57,15 +57,18 @@ class MANETranscript:
         :return: [cDNA transcript accession, cDNA pos start, cDNA pos end]
         """
         # TODO: Check version mappings 1 to 1 relationship
-        if ac.startswith('NP_'):
-            ac = self.transcript_mappings.np_to_nm[ac]
-        elif ac.startswith('ENSP'):
-            ac = \
-                self.transcript_mappings.ensp_to_enst[ac]
+        ac = self.uta.p_to_c_ac(ac)
+        if ac:
+            ac = ac[-1][1]
         else:
-            logger.warning(f"{ac} is an invalid accession")
-            return None
-
+            if ac.startswith('NP_'):
+                ac = self.transcript_mappings.np_to_nm[ac]
+            elif ac.startswith('ENSP'):
+                ac = \
+                    self.transcript_mappings.ensp_to_enst[ac]
+            else:
+                logger.warning(f"Unable to find accession: {ac}")
+                return None
         pos = self._p_to_c_pos(pos)
         return ac, pos
 
