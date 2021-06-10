@@ -1,5 +1,5 @@
 """Module for accessing UTA database."""
-from typing import Dict, Optional, Tuple, List
+from typing import Dict, Optional, List
 import psycopg2
 import psycopg2.extras
 from six.moves.urllib import parse as urlparse
@@ -26,6 +26,7 @@ class UTA:
         """Initialize UTA class.
 
         :param str db_url: UTA DB url
+        :param str db_pwd: UTA user uta_admin's password
         """
         self.db_url = self._update_db_url(db_pwd, db_url)
         self.url = _parse_url(self.db_url)
@@ -74,14 +75,40 @@ class UTA:
             application_name='variation',
         )
 
-    def get_alt_tx_data(self, ac, pos) -> \
-            Optional[Tuple[str, str, Tuple[int, int], str]]:
+    def get_mane_tx_c_data(self, mane_c_ac, nc_ac, genomic_change_range)\
+            -> List:
+        """Get MANE Transcript c. data.
+
+        :param str mane_c_ac: MANE Transcript c. accession
+        :param str nc_ac: NC accession
+        :param tuple[int, int] genomic_change_range: [genomic change start
+            position, genomic change end position]
+        :return: Data about MANE Transcript on c. coordinate
+        """
+        query = (
+            f"""
+            SELECT *
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE tx_ac = '{mane_c_ac}'
+            AND alt_ac = '{nc_ac}'
+            AND {genomic_change_range[0]} BETWEEN alt_start_i and alt_end_i
+            AND {genomic_change_range[1]} BETWEEN alt_start_i and alt_end_i
+            ORDER BY ord, alt_ac;
+            """
+        )
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        if len(result) > 1:
+            logger.debug(f"Found more than one match for tx_ac {mane_c_ac} "
+                         f"and alt_ac {nc_ac}")
+        return result
+
+    def get_alt_tx_data(self, ac, pos) -> Dict:
         """Get altered transcript data given transcript data.
 
         :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
-        :return: [Gene, NC accession,
-            [Genomic change pos start, Genomic change pos end]]
+        :return: Transcript and Alt transcript data
         """
         query = (
             f"""
@@ -120,24 +147,28 @@ class UTA:
         alt_pos = (alt_pos_range[0] + tx_pos_change[0],
                    alt_pos_range[1] - tx_pos_change[1])
 
-        return gene, nc_accession, alt_pos, strand
+        return dict(
+            gene=gene,
+            tx_ac=ac,
+            tx_pos_range=tx_pos_range,
+            alt_ac=nc_accession,
+            alt_pos_range=alt_pos,
+            pos_change=tx_pos_change,
+            strand=strand
+        )
 
-    def liftover_to_38(self, nc_accession, alt_pos_range, strand=None) \
-            -> Optional[Tuple[Tuple[int, int], str]]:
+    def liftover_to_38(self, alt_tx_data) \
+            -> Optional[Dict]:
         """Liftover NC accession to GRCh38 version.
 
-        :param str nc_accession: NC Accession
-        :param tuple alt_pos_range:
-            [Altered transcript pos start, Altered transcript pos end]
-        :param str strand: Strand
-        :return: [Altered transcript pos start, Altered transcript pos end]
-            for GRCh38
+        :param dict alt_tx_data: Dictionary containing gene, nc_accession,
+            alt_pos, and strand
         """
         query = (
             f"""
             SELECT descr
             FROM {self.schema}._seq_anno_most_recent
-            WHERE ac = '{nc_accession}'
+            WHERE ac = '{alt_tx_data['alt_ac']}'
             """
         )
         self.cursor.execute(query)
@@ -150,21 +181,27 @@ class UTA:
             # Get most recent assembly version position
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
             liftover_start_i = \
-                self._get_liftover(lo, chromosome, alt_pos_range[0])
+                self._get_liftover(lo, chromosome, alt_tx_data['alt_pos'][0])
             liftover_end_i = \
-                self._get_liftover(lo, chromosome, alt_pos_range[1])
+                self._get_liftover(lo, chromosome, alt_tx_data['alt_pos'][1])
             if liftover_start_i is None or liftover_end_i is None:
                 return None
 
-            alt_pos_range = liftover_start_i[1], liftover_end_i[1]
+            alt_tx_data['alt_os'] = liftover_start_i[1], liftover_end_i[1]
             if liftover_start_i[2] != liftover_end_i[2]:
                 logger.warning("Strand must be the same.")
-            strand = liftover_start_i[2]
-
-        return alt_pos_range, strand
+            alt_tx_data['strand'] = liftover_start_i[2]
 
     @staticmethod
     def _get_liftover(lo, chromosome, pos):
+        """Get new genome assembly data for a position on a chromosome.
+
+        :param str LiftOver lo: LiftOver object to convert coordinates
+        :param str chromosome: The chromosome number
+        :param int pos: Position on the chromosome
+        :return: [Target chromosome, target position, target strand,
+            conversion_chain_score] for hg38 assembly
+        """
         liftover = lo.convert_coordinate(chromosome, pos)
         if liftover is None or len(liftover) == 0:
             logger.warning(f"{pos} does not exist on {chromosome}")
