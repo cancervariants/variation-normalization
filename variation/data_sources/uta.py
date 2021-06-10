@@ -1,5 +1,5 @@
 """Module for accessing UTA database."""
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 import psycopg2
 import psycopg2.extras
 from six.moves.urllib import parse as urlparse
@@ -123,7 +123,7 @@ class UTA:
         return gene, nc_accession, alt_pos, strand
 
     def liftover_to_38(self, nc_accession, alt_pos_range, strand=None) \
-            -> Optional[Tuple[int, int], str]:
+            -> Optional[Tuple[Tuple[int, int], str]]:
         """Liftover NC accession to GRCh38 version.
 
         :param str nc_accession: NC Accession
@@ -171,6 +171,23 @@ class UTA:
             return None
         else:
             return liftover[0]
+
+    def p_to_c_ac(self, p_ac) -> List[str]:
+        """Return c. accession from p. accession.
+
+        :param str p_ac: Protein accession
+        :return: List of rows containing c. accessions that are associated
+            with the given p. accession.
+        """
+        query = (
+            f"""
+            SELECT *
+            FROM {self.schema}.associated_accessions
+            WHERE pro_ac = '{p_ac}'
+            """
+        )
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
 
 
 class ParseResult(urlparse.ParseResult):
