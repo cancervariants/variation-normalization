@@ -11,13 +11,12 @@ logger.setLevel(logging.DEBUG)
 class MANETranscript:
     """Class for retrieving MANE transcripts."""
 
-    def __init__(self, transcript_mappings, amino_acid_cache,
+    def __init__(self, transcript_mappings,
                  mane_transcript_mappings, uta) -> None:
         """Initialize the MANETranscript class.
 
         :param TranscriptMappings transcript_mappings: Access to transcript
             accession mappings
-        :param AminoAcidCache amino_acid_cache: Access to amino acid codes
             and conversions
         """
         self.hgvs_parser = hgvs.parser.Parser()
@@ -34,7 +33,33 @@ class MANETranscript:
         # TODO: If MANE Transcript not found, select longest transcript
         return self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
 
-    def _p_to_g(self, ac, pos) -> Optional[Tuple[str, str, Tuple[int, int]]]:
+    def _g_to_mane_c(self, nc_ac, mane_c_ac, genomic_change_range,
+                     alt_tx_data):
+        """Get MANE Transcript c. annotation from g. annotation.
+
+        :param str nc_ac: NC accession
+        :param str mane_c_ac: MANE Transcript c. accession
+        :param tuple[int, int] genomic_change_range: [genomic change start
+            position, genomic change end position]
+        :param dict alt_tx_data: Transcript data
+        """
+        result = self.uta.get_mane_tx_c_data(mane_c_ac, nc_ac,
+                                             genomic_change_range)
+        if not result:
+            logger.warning(f"Unable to find MANE Transcript {mane_c_ac} "
+                           f"position change.")
+            return None
+        else:
+            result = result[-1]
+
+        mane_tx_pos_range = result[6], result[7]
+        mane_c_pos_change = (
+            mane_tx_pos_range[0] + alt_tx_data['pos_change'][0],
+            mane_tx_pos_range[1] - alt_tx_data['pos_change'][1]
+        )
+        return mane_c_pos_change
+
+    def _p_to_g(self, ac, pos):
         """Convert protein annotation to genomic annotation.
 
         :param str ac: Protein accession
@@ -94,10 +119,8 @@ class MANETranscript:
         if not alt_tx_data:
             return None
 
-        gene_symbol, nc_ac, alt_pos, strand = alt_tx_data
-        alt_pos, strand = self.uta.liftover_to_38(nc_ac, alt_pos,
-                                                  strand=strand)
-        return gene_symbol, nc_ac, alt_pos, strand
+        self.uta.liftover_to_38(alt_tx_data)
+        return alt_tx_data
 
     def _get_reading_frame(self, pos) -> int:
         """Return reading frame number.
