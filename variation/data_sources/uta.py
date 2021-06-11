@@ -177,6 +177,20 @@ class UTA:
         self.cursor.execute(query)
         result = self.cursor.fetchone()
         if result and result[0]:
+            query = (
+                f"""
+                SELECT DISTINCT alt_ac
+                FROM {self.schema}.tx_exon_aln_v
+                WHERE tx_ac = '{alt_tx_data['tx_ac']}'
+                """
+            )
+            self.cursor.execute(query)
+            nc_acs = self.cursor.fetchall()
+            if len(nc_acs) == 1:
+                logger.warning(f"UTA does not have GRCh38 assembly for "
+                               f"{alt_tx_data['alt_ac'].split('.')[0]}")
+                return None
+
             descr = result[0].split(',')
             chromosome = f"chr{descr[0].split()[-1]}"
             assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
@@ -184,16 +198,28 @@ class UTA:
             # Get most recent assembly version position
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
             liftover_start_i = \
-                self._get_liftover(lo, chromosome, alt_tx_data['alt_pos'][0])
+                self._get_liftover(lo, chromosome,
+                                   alt_tx_data['alt_pos_range'][0])
             liftover_end_i = \
-                self._get_liftover(lo, chromosome, alt_tx_data['alt_pos'][1])
+                self._get_liftover(lo, chromosome,
+                                   alt_tx_data['alt_pos_range'][1])
             if liftover_start_i is None or liftover_end_i is None:
                 return None
+            alt_tx_data['alt_pos_range'] = \
+                liftover_start_i[1], liftover_end_i[1]
 
-            alt_tx_data['alt_os'] = liftover_start_i[1], liftover_end_i[1]
-            if liftover_start_i[2] != liftover_end_i[2]:
-                logger.warning("Strand must be the same.")
-            alt_tx_data['strand'] = liftover_start_i[2]
+            # Change alt_ac to most recent
+            query = (
+                f"""
+                SELECT *
+                FROM {self.schema}.seq_anno
+                WHERE ac LIKE '{alt_tx_data['alt_ac'].split('.')[0]}%'
+                ORDER BY ac
+                """
+            )
+            self.cursor.execute(query)
+            nc_acs = self.cursor.fetchall()
+            alt_tx_data['alt_ac'] = nc_acs[-1][3]
 
     @staticmethod
     def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
