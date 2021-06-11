@@ -8,6 +8,13 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
+# TODO:
+#  Figure out why genome assembly for older versions don't match genomic
+#    position change in CIViC examples
+#  ENST queries
+#  Position Ranges rather than  single position
+
+
 class MANETranscript:
     """Class for retrieving MANE transcripts."""
 
@@ -153,3 +160,16 @@ class MANETranscript:
         mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
                                    g['alt_pos_range'], g, mane_data)
         return self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+
+    def c_to_mane_c(self, ac, pos):
+        """Return MANE Transcript on the c. coordinate.
+        c->g->GRCh38->MANE c.
+
+        :param str ac: Transcript accession on c. coordinate
+        :param int pos: cDNA change position
+        :return: MANE Transcripts with cDNA change on c. coordinate
+        """
+        g = self._c_to_g(ac, (pos - 1, pos + 1))
+        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
+        return self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
+                                 g['alt_pos_range'], g, mane_data)
