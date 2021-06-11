@@ -27,34 +27,64 @@ class MANETranscript:
         self.mane_transcript_mappings = mane_transcript_mappings
         self.uta = uta
 
-    def p_to_mane_p(self, ac, pos) -> Dict:
-        """Return MANE Transcript on the p. coordinate.
-        p->c->g->GRCh38->MANE c.->MANE p.
+    def _get_reading_frame(self, pos) -> int:
+        """Return reading frame number.
 
-        :param str ac: Protein accession
-        :param int pos: Protein change position
-        :return: MANE transcripts with position change on p. coordinate
+        :param int pos: Position
+        :return: Reading frame
         """
-        g = self._p_to_g(ac, pos)
-        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
-                                   g['alt_pos_range'], g, mane_data)
-        return self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+        pos_mod_3 = (pos - 1) % 3
+        return pos_mod_3
 
-    def _mane_c_to_mane_p(self, mane_data, mane_c_pos_range) -> Dict:
-        """Translate MANE Transcript c. annotation to p. annotation
+    def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
+        """Return cDNA position given a protein position.
 
-        :param dict mane_data: MANE Transcript data
-        :param tuple[int, int] mane_c_pos_range: Position change range
-            on MANE Transcript c. coordinate
-        :return: MANE transcripts accessions and position change on
-            p. coordinate
+        :param int p_pos: Protein position
+        :return: cDNA position start, cDNA position end
         """
-        return dict(
-            refseq=mane_data['RefSeq_prot'],
-            ensembl=mane_data['Ensembl_prot'],
-            pos=int(mane_c_pos_range[1] / 3)
-        )
+        pos_mod_3 = p_pos % 3
+        pos = p_pos * 3
+        if pos_mod_3 == 0:
+            pos -= 1
+        return pos - 1, pos + 1
+
+    def _p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
+        """Convert protein (p.) annotation to cDNA (c.) annotation.
+
+        :param str ac: Transcript accession
+        :param int pos: Protein position where change occurred
+        :return: [cDNA transcript accession, [cDNA pos start, cDNA pos end]]
+        """
+        # TODO: Check version mappings 1 to 1 relationship
+        ac = self.uta.p_to_c_ac(ac)
+        if ac:
+            ac = ac[-1][1]
+        else:
+            if ac.startswith('NP_'):
+                ac = self.transcript_mappings.np_to_nm[ac]
+            elif ac.startswith('ENSP'):
+                ac = \
+                    self.transcript_mappings.ensp_to_enst[ac]
+            else:
+                logger.warning(f"Unable to find accession: {ac}")
+                return None
+        pos = self._p_to_c_pos(pos)
+        return ac, pos
+
+    def _c_to_g(self, ac, pos) -> Optional[Dict]:
+        """Get g. annotation from c. annotation.
+
+        :param str ac: cDNA accession
+        :param tuple pos: [cDNA pos start, cDNA pos end]
+        :return: Gene, Transcript accession and position change,
+            Altered transcript accession and position change, Strand
+        """
+        alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
+        if not alt_tx_data:
+            return None
+
+        self.uta.liftover_to_38(alt_tx_data)
+        return alt_tx_data
 
     def _g_to_mane_c(self, nc_ac, mane_c_ac, genomic_change_range,
                      alt_tx_data, mane_data) -> Optional[Dict]:
@@ -91,76 +121,35 @@ class MANETranscript:
             pos=mane_c_pos_change
         )
 
-    def _p_to_g(self, ac, pos) -> Optional[Dict]:
-        """Convert protein annotation to genomic annotation.
+    def _mane_c_to_mane_p(self, mane_data, mane_c_pos_range) -> Dict:
+        """Translate MANE Transcript c. annotation to p. annotation
+
+        :param dict mane_data: MANE Transcript data
+        :param tuple[int, int] mane_c_pos_range: Position change range
+            on MANE Transcript c. coordinate
+        :return: MANE transcripts accessions and position change on
+            p. coordinate
+        """
+        return dict(
+            refseq=mane_data['RefSeq_prot'],
+            ensembl=mane_data['Ensembl_prot'],
+            pos=int(mane_c_pos_range[1] / 3)
+        )
+
+    def p_to_mane_p(self, ac, pos) -> Dict:
+        """Return MANE Transcript on the p. coordinate.
+        p->c->g->GRCh38->MANE c.->MANE p.
 
         :param str ac: Protein accession
         :param int pos: Protein change position
-        :return: Gene, Transcript accession and position change,
-            Altered transcript accession and position change, Strand
+        :return: MANE transcripts with position change on p. coordinate
         """
         c = self._p_to_c(ac, pos)
         if not c:
             return None
         c_ac, pos = c
-
-        return self._c_to_g(c_ac, pos)
-
-    def _p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
-        """Convert protein (p.) annotation to cDNA (c.) annotation.
-
-        :param str ac: Transcript accession
-        :param int pos: Protein position where change occurred
-        :return: [cDNA transcript accession, [cDNA pos start, cDNA pos end]]
-        """
-        # TODO: Check version mappings 1 to 1 relationship
-        ac = self.uta.p_to_c_ac(ac)
-        if ac:
-            ac = ac[-1][1]
-        else:
-            if ac.startswith('NP_'):
-                ac = self.transcript_mappings.np_to_nm[ac]
-            elif ac.startswith('ENSP'):
-                ac = \
-                    self.transcript_mappings.ensp_to_enst[ac]
-            else:
-                logger.warning(f"Unable to find accession: {ac}")
-                return None
-        pos = self._p_to_c_pos(pos)
-        return ac, pos
-
-    def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
-        """Return cDNA position given a protein position.
-
-        :param int p_pos: Protein position
-        :return: cDNA position start, cDNA position end
-        """
-        pos_mod_3 = p_pos % 3
-        pos = p_pos * 3
-        if pos_mod_3 == 0:
-            pos -= 1
-        return pos - 1, pos + 1
-
-    def _c_to_g(self, ac, pos) -> Optional[Dict]:
-        """Get g. annotation from c. annotation.
-
-        :param str ac: cDNA accession
-        :param tuple pos: [cDNA pos start, cDNA pos end]
-        :return: Gene, Transcript accession and position change,
-            Altered transcript accession and position change, Strand
-        """
-        alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
-        if not alt_tx_data:
-            return None
-
-        self.uta.liftover_to_38(alt_tx_data)
-        return alt_tx_data
-
-    def _get_reading_frame(self, pos) -> int:
-        """Return reading frame number.
-
-        :param int pos: Position
-        :return: Reading frame
-        """
-        pos_mod_3 = (pos - 1) % 3
-        return pos_mod_3
+        g = self._c_to_g(c_ac, pos)
+        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
+        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
+                                   g['alt_pos_range'], g, mane_data)
+        return self._mane_c_to_mane_p(mane_data, mane_c['pos'])
