@@ -27,7 +27,8 @@ class MANETranscriptMappings:
         """Return MANE Transcript data for a gene.
 
         :param str gene_symbol: HGNC Gene Symbol
-        :return: MANE Transcript data for gene
+        :return: MANE Transcript data (Transcript accessions,
+            gene, and location information)
         """
         data = self.df.loc[self.df['symbol'] == gene_symbol.upper()]
 
