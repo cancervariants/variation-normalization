@@ -1,5 +1,5 @@
 """Module for accessing UTA database."""
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Tuple
 import psycopg2
 import psycopg2.extras
 from six.moves.urllib import parse as urlparse
@@ -12,6 +12,7 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
+# Assembly mappings
 GRCH_TO_HG = {
     'GRCh36': 'hg18',
     'GRCh37': 'hg19',
@@ -108,7 +109,8 @@ class UTA:
 
         :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
-        :return: Transcript and Alt transcript data
+        :return: Gene, Transcript accession and position change,
+            Altered transcript accession and position change, Strand
         """
         query = (
             f"""
@@ -126,6 +128,7 @@ class UTA:
         if not results:
             logger.warning(f"Unable to find transcript alignment for {ac}")
             return None
+
         result = results[-1]
         gene = result[0]
         nc_accession = result[2]
@@ -133,6 +136,7 @@ class UTA:
             strand = '-'
         else:
             strand = '+'
+
         tx_pos_range = result[6], result[7]
         alt_pos_range = result[8], result[9]
 
@@ -157,9 +161,8 @@ class UTA:
             strand=strand
         )
 
-    def liftover_to_38(self, alt_tx_data) \
-            -> Optional[Dict]:
-        """Liftover NC accession to GRCh38 version.
+    def liftover_to_38(self, alt_tx_data) -> None:
+        """Liftover alt_tx_data to hg38 assembly.
 
         :param dict alt_tx_data: Dictionary containing gene, nc_accession,
             alt_pos, and strand
@@ -193,7 +196,7 @@ class UTA:
             alt_tx_data['strand'] = liftover_start_i[2]
 
     @staticmethod
-    def _get_liftover(lo, chromosome, pos):
+    def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
 
         :param str LiftOver lo: LiftOver object to convert coordinates
