@@ -13,6 +13,9 @@ logger.setLevel(logging.DEBUG)
 #    position change in CIViC examples
 #  ENST queries
 #  Position Ranges rather than  single position
+#  Validation:
+#     Check correct reading frame
+#     Checks for references should be in validators
 
 
 class MANETranscript:
@@ -86,6 +89,9 @@ class MANETranscript:
         :return: Gene, Transcript accession and position change,
             Altered transcript accession and position change, Strand
         """
+        # UTA does not store ENST versions
+        if ac.startswith('ENST'):
+            ac = ac.split('.')[0]
         alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
         if not alt_tx_data:
             return None
@@ -143,7 +149,7 @@ class MANETranscript:
             pos=int(mane_c_pos_range[1] / 3)
         )
 
-    def p_to_mane_p(self, ac, pos) -> Dict:
+    def p_to_mane_p(self, ac, pos) -> Optional[Dict]:
         """Return MANE Transcript on the p. coordinate.
         p->c->g->GRCh38->MANE c.->MANE p.
 
@@ -159,9 +165,10 @@ class MANETranscript:
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
                                    g['alt_pos_range'], g, mane_data)
-        return self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+        mane_p = self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+        return mane_p
 
-    def c_to_mane_c(self, ac, pos):
+    def c_to_mane_c(self, ac, pos) -> Optional[Dict]:
         """Return MANE Transcript on the c. coordinate.
         c->g->GRCh38->MANE c.
 
@@ -171,5 +178,6 @@ class MANETranscript:
         """
         g = self._c_to_g(ac, (pos - 1, pos + 1))
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        return self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
-                                 g['alt_pos_range'], g, mane_data)
+        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
+                                   g['alt_pos_range'], g, mane_data)
+        return mane_c
