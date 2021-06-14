@@ -76,6 +76,26 @@ class UTA:
             application_name='variation',
         )
 
+    def get_coding_start_site(self, ac) -> Optional[int]:
+        """Get coding start site
+
+        :param str ac: Accession
+        :return: Coding start site
+        """
+        query = (
+            f"""
+            SELECT cds_start_i
+            FROM {self.schema}.transcript
+            WHERE ac='{ac}'
+            """
+        )
+        self.cursor.execute(query)
+        cds_start_i = self.cursor.fetchone()
+        if cds_start_i is not None:
+            return cds_start_i[0]
+        else:
+            return None
+
     def get_mane_tx_c_data(self, mane_c_ac, nc_ac, genomic_change_range)\
             -> List:
         """Get MANE Transcript c. data.
