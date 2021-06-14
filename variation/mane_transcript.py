@@ -2,6 +2,7 @@
 from typing import Optional, Tuple, Dict
 import hgvs.parser
 import logging
+import math
 
 
 logger = logging.getLogger('variation')
@@ -11,8 +12,8 @@ logger.setLevel(logging.DEBUG)
 # TODO:
 #  Figure out why genome assembly for older versions don't match genomic
 #    position change in CIViC examples
+#        - Need to add Coding Start Site
 #  ENST queries
-#  Position Ranges rather than  single position
 #  Validation:
 #     Check correct reading frame
 #     Checks for references should be in validators
@@ -58,11 +59,13 @@ class MANETranscript:
             pos -= 1
         return pos - 1, pos + 1
 
-    def _p_to_c(self, ac, pos) -> Optional[Tuple[str, Tuple[int, int]]]:
+    def _p_to_c(self, ac, start_pos, end_pos)\
+            -> Optional[Tuple[str, Tuple[int, int]]]:
         """Convert protein (p.) annotation to cDNA (c.) annotation.
 
         :param str ac: Transcript accession
-        :param int pos: Protein position where change occurred
+        :param int start_pos: Protein start position
+        :param int end_pos: Protein end position
         :return: [cDNA transcript accession, [cDNA pos start, cDNA pos end]]
         """
         # TODO: Check version mappings 1 to 1 relationship
@@ -78,7 +81,10 @@ class MANETranscript:
             else:
                 logger.warning(f"Unable to find accession: {ac}")
                 return None
-        pos = self._p_to_c_pos(pos)
+        pos = self._p_to_c_pos(start_pos)
+        if end_pos is not None:
+            end_pos = self._p_to_c_pos(end_pos)
+            pos = pos[0], end_pos[1]
         return ac, pos
 
     def _c_to_g(self, ac, pos) -> Optional[Dict]:
@@ -146,18 +152,20 @@ class MANETranscript:
         return dict(
             refseq=mane_data['RefSeq_prot'],
             ensembl=mane_data['Ensembl_prot'],
-            pos=int(mane_c_pos_range[1] / 3)
+            pos=(math.ceil(mane_c_pos_range[0] / 3),
+                 math.floor(mane_c_pos_range[1] / 3))  # TODO: Check
         )
 
-    def p_to_mane_p(self, ac, pos) -> Optional[Dict]:
+    def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
         """Return MANE Transcript on the p. coordinate.
         p->c->g->GRCh38->MANE c.->MANE p.
 
         :param str ac: Protein accession
-        :param int pos: Protein change position
+        :param int start_pos: Protein start position
+        :param int end_pos: Protein end position
         :return: MANE transcripts with position change on p. coordinate
         """
-        c = self._p_to_c(ac, pos)
+        c = self._p_to_c(ac, start_pos, end_pos)
         if not c:
             return None
         c_ac, pos = c
