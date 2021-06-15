@@ -21,7 +21,7 @@ logger.setLevel(logging.DEBUG)
 class MANETranscript:
     """Class for retrieving MANE transcripts."""
 
-    def __init__(self, transcript_mappings,
+    def __init__(self, seqrepo_access, transcript_mappings,
                  mane_transcript_mappings, uta) -> None:
         """Initialize the MANETranscript class.
 
@@ -32,6 +32,7 @@ class MANETranscript:
         :param UTA uta: UTA instance to give access to query methods for
             transcript alignments
         """
+        self.seqrepo_access = seqrepo_access
         self.hgvs_parser = hgvs.parser.Parser()
         self.transcript_mappings = transcript_mappings
         self.mane_transcript_mappings = mane_transcript_mappings
@@ -193,6 +194,42 @@ class MANETranscript:
                     return False
         return True
 
+    def _validate_references(self, ac, start_pos, end_pos,
+                             mane_transcript) -> StrictBool:
+        """Return whether or not reference changes are the same.
+
+        :param str ac: Query accession
+        :param int start_pos: Original start position change
+        :param int end_pos: Origin end position change
+        :param dict mane_transcript: Ensembl and RefSeq transcripts with
+            corresponding position change
+        """
+        ref = self.seqrepo_access.get_sequence(ac, start_pos, end_pos)
+        if not ref:
+            return False
+        mane_start_pos = mane_transcript['pos'][0]
+        mane_end_pos = mane_transcript['pos'][1]
+        if mane_start_pos == mane_end_pos:
+            mane_ref = self.seqrepo_access.sequence_at_position(
+                mane_transcript['refseq'],
+                mane_start_pos
+            )
+        else:
+            mane_ref = self.seqrepo_access.get_sequence(
+                mane_transcript['refseq'],
+                mane_transcript['pos'][0] + 1,
+                mane_transcript['pos'][1] - 1
+            )
+        if not mane_ref:
+            return False
+
+        if ref != mane_ref:
+            logger.warning(f"Original reference {ref} does not match MANE "
+                           f"reference {mane_ref}")
+            return False
+
+        return True
+
     def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
         """Return MANE Transcript on the p. coordinate.
         p->c->g->GRCh38->MANE c.->MANE p.
@@ -216,6 +253,15 @@ class MANETranscript:
                                                              end_pos, mane_p)
         if not valid_reading_frames:
             return None
+
+        if end_pos is None:
+            end_pos = start_pos
+
+        validate_references = self._validate_references(ac, start_pos,
+                                                        end_pos, mane_p)
+        if not validate_references:
+            return None
+
         return mane_p
 
     def c_to_mane_c(self, ac, pos) -> Optional[Dict]:
@@ -235,6 +281,12 @@ class MANETranscript:
         valid_reading_frames = self._validate_reading_frames(ac, pos[0],
                                                              pos[1], mane_c)
         if not valid_reading_frames:
+            return None
+
+        validate_references = self._validate_references(
+            ac, pos[0] + 1, pos[1] - 1, mane_c
+        )
+        if not validate_references:
             return None
 
         return mane_c
