@@ -14,6 +14,7 @@ logger.setLevel(logging.DEBUG)
 #  Validation:
 #     Check correct reading frame
 #     Checks for references should be in validators
+#  g -> MANE c
 
 
 class MANETranscript:
@@ -66,9 +67,9 @@ class MANETranscript:
         :return: [cDNA transcript accession, [cDNA pos start, cDNA pos end]]
         """
         # TODO: Check version mappings 1 to 1 relationship
-        ac = self.uta.p_to_c_ac(ac)
-        if ac:
-            ac = ac[-1][1]
+        temp_ac = self.uta.p_to_c_ac(ac)
+        if temp_ac:
+            ac = temp_ac[-1][1]
         else:
             if ac.startswith('NP_'):
                 ac = self.transcript_mappings.np_to_nm[ac]
