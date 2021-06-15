@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Dict
 import hgvs.parser
 import logging
 import math
-
+from pydantic.types import StrictBool
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -156,6 +156,38 @@ class MANETranscript:
                  math.floor(mane_c_pos_range[1] / 3))  # TODO: Check
         )
 
+    def _validate_reading_frames(self, ac, start_pos, end_pos,
+                                 mane_transcript) -> StrictBool:
+        """Return whether reading frames are the same after translation.
+
+        :param str ac: Query accession
+        :param int start_pos: Original start position change
+        :param int end_pos: Original end position change
+        :param dict mane_transcript: Ensembl and RefSeq transcripts with
+            corresponding position change
+        """
+        start_og_rf = self._get_reading_frame(start_pos)
+        start_mane_rf = self._get_reading_frame(mane_transcript['pos'][0])
+        if start_og_rf != start_mane_rf:
+            logger.warning(f"{ac} original start reading frame "
+                           f"({start_og_rf}) does not match"
+                           f" {mane_transcript['refseq']}, "
+                           f"{mane_transcript['ensembl']} MANE start "
+                           f"reading frame ({start_mane_rf})")
+            return False
+
+        if end_pos is not None:
+            end_og_rf = self._get_reading_frame(end_pos)
+            end_mane_rf = self._get_reading_frame(mane_transcript['pos'][1])
+            if end_og_rf != end_mane_rf:
+                logger.warning(f"{ac} original end reading frame "
+                               f"({start_og_rf}) does not match"
+                               f" {mane_transcript['refseq']}, "
+                               f"{mane_transcript['ensembl']} MANE end "
+                               f"reading frame ({start_mane_rf})")
+                return False
+        return True
+
     def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
         """Return MANE Transcript on the p. coordinate.
         p->c->g->GRCh38->MANE c.->MANE p.
@@ -173,6 +205,12 @@ class MANETranscript:
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         mane_c = self._g_to_mane_c(g, mane_data)
         mane_p = self._mane_c_to_mane_p(mane_data, mane_c['pos'])
+
+        # Check reading frames
+        valid_reading_frames = self._validate_reading_frames(ac, start_pos,
+                                                             end_pos, mane_p)
+        if not valid_reading_frames:
+            return None
         return mane_p
 
     def c_to_mane_c(self, ac, pos) -> Optional[Dict]:
@@ -187,4 +225,11 @@ class MANETranscript:
         g = self._c_to_g(ac, pos)
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         mane_c = self._g_to_mane_c(g, mane_data)
+
+        # Check reading frames
+        valid_reading_frames = self._validate_reading_frames(ac, pos[0],
+                                                             pos[1], mane_c)
+        if not valid_reading_frames:
+            return None
+
         return mane_c
