@@ -10,6 +10,7 @@
 
 -i https://pypi.org/simple
 -e .
+-e .
 anyio==3.1.0; python_full_version >= '3.6.2'
 appdirs==1.4.4
 appnope==0.1.2; sys_platform == 'darwin'
@@ -23,12 +24,11 @@ babel==2.9.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 
 backcall==0.2.0
 backports-datetime-fromisoformat==1.0.0
 beautifulsoup4==4.9.3
-biocommons.seqrepo==0.6.3.post1
-biopython==1.79
+biocommons.seqrepo==0.6.4
 bioutils==0.5.5; python_version >= '3.6'
 bleach==3.3.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-boto3==1.17.86; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
-botocore==1.20.86; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+boto3==1.17.94; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
+botocore==1.20.94; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'
 bs4==0.0.1
 canonicaljson==1.4.0; python_version ~= '3.5'
 certifi==2021.5.30
@@ -38,7 +38,7 @@ chardet==4.0.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2
 civicpy==1.1.3; python_version >= '3.5'
 click==8.0.1; python_version >= '3.6'
 colorama==0.4.4; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-coloredlogs==15.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+coloredlogs==15.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 configparser==5.0.2; python_version >= '3.6'
 coverage==5.5
 coveralls==3.1.0
@@ -52,7 +52,7 @@ docopt==0.6.2
 docutils==0.17.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 entrypoints==0.3; python_version >= '2.7'
 fake-useragent==0.1.11
-fastapi==0.65.1
+fastapi==0.65.2
 filelock==3.0.12
 flake8-docstrings==1.6.0
 flake8==3.9.2
@@ -63,10 +63,10 @@ gffutils==0.10.1
 h11==0.12.0; python_version >= '3.6'
 hgvs==1.5.1
 httptools==0.2.0
-humanfriendly==9.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-identify==2.2.8; python_full_version >= '3.6.1'
+humanfriendly==9.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
+identify==2.2.10; python_full_version >= '3.6.1'
 idna==2.10; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
-importlib-metadata==4.4.0; python_version >= '3.6'
+importlib-metadata==4.5.0; python_version >= '3.6'
 inflection==0.5.1; python_version >= '3.5'
 iniconfig==1.1.1
 ipykernel==5.5.5
@@ -133,7 +133,7 @@ pyflakes==2.3.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.
 pygments==2.9.0; python_version >= '3.5'
 pyliftover==0.4
 pyparsing==2.4.7; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
-pyppeteer==0.2.5; python_full_version >= '3.6.1' and python_full_version < '4.0.0'
+pyppeteer==0.2.5; python_version < '4' and python_full_version >= '3.6.1'
 pyquery==1.4.3
 pyrsistent==0.17.3; python_version >= '3.5'
 pysam==0.16.0.1
@@ -157,19 +157,19 @@ simplejson==3.17.2; python_version >= '2.5' and python_version not in '3.0, 3.1,
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sniffio==1.2.0; python_version >= '3.5'
 snowballstemmer==2.1.0
-soupsieve==2.2.1; python_version >= '3'
+soupsieve==2.2.1; python_version >= '3.0'
 sqlparse==0.4.1; python_version >= '3.5'
 starlette==0.14.2; python_version >= '3.6'
 tabulate==0.8.9
-terminado==0.10.0; python_version >= '3.6'
+terminado==0.10.1; python_version >= '3.6'
 testpath==0.5.0; python_version >= '3.5'
 toml==0.10.2; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 tornado==6.1; python_version >= '3.5'
-tqdm==4.61.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
+tqdm==4.61.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 traitlets==5.0.5; python_version >= '3.7'
 twine==3.4.1
 typing-extensions==3.10.0.0
-urllib3==1.26.5; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_full_version < '4.0.0'
+urllib3==1.26.5; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
 uvicorn==0.14.0
 uvloop==0.15.2
 vcfpy==0.13.3
@@ -177,7 +177,7 @@ virtualenv==20.4.7; python_version >= '2.7' and python_version not in '3.0, 3.1,
 w3lib==1.22.0
 wcwidth==0.2.5
 webencodings==0.5.1
-websocket-client==1.0.1; python_version >= '3.6'
+websocket-client==1.1.0; python_version >= '3.6'
 websockets==8.1
 widgetsnbextension==3.5.1
 yoyo-migrations==7.3.2
