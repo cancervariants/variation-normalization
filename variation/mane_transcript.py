@@ -173,26 +173,24 @@ class MANETranscript:
         :param dict mane_transcript: Ensembl and RefSeq transcripts with
             corresponding position change
         """
-        start_og_rf = self._get_reading_frame(start_pos)
-        start_mane_rf = self._get_reading_frame(mane_transcript['pos'][0])
-        if start_og_rf != start_mane_rf:
-            logger.warning(f"{ac} original start reading frame "
-                           f"({start_og_rf}) does not match"
-                           f" {mane_transcript['refseq']}, "
-                           f"{mane_transcript['ensembl']} MANE start "
-                           f"reading frame ({start_mane_rf})")
-            return False
+        for pos, mane_pos_index in [(start_pos, 0), (end_pos, 1)]:
+            if pos is not None:
+                og_rf = self._get_reading_frame(pos)
+                mane_rf = self._get_reading_frame(
+                    mane_transcript['pos'][mane_pos_index]
+                )
 
-        if end_pos is not None:
-            end_og_rf = self._get_reading_frame(end_pos)
-            end_mane_rf = self._get_reading_frame(mane_transcript['pos'][1])
-            if end_og_rf != end_mane_rf:
-                logger.warning(f"{ac} original end reading frame "
-                               f"({start_og_rf}) does not match"
-                               f" {mane_transcript['refseq']}, "
-                               f"{mane_transcript['ensembl']} MANE end "
-                               f"reading frame ({start_mane_rf})")
-                return False
+                if og_rf != mane_rf:
+                    logger.warning(f"{ac} original reading frame ({og_rf}) "
+                                   f"does not match MANE "
+                                   f"{mane_transcript['ensembl']}, "
+                                   f"{mane_transcript['refseq']} reading "
+                                   f"frame ({mane_rf})")
+                    return False
+            else:
+                if mane_pos_index == 0:
+                    logger.warning(f"{ac} must having start position")
+                    return False
         return True
 
     def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
