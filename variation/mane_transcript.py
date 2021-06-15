@@ -13,7 +13,8 @@ logger.setLevel(logging.DEBUG)
 #  ENST queries
 #  Validation:
 #     Check correct reading frame
-#     Checks for references should be in validators
+#     Checks references match (should this be in validators?)
+#     Exon Structure
 #  g -> MANE c
 
 
@@ -105,22 +106,18 @@ class MANETranscript:
         self.uta.liftover_to_38(alt_tx_data)
         return alt_tx_data
 
-    def _g_to_mane_c(self, nc_ac, mane_c_ac, genomic_change_range,
-                     alt_tx_data, mane_data) -> Optional[Dict]:
+    def _g_to_mane_c(self, g, mane_data) -> Optional[Dict]:
         """Get MANE Transcript c. annotation from g. annotation.
 
-        :param str nc_ac: NC accession
-        :param str mane_c_ac: MANE Transcript c. accession
-        :param tuple[int, int] genomic_change_range: [genomic change start
-            position, genomic change end position]
-        :param dict alt_tx_data: Transcript data
+        :param dict g: Genomic data
         :param dict mane_data: MANE Transcript data (Transcript accessions,
             gene, and location information)
         :return: MANE Transcripts accessions for RefSeq and Ensembl c.
             coordinates, and position where change occurred on these accessions
         """
-        result = self.uta.get_mane_tx_c_data(mane_c_ac, nc_ac,
-                                             genomic_change_range)
+        mane_c_ac = mane_data['RefSeq_nuc']
+        result = self.uta.get_mane_tx_c_data(mane_c_ac, g['alt_ac'],
+                                             g['alt_pos_range'])
         if not result:
             logger.warning(f"Unable to find MANE Transcript {mane_c_ac} "
                            f"position change.")
@@ -133,8 +130,8 @@ class MANETranscript:
 
         mane_tx_pos_range = result[6], result[7]
         mane_c_pos_change = (
-            mane_tx_pos_range[0] + alt_tx_data['pos_change'][0] - coding_start_site,  # noqa: E501
-            mane_tx_pos_range[1] - alt_tx_data['pos_change'][1] - coding_start_site  # noqa: E501
+            mane_tx_pos_range[0] + g['pos_change'][0] - coding_start_site,
+            mane_tx_pos_range[1] - g['pos_change'][1] - coding_start_site
         )
 
         return dict(
@@ -174,8 +171,7 @@ class MANETranscript:
         c_ac, pos = c
         g = self._c_to_g(c_ac, pos)
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
-                                   g['alt_pos_range'], g, mane_data)
+        mane_c = self._g_to_mane_c(g, mane_data)
         mane_p = self._mane_c_to_mane_p(mane_data, mane_c['pos'])
         return mane_p
 
@@ -190,6 +186,5 @@ class MANETranscript:
         pos = pos - 1, pos + 1
         g = self._c_to_g(ac, pos)
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
-                                   g['alt_pos_range'], g, mane_data)
+        mane_c = self._g_to_mane_c(g, mane_data)
         return mane_c
