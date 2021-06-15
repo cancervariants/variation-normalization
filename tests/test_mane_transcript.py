@@ -1,8 +1,8 @@
 """Module for testing MANE Transcript class."""
 import pytest
 from variation.mane_transcript import MANETranscript
-from variation.data_sources import TranscriptMappings
-from variation.tokenizers.caches import AminoAcidCache
+from variation.data_sources import TranscriptMappings, \
+    MANETranscriptMappings, UTA
 import hgvs.parser
 
 
@@ -12,48 +12,260 @@ def test_mane_transcript():
     class TestMANETranscript:
 
         def __init__(self):
-            self.test_mane_transcript = MANETranscript(TranscriptMappings(),
-                                                       AminoAcidCache())
+            self.test_mane_transcript = MANETranscript(
+                TranscriptMappings(), MANETranscriptMappings(), UTA()
+            )
             self.test_hgvs_parser = hgvs.parser.Parser()
 
-        def p_to_c(self, transcript, token):
-            return self.test_mane_transcript.p_to_c(transcript, token)
+        def _get_reading_frame(self, pos):
+            return self.test_mane_transcript._get_reading_frame(pos)
+
+        def _p_to_c_pos(self, p_pos):
+            return self.test_mane_transcript._p_to_c_pos(p_pos)
+
+        def _p_to_c(self, ac, start_pos, end_pos):
+            return self.test_mane_transcript._p_to_c(ac, start_pos, end_pos)
+
+        def _c_to_g(self, ac, pos):
+            return self.test_mane_transcript._c_to_g(ac, pos)
+
+        def _g_to_mane_c(self, alt_tx_data, mane_data):
+            return self.test_mane_transcript._g_to_mane_c(
+                alt_tx_data, mane_data
+            )
+
+        def _mane_c_to_mane_p(self, mane_data, mane_c_pos_range):
+            return self.test_mane_transcript._mane_c_to_mane_p(
+                mane_data, mane_c_pos_range
+            )
+
+        def p_to_mane_p(self, ac, start_pos, end_pos):
+            return self.test_mane_transcript.p_to_mane_p(ac, start_pos,
+                                                         end_pos)
+
+        def c_to_mane_c(self, ac, pos):
+            return self.test_mane_transcript.c_to_mane_c(ac, pos)
+
     return TestMANETranscript()
 
 
+@pytest.fixture(scope='module')
+def braf_mane_data():
+    """Create test fixture for BRAF MANE data."""
+    return {
+        '#NCBI_GeneID': 'GeneID:673',
+        'Ensembl_Gene': 'ENSG00000157764.14',
+        'HGNC_ID': 'HGNC:1097',
+        'symbol': 'BRAF',
+        'name': 'B-Raf proto-oncogene, serine/threonine kinase',
+        'RefSeq_nuc': 'NM_001374258.1',
+        'RefSeq_prot': 'NP_001361187.1',
+        'Ensembl_nuc': 'ENST00000644969.2',
+        'Ensembl_prot': 'ENSP00000496776.1',
+        'MANE_status': 'MANE Select',
+        'GRCh38_chr': '7',
+        'chr_start': 140719337,
+        'chr_end': 140924929,
+        'chr_strand': '-'
+    }
+
+
+@pytest.fixture(scope='module')
+def nm_004333v6_g():
+    """Create test fixture for NM_004333.6 genomic data."""
+    return {
+        'gene': 'BRAF',
+        'tx_ac': 'NM_004333.6',
+        'tx_pos_range': (1967, 2086),
+        'alt_ac': 'NC_000007.14',
+        'alt_pos_range': (140753331, 140753333),
+        'pos_change': (57, 60),
+        'strand': '-'
+    }
+
+
+@pytest.fixture(scope='module')
+def braf_v600e_mane_p():
+    """Create test fixture for BRAF V600E MANE Transcript on p coordinate."""
+    return {
+        'refseq': 'NP_001361187.1',
+        'ensembl': 'ENSP00000496776.1',
+        'pos': (640, 640)
+    }
+
+
+@pytest.fixture(scope='module')
+def egfr_l858r_mane_p():
+    """Create test fixture for EGFR L858R MANE Transcript on p coordinate."""
+    return {
+        'refseq': 'NP_005219.2',
+        'ensembl': 'ENSP00000275493.2',
+        'pos': (858, 858)
+    }
+
+
+@pytest.fixture(scope='module')
+def braf_v600e_mane_c():
+    """Create test fixture for BRAF V600E MANE Transcript on c coordinate."""
+    return {
+        'refseq': 'NM_001374258.1',
+        'ensembl': 'ENST00000644969.2',
+        'pos': (1918, 1920)
+    }
+
+
+@pytest.fixture(scope='module')
+def egfr_l858r_mane_c():
+    """Create test fixture for EGFR L858R MANE Transcript on c coordinate."""
+    return {
+        'refseq': 'NM_005228.5',
+        'ensembl': 'ENST00000275493.7',
+        'pos': (2572, 2574)
+    }
+
+
+def test_get_reading_frame(test_mane_transcript):
+    """Test that _get_reading_frame works correctly."""
+    rf = test_mane_transcript._get_reading_frame(600)
+    assert rf == 2
+
+    rf = test_mane_transcript._get_reading_frame(858)
+    assert rf == 2
+
+    rf = test_mane_transcript._get_reading_frame(712)
+    assert rf == 0
+
+    rf = test_mane_transcript._get_reading_frame(746)
+    assert rf == 1
+
+
+def test_p_to_c_pos(test_mane_transcript):
+    """Test that _p_to_c_pos method works correctly."""
+    c_pos = test_mane_transcript._p_to_c_pos(600)
+    assert c_pos == (1798, 1800)
+
+    c_pos = test_mane_transcript._p_to_c_pos(858)
+    assert c_pos == (2572, 2574)
+
+    c_pos = test_mane_transcript._p_to_c_pos(576)
+    assert c_pos == (1726, 1728)
+
+    # TODO: Check this
+    # c_pos = test_mane_transcript._p_to_c_pos(12)
+    # assert c_pos == (33, 35)
+
+
 def test_p_to_c(test_mane_transcript):
-    """Test that p_to_c method works correctly."""
+    """Test that _p_to_c method works correctly."""
     # Amino Acid Substitution
     expected_pos = 1798, 1800
-    ac, pos = test_mane_transcript.p_to_c('NP_004324.2', 600)
-    assert ac == 'NM_004333.4'
+    ac, pos = test_mane_transcript._p_to_c('NP_004324.2', 600, 600)
+    assert ac == 'NM_004333.6'
     assert pos == expected_pos
 
-    ac, pos = test_mane_transcript.p_to_c('ENSP00000288602.7', 600)
+    ac, pos = test_mane_transcript._p_to_c('ENSP00000288602.7', 600, None)
     assert ac == 'ENST00000288602.11'
     assert pos == expected_pos
 
     expected_pos = 2572, 2574
-    ac, pos = test_mane_transcript.p_to_c('NP_005219.2', 858)
-    assert ac == 'NM_005228.3'
+    ac, pos = test_mane_transcript._p_to_c('NP_005219.2', 858, None)
+    assert ac == 'NM_005228.5'
     assert pos == expected_pos
 
-    ac, pos = test_mane_transcript.p_to_c('ENSP00000275493.2', 858)
+    ac, pos = test_mane_transcript._p_to_c('ENSP00000275493.2', 858, None)
     assert ac == 'ENST00000275493.7'
     assert pos == expected_pos
 
     # Polypeptide Truncation
     expected_pos = 554, 556
-    ac, pos = test_mane_transcript.p_to_c('NP_000542.1', 185)
-    assert ac == 'NM_000551.3'
+    ac, pos = test_mane_transcript._p_to_c('NP_000542.1', 185, None)
+    assert ac == 'NM_000551.4'
     assert pos == expected_pos
 
-    ac, pos = test_mane_transcript.p_to_c('ENSP00000256474.3', 185)
+    ac, pos = test_mane_transcript._p_to_c('ENSP00000256474.3', 185, None)
     assert ac == 'ENST00000256474.3'
     assert pos == expected_pos
 
     # Silent Mutation
     expected_pos = 182, 184
-    ac, pos = test_mane_transcript.p_to_c('NP_000542.1', 61)
-    assert ac == 'NM_000551.3'
+    ac, pos = test_mane_transcript._p_to_c('NP_000542.1', 61, None)
+    assert ac == 'NM_000551.4'
     assert pos == expected_pos
+
+
+def test_c_to_g(test_mane_transcript, nm_004333v6_g):
+    """Test that _c_to_g method works correctly."""
+    tx_ac = 'NM_004333.6'
+    g = test_mane_transcript._c_to_g(tx_ac, (1798, 1800))
+    assert g == nm_004333v6_g
+
+
+def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g,
+                     braf_v600e_mane_c):
+    """Test that _g_to_mane_c method works correctly."""
+    mane_c = test_mane_transcript._g_to_mane_c(
+        nm_004333v6_g, braf_mane_data
+    )
+    assert mane_c == braf_v600e_mane_c
+
+
+def test_mane_c_to_mane_p(test_mane_transcript, braf_mane_data,
+                          braf_v600e_mane_p):
+    """Test that _mane_c_to_mane_p method works correctly."""
+    mane_p = test_mane_transcript._mane_c_to_mane_p(braf_mane_data,
+                                                    (1918, 1920))
+    assert mane_p == braf_v600e_mane_p
+
+
+def test_p_to_mane_p(test_mane_transcript, braf_v600e_mane_p,
+                     egfr_l858r_mane_p):
+    """Test that p_to_mane_p method works correctly."""
+    # BRAF V600E
+    # RefSeq Accessions
+    mane_p = test_mane_transcript.p_to_mane_p('NP_004324.2', 600, None)
+    assert mane_p == braf_v600e_mane_p
+
+    mane_p = test_mane_transcript.p_to_mane_p('NP_004324.2', 600, 600)
+    assert mane_p == braf_v600e_mane_p
+
+    # TODO: Ensembl Accessions
+
+    # EGFR L858R
+    # RefSeq Accessions
+    mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, None)
+    assert mane_p == egfr_l858r_mane_p
+
+    mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, 858)
+    assert mane_p == egfr_l858r_mane_p
+
+    # TODO: Ensembl Accessions
+
+
+def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
+                     egfr_l858r_mane_c):
+    """Test that c_to_mane_p method works correctly."""
+    # BRAF V600E
+    # RefSeq Accessions
+    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.4', 1799)
+    assert mane_c == braf_v600e_mane_c
+
+    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.5', 1799)
+    assert mane_c == braf_v600e_mane_c
+
+    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.6', 1799)
+    assert mane_c == braf_v600e_mane_c
+
+    # TODO: Ensembl Accessions
+
+    # EGFR L858R
+    # RefSeq Accessions
+    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.3', 2573)
+    assert mane_c == egfr_l858r_mane_c
+
+    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.4', 2573)
+    assert mane_c == egfr_l858r_mane_c
+
+    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.5', 2573)
+    assert mane_c == egfr_l858r_mane_c
+
+    # TODO: Ensembl Accessions
