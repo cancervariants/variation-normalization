@@ -2,6 +2,11 @@
 from typing import Optional, List
 from biocommons.seqrepo import SeqRepo
 from variation import SEQREPO_DATA_PATH
+import logging
+
+
+logger = logging.getLogger('variation')
+logger.setLevel(logging.DEBUG)
 
 
 class SeqRepoAccess:
@@ -24,13 +29,17 @@ class SeqRepoAccess:
         try:
             t = self.seq_repo_client.fetch(transcript)
             if len(t) < pos - 1:
+                logger.warning(f"Position {pos} exceeds {transcript} length")
                 return None
             else:
                 try:
                     return t[pos - 1]
                 except IndexError:
+                    logger.warning(f"Position {pos} not found in transcript "
+                                   f"{transcript}")
                     return None
         except KeyError:
+            logger.warning(f"Accession {transcript} not found in SeqRepo")
             return None
 
     def get_sequence(self, transcript: str, start: int, end: int)\
@@ -44,14 +53,23 @@ class SeqRepoAccess:
         try:
             sequence = self.seq_repo_client.fetch(transcript)
             len_of_sequence = len(sequence)
-            if len_of_sequence < start - 1 or len_of_sequence < end:
+            if len_of_sequence < start - 1:
+                logger.warning(f"Position {start-1} exceeds"
+                               f" {transcript} length")
+                return None
+            elif len_of_sequence < end:
+                logger.warning(f"Position {end} exceeds"
+                               f" {transcript} length")
                 return None
             else:
                 try:
                     return sequence[start - 1:end]
                 except IndexError:
+                    logger.warning(f"Positions {start -1} to {end} not found "
+                                   f"in transcript {transcript}")
                     return None
         except KeyError:
+            logger.warning(f"Accession {transcript} not found in SeqRepo")
             return None
 
     def len_of_sequence(self, transcript: str) -> int:
@@ -63,6 +81,7 @@ class SeqRepoAccess:
         try:
             return len(self.seq_repo_client.fetch(transcript))
         except KeyError:
+            logger.warning(f"Accession {transcript} not found in SeqRepo")
             return 0
 
     def aliases(self, input_str) -> List[str]:
@@ -70,4 +89,5 @@ class SeqRepoAccess:
         try:
             return self.seq_repo_client.translate_alias(input_str.strip())
         except KeyError:
+            logger.warning(f"SeqRepo could not translate alias: {input_str}")
             return []
