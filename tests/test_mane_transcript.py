@@ -220,32 +220,39 @@ def test_mane_c_to_mane_p(test_mane_transcript, braf_mane_data,
 def test_p_to_mane_p(test_mane_transcript, braf_v600e_mane_p,
                      egfr_l858r_mane_p):
     """Test that p_to_mane_p method works correctly."""
-    # BRAF V600E
-    # RefSeq Accessions
+    # BRAF V600E RefSeq Accessions
     mane_p = test_mane_transcript.p_to_mane_p('NP_004324.2', 600, None)
     assert mane_p == braf_v600e_mane_p
 
     mane_p = test_mane_transcript.p_to_mane_p('NP_004324.2', 600, 600)
     assert mane_p == braf_v600e_mane_p
 
-    # TODO: Ensembl Accessions
+    # BRAF V600E Ensembl Accessions
+    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000288602.7', 600, None)
+    assert mane_p == braf_v600e_mane_p
 
-    # EGFR L858R
-    # RefSeq Accessions
+    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000288602.7', 600, 600)
+    assert mane_p == braf_v600e_mane_p
+
+    # EGFR L858R RefSeq Accessions
     mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, None)
     assert mane_p == egfr_l858r_mane_p
 
     mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, 858)
     assert mane_p == egfr_l858r_mane_p
 
-    # TODO: Ensembl Accessions
+    # EGFR L858R Ensembl Accessions
+    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000275493.2', 858, None)
+    assert mane_p == egfr_l858r_mane_p
+
+    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000275493.2', 858, 858)
+    assert mane_p == egfr_l858r_mane_p
 
 
 def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
                      egfr_l858r_mane_c):
     """Test that c_to_mane_p method works correctly."""
-    # BRAF V600E
-    # RefSeq Accessions
+    # BRAF V600E RefSeq Accessions
     mane_c = test_mane_transcript.c_to_mane_c('NM_004333.4', 1799)
     assert mane_c == braf_v600e_mane_c
 
@@ -255,10 +262,11 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     mane_c = test_mane_transcript.c_to_mane_c('NM_004333.6', 1799)
     assert mane_c == braf_v600e_mane_c
 
-    # TODO: Ensembl Accessions
+    # BRAF V600E Ensembl Accessions
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000288602.6', 1799)
+    assert mane_c == braf_v600e_mane_c
 
-    # EGFR L858R
-    # RefSeq Accessions
+    # EGFR L858R RefSeq Accessions
     mane_c = test_mane_transcript.c_to_mane_c('NM_005228.3', 2573)
     assert mane_c == egfr_l858r_mane_c
 
@@ -268,4 +276,6 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     mane_c = test_mane_transcript.c_to_mane_c('NM_005228.5', 2573)
     assert mane_c == egfr_l858r_mane_c
 
-    # TODO: Ensembl Accessions
+    # EGFR L858R Ensembl Accessions
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.2', 2573)
+    assert mane_c == egfr_l858r_mane_c
