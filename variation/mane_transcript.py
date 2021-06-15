@@ -10,9 +10,6 @@ logger.setLevel(logging.DEBUG)
 
 
 # TODO:
-#  Figure out why genome assembly for older versions don't match genomic
-#    position change in CIViC examples
-#        - Need to add Coding Start Site
 #  ENST queries
 #  Validation:
 #     Check correct reading frame
@@ -95,6 +92,8 @@ class MANETranscript:
         :return: Gene, Transcript accession and position change,
             Altered transcript accession and position change, Strand
         """
+        coding_start_site = self.uta.get_coding_start_site(ac)
+        pos = pos[0] + coding_start_site, pos[1] + coding_start_site
         # UTA does not store ENST versions
         if ac.startswith('ENST'):
             ac = ac.split('.')[0]
@@ -128,10 +127,13 @@ class MANETranscript:
         else:
             result = result[-1]
 
+        coding_start_site = \
+            self.uta.get_coding_start_site(mane_data['RefSeq_nuc'])
+
         mane_tx_pos_range = result[6], result[7]
         mane_c_pos_change = (
-            mane_tx_pos_range[0] + alt_tx_data['pos_change'][0],
-            mane_tx_pos_range[1] - alt_tx_data['pos_change'][1]
+            mane_tx_pos_range[0] + alt_tx_data['pos_change'][0] - coding_start_site,  # noqa: E501
+            mane_tx_pos_range[1] - alt_tx_data['pos_change'][1] - coding_start_site  # noqa: E501
         )
 
         return dict(
@@ -184,7 +186,8 @@ class MANETranscript:
         :param int pos: cDNA change position
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
-        g = self._c_to_g(ac, (pos - 1, pos + 1))
+        pos = pos - 1, pos + 1
+        g = self._c_to_g(ac, pos)
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         mane_c = self._g_to_mane_c(g['alt_ac'], mane_data['RefSeq_nuc'],
                                    g['alt_pos_range'], g, mane_data)
