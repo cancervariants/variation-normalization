@@ -72,14 +72,19 @@ class MANETranscript:
         if temp_ac:
             ac = temp_ac[-1][1]
         else:
-            if ac.startswith('NP_'):
-                ac = self.transcript_mappings.np_to_nm[ac]
-            elif ac.startswith('ENSP'):
-                ac = \
-                    self.transcript_mappings.ensp_to_enst[ac]
-            else:
-                logger.warning(f"Unable to find accession: {ac}")
+            try:
+                if ac.startswith('NP_'):
+                    ac = self.transcript_mappings.np_to_nm[ac]
+                elif ac.startswith('ENSP'):
+                    ac = \
+                        self.transcript_mappings.ensp_to_enst[ac]
+                else:
+                    logger.warning(f"Unable to find accession: {ac}")
+                    return None
+            except KeyError:
+                logger.warning(f"{ac} not found in transcript_mappings")
                 return None
+
         pos = self._p_to_c_pos(start_pos)
         if end_pos is not None:
             end_pos = self._p_to_c_pos(end_pos)
@@ -94,11 +99,13 @@ class MANETranscript:
         :return: Gene, Transcript accession and position change,
             Altered transcript accession and position change, Strand
         """
-        coding_start_site = self.uta.get_coding_start_site(ac)
-        pos = pos[0] + coding_start_site, pos[1] + coding_start_site
         # UTA does not store ENST versions
         if ac.startswith('ENST'):
             ac = ac.split('.')[0]
+
+        coding_start_site = self.uta.get_coding_start_site(ac)
+        pos = pos[0] + coding_start_site, pos[1] + coding_start_site
+
         alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
         if not alt_tx_data:
             return None
