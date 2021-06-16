@@ -93,7 +93,8 @@ def braf_v600e_mane_p():
     return {
         'refseq': 'NP_001361187.1',
         'ensembl': 'ENSP00000496776.1',
-        'pos': (640, 640)
+        'pos': (640, 640),
+        'mane_status': 'MANE Select'
     }
 
 
@@ -103,7 +104,8 @@ def egfr_l858r_mane_p():
     return {
         'refseq': 'NP_005219.2',
         'ensembl': 'ENSP00000275493.2',
-        'pos': (858, 858)
+        'pos': (858, 858),
+        'mane_status': 'MANE Select'
     }
 
 
@@ -113,7 +115,8 @@ def braf_v600e_mane_c():
     return {
         'refseq': 'NM_001374258.1',
         'ensembl': 'ENST00000644969.2',
-        'pos': (1919, 1919)
+        'pos': (1919, 1919),
+        'mane_status': 'MANE Select'
     }
 
 
@@ -123,7 +126,8 @@ def egfr_l858r_mane_c():
     return {
         'refseq': 'NM_005228.5',
         'ensembl': 'ENST00000275493.7',
-        'pos': (2573, 2573)
+        'pos': (2573, 2573),
+        'mane_status': 'MANE Select'
     }
 
 
@@ -218,7 +222,8 @@ def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
     assert mane_c == {
         'refseq': 'NM_001374258.1',
         'ensembl': 'ENST00000644969.2',
-        'pos': (1918, 1920)
+        'pos': (1918, 1920),
+        'mane_status': 'MANE Select'
     }
 
 
