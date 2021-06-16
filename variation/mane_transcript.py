@@ -53,10 +53,7 @@ class MANETranscript:
         :param int p_pos: Protein position
         :return: cDNA position start, cDNA position end
         """
-        pos_mod_3 = p_pos % 3
-        pos = p_pos * 3
-        if pos_mod_3 == 0:
-            pos -= 1
+        pos = p_pos * 3 - 1
         return pos - 1, pos + 1
 
     def _p_to_c(self, ac, start_pos, end_pos)\
