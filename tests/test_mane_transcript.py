@@ -80,7 +80,8 @@ def nm_004333v6_g():
         'tx_ac': 'NM_004333.6',
         'tx_pos_range': (1967, 2086),
         'alt_ac': 'NC_000007.14',
-        'alt_pos_range': (140753331, 140753333),
+        'alt_pos_change_range': (140753331, 140753333),
+        'alt_pos_range': (140753274, 140753393),
         'pos_change': (57, 60),
         'strand': '-'
     }
