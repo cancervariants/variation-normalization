@@ -1,5 +1,5 @@
 """The module for MANE Transcript mappings."""
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from variation import REFSEQ_MANE_PATH
 import pandas as pd
 import logging
@@ -23,7 +23,7 @@ class MANETranscriptMappings:
         """
         return pd.read_csv(self.mane_data_path, delimiter='\t')
 
-    def get_gene_mane_data(self, gene_symbol) -> Optional[Dict]:
+    def get_gene_mane_data(self, gene_symbol) -> Optional[List[Dict]]:
         """Return MANE Transcript data for a gene.
 
         :param str gene_symbol: HGNC Gene Symbol
@@ -32,13 +32,9 @@ class MANETranscriptMappings:
         """
         data = self.df.loc[self.df['symbol'] == gene_symbol.upper()]
 
-        len_data = len(data)
-        if len_data == 0:
+        if len(data) == 0:
             logger.warning(f"Unable to get MANE Transcript data for gene: "
                            f"{gene_symbol}")
             return None
-        elif len_data > 1:
-            # Contains both MANE Select and MANE Plus
-            data = data.loc[data['MANE_status'] == 'MANE Select']
 
-        return data.to_dict('records')[0]
+        return data.to_dict('records')
