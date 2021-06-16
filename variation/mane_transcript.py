@@ -102,6 +102,9 @@ class MANETranscript:
             ac = ac.split('.')[0]
 
         coding_start_site = self.uta.get_coding_start_site(ac)
+        if coding_start_site is None:
+            logger.warning(f"Accession {ac} not found in UTA")
+            return None
         pos = pos[0] + coding_start_site, pos[1] + coding_start_site
 
         alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
@@ -271,6 +274,9 @@ class MANETranscript:
         """
         pos = pos - 1, pos + 1
         g = self._c_to_g(ac, pos)
+        if g is None:
+            return None
+
         mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         mane_c = self._g_to_mane_c(g, mane_data)
 
