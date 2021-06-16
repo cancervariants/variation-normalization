@@ -44,8 +44,9 @@ def test_mane_transcript():
             return self.test_mane_transcript.p_to_mane_p(ac, start_pos,
                                                          end_pos)
 
-        def c_to_mane_c(self, ac, pos):
-            return self.test_mane_transcript.c_to_mane_c(ac, pos)
+        def c_to_mane_c(self, ac, start_pos, end_pos):
+            return self.test_mane_transcript.c_to_mane_c(ac, start_pos,
+                                                         end_pos)
 
     return TestMANETranscript()
 
@@ -111,7 +112,7 @@ def braf_v600e_mane_c():
     return {
         'refseq': 'NM_001374258.1',
         'ensembl': 'ENST00000644969.2',
-        'pos': (1918, 1920)
+        'pos': (1919, 1919)
     }
 
 
@@ -121,7 +122,7 @@ def egfr_l858r_mane_c():
     return {
         'refseq': 'NM_005228.5',
         'ensembl': 'ENST00000275493.7',
-        'pos': (2572, 2574)
+        'pos': (2573, 2573)
     }
 
 
@@ -208,13 +209,16 @@ def test_c_to_g(test_mane_transcript, nm_004333v6_g):
     assert g == nm_004333v6_g
 
 
-def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g,
-                     braf_v600e_mane_c):
+def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
     """Test that _g_to_mane_c method works correctly."""
     mane_c = test_mane_transcript._g_to_mane_c(
         nm_004333v6_g, braf_mane_data
     )
-    assert mane_c == braf_v600e_mane_c
+    assert mane_c == {
+        'refseq': 'NM_001374258.1',
+        'ensembl': 'ENST00000644969.2',
+        'pos': (1918, 1920)
+    }
 
 
 def test_mane_c_to_mane_p(test_mane_transcript, braf_mane_data,
@@ -267,7 +271,7 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     # mane_c = test_mane_transcript.c_to_mane_c('NM_004333.5', 1799)
     # assert mane_c == braf_v600e_mane_c
 
-    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.6', 1799)
+    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.6', 1799, None)
     assert mane_c == braf_v600e_mane_c
 
     # BRAF V600E Ensembl Accessions
@@ -281,11 +285,11 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     # mane_c = test_mane_transcript.c_to_mane_c('NM_005228.4', 2573)
     # assert mane_c == egfr_l858r_mane_c
 
-    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.5', 2573)
+    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.5', 2573, 2573)
     assert mane_c == egfr_l858r_mane_c
 
     # EGFR L858R Ensembl Accessions
-    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.7', 2573)
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.7', 2573, None)
     assert mane_c == egfr_l858r_mane_c
 
     # mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.2', 2573)
@@ -295,5 +299,6 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
 def test_no_matches(test_mane_transcript):
     """Test that invalid queries return None."""
     # Invalid ENST version
-    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.15645', 2573)
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.15645', 2573,
+                                              None)
     assert mane_c is None
