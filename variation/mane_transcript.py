@@ -237,6 +237,34 @@ class MANETranscript:
 
         return True
 
+    def _ac_to_mane_validation_checks(self, ac, start_pos,
+                                      end_pos, mane_data) -> StrictBool:
+        """Return whether or not ac to MANE passes validation checks.
+
+        :param str ac: Original query accession
+        :param int start_pos: Start position change
+        :param int end_pos: End position change
+        :param dict mane_data: MANE Select or MANE Plus Clinical data
+        :return: `True` if validation checks pass. `False` otherwise.
+        """
+        # Check reading frames
+        is_valid_reading_frames = self._validate_reading_frames(
+            ac, start_pos, end_pos, mane_data
+        )
+        if not is_valid_reading_frames:
+            return False
+
+        # Check references
+        is_valid_references = self._validate_references(
+            ac, start_pos, end_pos, mane_data
+        )
+        if not is_valid_references:
+            return False
+
+        # TODO: Exon structure
+
+        return True
+
     def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
         """Return MANE Transcript on the p. coordinate.
         p->c->g->GRCh38->MANE c.->MANE p.
@@ -246,13 +274,19 @@ class MANETranscript:
         :param int end_pos: Protein end position
         :return: MANE transcripts with position change on p. coordinate
         """
+        if end_pos is None:
+            end_pos = start_pos
+
         c = self._p_to_c(ac, start_pos, end_pos)
         if not c:
             return None
         c_ac, pos = c
-        g = self._c_to_g(c_ac, pos)
-        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
 
+        g = self._c_to_g(c_ac, pos)
+        if not g:
+            return None
+
+        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
         if not mane_data:
             return None
         mane_data_len = len(mane_data)
@@ -264,19 +298,10 @@ class MANETranscript:
             mane_c = self._g_to_mane_c(g, current_mane_data)
             mane_p = self._mane_c_to_mane_p(current_mane_data, mane_c['pos'])
 
-            # Check reading frames
-            valid_reading_frames = self._validate_reading_frames(
+            valid = self._ac_to_mane_validation_checks(
                 ac, start_pos, end_pos, mane_p
             )
-            if not valid_reading_frames:
-                continue
-
-            if end_pos is None:
-                end_pos = start_pos
-
-            validate_references = self._validate_references(ac, start_pos,
-                                                            end_pos, mane_p)
-            if not validate_references:
+            if not valid:
                 continue
 
             return mane_p
@@ -293,6 +318,7 @@ class MANETranscript:
         """
         if end_pos is None:
             end_pos = start_pos
+
         g = self._c_to_g(ac, (start_pos, end_pos))
         if g is None:
             return None
@@ -307,18 +333,10 @@ class MANETranscript:
 
             mane_c = self._g_to_mane_c(g, mane_data[index])
 
-            # Check reading frames
-            is_valid_reading_frames = self._validate_reading_frames(
+            valid = self._ac_to_mane_validation_checks(
                 ac, start_pos, end_pos, mane_c
             )
-            if not is_valid_reading_frames:
-                continue
-
-            is_valid_references = self._validate_references(
-                ac, start_pos, end_pos, mane_c
-            )
-
-            if not is_valid_references:
+            if not valid:
                 continue
 
             return mane_c
