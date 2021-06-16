@@ -341,3 +341,47 @@ class MANETranscript:
 
             return mane_c
         return None
+
+    def g_to_mane_c(self, ac, start_pos, end_pos):
+        """Return MANE Transcript on the c. coordinate.
+        g->GRCh38->MANE c.
+
+        :param str ac: Transcript accession on g. coordinate
+        :param int start_pos: genomic change start position
+        :param int end_pos: genomic change end position
+        :return: MANE Transcripts with cDNA change on c. coordinate
+        """
+        if end_pos is None:
+            end_pos = start_pos
+
+        gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
+        if not gene_symbol:
+            return None
+
+        mane_data =\
+            self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
+        if not mane_data:
+            return None
+        mane_data_len = len(mane_data)
+        for i in range(mane_data_len):
+            index = mane_data_len - i - 1
+            current_mane_data = mane_data[index]
+
+            mane_c_ac = current_mane_data['RefSeq_nuc']
+            mane_tx_genomic_data = \
+                self.uta.get_mane_c_genomic_data(mane_c_ac, ac, start_pos,
+                                                 end_pos)
+
+            coding_start_site = mane_tx_genomic_data['coding_start_site']
+
+            mane_c_pos_change = (
+                mane_tx_genomic_data['tx_pos_range'][0] + mane_tx_genomic_data['alt_pos_change_range'][0] - coding_start_site,  # noqa: E501
+                mane_tx_genomic_data['tx_pos_range'][1] - mane_tx_genomic_data['alt_pos_change_range'][1] - coding_start_site  # noqa: E501
+            )
+
+            return dict(
+                refseq=current_mane_data['RefSeq_nuc'],
+                ensembl=current_mane_data['Ensembl_nuc'],
+                pos=mane_c_pos_change,
+                mane_status=current_mane_data['MANE_status']
+            )
