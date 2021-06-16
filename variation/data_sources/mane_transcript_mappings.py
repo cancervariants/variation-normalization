@@ -37,4 +37,5 @@ class MANETranscriptMappings:
                            f"{gene_symbol}")
             return None
 
+        data = data.sort_values('MANE_status')
         return data.to_dict('records')
