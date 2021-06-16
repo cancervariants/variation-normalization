@@ -2,7 +2,7 @@
 import pytest
 from variation.mane_transcript import MANETranscript
 from variation.data_sources import TranscriptMappings, \
-    MANETranscriptMappings, UTA
+    MANETranscriptMappings, UTA, SeqRepoAccess
 import hgvs.parser
 
 
@@ -13,7 +13,8 @@ def test_mane_transcript():
 
         def __init__(self):
             self.test_mane_transcript = MANETranscript(
-                TranscriptMappings(), MANETranscriptMappings(), UTA()
+                SeqRepoAccess(), TranscriptMappings(),
+                MANETranscriptMappings(), UTA()
             )
             self.test_hgvs_parser = hgvs.parser.Parser()
 
@@ -141,18 +142,25 @@ def test_get_reading_frame(test_mane_transcript):
 
 def test_p_to_c_pos(test_mane_transcript):
     """Test that _p_to_c_pos method works correctly."""
+    # https://civicdb.org/events/genes/5/summary/variants/12/summary#variant
     c_pos = test_mane_transcript._p_to_c_pos(600)
     assert c_pos == (1798, 1800)
 
+    # https://civicdb.org/events/genes/19/summary/variants/33/summary#variant
     c_pos = test_mane_transcript._p_to_c_pos(858)
     assert c_pos == (2572, 2574)
 
+    # https://civicdb.org/events/genes/29/summary/variants/72/summary#variant
     c_pos = test_mane_transcript._p_to_c_pos(576)
     assert c_pos == (1726, 1728)
 
-    # TODO: Check this
-    # c_pos = test_mane_transcript._p_to_c_pos(12)
-    # assert c_pos == (33, 35)
+    # https://civicdb.org/events/genes/38/summary/variants/99/summary#variant
+    c_pos = test_mane_transcript._p_to_c_pos(842)
+    assert c_pos == (2524, 2526)
+
+    # https://civicdb.org/events/genes/30/summary/variants/78/summary#variant
+    c_pos = test_mane_transcript._p_to_c_pos(12)
+    assert c_pos == (34, 36)
 
 
 def test_p_to_c(test_mane_transcript):
