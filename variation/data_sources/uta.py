@@ -124,8 +124,71 @@ class UTA:
                          f"and alt_ac {nc_ac}")
         return result
 
-    def get_genomic_tx_data(self, ac, pos) -> Dict:
+    def get_mane_c_genomic_data(self, ac, alt_ac, start_pos, end_pos):
+        """Get MANE Transcript and genomic data.
+        Used when going from g -> MANE c
+
+        :param str ac: MANE Transcript accession
+        :param str alt_ac: NC Accession
+        :param int start_pos: Genomic start position change
+        :param int end_pos: Genomic end position change
+        """
+        if end_pos is None:
+            end_pos = start_pos
+
+        query = (
+            f"""
+            SELECT *
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE tx_ac = '{ac}'
+            AND alt_ac = '{alt_ac}'
+            AND alt_aln_method = 'splign'
+            AND {start_pos} BETWEEN alt_start_i AND alt_end_i
+            AND {end_pos} BETWEEN alt_start_i AND alt_end_i
+            """
+        )
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        if not result:
+            return None
+        gene = result[0]
+        if result[4] == -1:
+            strand = '-'
+        else:
+            strand = '+'
+
+        tx_pos_range = result[6], result[7]
+        alt_pos_range = result[8], result[9]
+
+        if (tx_pos_range[1] - tx_pos_range[0]) != \
+                (alt_pos_range[1] - alt_pos_range[0]):
+            logger.warning(f"{alt_ac} tx_pos_range {tx_pos_range} "
+                           f"is not the same length as alt_pos_range "
+                           f"{alt_pos_range}.")
+            return None
+
+        coding_start_site = self.get_coding_start_site(ac)
+        if coding_start_site is None:
+            logger.warning(f"Accession {ac} not found in UTA")
+            return None
+
+        alt_pos = (start_pos - alt_pos_range[0],
+                   alt_pos_range[1] - end_pos)
+
+        return dict(
+            gene=gene,
+            tx_ac=ac,
+            tx_pos_range=tx_pos_range,
+            alt_ac=alt_ac,
+            alt_pos_range=alt_pos_range,
+            alt_pos_change_range=alt_pos,
+            strand=strand,
+            coding_start_site=coding_start_site
+        )
+
+    def get_genomic_tx_data(self, ac, pos) -> Optional[Dict]:
         """Get transcript mapping to genomic data.
+        Used when going from c -> g
 
         :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
@@ -187,6 +250,38 @@ class UTA:
             pos_change=tx_pos_change,
             strand=strand
         )
+
+    def get_gene_from_ac(self, ac, start_pos, end_pos) -> Optional[str]:
+        """Get transcripts from NC accession and positions.
+
+        :param str ac: NC Accession
+        :param int start_pos: Start position change
+        :param int end_pos: End position change
+        :return: HGNC gene symbol
+        """
+        if end_pos is None:
+            end_pos = start_pos
+        query = (
+            f"""
+            SELECT DISTINCT hgnc
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE alt_ac = '{ac}'
+            AND {start_pos} BETWEEN alt_start_i AND alt_end_i
+            AND {end_pos} BETWEEN alt_start_i AND alt_end_i
+            """
+        )
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        if not results:
+            logger.warning(f"Unable to find gene between {start_pos} and"
+                           f" {end_pos} on {ac}")
+            return None
+        else:
+            if len(results) > 1:
+                logger.warning(f"Found more than one gene beteween "
+                               f"{start_pos} and {end_pos} on {ac}")
+
+        return results[0][0]
 
     def liftover_to_38(self, genomic_tx_data) -> None:
         """Liftover genomic_tx_data to hg38 assembly.
