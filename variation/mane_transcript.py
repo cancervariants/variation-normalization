@@ -110,12 +110,12 @@ class MANETranscript:
 
         pos = pos[0] + coding_start_site, pos[1] + coding_start_site
 
-        alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
-        if not alt_tx_data:
+        genomic_tx_data = self.uta.get_genomic_tx_data(ac, pos)
+        if not genomic_tx_data:
             return None
 
-        self.uta.liftover_to_38(alt_tx_data)
-        return alt_tx_data
+        self.uta.liftover_to_38(genomic_tx_data)
+        return genomic_tx_data
 
     def _g_to_mane_c(self, g, mane_data) -> Optional[Dict]:
         """Get MANE Transcript c. annotation from g. annotation.
@@ -128,7 +128,7 @@ class MANETranscript:
         """
         mane_c_ac = mane_data['RefSeq_nuc']
         result = self.uta.get_mane_tx_c_data(mane_c_ac, g['alt_ac'],
-                                             g['alt_pos_range'])
+                                             g['alt_pos_change_range'])
         if not result:
             logger.warning(f"Unable to find MANE Transcript {mane_c_ac} "
                            f"position change.")

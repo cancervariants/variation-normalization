@@ -124,8 +124,8 @@ class UTA:
                          f"and alt_ac {nc_ac}")
         return result
 
-    def get_alt_tx_data(self, ac, pos) -> Dict:
-        """Get altered transcript data given transcript data.
+    def get_genomic_tx_data(self, ac, pos) -> Dict:
+        """Get transcript mapping to genomic data.
 
         :param str ac: cDNA transcript
         :param tuple pos: [cDNA pos start, cDNA pos end]
@@ -182,22 +182,23 @@ class UTA:
             tx_ac=ac,
             tx_pos_range=tx_pos_range,
             alt_ac=nc_accession,
-            alt_pos_range=alt_pos,
+            alt_pos_range=alt_pos_range,
+            alt_pos_change_range=alt_pos,
             pos_change=tx_pos_change,
             strand=strand
         )
 
-    def liftover_to_38(self, alt_tx_data) -> None:
-        """Liftover alt_tx_data to hg38 assembly.
+    def liftover_to_38(self, genomic_tx_data) -> None:
+        """Liftover genomic_tx_data to hg38 assembly.
 
-        :param dict alt_tx_data: Dictionary containing gene, nc_accession,
+        :param dict genomic_tx_data: Dictionary containing gene, nc_accession,
             alt_pos, and strand
         """
         query = (
             f"""
             SELECT descr
             FROM {self.schema}._seq_anno_most_recent
-            WHERE ac = '{alt_tx_data['alt_ac']}'
+            WHERE ac = '{genomic_tx_data['alt_ac']}'
             """
         )
         self.cursor.execute(query)
@@ -207,14 +208,14 @@ class UTA:
                 f"""
                 SELECT DISTINCT alt_ac
                 FROM {self.schema}.tx_exon_aln_v
-                WHERE tx_ac = '{alt_tx_data['tx_ac']}'
+                WHERE tx_ac = '{genomic_tx_data['tx_ac']}'
                 """
             )
             self.cursor.execute(query)
             nc_acs = self.cursor.fetchall()
             if len(nc_acs) == 1:
                 logger.warning(f"UTA does not have GRCh38 assembly for "
-                               f"{alt_tx_data['alt_ac'].split('.')[0]}")
+                               f"{genomic_tx_data['alt_ac'].split('.')[0]}")
                 return None
 
             descr = result[0].split(',')
@@ -225,13 +226,13 @@ class UTA:
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
             liftover_start_i = \
                 self._get_liftover(lo, chromosome,
-                                   alt_tx_data['alt_pos_range'][0])
+                                   genomic_tx_data['alt_pos_change_range'][0])
             liftover_end_i = \
                 self._get_liftover(lo, chromosome,
-                                   alt_tx_data['alt_pos_range'][1])
+                                   genomic_tx_data['alt_pos_change_range'][1])
             if liftover_start_i is None or liftover_end_i is None:
                 return None
-            alt_tx_data['alt_pos_range'] = \
+            genomic_tx_data['alt_pos_change_range'] = \
                 liftover_start_i[1], liftover_end_i[1]
 
             # Change alt_ac to most recent
@@ -239,13 +240,13 @@ class UTA:
                 f"""
                 SELECT *
                 FROM {self.schema}.seq_anno
-                WHERE ac LIKE '{alt_tx_data['alt_ac'].split('.')[0]}%'
+                WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
                 ORDER BY ac
                 """
             )
             self.cursor.execute(query)
             nc_acs = self.cursor.fetchall()
-            alt_tx_data['alt_ac'] = nc_acs[-1][3]
+            genomic_tx_data['alt_ac'] = nc_acs[-1][3]
 
     @staticmethod
     def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
