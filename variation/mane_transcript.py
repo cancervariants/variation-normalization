@@ -207,9 +207,13 @@ class MANETranscript:
         :param dict mane_transcript: Ensembl and RefSeq transcripts with
             corresponding position change
         """
-        ref = self.seqrepo_access.get_sequence(ac, start_pos, end_pos)
+        if start_pos == end_pos:
+            ref = self.seqrepo_access.sequence_at_position(ac, start_pos)
+        else:
+            ref = self.seqrepo_access.get_sequence(ac, start_pos, end_pos)
         if not ref:
             return False
+
         mane_start_pos = mane_transcript['pos'][0]
         mane_end_pos = mane_transcript['pos'][1]
         if mane_start_pos == mane_end_pos:
@@ -267,16 +271,18 @@ class MANETranscript:
 
         return mane_p
 
-    def c_to_mane_c(self, ac, pos) -> Optional[Dict]:
+    def c_to_mane_c(self, ac, start_pos, end_pos) -> Optional[Dict]:
         """Return MANE Transcript on the c. coordinate.
         c->g->GRCh38->MANE c.
 
         :param str ac: Transcript accession on c. coordinate
-        :param int pos: cDNA change position
+        :param int start_pos: cDNA change start position
+        :param int end_pos: cDNA change end position
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
-        pos = pos - 1, pos + 1
-        g = self._c_to_g(ac, pos)
+        if end_pos is None:
+            end_pos = start_pos
+        g = self._c_to_g(ac, (start_pos, end_pos))
         if g is None:
             return None
 
@@ -284,15 +290,17 @@ class MANETranscript:
         mane_c = self._g_to_mane_c(g, mane_data)
 
         # Check reading frames
-        valid_reading_frames = self._validate_reading_frames(ac, pos[0],
-                                                             pos[1], mane_c)
-        if not valid_reading_frames:
+        is_valid_reading_frames = self._validate_reading_frames(
+            ac, start_pos, end_pos, mane_c
+        )
+        if not is_valid_reading_frames:
             return None
 
-        validate_references = self._validate_references(
-            ac, pos[0] + 1, pos[1] - 1, mane_c
+        is_valid_references = self._validate_references(
+            ac, start_pos, end_pos, mane_c
         )
-        if not validate_references:
+
+        if not is_valid_references:
             return None
 
         return mane_c
