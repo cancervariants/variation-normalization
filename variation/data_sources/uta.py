@@ -132,11 +132,16 @@ class UTA:
         :return: Gene, Transcript accession and position change,
             Altered transcript accession and position change, Strand
         """
+        # UTA does not store ENST versions
+        if ac.startswith('ENST'):
+            temp_ac = ac.split('.')[0]
+        else:
+            temp_ac = ac
         query = (
             f"""
             SELECT *
             FROM {self.schema}.tx_exon_aln_v
-            WHERE tx_ac='{ac}'
+            WHERE tx_ac='{temp_ac}'
             AND alt_ac LIKE 'NC_00%'
             AND {pos[0]} BETWEEN tx_start_i AND tx_end_i
             AND {pos[1]} BETWEEN tx_start_i AND tx_end_i
@@ -146,7 +151,8 @@ class UTA:
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         if not results:
-            logger.warning(f"Unable to find transcript alignment for {ac}")
+            logger.warning(f"Unable to find transcript "
+                           f"alignment for {temp_ac}")
             return None
 
         result = results[-1]

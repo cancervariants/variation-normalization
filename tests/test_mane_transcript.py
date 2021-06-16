@@ -285,5 +285,15 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     assert mane_c == egfr_l858r_mane_c
 
     # EGFR L858R Ensembl Accessions
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.7', 2573)
+    assert mane_c == egfr_l858r_mane_c
+
     # mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.2', 2573)
     # assert mane_c == egfr_l858r_mane_c
+
+
+def test_no_matches(test_mane_transcript):
+    """Test that invalid queries return None."""
+    # Invalid ENST version
+    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.15645', 2573)
+    assert mane_c is None

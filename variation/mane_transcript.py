@@ -99,12 +99,15 @@ class MANETranscript:
         """
         # UTA does not store ENST versions
         if ac.startswith('ENST'):
-            ac = ac.split('.')[0]
+            temp_ac = ac.split('.')[0]
+        else:
+            temp_ac = ac
 
-        coding_start_site = self.uta.get_coding_start_site(ac)
+        coding_start_site = self.uta.get_coding_start_site(temp_ac)
         if coding_start_site is None:
-            logger.warning(f"Accession {ac} not found in UTA")
+            logger.warning(f"Accession {temp_ac} not found in UTA")
             return None
+
         pos = pos[0] + coding_start_site, pos[1] + coding_start_site
 
         alt_tx_data = self.uta.get_alt_tx_data(ac, pos)
