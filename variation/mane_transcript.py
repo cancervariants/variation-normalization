@@ -278,82 +278,59 @@ class MANETranscript:
 
         return True
 
-    def p_to_mane_p(self, ac, start_pos, end_pos) -> Optional[Dict]:
-        """Return MANE Transcript on the p. coordinate.
-        p->c->g->GRCh38->MANE c.->MANE p.
+    def get_mane_transcript(self, ac, start_pos, end_pos,
+                            start_annotation_layer) -> Optional[Dict]:
+        """Return mane transcript.
 
-        :param str ac: Protein accession
-        :param int start_pos: Protein start position
-        :param int end_pos: Protein end position
-        :return: MANE transcripts with position change on p. coordinate
+        :param str ac: Accession
+        :param int start_pos: Start position change
+        :param int end_pos: End position change
+        :param start_annotation_layer: Annotation layer we are starting from.
+            Must be either `p`, `c`, or `g`.
+        :return: MANE transcript
         """
+        anno = start_annotation_layer.lower()
         if end_pos is None:
             end_pos = start_pos
+        if anno in ['p', 'c']:
+            if anno == 'p':
+                c = self._p_to_c(ac, start_pos, end_pos)
+                if not c:
+                    return None
+                c_ac, c_pos = c
+            else:
+                c_ac = ac
+                c_pos = start_pos, end_pos
 
-        c = self._p_to_c(ac, start_pos, end_pos)
-        if not c:
+            g = self._c_to_g(c_ac, c_pos)
+            if g is None:
+                return None
+
+            mane_data = \
+                self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
+            if not mane_data:
+                return None
+            mane_data_len = len(mane_data)
+
+            for i in range(mane_data_len):
+                index = mane_data_len - i - 1
+                current_mane_data = mane_data[index]
+
+                mane = self._g_to_mane_c(g, current_mane_data)
+                if anno == 'p':
+                    mane = self._get_mane_p(current_mane_data, mane['pos'])
+
+                valid = self._ac_to_mane_validation_checks(
+                    ac, start_pos, end_pos, mane
+                )
+                if not valid:
+                    continue
+                return mane
             return None
-        c_ac, pos = c
-
-        g = self._c_to_g(c_ac, pos)
-        if not g:
-            return None
-
-        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        if not mane_data:
-            return None
-        mane_data_len = len(mane_data)
-
-        for i in range(mane_data_len):
-            index = mane_data_len - i - 1
-            current_mane_data = mane_data[index]
-
-            mane_c = self._g_to_mane_c(g, current_mane_data)
-            mane_p = self._get_mane_p(current_mane_data, mane_c['pos'])
-
-            valid = self._ac_to_mane_validation_checks(
-                ac, start_pos, end_pos, mane_p
-            )
-            if not valid:
-                continue
-
-            return mane_p
-        return None
-
-    def c_to_mane_c(self, ac, start_pos, end_pos) -> Optional[Dict]:
-        """Return MANE Transcript on the c. coordinate.
-        c->g->GRCh38->MANE c.
-
-        :param str ac: Transcript accession on c. coordinate
-        :param int start_pos: cDNA change start position
-        :param int end_pos: cDNA change end position
-        :return: MANE Transcripts with cDNA change on c. coordinate
-        """
-        if end_pos is None:
-            end_pos = start_pos
-
-        g = self._c_to_g(ac, (start_pos, end_pos))
-        if g is None:
-            return None
-
-        mane_data = self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
-        if not mane_data:
-            return None
-        mane_data_len = len(mane_data)
-
-        for i in range(mane_data_len):
-            index = mane_data_len - i - 1
-
-            mane_c = self._g_to_mane_c(g, mane_data[index])
-
-            valid = self._ac_to_mane_validation_checks(
-                ac, start_pos, end_pos, mane_c
-            )
-            if not valid:
-                continue
-
-            return mane_c
-        return None
+        elif anno == 'g':
+            pass
+        else:
+            logger.warning(f"Annotation layer not supported: {anno}")
 
     def g_to_mane_c(self, ac, start_pos, end_pos):
         """Return MANE Transcript on the c. coordinate.
