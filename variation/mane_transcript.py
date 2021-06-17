@@ -293,6 +293,7 @@ class MANETranscript:
         if end_pos is None:
             end_pos = start_pos
         if anno in ['p', 'c']:
+            # Get accession and position on c. coordinate
             if anno == 'p':
                 c = self._p_to_c(ac, start_pos, end_pos)
                 if not c:
@@ -302,16 +303,22 @@ class MANETranscript:
                 c_ac = ac
                 c_pos = start_pos, end_pos
 
+            # Go from c -> g annotation (liftover as well)
             g = self._c_to_g(c_ac, c_pos)
             if g is None:
                 return None
 
+            # Go from g -> mane transcript
             mane_data = \
                 self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
             if not mane_data:
                 return None
             mane_data_len = len(mane_data)
 
+            # Transcript Priority (Must pass validation checks):
+            #  1. MANE Select
+            #  2. MANE Plus Clinical
+            #  3. Longest Compatible Remaining
             for i in range(mane_data_len):
                 index = mane_data_len - i - 1
                 current_mane_data = mane_data[index]
@@ -320,6 +327,7 @@ class MANETranscript:
                 if anno == 'p':
                     mane = self._get_mane_p(current_mane_data, mane['pos'])
 
+                # Check if this alignment mapping is compatible
                 valid = self._ac_to_mane_validation_checks(
                     ac, start_pos, end_pos, mane
                 )
@@ -328,6 +336,8 @@ class MANETranscript:
                 return mane
             return None
         elif anno == 'g':
+            # TODO: Uncomment below once working
+            # self.g_to_mane_c(ac, start_pos, end_pos)
             pass
         else:
             logger.warning(f"Annotation layer not supported: {anno}")
