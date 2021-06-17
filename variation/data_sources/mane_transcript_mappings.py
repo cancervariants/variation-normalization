@@ -1,4 +1,4 @@
-"""The module for MANE Transcript mappings."""
+"""The module for loading MANE Transcript mappings to genes."""
 from typing import Dict, Optional, List
 from variation import REFSEQ_MANE_PATH
 import pandas as pd
@@ -12,12 +12,15 @@ class MANETranscriptMappings:
     """The MANE Transcript mappings class."""
 
     def __init__(self, mane_data_path=REFSEQ_MANE_PATH) -> None:
-        """Initialize the MANE Transcript mappings class."""
+        """Initialize the MANE Transcript mappings class.
+
+        :param str mane_data_path: Path to RefSeq MANE summary data
+        """
         self.mane_data_path = mane_data_path
         self.df = self._load_mane_transcript_data()
 
     def _load_mane_transcript_data(self) -> pd.core.frame.DataFrame:
-        """Read RefSeq MANE data file into DataFrame.
+        """Load RefSeq MANE data file into DataFrame.
 
         :return: DataFrame containing RefSeq MANE Transcript data
         """
@@ -37,5 +40,6 @@ class MANETranscriptMappings:
                            f"{gene_symbol}")
             return None
 
+        # Ordering: MANE Plus Clinical (If it exists), MANE Select
         data = data.sort_values('MANE_status')
         return data.to_dict('records')
