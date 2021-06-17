@@ -40,13 +40,11 @@ def test_mane_transcript():
                 mane_data, mane_c_pos_range
             )
 
-        def p_to_mane_p(self, ac, start_pos, end_pos):
-            return self.test_mane_transcript.p_to_mane_p(ac, start_pos,
-                                                         end_pos)
-
-        def c_to_mane_c(self, ac, start_pos, end_pos):
-            return self.test_mane_transcript.c_to_mane_c(ac, start_pos,
-                                                         end_pos)
+        def get_mane_transcript(self, ac, start_pos, end_pos,
+                                start_annotation_layer):
+            return self.test_mane_transcript.get_mane_transcript(
+                ac, start_pos, end_pos, start_annotation_layer
+            )
 
         def g_to_mane_c(self, ac, start_pos, end_pos):
             return self.test_mane_transcript.g_to_mane_c(ac, start_pos,
@@ -255,17 +253,21 @@ def test_p_to_mane_p(test_mane_transcript, braf_v600e_mane_p,
     # assert mane_p == braf_v600e_mane_p
 
     # EGFR L858R RefSeq Accessions
-    mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, None)
+    mane_p = test_mane_transcript.get_mane_transcript('NP_005219.2', 858,
+                                                      None, 'p')
     assert mane_p == egfr_l858r_mane_p
 
-    mane_p = test_mane_transcript.p_to_mane_p('NP_005219.2', 858, 858)
+    mane_p = test_mane_transcript.get_mane_transcript('NP_005219.2', 858,
+                                                      858, 'p')
     assert mane_p == egfr_l858r_mane_p
 
     # EGFR L858R Ensembl Accessions
-    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000275493.2', 858, None)
+    mane_p = test_mane_transcript.get_mane_transcript('ENSP00000275493.2',
+                                                      858, None, 'p')
     assert mane_p == egfr_l858r_mane_p
 
-    mane_p = test_mane_transcript.p_to_mane_p('ENSP00000275493.2', 858, 858)
+    mane_p = test_mane_transcript.get_mane_transcript('ENSP00000275493.2',
+                                                      858, 858, 'p')
     assert mane_p == egfr_l858r_mane_p
 
 
@@ -279,7 +281,8 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     # mane_c = test_mane_transcript.c_to_mane_c('NM_004333.5', 1799)
     # assert mane_c == braf_v600e_mane_c
 
-    mane_c = test_mane_transcript.c_to_mane_c('NM_004333.6', 1799, None)
+    mane_c = test_mane_transcript.get_mane_transcript('NM_004333.6', 1799,
+                                                      None, 'c')
     assert mane_c == braf_v600e_mane_c
 
     # BRAF V600E Ensembl Accessions
@@ -293,11 +296,13 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
     # mane_c = test_mane_transcript.c_to_mane_c('NM_005228.4', 2573)
     # assert mane_c == egfr_l858r_mane_c
 
-    mane_c = test_mane_transcript.c_to_mane_c('NM_005228.5', 2573, 2573)
+    mane_c = test_mane_transcript.get_mane_transcript('NM_005228.5', 2573,
+                                                      2573, 'c')
     assert mane_c == egfr_l858r_mane_c
 
     # EGFR L858R Ensembl Accessions
-    mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.7', 2573, None)
+    mane_c = test_mane_transcript.get_mane_transcript('ENST00000275493.7',
+                                                      2573, None, 'c')
     assert mane_c == egfr_l858r_mane_c
 
     # mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.2', 2573)
