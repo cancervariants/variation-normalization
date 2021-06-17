@@ -7,6 +7,7 @@ import logging
 from variation import UTA_DB_URL
 from pyliftover import LiftOver
 from os import environ
+import itertools
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -75,6 +76,32 @@ class UTA:
             password=self.url.password,
             application_name='variation',
         )
+
+    def get_exon_id(self, tx_ac, alt_ac, aln_method, pos):
+        """Get exon ID for transcript mapping at a given position.
+
+        :param str tx_ac: Transcript accession
+        :param str alt_ac: NC accession
+        :param str aln_method: Alignment method used
+        :param int pos: Position where change occurred
+        """
+        query = (
+            f"""
+            SELECT DISTINCT tx_exon_id
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE tx_ac='{tx_ac}'
+            AND alt_ac='{alt_ac}'
+            AND alt_aln_method='{aln_method}'
+            AND {pos} BETWEEN tx_start_i AND tx_end_i
+            """
+        )
+        self.cursor.execute()
+        results = self.cursor.fetchall()
+        if not results:
+            logger.warning(f"Unable to find tx_exon_id using query {query}")
+            return None
+        flatten = itertools.chain.from_iterable
+        return list(flatten(results))
 
     def get_coding_start_site(self, ac) -> Optional[int]:
         """Get coding start site
@@ -190,6 +217,9 @@ class UTA:
             strand = '+'
         tx_pos_range = result[6], result[7]
         alt_pos_range = result[8], result[9]
+        alt_aln_method = result[3]
+        tx_exon_id = result[15]
+        alt_exon_id = result[16]
 
         if (tx_pos_range[1] - tx_pos_range[0]) != \
                 (alt_pos_range[1] - alt_pos_range[0]):
@@ -202,7 +232,10 @@ class UTA:
             gene=gene,
             strand=strand,
             tx_pos_range=tx_pos_range,
-            alt_pos_range=alt_pos_range
+            alt_pos_range=alt_pos_range,
+            alt_aln_method=alt_aln_method,
+            tx_exon_id=tx_exon_id,
+            alt_exon_id=alt_exon_id,
         )
 
     def get_mane_c_genomic_data(self, ac, alt_ac, start_pos, end_pos):
