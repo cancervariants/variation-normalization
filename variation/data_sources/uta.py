@@ -172,8 +172,10 @@ class UTA:
             logger.warning(f"Accession {ac} not found in UTA")
             return None
 
-        alt_pos = (start_pos - alt_pos_range[0],
-                   alt_pos_range[1] - end_pos)
+        alt_pos_change = (start_pos - alt_pos_range[0],
+                          alt_pos_range[1] - end_pos)
+        alt_pos = (alt_pos_range[0] + alt_pos_change[0],
+                   alt_pos_range[1] - alt_pos_change[1])
 
         return dict(
             gene=gene,
@@ -319,16 +321,16 @@ class UTA:
 
             # Get most recent assembly version position
             lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-            liftover_start_i = \
-                self._get_liftover(lo, chromosome,
-                                   genomic_tx_data['alt_pos_change_range'][0])
-            liftover_end_i = \
-                self._get_liftover(lo, chromosome,
-                                   genomic_tx_data['alt_pos_change_range'][1])
-            if liftover_start_i is None or liftover_end_i is None:
-                return None
-            genomic_tx_data['alt_pos_change_range'] = \
-                liftover_start_i[1], liftover_end_i[1]
+
+            # Liftover range
+            self._set_liftover(
+                genomic_tx_data, 'alt_pos_range', lo, chromosome
+            )
+
+            # Liftover changes range
+            self._set_liftover(
+                genomic_tx_data, 'alt_pos_change_range', lo, chromosome
+            )
 
             # Change alt_ac to most recent
             query = (
@@ -347,7 +349,7 @@ class UTA:
     def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
 
-        :param str LiftOver lo: LiftOver object to convert coordinates
+        :param LiftOver lo: LiftOver object to convert coordinates
         :param str chromosome: The chromosome number
         :param int pos: Position on the chromosome
         :return: [Target chromosome, target position, target strand,
@@ -359,6 +361,30 @@ class UTA:
             return None
         else:
             return liftover[0]
+
+    def _set_liftover(self, genomic_tx_data, key, lo, chromosome) -> None:
+        """Update genomic_tx_data to have hg38 coordinates.
+
+        :param dict genomic_tx_data:
+        :param str key: Key to access coordinate positions
+        :param LiftOver lo: LiftOver object to convert coordinates
+        :param str chromosome: Chromosome
+        """
+        liftover_start_i = self._get_liftover(lo, chromosome,
+                                              genomic_tx_data[key][0])
+        if liftover_start_i is None:
+            logger.warning(f"Unable to liftover position "
+                           f"{genomic_tx_data[key][0]} on {chromosome}")
+            return None
+
+        liftover_end_i = self._get_liftover(lo, chromosome,
+                                            genomic_tx_data[key][1])
+        if liftover_end_i is None:
+            logger.warning(f"Unable to liftover position "
+                           f"{genomic_tx_data[key][1]} on {chromosome}")
+            return None
+
+        genomic_tx_data[key] = liftover_start_i[1], liftover_end_i[1]
 
     def p_to_c_ac(self, p_ac) -> List[str]:
         """Return c. accession from p. accession.

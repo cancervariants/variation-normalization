@@ -35,8 +35,8 @@ def test_mane_transcript():
                 alt_tx_data, mane_data
             )
 
-        def _mane_c_to_mane_p(self, mane_data, mane_c_pos_range):
-            return self.test_mane_transcript._mane_c_to_mane_p(
+        def _get_mane_p(self, mane_data, mane_c_pos_range):
+            return self.test_mane_transcript._get_mane_p(
                 mane_data, mane_c_pos_range
             )
 
@@ -46,6 +46,10 @@ def test_mane_transcript():
 
         def c_to_mane_c(self, ac, start_pos, end_pos):
             return self.test_mane_transcript.c_to_mane_c(ac, start_pos,
+                                                         end_pos)
+
+        def g_to_mane_c(self, ac, start_pos, end_pos):
+            return self.test_mane_transcript.g_to_mane_c(ac, start_pos,
                                                          end_pos)
 
     return TestMANETranscript()
@@ -214,7 +218,7 @@ def test_c_to_g(test_mane_transcript, nm_004333v6_g):
     assert g == nm_004333v6_g
 
 
-def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
+def test__g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
     """Test that _g_to_mane_c method works correctly."""
     mane_c = test_mane_transcript._g_to_mane_c(
         nm_004333v6_g, braf_mane_data
@@ -227,11 +231,9 @@ def test_g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
     }
 
 
-def test_mane_c_to_mane_p(test_mane_transcript, braf_mane_data,
-                          braf_v600e_mane_p):
-    """Test that _mane_c_to_mane_p method works correctly."""
-    mane_p = test_mane_transcript._mane_c_to_mane_p(braf_mane_data,
-                                                    (1918, 1920))
+def test_get_mane_p(test_mane_transcript, braf_mane_data, braf_v600e_mane_p):
+    """Test that _get_mane_p method works correctly."""
+    mane_p = test_mane_transcript._get_mane_p(braf_mane_data, (1918, 1920))
     assert mane_p == braf_v600e_mane_p
 
 
@@ -300,6 +302,20 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
 
     # mane_c = test_mane_transcript.c_to_mane_c('ENST00000275493.2', 2573)
     # assert mane_c == egfr_l858r_mane_c
+
+
+def test_g_to_mane_c(test_mane_transcript, egfr_l858r_mane_c,
+                     braf_v600e_mane_c):
+    """Test that g_to_mane_c method works correctly."""
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515, None)
+    assert mane_c == egfr_l858r_mane_c
+
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515,
+                                              55259515)
+    assert mane_c == egfr_l858r_mane_c
+
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 140453136, None)
+    assert mane_c == braf_v600e_mane_c
 
 
 def test_no_matches(test_mane_transcript):
