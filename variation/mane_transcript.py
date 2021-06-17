@@ -112,7 +112,17 @@ class MANETranscript:
         if not genomic_tx_data:
             return None
 
+        og_alt_exon_id = genomic_tx_data['alt_exon_id']
         self.uta.liftover_to_38(genomic_tx_data)
+        liftover_alt_exon_id = genomic_tx_data['alt_exon_id']
+
+        # Validation check: Exon structure
+        if og_alt_exon_id != liftover_alt_exon_id:
+            logger.warning(f"Original alt_exon_id {og_alt_exon_id} "
+                           f"does not match liftover alt_exon_id "
+                           f"{liftover_alt_exon_id}")
+            return None
+
         return genomic_tx_data
 
     def _get_mane_c(self, mane_data, mane_c_pos_change):
