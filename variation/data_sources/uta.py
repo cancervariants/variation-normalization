@@ -269,7 +269,7 @@ class UTA:
             start_pos - data['alt_pos_range'][0],
             data['alt_pos_range'][1] - end_pos
         )
-        data['alt_pos'] = (
+        data['alt_pos_change_range'] = (
             data['alt_pos_range'][0] + data['alt_pos_change'][0],
             data['alt_pos_range'][1] - data['alt_pos_change'][1]
         )
