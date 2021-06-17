@@ -247,8 +247,8 @@ class MANETranscript:
         else:
             mane_ref = self.seqrepo_access.get_sequence(
                 mane_transcript['refseq'],
-                mane_transcript['pos'][0] + 1,
-                mane_transcript['pos'][1] - 1
+                mane_transcript['pos'][0],
+                mane_transcript['pos'][1]
             )
         if not mane_ref:
             return False
