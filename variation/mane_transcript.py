@@ -157,8 +157,11 @@ class MANETranscript:
             coordinates, and position where change occurred on these accessions
         """
         mane_c_ac = mane_data['RefSeq_nuc']
-        result = self.uta.get_mane_tx_c_data(mane_c_ac, g['alt_ac'],
-                                             g['alt_pos_change_range'])
+        result = self.uta.get_tx_exon_aln_v_data(
+            mane_c_ac, g['alt_pos_change_range'][0],
+            g['alt_pos_change_range'][1], alt_ac=g['alt_ac'], use_tx_pos=False
+        )
+
         if not result:
             logger.warning(f"Unable to find MANE Transcript {mane_c_ac} "
                            f"position change.")

@@ -94,35 +94,116 @@ class UTA:
         if cds_start_i is not None:
             return cds_start_i[0]
         else:
+            logger.warning(f"Unable to get coding start site for accession: "
+                           f"{ac}")
             return None
 
-    def get_mane_tx_c_data(self, mane_c_ac, nc_ac, genomic_change_range)\
-            -> List:
-        """Get MANE Transcript c. data.
+    def get_ac_descr(self, ac) -> Optional[str]:
+        """Return accession description.
+        Typically description exists if not GRCh38 assembly.
 
-        :param str mane_c_ac: MANE Transcript c. accession
-        :param str nc_ac: NC accession
-        :param tuple[int, int] genomic_change_range: [genomic change start
-            position, genomic change end position]
-        :return: Data about MANE Transcript on c. coordinate
+        :param str ac: Accession
+        :return: Description containing assembly and chromosome
         """
+        query = (
+            f"""
+            SELECT descr
+            FROM {self.schema}._seq_anno_most_recent
+            WHERE ac = '{ac}'
+            """
+        )
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()[0]
+        if not result:
+            logger.warning(f"Accession {ac} does not have a description")
+            return None
+        else:
+            return result
+
+    def get_tx_exon_aln_v_data(self, ac, start_pos, end_pos, alt_ac=None,
+                               use_tx_pos=True) -> Optional[List]:
+        """Return queried data from tx_exon_aln_v table.
+
+        :param str ac: Accession
+        :param int start_pos: Start position change
+        :param int end_pos: End position change
+        :param str alt_ac: NC accession
+        :param bool use_tx_pos: `True` if querying on transcript position.
+            `False` if querying on genomic position.
+        :return: tx_exon_aln_v data
+        """
+        if end_pos is None:
+            end_pos = start_pos
+
+        if ac.startswith('ENST'):
+            temp_ac = ac.split('.')[0]
+            aln_method = f"AND alt_aln_method='genebuild'"  # noqa: F541
+        else:
+            temp_ac = ac
+            aln_method = f"AND alt_aln_method='splign'"  # noqa: F541
+
+        if alt_ac:
+            alt_ac_q = f"AND alt_ac = '{alt_ac}'"
+        else:
+            alt_ac_q = f"AND alt_ac LIKE 'NC_00%'"  # noqa: F541
+
+        if use_tx_pos:
+            pos_q = f"""tx_start_i AND tx_end_i"""  # noqa: F541
+        else:
+            pos_q = f"""alt_start_i AND alt_end_i"""  # noqa: F541
+
         query = (
             f"""
             SELECT *
             FROM {self.schema}.tx_exon_aln_v
-            WHERE tx_ac = '{mane_c_ac}'
-            AND alt_ac = '{nc_ac}'
-            AND {genomic_change_range[0]} BETWEEN alt_start_i and alt_end_i
-            AND {genomic_change_range[1]} BETWEEN alt_start_i and alt_end_i
-            ORDER BY ord, alt_ac;
+            WHERE tx_ac='{temp_ac}'
+            {alt_ac_q}
+            {aln_method}
+            AND {start_pos} BETWEEN {pos_q}
+            AND {end_pos} BETWEEN {pos_q}
+            ORDER BY alt_ac;
             """
         )
         self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        if len(result) > 1:
-            logger.debug(f"Found more than one match for tx_ac {mane_c_ac} "
-                         f"and alt_ac {nc_ac}")
-        return result
+        results = self.cursor.fetchall()
+        if not results:
+            logger.warning(f"Unable to find transcript alignment for query: "
+                           f"{query}")
+            return None
+        if alt_ac and not use_tx_pos:
+            if len(results) > 1:
+                logger.debug(f"Found more than one match for tx_ac {temp_ac} "
+                             f"and alt_ac = {alt_ac}")
+
+        return results
+
+    def data_from_result(self, result) -> Optional[Dict]:
+        """Return data found from result.
+
+        :param list result: Data from tx_exon_aln_v table
+        :return: Gene, strand, and position ranges for tx and alt_ac
+        """
+        gene = result[0]
+        if result[4] == -1:
+            strand = '-'
+        else:
+            strand = '+'
+        tx_pos_range = result[6], result[7]
+        alt_pos_range = result[8], result[9]
+
+        if (tx_pos_range[1] - tx_pos_range[0]) != \
+                (alt_pos_range[1] - alt_pos_range[0]):
+            logger.warning(f"tx_pos_range {tx_pos_range} "
+                           f"is not the same length as alt_pos_range "
+                           f"{alt_pos_range}.")
+            return None
+
+        return dict(
+            gene=gene,
+            strand=strand,
+            tx_pos_range=tx_pos_range,
+            alt_pos_range=alt_pos_range
+        )
 
     def get_mane_c_genomic_data(self, ac, alt_ac, start_pos, end_pos):
         """Get MANE Transcript and genomic data.
@@ -133,38 +214,14 @@ class UTA:
         :param int start_pos: Genomic start position change
         :param int end_pos: Genomic end position change
         """
-        if end_pos is None:
-            end_pos = start_pos
-
-        query = (
-            f"""
-            SELECT *
-            FROM {self.schema}.tx_exon_aln_v
-            WHERE tx_ac = '{ac}'
-            AND alt_ac = '{alt_ac}'
-            AND alt_aln_method = 'splign'
-            AND {start_pos} BETWEEN alt_start_i AND alt_end_i
-            AND {end_pos} BETWEEN alt_start_i AND alt_end_i
-            """
+        results = self.get_tx_exon_aln_v_data(
+            ac, start_pos, end_pos, alt_ac=alt_ac, use_tx_pos=False
         )
-        self.cursor.execute(query)
-        result = self.cursor.fetchone()
-        if not result:
+        if not results:
             return None
-        gene = result[0]
-        if result[4] == -1:
-            strand = '-'
-        else:
-            strand = '+'
 
-        tx_pos_range = result[6], result[7]
-        alt_pos_range = result[8], result[9]
-
-        if (tx_pos_range[1] - tx_pos_range[0]) != \
-                (alt_pos_range[1] - alt_pos_range[0]):
-            logger.warning(f"{alt_ac} tx_pos_range {tx_pos_range} "
-                           f"is not the same length as alt_pos_range "
-                           f"{alt_pos_range}.")
+        data = self.data_from_result(results[0])
+        if not data:
             return None
 
         coding_start_site = self.get_coding_start_site(ac)
@@ -172,21 +229,18 @@ class UTA:
             logger.warning(f"Accession {ac} not found in UTA")
             return None
 
-        alt_pos_change = (start_pos - alt_pos_range[0],
-                          alt_pos_range[1] - end_pos)
-        alt_pos = (alt_pos_range[0] + alt_pos_change[0],
-                   alt_pos_range[1] - alt_pos_change[1])
-
-        return dict(
-            gene=gene,
-            tx_ac=ac,
-            tx_pos_range=tx_pos_range,
-            alt_ac=alt_ac,
-            alt_pos_range=alt_pos_range,
-            alt_pos_change_range=alt_pos,
-            strand=strand,
-            coding_start_site=coding_start_site
+        data['tx_ac'] = ac
+        data['alt_ac'] = alt_ac
+        data['coding_start_site'] = coding_start_site
+        data['alt_pos_change'] = (
+            start_pos - data['alt_pos_range'][0],
+            data['alt_pos_range'][1] - end_pos
         )
+        data['alt_pos'] = (
+            data['alt_pos_range'][0] + data['alt_pos_change'][0],
+            data['alt_pos_range'][1] - data['alt_pos_change'][1]
+        )
+        return data
 
     def get_genomic_tx_data(self, ac, pos) -> Optional[Dict]:
         """Get transcript mapping to genomic data.
@@ -197,61 +251,25 @@ class UTA:
         :return: Gene, Transcript accession and position change,
             Altered transcript accession and position change, Strand
         """
-        # UTA does not store ENST versions
-        if ac.startswith('ENST'):
-            temp_ac = ac.split('.')[0]
-        else:
-            temp_ac = ac
-        query = (
-            f"""
-            SELECT *
-            FROM {self.schema}.tx_exon_aln_v
-            WHERE tx_ac='{temp_ac}'
-            AND alt_ac LIKE 'NC_00%'
-            AND {pos[0]} BETWEEN tx_start_i AND tx_end_i
-            AND {pos[1]} BETWEEN tx_start_i AND tx_end_i
-            ORDER BY ord, alt_ac;
-            """
-        )
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
+        results = self.get_tx_exon_aln_v_data(ac, pos[0], pos[1])
         if not results:
-            logger.warning(f"Unable to find transcript "
-                           f"alignment for {temp_ac}")
             return None
 
         result = results[-1]
-        gene = result[0]
-        nc_accession = result[2]
-        if result[4] == -1:
-            strand = '-'
-        else:
-            strand = '+'
-
-        tx_pos_range = result[6], result[7]
-        alt_pos_range = result[8], result[9]
-
-        if (tx_pos_range[1] - tx_pos_range[0]) != \
-                (alt_pos_range[1] - alt_pos_range[0]):
-            logger.warning(f"{nc_accession} tx_pos_range {tx_pos_range} "
-                           f"is not the same length as alt_pos_range "
-                           f"{alt_pos_range}.")
+        data = self.data_from_result(result)
+        if not data:
             return None
-
-        tx_pos_change = pos[0] - tx_pos_range[0], tx_pos_range[1] - pos[1]
-        alt_pos = (alt_pos_range[0] + tx_pos_change[0],
-                   alt_pos_range[1] - tx_pos_change[1])
-
-        return dict(
-            gene=gene,
-            tx_ac=ac,
-            tx_pos_range=tx_pos_range,
-            alt_ac=nc_accession,
-            alt_pos_range=alt_pos_range,
-            alt_pos_change_range=alt_pos,
-            pos_change=tx_pos_change,
-            strand=strand
+        data['tx_ac'] = ac
+        data['alt_ac'] = result[2]
+        data['pos_change'] = (
+            pos[0] - data['tx_pos_range'][0],
+            data['tx_pos_range'][1] - pos[1]
         )
+        data['alt_pos_change_range'] = (
+            data['alt_pos_range'][0] + data['pos_change'][0],
+            data['alt_pos_range'][1] - data['pos_change'][1]
+        )
+        return data
 
     def get_gene_from_ac(self, ac, start_pos, end_pos) -> Optional[str]:
         """Get transcripts from NC accession and positions.
@@ -291,59 +309,54 @@ class UTA:
         :param dict genomic_tx_data: Dictionary containing gene, nc_accession,
             alt_pos, and strand
         """
+        descr = self.get_ac_descr(genomic_tx_data['alt_ac'])
+        if descr is None:
+            return None
+
+        descr = descr.split(',')
+
         query = (
             f"""
-            SELECT descr
-            FROM {self.schema}._seq_anno_most_recent
-            WHERE ac = '{genomic_tx_data['alt_ac']}'
+            SELECT DISTINCT alt_ac
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE tx_ac = '{genomic_tx_data['tx_ac']}'
             """
         )
         self.cursor.execute(query)
-        result = self.cursor.fetchone()
-        if result and result[0]:
-            query = (
-                f"""
-                SELECT DISTINCT alt_ac
-                FROM {self.schema}.tx_exon_aln_v
-                WHERE tx_ac = '{genomic_tx_data['tx_ac']}'
-                """
-            )
-            self.cursor.execute(query)
-            nc_acs = self.cursor.fetchall()
-            if len(nc_acs) == 1:
-                logger.warning(f"UTA does not have GRCh38 assembly for "
-                               f"{genomic_tx_data['alt_ac'].split('.')[0]}")
-                return None
+        nc_acs = self.cursor.fetchall()
+        if len(nc_acs) == 1:
+            logger.warning(f"UTA does not have GRCh38 assembly for "
+                           f"{genomic_tx_data['alt_ac'].split('.')[0]}")
+            return None
 
-            descr = result[0].split(',')
-            chromosome = f"chr{descr[0].split()[-1]}"
-            assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
+        chromosome = f"chr{descr[0].split()[-1]}"
+        assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
 
-            # Get most recent assembly version position
-            lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
+        # Get most recent assembly version position
+        lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
 
-            # Liftover range
-            self._set_liftover(
-                genomic_tx_data, 'alt_pos_range', lo, chromosome
-            )
+        # Liftover range
+        self._set_liftover(
+            genomic_tx_data, 'alt_pos_range', lo, chromosome
+        )
 
-            # Liftover changes range
-            self._set_liftover(
-                genomic_tx_data, 'alt_pos_change_range', lo, chromosome
-            )
+        # Liftover changes range
+        self._set_liftover(
+            genomic_tx_data, 'alt_pos_change_range', lo, chromosome
+        )
 
-            # Change alt_ac to most recent
-            query = (
-                f"""
-                SELECT *
-                FROM {self.schema}.seq_anno
-                WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
-                ORDER BY ac
-                """
-            )
-            self.cursor.execute(query)
-            nc_acs = self.cursor.fetchall()
-            genomic_tx_data['alt_ac'] = nc_acs[-1][3]
+        # Change alt_ac to most recent
+        query = (
+            f"""
+            SELECT *
+            FROM {self.schema}.seq_anno
+            WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
+            ORDER BY ac
+            """
+        )
+        self.cursor.execute(query)
+        nc_acs = self.cursor.fetchall()
+        genomic_tx_data['alt_ac'] = nc_acs[-1][3]
 
     @staticmethod
     def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
