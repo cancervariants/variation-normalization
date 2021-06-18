@@ -232,7 +232,8 @@ class MANETranscript:
         return True
 
     def _validate_references(self, ac, start_pos, end_pos,
-                             mane_transcript) -> StrictBool:
+                             mane_transcript, expected_ref,
+                             anno) -> StrictBool:
         """Return whether or not reference changes are the same.
 
         :param str ac: Query accession
@@ -240,7 +241,18 @@ class MANETranscript:
         :param int end_pos: Origin end position change
         :param dict mane_transcript: Ensembl and RefSeq transcripts with
             corresponding position change
+        :param str expected_ref: Reference at position given during input
+        :param str anno: Annotation layer we are starting from.
+            Must be either `p`, `c`, or `g`.
+        :return: `True` if reference check passes. `False` otherwise.
         """
+        if anno == 'c':
+            coding_start_site = self.uta.get_coding_start_site(ac)
+            if not coding_start_site:
+                return False
+            start_pos += coding_start_site
+            end_pos += coding_start_site
+
         if start_pos == end_pos:
             ref = self.seqrepo_access.sequence_at_position(ac, start_pos)
         else:
@@ -262,18 +274,22 @@ class MANETranscript:
                 mane_transcript['pos'][1]
             )
         if not mane_ref:
-            return False
+            logger.info("Unable to validate reference for MANE Transcript")
 
-        if ref != mane_ref:
-            logger.warning(f"Original accession, {ac}, ref {ref} does not "
-                           f"match MANE accession, {mane_transcript['refseq']}"
-                           f", ref {mane_ref}")
+        if expected_ref != mane_ref:
+            logger.info(f"Expected ref, {expected_ref}, but got {mane_ref} "
+                        f"on MANE accession, {mane_transcript['refseq']}")
+
+        if expected_ref != ref:
+            logger.warning(f"Expected ref, {expected_ref}, but got {ref} "
+                           f"on accession, {ac}")
             return False
 
         return True
 
     def get_mane_transcript(self, ac, start_pos, end_pos,
-                            start_annotation_layer) -> Optional[Dict]:
+                            start_annotation_layer, ref=None)\
+            -> Optional[Dict]:
         """Return mane transcript.
 
         :param str ac: Accession
@@ -281,6 +297,7 @@ class MANETranscript:
         :param int end_pos: End position change
         :param start_annotation_layer: Annotation layer we are starting from.
             Must be either `p`, `c`, or `g`.
+        :param str ref: Reference at position given during input
         :return: MANE transcript
         """
         anno = start_annotation_layer.lower()
@@ -328,19 +345,17 @@ class MANETranscript:
                 if anno == 'p':
                     mane = self._get_mane_p(current_mane_data, mane['pos'])
 
-                # TODO: Fix
-                valid_references = self._validate_references(
-                    ac, start_pos, end_pos, mane
-                )
-                if not valid_references:
-                    continue
+                if ref:
+                    valid_references = self._validate_references(
+                        ac, start_pos, end_pos, mane, ref, anno
+                    )
+                    if not valid_references:
+                        continue
 
                 return mane
             return None
         elif anno == 'g':
-            # TODO: Uncomment below once working
-            # self.g_to_mane_c(ac, start_pos, end_pos)
-            pass
+            return self.g_to_mane_c(ac, start_pos, end_pos)
         else:
             logger.warning(f"Annotation layer not supported: {anno}")
 
@@ -353,9 +368,6 @@ class MANETranscript:
         :param int end_pos: genomic change end position
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
-        if end_pos is None:
-            end_pos = start_pos
-
         gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
         if not gene_symbol:
             return None
@@ -365,6 +377,7 @@ class MANETranscript:
         if not mane_data:
             return None
         mane_data_len = len(mane_data)
+
         for i in range(mane_data_len):
             index = mane_data_len - i - 1
             current_mane_data = mane_data[index]
