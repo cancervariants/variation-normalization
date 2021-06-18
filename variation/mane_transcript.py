@@ -146,6 +146,7 @@ class MANETranscript:
             refseq=mane_data['RefSeq_nuc'],
             ensembl=mane_data['Ensembl_nuc'],
             pos=mane_c_pos_change,
+            strand=mane_data['chr_strand'],
             mane_status=mane_data['MANE_status']
         )
 
@@ -163,6 +164,7 @@ class MANETranscript:
             ensembl=mane_data['Ensembl_prot'],
             pos=(math.ceil(mane_c_pos_range[0] / 3),
                  math.floor(mane_c_pos_range[1] / 3)),  # TODO: Check
+            strand=mane_data['chr_strand'],
             mane_status=mane_data['MANE_status']
         )
 
@@ -327,11 +329,11 @@ class MANETranscript:
                     mane = self._get_mane_p(current_mane_data, mane['pos'])
 
                 # TODO: Fix
-                # valid_references = self._validate_references(
-                #     ac, start_pos, end_pos, mane
-                # )
-                # if not valid_references:
-                #     continue
+                valid_references = self._validate_references(
+                    ac, start_pos, end_pos, mane
+                )
+                if not valid_references:
+                    continue
 
                 return mane
             return None
