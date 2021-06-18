@@ -138,17 +138,20 @@ def egfr_l858r_mane_c():
 
 def test_get_reading_frame(test_mane_transcript):
     """Test that _get_reading_frame works correctly."""
-    rf = test_mane_transcript._get_reading_frame(600)
-    assert rf == 2
+    rf = test_mane_transcript._get_reading_frame(1797)
+    assert rf == 3
 
-    rf = test_mane_transcript._get_reading_frame(858)
-    assert rf == 2
-
-    rf = test_mane_transcript._get_reading_frame(712)
-    assert rf == 0
-
-    rf = test_mane_transcript._get_reading_frame(746)
+    rf = test_mane_transcript._get_reading_frame(1798)
     assert rf == 1
+
+    rf = test_mane_transcript._get_reading_frame(1799)
+    assert rf == 2
+
+    rf = test_mane_transcript._get_reading_frame(1800)
+    assert rf == 3
+
+    rf = test_mane_transcript._get_reading_frame(2573)
+    assert rf == 2
 
 
 def test_p_to_c_pos(test_mane_transcript):

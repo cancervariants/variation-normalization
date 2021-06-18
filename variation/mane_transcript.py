@@ -42,7 +42,9 @@ class MANETranscript:
         :param int pos: Position
         :return: Reading frame
         """
-        pos_mod_3 = (pos - 1) % 3
+        pos_mod_3 = pos % 3
+        if pos_mod_3 == 0:
+            pos_mod_3 = 3
         return pos_mod_3
 
     def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
@@ -97,6 +99,13 @@ class MANETranscript:
         """
         # UTA does not store ENST versions
         if ac.startswith('ENST'):
+            if not self.transcript_mappings.ensembl_transcript_version_to_gene_symbol.get(ac):  # noqa: E501
+                try:
+                    self.seqrepo_access.seq_repo_client.fetch(ac)
+                except KeyError:
+                    logger.warning(f"Ensembl transcript {ac} not found")
+                    return None
+
             temp_ac = ac.split('.')[0]
         else:
             temp_ac = ac
@@ -254,37 +263,10 @@ class MANETranscript:
             return False
 
         if ref != mane_ref:
-            logger.warning(f"Original reference {ref} does not match MANE "
-                           f"reference {mane_ref}")
+            logger.warning(f"Original accession, {ac}, ref {ref} does not "
+                           f"match MANE accession, {mane_transcript['refseq']}"
+                           f", ref {mane_ref}")
             return False
-
-        return True
-
-    def _ac_to_mane_validation_checks(self, ac, start_pos,
-                                      end_pos, mane_data) -> StrictBool:
-        """Return whether or not ac to MANE passes validation checks.
-
-        :param str ac: Original query accession
-        :param int start_pos: Start position change
-        :param int end_pos: End position change
-        :param dict mane_data: MANE Select or MANE Plus Clinical data
-        :return: `True` if validation checks pass. `False` otherwise.
-        """
-        # Check reading frames
-        is_valid_reading_frames = self._validate_reading_frames(
-            ac, start_pos, end_pos, mane_data
-        )
-        if not is_valid_reading_frames:
-            return False
-
-        # Check references
-        is_valid_references = self._validate_references(
-            ac, start_pos, end_pos, mane_data
-        )
-        if not is_valid_references:
-            return False
-
-        # TODO: Exon structure
 
         return True
 
@@ -334,15 +316,23 @@ class MANETranscript:
                 current_mane_data = mane_data[index]
 
                 mane = self._g_to_mane_c(g, current_mane_data)
+
+                valid_reading_frame = self._validate_reading_frames(
+                    c_ac, c_pos[0], c_pos[1], mane
+                )
+                if not valid_reading_frame:
+                    continue
+
                 if anno == 'p':
                     mane = self._get_mane_p(current_mane_data, mane['pos'])
 
-                # Check if this alignment mapping is compatible
-                valid = self._ac_to_mane_validation_checks(
-                    ac, start_pos, end_pos, mane
-                )
-                if not valid:
-                    continue
+                # TODO: Fix
+                # valid_references = self._validate_references(
+                #     ac, start_pos, end_pos, mane
+                # )
+                # if not valid_references:
+                #     continue
+
                 return mane
             return None
         elif anno == 'g':
