@@ -15,7 +15,6 @@ logger.setLevel(logging.DEBUG)
 
 # Assembly mappings
 GRCH_TO_HG = {
-    'GRCh36': 'hg18',
     'GRCh37': 'hg19',
     'GRCh38': 'hg38'
 }
@@ -364,6 +363,11 @@ class UTA:
 
         chromosome = f"chr{descr[0].split()[-1]}"
         assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
+
+        if assembly not in ['GRCh37', 'GRCh38']:
+            logger.warning(f"Assembly not supported: {assembly}. "
+                           f"Only GRCh37 and GRCh38 are supported.")
+            return None
 
         # Get most recent assembly version position
         lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
