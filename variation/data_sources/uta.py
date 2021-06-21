@@ -350,11 +350,11 @@ class UTA:
         query = (
             f"""
             SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac
-            FROM uta_20210129.associated_accessions as AA
-            JOIN uta_20210129.transcript as T ON T.ac = AA.tx_ac
-            JOIN uta_20210129.tx_exon_aln_v as ALIGN ON T.ac = ALIGN.tx_ac
+            FROM {self.schema}.associated_accessions as AA
+            JOIN {self.schema}.transcript as T ON T.ac = AA.tx_ac
+            JOIN {self.schema}.tx_exon_aln_v as ALIGN ON T.ac = ALIGN.tx_ac
             WHERE T.hgnc = '{gene}'
-            AND alt_ac LIKE 'NC_00%'
+            AND ALIGN.alt_ac LIKE 'NC_00%'
             AND ALIGN.alt_aln_method = 'splign'
             AND {start_pos} + T.cds_start_i
                 BETWEEN ALIGN.tx_start_i AND ALIGN.tx_end_i
