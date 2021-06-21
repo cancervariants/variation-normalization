@@ -365,17 +365,38 @@ class UTA:
         )
         return pd.read_sql(query, self.conn)
 
+    def get_chr_assembly(self, ac) -> Optional[Tuple[str, str]]:
+        """Get chromosome and assembly for NC accession.
+
+        :param str ac: NC accession
+        :return: Chromosome and Assembly accession is on
+        """
+        descr = self.get_ac_descr(ac)
+        if descr is None:
+            # Already GRCh38 Assembly
+            return None
+
+        descr = descr.split(',')
+        chromosome = f"chr{descr[0].split()[-1]}"
+        assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
+
+        if assembly not in ['GRCh37', 'GRCh38']:
+            logger.warning(f"Assembly not supported: {assembly}. "
+                           f"Only GRCh37 and GRCh38 are supported.")
+            return None
+
+        return chromosome, assembly
+
     def liftover_to_38(self, genomic_tx_data) -> None:
         """Liftover genomic_tx_data to hg38 assembly.
 
         :param dict genomic_tx_data: Dictionary containing gene, nc_accession,
             alt_pos, and strand
         """
-        descr = self.get_ac_descr(genomic_tx_data['alt_ac'])
+        descr = self.get_chr_assembly(genomic_tx_data['alt_ac'])
         if descr is None:
             return None
-
-        descr = descr.split(',')
+        chromosome, assembly = descr
 
         query = (
             f"""
@@ -389,14 +410,6 @@ class UTA:
         if len(nc_acs) == 1:
             logger.warning(f"UTA does not have GRCh38 assembly for "
                            f"{genomic_tx_data['alt_ac'].split('.')[0]}")
-            return None
-
-        chromosome = f"chr{descr[0].split()[-1]}"
-        assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
-
-        if assembly not in ['GRCh37', 'GRCh38']:
-            logger.warning(f"Assembly not supported: {assembly}. "
-                           f"Only GRCh37 and GRCh38 are supported.")
             return None
 
         # Get most recent assembly version position
@@ -426,7 +439,7 @@ class UTA:
         genomic_tx_data['alt_ac'] = nc_acs[-1][3]
 
     @staticmethod
-    def _get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
+    def get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
 
         :param LiftOver lo: LiftOver object to convert coordinates
@@ -450,15 +463,15 @@ class UTA:
         :param LiftOver lo: LiftOver object to convert coordinates
         :param str chromosome: Chromosome
         """
-        liftover_start_i = self._get_liftover(lo, chromosome,
-                                              genomic_tx_data[key][0])
+        liftover_start_i = self.get_liftover(lo, chromosome,
+                                             genomic_tx_data[key][0])
         if liftover_start_i is None:
             logger.warning(f"Unable to liftover position "
                            f"{genomic_tx_data[key][0]} on {chromosome}")
             return None
 
-        liftover_end_i = self._get_liftover(lo, chromosome,
-                                            genomic_tx_data[key][1])
+        liftover_end_i = self.get_liftover(lo, chromosome,
+                                           genomic_tx_data[key][1])
         if liftover_end_i is None:
             logger.warning(f"Unable to liftover position "
                            f"{genomic_tx_data[key][1]} on {chromosome}")
