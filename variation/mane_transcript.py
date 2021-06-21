@@ -10,9 +10,6 @@ logger.setLevel(logging.DEBUG)
 
 
 # TODO:
-#  ENST queries
-#  Validation:
-#     Exon Structure
 #  g -> MANE c
 
 
@@ -147,7 +144,7 @@ class MANETranscript:
             ensembl=mane_data['Ensembl_nuc'],
             pos=mane_c_pos_change,
             strand=mane_data['chr_strand'],
-            mane_status=mane_data['MANE_status']
+            status=mane_data['MANE_status']
         )
 
     def _get_mane_p(self, mane_data, mane_c_pos_range) -> Dict:
@@ -165,7 +162,7 @@ class MANETranscript:
             pos=(math.ceil(mane_c_pos_range[0] / 3),
                  math.floor(mane_c_pos_range[1] / 3)),  # TODO: Check
             strand=mane_data['chr_strand'],
-            mane_status=mane_data['MANE_status']
+            status=mane_data['MANE_status']
         )
 
     def _g_to_mane_c(self, g, mane_data) -> Optional[Dict]:
@@ -260,25 +257,26 @@ class MANETranscript:
         if not ref:
             return False
 
-        mane_start_pos = mane_transcript['pos'][0]
-        mane_end_pos = mane_transcript['pos'][1]
-        if mane_start_pos == mane_end_pos:
-            mane_ref = self.seqrepo_access.sequence_at_position(
-                mane_transcript['refseq'],
-                mane_start_pos
-            )
-        else:
-            mane_ref = self.seqrepo_access.get_sequence(
-                mane_transcript['refseq'],
-                mane_transcript['pos'][0],
-                mane_transcript['pos'][1]
-            )
-        if not mane_ref:
-            logger.info("Unable to validate reference for MANE Transcript")
+        if mane_transcript:
+            mane_start_pos = mane_transcript['pos'][0]
+            mane_end_pos = mane_transcript['pos'][1]
+            if mane_start_pos == mane_end_pos:
+                mane_ref = self.seqrepo_access.sequence_at_position(
+                    mane_transcript['refseq'],
+                    mane_start_pos
+                )
+            else:
+                mane_ref = self.seqrepo_access.get_sequence(
+                    mane_transcript['refseq'],
+                    mane_transcript['pos'][0],
+                    mane_transcript['pos'][1]
+                )
+            if not mane_ref:
+                logger.info("Unable to validate reference for MANE Transcript")
 
-        if expected_ref != mane_ref:
-            logger.info(f"Expected ref, {expected_ref}, but got {mane_ref} "
-                        f"on MANE accession, {mane_transcript['refseq']}")
+            if expected_ref != mane_ref:
+                logger.info(f"Expected ref, {expected_ref}, but got {mane_ref}"
+                            f" on MANE accession, {mane_transcript['refseq']}")
 
         if expected_ref != ref:
             logger.warning(f"Expected ref, {expected_ref}, but got {ref} "
@@ -286,6 +284,83 @@ class MANETranscript:
             return False
 
         return True
+
+    def get_longest_compatible_transcript(self, gene, start_pos, end_pos,
+                                          start_annotation_layer,
+                                          ref=None):
+        """Get longest compatible transcript from a gene.
+        Try GRCh38 first, then GRCh37.
+        Transcript is compatible if it passes validation checks.
+
+        :param str gene: Gene symbol
+        :param int start_pos: Start position change
+        :param int end_pos: End position change
+        :param  str start_annotation_layer: Starting annotation layer.
+            Must be either `p`, `c`, or `g`.
+        :param str ref: Reference at position given during input
+        :return:
+        """
+        # TODO: Handle g anno
+        if end_pos is None:
+            end_pos = start_pos
+
+        if start_annotation_layer == 'p':
+            pos = self._p_to_c_pos(start_pos)
+            if end_pos != start_pos:
+                end_pos = self._p_to_c_pos(end_pos)
+                pos = pos[0], end_pos[1]
+            c_start_pos, c_end_pos = pos
+        else:
+            c_start_pos, c_end_pos = start_pos, end_pos
+
+        # Data Frame that contains transcripts associated to a gene
+        df = self.uta.get_transcripts_from_gene(gene, c_start_pos, c_end_pos)
+        nc_acs = list(df['alt_ac'].unique())
+        nc_acs.sort(reverse=True)
+
+        for nc_ac in nc_acs:
+            # Most recent accession first
+            nc_descr = self.uta.get_ac_descr(nc_ac)
+            tmp_df = df.loc[df['alt_ac'] == nc_ac]
+            for index, row in tmp_df.iterrows():
+                # Validate references
+                if ref:
+                    if start_annotation_layer == 'p':
+                        self._validate_references(row['pro_ac'], start_pos,
+                                                  end_pos, {}, ref, 'p')
+                    elif start_annotation_layer == 'c':
+                        self._validate_references(row['tx_ac'], c_start_pos,
+                                                  c_end_pos, {}, ref, 'c')
+
+                if start_annotation_layer == 'p':
+                    pos = start_pos, end_pos
+                    if row['pro_ac'].startswith('NP'):
+                        refseq = row['pro_ac']
+                        ensembl = None
+                    else:
+                        ensembl = row['pro_ac']
+                        refseq = None
+                elif start_annotation_layer == 'c':
+                    pos = c_start_pos, c_end_pos
+                    if row['tx_ac'].startswith('NM'):
+                        refseq = row['tx_ac']
+                        ensembl = None
+                    else:
+                        ensembl = row['tx_ac']
+                        refseq = None
+
+                if nc_descr:
+                    # Must do liftover
+                    pass
+
+                return dict(
+                    refseq=refseq,
+                    ensembl=ensembl,
+                    pos=pos,
+                    strand='-' if row['alt_strand'] == -1 else '+',
+                    status='Longest Compatible Remaining'
+                )
+        return None
 
     def get_mane_transcript(self, ac, start_pos, end_pos,
                             start_annotation_layer, ref=None)\
@@ -295,7 +370,7 @@ class MANETranscript:
         :param str ac: Accession
         :param int start_pos: Start position change
         :param int end_pos: End position change
-        :param start_annotation_layer: Annotation layer we are starting from.
+        :param str start_annotation_layer: Starting annotation layer.
             Must be either `p`, `c`, or `g`.
         :param str ref: Reference at position given during input
         :return: MANE transcript
@@ -353,7 +428,14 @@ class MANETranscript:
                         continue
 
                 return mane
-            return None
+            if anno == 'p':
+                return self.get_longest_compatible_transcript(
+                    g['gene'], start_pos, end_pos, 'p', ref
+                )
+            else:
+                return self.get_longest_compatible_transcript(
+                    g['gene'], c_pos[0], c_pos[1], 'c', ref
+                )
         elif anno == 'g':
             return self.g_to_mane_c(ac, start_pos, end_pos)
         else:
