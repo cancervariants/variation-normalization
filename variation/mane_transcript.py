@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 
 # TODO:
-#  g -> MANE c
+#  g -> MANE c, GRCh38
 
 
 class MANETranscript:
@@ -300,11 +300,15 @@ class MANETranscript:
         :param str ref: Reference at position given during input
         :return:
         """
+        anno = start_annotation_layer.lower()
+        if anno not in ['p', 'c', 'g']:
+            logger.warning(f"Annotation layer not supported: {anno}")
+
         # TODO: Handle g anno
         if end_pos is None:
             end_pos = start_pos
 
-        if start_annotation_layer == 'p':
+        if anno == 'p':
             pos = self._p_to_c_pos(start_pos)
             if end_pos != start_pos:
                 end_pos = self._p_to_c_pos(end_pos)
@@ -320,44 +324,46 @@ class MANETranscript:
 
         for nc_ac in nc_acs:
             # Most recent accession first
-            nc_descr = self.uta.get_ac_descr(nc_ac)
             tmp_df = df.loc[df['alt_ac'] == nc_ac]
             for index, row in tmp_df.iterrows():
+                g = self._c_to_g(row['tx_ac'], (c_start_pos, c_end_pos))
+                if not g:
+                    return None
+
                 # Validate references
                 if ref:
-                    if start_annotation_layer == 'p':
-                        self._validate_references(row['pro_ac'], start_pos,
-                                                  end_pos, {}, ref, 'p')
-                    elif start_annotation_layer == 'c':
-                        self._validate_references(row['tx_ac'], c_start_pos,
-                                                  c_end_pos, {}, ref, 'c')
+                    if anno == 'p':
+                        valid_references = self._validate_references(
+                            row['pro_ac'], start_pos, end_pos, {}, ref, 'p'
+                        )
+                    elif anno == 'c':
+                        valid_references = self._validate_references(
+                            row['tx_ac'], c_start_pos, c_end_pos, {}, ref, 'c'
+                        )
+                    else:
+                        valid_references = self._validate_references(
+                            row['alt_ac'], g['alt_pos_change_range'][0],
+                            g['alt_pos_change_range'][1], {}, ref, 'g'
+                        )
 
-                if start_annotation_layer == 'p':
+                    if not valid_references:
+                        continue
+
+                if anno == 'p':
                     pos = start_pos, end_pos
-                    if row['pro_ac'].startswith('NP'):
-                        refseq = row['pro_ac']
-                        ensembl = None
-                    else:
-                        ensembl = row['pro_ac']
-                        refseq = None
-                elif start_annotation_layer == 'c':
+                    ac = row['pro_ac']
+                elif anno == 'c':
                     pos = c_start_pos, c_end_pos
-                    if row['tx_ac'].startswith('NM'):
-                        refseq = row['tx_ac']
-                        ensembl = None
-                    else:
-                        ensembl = row['tx_ac']
-                        refseq = None
-
-                if nc_descr:
-                    # Must do liftover
-                    pass
+                    ac = row['tx_ac']
+                else:
+                    pos = g['alt_pos_change_range']
+                    ac = row['alt_ac']
 
                 return dict(
-                    refseq=refseq,
-                    ensembl=ensembl,
+                    refseq=ac if ac.startswith('N') else None,
+                    ensembl=ac if ac.startswith('E') else None,
                     pos=pos,
-                    strand='-' if row['alt_strand'] == -1 else '+',
+                    strand=g['strand'],
                     status='Longest Compatible Remaining'
                 )
         return None
