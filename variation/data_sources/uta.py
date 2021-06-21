@@ -8,6 +8,7 @@ from variation import UTA_DB_URL
 from pyliftover import LiftOver
 from os import environ
 import itertools
+import pandas as pd
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -334,6 +335,38 @@ class UTA:
                                f"{start_pos} and {end_pos} on {ac}")
 
         return results[0][0]
+
+    def get_transcripts_from_gene(self, gene, start_pos, end_pos)\
+            -> pd.core.frame.DataFrame:
+        """Get transcript data associated to a gene.
+
+        :param str gene: Gene symbol
+        :param int start_pos: Start position change on c. coordinate
+        :param int end_pos: End position change on c. coordinate
+        :return: Data Frame containing transcripts associated with a gene.
+            Transcripts are ordered by most recent NC accession, then by
+            descending transcript length.
+        """
+        query = (
+            f"""
+            SELECT T.hgnc, AA.pro_ac, AA.tx_ac, T.cds_start_i, ALIGN.alt_ac,
+                ALIGN.alt_aln_method, ALIGN.tx_start_i, ALIGN.tx_end_i,
+                ALIGN.alt_strand, ALIGN.alt_start_i, ALIGN.alt_end_i,
+                ALIGN.tx_exon_id, ALIGN.alt_exon_id
+            FROM uta_20210129.associated_accessions as AA
+            JOIN uta_20210129.transcript as T ON T.ac = AA.tx_ac
+            JOIN uta_20210129.tx_exon_aln_v as ALIGN ON T.ac = ALIGN.tx_ac
+            WHERE T.hgnc = '{gene}'
+            AND alt_ac LIKE 'NC_00%'
+            AND ALIGN.alt_aln_method = 'splign'
+            AND {start_pos} + T.cds_start_i
+                BETWEEN ALIGN.tx_start_i AND ALIGN.tx_end_i
+            AND {end_pos} + T.cds_start_i
+                BETWEEN ALIGN.tx_start_i AND ALIGN.tx_end_i
+            ORDER BY ALIGN.alt_ac, ALIGN.tx_end_i - ALIGN.tx_start_i DESC;
+            """
+        )
+        return pd.read_sql(query, self.conn)
 
     def liftover_to_38(self, genomic_tx_data) -> None:
         """Liftover genomic_tx_data to hg38 assembly.
