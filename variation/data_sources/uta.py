@@ -338,7 +338,7 @@ class UTA:
 
     def get_transcripts_from_gene(self, gene, start_pos, end_pos)\
             -> pd.core.frame.DataFrame:
-        """Get transcript data associated to a gene.
+        """Get transcripts on p/c/g coordinate associated to a gene.
 
         :param str gene: Gene symbol
         :param int start_pos: Start position change on c. coordinate
@@ -349,10 +349,7 @@ class UTA:
         """
         query = (
             f"""
-            SELECT T.hgnc, AA.pro_ac, AA.tx_ac, T.cds_start_i, ALIGN.alt_ac,
-                ALIGN.alt_aln_method, ALIGN.tx_start_i, ALIGN.tx_end_i,
-                ALIGN.alt_strand, ALIGN.alt_start_i, ALIGN.alt_end_i,
-                ALIGN.tx_exon_id, ALIGN.alt_exon_id
+            SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac
             FROM uta_20210129.associated_accessions as AA
             JOIN uta_20210129.transcript as T ON T.ac = AA.tx_ac
             JOIN uta_20210129.tx_exon_aln_v as ALIGN ON T.ac = ALIGN.tx_ac
