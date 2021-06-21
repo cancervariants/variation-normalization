@@ -4,6 +4,8 @@ import hgvs.parser
 import logging
 import math
 from pydantic.types import StrictBool
+from pyliftover import LiftOver
+from variation.data_sources.uta import GRCH_TO_HG
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -438,6 +440,72 @@ class MANETranscript:
             return self.g_to_mane_c(ac, start_pos, end_pos)
         else:
             logger.warning(f"Annotation layer not supported: {anno}")
+
+    def g_to_grch38(self, ac, start_pos, end_pos) -> Optional[Dict]:
+        """Return genomic coordinate on GRCh38 when not given gene context.
+
+        :param str ac: Genomic accession
+        :param int start_pos: Genomic start position change
+        :param int end_pos: Genomic end position change
+        :return: NC accession, start and end pos on GRCh38 assembly
+        """
+        if end_pos is None:
+            end_pos = start_pos
+
+        ac_len = self.seqrepo_access.len_of_sequence(ac)
+        if not ac_len:
+            # AC does not exist
+            return None
+
+        def _is_valid(start, end, length) -> StrictBool:
+            """Check that positions are valid positions on accession.
+
+            :param int start: Genomic start position change
+            :param int end: Genomic end position change
+            :param int length: Length of accession (count of nucleotides)
+            """
+            if start < length and end < length:
+                return True
+            else:
+                logger.warning(f"{start}, {end} must be less than"
+                               f" length of accession, {length}")
+                return False
+
+        # Checking to see what chromosome and assembly we're on
+        descr = self.uta.get_chr_assembly(ac)
+        if not descr:
+            # Already GRCh38 assembly
+            if _is_valid(start_pos, end_pos, ac_len):
+                return dict(
+                    ac=ac,
+                    pos=(start_pos, end_pos)
+                )
+            else:
+                return None
+        chromosome, assembly = descr
+
+        # Coordinate liftover
+        lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
+        liftover_start_i = self.uta.get_liftover(lo, chromosome, start_pos)
+        if liftover_start_i is None:
+            return None
+        else:
+            start_pos = liftover_start_i[1]
+
+        if start_pos != end_pos:
+            liftover_end_i = self.uta.get_liftover(lo, chromosome, end_pos)
+            if liftover_end_i is None:
+                return None
+            else:
+                end_pos = liftover_end_i[1]
+
+        if _is_valid(start_pos, end_pos, ac_len):
+            return dict(
+                ac=ac,
+                pos=(start_pos, end_pos)
+            )
+        else:
+            return None
 
     def g_to_mane_c(self, ac, start_pos, end_pos):
         """Return MANE Transcript on the c. coordinate.
