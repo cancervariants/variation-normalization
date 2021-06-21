@@ -296,15 +296,15 @@ class MANETranscript:
         :param int start_pos: Start position change
         :param int end_pos: End position change
         :param  str start_annotation_layer: Starting annotation layer.
-            Must be either `p`, `c`, or `g`.
+            Must be either `p`, or `c`.
         :param str ref: Reference at position given during input
         :return:
         """
         anno = start_annotation_layer.lower()
-        if anno not in ['p', 'c', 'g']:
+        if anno not in ['p', 'c']:
             logger.warning(f"Annotation layer not supported: {anno}")
+            return None
 
-        # TODO: Handle g anno
         if end_pos is None:
             end_pos = start_pos
 
@@ -336,14 +336,9 @@ class MANETranscript:
                         valid_references = self._validate_references(
                             row['pro_ac'], start_pos, end_pos, {}, ref, 'p'
                         )
-                    elif anno == 'c':
-                        valid_references = self._validate_references(
-                            row['tx_ac'], c_start_pos, c_end_pos, {}, ref, 'c'
-                        )
                     else:
                         valid_references = self._validate_references(
-                            row['alt_ac'], g['alt_pos_change_range'][0],
-                            g['alt_pos_change_range'][1], {}, ref, 'g'
+                            row['tx_ac'], c_start_pos, c_end_pos, {}, ref, 'c'
                         )
 
                     if not valid_references:
@@ -352,12 +347,9 @@ class MANETranscript:
                 if anno == 'p':
                     pos = start_pos, end_pos
                     ac = row['pro_ac']
-                elif anno == 'c':
+                else:
                     pos = c_start_pos, c_end_pos
                     ac = row['tx_ac']
-                else:
-                    pos = g['alt_pos_change_range']
-                    ac = row['alt_ac']
 
                 return dict(
                     refseq=ac if ac.startswith('N') else None,
