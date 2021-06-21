@@ -4,6 +4,7 @@ from variation.mane_transcript import MANETranscript
 from variation.data_sources import TranscriptMappings, \
     MANETranscriptMappings, UTA, SeqRepoAccess
 import hgvs.parser
+import copy
 
 
 @pytest.fixture(scope='module')
@@ -99,7 +100,8 @@ def braf_v600e_mane_p():
         'refseq': 'NP_001361187.1',
         'ensembl': 'ENSP00000496776.1',
         'pos': (640, 640),
-        'mane_status': 'MANE Select'
+        'status': 'MANE Select',
+        'strand': '-'
     }
 
 
@@ -110,7 +112,8 @@ def egfr_l858r_mane_p():
         'refseq': 'NP_005219.2',
         'ensembl': 'ENSP00000275493.2',
         'pos': (858, 858),
-        'mane_status': 'MANE Select'
+        'status': 'MANE Select',
+        'strand': '+'
     }
 
 
@@ -121,7 +124,8 @@ def braf_v600e_mane_c():
         'refseq': 'NM_001374258.1',
         'ensembl': 'ENST00000644969.2',
         'pos': (1919, 1919),
-        'mane_status': 'MANE Select'
+        'status': 'MANE Select',
+        'strand': '-'
     }
 
 
@@ -132,7 +136,8 @@ def egfr_l858r_mane_c():
         'refseq': 'NM_005228.5',
         'ensembl': 'ENST00000275493.7',
         'pos': (2573, 2573),
-        'mane_status': 'MANE Select'
+        'status': 'MANE Select',
+        'strand': '+'
     }
 
 
@@ -222,17 +227,15 @@ def test_c_to_g(test_mane_transcript, nm_004333v6_g):
     assert g == nm_004333v6_g
 
 
-def test__g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g):
+def test__g_to_mane_c(test_mane_transcript, braf_mane_data, nm_004333v6_g,
+                      braf_v600e_mane_c):
     """Test that _g_to_mane_c method works correctly."""
     mane_c = test_mane_transcript._g_to_mane_c(
         nm_004333v6_g, braf_mane_data
     )
-    assert mane_c == {
-        'refseq': 'NM_001374258.1',
-        'ensembl': 'ENST00000644969.2',
-        'pos': (1918, 1920),
-        'mane_status': 'MANE Select'
-    }
+    expected = copy.deepcopy(braf_v600e_mane_c)
+    expected['pos'] = (1918, 1920)
+    assert mane_c == expected
 
 
 def test_get_mane_p(test_mane_transcript, braf_mane_data, braf_v600e_mane_p):
