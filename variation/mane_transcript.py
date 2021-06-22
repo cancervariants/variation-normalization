@@ -363,8 +363,8 @@ class MANETranscript:
         return None
 
     def get_mane_transcript(self, ac, start_pos, end_pos,
-                            start_annotation_layer, ref=None)\
-            -> Optional[Dict]:
+                            start_annotation_layer, ref=None,
+                            normalize_endpoint=False) -> Optional[Dict]:
         """Return mane transcript.
 
         :param str ac: Accession
@@ -373,6 +373,10 @@ class MANETranscript:
         :param str start_annotation_layer: Starting annotation layer.
             Must be either `p`, `c`, or `g`.
         :param str ref: Reference at position given during input
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise. Only for normalize endpoint will we
+            look up set of transcripts associated with a gene if MANE
+            Transcript not found or validation checks not passed.
         :return: MANE transcript
         """
         anno = start_annotation_layer.lower()
@@ -428,14 +432,17 @@ class MANETranscript:
                         continue
 
                 return mane
-            if anno == 'p':
-                return self.get_longest_compatible_transcript(
-                    g['gene'], start_pos, end_pos, 'p', ref
-                )
+            if normalize_endpoint:
+                if anno == 'p':
+                    return self.get_longest_compatible_transcript(
+                        g['gene'], start_pos, end_pos, 'p', ref
+                    )
+                else:
+                    return self.get_longest_compatible_transcript(
+                        g['gene'], c_pos[0], c_pos[1], 'c', ref
+                    )
             else:
-                return self.get_longest_compatible_transcript(
-                    g['gene'], c_pos[0], c_pos[1], 'c', ref
-                )
+                return None
         elif anno == 'g':
             return self.g_to_mane_c(ac, start_pos, end_pos)
         else:
