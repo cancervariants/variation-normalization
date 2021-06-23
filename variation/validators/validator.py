@@ -419,7 +419,7 @@ class Validator(ABC):
 
     def add_validation_result(self, allele, valid_alleles, results,
                               classification, s, t, gene_tokens, errors,
-                              mane_transcript=None) -> None:
+                              mane_transcript=None) -> bool:
         """Add validation result to list of results.
 
         :param dict allele: A VRS Allele object
@@ -443,6 +443,7 @@ class Validator(ABC):
                     )
                 )
                 valid_alleles.append(allele)
+                return True
         else:
             results.append(
                 self.get_validation_result(
@@ -452,3 +453,4 @@ class Validator(ABC):
                     gene_tokens, mane_transcript
                 )
             )
+            return False
