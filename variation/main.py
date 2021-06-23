@@ -87,7 +87,7 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variation to normalize
     :return: NormalizeService for variation
     """
-    validations, warnings = to_vrs.get_validations(q)
+    validations, warnings = to_vrs.get_validations(q, normalize_endpoint=True)
     normalize_resp = normalizer.normalize(html.unescape(q),
                                           validations,
                                           to_vrs.amino_acid_cache,

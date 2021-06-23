@@ -2,6 +2,7 @@
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
@@ -29,40 +30,78 @@ class Validate:
     def __init__(self, seq_repo_client: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
+                 mane_transcript: MANETranscript,
                  amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validate class."""
         self.validators = [
-            AminoAcidSubstitution(seq_repo_client, transcript_mappings,
-                                  gene_symbol, amino_acid_cache),
-            PolypeptideTruncation(seq_repo_client, transcript_mappings,
-                                  gene_symbol, amino_acid_cache),
-            SilentMutation(seq_repo_client, transcript_mappings,
-                           gene_symbol, amino_acid_cache),
-            CodingDNASubstitution(seq_repo_client, transcript_mappings,
-                                  gene_symbol),
-            GenomicSubstitution(seq_repo_client, transcript_mappings,
-                                gene_symbol),
-            CodingDNASilentMutation(seq_repo_client, transcript_mappings,
-                                    gene_symbol),
-            GenomicSilentMutation(seq_repo_client, transcript_mappings,
-                                  gene_symbol),
-            AminoAcidDelIns(seq_repo_client, transcript_mappings, gene_symbol,
-                            amino_acid_cache),
-            CodingDNADelIns(seq_repo_client, transcript_mappings, gene_symbol),
-            GenomicDelIns(seq_repo_client, transcript_mappings, gene_symbol),
-            AminoAcidDeletion(seq_repo_client, transcript_mappings,
-                              gene_symbol, amino_acid_cache),
-            CodingDNADeletion(seq_repo_client, transcript_mappings,
-                              gene_symbol),
-            GenomicDeletion(seq_repo_client, transcript_mappings, gene_symbol),
-            AminoAcidInsertion(seq_repo_client, transcript_mappings,
-                               gene_symbol, amino_acid_cache),
-            CodingDNAInsertion(seq_repo_client, transcript_mappings,
-                               gene_symbol),
-            GenomicInsertion(seq_repo_client, transcript_mappings, gene_symbol)
+            AminoAcidSubstitution(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            PolypeptideTruncation(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            SilentMutation(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            CodingDNASubstitution(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            GenomicSubstitution(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            CodingDNASilentMutation(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            GenomicSilentMutation(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            AminoAcidDelIns(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            CodingDNADelIns(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            GenomicDelIns(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            AminoAcidDeletion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            CodingDNADeletion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            GenomicDeletion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            AminoAcidInsertion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript, amino_acid_cache
+            ),
+            CodingDNAInsertion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            ),
+            GenomicInsertion(
+                seq_repo_client, transcript_mappings, gene_symbol,
+                mane_transcript
+            )
         ]
 
-    def perform(self, classifications: List[Classification], warnings=None) \
+    def perform(self, classifications: List[Classification],
+                normalize_endpoint, warnings=None) \
             -> ValidationSummary:
         """Validate a list of classifications."""
         valid_possibilities = list()
@@ -75,7 +114,8 @@ class Validate:
             for validator in self.validators:
                 if validator.validates_classification_type(
                         classification.classification_type):
-                    results = validator.validate(classification)
+                    results = validator.validate(classification,
+                                                 normalize_endpoint)
                     for res in results:
                         if res.is_valid:
                             found_classification = True

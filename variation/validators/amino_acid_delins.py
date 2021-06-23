@@ -9,6 +9,7 @@ from variation.schemas.token_response_schema import Token
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation.mane_transcript import MANETranscript
 from .amino_acid_base import AminoAcidBase
 import logging
 
@@ -23,6 +24,7 @@ class AminoAcidDelIns(Validator):
     def __init__(self, seq_repo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
+                 mane_transcript: MANETranscript,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -31,9 +33,12 @@ class AminoAcidDelIns(Validator):
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings
         """
-        super().__init__(seq_repo_access, transcript_mappings, gene_symbol)
+        super().__init__(
+            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript
+        )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
+        self.mane_transcript = mane_transcript
 
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
