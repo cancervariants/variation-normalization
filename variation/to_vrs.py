@@ -6,7 +6,9 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
+    UTA, MANETranscriptMappings
+from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from urllib.parse import unquote
@@ -23,22 +25,33 @@ class ToVRS:
         self.transcript_mappings = TranscriptMappings()
         self.gene_symbol = GeneSymbol(GeneSymbolCache())
         self.amino_acid_cache = AminoAcidCache()
+        self.uta = UTA()
+        self.mane_transcript_mappings = MANETranscriptMappings()
+        self.mane_transcript = MANETranscript(
+            self.seq_repo_access, self.transcript_mappings,
+            self.mane_transcript_mappings, self.uta
+        )
         self.validator = Validate(self.seq_repo_access,
                                   self.transcript_mappings, self.gene_symbol,
+                                  self.mane_transcript,
                                   self.amino_acid_cache)
         self.translator = Translate()
 
-    def get_validations(self, q)\
+    def get_validations(self, q, normalize_endpoint=False)\
             -> Tuple[ValidationSummary, Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         classifications = self.classifier.perform(tokens)
-        validations = self.validator.perform(classifications, warnings)
+        validations = self.validator.perform(
+            classifications, normalize_endpoint, warnings
+        )
         if not warnings:
             warnings = validations.warnings
         return validations, warnings
