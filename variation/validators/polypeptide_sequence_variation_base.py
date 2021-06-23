@@ -97,9 +97,9 @@ class PolypeptideSequenceVariationBase(Validator):
             is_hgvs = False
 
         mane_data = {
-            'mane_select': list(),
-            'mane_plus_clinical': list(),
-            'longest_compatible_remaining': list()
+            'mane_select': dict(),
+            'mane_plus_clinical': dict(),
+            'longest_compatible_remaining': dict()
         }
 
         for s in classification_tokens:
@@ -119,13 +119,14 @@ class PolypeptideSequenceVariationBase(Validator):
                     hgvs_expr = f"{mane['refseq']}:p.{s.ref_protein}" \
                                 f"{mane['pos'][0]}{s.alt_protein}"
                     key = '_'.join(mane['status'].lower().split())
-                    mane_data[key].append(
-                        {
-                            'hgvs_expr': hgvs_expr,
+                    if hgvs_expr in mane_data[key].keys():
+                        mane_data[key][hgvs_expr]['count'] += 1
+                    else:
+                        mane_data[key][hgvs_expr] = {
                             'classification_token': s,
-                            'transcript': mane['refseq']
+                            'transcript': mane['refseq'],
+                            'count': 1
                         }
-                    )
 
                 if not allele:
                     errors.append("Unable to find allele.")
@@ -147,16 +148,26 @@ class PolypeptideSequenceVariationBase(Validator):
 
         for key in ['mane_select', 'mane_plus_clinical',
                     'longest_compatible_remaining']:
-            for data in mane_data[key][::-1]:
-                errors = list()
-                found_mane = self.add_validation_result(
-                    self.get_allele_from_hgvs(data['hgvs_expr'], errors),
-                    valid_alleles, results, classification,
-                    data['classification_token'], data['transcript'],
-                    gene_tokens, errors, mane_transcript=data['hgvs_expr']
+            highest_count = 0
+            mane_result = None
+            allele = None
+            mane_transcript = None
+            for hgvs_expr in mane_data[key].keys():
+                data = mane_data[key][hgvs_expr]
+                tmp_allele = self.get_allele_from_hgvs(hgvs_expr, [])
+                if data['count'] > highest_count and tmp_allele:
+                    highest_count = data['count']
+                    mane_result = data
+                    allele = tmp_allele
+                    mane_transcript = hgvs_expr
+            if allele:
+                self.add_validation_result(
+                    allele, valid_alleles, results, classification,
+                    mane_result['classification_token'],
+                    mane_result['transcript'], gene_tokens, [],
+                    mane_transcript=mane_transcript
                 )
-                if found_mane:
-                    return
+                return
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
