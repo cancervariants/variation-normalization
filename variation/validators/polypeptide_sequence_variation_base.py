@@ -96,6 +96,12 @@ class PolypeptideSequenceVariationBase(Validator):
         else:
             is_hgvs = False
 
+        mane_data = {
+            'mane_select': list(),
+            'mane_plus_clinical': list(),
+            'longest_compatible_remaining': list()
+        }
+
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
@@ -112,12 +118,13 @@ class PolypeptideSequenceVariationBase(Validator):
                 if mane:
                     hgvs_expr = f"{mane['refseq']}:p.{s.ref_protein}" \
                                 f"{mane['pos'][0]}{s.alt_protein}"
-
-                    self.add_validation_result(
-                        self.get_allele_from_hgvs(hgvs_expr, errors),
-                        valid_alleles, results, classification, s,
-                        mane['refseq'], gene_tokens, errors,
-                        mane_transcript=hgvs_expr
+                    key = '_'.join(mane['status'].lower().split())
+                    mane_data[key].append(
+                        {
+                            'hgvs_expr': hgvs_expr,
+                            'classification_token': s,
+                            'transcript': mane['refseq']
+                        }
                     )
 
                 if not allele:
@@ -137,6 +144,19 @@ class PolypeptideSequenceVariationBase(Validator):
                                            errors)
                 if is_hgvs:
                     break
+
+        for key in ['mane_select', 'mane_plus_clinical',
+                    'longest_compatible_remaining']:
+            for data in mane_data[key][::-1]:
+                errors = list()
+                found_mane = self.add_validation_result(
+                    self.get_allele_from_hgvs(data['hgvs_expr'], errors),
+                    valid_alleles, results, classification,
+                    data['classification_token'], data['transcript'],
+                    gene_tokens, errors, mane_transcript=data['hgvs_expr']
+                )
+                if found_mane:
+                    return
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
