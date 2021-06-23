@@ -414,6 +414,8 @@ class MANETranscript:
                 current_mane_data = mane_data[index]
 
                 mane = self._g_to_mane_c(g, current_mane_data)
+                if not mane:
+                    continue
 
                 valid_reading_frame = self._validate_reading_frames(
                     c_ac, c_pos[0], c_pos[1], mane
