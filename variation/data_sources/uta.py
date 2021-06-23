@@ -252,8 +252,9 @@ class UTA:
         )
         if not results:
             return None
+        result = results[0]
 
-        data = self.data_from_result(results[0])
+        data = self.data_from_result(result)
         if not data:
             return None
 
@@ -262,8 +263,8 @@ class UTA:
             logger.warning(f"Accession {ac} not found in UTA")
             return None
 
-        data['tx_ac'] = ac
-        data['alt_ac'] = alt_ac
+        data['tx_ac'] = result[1]
+        data['alt_ac'] = result[2]
         data['coding_start_site'] = coding_start_site
         data['alt_pos_change'] = (
             start_pos - data['alt_pos_range'][0],

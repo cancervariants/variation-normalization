@@ -538,23 +538,19 @@ class MANETranscript:
             current_mane_data = mane_data[index]
 
             mane_c_ac = current_mane_data['RefSeq_nuc']
+
+            # Liftover
+            grch38 = self.g_to_grch38(ac, start_pos, end_pos)
+            start_pos, end_pos = grch38['pos']
+
             mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
-                mane_c_ac, ac, start_pos, end_pos
+                mane_c_ac, None, start_pos, end_pos
             )
+            if not mane_tx_genomic_data:
+                return None
 
-            self.uta.liftover_to_38(mane_tx_genomic_data)
-
-            mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
-                mane_c_ac, mane_tx_genomic_data['alt_ac'],
-                mane_tx_genomic_data['alt_pos_change_range'][0],
-                mane_tx_genomic_data['alt_pos_change_range'][1]
-            )
-
+            alt_pos_change = mane_tx_genomic_data['alt_pos_change']
             coding_start_site = mane_tx_genomic_data['coding_start_site']
-            alt_pos_change = (
-                mane_tx_genomic_data['alt_pos_change_range'][0] - mane_tx_genomic_data['alt_pos_range'][0],  # noqa: E501
-                mane_tx_genomic_data['alt_pos_range'][1] - mane_tx_genomic_data['alt_pos_change_range'][1]  # noqa: E501
-            )
 
             mane_c_pos_change = (
                 mane_tx_genomic_data['tx_pos_range'][0] + alt_pos_change[0] - coding_start_site,  # noqa: E501
