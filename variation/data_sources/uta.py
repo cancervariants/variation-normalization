@@ -109,6 +109,8 @@ class UTA:
         :param str ac: Accession
         :return: Coding start site
         """
+        if ac.startswith('ENS'):
+            ac = ac.split('.')[0]
         query = (
             f"""
             SELECT cds_start_i
