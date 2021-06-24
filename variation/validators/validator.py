@@ -454,3 +454,54 @@ class Validator(ABC):
                 )
             )
             return False
+
+    def add_mane_data(self, hgvs_expr, mane, mane_data, s) -> None:
+        """Add mane transcript information to mane_data.
+
+        :param str hgvs_expr: HGVS expression of MANE Transcript
+        :param dict mane: MANE Transcript information
+        :param dict mane_data: MANE Transcript data found for given query
+        :param Classification s: Classification token
+        """
+        key = '_'.join(mane['status'].lower().split())
+        if hgvs_expr in mane_data[key].keys():
+            mane_data[key][hgvs_expr]['count'] += 1
+        else:
+            mane_data[key][hgvs_expr] = {
+                'classification_token': s,
+                'accession': mane['refseq'],
+                'count': 1
+            }
+
+    def add_mane_to_validation_results(self, mane_data, valid_alleles,
+                                       results, classification, gene_tokens):
+        """Add MANE Transcript data to list of validation results.
+
+        :param dict mane_data: MANE Transcript data found for given query
+        :param list valid_alleles: A list containing current valid alleles
+        :param list results: A list of validation results
+        :param Classification classification: The classification for tokens
+        :param list gene_tokens: List of GeneMatchTokens
+        """
+        for key in ['mane_select', 'mane_plus_clinical',
+                    'longest_compatible_remaining']:
+            highest_count = 0
+            mane_result = None
+            allele = None
+            mane_transcript = None
+            for hgvs_expr in mane_data[key].keys():
+                data = mane_data[key][hgvs_expr]
+                tmp_allele = self.get_allele_from_hgvs(hgvs_expr, [])
+                if data['count'] > highest_count and tmp_allele:
+                    highest_count = data['count']
+                    mane_result = data
+                    allele = tmp_allele
+                    mane_transcript = hgvs_expr
+            if allele:
+                self.add_validation_result(
+                    allele, valid_alleles, results, classification,
+                    mane_result['classification_token'],
+                    mane_result['accession'], gene_tokens, [],
+                    mane_transcript=mane_transcript
+                )
+                return
