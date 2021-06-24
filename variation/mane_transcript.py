@@ -382,6 +382,14 @@ class MANETranscript:
         anno = start_annotation_layer.lower()
         if end_pos is None:
             end_pos = start_pos
+
+        try:
+            start_pos = int(start_pos)
+            end_pos = int(end_pos)
+        except ValueError:
+            logger.warning(f"{start_pos} and {end_pos} must be valid integers")
+            return None
+
         if anno in ['p', 'c']:
             # Get accession and position on c. coordinate
             if anno == 'p':
