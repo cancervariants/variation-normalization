@@ -89,6 +89,8 @@ class PolypeptideSequenceVariationBase(Validator):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         valid_alleles = list()
         if 'HGVS' in classification.matching_tokens:
@@ -109,7 +111,7 @@ class PolypeptideSequenceVariationBase(Validator):
                     self.get_allele_with_context(classification, t, s, errors)
 
                 mane = self.mane_transcript.get_mane_transcript(
-                    t, s.position, s.position, 'p',
+                    t, s.position, s.position, s.reference_sequence,
                     ref=self._amino_acid_cache.convert_three_to_one(
                         s.ref_protein
                     ),
