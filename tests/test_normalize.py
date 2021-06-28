@@ -1135,8 +1135,6 @@ def test_genomic_deletion(test_normalize, genomic_deletion):
     resp = test_normalize.normalize('VHL g.10188279_10188297del')
     assert resp.id == 'normalize.variation:VHL%20g.10188279_10188297del'
     resp.id = 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del'
-    assert resp.ref_allele_seq is None  # seqrepo can't find enst transcript
-    resp.ref_allele_seq = 'CTCTTCAGAGATGCAGGGAC'
     assertion_checks(resp, genomic_deletion)
 
 
