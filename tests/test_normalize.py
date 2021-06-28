@@ -1171,15 +1171,13 @@ def test_amino_acid_insertion(test_normalize, amino_acid_insertion):
 
 def test_coding_dna_insertion(test_normalize, coding_dna_insertion):
     """Test that coding dna insertion normalizes correctly."""
-    # TODO: FIX This
-    pass
-    # resp = test_normalize.normalize('ENST00000331728.9:c.2049_2050insA')
-    # assertion_checks(resp, coding_dna_insertion)
-    #
-    # resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
-    # assert resp.id == 'normalize.variation:LIMK2%20c.2049_2050insA'
-    # resp.id = 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA'
-    # assertion_checks(resp, coding_dna_insertion)
+    resp = test_normalize.normalize('ENST00000331728.9:c.2049_2050insA')
+    assertion_checks(resp, coding_dna_insertion)
+
+    resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
+    assert resp.id == 'normalize.variation:LIMK2%20c.2049_2050insA'
+    resp.id = 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA'
+    assertion_checks(resp, coding_dna_insertion)
 
 
 def test_genomic_insertion(test_normalize, genomic_insertion):
@@ -1192,8 +1190,6 @@ def test_genomic_insertion(test_normalize, genomic_insertion):
            'normalize.variation:ERBB2%20g.37880993_37880994insGCTTACGTGATG'
     resp.id = \
         'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG'
-    assert resp.ref_allele_seq is None
-    resp.ref_allele_seq = 'GATCCTGAAAGAGA'
     assertion_checks(resp, genomic_insertion)
 
 
