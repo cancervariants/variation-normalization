@@ -133,17 +133,19 @@ class MANETranscript:
 
         return genomic_tx_data
 
-    def _get_mane_c(self, mane_data, mane_c_pos_change):
+    def _get_mane_c(self, mane_data, mane_c_pos_change, coding_start_site):
         """Return MANE Transcript data on c. coordinate.
 
         :param dict mane_data: MANE Transcript data (transcript accessions,
             gene, and location information)
         :param tuple[int, int] mane_c_pos_change: Start and end positions
             for change on c. coordinate
+        :param int coding_start_site: Coding start site for MANE transcript
         """
         return dict(
             refseq=mane_data['RefSeq_nuc'],
             ensembl=mane_data['Ensembl_nuc'],
+            coding_start_site=coding_start_site,
             pos=mane_c_pos_change,
             strand=mane_data['chr_strand'],
             status=mane_data['MANE_status']
@@ -198,7 +200,8 @@ class MANETranscript:
             mane_tx_pos_range[1] - g['pos_change'][1] - coding_start_site
         )
 
-        return self._get_mane_c(mane_data, mane_c_pos_change)
+        return self._get_mane_c(mane_data, mane_c_pos_change,
+                                coding_start_site)
 
     def _validate_reading_frames(self, ac, start_pos, end_pos,
                                  mane_transcript) -> StrictBool:
@@ -313,8 +316,8 @@ class MANETranscript:
         if anno == 'p':
             pos = self._p_to_c_pos(start_pos)
             if end_pos != start_pos:
-                end_pos = self._p_to_c_pos(end_pos)
-                pos = pos[0], end_pos[1]
+                tmp_end_pos = self._p_to_c_pos(end_pos)
+                pos = pos[0], tmp_end_pos[1]
             c_start_pos, c_end_pos = pos
         else:
             c_start_pos, c_end_pos = start_pos, end_pos
@@ -349,9 +352,26 @@ class MANETranscript:
                 if anno == 'p':
                     pos = start_pos, end_pos
                     ac = row['pro_ac']
+
+                    if self.seqrepo_access.sequence_at_position(
+                            ac, pos[0]) is None:
+                        continue
+                    if pos[0] != pos[1]:
+                        if self.seqrepo_access.sequence_at_position(
+                                ac, pos[1]) is None:
+                            continue
                 else:
                     pos = c_start_pos, c_end_pos
                     ac = row['tx_ac']
+
+                    if self.seqrepo_access.sequence_at_position(
+                            ac, pos[0] + row['cds_start_i']) is None:
+                        continue
+
+                    if pos[0] != pos[1]:
+                        if self.seqrepo_access.sequence_at_position(
+                                ac, pos[1] + row['cds_start_i']) is None:
+                            continue
 
                 return dict(
                     refseq=ac if ac.startswith('N') else None,
@@ -574,4 +594,5 @@ class MANETranscript:
                     tx_pos_range[1] - alt_pos_change[1] - coding_start_site
                 )
 
-            return self._get_mane_c(current_mane_data, mane_c_pos_change)
+            return self._get_mane_c(current_mane_data, mane_c_pos_change,
+                                    coding_start_site)
