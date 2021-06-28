@@ -352,7 +352,7 @@ class UTA:
         """
         query = (
             f"""
-            SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac
+            SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac, T.cds_start_i
             FROM {self.schema}.associated_accessions as AA
             JOIN {self.schema}.transcript as T ON T.ac = AA.tx_ac
             JOIN {self.schema}.tx_exon_aln_v as ALIGN ON T.ac = ALIGN.tx_ac
