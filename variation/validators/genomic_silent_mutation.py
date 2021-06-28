@@ -46,7 +46,7 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results,
-                                  gene_tokens) -> None:
+                                  gene_tokens, normalize_endpoint) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -55,10 +55,12 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens
+            gene_tokens, normalize_endpoint
         )
 
     def get_gene_tokens(self, classification):

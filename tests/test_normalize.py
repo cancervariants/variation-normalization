@@ -607,7 +607,7 @@ def coding_dna_silent_mutation(braf_gene_context):
 
 
 @pytest.fixture(scope='module')
-def nc_000007_silent_mutation():
+def nc_000007_silent_mutation(braf_gene_context):
     """Create test fixture for NC_000007.13:g.140453136=."""
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
@@ -633,7 +633,7 @@ def nc_000007_silent_mutation():
         "molecule_context": "genomic",
         "structural_type": "SO:0002073",
         "ref_allele_seq": "A",
-        "gene_context": None
+        "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
 

@@ -39,7 +39,8 @@ class SingleNucleotideVariationBase(Validator):
 
     def silent_mutation_valid_invalid_results(self, classification_tokens,
                                               transcripts, classification,
-                                              results, gene_tokens) -> None:
+                                              results, gene_tokens,
+                                              normalize_endpoint) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
 
@@ -49,8 +50,21 @@ class SingleNucleotideVariationBase(Validator):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         valid_alleles = list()
+        if 'HGVS' in classification.matching_tokens:
+            is_hgvs = True
+        else:
+            is_hgvs = False
+
+        mane_data = {
+            'mane_select': dict(),
+            'mane_plus_clinical': dict(),
+            'longest_compatible_remaining': dict()
+        }
+
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
@@ -62,6 +76,22 @@ class SingleNucleotideVariationBase(Validator):
                     hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
                 t = hgvs_expr.split(':')[0]
                 allele = None
+
+                mane = self.mane_transcript.get_mane_transcript(
+                    t, s.position, s.position, s.reference_sequence,
+                    ref=s.ref_nucleotide, normalize_endpoint=normalize_endpoint
+                )
+                if mane:
+                    if not gene_tokens:
+                        gene_tokens.append(
+                            self._gene_matcher.match(mane['gene'])
+                        )
+
+                    mane_hgvs_expr =\
+                        f"{mane['refseq']}:{s.reference_sequence.lower()}." \
+                        f"{mane['pos'][0]}="
+                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+
                 try:
                     sequence_id = \
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
@@ -83,6 +113,12 @@ class SingleNucleotideVariationBase(Validator):
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
+
+                if is_hgvs:
+                    break
+        self.add_mane_to_validation_results(
+            mane_data, valid_alleles, results, classification, gene_tokens
+        )
 
     @abstractmethod
     def get_hgvs_expr(self, classification, t, s, is_hgvs):
