@@ -60,8 +60,8 @@ class PolypeptideSequenceVariationBase(Validator):
         :return: hgvs expression
         """
         if not is_hgvs:
-            hgvs_expr = f"{t}:p.{s.ref_protein}{s.position}" \
-                        f"{s.alt_protein}"
+            hgvs_expr = f"{t}:{s.reference_sequence.lower()}." \
+                        f"{s.ref_protein}{s.position}{s.alt_protein}"
         else:
             # Replace `=` in silent mutation with 3 letter amino acid code
             hgvs_token = \
@@ -110,16 +110,31 @@ class PolypeptideSequenceVariationBase(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
+                if len(s.ref_protein) == 1:
+                    ref = s.ref_protein
+                    ref_protein = self._amino_acid_cache.amino_acid_code_conversion[s.ref_protein]  # noqa: E501
+                else:
+                    ref = self._amino_acid_cache.convert_three_to_one(
+                        s.ref_protein
+                    )
+                    ref_protein = s.ref_protein
+
+                if len(ref) == 3:
+                    ref = self._amino_acid_cache.convert_three_to_one(ref)
+
                 mane = self.mane_transcript.get_mane_transcript(
                     t, s.position, s.position, s.reference_sequence,
-                    ref=self._amino_acid_cache.convert_three_to_one(
-                        s.ref_protein
-                    ),
+                    ref=ref,
                     normalize_endpoint=normalize_endpoint
                 )
                 if mane:
-                    mane_hgvs_expr = f"{mane['refseq']}:p.{s.ref_protein}" \
-                                     f"{mane['pos'][0]}{s.alt_protein}"
+                    if len(s.alt_protein) == 1 and s.alt_protein != '=':
+                        alt_protein = self._amino_acid_cache.amino_acid_code_conversion[s.alt_protein]  # noqa: E501
+                    else:
+                        alt_protein = s.alt_protein
+
+                    mane_hgvs_expr = f"{mane['refseq']}:p.{ref_protein}" \
+                                     f"{mane['pos'][0]}{alt_protein}"
                     self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 if not allele:
