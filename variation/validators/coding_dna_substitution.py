@@ -54,8 +54,8 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
         return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens) \
-            -> None:
+                                  classification, results, gene_tokens,
+                                  normalize_endpoint) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -64,21 +64,46 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         valid_alleles = list()
-        mane_transcripts_dict = dict()
+        if 'HGVS' in classification.matching_tokens:
+            is_hgvs = True
+        else:
+            is_hgvs = False
+
+        mane_data = {
+            'mane_select': dict(),
+            'mane_plus_clinical': dict(),
+            'longest_compatible_remaining': dict()
+        }
+
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if hgvs_expr not in mane_transcripts_dict.keys():
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'nucleotide': is_ensembl
-                    }
+                mane = self.mane_transcript.get_mane_transcript(
+                    t, s.position, s.position, s.reference_sequence,
+                    ref=s.ref_nucleotide, normalize_endpoint=normalize_endpoint
+                )
+
+                if mane:
+                    if 'coding_start_site' in mane.keys():
+                        ref = self.seqrepo_access.sequence_at_position(
+                            mane['refseq'],
+                            mane['pos'][0] + mane['coding_start_site']
+                        )
+
+                        mane_hgvs_expr = f"{mane['refseq']}:" \
+                                         f"{s.reference_sequence.lower()}." \
+                                         f"{mane['pos'][0]}{ref}" \
+                                         f">{s.new_nucleotide}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+                    else:
+                        errors.append("No coding start site found.")
 
                 if not allele:
                     errors.append("Unable to find allele.")
@@ -92,9 +117,12 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                     classification, s, t, gene_tokens, errors
                 )
 
-        # Now add Mane transcripts to results
-        self.add_mane_transcript(classification, results, gene_tokens,
-                                 mane_transcripts_dict)
+                if is_hgvs:
+                    break
+
+        self.add_mane_to_validation_results(
+            mane_data, valid_alleles, results, classification, gene_tokens
+        )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.

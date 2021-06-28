@@ -11,8 +11,8 @@ class InsertionBase(Validator):
     """The Insertion Validator Base class."""
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens) \
-            -> None:
+                                  classification, results, gene_tokens,
+                                  normalize_endpoint) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -21,9 +21,23 @@ class InsertionBase(Validator):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         valid_alleles = list()
-        mane_transcripts_dict = dict()
+        if 'HGVS' in classification.matching_tokens:
+            is_hgvs = True
+        else:
+            is_hgvs = False
+
+        mane_data = {
+            'mane_select': dict(),
+            'mane_plus_clinical': dict(),
+            'longest_compatible_remaining': dict()
+        }
+
+        # TODO: Fix MANE for genomic
+
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
@@ -31,12 +45,28 @@ class InsertionBase(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if hgvs_expr not in mane_transcripts_dict.keys():
-                    mane_transcripts_dict[hgvs_expr] = {
-                        'classification_token': s,
-                        'transcript_token': t,
-                        'nucleotide': is_ensembl
-                    }
+                mane = self.mane_transcript.get_mane_transcript(
+                    t, s.start_pos_flank, s.end_pos_flank,
+                    s.reference_sequence, normalize_endpoint=normalize_endpoint
+                )
+                if mane:
+                    if s.reference_sequence == 'g':
+                        # TODO
+                        if not gene_tokens:
+                            gene_tokens.append(
+                                self._gene_matcher.match(mane['gene'])
+                            )
+                    else:
+                        prefix = \
+                            f"{mane['refseq']}:{s.reference_sequence.lower()}."
+                        position = f"{mane['pos'][0]}_{mane['pos'][1]}"
+                        if s.inserted_sequence2 is not None:
+                            inserted_seq = \
+                                f"{s.inserted_sequence}_{s.inserted_sequence2}"
+                        else:
+                            inserted_seq = f"{s.inserted_sequence}"
+                        mane_hgvs_expr = f"{prefix}{position}ins{inserted_seq}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 if allele:
                     self.check_pos_index(t, s, errors)
@@ -46,9 +76,12 @@ class InsertionBase(Validator):
                     classification, s, t, gene_tokens, errors
                 )
 
-        # Now add Mane transcripts to results
-        self.add_mane_transcript(classification, results, gene_tokens,
-                                 mane_transcripts_dict)
+                if is_hgvs:
+                    break
+
+        self.add_mane_to_validation_results(
+            mane_data, valid_alleles, results, classification, gene_tokens
+        )
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs):
         """Return a HGVS expression.

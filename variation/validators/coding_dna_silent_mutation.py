@@ -2,7 +2,8 @@
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType
-from variation.schemas.token_response_schema import CodingDNASilentMutationToken
+from variation.schemas.token_response_schema import\
+    CodingDNASilentMutationToken
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.schemas.token_response_schema import Token
@@ -49,8 +50,8 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
         return f"{t}:{s.reference_sequence.lower()}.{s.position}="
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens) \
-            -> None:
+                                  classification, results, gene_tokens,
+                                  normalize_endpoint) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -59,10 +60,12 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             tokens
         :param list results: A list to store validation result objects
         :param list gene_tokens: List of GeneMatchTokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens
+            gene_tokens, normalize_endpoint
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:

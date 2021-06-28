@@ -143,6 +143,7 @@ class MANETranscript:
         :param int coding_start_site: Coding start site for MANE transcript
         """
         return dict(
+            gene=mane_data['symbol'],
             refseq=mane_data['RefSeq_nuc'],
             ensembl=mane_data['Ensembl_nuc'],
             coding_start_site=coding_start_site,
@@ -161,6 +162,7 @@ class MANETranscript:
             p. coordinate
         """
         return dict(
+            gene=mane_data['symbol'],
             refseq=mane_data['RefSeq_prot'],
             ensembl=mane_data['Ensembl_prot'],
             pos=(math.ceil(mane_c_pos_range[0] / 3),
