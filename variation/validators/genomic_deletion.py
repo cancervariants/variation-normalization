@@ -84,7 +84,7 @@ class GenomicDeletion(DeletionBase):
                     self.get_allele_with_context(classification, t, s, errors)
 
                 mane = self.mane_transcript.get_mane_transcript(
-                    t, s.end_pos_del, s.end_pos_del, s.reference_sequence,
+                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
                     normalize_endpoint=normalize_endpoint
                 )
                 # TODO: Fix MANE when GRCh38 rather than mane
