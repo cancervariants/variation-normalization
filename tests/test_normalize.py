@@ -580,27 +580,27 @@ def coding_dna_silent_mutation(braf_gene_context):
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.KDlNyhYx4zWLSa_zB_db5bFOjuhmawK8",
+        "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
         "value": {
             "location": {
                 "interval": {
-                    "end": 1799,
-                    "start": 1798,
+                    "end": 1919,
+                    "start": 1918,
                     "type": "SimpleInterval"
                 },
-                "sequence_id": "ga4gh:SQ.jkiXxxRjK7uTMiW2KQFjpgvF3VQi-HhX",
+                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "A",
+                "sequence": "C",
                 "type": "SequenceState"
             },
             "type": "Allele"
         },
-        "label": "NM_004333.4:c.1799=",
+        "label": "NM_001374258.1:c.1919=",
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
-        "ref_allele_seq": "A",
+        "ref_allele_seq": "C",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -612,27 +612,27 @@ def nc_000007_silent_mutation(braf_gene_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.y3OnKtG-zUM-LTJHOg7IsLVfm8x3PNLI",
+        "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
         "value": {
             "location": {
                 "interval": {
-                    "end": 140453136,
-                    "start": 140453135,
+                    "end": 1919,
+                    "start": 1918,
                     "type": "SimpleInterval"
                 },
-                "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "A",
+                "sequence": "C",
                 "type": "SequenceState"
             },
             "type": "Allele"
         },
-        "label": "NC_000007.13:g.140453136=",
-        "molecule_context": "genomic",
+        "label": "NM_001374258.1:c.1919=",
+        "molecule_context": "transcript",
         "structural_type": "SO:0002073",
-        "ref_allele_seq": "A",
+        "ref_allele_seq": "C",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -1015,28 +1015,31 @@ def test_coding_dna_silent_mutation(test_normalize,
     resp = test_normalize.normalize('NM_004333.4:c.1799= ')
     assertion_checks(resp, coding_dna_silent_mutation)
 
-    # Only selects first from VRS, so this might change.
-    # Update test once MANE select works on silent mutations
-    resp = test_normalize.normalize('ENST00000288602.6:c.1799=')
-    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
-                                              1798, 1799)
-    assert resp.id == 'normalize.variation:ENST00000288602.6%3Ac.1799%3D'
-    assert resp.label == 'ENST00000288602.6:c.1799='
-    assert resp.molecule_context == 'transcript'
+    fixture_id = 'normalize.variation:NM_004333.4%3Ac.1799%3D'
+
+    resp = test_normalize.normalize('ENST00000288602.11:c.1799=')
+    assert resp.id == 'normalize.variation:ENST00000288602.11%3Ac.1799%3D'
+    resp.id = fixture_id
+    assertion_checks(resp, coding_dna_silent_mutation)
+
+    # TODO: What to do for older Ensembl transcripts that aren't found
+    #  in seqrepo or UTA
+    # resp = test_normalize.normalize('ENST00000288602.6:c.1799=')
+    # assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+    #                                           1798, 1799)
+    # assert resp.id == 'normalize.variation:ENST00000288602.6%3Ac.1799%3D'
+    # assert resp.label == 'ENST00000288602.6:c.1799='
+    # assert resp.molecule_context == 'transcript'
 
     resp = test_normalize.normalize('BRAF    c.1799=')
-    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
-                                              1798, 1799)
     assert resp.id == 'normalize.variation:BRAF%20c.1799%3D'
-    assert resp.label == 'BRAF c.1799='
-    assert resp.molecule_context == 'transcript'
+    resp.id = fixture_id
+    assertion_checks(resp, coding_dna_silent_mutation)
 
     resp = test_normalize.normalize('  BRAF  V600E  c.1799=  ')
-    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
-                                              1798, 1799)
     assert resp.id == 'normalize.variation:BRAF%20V600E%20c.1799%3D'
-    assert resp.label == 'BRAF V600E c.1799='
-    assert resp.molecule_context == 'transcript'
+    resp.id = fixture_id
+    assertion_checks(resp, coding_dna_silent_mutation)
 
 
 def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
@@ -1046,9 +1049,9 @@ def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
     assertion_checks(resp, nc_000007_silent_mutation)
 
     resp = test_normalize.normalize('BRAF g.140453136=')
-    assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
-                                              140453135, 140453136)
-    assert resp.molecule_context == 'genomic'
+    assert resp.id == 'normalize.variation:BRAF%20g.140453136%3D'
+    resp.id = 'normalize.variation:NC_000007.13%3Ag.140453136%3D'
+    assertion_checks(resp, nc_000007_silent_mutation)
 
 
 def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,
