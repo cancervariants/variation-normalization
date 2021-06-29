@@ -1,4 +1,5 @@
 """Module for Validation."""
+import re
 from typing import List, Tuple, Optional
 from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
@@ -14,6 +15,8 @@ from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
 from requests.exceptions import HTTPError
 import logging
+from ga4gh.vrs import models
+from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
 
 logger = logging.getLogger('variation')
@@ -487,19 +490,63 @@ class Validator(ABC):
                     'longest_compatible_remaining']:
             highest_count = 0
             mane_result = None
-            allele = None
+            mane_allele = None
             mane_transcript = None
             for hgvs_expr in mane_data[key].keys():
                 data = mane_data[key][hgvs_expr]
-                tmp_allele = self.get_allele_from_hgvs(hgvs_expr, [])
+                tmp_allele = None
+
+                if '=' in hgvs_expr:
+                    mane_ac = hgvs_expr.split(':')[0]
+                    pos = int(re.findall(r'\d+', hgvs_expr.split(':')[-1])[-1])
+
+                    try:
+                        sequence_id = self.dp.translate_sequence_identifier(
+                            mane_ac, 'ga4gh'
+                        )[0]
+                    except KeyError:
+                        logger.warning(f"GA4GH Data Proxy unable to translate"
+                                       f"sequence identifier {mane_ac}")
+                    else:
+                        new_nuc = self.seqrepo_access.sequence_at_position(
+                            mane_ac, pos
+                        )
+                        if new_nuc:
+                            seq_location = models.SequenceLocation(
+                                sequence_id=sequence_id,
+                                interval=models.SimpleInterval(
+                                    start=pos - 1,
+                                    end=pos
+                                )
+                            )
+
+                            state = models.SequenceState(sequence=new_nuc)
+                            allele = models.Allele(location=seq_location,
+                                                   state=state)
+                            allele['_id'] = ga4gh_identify(allele)
+                            allele = allele.as_dict()
+                            allele_seq_id = allele['location']['sequence_id']
+                            if allele_seq_id.startswith('ga4gh:GS.'):
+                                allele['location']['sequence_id'] = \
+                                    allele_seq_id.replace('ga4gh:GS.',
+                                                          'ga4gh:SQ.')
+
+                            if allele:
+                                len_of_seq = self.seqrepo_access.len_of_sequence(mane_ac)  # noqa: E501
+
+                                if len_of_seq >= pos - 1:
+                                    tmp_allele = allele
+                else:
+                    tmp_allele = self.get_allele_from_hgvs(hgvs_expr, [])
                 if data['count'] > highest_count and tmp_allele:
                     highest_count = data['count']
                     mane_result = data
-                    allele = tmp_allele
+                    mane_allele = tmp_allele
                     mane_transcript = hgvs_expr
-            if allele:
+
+            if mane_allele:
                 self.add_validation_result(
-                    allele, valid_alleles, results, classification,
+                    mane_allele, valid_alleles, results, classification,
                     mane_result['classification_token'],
                     mane_result['accession'], gene_tokens, [],
                     mane_transcript=mane_transcript
