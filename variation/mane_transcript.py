@@ -11,10 +11,6 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-# TODO:
-#  g -> MANE c, GRCh38
-
-
 class MANETranscript:
     """Class for retrieving MANE transcripts."""
 
