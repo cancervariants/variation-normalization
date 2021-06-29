@@ -7,7 +7,6 @@ import logging
 from variation import UTA_DB_URL
 from pyliftover import LiftOver
 from os import environ
-import itertools
 import pandas as pd
 
 logger = logging.getLogger('variation')
@@ -76,32 +75,6 @@ class UTA:
             password=self.url.password,
             application_name='variation',
         )
-
-    def get_exon_id(self, tx_ac, alt_ac, aln_method, pos):
-        """Get exon ID for transcript mapping at a given position.
-
-        :param str tx_ac: Transcript accession
-        :param str alt_ac: NC accession
-        :param str aln_method: Alignment method used
-        :param int pos: Position where change occurred
-        """
-        query = (
-            f"""
-            SELECT DISTINCT tx_exon_id
-            FROM {self.schema}.tx_exon_aln_v
-            WHERE tx_ac='{tx_ac}'
-            AND alt_ac='{alt_ac}'
-            AND alt_aln_method='{aln_method}'
-            AND {pos} BETWEEN tx_start_i AND tx_end_i
-            """
-        )
-        self.cursor.execute()
-        results = self.cursor.fetchall()
-        if not results:
-            logger.warning(f"Unable to find tx_exon_id using query {query}")
-            return None
-        flatten = itertools.chain.from_iterable
-        return list(flatten(results))
 
     def get_coding_start_site(self, ac) -> Optional[int]:
         """Get coding start site
@@ -491,9 +464,10 @@ class UTA:
         """
         query = (
             f"""
-            SELECT *
+            SELECT tx_ac
             FROM {self.schema}.associated_accessions
             WHERE pro_ac = '{p_ac}'
+            ORDER BY tx_ac;
             """
         )
         self.cursor.execute(query)
