@@ -96,12 +96,15 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                             mane['pos'][0] + mane['coding_start_site']
                         )
 
-                        # TODO: FIX to get correct alt
-                        nucs = {'T', 'C', 'A', 'G'}
-                        if ref == s.new_nucleotide:
-                            alt = list(nucs - {s.new_nucleotide})[0]
+                        # TODO: Check how to get correct alt
+                        if ref == 'T':
+                            alt = 'A'
+                        elif ref == 'A':
+                            alt = 'T'
+                        elif ref == 'G':
+                            alt = 'C'
                         else:
-                            alt = s.new_nucleotide
+                            alt = 'G'
 
                         mane_hgvs_expr = \
                             f"{mane['refseq']}:c.{mane['pos'][0]}{ref}>{alt}"

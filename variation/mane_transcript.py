@@ -42,14 +42,20 @@ class MANETranscript:
             pos_mod_3 = 3
         return pos_mod_3
 
-    def _p_to_c_pos(self, p_pos) -> Tuple[int, int]:
+    def _p_to_c_pos(self, start, end) -> Tuple[int, int]:
         """Return cDNA position given a protein position.
 
-        :param int p_pos: Protein position
+        :param int start: Start protein position
+        :param int end: End protein position
         :return: cDNA position start, cDNA position end
         """
-        pos = p_pos * 3 - 1
-        return pos - 1, pos + 1
+        start_pos = start * 3 - 1
+        if end != start:
+            end_pos = end * 3 - 1
+        else:
+            end_pos = start_pos + 1
+
+        return start_pos - 1, end_pos + 1
 
     def _p_to_c(self, ac, start_pos, end_pos)\
             -> Optional[Tuple[str, Tuple[int, int]]]:
@@ -63,7 +69,7 @@ class MANETranscript:
         # TODO: Check version mappings 1 to 1 relationship
         temp_ac = self.uta.p_to_c_ac(ac)
         if temp_ac:
-            ac = temp_ac[-1][1]
+            ac = temp_ac[-1][0]
         else:
             try:
                 if ac.startswith('NP_'):
@@ -78,10 +84,7 @@ class MANETranscript:
                 logger.warning(f"{ac} not found in transcript_mappings")
                 return None
 
-        pos = self._p_to_c_pos(start_pos)
-        if end_pos is not None:
-            end_pos = self._p_to_c_pos(end_pos)
-            pos = pos[0], end_pos[1]
+        pos = self._p_to_c_pos(start_pos, end_pos)
         return ac, pos
 
     def _c_to_g(self, ac, pos) -> Optional[Dict]:
@@ -93,12 +96,13 @@ class MANETranscript:
             Altered transcript accession and position change, Strand
         """
         # UTA does not store ENST versions
+        # So we want to make sure version is valid
         if ac.startswith('ENST'):
             if not self.transcript_mappings.ensembl_transcript_version_to_gene_symbol.get(ac):  # noqa: E501
                 try:
                     self.seqrepo_access.seq_repo_client.fetch(ac)
                 except KeyError:
-                    logger.warning(f"Ensembl transcript {ac} not found")
+                    logger.warning(f"Ensembl transcript not found: {ac}")
                     return None
 
             temp_ac = ac.split('.')[0]
@@ -115,6 +119,7 @@ class MANETranscript:
         genomic_tx_data = self.uta.get_genomic_tx_data(ac, pos)
         if not genomic_tx_data:
             return None
+        genomic_tx_data['coding_start_site'] = coding_start_site
 
         og_alt_exon_id = genomic_tx_data['alt_exon_id']
         self.uta.liftover_to_38(genomic_tx_data)
@@ -231,12 +236,13 @@ class MANETranscript:
                     return False
         return True
 
-    def _validate_references(self, ac, start_pos, end_pos,
+    def _validate_references(self, ac, coding_start_site, start_pos, end_pos,
                              mane_transcript, expected_ref,
                              anno) -> StrictBool:
         """Return whether or not reference changes are the same.
 
         :param str ac: Query accession
+        :param int coding_start_site: ac's coding start site
         :param int start_pos: Original start position change
         :param int end_pos: Origin end position change
         :param dict mane_transcript: Ensembl and RefSeq transcripts with
@@ -247,9 +253,6 @@ class MANETranscript:
         :return: `True` if reference check passes. `False` otherwise.
         """
         if anno == 'c':
-            coding_start_site = self.uta.get_coding_start_site(ac)
-            if not coding_start_site:
-                return False
             start_pos += coding_start_site
             end_pos += coding_start_site
 
@@ -312,11 +315,7 @@ class MANETranscript:
             end_pos = start_pos
 
         if anno == 'p':
-            pos = self._p_to_c_pos(start_pos)
-            if end_pos != start_pos:
-                tmp_end_pos = self._p_to_c_pos(end_pos)
-                pos = pos[0], tmp_end_pos[1]
-            c_start_pos, c_end_pos = pos
+            c_start_pos, c_end_pos = self._p_to_c_pos(start_pos, end_pos)
         else:
             c_start_pos, c_end_pos = start_pos, end_pos
 
@@ -337,11 +336,13 @@ class MANETranscript:
                 if ref:
                     if anno == 'p':
                         valid_references = self._validate_references(
-                            row['pro_ac'], start_pos, end_pos, {}, ref, 'p'
+                            row['pro_ac'], row['cds_start_i'], start_pos,
+                            end_pos, {}, ref, 'p'
                         )
                     else:
                         valid_references = self._validate_references(
-                            row['tx_ac'], c_start_pos, c_end_pos, {}, ref, 'c'
+                            row['tx_ac'], row['cds_start_i'], c_start_pos,
+                            c_end_pos, {}, ref, 'c'
                         )
 
                     if not valid_references:
@@ -351,6 +352,7 @@ class MANETranscript:
                     pos = start_pos, end_pos
                     ac = row['pro_ac']
 
+                    # Check that positions actually exist on transcript
                     if self.seqrepo_access.sequence_at_position(
                             ac, pos[0]) is None:
                         continue
@@ -362,6 +364,7 @@ class MANETranscript:
                     pos = c_start_pos, c_end_pos
                     ac = row['tx_ac']
 
+                    # Check that positions actually exist on transcript
                     if self.seqrepo_access.sequence_at_position(
                             ac, pos[0] + row['cds_start_i']) is None:
                         continue
@@ -401,12 +404,14 @@ class MANETranscript:
         if end_pos is None:
             end_pos = start_pos
 
-        try:
-            start_pos = int(start_pos)
-            end_pos = int(end_pos)
-        except ValueError:
-            logger.warning(f"{start_pos} and {end_pos} must be valid integers")
-            return None
+        if isinstance(start_pos, str) or isinstance(end_pos, str):
+            try:
+                start_pos = int(start_pos)
+                end_pos = int(end_pos)
+            except ValueError:
+                logger.warning(f"{start_pos} and {end_pos} "
+                               f"must be valid integers")
+                return None
 
         if anno in ['p', 'c']:
             # Get accession and position on c. coordinate
@@ -454,7 +459,8 @@ class MANETranscript:
 
                 if ref:
                     valid_references = self._validate_references(
-                        ac, start_pos, end_pos, mane, ref, anno
+                        ac, g['coding_start_site'], start_pos, end_pos,
+                        mane, ref, anno
                     )
                     if not valid_references:
                         continue
