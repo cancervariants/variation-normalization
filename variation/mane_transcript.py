@@ -291,6 +291,17 @@ class MANETranscript:
 
         return True
 
+    def _validate_index(self, ac, pos, coding_start_site):
+        """Validate that positions actually exist on accession
+
+        :param str ac: Accession
+        :param tuple[int, int] pos: Start position change, End position change
+        :param int coding_start_site: coding start site for accession
+        :return: `True` if positions exist on accession. `False` otherwise
+        """
+        len_of_seq = self.seqrepo_access.len_of_sequence(ac)
+        return pos[0] + coding_start_site <= pos[1] + coding_start_site <= len_of_seq  # noqa: E501
+
     def get_longest_compatible_transcript(self, gene, start_pos, end_pos,
                                           start_annotation_layer,
                                           ref=None):
@@ -351,28 +362,20 @@ class MANETranscript:
                 if anno == 'p':
                     pos = start_pos, end_pos
                     ac = row['pro_ac']
+                    coding_start_site = 0
 
-                    # Check that positions actually exist on transcript
-                    if self.seqrepo_access.sequence_at_position(
-                            ac, pos[0]) is None:
-                        continue
-                    if pos[0] != pos[1]:
-                        if self.seqrepo_access.sequence_at_position(
-                                ac, pos[1]) is None:
-                            continue
                 else:
                     pos = c_start_pos, c_end_pos
                     ac = row['tx_ac']
+                    coding_start_site = row['cds_start_i']
 
-                    # Check that positions actually exist on transcript
-                    if self.seqrepo_access.sequence_at_position(
-                            ac, pos[0] + row['cds_start_i']) is None:
-                        continue
-
-                    if pos[0] != pos[1]:
-                        if self.seqrepo_access.sequence_at_position(
-                                ac, pos[1] + row['cds_start_i']) is None:
-                            continue
+                if not self._validate_index(
+                    ac, pos, coding_start_site
+                ):
+                    logger.warning(f"{pos} are not valid positions on {ac}"
+                                   f"with coding start site "
+                                   f"{coding_start_site}")
+                    continue
 
                 return dict(
                     refseq=ac if ac.startswith('N') else None,
@@ -601,6 +604,13 @@ class MANETranscript:
                 tx_pos_range[0] + alt_pos_change[0] - coding_start_site,
                 tx_pos_range[1] - alt_pos_change[1] - coding_start_site
             )
+
+            if not self._validate_index(mane_c_ac, mane_c_pos_change,
+                                        coding_start_site):
+                logger.warning(f"{mane_c_pos_change} are not valid positions"
+                               f" on {mane_c_ac}with coding start site "
+                               f"{coding_start_site}")
+                return None
 
             return self._get_mane_c(current_mane_data, mane_c_pos_change,
                                     coding_start_site)
