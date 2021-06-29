@@ -6,6 +6,7 @@ from variation.to_vrs import ToVRS
 from variation.main import normalize as normalize_get_response
 from variation.main import translate as to_vrs_get_response
 from datetime import datetime
+import copy
 
 
 @pytest.fixture(scope="module")
@@ -447,28 +448,15 @@ def vhl_silent(vhl_gene_context):
 
 
 @pytest.fixture(scope='module')
-def braf_v600e_nucleotide(braf_gene_context):
+def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
+    value = copy.deepcopy(braf_nuc_value)
+    value['state']['sequence'] = 'A'
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
-        "value": {
-            "location": {
-                "interval": {
-                    "end": 1919,
-                    "start": 1918,
-                    "type": "SimpleInterval"
-                },
-                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "A",
-                "type": "SequenceState"
-            },
-            "type": "Allele"
-        },
+        "value": value,
         "label": "NM_001374258.1:c.1919T>A",
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
@@ -511,7 +499,7 @@ def nm_004448_coding_dna_delins(erbb2_context):
 
 
 @pytest.fixture(scope='module')
-def nc_000007_genomic_delins(braf_gene_context):
+def nc_000007_genomic_delins(braf_gene_context, braf_nuc_value):
     """Create test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
@@ -575,28 +563,34 @@ def nm_000551(vhl_gene_context):
 
 
 @pytest.fixture(scope='module')
-def coding_dna_silent_mutation(braf_gene_context):
+def braf_nuc_value():
+    """Create test fixture for BRAF V600E value on c. coordinate."""
+    return {
+        "location": {
+            "interval": {
+                "end": 1919,
+                "start": 1918,
+                "type": "SimpleInterval"
+            },
+            "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
+            "type": "SequenceLocation"
+        },
+        "state": {
+            "sequence": "C",
+            "type": "SequenceState"
+        },
+        "type": "Allele"
+    }
+
+
+@pytest.fixture(scope='module')
+def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     """Create test fixture for NM_004333.4:c.1799=."""
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
-        "value": {
-            "location": {
-                "interval": {
-                    "end": 1919,
-                    "start": 1918,
-                    "type": "SimpleInterval"
-                },
-                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "C",
-                "type": "SequenceState"
-            },
-            "type": "Allele"
-        },
+        "value": braf_nuc_value,
         "label": "NM_001374258.1:c.1919=",
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -607,28 +601,13 @@ def coding_dna_silent_mutation(braf_gene_context):
 
 
 @pytest.fixture(scope='module')
-def nc_000007_silent_mutation(braf_gene_context):
+def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     """Create test fixture for NC_000007.13:g.140453136=."""
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
-        "value": {
-            "location": {
-                "interval": {
-                    "end": 1919,
-                    "start": 1918,
-                    "type": "SimpleInterval"
-                },
-                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "C",
-                "type": "SequenceState"
-            },
-            "type": "Allele"
-        },
+        "value": braf_nuc_value,
         "label": "NM_001374258.1:c.1919=",
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
