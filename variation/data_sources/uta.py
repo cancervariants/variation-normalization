@@ -1,4 +1,4 @@
-"""Module for accessing UTA database."""
+"""Module for transcript alignments and genome  assemblt liftover."""
 from typing import Dict, Optional, List, Tuple
 import psycopg2
 import psycopg2.extras
@@ -30,7 +30,7 @@ class UTA:
         :param str db_pwd: UTA user uta_admin's password
         """
         self.db_url = self._update_db_url(db_pwd, db_url)
-        self.url = _parse_url(self.db_url)
+        self.url = ParseResult(urlparse.urlparse(self.db_url))
         self.schema = self.url.schema
         self.args = self._get_conn_args()
         self.conn = psycopg2.connect(**self.args)
@@ -495,13 +495,3 @@ class ParseResult(urlparse.ParseResult):
         """Create schema property."""
         path_elems = self.path.split("/")
         return path_elems[2] if len(path_elems) > 2 else None
-
-
-def _parse_url(db_url) -> ParseResult:
-    """Parse database connection urls into components.
-    Source: https://github.com/biocommons/hgvs
-
-    :param str db_url: UTA DB url
-    :return: Parsed Result containing URL components
-    """
-    return ParseResult(urlparse.urlparse(db_url))
