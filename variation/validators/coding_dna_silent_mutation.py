@@ -44,9 +44,7 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type == 'HGVS'][0]
             input_string = hgvs_token.input_string
-            # TODO: Check if this is ok to do
-            if not input_string.startswith('ENST'):
-                t = input_string.split(':')[0]
+            t = input_string.split(':')[0]
         return f"{t}:{s.reference_sequence.lower()}.{s.position}="
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
