@@ -595,15 +595,12 @@ class MANETranscript:
             coding_start_site = mane_tx_genomic_data['coding_start_site']
 
             if mane_tx_genomic_data['strand'] == '-':
-                mane_c_pos_change = (
-                    tx_pos_range[0] + (alt_pos_change[1] + 1) - coding_start_site,  # noqa: E501
-                    tx_pos_range[1] - (alt_pos_change[0] - 1) - coding_start_site  # noqa: E501
-                )
-            else:
-                mane_c_pos_change = (
-                    tx_pos_range[0] + alt_pos_change[0] - coding_start_site,
-                    tx_pos_range[1] - alt_pos_change[1] - coding_start_site
-                )
+                alt_pos_change = (alt_pos_change[1] + 1, alt_pos_change[0] - 1)
+
+            mane_c_pos_change = (
+                tx_pos_range[0] + alt_pos_change[0] - coding_start_site,
+                tx_pos_range[1] - alt_pos_change[1] - coding_start_site
+            )
 
             return self._get_mane_c(current_mane_data, mane_c_pos_change,
                                     coding_start_site)
