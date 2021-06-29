@@ -87,9 +87,10 @@ class SingleNucleotideVariationBase(Validator):
                             self._gene_matcher.match(mane['gene'])
                         )
 
+                    s.molecule_context = 'transcript'
+
                     mane_hgvs_expr =\
-                        f"{mane['refseq']}:{s.reference_sequence.lower()}." \
-                        f"{mane['pos'][0]}="
+                        f"{mane['refseq']}:c.{mane['pos'][0]}="
                     self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 try:
