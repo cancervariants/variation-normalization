@@ -96,8 +96,8 @@ class SingleNucleotideVariationBase(Validator):
                     sequence_id = \
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
                 except KeyError:
-                    errors.append("GA4GH Data Proxy unable to translate "
-                                  "sequence identifier {t}")
+                    errors.append(f"GA4GH Data Proxy unable to translate "
+                                  f"sequence identifier {t}")
                 else:
                     s.new_nucleotide = \
                         self.seqrepo_access.sequence_at_position(t, s.position)
