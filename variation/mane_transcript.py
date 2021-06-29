@@ -573,15 +573,22 @@ class MANETranscript:
 
             mane_c_ac = current_mane_data['RefSeq_nuc']
 
-            # Liftover
+            # Liftover to GRCh38
             grch38 = self.g_to_grch38(ac, start_pos, end_pos)
-            start_pos, end_pos = grch38['pos']
 
+            # GRCh38 -> MANE C
             mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
-                mane_c_ac, None, start_pos, end_pos
+                mane_c_ac, None, grch38['pos'][0], grch38['pos'][1]
             )
             if not mane_tx_genomic_data:
-                return None
+                # GRCh38 did not work, so let's try original assembly
+                mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
+                    mane_c_ac, ac, start_pos, end_pos
+                )
+                if not mane_tx_genomic_data:
+                    return None
+                else:
+                    logger.info("Not using most recent assembly")
 
             tx_pos_range = mane_tx_genomic_data['tx_pos_range']
             alt_pos_change = mane_tx_genomic_data['alt_pos_change']
