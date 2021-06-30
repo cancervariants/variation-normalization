@@ -5,8 +5,9 @@ from variation.classifiers import GenomicDeletionClassifier
 from .validator_base import ValidatorBase
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
 
 
 class TestGenomicDeletionValidator(ValidatorBase, unittest.TestCase):
@@ -14,9 +15,13 @@ class TestGenomicDeletionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return genomic deletion instance."""
-        return GenomicDeletion(SeqRepoAccess(SEQREPO_DATA_PATH),
-                               TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),  # noqa: E501
-                               GeneSymbol(GeneSymbolCache()))
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        return GenomicDeletion(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), UTA())
+        )
 
     def classifier_instance(self):
         """Return the genomic deletion classifier instance."""

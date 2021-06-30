@@ -5,8 +5,9 @@ from variation.classifiers import CodingDNASubstitutionClassifier
 from .validator_base import ValidatorBase
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
 
 
 class TestCodingDNASubstitutionValidator(ValidatorBase, unittest.TestCase):
@@ -14,9 +15,13 @@ class TestCodingDNASubstitutionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA substitution instance."""
-        return CodingDNASubstitution(SeqRepoAccess(SEQREPO_DATA_PATH),
-                                     TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),  # noqa: E501
-                                     GeneSymbol(GeneSymbolCache()))
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        return CodingDNASubstitution(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), UTA())
+        )
 
     def classifier_instance(self):
         """Return the coding DNA substitution classifier instance."""
