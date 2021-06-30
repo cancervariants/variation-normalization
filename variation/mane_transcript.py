@@ -496,30 +496,11 @@ class MANETranscript:
         if end_pos is None:
             end_pos = start_pos
 
-        ac_len = self.seqrepo_access.len_of_sequence(ac)
-        if not ac_len:
-            # AC does not exist
-            return None
-
-        def _is_valid(start, end, length) -> StrictBool:
-            """Check that positions are valid positions on accession.
-
-            :param int start: Genomic start position change
-            :param int end: Genomic end position change
-            :param int length: Length of accession (count of nucleotides)
-            """
-            if start < length and end < length:
-                return True
-            else:
-                logger.warning(f"{start}, {end} must be less than"
-                               f" length of accession, {length}")
-                return False
-
         # Checking to see what chromosome and assembly we're on
         descr = self.uta.get_chr_assembly(ac)
         if not descr:
             # Already GRCh38 assembly
-            if _is_valid(start_pos, end_pos, ac_len):
+            if self._validate_index(ac, (start_pos, end_pos), 0):
                 return dict(
                     ac=ac,
                     pos=(start_pos, end_pos)
@@ -542,14 +523,19 @@ class MANETranscript:
                 return None
             else:
                 end_pos = liftover_end_i[1]
-
-        if _is_valid(start_pos, end_pos, ac_len):
-            return dict(
-                ac=ac,
-                pos=(start_pos, end_pos)
-            )
         else:
-            return None
+            end_pos = start_pos
+
+        newest_ac = self.uta.get_newest_assembly_ac(ac)
+        if newest_ac:
+            ac = newest_ac[0][0]
+            if self._validate_index(ac, (start_pos, end_pos), 0):
+                return dict(
+                    ac=ac,
+                    pos=(start_pos, end_pos)
+                )
+
+        return None
 
     def g_to_mane_c(self, ac, start_pos, end_pos):
         """Return MANE Transcript on the c. coordinate.
@@ -560,6 +546,10 @@ class MANETranscript:
         :param int end_pos: genomic change end position
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
+        if not self.uta.validate_genomic_ac(ac):
+            logger.warning(f"Genomic accession does not exist: {ac}")
+            return None
+
         gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
         if not gene_symbol:
             return None
@@ -578,12 +568,14 @@ class MANETranscript:
 
             # Liftover to GRCh38
             grch38 = self.g_to_grch38(ac, start_pos, end_pos)
+            mane_tx_genomic_data = None
+            if grch38:
+                # GRCh38 -> MANE C
+                mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
+                    mane_c_ac, None, grch38['pos'][0], grch38['pos'][1]
+                )
 
-            # GRCh38 -> MANE C
-            mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
-                mane_c_ac, None, grch38['pos'][0], grch38['pos'][1]
-            )
-            if not mane_tx_genomic_data:
+            if not grch38 or not mane_tx_genomic_data:
                 # GRCh38 did not work, so let's try original assembly
                 mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
                     mane_c_ac, ac, start_pos, end_pos
