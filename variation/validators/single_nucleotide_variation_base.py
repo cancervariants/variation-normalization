@@ -77,22 +77,6 @@ class SingleNucleotideVariationBase(Validator):
                 t = hgvs_expr.split(':')[0]
                 allele = None
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.position, s.position, s.reference_sequence,
-                    ref=s.ref_nucleotide, normalize_endpoint=normalize_endpoint
-                )
-                if mane:
-                    if not gene_tokens:
-                        gene_tokens.append(
-                            self._gene_matcher.match(mane['gene'])
-                        )
-
-                    s.molecule_context = 'transcript'
-
-                    mane_hgvs_expr =\
-                        f"{mane['refseq']}:c.{mane['pos'][0]}="
-                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 try:
                     sequence_id = \
                         self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
@@ -109,6 +93,25 @@ class SingleNucleotideVariationBase(Validator):
                     len_of_seq = self.seqrepo_access.len_of_sequence(t)
                     if len_of_seq < s.position - 1:
                         errors.append('Sequence index error')
+                else:
+                    errors.append("Unable to get allele")
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.position, s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    if mane:
+                        if not gene_tokens:
+                            gene_tokens.append(
+                                self._gene_matcher.match(mane['gene'])
+                            )
+
+                        s.molecule_context = 'transcript'
+
+                        mane_hgvs_expr = \
+                            f"{mane['refseq']}:c.{mane['pos'][0]}="
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

@@ -79,43 +79,48 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                 ref_nuc = \
                     self.seqrepo_access.sequence_at_position(t, s.position)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.position, s.position, s.reference_sequence,
-                    normalize_endpoint=normalize_endpoint
-                )
-                # TODO: Fix MANE when GRCh38 rather than mane
-                if mane:
-                    if 'coding_start_site' in mane.keys():
-                        if not gene_tokens:
-                            gene_tokens.append(
-                                self._gene_matcher.match(mane['gene'])
-                            )
-
-                        ref = self.seqrepo_access.sequence_at_position(
-                            mane['refseq'],
-                            mane['pos'][0] + mane['coding_start_site']
-                        )
-
-                        # TODO: Check how to get correct alt
-                        if ref == 'T':
-                            alt = 'A'
-                        elif ref == 'A':
-                            alt = 'T'
-                        elif ref == 'G':
-                            alt = 'C'
-                        else:
-                            alt = 'G'
-
-                        mane_hgvs_expr = \
-                            f"{mane['refseq']}:c.{mane['pos'][0]}{ref}>{alt}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-                    else:
-                        errors.append("No coding start site found.")
-
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                if allele:
+                    self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                else:
+                    errors.append("Unable to get allele")
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.position, s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    # TODO: Fix MANE when GRCh38 rather than mane
+                    if mane:
+                        if 'coding_start_site' in mane.keys():
+                            if not gene_tokens:
+                                gene_tokens.append(
+                                    self._gene_matcher.match(mane['gene'])
+                                )
+
+                            ref = self.seqrepo_access.sequence_at_position(
+                                mane['refseq'],
+                                mane['pos'][0] + mane['coding_start_site']
+                            )
+
+                            # TODO: Check how to get correct alt
+                            if ref == 'T':
+                                alt = 'A'
+                            elif ref == 'A':
+                                alt = 'T'
+                            elif ref == 'G':
+                                alt = 'C'
+                            else:
+                                alt = 'G'
+
+                            mane_hgvs_expr = f"{mane['refseq']}:c." \
+                                             f"{mane['pos'][0]}{ref}>{alt}"
+                            self.add_mane_data(
+                                mane_hgvs_expr, mane, mane_data, s
+                            )
+
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors

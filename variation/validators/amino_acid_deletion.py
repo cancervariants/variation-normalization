@@ -84,19 +84,6 @@ class AminoAcidDeletion(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
-                    normalize_endpoint=normalize_endpoint
-                )
-                if mane:
-                    prefix = \
-                        f"{mane['refseq']}:{s.reference_sequence.lower()}."
-                    dels = f"{s.start_aa_del}{mane['pos'][0]}"
-                    if s.start_pos_del is not None and s.end_pos_del is not None:  # noqa: E501
-                        dels += f"_{s.end_aa_del}{mane['pos'][1]}"
-                    mane_hgvs_expr = f"{prefix}{dels}del"
-                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
@@ -115,6 +102,21 @@ class AminoAcidDeletion(Validator):
                         self.amino_acid_base.check_ref_aa(
                             t, s.end_aa_del, s.end_pos_del, errors
                         )
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_del, s.end_pos_del,
+                        s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    if mane:
+                        prefix = \
+                            f"{mane['refseq']}:{s.reference_sequence.lower()}."
+                        dels = f"{s.start_aa_del}{mane['pos'][0]}"
+                        if s.start_pos_del is not None and s.end_pos_del is not None:  # noqa: E501
+                            dels += f"_{s.end_aa_del}{mane['pos'][1]}"
+                        mane_hgvs_expr = f"{prefix}{dels}del"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,

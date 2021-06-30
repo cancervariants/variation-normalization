@@ -110,33 +110,6 @@ class PolypeptideSequenceVariationBase(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                if len(s.ref_protein) == 1:
-                    ref = s.ref_protein
-                    ref_protein = self._amino_acid_cache.amino_acid_code_conversion[s.ref_protein]  # noqa: E501
-                else:
-                    ref = self._amino_acid_cache.convert_three_to_one(
-                        s.ref_protein
-                    )
-                    ref_protein = s.ref_protein
-
-                if len(ref) == 3:
-                    ref = self._amino_acid_cache.convert_three_to_one(ref)
-
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.position, s.position, s.reference_sequence,
-                    ref=ref,
-                    normalize_endpoint=normalize_endpoint
-                )
-                if mane:
-                    if len(s.alt_protein) == 1 and s.alt_protein != '=':
-                        alt_protein = self._amino_acid_cache.amino_acid_code_conversion[s.alt_protein]  # noqa: E501
-                    else:
-                        alt_protein = s.alt_protein
-
-                    mane_hgvs_expr = f"{mane['refseq']}:p.{ref_protein}" \
-                                     f"{mane['pos'][0]}{alt_protein}"
-                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
@@ -148,6 +121,28 @@ class PolypeptideSequenceVariationBase(Validator):
                     self.amino_acid_base.check_ref_aa(
                         t, s.ref_protein, s.position, errors
                     )
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.position, s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    if mane:
+                        if len(s.alt_protein) == 1 and s.alt_protein != '=':
+                            alt_protein = \
+                                self._amino_acid_cache.amino_acid_code_conversion[s.alt_protein]  # noqa: E501
+                        else:
+                            alt_protein = s.alt_protein
+
+                        if len(s.ref_protein) == 1:
+                            ref_protein = \
+                                self._amino_acid_cache.amino_acid_code_conversion[s.ref_protein]  # noqa: E501
+                        else:
+                            ref_protein = s.ref_protein
+
+                        mane_hgvs_expr = f"{mane['refseq']}:p.{ref_protein}" \
+                                         f"{mane['pos'][0]}{alt_protein}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,

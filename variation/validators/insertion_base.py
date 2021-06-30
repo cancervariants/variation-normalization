@@ -45,31 +45,37 @@ class InsertionBase(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.start_pos_flank, s.end_pos_flank,
-                    s.reference_sequence, normalize_endpoint=normalize_endpoint
-                )
-                if mane:
-                    if s.reference_sequence == 'g':
-                        # TODO
-                        if not gene_tokens:
-                            gene_tokens.append(
-                                self._gene_matcher.match(mane['gene'])
-                            )
-                    else:
-                        prefix = \
-                            f"{mane['refseq']}:{s.reference_sequence.lower()}."
-                        position = f"{mane['pos'][0]}_{mane['pos'][1]}"
-                        if s.inserted_sequence2 is not None:
-                            inserted_seq = \
-                                f"{s.inserted_sequence}_{s.inserted_sequence2}"
-                        else:
-                            inserted_seq = f"{s.inserted_sequence}"
-                        mane_hgvs_expr = f"{prefix}{position}ins{inserted_seq}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 if allele:
                     self.check_pos_index(t, s, errors)
+                else:
+                    errors.append("Unable to find allele")
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_flank, s.end_pos_flank,
+                        s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    if mane:
+                        if s.reference_sequence == 'g':
+                            # TODO
+                            if not gene_tokens:
+                                gene_tokens.append(
+                                    self._gene_matcher.match(mane['gene'])
+                                )
+                        else:
+                            prefix = f"{mane['refseq']}:" \
+                                     f"{s.reference_sequence.lower()}."
+                            position = f"{mane['pos'][0]}_{mane['pos'][1]}"
+                            if s.inserted_sequence2 is not None:
+                                inserted_seq = f"{s.inserted_sequence}_" \
+                                               f"{s.inserted_sequence2}"
+                            else:
+                                inserted_seq = f"{s.inserted_sequence}"
+                            mane_hgvs_expr =\
+                                f"{prefix}{position}ins{inserted_seq}"
+                            self.add_mane_data(mane_hgvs_expr, mane, mane_data,
+                                               s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
