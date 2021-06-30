@@ -91,25 +91,29 @@ class AminoAcidInsertion(Validator):
 
                 if mane:
                     refseq_ac = mane['refseq']
-                    start_aa_flank = \
-                        self._amino_acid_cache.amino_acid_code_conversion[
-                            self.seqrepo_access.sequence_at_position(
-                                refseq_ac, mane['pos'][0]
-                            )
-                        ]
-                    end_aa_flank = \
-                        self._amino_acid_cache.amino_acid_code_conversion[
-                            self.seqrepo_access.sequence_at_position(
-                                refseq_ac, mane['pos'][1]
-                            )
-                        ]
-
-                    mane_hgvs_expr = \
-                        f"{refseq_ac}:{s.reference_sequence.lower()}." \
-                        f"{start_aa_flank}{mane['pos'][0]}_" \
-                        f"{end_aa_flank}{mane['pos'][1]}" \
-                        f"ins{s.inserted_sequence}"
-                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+                    try:
+                        start_aa_flank = \
+                            self._amino_acid_cache.amino_acid_code_conversion[
+                                self.seqrepo_access.sequence_at_position(
+                                    refseq_ac, mane['pos'][0]
+                                )
+                            ]
+                        end_aa_flank = \
+                            self._amino_acid_cache.amino_acid_code_conversion[
+                                self.seqrepo_access.sequence_at_position(
+                                    refseq_ac, mane['pos'][1]
+                                )
+                            ]
+                    except KeyError:
+                        logger.warning(f"Unable to get aa flanks for "
+                                       f"{refseq_ac} positions {mane['pos']}")
+                    else:
+                        mane_hgvs_expr = \
+                            f"{refseq_ac}:{s.reference_sequence.lower()}." \
+                            f"{start_aa_flank}{mane['pos'][0]}_" \
+                            f"{end_aa_flank}{mane['pos'][1]}" \
+                            f"ins{s.inserted_sequence}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 if not allele:
                     errors.append("Unable to find allele.")
