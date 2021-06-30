@@ -53,7 +53,7 @@ class MANETranscript:
         if end != start:
             end_pos = end * 3 - 1
         else:
-            end_pos = start_pos + 1
+            end_pos = start_pos
 
         return start_pos - 1, end_pos + 1
 
