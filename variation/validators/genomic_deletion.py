@@ -83,26 +83,6 @@ class GenomicDeletion(DeletionBase):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
-                    normalize_endpoint=normalize_endpoint
-                )
-                # TODO: Fix MANE when GRCh38 rather than mane
-                if mane:
-                    if not gene_tokens:
-                        gene_tokens.append(
-                            self._gene_matcher.match(mane['gene'])
-                        )
-
-                    prefix = f"{mane['refseq']}:" \
-                             f"c.{mane['pos'][0]}"
-                    if s.end_pos_del:
-                        prefix += f"_{mane['pos'][1]}"
-                    mane_hgvs_expr = f"{prefix}del"
-                    if s.deleted_sequence:
-                        mane_hgvs_expr += f"{s.deleted_sequence}"
-                    self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 if allele:
                     ref_sequence = self.get_reference_sequence(t, s, errors)
 
@@ -110,6 +90,28 @@ class GenomicDeletion(DeletionBase):
                         self.check_reference_sequence(
                             ref_sequence, s.deleted_sequence, errors
                         )
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_del, s.end_pos_del,
+                        s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+                    # TODO: Fix MANE when GRCh38 rather than mane
+                    if mane:
+                        if not gene_tokens:
+                            gene_tokens.append(
+                                self._gene_matcher.match(mane['gene'])
+                            )
+
+                        prefix = f"{mane['refseq']}:" \
+                                 f"c.{mane['pos'][0]}"
+                        if s.end_pos_del:
+                            prefix += f"_{mane['pos'][1]}"
+                        mane_hgvs_expr = f"{prefix}del"
+                        if s.deleted_sequence:
+                            mane_hgvs_expr += f"{s.deleted_sequence}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

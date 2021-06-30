@@ -85,32 +85,37 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.position, s.position, s.reference_sequence,
-                    ref=s.ref_nucleotide, normalize_endpoint=normalize_endpoint
-                )
-
-                if mane:
-                    if 'coding_start_site' in mane.keys():
-                        ref = self.seqrepo_access.sequence_at_position(
-                            mane['refseq'],
-                            mane['pos'][0] + mane['coding_start_site']
-                        )
-
-                        mane_hgvs_expr = f"{mane['refseq']}:" \
-                                         f"{s.reference_sequence.lower()}." \
-                                         f"{mane['pos'][0]}{ref}" \
-                                         f">{s.new_nucleotide}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-                    else:
-                        errors.append("No coding start site found.")
-
                 if not allele:
                     errors.append("Unable to find allele.")
-                else:
-                    ref_nuc = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
-                    self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                # TODO
+                # else:
+                #     ref_nuc = \
+                #         self.seqrepo_access.sequence_at_position(t, s.position)  # noqa: E501
+                #     self.check_ref_nucleotide(ref_nuc, s, t, errors)
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.position, s.reference_sequence,
+                        ref=s.ref_nucleotide,
+                        normalize_endpoint=normalize_endpoint
+                    )
+
+                    if mane:
+                        if 'coding_start_site' in mane.keys():
+                            ref = self.seqrepo_access.sequence_at_position(
+                                mane['refseq'],
+                                mane['pos'][0] + mane['coding_start_site']
+                            )
+
+                            mane_hgvs_expr = \
+                                f"{mane['refseq']}:" \
+                                f"{s.reference_sequence.lower()}." \
+                                f"{mane['pos'][0]}{ref}" \
+                                f">{s.new_nucleotide}"
+                            self.add_mane_data(mane_hgvs_expr, mane, mane_data,
+                                               s)
+                        else:
+                            errors.append("No coding start site found.")
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

@@ -84,37 +84,6 @@ class AminoAcidInsertion(Validator):
                 allele, t, hgvs_expr, is_ensembl = \
                     self.get_allele_with_context(classification, t, s, errors)
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, s.start_pos_flank, s.end_pos_flank,
-                    s.reference_sequence, normalize_endpoint=normalize_endpoint
-                )
-
-                if mane:
-                    refseq_ac = mane['refseq']
-                    try:
-                        start_aa_flank = \
-                            self._amino_acid_cache.amino_acid_code_conversion[
-                                self.seqrepo_access.sequence_at_position(
-                                    refseq_ac, mane['pos'][0]
-                                )
-                            ]
-                        end_aa_flank = \
-                            self._amino_acid_cache.amino_acid_code_conversion[
-                                self.seqrepo_access.sequence_at_position(
-                                    refseq_ac, mane['pos'][1]
-                                )
-                            ]
-                    except KeyError:
-                        logger.warning(f"Unable to get aa flanks for "
-                                       f"{refseq_ac} positions {mane['pos']}")
-                    else:
-                        mane_hgvs_expr = \
-                            f"{refseq_ac}:{s.reference_sequence.lower()}." \
-                            f"{start_aa_flank}{mane['pos'][0]}_" \
-                            f"{end_aa_flank}{mane['pos'][1]}" \
-                            f"ins{s.inserted_sequence}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
-
                 if not allele:
                     errors.append("Unable to find allele.")
                 else:
@@ -133,6 +102,42 @@ class AminoAcidInsertion(Validator):
                         self.amino_acid_base.check_ref_aa(
                             t, s.end_aa_flank, s.end_pos_flank, errors
                         )
+
+                if not errors:
+                    mane = self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_flank, s.end_pos_flank,
+                        s.reference_sequence,
+                        normalize_endpoint=normalize_endpoint
+                    )
+
+                    if mane:
+                        refseq_ac = mane['refseq']
+                        try:
+                            start_aa_flank = \
+                                self._amino_acid_cache.amino_acid_code_conversion[  # noqa: E501
+                                    self.seqrepo_access.sequence_at_position(
+                                        refseq_ac, mane['pos'][0]
+                                    )
+                                ]
+                            end_aa_flank = \
+                                self._amino_acid_cache.amino_acid_code_conversion[  # noqa: E501
+                                    self.seqrepo_access.sequence_at_position(
+                                        refseq_ac, mane['pos'][1]
+                                    )
+                                ]
+                        except KeyError:
+                            logger.warning(
+                                f"Unable to get aa flanks for {refseq_ac} "
+                                f"positions {mane['pos']}"
+                            )
+                        else:
+                            mane_hgvs_expr = \
+                                f"{refseq_ac}:{s.reference_sequence.lower()}" \
+                                f".{start_aa_flank}{mane['pos'][0]}_" \
+                                f"{end_aa_flank}{mane['pos'][1]}" \
+                                f"ins{s.inserted_sequence}"
+                            self.add_mane_data(mane_hgvs_expr, mane, mane_data,
+                                               s)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,
