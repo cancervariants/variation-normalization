@@ -2,6 +2,7 @@
 from typing import Dict, Optional, List, Tuple
 import psycopg2
 import psycopg2.extras
+from pydantic.types import StrictBool
 from six.moves.urllib import parse as urlparse
 import logging
 from variation import UTA_DB_URL
@@ -100,6 +101,42 @@ class UTA:
                            f"{ac}")
             return None
 
+    def get_newest_assembly_ac(self, ac) -> Optional[List]:
+        """Find most recent genomic accession version.
+
+        :param str ac: Genomic accession
+        :return: List of most recent genomic accession version
+        """
+        query = (
+            f"""
+            SELECT ac
+            FROM {self.schema}._seq_anno_most_recent
+            WHERE ac LIKE '{ac.split('.')[0]}%'
+            AND ((descr IS NULL) OR (descr = ''))
+            ORDER BY ac
+            """
+        )
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def validate_genomic_ac(self, ac) -> StrictBool:
+        """Return whether or not genomic accession exists.
+
+        :param str ac: Genomic accession
+        :return: `True` if genomic accession exists. `False` otherwise.
+        """
+        query = (
+            f"""
+            SELECT EXISTS(
+                SELECT ac
+                FROM {self.schema}._seq_anno_most_recent
+                WHERE ac = '{ac}'
+            )
+            """
+        )
+        self.cursor.execute(query)
+        return self.cursor.fetchone()[0]
+
     def get_ac_descr(self, ac) -> Optional[str]:
         """Return accession description.
         Typically description exists if not GRCh38 assembly.
@@ -115,12 +152,12 @@ class UTA:
             """
         )
         self.cursor.execute(query)
-        result = self.cursor.fetchone()[0]
+        result = self.cursor.fetchone()
         if not result:
             logger.warning(f"Accession {ac} does not have a description")
             return None
         else:
-            return result
+            return result[0]
 
     def get_tx_exon_aln_v_data(self, ac, start_pos, end_pos, alt_ac=None,
                                use_tx_pos=True) -> Optional[List]:
@@ -348,10 +385,9 @@ class UTA:
         :return: Chromosome and Assembly accession is on
         """
         descr = self.get_ac_descr(ac)
-        if descr is None:
+        if not descr:
             # Already GRCh38 Assembly
             return None
-
         descr = descr.split(',')
         chromosome = f"chr{descr[0].split()[-1]}"
         assembly = f"GRCh{descr[1].split('.')[0].split('GRCh')[-1]}"
