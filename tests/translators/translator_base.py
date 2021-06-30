@@ -41,7 +41,9 @@ class TranslatorBase:
         for x in self.fixtures['tests']:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
-            validation_results = self.validator.validate(classification)
+            validation_results = self.validator.validate(
+                classification, normalize_endpoint=True
+            )
             num_valid = 0
             found = list()
             for vr in validation_results:
@@ -50,5 +52,5 @@ class TranslatorBase:
                     if loc not in found:
                         found.append(loc)
                         num_valid += 1
-                        self.assertIn(loc, x['variations'], msg=x['query'])
-            self.assertEqual(len(x['variations']), num_valid, msg=x['query'])
+                        self.assertIn(loc, x['variants'], msg=x['query'])
+            self.assertEqual(len(x['variants']), num_valid, msg=x['query'])
