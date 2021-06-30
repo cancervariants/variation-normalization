@@ -6,8 +6,9 @@ from variation.validators import AminoAcidDelIns as AAD_V
 from .translator_base import TranslatorBase
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
 
 
 class TestAminoAcidDelInsTranslator(TranslatorBase, unittest.TestCase):
@@ -19,11 +20,13 @@ class TestAminoAcidDelInsTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return amino acid delins instance."""
-        return AAD_V(SeqRepoAccess(SEQREPO_DATA_PATH),
-                     TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                     GeneSymbol(GeneSymbolCache()),
-                     AminoAcidCache()
-                     )
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        return AAD_V(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), UTA()),
+            AminoAcidCache())
 
     def translator_instance(self):
         """Return amino acid delins instance."""

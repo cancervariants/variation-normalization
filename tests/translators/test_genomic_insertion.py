@@ -6,8 +6,9 @@ from variation.validators import GenomicInsertion as GD_V
 from .translator_base import TranslatorBase
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
 
 
 class TestGenomicInsertionTranslator(TranslatorBase, unittest.TestCase):
@@ -19,10 +20,13 @@ class TestGenomicInsertionTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA insertion instance."""
-        return GD_V(SeqRepoAccess(SEQREPO_DATA_PATH),
-                    TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                    GeneSymbol(GeneSymbolCache())
-                    )
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        return GD_V(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), UTA())
+        )
 
     def translator_instance(self):
         """Return genomic insertion instance."""
