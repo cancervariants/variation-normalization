@@ -5,8 +5,9 @@ from variation.classifiers import AminoAcidInsertionClassifier
 from .validator_base import ValidatorBase
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
 
 
 class TestAminoAcidInsertionValidator(ValidatorBase, unittest.TestCase):
@@ -14,10 +15,13 @@ class TestAminoAcidInsertionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return amino acid insertion instance."""
-        return AminoAcidInsertion(SeqRepoAccess(SEQREPO_DATA_PATH),
-                                  TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                                  GeneSymbol(GeneSymbolCache()),
-                                  AminoAcidCache())
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        return AminoAcidInsertion(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), UTA()),
+            AminoAcidCache())
 
     def classifier_instance(self):
         """Return the amino acid insertion classifier instance."""
