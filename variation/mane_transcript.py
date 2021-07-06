@@ -181,7 +181,7 @@ class MANETranscript:
             refseq=mane_data['RefSeq_prot'],
             ensembl=mane_data['Ensembl_prot'],
             pos=(math.ceil(mane_c_pos_range[0] / 3),
-                 math.floor(mane_c_pos_range[1] / 3)),  # TODO: Check
+                 math.floor(mane_c_pos_range[1] / 3)),
             strand=mane_data['chr_strand'],
             status=mane_data['MANE_status']
         )
@@ -567,8 +567,25 @@ class MANETranscript:
             return None
 
         gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
-        if not gene_symbol:
-            return None
+        if len(gene_symbol) != 1:
+            # Return GRCh38
+            grch38 = self.g_to_grch38(ac, start_pos, end_pos)
+            if not grch38:
+                return None
+
+            return dict(
+                gene=None,
+                refseq=grch38['ac'],  # TODO: Is this always refseq
+                ensembl=None,
+                coding_start_site=None,
+                coding_end_site=None,
+                pos=grch38['pos'],
+                strand=None,
+                status='GRCh38'
+            )
+
+        # Exactly one gene found for an accession
+        gene_symbol = gene_symbol[0][0]
 
         mane_data =\
             self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
