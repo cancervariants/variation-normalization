@@ -109,11 +109,11 @@ class MANETranscript:
         else:
             temp_ac = ac
 
-        coding_start_site = self.uta.get_coding_start_site(temp_ac)
-        if coding_start_site is None:
+        cds_start_end = self.uta.get_cds_start_end(temp_ac)
+        if not cds_start_end:
             logger.warning(f"Accession {temp_ac} not found in UTA")
             return None
-
+        coding_start_site = cds_start_end[0]
         pos = pos[0] + coding_start_site, pos[1] + coding_start_site
 
         genomic_tx_data = self.uta.get_genomic_tx_data(ac, pos)
@@ -134,20 +134,34 @@ class MANETranscript:
 
         return genomic_tx_data
 
-    def _get_mane_c(self, mane_data, mane_c_pos_change, coding_start_site):
+    def _get_mane_c(self, mane_data, mane_c_pos_change, cds_start_end):
         """Return MANE Transcript data on c. coordinate.
 
         :param dict mane_data: MANE Transcript data (transcript accessions,
             gene, and location information)
         :param tuple[int, int] mane_c_pos_change: Start and end positions
             for change on c. coordinate
-        :param int coding_start_site: Coding start site for MANE transcript
+        :param DictRow[int, int]: Coding start and end site for MANE transcript
         """
+        cds_start = cds_start_end[0]
+        cds_end = cds_start_end[1]
+        lt_cds_start = (mane_c_pos_change[0] < cds_start and mane_c_pos_change[1] < cds_start)  # noqa: E501
+        gt_cds_end = (mane_c_pos_change[1] > cds_end and mane_c_pos_change[1] > cds_end)  # noqa: E501
+
+        if lt_cds_start or gt_cds_end:
+            logger.info(f"{mane_data['RefSeq_nuc']} with position"
+                        f" {mane_c_pos_change} is not within CDS start/end")
+            mane_c_pos_change = (
+                mane_c_pos_change[0] - (cds_end - cds_start),
+                mane_c_pos_change[1] - (cds_end - cds_start)
+            )
+
         return dict(
             gene=mane_data['symbol'],
             refseq=mane_data['RefSeq_nuc'],
             ensembl=mane_data['Ensembl_nuc'],
-            coding_start_site=coding_start_site,
+            coding_start_site=cds_start,
+            coding_end_site=cds_end,
             pos=mane_c_pos_change,
             strand=mane_data['chr_strand'],
             status=mane_data['MANE_status']
@@ -194,8 +208,10 @@ class MANETranscript:
         else:
             result = result[-1]
 
-        coding_start_site = \
-            self.uta.get_coding_start_site(mane_data['RefSeq_nuc'])
+        cds_start_end = self.uta.get_cds_start_end(mane_data['RefSeq_nuc'])
+        if not cds_start_end:
+            return None
+        coding_start_site = cds_start_end[0]
 
         mane_tx_pos_range = result[6], result[7]
         mane_c_pos_change = (
@@ -204,7 +220,7 @@ class MANETranscript:
         )
 
         return self._get_mane_c(mane_data, mane_c_pos_change,
-                                coding_start_site)
+                                cds_start_end)
 
     def _validate_reading_frames(self, ac, start_pos, end_pos,
                                  mane_transcript) -> StrictBool:
@@ -588,6 +604,7 @@ class MANETranscript:
             tx_pos_range = mane_tx_genomic_data['tx_pos_range']
             alt_pos_change = mane_tx_genomic_data['alt_pos_change']
             coding_start_site = mane_tx_genomic_data['coding_start_site']
+            coding_end_site = mane_tx_genomic_data['coding_end_site']
 
             if mane_tx_genomic_data['strand'] == '-':
                 alt_pos_change = (alt_pos_change[1] + 1, alt_pos_change[0] - 1)
@@ -605,4 +622,4 @@ class MANETranscript:
                 return None
 
             return self._get_mane_c(current_mane_data, mane_c_pos_change,
-                                    coding_start_site)
+                                    (coding_start_site, coding_end_site))
