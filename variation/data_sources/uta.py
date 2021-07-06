@@ -77,28 +77,30 @@ class UTA:
             application_name='variation',
         )
 
-    def get_coding_start_site(self, ac) -> Optional[int]:
-        """Get coding start site
+    def get_cds_start_end(self, ac) \
+            -> Optional[psycopg2.extras.DictRow[int, int]]:
+        """Get coding start and end site
 
         :param str ac: Accession
-        :return: Coding start site
+        :return: [Coding start site, Coding end site]
         """
         if ac.startswith('ENS'):
             ac = ac.split('.')[0]
         query = (
             f"""
-            SELECT cds_start_i
+            SELECT cds_start_i, cds_end_i
             FROM {self.schema}.transcript
             WHERE ac='{ac}'
             """
         )
         self.cursor.execute(query)
-        cds_start_i = self.cursor.fetchone()
-        if cds_start_i is not None:
-            return cds_start_i[0]
+        cds_start_end = self.cursor.fetchone()
+        if cds_start_end and cds_start_end[0] is not None \
+                and cds_start_end[1] is not None:
+            return cds_start_end
         else:
-            logger.warning(f"Unable to get coding start site for accession: "
-                           f"{ac}")
+            logger.warning(f"Unable to get coding start/end site for "
+                           f"accession: {ac}")
             return None
 
     def get_newest_assembly_ac(self, ac) -> Optional[List]:
@@ -270,14 +272,15 @@ class UTA:
         if not data:
             return None
 
-        coding_start_site = self.get_coding_start_site(ac)
+        coding_start_site = self.get_cds_start_end(ac)
         if coding_start_site is None:
             logger.warning(f"Accession {ac} not found in UTA")
             return None
 
         data['tx_ac'] = result[1]
         data['alt_ac'] = result[2]
-        data['coding_start_site'] = coding_start_site
+        data['coding_start_site'] = coding_start_site[0]
+        data['coding_end_site'] = coding_start_site[1]
         data['alt_pos_change'] = (
             start_pos - data['alt_pos_range'][0],
             data['alt_pos_range'][1] - end_pos
