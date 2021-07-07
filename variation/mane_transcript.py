@@ -567,6 +567,9 @@ class MANETranscript:
             return None
 
         gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
+        if not gene_symbol:
+            return None
+
         if len(gene_symbol) != 1:
             # Return GRCh38
             grch38 = self.g_to_grch38(ac, start_pos, end_pos)
