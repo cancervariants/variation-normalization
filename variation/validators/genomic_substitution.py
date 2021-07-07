@@ -121,7 +121,8 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                                 s.new_nucleotide += complements[nt]
 
                         mane_hgvs_expr = \
-                            f"{mane['refseq']}:{s.reference_sequence}." \
+                            f"{mane['refseq']}:" \
+                            f"{s.reference_sequence.lower()}." \
                             f"{mane['pos'][0]}{s.ref_nucleotide}>" \
                             f"{s.new_nucleotide}"
 

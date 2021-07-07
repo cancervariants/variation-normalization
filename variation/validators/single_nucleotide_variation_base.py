@@ -109,9 +109,11 @@ class SingleNucleotideVariationBase(Validator):
 
                         if mane['status'] != 'grch38':
                             s.molecule_context = 'transcript'
+                            s.reference_sequence = 'c'
 
                         mane_hgvs_expr = \
-                            f"{mane['refseq']}:c.{mane['pos'][0]}="
+                            f"{mane['refseq']}:" \
+                            f"{s.reference_sequence.lower()}.{mane['pos'][0]}="
                         self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
 
                 self.add_validation_result(

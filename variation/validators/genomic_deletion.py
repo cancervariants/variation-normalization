@@ -105,9 +105,11 @@ class GenomicDeletion(DeletionBase):
 
                         if mane['status'] != 'grch38':
                             s.molecule_context = 'transcript'
+                            s.reference_sequence = 'c'
 
-                        prefix = f"{mane['refseq']}:" \
-                                 f"c.{mane['pos'][0]}"
+                        prefix =\
+                            f"{mane['refseq']}:" \
+                            f"{s.reference_sequence.lower()}.{mane['pos'][0]}"
                         if s.end_pos_del:
                             prefix += f"_{mane['pos'][1]}"
                         mane_hgvs_expr = f"{prefix}del"
