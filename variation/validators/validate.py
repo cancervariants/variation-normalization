@@ -1,7 +1,7 @@
 """Module for Validation."""
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
-from variation.data_sources import TranscriptMappings, SeqRepoAccess
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
@@ -27,76 +27,87 @@ from typing import List
 class Validate:
     """The validation class."""
 
-    def __init__(self, seq_repo_client: SeqRepoAccess,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
+                 uta: UTA,
                  amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the validate class."""
+        """Initialize the validate class.
+
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
+        :param TranscriptMappings transcript_mappings: Access to transcript
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
+        :param amino_acid_cache: Amino Acid codes and conversions
+        """
         self.validators = [
             AminoAcidSubstitution(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             PolypeptideTruncation(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             SilentMutation(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             CodingDNASubstitution(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             GenomicSubstitution(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             CodingDNASilentMutation(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             GenomicSilentMutation(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             AminoAcidDelIns(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             CodingDNADelIns(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             GenomicDelIns(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             AminoAcidDeletion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             CodingDNADeletion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             GenomicDeletion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             AminoAcidInsertion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript, amino_acid_cache
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta, amino_acid_cache
             ),
             CodingDNAInsertion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             ),
             GenomicInsertion(
-                seq_repo_client, transcript_mappings, gene_symbol,
-                mane_transcript
+                seqrepo_access, transcript_mappings, gene_symbol,
+                mane_transcript, uta
             )
         ]
 

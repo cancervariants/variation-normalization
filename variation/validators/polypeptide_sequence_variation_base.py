@@ -6,7 +6,7 @@ from variation.schemas.token_response_schema import GeneMatchToken
 from variation.schemas.token_response_schema import Token
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
 from .amino_acid_base import AminoAcidBase
 import logging
@@ -22,6 +22,7 @@ class PolypeptideSequenceVariationBase(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
+                 uta: UTA,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -29,9 +30,15 @@ class PolypeptideSequenceVariationBase(Validator):
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
             mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
+        :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
-            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript
+            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
+            uta
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)

@@ -18,6 +18,7 @@ import logging
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
+from variation.data_sources import UTA
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -29,13 +30,17 @@ class Validator(ABC):
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript) -> None:
+                 mane_transcript: MANETranscript,
+                 uta: UTA) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings to/from gene symbols
-        :param GeneSymbol gene_symbol: GeneSymbol tokenizer
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
@@ -43,7 +48,8 @@ class Validator(ABC):
         self.dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
         self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_parser = hgvs.parser.Parser()
-        self.genomic_base = GenomicBase(self.dp)
+        self.uta = uta
+        self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
 
     @abstractmethod
