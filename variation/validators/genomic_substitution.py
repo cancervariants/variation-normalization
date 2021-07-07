@@ -10,8 +10,6 @@ from variation.schemas.token_response_schema import Token
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
-# TODO: Find gene from NC accession (in event of no mane transcripts)
-
 
 class GenomicSubstitution(SingleNucleotideVariationBase):
     """The Genomic Substitution Validator class."""

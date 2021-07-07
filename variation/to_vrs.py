@@ -33,7 +33,7 @@ class ToVRS:
         )
         self.validator = Validate(self.seq_repo_access,
                                   self.transcript_mappings, self.gene_symbol,
-                                  self.mane_transcript,
+                                  self.mane_transcript, self.uta,
                                   self.amino_acid_cache)
         self.translator = Translate()
 
