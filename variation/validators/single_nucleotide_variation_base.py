@@ -102,12 +102,13 @@ class SingleNucleotideVariationBase(Validator):
                         normalize_endpoint=normalize_endpoint
                     )
                     if mane:
-                        if not gene_tokens:
+                        if not gene_tokens and mane['gene']:
                             gene_tokens.append(
                                 self._gene_matcher.match(mane['gene'])
                             )
 
-                        s.molecule_context = 'transcript'
+                        if mane['status'] != 'grch38':
+                            s.molecule_context = 'transcript'
 
                         mane_hgvs_expr = \
                             f"{mane['refseq']}:c.{mane['pos'][0]}="

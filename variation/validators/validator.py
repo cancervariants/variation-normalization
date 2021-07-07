@@ -492,12 +492,15 @@ class Validator(ABC):
         :param Classification classification: The classification for tokens
         :param list gene_tokens: List of GeneMatchTokens
         """
+        hgvs_exprs = mane_data.keys()
         for key in ['mane_select', 'mane_plus_clinical',
-                    'longest_compatible_remaining']:
+                    'longest_compatible_remaining', 'grch38']:
             highest_count = 0
             mane_result = None
             mane_allele = None
             mane_transcript = None
+            if key not in hgvs_exprs:
+                continue
             for hgvs_expr in mane_data[key].keys():
                 data = mane_data[key][hgvs_expr]
                 tmp_allele = None

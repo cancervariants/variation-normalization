@@ -58,24 +58,26 @@ class InsertionBase(Validator):
                     )
                     if mane:
                         if s.reference_sequence == 'g':
-                            # TODO
-                            if not gene_tokens:
+                            if not gene_tokens and mane['gene']:
                                 gene_tokens.append(
                                     self._gene_matcher.match(mane['gene'])
                                 )
+
+                        if mane['status'] != 'grch38':
+                            s.molecule_context = 'transcript'
+
+                        prefix = f"{mane['refseq']}:" \
+                                 f"{s.reference_sequence.lower()}."
+                        position = f"{mane['pos'][0]}_{mane['pos'][1]}"
+                        if s.inserted_sequence2 is not None:
+                            inserted_seq = f"{s.inserted_sequence}_" \
+                                           f"{s.inserted_sequence2}"
                         else:
-                            prefix = f"{mane['refseq']}:" \
-                                     f"{s.reference_sequence.lower()}."
-                            position = f"{mane['pos'][0]}_{mane['pos'][1]}"
-                            if s.inserted_sequence2 is not None:
-                                inserted_seq = f"{s.inserted_sequence}_" \
-                                               f"{s.inserted_sequence2}"
-                            else:
-                                inserted_seq = f"{s.inserted_sequence}"
-                            mane_hgvs_expr =\
-                                f"{prefix}{position}ins{inserted_seq}"
-                            self.add_mane_data(mane_hgvs_expr, mane, mane_data,
-                                               s)
+                            inserted_seq = f"{s.inserted_sequence}"
+                        mane_hgvs_expr =\
+                            f"{prefix}{position}ins{inserted_seq}"
+                        self.add_mane_data(mane_hgvs_expr, mane, mane_data,
+                                           s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
