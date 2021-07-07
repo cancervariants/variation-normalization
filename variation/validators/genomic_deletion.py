@@ -97,12 +97,14 @@ class GenomicDeletion(DeletionBase):
                         s.reference_sequence,
                         normalize_endpoint=normalize_endpoint
                     )
-                    # TODO: Fix MANE when GRCh38 rather than mane
                     if mane:
-                        if not gene_tokens:
+                        if not gene_tokens and mane['gene']:
                             gene_tokens.append(
                                 self._gene_matcher.match(mane['gene'])
                             )
+
+                        if mane['status'] != 'grch38':
+                            s.molecule_context = 'transcript'
 
                         prefix = f"{mane['refseq']}:" \
                                  f"c.{mane['pos'][0]}"
