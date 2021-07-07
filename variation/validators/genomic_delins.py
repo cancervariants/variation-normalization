@@ -108,8 +108,10 @@ class GenomicDelIns(DelInsBase):
 
                         if mane['status'] != 'grch38':
                             s.molecule_context = 'transcript'
+                            s.reference_sequence = 'c'
 
-                        prefix = f"{mane['refseq']}:c."
+                        prefix = \
+                            f"{mane['refseq']}:{s.reference_sequence.lower()}."
                         if s.start_pos_del is not None and s.end_pos_del is not None:  # noqa: E501
                             pos_del = f"{mane['pos'][0]}_{mane['pos'][1]}"
                         else:
