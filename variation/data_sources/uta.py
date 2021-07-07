@@ -320,6 +320,27 @@ class UTA:
         )
         return data
 
+    def get_ac_from_gene(self, gene) -> Optional[List[str]]:
+        """Return genomic accession for a gene.
+
+        :param str gene: Gene symbol
+        :return: List of genomic accessions
+        """
+        query = (
+            f"""
+            SELECT DISTINCT alt_ac
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE hgnc = '{gene}'
+            AND alt_ac LIKE 'NC_00%'
+            ORDER BY alt_ac
+            """
+        )
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        if not results:
+            return []
+        return [item for sublist in results for item in sublist]
+
     def get_gene_from_ac(self, ac, start_pos, end_pos) -> Optional[str]:
         """Get transcripts from NC accession and positions.
 
@@ -347,10 +368,10 @@ class UTA:
             return None
         else:
             if len(results) > 1:
-                logger.warning(f"Found more than one gene beteween "
-                               f"{start_pos} and {end_pos} on {ac}")
+                logger.info(f"Found more than one gene between "
+                            f"{start_pos} and {end_pos} on {ac}")
 
-        return results[0][0]
+        return results
 
     def get_transcripts_from_gene(self, gene, start_pos, end_pos)\
             -> pd.core.frame.DataFrame:
