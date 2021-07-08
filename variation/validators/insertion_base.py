@@ -63,7 +63,7 @@ class InsertionBase(Validator):
                                     self._gene_matcher.match(mane['gene'])
                                 )
 
-                            if mane['status'] != 'grch38':
+                            if mane['status'] != 'GRCh38':
                                 s.molecule_context = 'transcript'
                                 s.reference_sequence = 'c'
 
