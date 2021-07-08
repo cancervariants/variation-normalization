@@ -17,10 +17,12 @@ class TestPolypeptideTruncationValidator(ValidatorBase, unittest.TestCase):
         """Return Polypeptide Truncation instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return PolypeptideTruncation(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA()),
+                           MANETranscriptMappings(), uta),
+            uta,
             AminoAcidCache())
 
     def classifier_instance(self):

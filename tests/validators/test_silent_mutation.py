@@ -17,10 +17,12 @@ class TestSilentMutationValidator(ValidatorBase, unittest.TestCase):
         """Return Silent Mutation instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return SilentMutation(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA()),
+                           MANETranscriptMappings(), uta),
+            uta,
             AminoAcidCache())
 
     def classifier_instance(self):

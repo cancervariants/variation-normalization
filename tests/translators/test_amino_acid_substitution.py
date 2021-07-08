@@ -22,10 +22,12 @@ class TestAminoAcidSubstitutionTranslator(TranslatorBase, unittest.TestCase):
         """Return amino acid substitution instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return AASUB_V(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA()),
+                           MANETranscriptMappings(), uta),
+            uta,
             AminoAcidCache())
 
     def translator_instance(self):

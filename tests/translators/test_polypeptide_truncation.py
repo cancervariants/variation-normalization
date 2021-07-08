@@ -22,10 +22,12 @@ class TestPolypeptideTruncationTranslator(TranslatorBase, unittest.TestCase):
         """Return polypeptide truncation instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return PT_V(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA()),
+                           MANETranscriptMappings(), uta),
+            uta,
             AminoAcidCache())
 
     def translator_instance(self):

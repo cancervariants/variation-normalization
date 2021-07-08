@@ -22,10 +22,12 @@ class TestGenomicSilentMutationTranslator(TranslatorBase, unittest.TestCase):
         """Return genomic silent mutation instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return GENOMICSM_V(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA())
+                           MANETranscriptMappings(), uta),
+            uta
         )
 
     def translator_instance(self):

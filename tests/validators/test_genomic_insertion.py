@@ -17,10 +17,12 @@ class TestGenomicInsertionValidator(ValidatorBase, unittest.TestCase):
         """Return genomic insertion instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return GenomicInsertion(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA())
+                           MANETranscriptMappings(), uta),
+            uta
         )
 
     def classifier_instance(self):

@@ -17,10 +17,12 @@ class TestCodingDNASubstitutionValidator(ValidatorBase, unittest.TestCase):
         """Return coding DNA substitution instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return CodingDNASubstitution(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA())
+                           MANETranscriptMappings(), uta),
+            uta
         )
 
     def classifier_instance(self):
