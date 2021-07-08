@@ -22,10 +22,12 @@ class TestGenomicDelInsTranslator(TranslatorBase, unittest.TestCase):
         """Return genomic delins instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return GENOMICDELINS_V(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA())
+                           MANETranscriptMappings(), uta),
+            uta
         )
 
     def translator_instance(self):

@@ -17,10 +17,12 @@ class TestAminoAcidInsertionValidator(ValidatorBase, unittest.TestCase):
         """Return amino acid insertion instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return AminoAcidInsertion(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA()),
+                           MANETranscriptMappings(), uta),
+            uta,
             AminoAcidCache())
 
     def classifier_instance(self):

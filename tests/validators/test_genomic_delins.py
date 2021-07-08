@@ -17,10 +17,12 @@ class TestGenomicDelInsValidator(ValidatorBase, unittest.TestCase):
         """Return genomic delins instance."""
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
+        uta = UTA()
         return GenomicDelIns(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), UTA())
+                           MANETranscriptMappings(), uta),
+            uta
         )
 
     def classifier_instance(self):
