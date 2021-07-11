@@ -5,7 +5,6 @@ from variation.schemas.token_response_schema import AminoAcidDelInsToken
 from typing import List, Optional
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.token_response_schema import Token
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
@@ -61,7 +60,7 @@ class AminoAcidDelIns(Validator):
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
-                                  normalize_endpoint) -> None:
+                                  normalize_endpoint, mane_data_found) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -79,28 +78,16 @@ class AminoAcidDelIns(Validator):
         else:
             is_hgvs = False
 
-        mane_data = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict()
-        }
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                allele, t, hgvs_expr, is_ensembl = \
-                    self.get_allele_with_context(classification, t, s, errors)
+                t = self.get_accession(t, classification)
+                allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
+                                            s.reference_sequence, s.alt_type,
+                                            errors, alt=s.inserted_sequence)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                else:
-                    if len(allele['state']['sequence']) == 3:
-                        allele['state']['sequence'] = \
-                            self._amino_acid_cache.convert_three_to_one(
-                                allele['state']['sequence'])
-
-                # Check ref start/end protein matches expected
                 if not errors:
+                    # Check ref start/end protein matches expected
                     self.amino_acid_base.check_ref_aa(
                         t, s.start_aa_del, s.start_pos_del, errors
                     )
@@ -116,15 +103,10 @@ class AminoAcidDelIns(Validator):
                         s.reference_sequence,
                         normalize_endpoint=normalize_endpoint
                     )
-                    if mane:
-                        prefix = f"{mane['refseq']}:" \
-                                 f"{s.reference_sequence.lower()}."
-                        dels = f"{s.start_aa_del}{mane['pos'][0]}"
-                        if s.start_pos_del is not None and s.end_pos_del is not None:  # noqa: E501
-                            dels += f"_{s.end_aa_del}{mane['pos'][1]}"
-                        mane_hgvs_expr = \
-                            f"{prefix}{dels}delins{s.inserted_sequence}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+                    self.add_mane_data(
+                        mane, mane_data_found, s.reference_sequence,
+                        s.alt_type, s, gene_tokens, alt=s.inserted_sequence
+                    )
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,
@@ -134,35 +116,9 @@ class AminoAcidDelIns(Validator):
                     break
 
         self.add_mane_to_validation_results(
-            mane_data, valid_alleles, results, classification, gene_tokens
+            mane_data_found, valid_alleles, results,
+            classification, gene_tokens
         )
-
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: HGVS Expression
-        """
-        if not is_hgvs:
-            prefix = f"{t}:{s.reference_sequence.lower()}."
-            dels = f"{s.start_aa_del}{s.start_pos_del}"
-            if s.start_pos_del is not None and s.end_pos_del is not None:
-                dels += f"_{s.end_aa_del}{s.end_pos_del}"
-            hgvs_expr = f"{prefix}{dels}delins{s.inserted_sequence}"
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS']
-            if not hgvs_token:
-                hgvs_token = \
-                    [t for t in classification.all_tokens if
-                     isinstance(t, Token) and t.token_type == 'ReferenceSequence']  # noqa: E501
-            hgvs_token = hgvs_token[0]
-            hgvs_expr = hgvs_token.input_string
-        return hgvs_expr
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
