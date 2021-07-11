@@ -1,8 +1,5 @@
 """The module for Single Nucleotide Variation Validation."""
-from abc import abstractmethod
 from .validator import Validator
-from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify
 import logging
 
 logger = logging.getLogger('variation')
@@ -12,35 +9,11 @@ logger.setLevel(logging.DEBUG)
 class SingleNucleotideVariationBase(Validator):
     """The Single Nucleotide Variation Validator Base class."""
 
-    def get_vrs_allele(self, sequence_id, s) -> dict:
-        """Return VRS Allele object.
-
-        :param str sequence_id: Sequence containing the sequence to be located
-        :param Token s: A Classification token
-        :return: A VRS Allele object as a dictionary
-        """
-        seq_location = models.SequenceLocation(
-            sequence_id=sequence_id,
-            interval=models.SimpleInterval(
-                start=s.position - 1,
-                end=s.position
-            )
-        )
-
-        state = models.SequenceState(sequence=s.new_nucleotide)
-        allele = models.Allele(location=seq_location, state=state)
-        allele['_id'] = ga4gh_identify(allele)
-        allele = allele.as_dict()
-        allele_seq_id = allele['location']['sequence_id']
-        if allele_seq_id.startswith('ga4gh:GS.'):
-            allele['location']['sequence_id'] = \
-                allele_seq_id.replace('ga4gh:GS.', 'ga4gh:SQ.')
-        return allele
-
     def silent_mutation_valid_invalid_results(self, classification_tokens,
                                               transcripts, classification,
                                               results, gene_tokens,
-                                              normalize_endpoint) -> None:
+                                              normalize_endpoint,
+                                              mane_data_found) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
 
@@ -59,62 +32,47 @@ class SingleNucleotideVariationBase(Validator):
         else:
             is_hgvs = False
 
-        mane_data = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict()
-        }
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
 
-                if 'HGVS' in classification.matching_tokens:
-                    # TODO: How to convert ENST_ to NM_ versioned
-                    hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
-                else:
-                    hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
-                t = hgvs_expr.split(':')[0]
+                t = self.get_accession(t, classification)
                 allele = None
+                if s.reference_sequence == 'c':
+                    cds_start_end = self.uta.get_cds_start_end(t)
 
-                try:
-                    sequence_id = \
-                        self.dp.translate_sequence_identifier(t, 'ga4gh')[0]
-                except KeyError:
-                    errors.append(f"GA4GH Data Proxy unable to translate "
-                                  f"sequence identifier {t}")
+                    if not cds_start_end:
+                        cds_start = None
+                        errors.append(
+                            f"Unable to find CDS start for accession : {t}"
+                        )
+                    else:
+                        cds_start = cds_start_end[0]
                 else:
-                    s.new_nucleotide = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
-                    if s.new_nucleotide:
-                        allele = self.get_vrs_allele(sequence_id, s)
+                    cds_start = None
 
-                if allele:
+                if not errors:
+                    allele = self.to_vrs_allele(
+                        t, s.position, s.position, s.reference_sequence,
+                        s.alt_type, errors, cds_start=cds_start,
+                        alt=s.new_nucleotide
+                    )
+
+                if not errors:
                     len_of_seq = self.seqrepo_access.len_of_sequence(t)
                     if len_of_seq < s.position - 1:
                         errors.append('Sequence index error')
-                else:
-                    errors.append("Unable to get allele")
 
                 if not errors:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position, s.reference_sequence,
+                        gene=gene_tokens[0].token if gene_tokens else None,
                         normalize_endpoint=normalize_endpoint
                     )
-                    if mane:
-                        if not gene_tokens and mane['gene']:
-                            gene_tokens.append(
-                                self._gene_matcher.match(mane['gene'])
-                            )
 
-                        if mane['status'] != 'GRCh38':
-                            s.molecule_context = 'transcript'
-                            s.reference_sequence = 'c'
-
-                        mane_hgvs_expr = \
-                            f"{mane['refseq']}:" \
-                            f"{s.reference_sequence.lower()}.{mane['pos'][0]}="
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+                    self.add_mane_data(mane, mane_data_found,
+                                       s.reference_sequence, s.alt_type, s,
+                                       gene_tokens)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
@@ -124,28 +82,17 @@ class SingleNucleotideVariationBase(Validator):
                 if is_hgvs:
                     break
         self.add_mane_to_validation_results(
-            mane_data, valid_alleles, results, classification, gene_tokens
+            mane_data_found, valid_alleles, results,
+            classification, gene_tokens
         )
 
-    @abstractmethod
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
-        """Return a HGVS expression.
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        raise NotImplementedError
-
-    def check_ref_nucleotide(self, ref_nuc, s, t, errors):
+    def check_ref_nucleotide(self, actual_ref_nuc, expected_ref_nuc,
+                             position, t, errors):
         """Assert that ref_nuc matches s.ref_nucleotide."""
-        if ref_nuc != s.ref_nucleotide:
-            errors.append(f'Needed to find {s.ref_nucleotide} at'
-                          f' position {s.position} on {t}'
-                          f' but found {ref_nuc}')
+        if actual_ref_nuc != expected_ref_nuc:
+            errors.append(f'Needed to find {expected_ref_nuc} at'
+                          f' position {position} on {t}'
+                          f' but found {actual_ref_nuc}')
 
     def concise_description(self, transcript, token) -> str:
         """Return a HGVS description of the identified variation.

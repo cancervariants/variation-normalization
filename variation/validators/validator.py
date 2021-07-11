@@ -518,6 +518,11 @@ class Validator(ABC):
             return
 
         if coordinate == 'g':
+            if not gene_tokens and mane['gene']:
+                gene_tokens.append(
+                    self._gene_matcher.match(mane['gene'])
+                )
+
             if mane['status'] != 'GRCh38':
                 s.molecule_context = 'transcript'
                 s.reference_sequence = 'c'
@@ -550,12 +555,6 @@ class Validator(ABC):
         if not mane_allele:
             return
 
-        if coordinate == 'g':
-            if not gene_tokens and mane['gene']:
-                gene_tokens.append(
-                    self._gene_matcher.match(mane['gene'])
-                )
-
         allele_id = mane_allele['_id']
 
         key = '_'.join(mane['status'].lower().split())
@@ -581,7 +580,6 @@ class Validator(ABC):
         :param list gene_tokens: List of GeneMatchTokens
         """
         mane_data_keys = mane_data.keys()
-
         for key in ['mane_select', 'mane_plus_clinical',
                     'longest_compatible_remaining', 'grch38']:
             highest_count = 0
