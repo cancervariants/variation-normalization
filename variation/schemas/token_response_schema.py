@@ -131,6 +131,7 @@ class PolypeptideSequenceVariation(Token):
     reference_sequence = ReferenceSequence.PROTEIN
     so_id: str
     molecule_context = 'protein'
+    alt_type: str
 
 
 class PolypeptideTruncationToken(PolypeptideSequenceVariation):
@@ -138,9 +139,10 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
     resulting polypeptide. (nonsense)
     """
 
-    alt_protein = 'Ter'
+    alt_protein = '*'
     token_type = 'PolypeptideTruncation'
     so_id = 'SO:0001617'
+    alt_type = 'nonsense'
 
     class Config:
         """Configure model."""
@@ -172,6 +174,7 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
 
     token_type = 'AminoAcidSubstitution'
     so_id = 'SO:0001606'
+    alt_type = 'substitution'
 
     class Config:
         """Configure model."""
@@ -202,6 +205,7 @@ class SilentMutationToken(PolypeptideSequenceVariation):
     alt_protein = '='
     token_type = 'SilentMutation'
     so_id = 'SO:0001017'
+    alt_type = 'silent_mutation'
 
     class Config:
         """Configure model."""
@@ -282,6 +286,7 @@ class SingleNucleotideVariation(Token):
     reference_sequence: ReferenceSequence
     so_id: str
     molecule_context: str
+    alt_type: str
 
 
 class CodingDNASubstitutionToken(SingleNucleotideVariation):
@@ -291,6 +296,7 @@ class CodingDNASubstitutionToken(SingleNucleotideVariation):
     token_type = 'CodingDNASubstitution'
     so_id = 'SO:0001483'
     molecule_context = 'transcript'
+    alt_type = 'substitution'
 
 
 class CodingDNASilentMutationToken(SingleNucleotideVariation):
@@ -301,6 +307,7 @@ class CodingDNASilentMutationToken(SingleNucleotideVariation):
     token_type = 'CodingDNASilentMutation'
     so_id = 'SO:0002073'
     molecule_context = 'transcript'
+    alt_type = 'silent_mutation'
 
 
 class GenomicSubstitutionToken(SingleNucleotideVariation):
@@ -310,6 +317,7 @@ class GenomicSubstitutionToken(SingleNucleotideVariation):
     token_type = 'GenomicSubstitution'
     so_id = 'SO:0001483'
     molecule_context = 'genomic'
+    alt_type = 'substitution'
 
 
 class GenomicSilentMutationToken(SingleNucleotideVariation):
@@ -320,6 +328,7 @@ class GenomicSilentMutationToken(SingleNucleotideVariation):
     token_type = 'GenomicSilentMutation'
     so_id = 'SO:0002073'
     molecule_context = 'genomic'
+    alt_type = 'silent_mutation'
 
 
 class DelIns(Token):
@@ -335,6 +344,7 @@ class DelIns(Token):
     reference_sequence: ReferenceSequence
     so_id = 'SO:1000032'
     molecule_context: str
+    alt_type = 'delins'
 
 
 class AminoAcidDelInsToken(Token):
@@ -349,6 +359,7 @@ class AminoAcidDelInsToken(Token):
     so_id = 'SO:1000032'
     molecule_context = 'protein'
     token_type = 'AminoAcidDelIns'
+    alt_type = 'delins'
 
 
 class CodingDNADelInsToken(DelIns):
@@ -389,6 +400,7 @@ class Deletion(Token):
     token_type: str
     so_id: str
     molecule_context: str
+    alt_type = 'deletion'
 
 
 class AminoAcidDeletionToken(Deletion):
@@ -444,6 +456,7 @@ class Insertion(Token):
     token_type: str
     so_id: str
     molecule_context: str
+    alt_type = 'insertion'
 
 
 class AminoAcidInsertionToken(Insertion):
