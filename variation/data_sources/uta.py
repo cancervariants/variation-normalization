@@ -332,7 +332,7 @@ class UTA:
             FROM {self.schema}.tx_exon_aln_v
             WHERE hgnc = '{gene}'
             AND alt_ac LIKE 'NC_00%'
-            ORDER BY alt_ac
+            ORDER BY alt_ac DESC
             """
         )
         self.cursor.execute(query)

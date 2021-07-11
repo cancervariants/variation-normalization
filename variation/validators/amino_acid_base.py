@@ -27,7 +27,7 @@ class AminoAcidBase:
         ref_aa = self.seqrepo_access.sequence_at_position(t, pos)
         if ref_aa and len(ref_aa) == 1 \
                 and len(aa) == 3:
-            ref_aa = self.amino_acid_cache.amino_acid_code_conversion[ref_aa]
+            aa = self.amino_acid_cache.convert_three_to_one(aa)
 
         if ref_aa != aa:
             errors.append(f"Needed to find {aa} at "
