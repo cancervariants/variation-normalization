@@ -41,13 +41,16 @@ class TokenizeBase:
         if len(aa) == 1:
             if not used_one_letter:
                 used_one_letter = True
-            aa = self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]
+            tmp_aa = \
+                self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]
+        else:
+            tmp_aa = aa
         pos = char_and_digits[1]
 
-        if not self.amino_acid_cache.__contains__(aa) \
+        if not self.amino_acid_cache.__contains__(tmp_aa) \
                 or not pos.isdigit():
             return None
-        return aa.capitalize(), pos, used_one_letter
+        return aa.upper(), pos, used_one_letter
 
     def get_protein_inserted_sequence(self, parts, used_one_letter)\
             -> Optional[str]:
@@ -66,18 +69,19 @@ class TokenizeBase:
                 if len(aa) != 1:
                     return None
                 try:
-                    aa = self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]  # noqa: E501
+                    self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]  # noqa: E501
                 except KeyError:
                     return None
                 else:
-                    inserted_sequence += aa
+                    inserted_sequence += aa.upper()
         else:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
                 if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
                     if aa != 'ter':
                         return None
-                inserted_sequence += aa.capitalize()
+                inserted_sequence += \
+                    self.amino_acid_cache.convert_three_to_one(aa)
 
         if inserted_sequence == '':
             return None
