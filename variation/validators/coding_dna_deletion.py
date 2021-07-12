@@ -5,7 +5,6 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.token_response_schema import CodingDNADeletionToken
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.token_response_schema import Token
 import logging
 
 
@@ -28,72 +27,48 @@ class CodingDNADeletion(DeletionBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        if not is_hgvs:
-            prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
-            if s.end_pos_del:
-                prefix += f"_{s.end_pos_del}"
-            hgvs_expr = f"{prefix}del"
-            if s.deleted_sequence:
-                hgvs_expr += f"{s.deleted_sequence}"
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type
-                          in ['HGVS', 'ReferenceSequence']][0]
-            hgvs_expr = hgvs_token.input_string
-        return hgvs_expr
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
-                                  normalize_endpoint) -> None:
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of Tokens
-        :param list transcripts: A list of transcript strings
+        :param list classification_tokens: A list of classification Tokens
+        :param list transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: A list to store validation result objects
-        :param list gene_tokens: List of GeneMatchTokens
+        :param list results: Stores validation result objects
+        :param list gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         valid_alleles = list()
-        if 'HGVS' in classification.matching_tokens:
-            is_hgvs = True
-        else:
-            is_hgvs = False
-
-        mane_data = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict()
-        }
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                allele, t, hgvs_expr, is_ensembl = \
-                    self.get_allele_with_context(classification, t, s, errors)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                # TODO: Fix reference check
-                # else:
-                #     ref_sequence = self.get_reference_sequence(t, s, errors)
-                #
-                #     if ref_sequence and s.deleted_sequence:
-                #         self.check_reference_sequence(
-                #             ref_sequence, s.deleted_sequence, errors
-                #         )
+                t = self.get_accession(t, classification)
+
+                cds_start_end = self.uta.get_cds_start_end(t)
+                if cds_start_end is not None:
+                    cds_start = cds_start_end[0]
+
+                    allele = self.to_vrs_allele(
+                        t, s.start_pos_del, s.end_pos_del,
+                        s.reference_sequence, s.alt_type,
+                        errors, cds_start=cds_start
+                    )
+                else:
+                    cds_start = 0
+                    allele = None
+                    errors.append(f"Unable to find CDS start for {t}")
+
+                if not errors:
+                    self.check_reference_sequence(t, s, errors,
+                                                  cds_start=cds_start)
 
                 if not errors:
                     mane = self.mane_transcript.get_mane_transcript(
@@ -102,27 +77,23 @@ class CodingDNADeletion(DeletionBase):
                         ref=s.deleted_sequence,
                         normalize_endpoint=normalize_endpoint
                     )
-                    if mane:
-                        prefix = f"{mane['refseq']}:" \
-                                 f"{s.reference_sequence.lower()}." \
-                                 f"{mane['pos'][0]}"
-                        if s.end_pos_del:
-                            prefix += f"_{mane['pos'][1]}"
-                        mane_hgvs_expr = f"{prefix}del"
-                        # if s.deleted_sequence:
-                        #     mane_hgvs_expr += f"{s.deleted_sequence}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+
+                    self.add_mane_data(
+                        mane, mane_data_found, s.reference_sequence,
+                        s.alt_type, s, gene_tokens
+                    )
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 
-                if is_hgvs:
+                if is_identifier:
                     break
 
         self.add_mane_to_validation_results(
-            mane_data, valid_alleles, results, classification, gene_tokens
+            mane_data_found, valid_alleles, results,
+            classification, gene_tokens
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
