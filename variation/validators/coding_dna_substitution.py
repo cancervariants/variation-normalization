@@ -5,7 +5,6 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.token_response_schema import CodingDNASubstitutionToken
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.token_response_schema import Token
 import logging
 
 # TODO:
@@ -31,67 +30,50 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-         :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        hgvs_from_transcript = f"{t}:{s.reference_sequence.lower()}." \
-                               f"{s.position}{s.ref_nucleotide}" \
-                               f">{s.new_nucleotide}"
-        if not is_hgvs:
-            hgvs_expr = hgvs_from_transcript
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type
-                          in ['HGVS', 'ReferenceSequence']][0]
-            hgvs_expr = hgvs_token.input_string
-        return hgvs_expr
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
-                                  normalize_endpoint) -> None:
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of Tokens
-        :param list transcripts: A list of transcript strings
+        :param list classification_tokens: A list of classification Tokens
+        :param list transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: A list to store validation result objects
-        :param list gene_tokens: List of GeneMatchTokens
+        :param list results: Stores validation result objects
+        :param list gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         valid_alleles = list()
-        if 'HGVS' in classification.matching_tokens:
-            is_hgvs = True
-        else:
-            is_hgvs = False
-
-        mane_data = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict()
-        }
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                allele, t, hgvs_expr, is_ensembl = \
-                    self.get_allele_with_context(classification, t, s, errors)
 
-                if not allele:
-                    errors.append("Unable to find allele.")
-                # TODO
-                # else:
-                #     ref_nuc = \
-                #         self.seqrepo_access.sequence_at_position(t, s.position)  # noqa: E501
-                #     self.check_ref_nucleotide(ref_nuc, s, t, errors)
+                t = self.get_accession(t, classification)
+                cds_start_end = self.uta.get_cds_start_end(t)
+                if cds_start_end is not None:
+                    cds_start = cds_start_end[0]
+
+                    allele = self.to_vrs_allele(t, s.position, s.position,
+                                                s.reference_sequence,
+                                                s.alt_type, errors,
+                                                cds_start=cds_start,
+                                                alt=s.new_nucleotide)
+                else:
+                    allele = None
+                    cds_start = 0
+                    errors.append(f"Unable to get CDS start for {t}")
+
+                if not errors:
+                    ref_nuc = self.seqrepo_access.sequence_at_position(
+                        t, s.position + cds_start
+                    )
+                    self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
+                                              s.position, t, errors)
 
                 if not errors:
                     mane = self.mane_transcript.get_mane_transcript(
@@ -100,33 +82,23 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                         normalize_endpoint=normalize_endpoint
                     )
 
-                    if mane:
-                        if 'coding_start_site' in mane.keys():
-                            ref = self.seqrepo_access.sequence_at_position(
-                                mane['refseq'],
-                                mane['pos'][0] + mane['coding_start_site']
-                            )
-
-                            mane_hgvs_expr = \
-                                f"{mane['refseq']}:" \
-                                f"{s.reference_sequence.lower()}." \
-                                f"{mane['pos'][0]}{ref}" \
-                                f">{s.new_nucleotide}"
-                            self.add_mane_data(mane_hgvs_expr, mane, mane_data,
-                                               s)
-                        else:
-                            errors.append("No coding start site found.")
+                    self.add_mane_data(
+                        mane, mane_data_found, s.reference_sequence,
+                        s.alt_type, s, gene_tokens,
+                        alt=s.new_nucleotide
+                    )
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 
-                if is_hgvs:
+                if is_identifier:
                     break
 
         self.add_mane_to_validation_results(
-            mane_data, valid_alleles, results, classification, gene_tokens
+            mane_data_found, valid_alleles, results,
+            classification, gene_tokens
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
