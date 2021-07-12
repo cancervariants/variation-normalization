@@ -5,7 +5,6 @@ from variation.schemas.classification_response_schema import \
     ClassificationType
 from variation.schemas.token_response_schema import GenomicSilentMutationToken
 import logging
-from variation.schemas.token_response_schema import Token
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -26,39 +25,27 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         """
         return self.get_genomic_transcripts(classification, errors)
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        if is_hgvs:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
-            t = hgvs_token.input_string.split(':')[0]
-        return f"{t}:{s.reference_sequence.lower()}.{s.position}="
-
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results,
-                                  gene_tokens, normalize_endpoint) -> None:
+                                  gene_tokens, normalize_endpoint,
+                                  mane_data_found, is_identifier) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of Tokens
-        :param list transcripts: A list of transcript strings
+        :param list classification_tokens: A list of classification Tokens
+        :param list transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: A list to store validation result objects
-        :param list gene_tokens: List of GeneMatchTokens
+        :param list results: Stores validation result objects
+        :param list gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens, normalize_endpoint
+            gene_tokens, normalize_endpoint, mane_data_found, is_identifier
         )
 
     def get_gene_tokens(self, classification):
