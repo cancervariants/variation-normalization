@@ -53,7 +53,8 @@ class GenomicDeletion(DeletionBase):
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
-                                  normalize_endpoint) -> None:
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -66,67 +67,41 @@ class GenomicDeletion(DeletionBase):
             used. `False` otherwise.
         """
         valid_alleles = list()
-        if 'HGVS' in classification.matching_tokens:
-            is_hgvs = True
-        else:
-            is_hgvs = False
-
-        mane_data = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict()
-        }
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
-                allele, t, hgvs_expr, is_ensembl = \
-                    self.get_allele_with_context(classification, t, s, errors)
+                t = self.get_accession(t, classification)
 
-                if allele:
-                    ref_sequence = self.get_reference_sequence(t, s, errors)
+                allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
+                                            s.reference_sequence, s.alt_type,
+                                            errors)
 
-                    if ref_sequence and s.deleted_sequence:
-                        self.check_reference_sequence(
-                            ref_sequence, s.deleted_sequence, errors
-                        )
+                if not errors:
+                    self.check_reference_sequence(t, s, errors)
 
                 if not errors:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.end_pos_del,
                         s.reference_sequence,
+                        gene=gene_tokens[0].token if gene_tokens else None,
                         normalize_endpoint=normalize_endpoint
                     )
-                    if mane:
-                        if not gene_tokens and mane['gene']:
-                            gene_tokens.append(
-                                self._gene_matcher.match(mane['gene'])
-                            )
-
-                        if mane['status'] != 'GRCh38':
-                            s.molecule_context = 'transcript'
-                            s.reference_sequence = 'c'
-
-                        prefix =\
-                            f"{mane['refseq']}:" \
-                            f"{s.reference_sequence.lower()}.{mane['pos'][0]}"
-                        if s.end_pos_del:
-                            prefix += f"_{mane['pos'][1]}"
-                        mane_hgvs_expr = f"{prefix}del"
-                        if s.deleted_sequence:
-                            mane_hgvs_expr += f"{s.deleted_sequence}"
-                        self.add_mane_data(mane_hgvs_expr, mane, mane_data, s)
+                    self.add_mane_data(
+                        mane, mane_data_found, s.reference_sequence,
+                        s.alt_type, s, gene_tokens
+                    )
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 
-                if is_hgvs:
+                if is_identifier:
                     break
 
         self.add_mane_to_validation_results(
-            mane_data, valid_alleles, results, classification, gene_tokens
+            mane_data_found, valid_alleles, results,
+            classification, gene_tokens
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
