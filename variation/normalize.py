@@ -1,9 +1,9 @@
 """Module for Variation Normalization."""
 from typing import Optional
-from variation.schemas.token_response_schema import PolypeptideSequenceVariation
 from variation import GENE_NORMALIZER
-from variation.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
-from variation.data_sources import SeqRepoAccess
+from variation.schemas.ga4gh_vod import Gene, VariationDescriptor, \
+    GeneDescriptor
+from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
 
@@ -11,17 +11,17 @@ from variation import logger
 class Normalize:
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self):
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTA):
         """Initialize Normalize class."""
-        self.seqrepo_access = SeqRepoAccess()
+        self.seqrepo_access = seqrepo_access
+        self.uta = uta
         self.warnings = list()
 
-    def normalize(self, q, validations, amino_acid_cache, warnings):
+    def normalize(self, q, validations, warnings):
         """Normalize a given variation.
 
         :param str q: The variation to normalize
         :param ValidationSummary validations: Invalid and valid results
-        :param AminoAcidCache amino_acid_cache: Amino Acid Code and Conversion
         :param list warnings: List of warnings
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
@@ -57,8 +57,8 @@ class Normalize:
                 except AttributeError:
                     continue
 
-            ref_allele_seq = self._get_ref_allele_seq(
-                variation_token, amino_acid_cache, label, allele
+            ref_allele_seq = self.get_ref_allele_seq(
+                allele, label, variation_token.reference_sequence
             )
 
             if valid_result.gene_tokens:
@@ -143,33 +143,13 @@ class Normalize:
             'value': value
         })
 
-    def _get_ref_allele_seq(self, variation_token, amino_acid_cache,
-                            label, allele) -> str:
-        """Return ref_allele_seq for a variation.
-
-        :return: ref_allele_seq
-        """
-        if variation_token.token_type == PolypeptideSequenceVariation:
-            # convert 3 letter to 1 letter amino acid code
-            if len(variation_token.ref_protein) == 3:
-                for one, three in \
-                        amino_acid_cache.amino_acid_code_conversion.items():
-                    if three == variation_token.ref_protein:
-                        variation_token.ref_protein = one
-            ref_allele_seq = variation_token.ref_protein
-        else:
-            if variation_token.token_type in ['CodingDNASubstitution',
-                                            'GenomicSubstitution']:
-                ref_allele_seq = variation_token.ref_nucleotide
-            else:
-                ref_allele_seq = self.get_ref_allele_seq(allele, label)
-        return ref_allele_seq
-
-    def get_ref_allele_seq(self, allele, label) -> Optional[str]:
+    def get_ref_allele_seq(self, allele, label, coordinate) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
         :param str label: Transcript label
+        :param str coordinate: Coordinate allele is on. Can either be
+            `p', 'c', or 'g'
         :return: Ref seq allele
         """
         label = label.split(':')[0]
@@ -179,6 +159,11 @@ class Normalize:
             end = interval['end']
         else:
             return None
+
+        if coordinate == 'c':
+            cds_start = self.uta.get_cds_start_end(label)[0]
+            start += cds_start
+            end += cds_start
 
         if start and end:
             refseq_list = list()
