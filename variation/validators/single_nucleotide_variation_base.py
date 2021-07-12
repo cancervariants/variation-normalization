@@ -13,25 +13,24 @@ class SingleNucleotideVariationBase(Validator):
                                               transcripts, classification,
                                               results, gene_tokens,
                                               normalize_endpoint,
-                                              mane_data_found) -> None:
+                                              mane_data_found,
+                                              is_identifier) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
 
-        :param list classification_tokens: A list of Tokens
-        :param list transcripts: A list of transcript strings
+        :param list classification_tokens: A list of classification Tokens
+        :param list transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: A list to store validation result objects
-        :param list gene_tokens: List of GeneMatchTokens
+        :param list results: Stores validation result objects
+        :param list gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         valid_alleles = list()
-        if 'HGVS' in classification.matching_tokens:
-            is_hgvs = True
-        else:
-            is_hgvs = False
-
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
@@ -79,7 +78,7 @@ class SingleNucleotideVariationBase(Validator):
                     classification, s, t, gene_tokens, errors
                 )
 
-                if is_hgvs:
+                if is_identifier:
                     break
         self.add_mane_to_validation_results(
             mane_data_found, valid_alleles, results,
