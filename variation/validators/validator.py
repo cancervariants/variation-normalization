@@ -127,7 +127,8 @@ class Validator(ABC):
     @abstractmethod
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
-                                  normalize_endpoint, mane_data_found) -> None:
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -139,6 +140,8 @@ class Validator(ABC):
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
         :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         raise NotImplementedError
 
@@ -148,6 +151,8 @@ class Validator(ABC):
 
         :param Classification classification: A classification for a list of
             tokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         :return: Validation Result's containing valid and invalid results
         """
         results = list()
@@ -171,24 +176,34 @@ class Validator(ABC):
             transcripts = list()
 
         if len(errors) > 0:
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
+            return [
+                self.get_validation_result(
+                    classification, False, 0, {}, '', '', errors, gene_tokens
+                )
+            ]
 
         mane_data_found = {
             'mane_select': dict(),
             'mane_plus_clinical': dict(),
             'longest_compatible_remaining': dict(),
-            'GRCh38': dict()
+            'grch38': dict()
         }
+
+        # If is_identifier, should only run once
+        if 'HGVS' in classification.matching_tokens:
+            is_identifier = True
+        else:
+            is_identifier = False
 
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
-            results, gene_tokens, normalize_endpoint, mane_data_found
+            results, gene_tokens, normalize_endpoint, mane_data_found,
+            is_identifier
         )
         return results
 
-    def get_validation_result(self, classification, is_valid, confidence_score,
+    @staticmethod
+    def get_validation_result(classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
                               errors, gene_tokens,
                               mane_transcript=None) -> ValidationResult:
@@ -443,10 +458,12 @@ class Validator(ABC):
 
         if coordinate == 'c':
             if cds_start is None:
-                cds_start = self.uta.get_cds_start_end(ac)
-                if cds_start is None:
+                cds_start_end = self.uta.get_cds_start_end(ac)
+                if cds_start_end is None:
                     errors.append(f"Unable to get CDS start for {ac}")
                     return None
+                else:
+                    cds_start = cds_start_end[0]
             try:
                 cds_start = int(cds_start)
             except ValueError:
@@ -511,7 +528,7 @@ class Validator(ABC):
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
         :param str alt_type: Type of alteration
         :param Token s: Classification token
-        :param int cds_start: Coding start site
+        :param list gene_tokens: List of GeneMatchTokens for a classification
         :param str alt: Alteration
         """
         if not mane:
@@ -523,12 +540,13 @@ class Validator(ABC):
                     self._gene_matcher.match(mane['gene'])
                 )
 
-            if mane['status'] != 'GRCh38':
+            if mane['status'].lower() != 'grch38':
                 s.molecule_context = 'transcript'
                 s.reference_sequence = 'c'
+                coordinate = s.reference_sequence
 
-                if isinstance(s, token_schema.GenomicSubstitutionToken):
-                    # TODO: Only if on different strands
+                if isinstance(s, token_schema.GenomicSubstitutionToken) and \
+                        mane['strand'] == '-':
                     ref_rev = s.ref_nucleotide[::-1]
                     alt_rev = s.new_nucleotide[::-1]
 
@@ -545,6 +563,7 @@ class Validator(ABC):
                         s.ref_nucleotide += complements[nt]
                     for nt in alt_rev:
                         s.new_nucleotide += complements[nt]
+                    alt = s.new_nucleotide
 
         mane_allele = self.to_vrs_allele(
             mane['refseq'], mane['pos'][0], mane['pos'][1],
