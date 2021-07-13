@@ -151,10 +151,6 @@ class MANETranscript:
         if lt_cds_start or gt_cds_end:
             logger.info(f"{mane_data['RefSeq_nuc']} with position"
                         f" {mane_c_pos_change} is not within CDS start/end")
-            mane_c_pos_change = (
-                mane_c_pos_change[0] - (cds_end - cds_start),
-                mane_c_pos_change[1] - (cds_end - cds_start)
-            )
 
         return dict(
             gene=mane_data['symbol'],
@@ -218,6 +214,9 @@ class MANETranscript:
             mane_tx_pos_range[0] + g['pos_change'][0] - coding_start_site,
             mane_tx_pos_range[1] - g['pos_change'][1] - coding_start_site
         )
+
+        if mane_c_pos_change[0] > mane_c_pos_change[1]:
+            mane_c_pos_change = mane_c_pos_change[1], mane_c_pos_change[0]
 
         return self._get_mane_c(mane_data, mane_c_pos_change,
                                 cds_start_end)
@@ -442,12 +441,10 @@ class MANETranscript:
             else:
                 c_ac = ac
                 c_pos = start_pos, end_pos
-
             # Go from c -> g annotation (liftover as well)
             g = self._c_to_g(c_ac, c_pos)
             if g is None:
                 return None
-
             # Go from g -> mane transcript
             mane_data = \
                 self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
