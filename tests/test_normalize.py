@@ -836,11 +836,11 @@ def genomic_insertion(erbb2_context):
     params = {
         "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.nhzmkOIlB-5Om8-duGq5qIvtzghoHv-_",
+        "value_id": "ga4gh:VA.qk5UNMFwxqQQWjO6CGMk3tryHBN3Sm_P",
         "value": {
             "location": {
                 "interval": {
-                    "end": 2502,
+                    "end": 2500,
                     "start": 2488,
                     "type": "SimpleInterval"
                 },
@@ -848,14 +848,14 @@ def genomic_insertion(erbb2_context):
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "GATCCTGAAAGAGATCCTGAAAGAGA",
+                "sequence": "TACGTGATGGCTTACGTGATGGCT",
                 "type": "SequenceState"
             },
             "type": "Allele"
         },
-        "molecule_context": "genomic",
+        "molecule_context": "transcript",
         "structural_type": "SO:0000667",
-        "ref_allele_seq": "GATCCTGAAAGAGA",
+        "ref_allele_seq": "TACGTGATGGCT",
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
