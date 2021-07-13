@@ -8,6 +8,8 @@ from variation.tokenizers.caches import GeneSymbolCache
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 class TestGenomicSilentMutationValidator(ValidatorBase, unittest.TestCase):
@@ -18,11 +20,13 @@ class TestGenomicSilentMutationValidator(ValidatorBase, unittest.TestCase):
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
         uta = UTA()
+        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        tlr = Translator(data_proxy=dp)
         return GenomicSilentMutation(
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
                            MANETranscriptMappings(), uta),
-            uta
+            uta, dp, tlr
         )
 
     def classifier_instance(self):
