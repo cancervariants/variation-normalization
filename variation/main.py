@@ -1,6 +1,8 @@
 """Main application for FastAPI."""
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 from variation.to_vrs import ToVRS
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variation.normalize import Normalize
@@ -28,11 +30,14 @@ gene_symbol = GeneSymbol(GeneSymbolCache())
 amino_acid_cache = AminoAcidCache()
 uta = UTA()
 mane_transcript_mappings = MANETranscriptMappings()
+dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+tlr = Translator(data_proxy=dp)
 mane_transcript = MANETranscript(seqrepo_access, transcript_mappings,
                                  mane_transcript_mappings, uta)
 validator = Validate(seqrepo_access, transcript_mappings, gene_symbol,
-                     mane_transcript, uta, amino_acid_cache)
+                     mane_transcript, uta, dp, tlr, amino_acid_cache)
 translator = Translate()
+
 
 to_vrs = ToVRS(tokenizer, classifier, seqrepo_access, transcript_mappings,
                gene_symbol, amino_acid_cache, uta, mane_transcript_mappings,

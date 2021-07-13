@@ -21,6 +21,8 @@ from .genomic_deletion import GenomicDeletion
 from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 from typing import List
 
 
@@ -31,7 +33,7 @@ class Validate:
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
                  amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validate class.
 
@@ -44,71 +46,29 @@ class Validate:
         :param UTA uta: Access to UTA queries
         :param amino_acid_cache: Amino Acid codes and conversions
         """
+        params = [
+            seqrepo_access, transcript_mappings, gene_symbol,
+            mane_transcript, uta, dp, tlr
+        ]
+        amino_acid_params = params[:]
+        amino_acid_params.append(amino_acid_cache)
         self.validators = [
-            AminoAcidSubstitution(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            PolypeptideTruncation(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            SilentMutation(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            CodingDNASubstitution(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            GenomicSubstitution(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            CodingDNASilentMutation(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            GenomicSilentMutation(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            AminoAcidDelIns(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            CodingDNADelIns(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            GenomicDelIns(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            AminoAcidDeletion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            CodingDNADeletion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            GenomicDeletion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            AminoAcidInsertion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta, amino_acid_cache
-            ),
-            CodingDNAInsertion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            ),
-            GenomicInsertion(
-                seqrepo_access, transcript_mappings, gene_symbol,
-                mane_transcript, uta
-            )
+            AminoAcidSubstitution(*amino_acid_params),
+            PolypeptideTruncation(*amino_acid_params),
+            SilentMutation(*amino_acid_params),
+            CodingDNASubstitution(*params),
+            GenomicSubstitution(*params),
+            CodingDNASilentMutation(*params),
+            GenomicSilentMutation(*params),
+            AminoAcidDelIns(*amino_acid_params),
+            CodingDNADelIns(*params),
+            GenomicDelIns(*params),
+            AminoAcidDeletion(*amino_acid_params),
+            CodingDNADeletion(*params),
+            GenomicDeletion(*params),
+            AminoAcidInsertion(*amino_acid_params),
+            CodingDNAInsertion(*params),
+            GenomicInsertion(*params)
         ]
 
     def perform(self, classifications: List[Classification],

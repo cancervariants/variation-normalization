@@ -10,6 +10,8 @@ from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
 from .amino_acid_base import AminoAcidBase
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 import logging
 
 
@@ -24,7 +26,7 @@ class AminoAcidDeletion(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -40,7 +42,7 @@ class AminoAcidDeletion(Validator):
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta
+            uta, dp, tlr
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
