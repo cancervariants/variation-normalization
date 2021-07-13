@@ -29,23 +29,20 @@ class Normalize:
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
-            label = None
             for r in validations.valid_results:
-                if r.mane_transcript and r.allele:
+                if r.is_mane_transcript and r.allele:
                     valid_result = r
-                    label = valid_result.mane_transcript.strip()
                     break
             if not valid_result:
                 warning = f"Unable to find MANE Select Transcript for {q}."
                 logger.warning(warning)
                 warnings.append(warning)
                 valid_result = validations.valid_results[0]
-                label = ' '.join(q.strip().split())
 
             valid_result_tokens = valid_result.classification.all_tokens
             allele = valid_result.allele
             allele_id = allele.pop('_id')
-            variation_token = None
+            identifier = valid_result.identifier
             molecule_context = None
             structural_type = None
 
@@ -53,12 +50,11 @@ class Normalize:
                 try:
                     molecule_context = token.molecule_context
                     structural_type = token.so_id
-                    variation_token = token
                 except AttributeError:
                     continue
 
             ref_allele_seq = self.get_ref_allele_seq(
-                allele, label, variation_token.reference_sequence
+                allele, identifier
             )
 
             if valid_result.gene_tokens:
@@ -70,7 +66,6 @@ class Normalize:
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variation:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
-                label=label,
                 value=allele,
                 molecule_context=molecule_context,
                 structural_type=structural_type,
@@ -143,16 +138,13 @@ class Normalize:
             'value': value
         })
 
-    def get_ref_allele_seq(self, allele, label, coordinate) -> Optional[str]:
+    def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
-        :param str label: Transcript label
-        :param str coordinate: Coordinate allele is on. Can either be
-            `p', 'c', or 'g'
+        :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
-        label = label.split(':')[0]
         interval = allele['location']['interval']
         if interval['start'] != interval['end']:
             start = interval['start'] + 1
@@ -160,16 +152,11 @@ class Normalize:
         else:
             return None
 
-        if coordinate == 'c':
-            cds_start = self.uta.get_cds_start_end(label)[0]
-            start += cds_start
-            end += cds_start
-
         if start and end:
             refseq_list = list()
             while start <= end:
                 refseq_list.append(self.seqrepo_access.sequence_at_position(
-                    label, start
+                    identifier, start
                 ))
                 start += 1
             try:
