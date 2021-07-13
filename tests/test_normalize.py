@@ -1,5 +1,7 @@
 """Module for testing the normalize endpoint."""
 import pytest
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 from variation.normalize import Normalize
 from variation.schemas.ga4gh_vod import VariationDescriptor
 from variation.to_vrs import ToVRS
@@ -32,12 +34,14 @@ def test_normalize():
             amino_acid_cache = AminoAcidCache()
             uta = UTA()
             mane_transcript_mappings = MANETranscriptMappings()
+            dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+            tlr = Translator(data_proxy=dp)
             mane_transcript = MANETranscript(seqrepo_access,
                                              transcript_mappings,
                                              mane_transcript_mappings, uta)
             validator = Validate(seqrepo_access, transcript_mappings,
-                                 gene_symbol,
-                                 mane_transcript, uta, amino_acid_cache)
+                                 gene_symbol, mane_transcript, uta,
+                                 dp, tlr, amino_acid_cache)
             translator = Translate()
 
             self.to_vrs = ToVRS(tokenizer, classifier, seqrepo_access,
@@ -402,7 +406,6 @@ def braf_v600e(braf_gene_context):
             },
             "type": "Allele"
         },
-        "label": "NP_001361187.1:p.Val640Glu",
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "ref_allele_seq": "V",
@@ -434,7 +437,6 @@ def vhl(vhl_gene_context):
             },
             "type": "Allele"
         },
-        "label": "NP_000542.1:p.Tyr185Ter",
         "molecule_context": "protein",
         "structural_type": "SO:0001617",
         "ref_allele_seq": "Y",
@@ -449,7 +451,6 @@ def vhl_silent(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "label": "NP_000542.1:p.Pro61=",
         "value_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
         "value": {
             "location": {
@@ -481,9 +482,8 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
+        "value_id": "ga4gh:VA.19rEOp0IBkrDkUA4gwwM-4Gde08-kBb1",
         "value": braf_nuc_value,
-        "label": "NM_001374258.1:c.1919T>A",
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "T",
@@ -498,12 +498,12 @@ def nm_004448_coding_dna_delins(erbb2_context):
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.G8pUN2zEuDtTfI8i30RNLF-gQAab4rUC",
+        "value_id": "ga4gh:VA.sSFX2CO2DPTvE4MqnJ5VifnaQOGS0CVb",
         "value": {
             "location": {
                 "interval": {
-                    "end": 2327,
-                    "start": 2325,
+                    "end": 2502,
+                    "start": 2500,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
@@ -515,7 +515,6 @@ def nm_004448_coding_dna_delins(erbb2_context):
             },
             "type": "Allele"
         },
-        "label": "NM_004448.4:c.2326_2327delinsCT",
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "GG",
@@ -530,12 +529,12 @@ def nc_000007_genomic_delins(braf_gene_context):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.X_ij6wmw-fBwcoCVhHAfP7HiWUtkNfwq",
+        "value_id": "ga4gh:VA._GzAG8_K8YwcYQk6bEvINNGM_hEViytU",
         "value": {
             "location": {
                 "interval": {
-                    "end": 1920,
-                    "start": 1918,
+                    "end": 2146,
+                    "start": 2144,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
@@ -547,7 +546,6 @@ def nc_000007_genomic_delins(braf_gene_context):
             },
             "type": "Allele"
         },
-        "label": "NM_001374258.1:c.1919_1920delinsAT",
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "TG",
@@ -562,12 +560,12 @@ def nm_000551(vhl_gene_context):
     params = {
         "id": 'temp_id',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.tPF0lpCD-oDyX3SdqSDAbSXfaB_7Lo8x",
+        "value_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
         "value": {
             "location": {
                 "interval": {
-                    "end": 615,
-                    "start": 614,
+                    "end": 685,
+                    "start": 684,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
@@ -579,7 +577,6 @@ def nm_000551(vhl_gene_context):
             },
             "type": "Allele"
         },
-        "label": "NM_000551.4:c.615delinsAA",
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "C",
@@ -594,8 +591,8 @@ def braf_nuc_value():
     return {
         "location": {
             "interval": {
-                "end": 1919,
-                "start": 1918,
+                "end": 2145,
+                "start": 2144,
                 "type": "SimpleInterval"
             },
             "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
@@ -617,9 +614,8 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
+        "value_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
         "value": value,
-        "label": "NM_001374258.1:c.1919=",
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "ref_allele_seq": "T",
@@ -636,9 +632,8 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.ndTpiGUM64HfJwzEL1iQdvAFYhL8xsL_",
+        "value_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
         "value": value,
-        "label": "NM_001374258.1:c.1919=",
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "ref_allele_seq": "T",
@@ -670,7 +665,6 @@ def amino_acid_delins(egfr_context):
             },
             "type": "Allele"
         },
-        "label": "NP_005219.2:p.Leu747_Thr751delinsPro",
         "molecule_context": "protein",
         "structural_type": "SO:1000032",
         "ref_allele_seq": "LREAT",
@@ -704,7 +698,6 @@ def amino_acid_deletion_np_range(erbb2_context):
             },
             "type": "Allele"
         },
-        "label": "NP_004439.2:p.Leu755_Thr759del",
         "molecule_context": "protein",
         "structural_type": "SO:0001604",
         "ref_allele_seq": "LRENT",
@@ -721,12 +714,12 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.g_DrfzkfKKB1p8LTPvYLn3pIDBgrPV0K",
+        "value_id": "ga4gh:VA.FqrZbBlsAwpXWOXiBq2glfhCvLqp4xLC",
         "value": {
             "location": {
                 "interval": {
-                    "end": 2278,
-                    "start": 2262,
+                    "end": 2453,
+                    "start": 2437,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
@@ -738,7 +731,6 @@ def coding_dna_deletion(erbb2_context):
             },
             "type": "Allele"
         },
-        "label": "NM_004448.4:c.2264_2278del",
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
         "ref_allele_seq": "TTGAGGGAAAACACAT",
@@ -753,12 +745,12 @@ def genomic_deletion(vhl_gene_context):
     params = {
         "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.s_HhEqbHB3MRwvmlgvAtBOPFFsSLUAyA",
+        "value_id": "ga4gh:VA.uagNswLQY5rgN2c30_J3-45UMpIySM4C",
         "value": {
             "location": {
                 "interval": {
-                    "end": 440,
-                    "start": 421,
+                    "end": 510,
+                    "start": 491,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
@@ -770,7 +762,6 @@ def genomic_deletion(vhl_gene_context):
             },
             "type": "Allele"
         },
-        "label": "NM_000551.4:c.422_440del",
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
         "ref_allele_seq": "ATGTTGACGGACAGCCTAT",
@@ -802,7 +793,6 @@ def amino_acid_insertion(egfr_context):
             },
             "type": "Allele"
         },
-        "label": "NP_005219.2:p.Asp770_Asn771insGlyLeu",
         "molecule_context": "protein",
         "structural_type": "SO:0001605",
         "gene_context": egfr_context
@@ -816,27 +806,25 @@ def coding_dna_insertion(limk2_gene_context):
     params = {
         "id": 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.k1n2iF9CBTALeZFcXP8bIFMUXowcxr7T",
+        "value_id": "ga4gh:VA.195Sg1AkyM4uQOhxLhBhANe2BUbnbEcR",
         "value": {
             "location": {
                 "interval": {
-                    "end": 132,
-                    "start": 130,
+                    "end": 2160,
+                    "start": 2160,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.7_mlQyDN-uWH0RlxTQFvFEv6ykd2D-xF",
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "AAA",
+                "sequence": "A",
                 "type": "SequenceState"
             },
             "type": "Allele"
         },
-        "label": "ENST00000331728.9:c.*132_*133insA",
         "molecule_context": "transcript",
         "structural_type": "SO:0000667",
-        "ref_allele_seq": "AA",
         "gene_context": limk2_gene_context
     }
     return VariationDescriptor(**params)
@@ -848,12 +836,12 @@ def genomic_insertion(erbb2_context):
     params = {
         "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.lXgvYx4IjSu128OQhDFCzsGNQXT5uw3r",
+        "value_id": "ga4gh:VA.nhzmkOIlB-5Om8-duGq5qIvtzghoHv-_",
         "value": {
             "location": {
                 "interval": {
-                    "end": 2327,
-                    "start": 2313,
+                    "end": 2502,
+                    "start": 2488,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
@@ -865,7 +853,6 @@ def genomic_insertion(erbb2_context):
             },
             "type": "Allele"
         },
-        "label": "NM_004448.4:c.2314_2325dup",
         "molecule_context": "genomic",
         "structural_type": "SO:0000667",
         "ref_allele_seq": "GATCCTGAAAGAGA",
@@ -880,12 +867,12 @@ def genomic_substitution(egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.bPV53BWD4orAzzvkclXL0EM_yjYWcD6f",
+        "value_id": "ga4gh:VA.c8ePmPEstWMCAJmtg3FuPb10XDr1G_8E",
         "value": {
             "location": {
                 "interval": {
-                    "end": 2369,
-                    "start": 2368,
+                    "end": 2630,
+                    "start": 2629,
                     "type": "SimpleInterval"
                 },
                 "sequence_id": "ga4gh:SQ.d_QsP29RWJi6bac7GOC9cJ9AO7s_HUMN",
@@ -897,7 +884,6 @@ def genomic_substitution(egfr_context):
             },
             "type": "Allele"
         },
-        "label": "NM_005228.5:c.2369C>T",
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "C",
@@ -929,7 +915,6 @@ def genomic_sub_grch38():
             },
             "type": "Allele"
         },
-        "label": "NC_000007.14:g.55181378C>T",
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "C"
@@ -960,7 +945,6 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
             },
             "type": "Allele"
         },
-        "label": "NC_000007.14:g.55181378C>T",
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
         "ref_allele_seq": "C",
@@ -973,7 +957,6 @@ def assertion_checks(normalize_response, test_variation):
     """Check that normalize_response and test_variation are equal."""
     assert normalize_response.id == test_variation.id
     assert normalize_response.type == test_variation.type
-    # assert normalize_response.label == test_variation.label
     assert normalize_response.value == test_variation.value
     assert normalize_response.molecule_context == \
            test_variation.molecule_context
@@ -1077,44 +1060,24 @@ def test_coding_dna_and_genomic_substitution(
     assertion_checks(resp, braf_v600e_nucleotide)
 
     # TODO: Issue 99
-    # resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
-    # assert resp.id == 'normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29'  # noqa: E501
-    # assert resp.label == ensembl_label
-    # assert resp.ref_allele_seq == 'A'
-    # assert resp.molecule_context == 'genomic'
-    # resp.id = refseq_id
-    # resp.label = refseq_label
-    # resp.ref_allele_seq = 'T'
-    # resp.molecule_context = 'transcript'
-    # assertion_checks(resp, braf_v600e_nucleotide)
+    resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
+    assert resp.id == 'normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29'  # noqa: E501
+    resp.id = refseq_id
+    assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = test_normalize.normalize('BRAF g.140453136A>T')
     assert resp.id == 'normalize.variation:BRAF%20g.140453136A%3ET'
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide)
 
-    # TODO: Check if fusions to see which gene?
     # More than 1 gene (EGFR and EGFR-AS1)
     resp = test_normalize.normalize('NC_000007.13:g.55249071C>T')
     assertion_checks(resp, genomic_sub_grch38)
-    # IF allowed to choose from fusions
-    # assertions_checks(resp, genomic_substitution)
 
     resp = test_normalize.normalize('EGFR g.55249071C>T')
     assert resp.id == 'normalize.variation:EGFR%20g.55249071C%3ET'
     resp.id = 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET'
     assertion_checks(resp, genomic_substitution)
-
-
-def assert_coding_dna_genomic_silent_mutation(resp, gene_context, start, stop):
-    """Check for coding dna or genomic silent mutation."""
-    assert resp
-    assert resp.value_id.startswith('ga4gh:VA.')
-    assert resp.value['location']['interval']['start'] == start
-    assert resp.value['location']['interval']['end'] == stop
-    assert resp.value['location']['sequence_id'].startswith('ga4gh:SQ.')
-    assert resp.gene_context.dict(exclude_none=True) == gene_context
-    assert resp.structural_type == 'SO:0002073'
 
 
 def test_coding_dna_silent_mutation(test_normalize,
@@ -1232,8 +1195,6 @@ def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
     assert resp.id == \
            'normalize.variation:ERBB2%20c.2263_2277delTTGAGGGAAAACACA'
     resp.id = 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA'
-    # assert resp.ref_allele_seq is None  # seqrepo can't find enst transcript
-    # resp.ref_allele_seq = 'GTGGAGCCGCTGACA'
     assertion_checks(resp, coding_dna_deletion)
 
 
