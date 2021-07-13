@@ -24,7 +24,8 @@ class ValidationResult(BaseModel):
     concise_description: str
     errors: List[str]
     gene_tokens: Optional[List[GeneMatchToken]]
-    mane_transcript: Optional[str]
+    is_mane_transcript: Optional[StrictBool]
+    identifier: Optional[str]
 
 
 class ValidationSummary(BaseModel):

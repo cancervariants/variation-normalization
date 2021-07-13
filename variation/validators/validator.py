@@ -31,7 +31,7 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA) -> None:
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -45,8 +45,8 @@ class Validator(ABC):
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self._gene_matcher = gene_symbol
-        self.dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        self.tlr = Translator(data_proxy=self.dp)
+        self.dp = dp
+        self.tlr = tlr
         self.hgvs_parser = hgvs.parser.Parser()
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
@@ -205,8 +205,8 @@ class Validator(ABC):
     @staticmethod
     def get_validation_result(classification, is_valid, confidence_score,
                               allele, human_description, concise_description,
-                              errors, gene_tokens,
-                              mane_transcript=None) -> ValidationResult:
+                              errors, gene_tokens, identifier=None,
+                              is_mane_transcript=False) -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
@@ -218,8 +218,9 @@ class Validator(ABC):
         :param str concise_description: HGVS expression for variation
         :param list errors: A list of errors for the classification
         :param list gene_tokens: List of GeneMatchTokens
-        :param str mane_transcript: HGVS expression for MANE transcript found
-            from ClinGen Allele Registry API
+        :param str identifier: Identifier for allele
+        :param bool is_mane_transcript: `True` if result is MANE transcript.
+            `False` otherwise.
         :return: A validation result
         """
         return ValidationResult(
@@ -231,7 +232,8 @@ class Validator(ABC):
             concise_description=concise_description,
             errors=errors,
             gene_tokens=gene_tokens,
-            mane_transcript=mane_transcript
+            is_mane_transcript=is_mane_transcript,
+            identifier=identifier
         )
 
     def get_protein_transcripts(self, gene_tokens, errors)\
@@ -396,7 +398,8 @@ class Validator(ABC):
 
     def add_validation_result(self, allele, valid_alleles, results,
                               classification, s, t, gene_tokens, errors,
-                              mane_transcript=None) -> bool:
+                              identifier=None,
+                              is_mane_transcript=False) -> bool:
         """Add validation result to list of results.
 
         :param dict allele: A VRS Allele object
@@ -407,16 +410,20 @@ class Validator(ABC):
         :param string t: Transcript
         :param list gene_tokens: List of GeneMatchTokens
         :param list errors: A list of errors for the classification
-        :param str mane_transcript: The mane transcript found
+        :param str identifier: Identifier for allele
+        :param bool is_mane_transcript: `True` if result is MANE transcript.
+            `False` otherwise.
         """
         if not errors:
-            if mane_transcript or (allele and allele not in valid_alleles):
+            if is_mane_transcript or (allele and allele not in valid_alleles):
                 results.append(
                     self.get_validation_result(
                         classification, True, 1, allele,
                         self.human_description(t, s),
                         self.concise_description(t, s), [],
-                        gene_tokens, mane_transcript
+                        gene_tokens,
+                        identifier=identifier if identifier else t,
+                        is_mane_transcript=is_mane_transcript
                     )
                 )
                 valid_alleles.append(allele)
@@ -427,7 +434,9 @@ class Validator(ABC):
                     classification, False, 1, allele,
                     self.human_description(t, s),
                     self.concise_description(t, s), errors,
-                    gene_tokens, mane_transcript
+                    gene_tokens,
+                    identifier=identifier if identifier else t,
+                    is_mane_transcript=is_mane_transcript
                 )
             )
             return False
@@ -506,12 +515,6 @@ class Validator(ABC):
             errors.append(f"Unable to find allele for accession, {ac}, "
                           f"and position ({start}, {end})")
             return None
-
-        if coordinate == 'c':
-            allele.location.interval.start._value = \
-                allele.location.interval.start._value - cds_start
-            allele.location.interval.end._value = \
-                allele.location.interval.end._value - cds_start
 
         seq_id = self.dp.translate_sequence_identifier(
             allele.location.sequence_id._value, "ga4gh")[0]
@@ -604,7 +607,7 @@ class Validator(ABC):
             highest_count = 0
             mane_result = None
             mane_allele = None
-            mane_transcript = None
+            identifier = None
             if key not in mane_data_keys:
                 continue
             for mane_allele_id in mane_data[key].keys():
@@ -614,13 +617,13 @@ class Validator(ABC):
                     highest_count = data['count']
                     mane_result = data
                     mane_allele = data['allele']
-                    mane_transcript = data['label']
+                    identifier = data['accession']
 
             if mane_allele:
                 self.add_validation_result(
                     mane_allele, valid_alleles, results, classification,
                     mane_result['classification_token'],
                     mane_result['accession'], gene_tokens, [],
-                    mane_transcript=mane_transcript
+                    identifier=identifier, is_mane_transcript=True
                 )
                 return
