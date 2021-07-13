@@ -209,10 +209,13 @@ class MANETranscript:
             return None
         coding_start_site = cds_start_end[0]
 
+        g_pos = g['alt_pos_change_range'][0], g['alt_pos_change_range'][1]
+        g_pos_change = g_pos[0] - result[8], result[9] - g_pos[1]
+
         mane_tx_pos_range = result[6], result[7]
         mane_c_pos_change = (
-            mane_tx_pos_range[0] + g['pos_change'][0] - coding_start_site,
-            mane_tx_pos_range[1] - g['pos_change'][1] - coding_start_site
+            mane_tx_pos_range[0] + g_pos_change[0] - coding_start_site,
+            mane_tx_pos_range[1] - g_pos_change[1] - coding_start_site
         )
 
         if mane_c_pos_change[0] > mane_c_pos_change[1]:
