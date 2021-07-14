@@ -23,7 +23,8 @@ class DeletionBase(Validator):
         """
         if cds_start:
             start += cds_start
-            end += cds_start
+            if end is not None:
+                end += cds_start
 
         if start and not end:
             ref_sequence = self.seqrepo_access.sequence_at_position(
