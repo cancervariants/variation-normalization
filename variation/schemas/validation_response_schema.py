@@ -4,7 +4,7 @@ from pydantic.types import StrictBool
 from typing import List, Optional
 from enum import IntEnum
 from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import GeneMatchToken, Token
 
 
 class LookupType(IntEnum):
@@ -17,6 +17,7 @@ class ValidationResult(BaseModel):
     """Validation Results for a given variation."""
 
     classification: Classification
+    classification_token: Optional[Token]
     is_valid: StrictBool
     confidence_score: float
     allele: Optional[dict] = None
