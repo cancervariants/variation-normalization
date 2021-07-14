@@ -1,4 +1,5 @@
 """Module for Validation."""
+import copy
 from typing import List, Optional, Dict
 from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
@@ -178,7 +179,8 @@ class Validator(ABC):
         if len(errors) > 0:
             return [
                 self.get_validation_result(
-                    classification, False, 0, {}, '', '', errors, gene_tokens
+                    classification, None, False, 0, {}, '', '',
+                    errors, gene_tokens
                 )
             ]
 
@@ -203,13 +205,15 @@ class Validator(ABC):
         return results
 
     @staticmethod
-    def get_validation_result(classification, is_valid, confidence_score,
-                              allele, human_description, concise_description,
-                              errors, gene_tokens, identifier=None,
-                              is_mane_transcript=False) -> ValidationResult:
+    def get_validation_result(classification, classification_token, is_valid,
+                              confidence_score, allele, human_description,
+                              concise_description, errors, gene_tokens,
+                              identifier=None, is_mane_transcript=False)\
+            -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
+        :param Token classification_token: Classification token
         :param boolean is_valid: Whether or not the classification is valid
         :param int confidence_score: The classification confidence score
         :param dict allele: A VRS Allele object
@@ -225,6 +229,7 @@ class Validator(ABC):
         """
         return ValidationResult(
             classification=classification,
+            classification_token=classification_token,
             is_valid=is_valid,
             confidence_score=confidence_score,
             allele=allele,
@@ -418,7 +423,7 @@ class Validator(ABC):
             if is_mane_transcript or (allele and allele not in valid_alleles):
                 results.append(
                     self.get_validation_result(
-                        classification, True, 1, allele,
+                        classification, s, True, 1, allele,
                         self.human_description(t, s),
                         self.concise_description(t, s), [],
                         gene_tokens,
@@ -431,7 +436,7 @@ class Validator(ABC):
         else:
             results.append(
                 self.get_validation_result(
-                    classification, False, 1, allele,
+                    classification, s, False, 1, allele,
                     self.human_description(t, s),
                     self.concise_description(t, s), errors,
                     gene_tokens,
@@ -538,6 +543,7 @@ class Validator(ABC):
         if not mane:
             return
 
+        s_copy = copy.deepcopy(s)
         if coordinate == 'g':
             if not gene_tokens and mane['gene']:
                 gene_tokens.append(
@@ -545,14 +551,15 @@ class Validator(ABC):
                 )
 
             if mane['status'].lower() != 'grch38':
-                s.molecule_context = 'transcript'
-                s.reference_sequence = 'c'
-                coordinate = s.reference_sequence
+                s_copy.molecule_context = 'transcript'
+                s_copy.reference_sequence = 'c'
+                coordinate = s_copy.reference_sequence
 
-                if isinstance(s, token_schema.GenomicSubstitutionToken) and \
+                if isinstance(s_copy,
+                              token_schema.GenomicSubstitutionToken) and \
                         mane['strand'] == '-':
-                    ref_rev = s.ref_nucleotide[::-1]
-                    alt_rev = s.new_nucleotide[::-1]
+                    ref_rev = s_copy.ref_nucleotide[::-1]
+                    alt_rev = s_copy.new_nucleotide[::-1]
 
                     complements = {
                         'A': 'T',
@@ -561,13 +568,13 @@ class Validator(ABC):
                         'G': 'C'
                     }
 
-                    s.ref_nucleotide = ''
-                    s.new_nucleotide = ''
+                    s_copy.ref_nucleotide = ''
+                    s_copy.new_nucleotide = ''
                     for nt in ref_rev:
-                        s.ref_nucleotide += complements[nt]
+                        s_copy.ref_nucleotide += complements[nt]
                     for nt in alt_rev:
-                        s.new_nucleotide += complements[nt]
-                    alt = s.new_nucleotide
+                        s_copy.new_nucleotide += complements[nt]
+                    alt = s_copy.new_nucleotide
 
         mane_allele = self.to_vrs_allele(
             mane['refseq'], mane['pos'][0], mane['pos'][1],
@@ -585,7 +592,7 @@ class Validator(ABC):
             mane_data[key][allele_id]['count'] += 1
         else:
             mane_data[key][allele_id] = {
-                'classification_token': s,
+                'classification_token': s_copy,
                 'accession': mane['refseq'],
                 'count': 1,
                 'allele': mane_allele,

@@ -39,20 +39,9 @@ class Normalize:
                 warnings.append(warning)
                 valid_result = validations.valid_results[0]
 
-            valid_result_tokens = valid_result.classification.all_tokens
             allele = valid_result.allele
             allele_id = allele.pop('_id')
             identifier = valid_result.identifier
-            molecule_context = None
-            structural_type = None
-
-            for token in valid_result_tokens:
-                try:
-                    molecule_context = token.molecule_context
-                    structural_type = token.so_id
-                except AttributeError:
-                    continue
-
             ref_allele_seq = self.get_ref_allele_seq(
                 allele, identifier
             )
@@ -67,8 +56,8 @@ class Normalize:
                 id=f"normalize.variation:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
                 value=allele,
-                molecule_context=molecule_context,
-                structural_type=structural_type,
+                molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
+                structural_type=valid_result.classification_token.so_id,
                 ref_allele_seq=ref_allele_seq,
                 gene_context=gene_context
             )
