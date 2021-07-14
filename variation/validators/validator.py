@@ -507,8 +507,9 @@ class Validator(ABC):
 
         try:
             allele = normalize(allele, self.dp)
-        except KeyError:
-            errors.append(f"Unable to normalize allele: {allele.as_dict()}")
+        except (KeyError, AttributeError):
+            errors.append(f"vrs-python unable to normalize allele: "
+                          f"{allele.as_dict()}")
             return None
 
         if not allele:
