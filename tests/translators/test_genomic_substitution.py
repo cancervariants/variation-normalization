@@ -31,7 +31,7 @@ class TestGenomicSubstitutionTranslator(TranslatorBase, unittest.TestCase):
             seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
             MANETranscript(seqrepo_access, transcript_mappings,
                            MANETranscriptMappings(), uta),
-            dp, tlr
+            uta, dp, tlr
         )
 
     def translator_instance(self):
