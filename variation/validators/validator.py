@@ -471,24 +471,15 @@ class Validator(ABC):
             return None
 
         if coordinate == 'c':
-            if cds_start is None:
-                cds_start_end = self.uta.get_cds_start_end(ac)
-                if cds_start_end is None:
-                    errors.append(f"Unable to get CDS start for {ac}")
-                    return None
-                else:
-                    cds_start = cds_start_end[0]
-            try:
-                cds_start = int(cds_start)
-            except ValueError:
-                errors.append(f"CDS start {cds_start} is not a valid int")
-                return None
-            start += cds_start
-            end += cds_start
+            if cds_start:
+                start += cds_start
+                end += cds_start
 
         ival_start = start
         ival_end = end
 
+        # Right now, this follows HGVS conventions
+        # This will change once we support other representations
         if alt_type == 'insertion':
             state = alt
             ival_end = ival_start
