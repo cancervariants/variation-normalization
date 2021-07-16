@@ -1,4 +1,4 @@
-"""Module for retrieving MANE transcript."""
+"""Module for retrieving MANE Transcript from variation on p/c/g coordinate."""
 from typing import Optional, Tuple, Dict
 import hgvs.parser
 import logging
@@ -18,6 +18,7 @@ class MANETranscript:
                  mane_transcript_mappings, uta) -> None:
         """Initialize the MANETranscript class.
 
+        :param SeqRepoAccess seqrepo_access: Access to seqrepo queries
         :param TranscriptMappings transcript_mappings: Access to transcript
             accession mappings and conversions
         :param MANETranscriptMappings mane_transcript_mappings: Access to
@@ -33,6 +34,7 @@ class MANETranscript:
 
     def _get_reading_frame(self, pos) -> int:
         """Return reading frame number.
+        Only used on c. coordinate
 
         :param int pos: Position
         :return: Reading frame
@@ -109,6 +111,7 @@ class MANETranscript:
         else:
             temp_ac = ac
 
+        # c. coordinate does not contain cds start, so we need to add it
         cds_start_end = self.uta.get_cds_start_end(temp_ac)
         if not cds_start_end:
             logger.warning(f"Accession {temp_ac} not found in UTA")
@@ -414,6 +417,7 @@ class MANETranscript:
         :param int end_pos: End position change
         :param str start_annotation_layer: Starting annotation layer.
             Must be either `p`, `c`, or `g`.
+        :param str gene: Gene symbol
         :param str ref: Reference at position given during input
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise. Only for normalize endpoint will we
@@ -560,6 +564,7 @@ class MANETranscript:
         :param str ac: Transcript accession on g. coordinate
         :param int start_pos: genomic change start position
         :param int end_pos: genomic change end position
+        :param str gene: Gene symbol
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
         if not self.uta.validate_genomic_ac(ac):
