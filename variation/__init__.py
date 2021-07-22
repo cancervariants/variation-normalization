@@ -65,4 +65,7 @@ REFSEQ_MANE_PATH = f"{APP_ROOT}/data/MANE.GRCh38.v0.93.summary.txt"
 data_download(REFSEQ_MANE_PATH, 'ftp.ncbi.nlm.nih.gov',
               'refseq/MANE/MANE_human/release_0.93/',
               'MANE.GRCh38.v0.93.summary.txt.gz')
-UTA_DB_URL = 'postgresql://uta_admin@localhost:5433/uta/uta_20210129'
+if "UTA_DB_URL" in environ:
+    UTA_DB_URL = environ["UTA_DB_URL"]
+else:
+    UTA_DB_URL = 'postgresql://uta_admin@localhost:5433/uta/uta_20210129'
