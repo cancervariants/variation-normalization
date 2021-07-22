@@ -36,7 +36,7 @@ _The following commands will likely need modification appropriate for the instal
 
 3. To install locally, from the _variation/data_ directory:
 ```
-UTA_VERSION = uta_20210129.pgd.gz
+export UTA_VERSION=uta_20210129.pgd.gz
 curl -O http://dl.biocommons.org/uta/$UTA_VERSION
 gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5433
 ```
