@@ -47,6 +47,9 @@ class UTA:
         :param str db_url: PostgreSQL db url
         :return: PostgreSQL db url with password included
         """
+        if 'UTA_DB_URL' in environ:
+            return environ["UTA_DB_URL"]
+
         if not db_pwd and 'UTA_PASSWORD' not in environ:
             raise Exception('Environment variable UTA_PASSWORD '
                             'or `db_pwd` param must be set')
