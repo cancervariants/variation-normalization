@@ -39,7 +39,7 @@ def data_download(path, domain, dir, fn):
     :param str dir: The directory that the file is located in
     :param str fn: The file name to download
     """
-    if not Path(path).exists():
+    if 'VARIATION_NORM_EB_PROD' not in environ and not Path(path).exists():
         with FTP(domain) as ftp:
             ftp.login()
             ftp.cwd(dir)
