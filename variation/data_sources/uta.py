@@ -81,7 +81,7 @@ class UTA:
         )
 
     def get_cds_start_end(self, ac) \
-            -> Optional[psycopg2.extras.DictRow[int, int]]:
+            -> Optional[Dict[int, int]]:
         """Get coding start and end site
 
         :param str ac: Accession
