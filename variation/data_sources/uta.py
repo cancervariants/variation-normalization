@@ -9,6 +9,7 @@ from variation import UTA_DB_URL
 from pyliftover import LiftOver
 from os import environ
 import pandas as pd
+from urllib.parse import quote, unquote
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -38,6 +39,11 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    def _url_encode_password(self) -> None:
+        """Update DB URL to url encode password."""
+        original_pwd = self.db_url.split('//')[-1].split('@')[0].split(':')[-1]
+        self.db_url = self.db_url.replace(original_pwd, quote(original_pwd))
 
     @staticmethod
     def _update_db_url(db_pwd, db_url) -> Optional[str]:
@@ -76,7 +82,7 @@ class UTA:
             port=self.url.port,
             database=self.url.database,
             user=self.url.username,
-            password=self.url.password,
+            password=unquote(self.url.password),
             application_name='variation',
         )
 
