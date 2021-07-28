@@ -11,11 +11,7 @@ import shutil
 APP_ROOT = Path(__file__).resolve().parents[0]
 
 if 'VARIATION_NORM_EB_PROD' in environ:
-    # Elastic beanstalk
-    LOG_FN = '/tmp/sample-app.log'
     environ['GENE_NORM_EB_PROD'] = "true"
-else:
-    LOG_FN = f'{APP_ROOT}/variation/variation.log'
 
 logging.basicConfig(
     filename='variation.log',

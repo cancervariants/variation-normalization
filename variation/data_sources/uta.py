@@ -104,7 +104,7 @@ class UTA:
         """
         if 'VARIATION_NORM_EB_PROD' in environ:
             if 'UTA_DB_URL' not in environ:
-                return ast.literal_eval(self.get_secret())
+                return ast.literal_eval(self.get_secret())["UTA_DB_URL"]
             else:
                 return environ['UTA_DB_URL']
 
