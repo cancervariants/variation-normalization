@@ -10,6 +10,10 @@ from pyliftover import LiftOver
 from os import environ
 import pandas as pd
 from urllib.parse import quote, unquote
+import boto3
+import base64
+from botocore.exceptions import ClientError
+import ast
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -46,14 +50,64 @@ class UTA:
         original_pwd = self.db_url.split('//')[-1].split('@')[0].split(':')[-1]
         self.db_url = self.db_url.replace(original_pwd, quote(original_pwd))
 
-    @staticmethod
-    def _update_db_url(db_pwd, db_url) -> Optional[str]:
+    def get_secret(self):
+        """Get secrets for Variation instance."""
+        secret_name = environ["UTA_SECRET_NAME"]
+        region_name = "us-east-2"
+
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name='secretsmanager',
+            region_name=region_name
+        )
+
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId=secret_name
+            )
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'DecryptionFailureException':
+                # Secrets Manager can't decrypt the protected
+                # secret text using the provided KMS key.
+                raise e
+            elif e.response['Error']['Code'] == \
+                    'InternalServiceErrorException':
+                # An error occurred on the server side.
+                raise e
+            elif e.response['Error']['Code'] == 'InvalidParameterException':
+                # You provided an invalid value for a parameter.
+                raise e
+            elif e.response['Error']['Code'] == 'InvalidRequestException':
+                # You provided a parameter value that is not valid for the
+                # current state of the resource.
+                raise e
+            elif e.response['Error']['Code'] == 'ResourceNotFoundException':
+                # We can't find the resource that you asked for.
+                raise e
+        else:
+            # Decrypts secret using the associated KMS CMK.
+            if 'SecretString' in get_secret_value_response:
+                secret = get_secret_value_response['SecretString']
+                return secret
+            else:
+                decoded_binary_secret = base64.b64decode(
+                    get_secret_value_response['SecretBinary'])
+                return decoded_binary_secret
+
+    def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
 
         :param str db_pwd: uta_admin's user password
         :param str db_url: PostgreSQL db url
         :return: PostgreSQL db url with password included
         """
+        if 'VARIATION_NORM_EB_PROD' in environ:
+            if 'UTA_DB_URL' not in environ:
+                return ast.literal_eval(self.get_secret())
+            else:
+                return environ['UTA_DB_URL']
+
         if 'UTA_DB_URL' in environ:
             return environ["UTA_DB_URL"]
 
