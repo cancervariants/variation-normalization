@@ -32,6 +32,7 @@ class UTA:
         :param str db_pwd: UTA user uta_admin's password
         """
         self.db_url = self._update_db_url(db_pwd, db_url)
+        self._url_encode_password()
         self.url = ParseResult(urlparse.urlparse(self.db_url))
         self.schema = self.url.schema
         self.args = self._get_conn_args()
