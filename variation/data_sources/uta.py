@@ -103,10 +103,11 @@ class UTA:
         :param str db_url: PostgreSQL db url
         :return: PostgreSQL db url with password included
         """
-        if 'UTA_DB_URL' not in environ:
-            if 'VARIATION_NORM_EB_PROD' in environ:
-                return ast.literal_eval(self.get_secret())["UTA_DB_URL"]
-        else:
+        if 'VARIATION_NORM_EB_PROD' in environ and\
+                'UTA_SECRET_NAME' in environ:
+            return ast.literal_eval(self.get_secret())["UTA_DB_URL"]
+
+        if 'UTA_DB_URL' in environ:
             return environ['UTA_DB_URL']
 
         if not db_pwd and 'UTA_PASSWORD' not in environ:
