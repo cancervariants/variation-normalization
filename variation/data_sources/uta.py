@@ -52,7 +52,8 @@ class UTA:
 
     def get_secret(self):
         """Get secrets for Variation instance."""
-        secret_name = environ["UTA_SECRET_NAME"]
+        # secret_name = environ["UTA_SECRET_NAME"]
+        secret_name = "test"
         region_name = "us-east-2"
 
         # Create a Secrets Manager client
