@@ -10,10 +10,7 @@ from pyliftover import LiftOver
 from os import environ
 import pandas as pd
 from urllib.parse import quote, unquote
-import boto3
-import base64
-from botocore.exceptions import ClientError
-import ast
+
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -36,11 +33,23 @@ class UTA:
         :param str db_pwd: UTA user uta_admin's password
         """
         logger.info("UTA Class")
-        self.db_url = self._update_db_url(db_pwd, db_url)
-        self._url_encode_password()
-        self.url = ParseResult(urlparse.urlparse(self.db_url))
-        self.schema = self.url.schema
-        self.args = self._get_conn_args()
+        if 'VARIATION_NORM_EB_PROD' in environ:
+            self.schema = environ['UTA_SCHEMA']
+            self.args = dict(
+                host=environ['UTA_HOST'],
+                port=environ['UTA_PORT'],
+                database=environ['UTA_DATABASE'],
+                user=environ['UTA_USER'],
+                password=environ['UTA_PASSWORD'],
+                application_name='variation-prod'
+            )
+            logger.info(f"ARGS: {self.args}")
+        else:
+            self.db_url = self._update_db_url(db_pwd, db_url)
+            self._url_encode_password()
+            self.url = ParseResult(urlparse.urlparse(self.db_url))
+            self.schema = self.url.schema
+            self.args = self._get_conn_args()
         self.conn = psycopg2.connect(**self.args)
         self.conn.autocommit = True
         self.cursor = \
@@ -51,55 +60,6 @@ class UTA:
         original_pwd = self.db_url.split('//')[-1].split('@')[0].split(':')[-1]
         self.db_url = self.db_url.replace(original_pwd, quote(original_pwd))
 
-    def get_secret(self):
-        """Get secrets for Variation instance."""
-        secret_name = environ["UTA_SECRET_NAME"]
-        region_name = "us-east-2"
-
-        # Create a Secrets Manager client
-        session = boto3.session.Session()
-        client = session.client(
-            service_name='secretsmanager',
-            region_name=region_name
-        )
-
-        try:
-            logger.info("SECRET VALUE RESPONSE")
-            get_secret_value_response = client.get_secret_value(
-                SecretId=secret_name
-            )
-            logger.info(get_secret_value_response)
-        except ClientError as e:
-            logger.info(f"CLIENT ERROR: {e}")
-            if e.response['Error']['Code'] == 'DecryptionFailureException':
-                # Secrets Manager can't decrypt the protected
-                # secret text using the provided KMS key.
-                raise e
-            elif e.response['Error']['Code'] == \
-                    'InternalServiceErrorException':
-                # An error occurred on the server side.
-                raise e
-            elif e.response['Error']['Code'] == 'InvalidParameterException':
-                # You provided an invalid value for a parameter.
-                raise e
-            elif e.response['Error']['Code'] == 'InvalidRequestException':
-                # You provided a parameter value that is not valid for the
-                # current state of the resource.
-                raise e
-            elif e.response['Error']['Code'] == 'ResourceNotFoundException':
-                # We can't find the resource that you asked for.
-                raise e
-        else:
-            # Decrypts secret using the associated KMS CMK.
-            if 'SecretString' in get_secret_value_response:
-                secret = get_secret_value_response['SecretString']
-                logger.info(f"SECRET: {secret}")
-                return secret
-            else:
-                decoded_binary_secret = base64.b64decode(
-                    get_secret_value_response['SecretBinary'])
-                return decoded_binary_secret
-
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
 
@@ -107,10 +67,6 @@ class UTA:
         :param str db_url: PostgreSQL db url
         :return: PostgreSQL db url with password included
         """
-        if 'VARIATION_NORM_EB_PROD' in environ and\
-                'UTA_SECRET_NAME' in environ:
-            return ast.literal_eval(self.get_secret())["UTA_DB_URL"]
-
         if 'UTA_DB_URL' in environ:
             return environ['UTA_DB_URL']
 
