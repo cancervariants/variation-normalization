@@ -65,10 +65,13 @@ class UTA:
         )
 
         try:
+            logger.info("SECRET VALUE RESPONSE")
             get_secret_value_response = client.get_secret_value(
                 SecretId=secret_name
             )
+            logger.info(get_secret_value_response)
         except ClientError as e:
+            logger.info(f"CLIENT ERROR: {e}")
             if e.response['Error']['Code'] == 'DecryptionFailureException':
                 # Secrets Manager can't decrypt the protected
                 # secret text using the provided KMS key.
