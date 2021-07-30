@@ -35,6 +35,7 @@ class UTA:
         :param str db_url: UTA DB url
         :param str db_pwd: UTA user uta_admin's password
         """
+        logger.info("UTA Class")
         self.db_url = self._update_db_url(db_pwd, db_url)
         self._url_encode_password()
         self.url = ParseResult(urlparse.urlparse(self.db_url))
@@ -90,6 +91,7 @@ class UTA:
             # Decrypts secret using the associated KMS CMK.
             if 'SecretString' in get_secret_value_response:
                 secret = get_secret_value_response['SecretString']
+                logger.info(f"SECRET: {secret}")
                 return secret
             else:
                 decoded_binary_secret = base64.b64decode(
