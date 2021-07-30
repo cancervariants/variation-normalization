@@ -23,6 +23,10 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
 
+if 'VARIATION_NORM_EB_PROD' in environ:
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    logger.addHandler(ch)
 
 # Default DynamoDB url is http://localhost:8000
 # To use a different connection, set `GENE_NORM_DB_URL`
