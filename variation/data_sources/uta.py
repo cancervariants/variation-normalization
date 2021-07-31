@@ -35,6 +35,7 @@ class UTA:
         logger.info("UTA Class")
         if 'VARIATION_NORM_EB_PROD' in environ:
             self.schema = environ['UTA_SCHEMA']
+            logger.info(self.schema)
             self.args = dict(
                 host=environ['UTA_HOST'],
                 port=environ['UTA_PORT'],
