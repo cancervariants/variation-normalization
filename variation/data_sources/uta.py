@@ -10,6 +10,7 @@ from pyliftover import LiftOver
 from os import environ
 import pandas as pd
 from urllib.parse import quote, unquote
+import boto3
 
 
 logger = logging.getLogger('variation')
@@ -33,24 +34,9 @@ class UTA:
         :param str db_pwd: UTA user uta_admin's password
         """
         logger.info("UTA Class")
-        if 'VARIATION_NORM_EB_PROD' in environ:
-            self.schema = environ['UTA_SCHEMA']
-            logger.info(self.schema)
-            self.args = dict(
-                host=environ['UTA_HOST'],
-                port=environ['UTA_PORT'],
-                database=environ['UTA_DATABASE'],
-                user=environ['UTA_USER'],
-                password=environ['UTA_PASSWORD'],
-                application_name='variation-prod'
-            )
-            logger.info(f"ARGS: {self.args}")
-        else:
-            self.db_url = self._update_db_url(db_pwd, db_url)
-            self._url_encode_password()
-            self.url = ParseResult(urlparse.urlparse(self.db_url))
-            self.schema = self.url.schema
-            self.args = self._get_conn_args()
+        self.args = self._get_conn_args(('VARIATION_NORM_EB_PROD' in environ),
+                                        db_pwd, db_url)
+        logger.info(f"ARGS: {self.args}")
         self.conn = psycopg2.connect(**self.args)
         self.conn.autocommit = True
         self.cursor = \
@@ -87,19 +73,40 @@ class UTA:
                     db_pwd = environ['UTA_PASSWORD']
             return f"{db_url[0]}:{db_pwd}@{db_url[1]}"
 
-    def _get_conn_args(self) -> Dict:
+    def _get_conn_args(self, is_prod, db_pwd, db_url) -> Dict:
         """Return connection arguments.
 
         :return: A dictionary containing db credentials
         """
-        return dict(
-            host=self.url.hostname,
-            port=self.url.port,
-            database=self.url.database,
-            user=self.url.username,
-            password=unquote(self.url.password),
-            application_name='variation',
-        )
+        if not is_prod:
+            self.db_url = self._update_db_url(db_pwd, db_url)
+            self._url_encode_password()
+            self.url = ParseResult(urlparse.urlparse(self.db_url))
+            self.schema = self.url.schema
+            return dict(
+                host=self.url.hostname,
+                port=self.url.port,
+                database=self.url.database,
+                user=self.url.username,
+                password=unquote(self.url.password),
+                application_name='variation',
+            )
+        else:
+            self.schema = environ['UTA_SCHEMA']
+            session = boto3.Session(profile_name='RDSCreds')
+            client = session.client('rds')
+            token = client.generate_db_auth_token(
+                DBHostname=environ['UTA_HOST'], Port=environ['UTA_PORT'],
+                DBUsername=environ['UTA_USER'], Region='us-east-2'
+            )
+            return dict(
+                host=environ['UTA_HOST'],
+                port=environ['UTA_PORT'],
+                database=environ['UTA_DATABASE'],
+                user=environ['UTA_USER'],
+                password=token,
+                application_name='variation-prod'
+            )
 
     def get_cds_start_end(self, ac) \
             -> Optional[Dict[int, int]]:
