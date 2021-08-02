@@ -33,19 +33,12 @@ class UTA:
         :param str db_url: UTA DB url
         :param str db_pwd: UTA user uta_admin's password
         """
-        logger.info("UTA Class")
         self.args = self._get_conn_args(('VARIATION_NORM_EB_PROD' in environ),
                                         db_pwd, db_url)
-        logger.info(f"ARGS: {self.args}")
         self.conn = psycopg2.connect(**self.args)
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-    def _url_encode_password(self) -> None:
-        """Update DB URL to url encode password."""
-        original_pwd = self.db_url.split('//')[-1].split('@')[0].split(':')[-1]
-        self.db_url = self.db_url.replace(original_pwd, quote(original_pwd))
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
@@ -79,18 +72,12 @@ class UTA:
         :return: A dictionary containing db credentials
         """
         if not is_prod:
-            self.db_url = self._update_db_url(db_pwd, db_url)
-            self._url_encode_password()
-            self.url = ParseResult(urlparse.urlparse(self.db_url))
-            self.schema = self.url.schema
-            return dict(
-                host=self.url.hostname,
-                port=self.url.port,
-                database=self.url.database,
-                user=self.url.username,
-                password=unquote(self.url.password),
-                application_name='variation',
-            )
+            db_url = self._update_db_url(db_pwd, db_url)
+            db_url = self._url_encode_password(db_url)
+            url = ParseResult(urlparse.urlparse(db_url))
+            self.schema = url.schema
+            return self._get_args(url.hostname, url.port, url.database,
+                                  url.username, unquote(url.password))
         else:
             self.schema = environ['UTA_SCHEMA']
             region = 'us-east-2'
@@ -99,14 +86,37 @@ class UTA:
                 DBHostname=environ['UTA_HOST'], Port=environ['UTA_PORT'],
                 DBUsername=environ['UTA_USER'], Region=region
             )
-            return dict(
-                host=environ['UTA_HOST'],
-                port=environ['UTA_PORT'],
-                database=environ['UTA_DATABASE'],
-                user=environ['UTA_USER'],
-                password=token,
-                application_name='variation-prod'
-            )
+            return self._get_args(environ['UTA_HOST'],
+                                  int(environ['UTA_PORT']),
+                                  environ['UTA_DATABASE'], environ['UTA_USER'],
+                                  token)
+
+    def _url_encode_password(self, db_url) -> str:
+        """Update DB URL to url encode password.
+
+        :param str db_url: URL for PostgreSQL Database
+        :return: DB URL encoded
+        """
+        original_pwd = db_url.split('//')[-1].split('@')[0].split(':')[-1]
+        return db_url.replace(original_pwd, quote(original_pwd))
+
+    def _get_args(self, host, port, database, user, password) -> Dict:
+        """Return db credentials.
+
+        :param str host: DB Host name
+        :param int port: DB port number
+        :param str database: DB name
+        :param str user: DB user name
+        :param str password: DB password for user
+        """
+        return dict(
+            host=host,
+            port=port,
+            database=database,
+            user=user,
+            password=password,
+            application_name='variation'
+        )
 
     def get_cds_start_end(self, ac) \
             -> Optional[Dict[int, int]]:
