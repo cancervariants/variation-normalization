@@ -105,9 +105,12 @@ class Tokenize:
 
         # If reference sequence: Check description
         if list(map(lambda t: t.token_type, tokens)) == ['ReferenceSequence']:
-            self._add_tokens(tokens,
-                             [search_string.split(':')[1]],
-                             search_string, warnings)
+            try:
+                self._add_tokens(tokens,
+                                 [search_string.split(':')[1]],
+                                 search_string, warnings)
+            except IndexError:
+                return tokens
         return tokens
 
     def _add_tokens(self, tokens, terms, search_string, warnings):
