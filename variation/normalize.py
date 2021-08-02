@@ -88,7 +88,7 @@ class Normalize:
                 id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
                 value=Gene(id=record.concept_id),
-                xrefs=record.other_identifiers,
+                xrefs=[],  # TODO: update once gene-normalizer is updated
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)
             )
@@ -109,7 +109,8 @@ class Normalize:
         if record.symbol_status:
             self.add_extension(extensions, 'symbol_status',
                                record.symbol_status)
-        self.add_extension(extensions, 'associated_with', record.xrefs)
+        # TODO: update once gene-normalizer db is updated
+        # self.add_extension(extensions, 'associated_with', record.xrefs)
         self.add_extension(extensions, 'chromosome_location',
                            record_location.dict(by_alias=True))
         return extensions
