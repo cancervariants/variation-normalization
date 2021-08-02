@@ -93,11 +93,11 @@ class UTA:
             )
         else:
             self.schema = environ['UTA_SCHEMA']
-            session = boto3.Session(profile_name='RDSCreds')
-            client = session.client('rds')
+            region = 'us-east-2'
+            client = boto3.client('rds', region_name=region)
             token = client.generate_db_auth_token(
                 DBHostname=environ['UTA_HOST'], Port=environ['UTA_PORT'],
-                DBUsername=environ['UTA_USER'], Region='us-east-2'
+                DBUsername=environ['UTA_USER'], Region=region
             )
             return dict(
                 host=environ['UTA_HOST'],
