@@ -88,7 +88,7 @@ class Normalize:
                 id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
                 value=Gene(id=record.concept_id),
-                xrefs=[],  # TODO: update once gene-normalizer is updated
+                xrefs=record.xrefs if record.xrefs else [],
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)
             )
@@ -104,13 +104,10 @@ class Normalize:
         :return: List of extensions providing additional information
         """
         extensions = list()
-        if record.strand:
-            self.add_extension(extensions, 'strand', record.strand)
-        if record.symbol_status:
-            self.add_extension(extensions, 'symbol_status',
-                               record.symbol_status)
-        # TODO: update once gene-normalizer db is updated
-        # self.add_extension(extensions, 'associated_with', record.xrefs)
+        self.add_extension(extensions, 'strand', record.strand)
+        self.add_extension(extensions, 'symbol_status', record.symbol_status)
+        self.add_extension(extensions, 'associated_with',
+                           record.associated_with)
         self.add_extension(extensions, 'chromosome_location',
                            record_location.dict(by_alias=True))
         return extensions
@@ -120,13 +117,14 @@ class Normalize:
 
         :param list extensions: List of ga4gh extensions
         :param str name: name of extension
-        :param str value: value of extension
+        :param any value: value of extension
         """
-        extensions.append({
-            'type': 'Extension',
-            'name': name,
-            'value': value
-        })
+        if value:
+            extensions.append({
+                'type': 'Extension',
+                'name': name,
+                'value': value
+            })
 
     def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.
