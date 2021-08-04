@@ -1,5 +1,4 @@
 """The module for DelIns Validation."""
-from abc import abstractmethod
 from variation.validators.validator import Validator
 import logging
 
@@ -9,19 +8,6 @@ logger.setLevel(logging.DEBUG)
 
 class DelInsBase(Validator):
     """The DelIns Validator Base class."""
-
-    @abstractmethod
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
-        """Return a HGVS expression.
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        raise NotImplementedError
 
     def concise_description(self, transcript, token) -> str:
         """Return a HGVS description of the identified variation.

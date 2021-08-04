@@ -16,7 +16,6 @@ dist/
 
 .mypy_cache/
 
-
 variation/data/seqrepo/
 variation/data/uta_20180821
 variation/data/notebooks

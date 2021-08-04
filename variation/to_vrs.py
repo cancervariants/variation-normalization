@@ -6,39 +6,52 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
+    UTA, MANETranscriptMappings
+from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.tokenizers.caches import AminoAcidCache
 from urllib.parse import unquote
 
 
 class ToVRS:
     """The class for translating variation strings to VRS representations."""
 
-    def __init__(self):
+    def __init__(self, tokenizer: Tokenize, classifier: Classify,
+                 seqrepo_access: SeqRepoAccess,
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol, amino_acid_cache: AminoAcidCache,
+                 uta: UTA, mane_transcript_mappings: MANETranscriptMappings,
+                 mane_transcript: MANETranscript, validator: Validate,
+                 translator: Translate):
         """Initialize the ToVRS class."""
-        self.tokenizer = Tokenize()
-        self.classifier = Classify()
-        self.seq_repo_access = SeqRepoAccess()
-        self.transcript_mappings = TranscriptMappings()
-        self.gene_symbol = GeneSymbol(GeneSymbolCache())
-        self.amino_acid_cache = AminoAcidCache()
-        self.validator = Validate(self.seq_repo_access,
-                                  self.transcript_mappings, self.gene_symbol,
-                                  self.amino_acid_cache)
-        self.translator = Translate()
+        self.tokenizer = tokenizer
+        self.classifier = classifier
+        self.seq_repo_access = seqrepo_access
+        self.transcript_mappings = transcript_mappings
+        self.gene_symbol = gene_symbol
+        self.amino_acid_cache = amino_acid_cache
+        self.uta = uta
+        self.mane_transcript_mappings = mane_transcript_mappings
+        self.mane_transcript = mane_transcript
+        self.validator = validator
+        self.translator = translator
 
-    def get_validations(self, q)\
+    def get_validations(self, q, normalize_endpoint=False)\
             -> Tuple[ValidationSummary, Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         classifications = self.classifier.perform(tokens)
-        validations = self.validator.perform(classifications, warnings)
+        validations = self.validator.perform(
+            classifications, normalize_endpoint, warnings
+        )
         if not warnings:
             warnings = validations.warnings
         return validations, warnings

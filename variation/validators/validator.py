@@ -1,21 +1,25 @@
 """Module for Validation."""
-from typing import List, Tuple, Optional
+import copy
+from typing import List, Optional, Dict
 from abc import ABC, abstractmethod
-from variation import SEQREPO_REST_SERVICE_URL
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.token_response_schema import GeneMatchToken
+import variation.schemas.token_response_schema as token_schema
 from variation.schemas.validation_response_schema import ValidationResult, \
     LookupType
 from variation.tokenizers import GeneSymbol
 from variation.data_sources import SeqRepoAccess, TranscriptMappings
-from ga4gh.vrs.dataproxy import SeqRepoRESTDataProxy
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
-import requests
-from requests.exceptions import HTTPError
 import logging
+from ga4gh.vrs import models, normalize
+from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
+from variation.data_sources import UTA
+from bioutils.accessions import coerce_namespace
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -27,22 +31,27 @@ class Validator(ABC):
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
-                 seqrepo_rest_service_url=SEQREPO_REST_SERVICE_URL) -> None:
+                 mane_transcript: MANETranscript,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
         :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings to/from gene symbols
-        :param GeneSymbol gene_symbol: GeneSymbol tokenizer
-        :param str seqrepo_rest_service_url: URL to seqrepo rest service
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self._gene_matcher = gene_symbol
-        self.dp = SeqRepoRESTDataProxy(seqrepo_rest_service_url)
-        self.tlr = Translator(data_proxy=self.dp)
+        self.dp = dp
+        self.tlr = tlr
         self.hgvs_parser = hgvs.parser.Parser()
-        self.genomic_base = GenomicBase(self.dp)
+        self.uta = uta
+        self.genomic_base = GenomicBase(self.dp, self.uta)
+        self.mane_transcript = mane_transcript
 
     @abstractmethod
     def is_token_instance(self, t) -> bool:
@@ -92,22 +101,6 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression for a classification token.
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript accession
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is a HGVS expression
-            token
-        :return: Tuple[hgvs expression, `True` if MANE transcript should use
-            Ensembl accession. `False` if MANE transcript should use RefSeq
-            accession
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
@@ -134,8 +127,9 @@ class Validator(ABC):
 
     @abstractmethod
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens) \
-            -> None:
+                                  classification, results, gene_tokens,
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -144,15 +138,22 @@ class Validator(ABC):
             tokens
         :param list results: Stores validation result objects
         :param list gene_tokens: List of GeneMatchTokens for a classification
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
+        :param dict mane_data_found: MANE Transcript information found
+        :param bool is_identifier: `True` if identifier is given for exact
+            location. `False` otherwise.
         """
         raise NotImplementedError
 
-    def validate(self, classification: Classification) \
+    def validate(self, classification: Classification, normalize_endpoint) \
             -> List[ValidationResult]:
         """Return validation result for a given classification.
 
         :param Classification classification: A classification for a list of
             tokens
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
         :return: Validation Result's containing valid and invalid results
         """
         results = list()
@@ -176,21 +177,43 @@ class Validator(ABC):
             transcripts = list()
 
         if len(errors) > 0:
-            return [self.get_validation_result(
-                classification, False, 0, None,
-                '', '', errors, gene_tokens)]
+            return [
+                self.get_validation_result(
+                    classification, None, False, 0, {}, '', '',
+                    errors, gene_tokens
+                )
+            ]
 
-        self.get_valid_invalid_results(classification_tokens, transcripts,
-                                       classification, results, gene_tokens)
+        mane_data_found = {
+            'mane_select': dict(),
+            'mane_plus_clinical': dict(),
+            'longest_compatible_remaining': dict(),
+            'grch38': dict()
+        }
+
+        # If is_identifier, should only run once
+        if 'HGVS' in classification.matching_tokens:
+            is_identifier = True
+        else:
+            is_identifier = False
+
+        self.get_valid_invalid_results(
+            classification_tokens, transcripts, classification,
+            results, gene_tokens, normalize_endpoint, mane_data_found,
+            is_identifier
+        )
         return results
 
-    def get_validation_result(self, classification, is_valid, confidence_score,
-                              allele, human_description, concise_description,
-                              errors, gene_tokens,
-                              mane_transcript=None) -> ValidationResult:
+    @staticmethod
+    def get_validation_result(classification, classification_token, is_valid,
+                              confidence_score, allele, human_description,
+                              concise_description, errors, gene_tokens,
+                              identifier=None, is_mane_transcript=False)\
+            -> ValidationResult:
         """Return a validation result object.
 
         :param Classification classification: The classification for tokens
+        :param Token classification_token: Classification token
         :param boolean is_valid: Whether or not the classification is valid
         :param int confidence_score: The classification confidence score
         :param dict allele: A VRS Allele object
@@ -199,12 +222,14 @@ class Validator(ABC):
         :param str concise_description: HGVS expression for variation
         :param list errors: A list of errors for the classification
         :param list gene_tokens: List of GeneMatchTokens
-        :param str mane_transcript: HGVS expression for MANE transcript found
-            from ClinGen Allele Registry API
+        :param str identifier: Identifier for allele
+        :param bool is_mane_transcript: `True` if result is MANE transcript.
+            `False` otherwise.
         :return: A validation result
         """
         return ValidationResult(
             classification=classification,
+            classification_token=classification_token,
             is_valid=is_valid,
             confidence_score=confidence_score,
             allele=allele,
@@ -212,7 +237,8 @@ class Validator(ABC):
             concise_description=concise_description,
             errors=errors,
             gene_tokens=gene_tokens,
-            mane_transcript=mane_transcript
+            is_mane_transcript=is_mane_transcript,
+            identifier=identifier
         )
 
     def get_protein_transcripts(self, gene_tokens, errors)\
@@ -359,66 +385,26 @@ class Validator(ABC):
         ]
         return self._get_gene_tokens(classification, mappings)
 
-    def get_allele_with_context(self, classification, t, s, errors)\
-            -> Tuple[dict, str, str, bool]:
-        """Get VRS allele object, transcript accession used, HGVS expression
-        for transcript, and whether or not to use Ensembl MANE transcript.
+    def get_accession(self, t, classification) -> str:
+        """Return accession for a classification
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript accession retrieved from transcript mapping
-        :param Token s: The classification token
-        :param list errors: List of errors
-        :return: Tuple[VRS allele, transcript accession, hgvs_expression,
-            `True` if MANE should use Ensembl accession.
-            `False` if MANE should use RefSeq accession]
+        :param str t: Accession
+        :param Token classification: Classification for token
+        :return: Accession
         """
         if 'HGVS' in classification.matching_tokens or \
                 'ReferenceSequence' in classification.matching_tokens:
-            hgvs_expr = self.get_hgvs_expr(classification, t, s, True)
+            hgvs_token = [t for t in classification.all_tokens if
+                          isinstance(t, token_schema.Token) and t.token_type
+                          in ['HGVS', 'ReferenceSequence']][0]
+            hgvs_expr = hgvs_token.input_string
             t = hgvs_expr.split(':')[0]
-        else:
-            hgvs_expr = self.get_hgvs_expr(classification, t, s, False)
-        allele = self.get_allele_from_hgvs(hgvs_expr, errors)
-
-        gene_token = [t for t in classification.all_tokens
-                      if t.token_type == 'GeneSymbol']
-        if gene_token or hgvs_expr.startswith('EN'):
-            is_ensembl = True
-        else:
-            is_ensembl = False
-        return allele, t, hgvs_expr, is_ensembl
-
-    def get_allele_from_hgvs(self, hgvs_expr, errors) -> Optional[dict]:
-        """Return allele given a HGVS expression.
-
-        :param str hgvs_expr: The HGVS expression
-        :param list errors: List of errors
-        :return: VRS Allele object represented as a dictionary
-        """
-        allele = None
-        try:
-            allele = self.tlr.translate_from(hgvs_expr, 'hgvs')
-        except HTTPError:
-            errors.append(f"{hgvs_expr} is an invalid HGVS expression.")
-        except KeyError:
-            errors.append("GA4GH Data Proxy unable to translate sequence "
-                          f"identifier: {hgvs_expr}.")
-        except ValueError:
-            errors.append(f"Unable to parse {hgvs_expr} as hgvs variation")
-        except:  # noqa
-            errors.append("Unable to get VRS Allele.")
-        else:
-            allele = allele.as_dict()
-            allele_seq_id = allele['location']['sequence_id']
-            if allele_seq_id.startswith('ga4gh:GS.'):
-                allele['location']['sequence_id'] = \
-                    allele_seq_id.replace('ga4gh:GS.', 'ga4gh:SQ.')
-        return allele
+        return t
 
     def add_validation_result(self, allele, valid_alleles, results,
                               classification, s, t, gene_tokens, errors,
-                              mane_transcript=None) -> None:
+                              identifier=None,
+                              is_mane_transcript=False) -> bool:
         """Add validation result to list of results.
 
         :param dict allele: A VRS Allele object
@@ -429,176 +415,214 @@ class Validator(ABC):
         :param string t: Transcript
         :param list gene_tokens: List of GeneMatchTokens
         :param list errors: A list of errors for the classification
-        :param str mane_transcript: The mane transcript found
+        :param str identifier: Identifier for allele
+        :param bool is_mane_transcript: `True` if result is MANE transcript.
+            `False` otherwise.
         """
         if not errors:
-            if mane_transcript or (allele and allele not in valid_alleles):
+            if is_mane_transcript or (allele and allele not in valid_alleles):
                 results.append(
                     self.get_validation_result(
-                        classification, True, 1, allele,
+                        classification, s, True, 1, allele,
                         self.human_description(t, s),
                         self.concise_description(t, s), [],
-                        gene_tokens, mane_transcript
+                        gene_tokens,
+                        identifier=identifier if identifier else t,
+                        is_mane_transcript=is_mane_transcript
                     )
                 )
                 valid_alleles.append(allele)
+                return True
         else:
             results.append(
                 self.get_validation_result(
-                    classification, False, 1, allele,
+                    classification, s, False, 1, allele,
                     self.human_description(t, s),
                     self.concise_description(t, s), errors,
-                    gene_tokens, mane_transcript
+                    gene_tokens,
+                    identifier=identifier if identifier else t,
+                    is_mane_transcript=is_mane_transcript
                 )
             )
+            return False
 
-    def add_mane_transcript(self, classification, results, gene_tokens,
-                            mane_transcripts_dict) -> None:
-        """Add MANE transcript validation result objects to a list of results.
+    def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
+                      cds_start=None, alt=None) -> Optional[Dict]:
+        """Translate accession and position to VRS Allele Object.
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param list results: A list to store validation result objects
-        :param list gene_tokens: List of GeneMatchTokens
-        :param dict mane_transcripts_dict: Possible MANE select transcripts
-            with classification and transcript
+        :param str ac: Accession
+        :param int start: Start position change
+        :param int end: End position change
+        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
+        :param str alt_type: Type of alteration
+        :param list errors: List of errors
+        :param int cds_start: Coding start site
+        :param str alt: Alteration
+        :return: VRS Allele Object
         """
-        mane_transcripts = list()
-        found_mane_transcripts = list()
-        replace_old_keys = list()
-        for hgvs_expr in mane_transcripts_dict.keys():
-            self.add_valid_mane_transcripts(hgvs_expr, mane_transcripts_dict,
-                                            replace_old_keys, gene_tokens,
-                                            found_mane_transcripts,
-                                            mane_transcripts)
+        sequence_id = coerce_namespace(ac)
+        try:
+            start = int(start)
+            if end is None:
+                end = start
+            end = int(end)
+        except (ValueError, TypeError):
+            errors.append("Start/End must be valid ints")
+            return None
 
-        for tup in replace_old_keys:
-            mane_transcripts_dict[tup[1]] = mane_transcripts_dict[tup[0]]
-            del mane_transcripts_dict[tup[0]]
+        if coordinate == 'c':
+            if cds_start:
+                start += cds_start
+                end += cds_start
 
-        errors = list()
+        ival_start = start
+        ival_end = end
 
-        if len(mane_transcripts) == 0:
-            logger.warning("No MANE Select transcript found for "
-                           f"{mane_transcripts_dict.keys()}")
+        # Right now, this follows HGVS conventions
+        # This will change once we support other representations
+        if alt_type == 'insertion':
+            state = alt
+            ival_end = ival_start
+        elif alt_type in ['substitution', 'deletion', 'delins',
+                          'silent_mutation', 'nonsense']:
+            if alt_type == 'silent_mutation':
+                state = self.seqrepo_access.sequence_at_position(
+                    ac, ival_start
+                )
+            else:
+                state = alt or ''
+            ival_start -= 1
+        else:
+            errors.append(f"alt_type not supported: {alt_type}")
+            return None
+
+        interval = models.SimpleInterval(start=ival_start, end=ival_end)
+        location = models.Location(sequence_id=sequence_id, interval=interval)
+        sstate = models.SequenceState(sequence=state)
+        allele = models.Allele(location=location, state=sstate)
+
+        try:
+            allele = normalize(allele, self.dp)
+        except (KeyError, AttributeError):
+            errors.append(f"vrs-python unable to normalize allele: "
+                          f"{allele.as_dict()}")
+            return None
+
+        if not allele:
+            errors.append(f"Unable to find allele for accession, {ac}, "
+                          f"and position ({start}, {end})")
+            return None
+
+        seq_id = self.dp.translate_sequence_identifier(
+            allele.location.sequence_id._value, "ga4gh")[0]
+        allele.location.sequence_id = seq_id
+        allele._id = ga4gh_identify(allele)
+        return allele.as_dict()
+
+    def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
+                      gene_tokens, alt=None) -> None:
+        """Add mane transcript information to mane_data.
+
+        :param dict mane: MANE Transcript information
+        :param dict mane_data: MANE Transcript data found for given query
+        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
+        :param str alt_type: Type of alteration
+        :param Token s: Classification token
+        :param list gene_tokens: List of GeneMatchTokens for a classification
+        :param str alt: Alteration
+        """
+        if not mane:
             return
 
-        for el in mane_transcripts:
-            (hgvs_expr, ensembl_nuc, refseq_nuc,
-             ensembl_protein, refseq_protein) = el
+        s_copy = copy.deepcopy(s)
+        if coordinate == 'g':
+            if not gene_tokens and mane['gene']:
+                gene_tokens.append(
+                    self._gene_matcher.match(mane['gene'])
+                )
 
-            keys = mane_transcripts_dict[hgvs_expr].keys()
+            if mane['status'].lower() != 'grch38':
+                s_copy.molecule_context = 'transcript'
+                s_copy.reference_sequence = 'c'
+                coordinate = s_copy.reference_sequence
 
-            if 'protein' in keys:
-                allele = self.get_allele_from_hgvs(refseq_protein, errors)
-                if mane_transcripts_dict[hgvs_expr]['protein']:
-                    transcript = ensembl_protein
-                else:
-                    transcript = refseq_protein
-            else:
-                allele = self.get_allele_from_hgvs(refseq_nuc, errors)
-                if mane_transcripts_dict[hgvs_expr]['nucleotide']:
-                    transcript = ensembl_nuc
-                else:
-                    transcript = refseq_nuc
+                if isinstance(s_copy,
+                              token_schema.GenomicSubstitutionToken) and \
+                        mane['strand'] == '-':
+                    ref_rev = s_copy.ref_nucleotide[::-1]
+                    alt_rev = s_copy.new_nucleotide[::-1]
 
-            self.add_validation_result(
-                allele, [], results, classification,
-                mane_transcripts_dict[hgvs_expr]['classification_token'],
-                mane_transcripts_dict[hgvs_expr]['transcript_token'],
-                gene_tokens, errors, transcript
-            )
+                    complements = {
+                        'A': 'T',
+                        'T': 'A',
+                        'C': 'G',
+                        'G': 'C'
+                    }
 
-    def add_valid_mane_transcripts(self, hgvs_expr, mane_transcripts_dict,
-                                   replace_old_keys, gene_tokens,
-                                   found_mane_transcripts, mane_transcripts)\
-            -> None:
-        """Add valid mane transcripts to a list.
+                    s_copy.ref_nucleotide = ''
+                    s_copy.new_nucleotide = ''
+                    for nt in ref_rev:
+                        s_copy.ref_nucleotide += complements[nt]
+                    for nt in alt_rev:
+                        s_copy.new_nucleotide += complements[nt]
+                    alt = s_copy.new_nucleotide
 
-        :param str hgvs_expr: The HGVS expression to find a mane transcript for
-        :param dict mane_transcripts_dict: Possible MANE select transcripts
-            with classification and transcript
-        :param list replace_old_keys: Contains tuples of old and new keys to
-            replace in mane_transcripts_dict
-        :param list gene_tokens: A list of GeneMatchTokens
-        :param list found_mane_transcripts: Contains tuple of ensembl and
-            refseq hgvs expressions that have already been found
-        :param list mane_transcripts: The list of mane transcripts for
-            a given hgvs_expr
-        """
-        if '(' in hgvs_expr and ')' in hgvs_expr:
-            # ClinGen Allele Registry doesn't like () in the query
-            if mane_transcripts_dict[hgvs_expr][
-                'classification_token'].token_type == \
-                    'PolypeptideTruncation':  # TODO: Change
-                old = hgvs_expr
-                hgvs_expr = hgvs_expr.replace('(', '')
-                hgvs_expr = hgvs_expr.replace(')', '')
-                old_and_new = old, hgvs_expr
-                if old_and_new not in replace_old_keys:
-                    replace_old_keys.append(old_and_new)
-        mane_transcript_tuple = self.get_mane_transcript(hgvs_expr,
-                                                         gene_tokens)
-        if mane_transcript_tuple:
-            ensembl_nuc, refseq_nuc, ensembl_protein, refseq_protein =\
-                mane_transcript_tuple
+        mane_allele = self.to_vrs_allele(
+            mane['refseq'], mane['pos'][0], mane['pos'][1],
+            coordinate, alt_type, [],
+            cds_start=mane.get('coding_start_site', None), alt=alt
+        )
 
-            if ensembl_nuc and refseq_nuc:
-                if (ensembl_nuc, refseq_nuc) not in found_mane_transcripts:
-                    found_mane_transcripts.append(
-                        (ensembl_nuc, refseq_nuc,
-                         ensembl_protein, refseq_protein)
-                    )
-                    mane_transcripts.append(
-                        (hgvs_expr, ensembl_nuc, refseq_nuc,
-                         ensembl_protein, refseq_protein)
-                    )
+        if not mane_allele:
+            return
 
-    def get_mane_transcript(self, hgvs_expr, gene_tokens)\
-            -> Optional[Tuple[str, str, str, str]]:
-        """Return MANE Select Transcript from ClinGene Allele Registry API.
+        allele_id = mane_allele['_id']
 
-        :param str hgvs_expr: The HGVS expression to query
+        key = '_'.join(mane['status'].lower().split())
+        if allele_id in mane_data[key].keys():
+            mane_data[key][allele_id]['count'] += 1
+        else:
+            mane_data[key][allele_id] = {
+                'classification_token': s_copy,
+                'accession': mane['refseq'],
+                'count': 1,
+                'allele': mane_allele,
+                'label': mane['refseq']  # TODO: Use VRS to translate
+            }
+
+    def add_mane_to_validation_results(self, mane_data, valid_alleles,
+                                       results, classification, gene_tokens):
+        """Add MANE Transcript data to list of validation results.
+
+        :param dict mane_data: MANE Transcript data found for given query
+        :param list valid_alleles: A list containing current valid alleles
+        :param list results: A list of validation results
+        :param Classification classification: The classification for tokens
         :param list gene_tokens: List of GeneMatchTokens
-        :return: Tuple[nucleotide Ensembl HGVS expr, nucleotide RefSeq hgvs
-            expr, protein Ensembl hgvs expr, protein RefSeq hgvs expr]
         """
-        request = requests.get(
-            f"https://reg.genome.network/allele?hgvs={hgvs_expr}")
-        if request.status_code == 200:
-            resp = request.json()
-            if 'transcriptAlleles' in resp.keys():
-                mane_transcript = None
-                gene_symbol = None
-                for t in resp['transcriptAlleles']:
-                    if 'geneSymbol' in t.keys() and not gene_symbol:
-                        gene_symbol = t['geneSymbol']
-                    if 'MANE' in t.keys() and not mane_transcript:
-                        mane_transcript = t['MANE']
-                    if gene_symbol and mane_transcript:
-                        break
-                if mane_transcript:
-                    if mane_transcript['maneStatus'] == 'MANE Select':
-                        if gene_symbol:
-                            gene = self._gene_matcher.match(gene_symbol)
-                            if gene not in gene_tokens:
-                                gene_tokens.append(gene)
-                        return (
-                            mane_transcript['nucleotide']['Ensembl']['hgvs'],
-                            mane_transcript['nucleotide']['RefSeq']['hgvs'],
-                            mane_transcript['protein']['Ensembl']['hgvs'],
-                            mane_transcript['protein']['RefSeq']['hgvs']
-                        )
-            else:
-                if 'aminoAcidAlleles' in resp.keys() and len(resp['aminoAcidAlleles']) > 0:  # noqa: E501
-                    amino_acid_allele = resp['aminoAcidAlleles'][0]
-                    if 'hgvsMatchingTranscriptVariation' in amino_acid_allele.keys():  # noqa: E501
-                        if len(amino_acid_allele['hgvsMatchingTranscriptVariation']) > 0:  # noqa: E501
-                            for t in amino_acid_allele['hgvsMatchingTranscriptVariation']:  # noqa: E501
-                                if '[' not in t:
-                                    # Temp condition since variation norm
-                                    # cant handle multiple possible variations
-                                    return self.get_mane_transcript(
-                                        t, gene_tokens
-                                    )
-        return None
+        mane_data_keys = mane_data.keys()
+        for key in ['mane_select', 'mane_plus_clinical',
+                    'longest_compatible_remaining', 'grch38']:
+            highest_count = 0
+            mane_result = None
+            mane_allele = None
+            identifier = None
+            if key not in mane_data_keys:
+                continue
+            for mane_allele_id in mane_data[key].keys():
+                data = mane_data[key][mane_allele_id]
+
+                if data['count'] > highest_count:
+                    highest_count = data['count']
+                    mane_result = data
+                    mane_allele = data['allele']
+                    identifier = data['accession']
+
+            if mane_allele:
+                self.add_validation_result(
+                    mane_allele, valid_alleles, results, classification,
+                    mane_result['classification_token'],
+                    mane_result['accession'], gene_tokens, [],
+                    identifier=identifier, is_mane_transcript=True
+                )
+                return
