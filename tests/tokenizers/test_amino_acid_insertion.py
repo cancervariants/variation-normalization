@@ -1,8 +1,8 @@
 """A module for testing Amino Acid Insertion Tokenization."""
 import unittest
-from variant.tokenizers import AminoAcidInsertion
+from variation.tokenizers import AminoAcidInsertion
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestAminoAcidInsertionTokenizer(TokenizerBase, unittest.TestCase):

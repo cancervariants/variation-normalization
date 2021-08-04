@@ -1,6 +1,6 @@
 """Module for testing Amino Acid Substitution Classifier."""
 import unittest
-from variant.classifiers import AminoAcidSubstitutionClassifier
+from variation.classifiers import AminoAcidSubstitutionClassifier
 from .classifier_base import ClassifierBase
 
 

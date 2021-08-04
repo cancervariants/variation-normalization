@@ -1,6 +1,6 @@
 """Module for testing Genomic DelIns Classifier."""
 import unittest
-from variant.classifiers import GenomicDelInsClassifier
+from variation.classifiers import GenomicDelInsClassifier
 from .classifier_base import ClassifierBase
 
 

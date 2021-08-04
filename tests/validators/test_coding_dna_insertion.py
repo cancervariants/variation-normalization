@@ -1,12 +1,15 @@
 """Module for testing Coding DNA Insertion Validator."""
 import unittest
-from variant.validators import CodingDNAInsertion
-from variant.classifiers import CodingDNAInsertionClassifier
+from variation.validators import CodingDNAInsertion
+from variation.classifiers import CodingDNAInsertionClassifier
 from .validator_base import ValidatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import TranscriptMappings, SeqRepoAccess
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 class TestCodingDNAInsertionValidator(ValidatorBase, unittest.TestCase):
@@ -14,9 +17,17 @@ class TestCodingDNAInsertionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding dna insertion instance."""
-        return CodingDNAInsertion(SeqRepoAccess(SEQREPO_DATA_PATH),
-                                  TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                                  GeneSymbol(GeneSymbolCache()))
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        uta = UTA()
+        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        tlr = Translator(data_proxy=dp)
+        return CodingDNAInsertion(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), uta),
+            uta, dp, tlr
+        )
 
     def classifier_instance(self):
         """Return the coding dna insertion classifier instance."""

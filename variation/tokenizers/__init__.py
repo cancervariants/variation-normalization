@@ -1,0 +1,40 @@
+"""Module to load and init namespace at package level."""
+from .tokenizer import Tokenizer  # noqa: F401
+from .tokenize import Tokenize  # noqa: F401
+from .amplification import Amplification  # noqa: F401
+from .deletion import Deletion  # noqa: F401
+from .exon import Exon  # noqa: F401
+from .expression import Expression  # noqa: F401
+from .fusion import Fusion  # noqa: F401
+from .gain_of_function import GainOfFunction  # noqa: F401
+from .gene_pair import GenePair  # noqa: F401
+from .gene_symbol import GeneSymbol  # noqa: F401
+from .loss_of_function import LossOfFunction  # noqa: F401
+from .overexpression import OverExpression  # noqa: F401
+from .protein_alternate import ProteinAlternate  # noqa: F401
+from .protein_delins import ProteinDelIns  # noqa: F401
+from .protein_frameshift import ProteinFrameshift  # noqa: F401
+from .protein_termination import ProteinTermination  # noqa: F401
+from .underexpression import UnderExpression  # noqa: F401
+from .wild_type import WildType  # noqa: F401
+from .hgvs import HGVS  # noqa: F401
+from .reference_sequence import ReferenceSequence  # noqa: F401
+from .amino_acid_substitution import AminoAcidSubstitution  # noqa: F401
+from .polypeptide_truncation import PolypeptideTruncation  # noqa: F401
+from .silent_mutation import SilentMutation  # noqa: F401
+from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase  # noqa: F401, E501
+from .single_nucleotide_variation_base import SingleNucleotideVariationBase  # noqa: F401, E501
+from .coding_dna_substitution import CodingDNASubstitution  # noqa: F401
+from .genomic_substitution import GenomicSubstitution  # noqa: F401
+from .coding_dna_silent_mutation import CodingDNASilentMutation  # noqa: F401
+from .genomic_silent_mutation import GenomicSilentMutation  # noqa: F401
+from .amino_acid_delins import AminoAcidDelIns  # noqa: F401
+from .coding_dna_delins import CodingDNADelIns  # noqa: F401
+from .genomic_delins import GenomicDelIns  # noqa: F401
+from .locus_reference_genomic import LocusReferenceGenomic  # noqa: F401
+from .amino_acid_deletion import AminoAcidDeletion  # noqa: F401
+from .coding_dna_deletion import CodingDNADeletion  # noqa: F401
+from .genomic_deletion import GenomicDeletion  # noqa: F401
+from .amino_acid_insertion import AminoAcidInsertion  # noqa: F401
+from .coding_dna_insertion import CodingDNAInsertion  # noqa: F401
+from .genomic_insertion import GenomicInsertion  # noqa: F401
