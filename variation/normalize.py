@@ -1,9 +1,9 @@
 """Module for Variation Normalization."""
 from typing import Optional
-from variation.schemas.token_response_schema import PolypeptideSequenceVariation
 from variation import GENE_NORMALIZER
-from variation.schemas.ga4gh_vod import Gene, VariationDescriptor, GeneDescriptor
-from variation.data_sources import SeqRepoAccess
+from variation.schemas.ga4gh_vod import Gene, VariationDescriptor, \
+    GeneDescriptor
+from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
 
@@ -11,17 +11,17 @@ from variation import logger
 class Normalize:
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self):
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTA):
         """Initialize Normalize class."""
-        self.seqrepo_access = SeqRepoAccess()
+        self.seqrepo_access = seqrepo_access
+        self.uta = uta
         self.warnings = list()
 
-    def normalize(self, q, validations, amino_acid_cache, warnings):
+    def normalize(self, q, validations, warnings):
         """Normalize a given variation.
 
         :param str q: The variation to normalize
         :param ValidationSummary validations: Invalid and valid results
-        :param AminoAcidCache amino_acid_cache: Amino Acid Code and Conversion
         :param list warnings: List of warnings
         :return: An allele descriptor for a valid result if one exists. Else,
             None.
@@ -29,36 +29,21 @@ class Normalize:
         if len(validations.valid_results) > 0:
             # For now, only use first valid result
             valid_result = None
-            label = None
             for r in validations.valid_results:
-                if r.mane_transcript and r.allele:
+                if r.is_mane_transcript and r.allele:
                     valid_result = r
-                    label = valid_result.mane_transcript.strip()
                     break
             if not valid_result:
                 warning = f"Unable to find MANE Select Transcript for {q}."
                 logger.warning(warning)
                 warnings.append(warning)
                 valid_result = validations.valid_results[0]
-                label = ' '.join(q.strip().split())
 
-            valid_result_tokens = valid_result.classification.all_tokens
             allele = valid_result.allele
             allele_id = allele.pop('_id')
-            variation_token = None
-            molecule_context = None
-            structural_type = None
-
-            for token in valid_result_tokens:
-                try:
-                    molecule_context = token.molecule_context
-                    structural_type = token.so_id
-                    variation_token = token
-                except AttributeError:
-                    continue
-
-            ref_allele_seq = self._get_ref_allele_seq(
-                variation_token, amino_acid_cache, label, allele
+            identifier = valid_result.identifier
+            ref_allele_seq = self.get_ref_allele_seq(
+                allele, identifier
             )
 
             if valid_result.gene_tokens:
@@ -70,10 +55,9 @@ class Normalize:
             variation_descriptor = VariationDescriptor(
                 id=f"normalize.variation:{quote(' '.join(q.strip().split()))}",
                 value_id=allele_id,
-                label=label,
                 value=allele,
-                molecule_context=molecule_context,
-                structural_type=structural_type,
+                molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
+                structural_type=valid_result.classification_token.so_id,
                 ref_allele_seq=ref_allele_seq,
                 gene_context=gene_context
             )
@@ -104,7 +88,7 @@ class Normalize:
                 id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
                 label=gene_symbol,
                 value=Gene(id=record.concept_id),
-                xrefs=record.other_identifiers,
+                xrefs=record.xrefs if record.xrefs else [],
                 alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
                 extensions=self.get_extensions(record, record_location)
             )
@@ -120,12 +104,10 @@ class Normalize:
         :return: List of extensions providing additional information
         """
         extensions = list()
-        if record.strand:
-            self.add_extension(extensions, 'strand', record.strand)
-        if record.symbol_status:
-            self.add_extension(extensions, 'symbol_status',
-                               record.symbol_status)
-        self.add_extension(extensions, 'associated_with', record.xrefs)
+        self.add_extension(extensions, 'strand', record.strand)
+        self.add_extension(extensions, 'symbol_status', record.symbol_status)
+        self.add_extension(extensions, 'associated_with',
+                           record.associated_with)
         self.add_extension(extensions, 'chromosome_location',
                            record_location.dict(by_alias=True))
         return extensions
@@ -135,44 +117,22 @@ class Normalize:
 
         :param list extensions: List of ga4gh extensions
         :param str name: name of extension
-        :param str value: value of extension
+        :param any value: value of extension
         """
-        extensions.append({
-            'type': 'Extension',
-            'name': name,
-            'value': value
-        })
+        if value:
+            extensions.append({
+                'type': 'Extension',
+                'name': name,
+                'value': value
+            })
 
-    def _get_ref_allele_seq(self, variation_token, amino_acid_cache,
-                            label, allele) -> str:
-        """Return ref_allele_seq for a variation.
-
-        :return: ref_allele_seq
-        """
-        if variation_token.token_type == PolypeptideSequenceVariation:
-            # convert 3 letter to 1 letter amino acid code
-            if len(variation_token.ref_protein) == 3:
-                for one, three in \
-                        amino_acid_cache.amino_acid_code_conversion.items():
-                    if three == variation_token.ref_protein:
-                        variation_token.ref_protein = one
-            ref_allele_seq = variation_token.ref_protein
-        else:
-            if variation_token.token_type in ['CodingDNASubstitution',
-                                            'GenomicSubstitution']:
-                ref_allele_seq = variation_token.ref_nucleotide
-            else:
-                ref_allele_seq = self.get_ref_allele_seq(allele, label)
-        return ref_allele_seq
-
-    def get_ref_allele_seq(self, allele, label) -> Optional[str]:
+    def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param dict allele: VRS Allele object
-        :param str label: Transcript label
+        :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
-        label = label.split(':')[0]
         interval = allele['location']['interval']
         if interval['start'] != interval['end']:
             start = interval['start'] + 1
@@ -184,7 +144,7 @@ class Normalize:
             refseq_list = list()
             while start <= end:
                 refseq_list.append(self.seqrepo_access.sequence_at_position(
-                    label, start
+                    identifier, start
                 ))
                 start += 1
             try:

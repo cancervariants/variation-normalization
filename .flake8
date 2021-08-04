@@ -7,4 +7,4 @@ exclude =
   source
   outputs
   docs/*
-  variant/version.py
+  variation/version.py
