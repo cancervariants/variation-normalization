@@ -1,6 +1,6 @@
 """Module for testing Amino Acid Insertion Classifier."""
 import unittest
-from variant.classifiers import AminoAcidInsertionClassifier
+from variation.classifiers import AminoAcidInsertionClassifier
 from .classifier_base import ClassifierBase
 
 

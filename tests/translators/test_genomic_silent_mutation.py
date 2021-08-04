@@ -1,13 +1,16 @@
 """Module for testing Genomic Silent Mutation Translator."""
 import unittest
-from variant.classifiers import GenomicSilentMutationClassifier
-from variant.translators import GenomicSilentMutation
-from variant.validators import GenomicSilentMutation as GENOMICSM_V
+from variation.classifiers import GenomicSilentMutationClassifier
+from variation.translators import GenomicSilentMutation
+from variation.validators import GenomicSilentMutation as GENOMICSM_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 class TestGenomicSilentMutationTranslator(TranslatorBase, unittest.TestCase):
@@ -19,10 +22,17 @@ class TestGenomicSilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return genomic silent mutation instance."""
-        return GENOMICSM_V(SeqRepoAccess(SEQREPO_DATA_PATH),
-                           TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                           GeneSymbol(GeneSymbolCache())
-                           )
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        uta = UTA()
+        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        tlr = Translator(data_proxy=dp)
+        return GENOMICSM_V(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), uta),
+            uta, dp, tlr
+        )
 
     def translator_instance(self):
         """Return genomic silent mutation instance."""

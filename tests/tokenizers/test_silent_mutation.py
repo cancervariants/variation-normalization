@@ -1,8 +1,8 @@
 """A module for testing Silent Mutation tokenization."""
 import unittest
-from variant.tokenizers import SilentMutation
+from variation.tokenizers import SilentMutation
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache
+from variation.tokenizers.caches import AminoAcidCache
 
 
 class TestSilentMutationTokenizer(TokenizerBase, unittest.TestCase):

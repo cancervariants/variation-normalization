@@ -1,7 +1,7 @@
 """A module for testing validator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variant.tokenizers import Tokenize
+from variation.tokenizers import Tokenize
 
 
 class ValidatorBase:
@@ -36,7 +36,9 @@ class ValidatorBase:
         for x in self.fixtures['should_match']:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
-            validation_results = self.validator.validate(classification)
+            validation_results = self.validator.validate(
+                classification, normalize_endpoint=True
+            )
             is_valid = False
             for vr in validation_results:
                 if vr.is_valid:
@@ -50,7 +52,9 @@ class ValidatorBase:
         for x in self.fixtures['should_not_match']:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
-            validation_results = self.validator.validate(classification)
+            validation_results = self.validator.validate(
+                classification, normalize_endpoint=True
+            )
             is_valid = False
             for vr in validation_results:
                 if vr.is_valid:

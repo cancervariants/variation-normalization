@@ -1,8 +1,8 @@
 """A module for testing Polypeptide Truncation tokenization."""
 import unittest
-from variant.tokenizers import PolypeptideTruncation
+from variation.tokenizers import PolypeptideTruncation
 from .tokenizer_base import TokenizerBase
-from variant.tokenizers.caches import AminoAcidCache
+from variation.tokenizers.caches import AminoAcidCache
 
 
 class TestPolypeptideTruncationTokenizer(TokenizerBase, unittest.TestCase):

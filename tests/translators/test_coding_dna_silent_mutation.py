@@ -1,13 +1,16 @@
 """Module for testing Coding DNA Silent Mutation Translator."""
 import unittest
-from variant.classifiers import CodingDNASilentMutationClassifier
-from variant.translators import CodingDNASilentMutation
-from variant.validators import CodingDNASilentMutation as CDNASM_V
+from variation.classifiers import CodingDNASilentMutationClassifier
+from variation.translators import CodingDNASilentMutation
+from variation.validators import CodingDNASilentMutation as CDNASM_V
 from .translator_base import TranslatorBase
-from variant.tokenizers import GeneSymbol
-from variant.tokenizers.caches import GeneSymbolCache
-from variant.data_sources import SeqRepoAccess, TranscriptMappings
-from variant import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH
+from variation.tokenizers import GeneSymbol
+from variation.tokenizers.caches import GeneSymbolCache
+from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTA
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
@@ -19,10 +22,17 @@ class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA silent mutation instance."""
-        return CDNASM_V(SeqRepoAccess(SEQREPO_DATA_PATH),
-                        TranscriptMappings(TRANSCRIPT_MAPPINGS_PATH),
-                        GeneSymbol(GeneSymbolCache())
-                        )
+        seqrepo_access = SeqRepoAccess()
+        transcript_mappings = TranscriptMappings()
+        uta = UTA()
+        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        tlr = Translator(data_proxy=dp)
+        return CDNASM_V(
+            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            MANETranscript(seqrepo_access, transcript_mappings,
+                           MANETranscriptMappings(), uta),
+            uta, dp, tlr
+        )
 
     def translator_instance(self):
         """Return coding DNA silent mutation instance."""

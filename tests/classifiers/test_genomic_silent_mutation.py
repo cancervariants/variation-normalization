@@ -1,6 +1,6 @@
 """Module for testing Genomic Silent Mutation Classifier."""
 import unittest
-from variant.classifiers import GenomicSilentMutationClassifier
+from variation.classifiers import GenomicSilentMutationClassifier
 from .classifier_base import ClassifierBase
 
 
