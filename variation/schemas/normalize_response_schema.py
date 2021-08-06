@@ -1,6 +1,7 @@
 """Module for normalize endpoint response schema."""
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 from variation.schemas.ga4gh_vod import VariationDescriptor
+from variation.schemas.ga4gh_vrs import Text
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
@@ -37,8 +38,21 @@ class NormalizeService(BaseModel):
 
     variation_query: str
     warnings: Optional[List[str]]
-    variation_descriptor: Optional[VariationDescriptor]
+    variation_descriptor: Optional[VariationDescriptor] = None
+    text: Optional[Text] = None
     service_meta_: ServiceMeta
+
+    @root_validator(pre=True)
+    def check_variation_descriptor_or_text_present(cls, values):
+        """Check that exactly one of {`variation_descriptor`, `text`} is
+        provided.
+        """
+        msg = 'Must give values for either `variation_descriptor` OR `text`'
+        variation_descriptor, text = \
+            values.get('variation_descriptor'), values.get('text')
+        assert (variation_descriptor and not text) or \
+               (text and not variation_descriptor), msg
+        return values
 
     class Config:
         """Configure model."""

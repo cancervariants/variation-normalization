@@ -1,7 +1,7 @@
 """Module for Translation Response Schema."""
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 from typing import List, Dict, Type, Any, Optional
-from variation.schemas.ga4gh_vrs import Allele
+from variation.schemas.ga4gh_vrs import Allele, Text
 from variation.schemas.normalize_response_schema import ServiceMeta
 
 
@@ -10,8 +10,17 @@ class ToVRSService(BaseModel):
 
     search_term: str
     warnings: Optional[List[str]]
-    variations: List[Allele]
+    variations: Optional[List[Allele]] = None
+    text: Optional[Text] = None
     service_meta_: ServiceMeta
+
+    @root_validator(pre=True)
+    def check_variations_or_text_present(cls, values):
+        """Check that exactly one of {`variations`, `text`} is provided."""
+        msg = 'Must give values for either `variations` OR `text`'
+        variations, text = values.get('variations'), values.get('text')
+        assert (variations and not text) or (text and not variations), msg
+        return values
 
     class Config:
         """Configure model."""
