@@ -1,7 +1,7 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple
 from variation import GENE_NORMALIZER
-from variation.schemas.ga4gh_vod import Gene, VariationDescriptor, \
+from variation.schemas.ga4gh_vrsatile import Gene, VariationDescriptor, \
     GeneDescriptor
 from variation.schemas.ga4gh_vrs import Text
 from variation.data_sources import SeqRepoAccess, UTA
