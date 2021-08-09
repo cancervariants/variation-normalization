@@ -7,10 +7,15 @@ from variation.schemas.token_response_schema import Token
 
 
 class SetBasedClassifier(Classifier):
-    """The set based classifier class."""
+    """The set based classifier class for finding classification matches."""
 
     def match(self, tokens: List[Token]) -> Optional[Classification]:
-        """Return a classification from a list of tokens."""
+        """Return a classification match for a list of tokens.
+
+        :param list[Token] tokens: List of tokens to determine classification
+            match type
+        :return: A classification for a list of tokens
+        """
         token_types = list(map(lambda t: t.token_type, tokens))
         exact_matches: List[List[str]] = []
         out_of_order_matches: List[List[str]] = []
@@ -73,5 +78,9 @@ class SetBasedClassifier(Classifier):
         pass
 
     def exact_match_candidates(self) -> List[List[str]]:
-        """Return the token match candidates."""
+        """Return the token match candidates for a given classification.
+
+        :return: List of tokens, where order matters, that make up a given
+            classification.
+        """
         pass
