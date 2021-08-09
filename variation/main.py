@@ -15,7 +15,7 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
-from .schemas.ga4gh_vod import VariationDescriptor
+from .schemas.ga4gh_vrsatile import VariationDescriptor
 from .schemas.ga4gh_vrs import Text
 from urllib.parse import quote
 from .version import __version__
