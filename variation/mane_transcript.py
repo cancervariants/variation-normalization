@@ -1,4 +1,13 @@
-"""Module for retrieving MANE Transcript from variation on p/c/g coordinate."""
+"""Module for retrieving MANE Transcript from variation on p/c/g coordinate.
+
+Steps:
+1. Map annotation layer to genome
+2. Liftover to preferred genome
+    We want to liftover to GRCh38. We do not support getting MANE transcripts
+    for GRCh36 and earlier assemblies.
+3. Select preferred compatible annotation
+4. Map back to correct annotation layer
+"""
 from typing import Optional, Tuple, Dict
 import hgvs.parser
 import logging
@@ -560,6 +569,8 @@ class MANETranscript:
     def g_to_mane_c(self, ac, start_pos, end_pos, gene=None):
         """Return MANE Transcript on the c. coordinate.
         g->GRCh38->MANE c.
+        If MANE c. cannot be found, we return the genomic coordinate on
+            GRCh38
 
         :param str ac: Transcript accession on g. coordinate
         :param int start_pos: genomic change start position

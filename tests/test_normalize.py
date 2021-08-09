@@ -3,7 +3,7 @@ import pytest
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from variation.normalize import Normalize
-from variation.schemas.ga4gh_vod import VariationDescriptor
+from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from variation.to_vrs import ToVRS
 from variation.main import normalize as normalize_get_response
 from variation.main import translate as to_vrs_get_response

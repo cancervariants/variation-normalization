@@ -1,4 +1,4 @@
-"""Module for Classifier."""
+"""Module for Classification methods."""
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from variation.schemas.classification_response_schema import Classification,\

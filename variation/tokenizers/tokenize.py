@@ -100,6 +100,9 @@ class Tokenize:
         :return: An Iterable of Tokens
         """
         tokens: List[Token] = list()
+        # Currently splits on whitespace
+        # Also adds a token if an string looks like an accession
+        #  ex: NC_, NM_, ENST
         terms = self.search_term_splitter.split(search_string)
         self._add_tokens(tokens, terms, search_string, warnings)
 

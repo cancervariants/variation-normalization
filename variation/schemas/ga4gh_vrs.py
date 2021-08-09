@@ -1,4 +1,4 @@
-"""Module for VRS location schemas."""
+"""Module for modeling VRS objects."""
 from pydantic import BaseModel
 from pydantic.fields import Field
 from typing import Dict, Any, Type, Optional

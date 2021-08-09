@@ -15,11 +15,11 @@ class Translator(ABC):
 
     @abstractmethod
     def is_token_instance(self, token):
-        """Check tthat the token is the correct instance."""
+        """Check that the token is the correct instance for a translator."""
         raise NotImplementedError
 
     def translate(self, res: ValidationResult) -> Allele:
-        """Translate to VRS representation."""
+        """Translate to VRS representation for an Allele."""
         instance_tokens = [t for t in res.classification.all_tokens if
                            self.is_token_instance(t)]
         len_instance_tokens = len(instance_tokens)
