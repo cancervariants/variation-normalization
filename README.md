@@ -10,10 +10,10 @@ Variation Normalization is limited to substitution, deletion, insertion, and del
 
 ### Endpoints
 #### /toVRS
-The `/toVRS` endpoint returns a list of valid [Alleles](https://normalize.cancervariants.org/variant). 
+The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/stable/terms_and_model.html#allele).
 
 #### /normalize
-The `/normalize` endpoint returns a [Variation Descriptor](https://normalize.cancervariants.org/variant) containing the MANE Transcript, if one is found.
+The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found.
 
 ## Backend Services
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
