@@ -17,8 +17,8 @@ backports-datetime-fromisoformat==1.0.0
 beautifulsoup4==4.9.3
 biocommons.seqrepo==0.6.4
 bioutils==0.5.5; python_version >= '3.6'
-boto3==1.18.11
-botocore==1.21.11; python_version >= '3.6'
+boto3==1.18.17
+botocore==1.21.17; python_version >= '3.6'
 bs4==0.0.1
 canonicaljson==1.4.0; python_version ~= '3.5'
 certifi==2021.5.30
@@ -34,7 +34,7 @@ fake-useragent==0.1.11
 fastapi==0.68.0
 frozendict==2.0.3; python_version >= '3.6'
 ga4gh.vrs[extras]==0.7.0rc3
-gene-normalizer==0.1.10
+gene-normalizer==0.1.14
 gffutils==0.10.1
 h11==0.12.0; python_version >= '3.6'
 hgvs==1.5.1
@@ -69,7 +69,7 @@ pyfaidx==0.6.1
 pygments==2.9.0; python_version >= '3.5'
 pyliftover==0.4
 pyparsing==2.4.7; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
-pyppeteer==0.2.5; python_version < '4' and python_full_version >= '3.6.1'
+pyppeteer==0.2.5; python_full_version >= '3.6.1' and python_full_version < '4.0.0'
 pyquery==1.4.3
 pyrsistent==0.18.0; python_version >= '3.6'
 pysam==0.16.0.1
@@ -89,11 +89,11 @@ tabulate==0.8.9
 tqdm==4.62.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 traitlets==5.0.5; python_version >= '3.7'
 typing-extensions==3.10.0.0
-urllib3==1.26.6; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
+urllib3==1.26.6; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_full_version < '4.0.0'
 uvicorn==0.14.0
 uvloop==0.15.3
 vcfpy==0.13.3
 w3lib==1.22.0
 wcwidth==0.2.5
-websockets==8.1
+websockets>=9.1
 yoyo-migrations==7.3.2
