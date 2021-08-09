@@ -1,10 +1,27 @@
 # Variation Normalization
-Services and guidelines for normalizing variation terms
+Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest/) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+
+FastAPI: https://normalize.cancervariants.org/variant
+
+## About
+Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
+
+### Endpoints
+#### /toVRS
+The `/toVRS` endpoint returns a list of valid [Alleles](https://normalize.cancervariants.org/variant). 
+
+#### /normalize
+The `/normalize` endpoint returns a [Variation Descriptor](https://normalize.cancervariants.org/variant) containing the MANE Transcript, if one is found.
 
 ## Backend Services
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
 ### Installation
+#### Installing with pip
+```commandline
+pip install variation-normalizer
+```
+
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
 
 From the _root_ directory:
@@ -51,17 +68,11 @@ Variation Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/ma
 ![image](biomart.png)
 
 ### Setting up Gene Normalizer
-Variation Normalization `normalize` endpoint relies on data from Gene Normalization. To install:
-```shell script
-pip install gene-normalizer
-```
+Variation Normalization `normalize` endpoint relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the `normalizer` endpoint to work.
 
-To setup, follow the instructions from the [Gene Normalization README](https://github.com/cancervariants/gene-normalization). 
-
-You must have the Gene Normalizer DynamoDB running for the variation `normalize` endpoint to work.
+To setup, follow the instructions from the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md). 
 
 ### Init coding style tests
-
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
 
 We use [pre-commit](https://pre-commit.com/#usage) to run conformance tests.
@@ -85,8 +96,7 @@ From the _root_ directory of the repository:
 pytest tests/
 ```
 
-### Starting the Variation Normalization Service
-
+### Starting the Variation Normalization Service Locally
 `gene-normalizer`s dynamodb must be running and run the following:
 ```
 docker-compose -f docker-compose.yml up
