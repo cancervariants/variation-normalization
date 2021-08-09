@@ -1,29 +1,8 @@
 """Module for modeling VRSATILE objects."""
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any, Type, Union
+from typing import List, Optional, Dict, Any, Type
 from enum import Enum
-
-
-class Extension(BaseModel):
-    """Extend descriptions with other attributes unique to a content provider. -GA4GH"""  # noqa: E501
-
-    type = 'Extension'
-    name: str
-    value: Union[str, dict, List[str]]
-
-    @staticmethod
-    def schema_extra(schema: Dict[str, Any],
-                     model: Type['Extension']) -> None:
-        """Configure OpenAPI schema."""
-        if 'title' in schema.keys():
-            schema.pop('title', None)
-        for prop in schema.get('properties', {}).values():
-            prop.pop('title', None)
-        schema['example'] = {
-            'type': 'Extension',
-            'name': 'symbol_status',
-            'value': 'approved'
-        }
+from gene.schemas import GeneDescriptor, Extension
 
 
 class ValueObjectDescriptor(BaseModel):
@@ -72,80 +51,6 @@ class Expression(BaseModel):
                 'syntax': 'hgvs:protein',
                 'value': 'NP_005219.2:p.Leu858Arg'
             }
-
-
-class GeneDescriptor(ValueObjectDescriptor):
-    """Reference GA4GH Gene Value Objects."""
-
-    type = 'GeneDescriptor'
-
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type['GeneDescriptor']) -> None:
-            """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
-                "id": "normalize.gene:BRAF",
-                "type": "GeneDescriptor",
-                "label": "BRAF",
-                "value": {
-                    "id": "hgnc:1097",
-                    "type": "Gene"
-                },
-                "xrefs": ["ncbigene:673", "ensembl:ENSG00000157764"],
-                "alternate_labels": [
-                    "B-Raf proto-oncogene, serine/threonine kinase",
-                    "BRAF1"
-                ],
-                "extensions": [
-                    {
-                        "type": "Extension",
-                        "name": "symbol_status",
-                        "value": "approved"
-                    },
-                    {
-                        "type": "Extension",
-                        "name": "associated_with",
-                        "value": [
-                            "vega:OTTHUMG00000157457", "ucsc:uc003vwc.5",
-                            "ccds:CCDS5863", "ccds:CCDS87555",
-                            "uniprot:P15056",
-                            "pubmed:2284096", "pubmed:1565476", "cosmic:BRAF",
-                            "omim:164757", "orphanet:119066", "iuphar:1943",
-                            "ena.embl:M95712", "refseq:NM_004333"
-                        ]
-                    },
-                    {
-                        "type": "Extension",
-                        "name": "chromosome_location",
-                        "value": {
-                            "_id":
-                                "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "7",
-                            "interval": {
-                                "end": "q34",
-                                "start": "q34",
-                                "type": "CytobandInterval"
-                            }
-                        }
-                    }
-                ]
-            }
-
-
-class Gene(BaseModel):
-    """GA4GH Gene Value Object."""
-
-    id: str
-    type = "Gene"
 
 
 class VariationDescriptor(ValueObjectDescriptor):
