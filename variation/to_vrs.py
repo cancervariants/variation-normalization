@@ -38,7 +38,7 @@ class ToVRS:
         self.translator = translator
 
     def get_validations(self, q, normalize_endpoint=False)\
-            -> Tuple[ValidationSummary, Optional[List[str]]]:
+            -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
@@ -47,6 +47,8 @@ class ToVRS:
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
+        if q is None:
+            return None, ["No variation entered"]
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
@@ -65,10 +67,11 @@ class ToVRS:
         :return: A list of unique translations from valid results
         """
         translations = []
-        for valid_variation in validations.valid_results:
-            result = self.translator.perform(valid_variation)
-            if result not in translations:
-                translations.append(result)
-        if not translations and not warnings:
-            warnings.append("Unable to validate variation")
+        if validations is not None:
+            for valid_variation in validations.valid_results:
+                result = self.translator.perform(valid_variation)
+                if result not in translations:
+                    translations.append(result)
+            if not translations and not warnings:
+                warnings.append("Unable to validate variation")
         return translations, warnings

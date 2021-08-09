@@ -1,7 +1,7 @@
 """Module for modeling VRS objects."""
 from pydantic import BaseModel
 from pydantic.fields import Field
-from typing import Dict, Any, Type
+from typing import Dict, Any, Type, Optional
 
 
 class SequenceState(BaseModel):
@@ -116,3 +116,13 @@ class Allele(BaseModel):
                 },
                 "type": "Allele"
             }
+
+
+class Text(BaseModel):
+    """A free-text description of variation that is intended for
+    interpretation by humans.
+    """
+
+    id: Optional[str] = Field(alias='_id')
+    type = "Text"
+    definition: str
