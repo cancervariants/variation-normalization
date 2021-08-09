@@ -1287,13 +1287,14 @@ def test_no_matches(test_normalize):
     assert resp.id == 'normalize.variation:clinvar%3A10'
     assert resp.definition == 'clinvar:10'
 
-    resp = test_normalize.normalize(' ')
-    assert resp.type == 'Text'
-    assert resp.definition == 'No variation entered'
+    resp = test_normalize.normalize('   ')
+    assert resp is None
+
+    resp = test_normalize.normalize('')
+    assert resp is None
 
     resp = test_normalize.normalize(None)
-    assert resp.type == 'Text'
-    assert resp.definition == 'No variation entered'
+    assert resp is None
 
 
 def test_service_meta():

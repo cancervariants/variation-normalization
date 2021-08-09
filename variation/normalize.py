@@ -81,17 +81,14 @@ class Normalize:
         self.warnings = warnings
         return resp
 
-    def _no_variation_entered(self) -> Tuple[Text, List[str]]:
+    def _no_variation_entered(self) -> Tuple[None, List[str]]:
         """Return response when no variation queried.
 
-        :return: VRS Text object, list of warnings
+        :return: None, list of warnings
         """
         warnings = ["No variation was entered to normalize"]
         logger.warning(warnings)
-        resp = Text(
-            definition="No variation entered"
-        )
-        return resp, warnings
+        return None, warnings
 
     def get_gene_descriptor(self, gene_token):
         """Return a GA4GH Gene Descriptor using Gene Normalization.

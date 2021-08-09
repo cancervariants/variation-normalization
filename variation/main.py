@@ -15,6 +15,7 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from .schemas.ga4gh_vod import VariationDescriptor
 from .schemas.ga4gh_vrs import Text
 from urllib.parse import quote
 from .version import __version__
@@ -90,13 +91,18 @@ def translate(q: str = Query(..., description=q_description)):
     validations, warnings = to_vrs.get_validations(html.unescape(q))
     translations, warnings = to_vrs.get_translations(validations, warnings)
 
+    is_empty = False
+    if not translations:
+        if not q or not q.strip():
+            is_empty = True
+
     return ToVRSService(
         search_term=q,
         variations=translations if translations else None,
         text=Text(
             _id=f"normalize.variation:{quote(' '.join(q.strip().split()))}",
             definition=q
-        ) if not translations else None,
+        ) if not translations and not is_empty else None,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
@@ -131,8 +137,8 @@ def normalize(q: str = Query(..., description=q_description)):
                                           warnings)
     return NormalizeService(
         variation_query=q,
-        variation_descriptor=normalize_resp if normalize_resp.type == 'VariationDescriptor' else None,  # noqa: E501
-        text=normalize_resp if normalize_resp.type == 'Text' else None,
+        variation_descriptor=normalize_resp if isinstance(normalize_resp, VariationDescriptor) else None,  # noqa: E501
+        text=normalize_resp if isinstance(normalize_resp, Text) else None,
         warnings=normalizer.warnings if normalizer.warnings else None,
         service_meta_=ServiceMeta(
             version=__version__,
