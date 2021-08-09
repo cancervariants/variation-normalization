@@ -1,7 +1,7 @@
 """Module for toVRS endpoint response schema."""
 from pydantic import BaseModel
 from typing import List, Dict, Type, Any, Optional
-from variation.schemas.ga4gh_vrs import Allele
+from variation.schemas.ga4gh_vrs import Allele, Text
 from variation.schemas.normalize_response_schema import ServiceMeta
 
 
@@ -10,7 +10,8 @@ class ToVRSService(BaseModel):
 
     search_term: str
     warnings: Optional[List[str]]
-    variations: List[Allele]
+    variations: Optional[List[Allele]] = None
+    text: Optional[Text] = None
     service_meta_: ServiceMeta
 
     class Config:

@@ -1267,7 +1267,7 @@ def test_genomic_insertion(test_normalize, genomic_insertion):
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
-        "", "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
+        "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
         "NP_000213.1:cp.Leu862", "BRAF V600E 33", "NP_004324.2:p.Glu600Val",
         "NP_004324.2:p.Glu600Gal", "NP_004324.2839:p.Glu600Val",
         "NP_004324.2:t.Glu600Val", "this:c.54G>H", "NC_000007.13:g.4T<A",
@@ -1280,7 +1280,21 @@ def test_no_matches(test_normalize):
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
-        assert resp is None
+        assert resp.type == 'Text'
+
+    resp = test_normalize.normalize('clinvar:10')
+    assert resp.type == 'Text'
+    assert resp.id == 'normalize.variation:clinvar%3A10'
+    assert resp.definition == 'clinvar:10'
+
+    resp = test_normalize.normalize('   ')
+    assert resp is None
+
+    resp = test_normalize.normalize('')
+    assert resp is None
+
+    resp = test_normalize.normalize(None)
+    assert resp is None
 
 
 def test_service_meta():
