@@ -80,8 +80,11 @@ def braf_gene_context():
             "ensembl:ENSG00000157764"
         ],
         "alternate_labels": [
-            "B-Raf proto-oncogene, serine/threonine kinase",
-            "BRAF1"
+            "BRAF1",
+            "RAFB1",
+            "B-raf",
+            "B-RAF1",
+            "NS7"
         ],
         "extensions": [
             {
@@ -91,21 +94,26 @@ def braf_gene_context():
             },
             {
                 "type": "Extension",
+                "name": "approved_name",
+                "value": "B-Raf proto-oncogene, serine/threonine kinase"
+            },
+            {
+                "type": "Extension",
                 "name": "associated_with",
                 "value": [
-                    "vega:OTTHUMG00000157457",
                     "ucsc:uc003vwc.5",
-                    "ccds:CCDS5863",
-                    "ccds:CCDS87555",
-                    "uniprot:P15056",
-                    "pubmed:2284096",
                     "pubmed:1565476",
-                    "cosmic:BRAF",
                     "omim:164757",
-                    "orphanet:119066",
+                    "vega:OTTHUMG00000157457",
+                    "ccds:CCDS5863",
                     "iuphar:1943",
+                    "ccds:CCDS87555",
+                    "orphanet:119066",
+                    "refseq:NM_004333",
                     "ena.embl:M95712",
-                    "refseq:NM_004333"
+                    "pubmed:2284096",
+                    "uniprot:P15056",
+                    "cosmic:BRAF"
                 ]
             },
             {
@@ -143,8 +151,10 @@ def vhl_gene_context():
             "ensembl:ENSG00000134086"
         ],
         "alternate_labels": [
+            "HRCA1",
             "VHL1",
-            "von Hippel-Lindau tumor suppressor"
+            "RCA1",
+            "pVHL"
         ],
         "extensions": [
             {
@@ -154,19 +164,24 @@ def vhl_gene_context():
             },
             {
                 "type": "Extension",
+                "name": "approved_name",
+                "value": "von Hippel-Lindau tumor suppressor"
+            },
+            {
+                "type": "Extension",
                 "name": "associated_with",
                 "value": [
-                    "vega:OTTHUMG00000128668",
                     "ucsc:uc003bvc.4",
-                    "ccds:CCDS2597",
-                    "ccds:CCDS2598",
-                    "uniprot:P40337",
                     "pubmed:9671762",
+                    "refseq:NM_000551",
                     "cosmic:VHL",
                     "omim:608537",
-                    "orphanet:120467",
+                    "vega:OTTHUMG00000128668",
+                    "ccds:CCDS2598",
                     "ena.embl:L15409",
-                    "refseq:NM_000551"
+                    "orphanet:120467",
+                    "ccds:CCDS2597",
+                    "uniprot:P40337"
                 ]
             },
             {
@@ -184,6 +199,13 @@ def vhl_gene_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "name": "previous_symbols",
+                "value": [
+                    "RCA1"
+                ],
+                "type": "Extension"
             }
         ]
     }
@@ -205,12 +227,15 @@ def erbb2_context():
             "ensembl:ENSG00000141736"
         ],
         "alternate_labels": [
-            "NEU",
-            "HER-2",
-            "HER2",
+            "NGL",
             "CD340",
-            "erb-b2 receptor tyrosine kinase 2",
-            "NGL"
+            "HER2",
+            "NEU",
+            "TKR1",
+            "HER-2",
+            "HER-2/neu",
+            "VSCN2",
+            "MLN 19"
         ],
         "extensions": [
             {
@@ -219,23 +244,28 @@ def erbb2_context():
                 "value": "approved"
             },
             {
+                "name": "approved_name",
+                "value": "erb-b2 receptor tyrosine kinase 2",
+                "type": "Extension"
+            },
+            {
                 "type": "Extension",
                 "name": "associated_with",
                 "value": [
-                    "vega:OTTHUMG00000179300",
                     "ucsc:uc002hso.4",
-                    "ccds:CCDS77016",
-                    "ccds:CCDS74052",
-                    "ccds:CCDS45667",
-                    "ccds:CCDS32642",
-                    "ccds:CCDS77017",
-                    "uniprot:P04626",
-                    "cosmic:ERBB2",
-                    "omim:164870",
-                    "iuphar:2019",
-                    "hcdmdb:CD340",
                     "ena.embl:X03363",
-                    "refseq:NM_004448"
+                    "ccds:CCDS77017",
+                    "vega:OTTHUMG00000179300",
+                    "ccds:CCDS77016",
+                    "uniprot:P04626",
+                    "refseq:NM_004448",
+                    "ccds:CCDS74052",
+                    "hcdmdb:CD340",
+                    "omim:164870",
+                    "ccds:CCDS32642",
+                    "ccds:CCDS45667",
+                    "cosmic:ERBB2",
+                    "iuphar:2019"
                 ]
             },
             {
@@ -252,6 +282,13 @@ def erbb2_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "name": "previous_symbols",
+                "value": [
+                    "NGL"
+                ],
+                "type": "Extension"
             }
         ]
     }
@@ -273,10 +310,13 @@ def egfr_context():
             "ensembl:ENSG00000146648"
         ],
         "alternate_labels": [
-            "ERBB1",
-            "ERRP",
+            "HER1",
+            "NISBD2",
             "ERBB",
-            "epidermal growth factor receptor"
+            "PIG61",
+            "mENA",
+            "ERBB1",
+            "ERRP"
         ],
         "extensions": [
             {
@@ -285,24 +325,29 @@ def egfr_context():
                 "value": "approved"
             },
             {
+                "name": "approved_name",
+                "value": "epidermal growth factor receptor",
+                "type": "Extension"
+            },
+            {
                 "type": "Extension",
                 "name": "associated_with",
                 "value": [
+                    "ccds:CCDS5516",
+                    "ccds:CCDS5514",
+                    "iuphar:1797",
+                    "uniprot:P00533",
                     "vega:OTTHUMG00000023661",
                     "ucsc:uc003tqk.4",
-                    "ccds:CCDS87507",
-                    "ccds:CCDS47587",
-                    "ccds:CCDS87506",
-                    "ccds:CCDS5514",
                     "ccds:CCDS5515",
-                    "ccds:CCDS5516",
-                    "uniprot:P00533",
+                    "refseq:NM_005228",
+                    "ccds:CCDS87506",
+                    "ccds:CCDS47587",
                     "pubmed:1505215",
                     "cosmic:EGFR",
+                    "ccds:CCDS87507",
                     "omim:131550",
-                    "orphanet:121311",
-                    "iuphar:1797",
-                    "refseq:NM_005228"
+                    "orphanet:121311"
                 ]
             },
             {
@@ -319,6 +364,13 @@ def egfr_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "name": "previous_symbols",
+                "value": [
+                    "ERBB"
+                ],
+                "type": "Extension"
             }
         ]
     }
@@ -339,7 +391,6 @@ def limk2_gene_context():
             "ncbigene:3985",
             "ensembl:ENSG00000182541"
         ],
-        "alternate_labels": ["LIM domain kinase 2"],
         "extensions": [
             {
                 "type": "Extension",
@@ -347,21 +398,26 @@ def limk2_gene_context():
                 "value": "approved"
             },
             {
+                "name": "approved_name",
+                "value": "LIM domain kinase 2",
+                "type": "Extension"
+            },
+            {
                 "type": "Extension",
                 "name": "associated_with",
                 "value": [
-                    "vega:OTTHUMG00000151251",
-                    "ucsc:uc003akh.4",
-                    "ccds:CCDS13892",
-                    "ccds:CCDS13891",
+                    "refseq:NM_016733",
                     "ccds:CCDS33637",
+                    "ccds:CCDS13892",
+                    "ena.embl:D45906",
                     "uniprot:P53671",
-                    "pubmed:8537403",
                     "pubmed:10591208",
+                    "vega:OTTHUMG00000151251",
                     "omim:601988",
                     "iuphar:2055",
-                    "ena.embl:D45906",
-                    "refseq:NM_016733"
+                    "pubmed:8537403",
+                    "ccds:CCDS13891",
+                    "ucsc:uc003akh.4"
                 ]
             },
             {
@@ -971,8 +1027,9 @@ def assertion_checks(normalize_response, test_variation):
         assert resp_gene_context.value_id == test_variation_context.value_id
         assert set(resp_gene_context.xrefs) ==\
                set(test_variation_context.xrefs)
-        assert set(resp_gene_context.alternate_labels) == \
-               set(test_variation_context.alternate_labels)
+        if test_variation_context.alternate_labels:
+            assert set(resp_gene_context.alternate_labels) == \
+                   set(test_variation_context.alternate_labels)
         assert len(resp_gene_context.extensions) == \
                len(test_variation_context.extensions)
         for resp_ext in resp_gene_context.extensions:
