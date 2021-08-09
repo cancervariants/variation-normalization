@@ -1,8 +1,7 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple
 from variation import GENE_NORMALIZER
-from variation.schemas.ga4gh_vrsatile import Gene, VariationDescriptor, \
-    GeneDescriptor
+from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from variation.schemas.ga4gh_vrs import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
@@ -98,19 +97,9 @@ class Normalize:
             gene-normalizer.
         """
         gene_symbol = gene_token.matched_value
-        response = GENE_NORMALIZER.search_sources(gene_symbol, incl='hgnc')
-        if response['source_matches'][0]['records']:
-            record = response['source_matches'][0]['records'][0]
-            record_location = record.locations[0] if record.locations else None
-
-            return GeneDescriptor(
-                id=f"normalize.gene:{quote(' '.join(gene_symbol.strip().split()))}",  # noqa: E501
-                label=gene_symbol,
-                value=Gene(id=record.concept_id),
-                xrefs=record.xrefs if record.xrefs else [],
-                alternate_labels=[record.label] + record.aliases + record.previous_symbols,  # noqa: E501
-                extensions=self.get_extensions(record, record_location)
-            )
+        response = GENE_NORMALIZER.normalize(gene_symbol)
+        if 'gene_descriptor' in response and response['gene_descriptor']:
+            return response['gene_descriptor']
         return None
 
     def get_extensions(self, record, record_location):
