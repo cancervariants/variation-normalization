@@ -1,4 +1,4 @@
-"""Module for GA4GH Value Object Descriptor."""
+"""Module for modeling VRSATILE objects."""
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any, Type, Union
 from enum import Enum

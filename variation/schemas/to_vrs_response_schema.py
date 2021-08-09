@@ -1,4 +1,4 @@
-"""Module for Translation Response Schema."""
+"""Module for toVRS endpoint response schema."""
 from pydantic import BaseModel
 from typing import List, Dict, Type, Any, Optional
 from variation.schemas.ga4gh_vrs import Allele

@@ -1,6 +1,6 @@
 """Module for normalize endpoint response schema."""
 from pydantic import BaseModel
-from variation.schemas.ga4gh_vod import VariationDescriptor
+from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 

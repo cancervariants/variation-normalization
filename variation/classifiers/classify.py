@@ -50,7 +50,11 @@ class Classify:
         ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
-        """Classify a list of tokens."""
+        """Classify a list of tokens.
+
+        :param List[Token] tokens: List of tokens found
+        :return: A classification with the highest confidence rating
+        """
         classifications: List[Classification] = list()
 
         for classifier in self.classifiers:
