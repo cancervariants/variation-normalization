@@ -58,7 +58,7 @@ fastapi==0.68.0
 filelock==3.0.12
 flake8-docstrings==1.6.0
 flake8==3.9.2
-frozendict==2.0.3; python_version >= '3.6'
+frozendict==2.0.4; python_version >= '3.6'
 ga4gh.vrs[extras]==0.7.0rc3
 gene-normalizer==0.1.15
 gffutils==0.10.1
@@ -182,7 +182,7 @@ w3lib==1.22.0
 wcwidth==0.2.5
 webencodings==0.5.1
 websocket-client==1.1.1; python_version >= '3.6'
-websockets>=9.1
+websockets==8.1
 widgetsnbextension==3.5.1
 yoyo-migrations==7.3.2
 zipp==3.5.0; python_version >= '3.6'
