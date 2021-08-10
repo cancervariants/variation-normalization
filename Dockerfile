@@ -11,6 +11,6 @@ RUN if [ ! -f "Pipfile.lock" ] ; then pipenv lock ; else echo Pipfile.lock exist
 RUN pipenv sync
 EXPOSE 80
 HEALTHCHECK --interval=5m --timeout=3s \
-    CMD curl -f http://localhost/variant || exit 1
+    CMD curl -f http://localhost/variation || exit 1
 
-CMD pipenv run uvicorn variant.main:app  --port 80 --host 0.0.0.0
+CMD pipenv run uvicorn variation.main:app  --port 80 --host 0.0.0.0
