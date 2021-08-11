@@ -70,7 +70,7 @@ Variation Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/ma
 ![image](biomart.png)
 
 ### Setting up Gene Normalizer
-Variation Normalization `normalize` endpoint relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the `normalizer` endpoint to work.
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
 
 To setup, follow the instructions from the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md). 
 

@@ -9,8 +9,8 @@ class TokenMatchType(IntEnum):
 
     ID = 1
     SYMBOL = 2
-    ALIAS = 3
-    PREVIOUS = 4
+    PREVIOUS = 3
+    ALIAS = 4
     UNSPECIFIED = 5
 
 

@@ -1,48 +1,46 @@
 """Module for Gene Symbol tokenization."""
 from typing import Optional
+from gene.schemas import MatchType
 from .tokenizer import Tokenizer
-from .caches import GeneSymbolCache
 from variation.schemas.token_response_schema import GeneMatchToken, \
     TokenMatchType
+from variation import GENE_NORMALIZER
 
 
 class GeneSymbol(Tokenizer):
     """Class for gene symbol tokenization."""
 
-    def __init__(self, gene_cache: GeneSymbolCache) -> None:
+    def __init__(self) -> None:
         """Initialize the gene symbol tokenizer class."""
-        self.gene_cache = gene_cache
+        self.gene_normalizer = GENE_NORMALIZER
 
     def match(self, input_string: str) -> Optional[GeneMatchToken]:
         """Return token matches from input string."""
-        uppercase_input = input_string.upper()
-        if uppercase_input in self.gene_cache.gene_symbols:
+        norm_resp = self.gene_normalizer.normalize(input_string)
+
+        norm_match_type = norm_resp['match_type']
+        if norm_match_type == MatchType.CONCEPT_ID:
+            match_type = TokenMatchType.ID
+        elif norm_match_type == MatchType.SYMBOL:
+            match_type = TokenMatchType.SYMBOL
+        elif norm_match_type == MatchType.ALIAS:
+            match_type = TokenMatchType.ALIAS
+        elif norm_match_type == MatchType.PREV_SYMBOL:
+            match_type = TokenMatchType.PREVIOUS
+        else:
+            match_type = TokenMatchType.UNSPECIFIED
+
+        if match_type != TokenMatchType.UNSPECIFIED:
+            label = norm_resp['gene_descriptor']['label']
+        else:
+            label = input_string.upper()
+
+        if norm_match_type != 0:
             return GeneMatchToken(
-                token=uppercase_input,
+                token=label,
                 input_string=input_string,
-                matched_value=uppercase_input,
-                match_type=TokenMatchType.SYMBOL
-            )
-        elif uppercase_input in self.gene_cache.gene_ids:
-            return GeneMatchToken(
-                token=self.gene_cache.gene_ids[uppercase_input],
-                input_string=input_string,
-                matched_value=uppercase_input,
-                match_type=TokenMatchType.ID
-            )
-        elif uppercase_input in self.gene_cache.gene_aliases:
-            return GeneMatchToken(
-                token=self.gene_cache.gene_aliases[uppercase_input],
-                input_string=input_string,
-                matched_value=uppercase_input,
-                match_type=TokenMatchType.ALIAS
-            )
-        elif uppercase_input in self.gene_cache.previous_identifiers:
-            return GeneMatchToken(
-                token=self.gene_cache.previous_identifiers[uppercase_input],
-                input_string=input_string,
-                matched_value=uppercase_input,
-                match_type=TokenMatchType.PREVIOUS
+                matched_value=label,
+                match_type=match_type
             )
         else:
             return None

@@ -1,7 +1,6 @@
 """Module for testing gene pair tokenization."""
 import unittest
 from variation.tokenizers import GenePair
-from variation.tokenizers.caches import GeneSymbolCache
 from .tokenizer_base import TokenizerBase
 
 
@@ -10,7 +9,7 @@ class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Gene Pair Tokenizer instance."""
-        return GenePair(GeneSymbolCache())
+        return GenePair()
 
     def token_type(self):
         """Return Gene Pair token type."""
