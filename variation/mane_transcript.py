@@ -538,6 +538,11 @@ class MANETranscript:
                 return None
         chromosome, assembly = descr
 
+        if start_pos == end_pos:
+            is_same_pos = True
+        else:
+            is_same_pos = False
+
         # Coordinate liftover
         lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
         liftover_start_i = self.uta.get_liftover(lo, chromosome, start_pos)
@@ -546,7 +551,7 @@ class MANETranscript:
         else:
             start_pos = liftover_start_i[1]
 
-        if start_pos != end_pos:
+        if not is_same_pos:
             liftover_end_i = self.uta.get_liftover(lo, chromosome, end_pos)
             if liftover_end_i is None:
                 return None
