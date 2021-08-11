@@ -238,7 +238,7 @@ class UTA:
             f"""
             SELECT hgnc, tx_ac, tx_start_i, tx_end_i, alt_ac, alt_start_i,
                 alt_end_i, alt_strand, alt_aln_method, tx_exon_id, alt_exon_id
-            FROM {self.schema}.tx_exon_aln
+            FROM {self.schema}.tx_exon_aln_v
             WHERE tx_ac='{temp_ac}'
             {alt_ac_q}
             {aln_method}
@@ -371,7 +371,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT alt_ac
-            FROM {self.schema}.tx_exon_aln
+            FROM {self.schema}.tx_exon_aln_v
             WHERE hgnc = '{gene}'
             AND alt_ac LIKE 'NC_00%'
             ORDER BY alt_ac DESC
@@ -396,7 +396,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT hgnc
-            FROM {self.schema}.tx_exon_aln
+            FROM {self.schema}.tx_exon_aln_v
             WHERE alt_ac = '{ac}'
             AND {start_pos} BETWEEN alt_start_i AND alt_end_i
             AND {end_pos} BETWEEN alt_start_i AND alt_end_i
