@@ -5,7 +5,6 @@ from variation.translators import GenomicDeletion
 from variation.validators import GenomicDeletion as GD_V
 from .translator_base import TranslatorBase
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import GeneSymbolCache
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
@@ -28,7 +27,7 @@ class TestGenomicDeletionTranslator(TranslatorBase, unittest.TestCase):
         dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
         tlr = Translator(data_proxy=dp)
         return GD_V(
-            seqrepo_access, transcript_mappings, GeneSymbol(GeneSymbolCache()),
+            seqrepo_access, transcript_mappings, GeneSymbol(),
             MANETranscript(seqrepo_access, transcript_mappings,
                            MANETranscriptMappings(), uta),
             uta, dp, tlr
