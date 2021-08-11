@@ -18,6 +18,7 @@ class SeqRepoAccess:
         :param str seqrepo_data_path: The path to the seqrepo directory.
         """
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
+        self.cache = dict()
 
     def sequence_at_position(self, transcript: str, pos: int) -> Optional[str]:
         """Return sequence at a position for a given transcript.
@@ -27,13 +28,13 @@ class SeqRepoAccess:
         :return: A sequence (protein or nucleotide)
         """
         try:
-            t = self.seq_repo_client.fetch(transcript)
-            if len(t) < pos - 1:
+            sequence = self._get_sequence(transcript)
+            if len(sequence) < pos - 1:
                 logger.warning(f"Position {pos} exceeds {transcript} length")
                 return None
             else:
                 try:
-                    return t[pos - 1]
+                    return sequence[pos - 1]
                 except IndexError:
                     logger.warning(f"Position {pos} not found in transcript "
                                    f"{transcript}")
@@ -51,7 +52,7 @@ class SeqRepoAccess:
         :param int end: End position
         """
         try:
-            sequence = self.seq_repo_client.fetch(transcript)
+            sequence = self._get_sequence(transcript)
             len_of_sequence = len(sequence)
             if len_of_sequence < start - 1:
                 logger.warning(f"Position {start-1} exceeds"
@@ -79,10 +80,24 @@ class SeqRepoAccess:
         :return: Length of transcript
         """
         try:
-            return len(self.seq_repo_client.fetch(transcript))
+            sequence = self._get_sequence(transcript)
+            return len(sequence)
         except KeyError:
             logger.warning(f"Accession {transcript} not found in SeqRepo")
             return 0
+
+    def _get_sequence(self, transcript) -> str:
+        """Return sequence for a transcript.
+
+        :param str transcript: Transcript accession
+        :return: Sequence
+        """
+        if transcript in self.cache.keys():
+            return self.cache[transcript]
+        else:
+            sequence = self.seq_repo_client.fetch(transcript)
+            self.cache[transcript] = sequence
+            return sequence
 
     def aliases(self, input_str) -> List[str]:
         """Get aliases for a given input."""
