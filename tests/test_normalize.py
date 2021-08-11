@@ -15,7 +15,7 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
     UTA, MANETranscriptMappings
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
+from variation.tokenizers.caches import AminoAcidCache
 from datetime import datetime
 import copy
 
@@ -30,7 +30,7 @@ def test_normalize():
             classifier = Classify()
             seqrepo_access = SeqRepoAccess()
             transcript_mappings = TranscriptMappings()
-            gene_symbol = GeneSymbol(GeneSymbolCache())
+            gene_symbol = GeneSymbol()
             amino_acid_cache = AminoAcidCache()
             uta = UTA()
             mane_transcript_mappings = MANETranscriptMappings()
