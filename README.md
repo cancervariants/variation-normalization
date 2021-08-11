@@ -1,7 +1,7 @@
 # Variation Normalization
 Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest/) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
-Public OpenAPI endpoint: https://normalize.cancervariants.org/variant
+Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
