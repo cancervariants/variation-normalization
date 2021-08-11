@@ -236,8 +236,9 @@ class UTA:
 
         query = (
             f"""
-            SELECT *
-            FROM {self.schema}.tx_exon_aln_v
+            SELECT hgnc, tx_ac, tx_start_i, tx_end_i, alt_ac, alt_start_i,
+                alt_end_i, alt_strand, alt_aln_method, tx_exon_id, alt_exon_id
+            FROM {self.schema}.tx_exon_aln
             WHERE tx_ac='{temp_ac}'
             {alt_ac_q}
             {aln_method}
@@ -266,15 +267,15 @@ class UTA:
         :return: Gene, strand, and position ranges for tx and alt_ac
         """
         gene = result[0]
-        if result[4] == -1:
+        if result[7] == -1:
             strand = '-'
         else:
             strand = '+'
-        tx_pos_range = result[6], result[7]
-        alt_pos_range = result[8], result[9]
-        alt_aln_method = result[3]
-        tx_exon_id = result[15]
-        alt_exon_id = result[16]
+        tx_pos_range = result[2], result[3]
+        alt_pos_range = result[5], result[6]
+        alt_aln_method = result[8]
+        tx_exon_id = result[9]
+        alt_exon_id = result[10]
 
         if (tx_pos_range[1] - tx_pos_range[0]) != \
                 (alt_pos_range[1] - alt_pos_range[0]):
@@ -319,7 +320,7 @@ class UTA:
             return None
 
         data['tx_ac'] = result[1]
-        data['alt_ac'] = result[2]
+        data['alt_ac'] = result[4]
         data['coding_start_site'] = coding_start_site[0]
         data['coding_end_site'] = coding_start_site[1]
         data['alt_pos_change'] = (
@@ -350,7 +351,7 @@ class UTA:
         if not data:
             return None
         data['tx_ac'] = ac
-        data['alt_ac'] = result[2]
+        data['alt_ac'] = result[4]
         data['pos_change'] = (
             pos[0] - data['tx_pos_range'][0],
             data['tx_pos_range'][1] - pos[1]
@@ -370,7 +371,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT alt_ac
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.tx_exon_aln
             WHERE hgnc = '{gene}'
             AND alt_ac LIKE 'NC_00%'
             ORDER BY alt_ac DESC
@@ -395,7 +396,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT hgnc
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.tx_exon_aln
             WHERE alt_ac = '{ac}'
             AND {start_pos} BETWEEN alt_start_i AND alt_end_i
             AND {end_pos} BETWEEN alt_start_i AND alt_end_i
@@ -416,7 +417,7 @@ class UTA:
 
     def get_transcripts_from_gene(self, gene, start_pos, end_pos)\
             -> pd.core.frame.DataFrame:
-        """Get transcripts on p/c/g coordinate associated to a gene.
+        """Get transcripts on c coordinate associated to a gene.
 
         :param str gene: Gene symbol
         :param int start_pos: Start position change on c. coordinate
@@ -505,7 +506,7 @@ class UTA:
         # Change alt_ac to most recent
         query = (
             f"""
-            SELECT *
+            SELECT ac
             FROM {self.schema}.seq_anno
             WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
             ORDER BY ac
@@ -513,7 +514,7 @@ class UTA:
         )
         self.cursor.execute(query)
         nc_acs = self.cursor.fetchall()
-        genomic_tx_data['alt_ac'] = nc_acs[-1][3]
+        genomic_tx_data['alt_ac'] = nc_acs[-1][0]
 
     @staticmethod
     def get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
