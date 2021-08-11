@@ -36,19 +36,14 @@ from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from variation.schemas.token_response_schema import Token, TokenMatchType
-from .caches import GeneSymbolCache, AminoAcidCache, NucleotideCache
-from variation import HGNC_GENE_SYMBOL_PATH
+from .caches import AminoAcidCache, NucleotideCache
 
 
 class Tokenize:
     """The tokenize class."""
 
-    def __init__(self, gene_file_path=HGNC_GENE_SYMBOL_PATH) -> None:
-        """Initialize the tokenize class.
-
-        :param str gene_file_path: The path to the gene file
-        """
-        gene_cache = GeneSymbolCache(gene_file_path)
+    def __init__(self) -> None:
+        """Initialize the tokenize class."""
         amino_acid_cache = AminoAcidCache()
         nucleotide_cache = NucleotideCache()
 
@@ -61,8 +56,8 @@ class Tokenize:
             Expression(),
             Fusion(),
             GainOfFunction(),
-            GenePair(gene_cache),
-            GeneSymbol(gene_cache),
+            GenePair(),
+            GeneSymbol(),
             LossOfFunction(),
             OverExpression(),
             ProteinAlternate(amino_acid_cache),
