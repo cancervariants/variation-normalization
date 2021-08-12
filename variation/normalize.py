@@ -70,9 +70,9 @@ class Normalize:
                     resp, warnings = self._no_variation_entered()
                 else:
                     warning = f"Unable to normalize {q}"
-                    resp = Text(
-                        _id=_id,
-                        definition=q
+                    resp = VariationDescriptor(
+                        id=_id,
+                        value=Text(definition=q)
                     )
                     if not warnings:
                         warnings.append(warning)

@@ -1337,12 +1337,12 @@ def test_no_matches(test_normalize):
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
-        assert resp.type == 'Text'
+        assert resp.type == 'VariationDescriptor'
+        assert resp.value['type'] == 'Text'
 
     resp = test_normalize.normalize('clinvar:10')
-    assert resp.type == 'Text'
-    assert resp.id == 'normalize.variation:clinvar%3A10'
-    assert resp.definition == 'clinvar:10'
+    assert resp.type == 'VariationDescriptor'
+    assert resp.value['definition'] == 'clinvar:10'
 
     resp = test_normalize.normalize('   ')
     assert resp is None
