@@ -2,6 +2,7 @@
 from typing import Optional, List
 from biocommons.seqrepo import SeqRepo
 from variation import SEQREPO_DATA_PATH
+from os import environ
 import logging
 
 
@@ -17,6 +18,7 @@ class SeqRepoAccess:
 
         :param str seqrepo_data_path: The path to the seqrepo directory.
         """
+        environ['SEQREPO_LRU_CACHE_MAXSIZE'] = "none"
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
         self.cache = dict()
 
