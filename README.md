@@ -1,5 +1,5 @@
 # Variation Normalization
-Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest/) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms into [VRS (v1.1.1)](https://vrs.ga4gh.org/en/1.1.1) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
@@ -10,7 +10,7 @@ Variation Normalization is limited to substitution, deletion, insertion, and del
 
 ### Endpoints
 #### /toVRS
-The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/stable/terms_and_model.html#allele).
+The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/1.1.1/terms_and_model.html#allele).
 
 #### /normalize
 The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found.
