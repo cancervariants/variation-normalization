@@ -1,6 +1,5 @@
 """Module for normalize endpoint response schema."""
 from pydantic import BaseModel
-from variation.schemas.ga4gh_vrs import Text
 from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
@@ -38,8 +37,7 @@ class NormalizeService(BaseModel):
 
     variation_query: str
     warnings: Optional[List[str]]
-    variation_descriptor: Optional[VariationDescriptor] = None
-    text: Optional[Text] = None
+    variation_descriptor: Optional[VariationDescriptor]
     service_meta_: ServiceMeta
 
     class Config:
