@@ -49,6 +49,8 @@ class TranslatorBase:
             for vr in validation_results:
                 if vr.is_valid:
                     loc = (self.translator.translate(vr)).__dict__
+                    loc['location'] = loc['location'].dict()
+                    del loc['location']['id']
                     if loc not in found:
                         found.append(loc)
                         num_valid += 1
