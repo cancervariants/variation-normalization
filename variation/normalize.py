@@ -46,7 +46,7 @@ class Normalize:
                 allele = valid_result.allele
                 allele_id = allele.pop('_id')
                 identifier = valid_result.identifier
-                ref_allele_seq = self.get_ref_allele_seq(
+                vrs_ref_allele_seq = self.get_ref_allele_seq(
                     allele, identifier
                 )
 
@@ -62,7 +62,7 @@ class Normalize:
                     value=allele,
                     molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
                     structural_type=valid_result.classification_token.so_id,
-                    ref_allele_seq=ref_allele_seq,
+                    vrs_ref_allele_seq=vrs_ref_allele_seq,
                     gene_context=gene_context
                 )
             else:
