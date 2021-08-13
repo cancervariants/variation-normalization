@@ -1,22 +1,11 @@
 """Module for modeling VRSATILE objects."""
-from pydantic import BaseModel
-from typing import List, Optional, Dict, Any, Type
+from pydantic import BaseModel, validator, root_validator
+from pydantic.types import StrictStr
+from typing import List, Optional, Dict, Any, Type, Union
 from enum import Enum
-from gene.schemas import GeneDescriptor, Extension
-
-
-class ValueObjectDescriptor(BaseModel):
-    """GA4GH Value Object Descriptor."""
-
-    id: str
-    type: str
-    label: Optional[str]
-    description: Optional[str]
-    value_id: Optional[str]
-    value: Optional[dict]
-    xrefs: Optional[List[str]]
-    alternate_labels: Optional[List[str]]
-    extensions: Optional[List[Extension]]
+from gene.schemas import GeneDescriptor, Extension, check_curie
+from variation.schemas.ga4gh_vrs import Allele, Text
+import re
 
 
 class MoleculeContext(str, Enum):
@@ -31,9 +20,11 @@ class Expression(BaseModel):
     """Enable descriptions based on a specified nomenclature or syntax for representing an object. - GA4GH"""  # noqa: E501
 
     type = 'Expression'
-    syntax: str
-    value: str
-    version: Optional[str]
+    syntax: StrictStr
+    value: StrictStr
+    version: Optional[StrictStr]
+
+    _validate_syntax = validator('syntax', allow_reuse=True)(check_curie)
 
     class Config:
         """Configure model."""
@@ -53,15 +44,40 @@ class Expression(BaseModel):
             }
 
 
-class VariationDescriptor(ValueObjectDescriptor):
-    """Reference GA4GH Variation Value Objects."""
+class VariationDescriptor(BaseModel):
+    """GA4GH Value Object Descriptor."""
 
+    id: StrictStr
     type = 'VariationDescriptor'
+    value_id: Optional[StrictStr]
+    value: Optional[Union[Allele, Text]]
+    label: Optional[StrictStr]
+    extensions: Optional[List[Extension]]
     molecule_context: Optional[MoleculeContext]
-    structural_type: Optional[str]
+    structural_type: Optional[StrictStr]
     expressions: Optional[Expression]
-    ref_allele_seq: Optional[str]
     gene_context: Optional[GeneDescriptor]
+    vrs_ref_allele_seq: Optional[StrictStr]
+
+    _validate_id = validator('id', allow_reuse=True)(check_curie)
+    _validate_value_id = validator('value_id', allow_reuse=True)(check_curie)
+    _validate_structural_type = \
+        validator('structural_type', allow_reuse=True)(check_curie)
+
+    @root_validator(pre=True)
+    def check_value_or_value_id_present(cls, values):
+        """Check that at least one of {`value`, `value_id`} is provided."""
+        msg = 'Must give values for either `value`, `value_id`, or both'
+        value, value_id = values.get('value'), values.get('value_id')
+        assert value or value_id, msg
+        return values
+
+    @validator('vrs_ref_allele_seq')
+    def check_vrs_ref_allele_seq(cls, v):
+        """Validate vrs_ref_allele_seq"""
+        if v is not None:
+            assert bool(re.match(r"^[A-Z*\-]*$", v))
+        return v
 
     class Config:
         """Configure model."""
@@ -98,7 +114,7 @@ class VariationDescriptor(ValueObjectDescriptor):
                 "label": "BRAF V600E",
                 "molecule_context": "protein",
                 "structural_type": "SO:0001606",
-                "ref_allele_seq": "V",
+                "vrs_ref_allele_seq": "V",
                 "gene_context": {
                     "id": "normalize.gene:BRAF",
                     "type": "GeneDescriptor",
