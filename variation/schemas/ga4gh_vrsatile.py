@@ -52,9 +52,6 @@ class VariationDescriptor(BaseModel):
     value_id: Optional[StrictStr]
     value: Optional[Union[Allele, Text]]
     label: Optional[StrictStr]
-    description: Optional[StrictStr]
-    xrefs: Optional[List[StrictStr]]
-    alternate_labels: Optional[List[StrictStr]]
     extensions: Optional[List[Extension]]
     molecule_context: Optional[MoleculeContext]
     structural_type: Optional[StrictStr]
@@ -64,7 +61,8 @@ class VariationDescriptor(BaseModel):
 
     _validate_id = validator('id', allow_reuse=True)(check_curie)
     _validate_value_id = validator('value_id', allow_reuse=True)(check_curie)
-    _validate_xrefs = validator('xrefs', allow_reuse=True)(check_curie)
+    _validate_structural_type = \
+        validator('structural_type', allow_reuse=True)(check_curie)
 
     @root_validator(pre=True)
     def check_value_or_value_id_present(cls, values):
@@ -73,9 +71,6 @@ class VariationDescriptor(BaseModel):
         value, value_id = values.get('value'), values.get('value_id')
         assert value or value_id, msg
         return values
-
-    _validate_structural_type = \
-        validator('structural_type', allow_reuse=True)(check_curie)
 
     @validator('vrs_ref_allele_seq')
     def check_vrs_ref_allele_seq(cls, v):
