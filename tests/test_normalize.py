@@ -614,7 +614,7 @@ def nc_000007_genomic_delins(braf_gene_context):
 def nm_000551(vhl_gene_context):
     """Create test fixture for NM_000551.4:c.615delinsAA."""
     params = {
-        "id": 'temp_id',
+        "id": 'normalize.variation:temp',
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
         "value": {
@@ -1339,11 +1339,11 @@ def test_no_matches(test_normalize):
     for q in queries:
         resp = test_normalize.normalize(q)
         assert resp.type == 'VariationDescriptor'
-        assert resp.value['type'] == 'Text'
+        assert resp.value.type == 'Text'
 
     resp = test_normalize.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'
-    assert resp.value['definition'] == 'clinvar:10'
+    assert resp.value.definition == 'clinvar:10'
 
     resp = test_normalize.normalize('   ')
     assert resp is None
