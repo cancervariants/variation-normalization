@@ -20,7 +20,6 @@ variation/data/seqrepo/
 variation/data/uta_20180821
 variation/data/notebooks
 variation/data/*.txt
-variation/data/*.json
 
 Pipfile.lock
 
