@@ -1,6 +1,6 @@
 """Module for normalize endpoint response schema."""
 from pydantic import BaseModel
-from variation.schemas.ga4gh_vrs import Text
+from pydantic.types import StrictStr
 from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
@@ -10,7 +10,7 @@ class ServiceMeta(BaseModel):
     """Metadata regarding the variation-normalization service."""
 
     name = 'variation-normalizer'
-    version: str
+    version: StrictStr
     response_datetime: datetime
     url = 'https://github.com/cancervariants/variation-normalization'
 
@@ -36,10 +36,9 @@ class ServiceMeta(BaseModel):
 class NormalizeService(BaseModel):
     """A response to normalizing a variation to a single GA4GH Value Object Descriptor."""  # noqa: E501
 
-    variation_query: str
-    warnings: Optional[List[str]]
-    variation_descriptor: Optional[VariationDescriptor] = None
-    text: Optional[Text] = None
+    variation_query: StrictStr
+    warnings: Optional[List[StrictStr]]
+    variation_descriptor: Optional[VariationDescriptor]
     service_meta_: ServiceMeta
 
     class Config:
@@ -78,7 +77,7 @@ class NormalizeService(BaseModel):
                     },
                     "molecule_context": "protein",
                     "structural_type": "SO:0001606",
-                    "ref_allele_seq": "V",
+                    "vrs_ref_allele_seq": "V",
                     "gene_context": {
                         "id": "normalize.gene:BRAF",
                         "type": "GeneDescriptor",

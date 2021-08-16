@@ -464,7 +464,7 @@ def braf_v600e(braf_gene_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
-        "ref_allele_seq": "V",
+        "vrs_ref_allele_seq": "V",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -495,7 +495,7 @@ def vhl(vhl_gene_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:0001617",
-        "ref_allele_seq": "Y",
+        "vrs_ref_allele_seq": "Y",
         "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
@@ -526,7 +526,7 @@ def vhl_silent(vhl_gene_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:0001017",
-        "ref_allele_seq": "P",
+        "vrs_ref_allele_seq": "P",
         "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
@@ -542,7 +542,7 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
         "value": braf_nuc_value,
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
-        "ref_allele_seq": "T",
+        "vrs_ref_allele_seq": "T",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -573,7 +573,7 @@ def nm_004448_coding_dna_delins(erbb2_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
-        "ref_allele_seq": "GG",
+        "vrs_ref_allele_seq": "GG",
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
@@ -604,7 +604,7 @@ def nc_000007_genomic_delins(braf_gene_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
-        "ref_allele_seq": "TG",
+        "vrs_ref_allele_seq": "TG",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -614,7 +614,7 @@ def nc_000007_genomic_delins(braf_gene_context):
 def nm_000551(vhl_gene_context):
     """Create test fixture for NM_000551.4:c.615delinsAA."""
     params = {
-        "id": 'temp_id',
+        "id": 'normalize.variation:temp',
         "type": "VariationDescriptor",
         "value_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
         "value": {
@@ -635,7 +635,7 @@ def nm_000551(vhl_gene_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
-        "ref_allele_seq": "C",
+        "vrs_ref_allele_seq": "C",
         "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
@@ -674,7 +674,7 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
         "value": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
-        "ref_allele_seq": "T",
+        "vrs_ref_allele_seq": "T",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -692,7 +692,7 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
         "value": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
-        "ref_allele_seq": "T",
+        "vrs_ref_allele_seq": "T",
         "gene_context": braf_gene_context
     }
     return VariationDescriptor(**params)
@@ -723,7 +723,7 @@ def amino_acid_delins(egfr_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:1000032",
-        "ref_allele_seq": "LREAT",
+        "vrs_ref_allele_seq": "LREAT",
         "gene_context": egfr_context
     }
     return VariationDescriptor(**params)
@@ -756,7 +756,7 @@ def amino_acid_deletion_np_range(erbb2_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:0001604",
-        "ref_allele_seq": "LRENT",
+        "vrs_ref_allele_seq": "LRENT",
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
@@ -789,7 +789,7 @@ def coding_dna_deletion(erbb2_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
-        "ref_allele_seq": "TTGAGGGAAAACACAT",
+        "vrs_ref_allele_seq": "TTGAGGGAAAACACAT",
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
@@ -820,7 +820,7 @@ def genomic_deletion(vhl_gene_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
-        "ref_allele_seq": "ATGTTGACGGACAGCCTAT",
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
         "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
@@ -911,7 +911,7 @@ def genomic_insertion(erbb2_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:0000667",
-        "ref_allele_seq": "TACGTGATGGCT",
+        "vrs_ref_allele_seq": "TACGTGATGGCT",
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
@@ -942,7 +942,7 @@ def genomic_substitution(egfr_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
-        "ref_allele_seq": "C",
+        "vrs_ref_allele_seq": "C",
         "gene_context": egfr_context
     }
     return VariationDescriptor(**params)
@@ -973,7 +973,7 @@ def genomic_sub_grch38():
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
-        "ref_allele_seq": "C"
+        "vrs_ref_allele_seq": "C"
     }
     return VariationDescriptor(**params)
 
@@ -1003,7 +1003,7 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
-        "ref_allele_seq": "C",
+        "vrs_ref_allele_seq": "C",
         "gene_context": egfr_context
     }
     return VariationDescriptor(**params)
@@ -1017,7 +1017,8 @@ def assertion_checks(normalize_response, test_variation):
     assert normalize_response.molecule_context == \
            test_variation.molecule_context
     assert normalize_response.structural_type == test_variation.structural_type
-    assert normalize_response.ref_allele_seq == test_variation.ref_allele_seq
+    assert normalize_response.vrs_ref_allele_seq == \
+           test_variation.vrs_ref_allele_seq
 
     resp_gene_context = normalize_response.gene_context
     test_variation_context = test_variation.gene_context
@@ -1337,12 +1338,12 @@ def test_no_matches(test_normalize):
     ]
     for q in queries:
         resp = test_normalize.normalize(q)
-        assert resp.type == 'Text'
+        assert resp.type == 'VariationDescriptor'
+        assert resp.value.type == 'Text'
 
     resp = test_normalize.normalize('clinvar:10')
-    assert resp.type == 'Text'
-    assert resp.id == 'normalize.variation:clinvar%3A10'
-    assert resp.definition == 'clinvar:10'
+    assert resp.type == 'VariationDescriptor'
+    assert resp.value.definition == 'clinvar:10'
 
     resp = test_normalize.normalize('   ')
     assert resp is None

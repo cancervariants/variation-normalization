@@ -46,7 +46,7 @@ class Normalize:
                 allele = valid_result.allele
                 allele_id = allele.pop('_id')
                 identifier = valid_result.identifier
-                ref_allele_seq = self.get_ref_allele_seq(
+                vrs_ref_allele_seq = self.get_ref_allele_seq(
                     allele, identifier
                 )
 
@@ -62,7 +62,7 @@ class Normalize:
                     value=allele,
                     molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
                     structural_type=valid_result.classification_token.so_id,
-                    ref_allele_seq=ref_allele_seq,
+                    vrs_ref_allele_seq=vrs_ref_allele_seq,
                     gene_context=gene_context
                 )
             else:
@@ -70,9 +70,9 @@ class Normalize:
                     resp, warnings = self._no_variation_entered()
                 else:
                     warning = f"Unable to normalize {q}"
-                    resp = Text(
-                        _id=_id,
-                        definition=q
+                    resp = VariationDescriptor(
+                        id=_id,
+                        value=Text(definition=q)
                     )
                     if not warnings:
                         warnings.append(warning)
@@ -101,38 +101,6 @@ class Normalize:
         if 'gene_descriptor' in response and response['gene_descriptor']:
             return response['gene_descriptor']
         return None
-
-    def get_extensions(self, record, record_location):
-        """Return a list of ga4gh extensions.
-
-        :param gene.schemas.Gene record: The record from the normalization
-            service
-        :param gene.schemas.ChromosomeLocation record_location: The record's
-            location
-        :return: List of extensions providing additional information
-        """
-        extensions = list()
-        self.add_extension(extensions, 'strand', record.strand)
-        self.add_extension(extensions, 'symbol_status', record.symbol_status)
-        self.add_extension(extensions, 'associated_with',
-                           record.associated_with)
-        self.add_extension(extensions, 'chromosome_location',
-                           record_location.dict(by_alias=True))
-        return extensions
-
-    def add_extension(self, extensions, name, value):
-        """Add extension to list of extensions.
-
-        :param list extensions: List of ga4gh extensions
-        :param str name: name of extension
-        :param any value: value of extension
-        """
-        if value:
-            extensions.append({
-                'type': 'Extension',
-                'name': name,
-                'value': value
-            })
 
     def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.

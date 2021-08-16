@@ -32,6 +32,6 @@ pydantic = "*"
 uvloop = "*"
 httptools = "*"
 "ga4gh.vrs" = {version = "==0.7.0rc3", extras = ["extras"]}
-gene-normalizer = "*"
+gene-normalizer = ">=0.1.17"
 pyliftover = "*"
 boto3 = "*"
