@@ -111,7 +111,7 @@ class MANETranscript:
         if ac.startswith('ENST'):
             if not self.transcript_mappings.ensembl_transcript_version_to_gene_symbol.get(ac):  # noqa: E501
                 try:
-                    self.seqrepo_access.seq_repo_client.fetch(ac)
+                    self.seqrepo_access._get_sequence(ac)
                 except KeyError:
                     logger.warning(f"Ensembl transcript not found: {ac}")
                     return None
