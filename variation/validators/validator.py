@@ -537,9 +537,12 @@ class Validator(ABC):
         s_copy = copy.deepcopy(s)
         if coordinate == 'g':
             if not gene_tokens and mane['gene']:
-                gene_tokens.append(
-                    self._gene_matcher.match(mane['gene'])
-                )
+                gene_tokens.append(GeneMatchToken(
+                    token=mane['gene'],
+                    input_string=mane['gene'],
+                    matched_value=mane['gene'],
+                    match_type=token_schema.TokenMatchType.SYMBOL
+                ))
 
             if mane['status'].lower() != 'grch38':
                 s_copy.molecule_context = 'transcript'
@@ -601,15 +604,16 @@ class Validator(ABC):
         :param list gene_tokens: List of GeneMatchTokens
         """
         mane_data_keys = mane_data.keys()
-        for key in ['mane_select', 'mane_plus_clinical',
-                    'longest_compatible_remaining', 'grch38']:
+        for key in ['mane_select', 'mane_plus_clinical', 'grch38',
+                    'longest_compatible_remaining']:
             highest_count = 0
             mane_result = None
             mane_allele = None
             identifier = None
             if key not in mane_data_keys:
                 continue
-            for mane_allele_id in mane_data[key].keys():
+            _mane_data_keys = mane_data[key].keys()
+            for mane_allele_id in _mane_data_keys:
                 data = mane_data[key][mane_allele_id]
 
                 if data['count'] > highest_count:
