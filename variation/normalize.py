@@ -119,7 +119,7 @@ class Normalize:
         if start and end:
             refseq_list = list()
             while start <= end:
-                refseq_list.append(self.seqrepo_access.sequence_at_position(
+                refseq_list.append(self.seqrepo_access.get_sequence(
                     identifier, start
                 ))
                 start += 1

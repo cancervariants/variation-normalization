@@ -58,8 +58,9 @@ class SingleNucleotideVariationBase(Validator):
                     )
 
                 if not errors:
-                    len_of_seq = self.seqrepo_access.len_of_sequence(t)
-                    if len_of_seq < s.position - 1:
+                    sequence = \
+                        self.seqrepo_access.get_sequence(t, s.position)
+                    if sequence is None:
                         errors.append('Sequence index error')
 
                 if not errors:
