@@ -116,18 +116,7 @@ class Normalize:
         else:
             return None
 
-        if start and end:
-            refseq_list = list()
-            while start <= end:
-                refseq_list.append(self.seqrepo_access.get_sequence(
-                    identifier, start
-                ))
-                start += 1
-            try:
-                return ''.join(refseq_list)
-            except TypeError:
-                pass
-        return None
+        return self.seqrepo_access.get_sequence(identifier, start, end)
 
     def _is_token_type(self, valid_result_tokens, token_type) -> bool:
         """Return whether or not token_type is in valid_result_tokens.
