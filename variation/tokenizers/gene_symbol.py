@@ -13,10 +13,15 @@ class GeneSymbol(Tokenizer):
     def __init__(self) -> None:
         """Initialize the gene symbol tokenizer class."""
         self.gene_normalizer = GENE_NORMALIZER
+        self._gene_cache = dict()
 
     def match(self, input_string: str) -> Optional[GeneMatchToken]:
         """Return token matches from input string."""
-        norm_resp = self.gene_normalizer.normalize(input_string)
+        upper_input = input_string.upper()
+        if upper_input in self._gene_cache:
+            return self._gene_cache[upper_input]
+
+        norm_resp = self.gene_normalizer.normalize(upper_input)
 
         norm_match_type = norm_resp['match_type']
         if norm_match_type == MatchType.CONCEPT_ID:
@@ -33,14 +38,16 @@ class GeneSymbol(Tokenizer):
         if match_type != TokenMatchType.UNSPECIFIED:
             label = norm_resp['gene_descriptor']['label']
         else:
-            label = input_string.upper()
+            label = upper_input
 
         if norm_match_type != 0:
-            return GeneMatchToken(
+            gene_match_token = GeneMatchToken(
                 token=label,
                 input_string=input_string,
                 matched_value=label,
                 match_type=match_type
             )
+            self._gene_cache[upper_input] = gene_match_token
+            return gene_match_token
         else:
             return None
