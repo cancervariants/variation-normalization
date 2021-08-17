@@ -486,7 +486,7 @@ class Validator(ABC):
         elif alt_type in ['substitution', 'deletion', 'delins',
                           'silent_mutation', 'nonsense']:
             if alt_type == 'silent_mutation':
-                state = self.seqrepo_access.sequence_at_position(
+                state = self.seqrepo_access.get_sequence(
                     ac, ival_start
                 )
             else:

@@ -24,7 +24,7 @@ class AminoAcidBase:
         :param str pos: Expected position
         :param list errors: List of errors
         """
-        ref_aa = self.seqrepo_access.sequence_at_position(t, pos)
+        ref_aa = self.seqrepo_access.get_sequence(t, pos)
         if ref_aa and len(ref_aa) == 1 \
                 and len(aa) == 3:
             aa = self.amino_acid_cache.convert_three_to_one(aa)

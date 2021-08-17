@@ -1,4 +1,6 @@
-"""Module for transcript alignments and genome  assemblt liftover."""
+"""Module for transcript alignments and genome  assembly liftover.
+Variation Normalization only supports liftover from GRCh37 assembly.
+"""
 from typing import Dict, Optional, List, Tuple
 import psycopg2
 import psycopg2.extras
@@ -17,13 +19,6 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-# Assembly mappings
-GRCH_TO_HG = {
-    'GRCh37': 'hg19',
-    'GRCh38': 'hg38'
-}
-
-
 class UTA:
     """Class for accessing UTA database."""
 
@@ -39,6 +34,7 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        self.liftover = LiftOver('hg19', 'hg38')
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
@@ -491,16 +487,14 @@ class UTA:
             return None
 
         # Get most recent assembly version position
-        lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-
         # Liftover range
         self._set_liftover(
-            genomic_tx_data, 'alt_pos_range', lo, chromosome
+            genomic_tx_data, 'alt_pos_range', chromosome
         )
 
         # Liftover changes range
         self._set_liftover(
-            genomic_tx_data, 'alt_pos_change_range', lo, chromosome
+            genomic_tx_data, 'alt_pos_change_range', chromosome
         )
 
         # Change alt_ac to most recent
@@ -516,8 +510,7 @@ class UTA:
         nc_acs = self.cursor.fetchall()
         genomic_tx_data['alt_ac'] = nc_acs[-1][0]
 
-    @staticmethod
-    def get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
+    def get_liftover(self, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
 
         :param LiftOver lo: LiftOver object to convert coordinates
@@ -526,14 +519,14 @@ class UTA:
         :return: [Target chromosome, target position, target strand,
             conversion_chain_score] for hg38 assembly
         """
-        liftover = lo.convert_coordinate(chromosome, pos)
+        liftover = self.liftover.convert_coordinate(chromosome, pos)
         if liftover is None or len(liftover) == 0:
             logger.warning(f"{pos} does not exist on {chromosome}")
             return None
         else:
             return liftover[0]
 
-    def _set_liftover(self, genomic_tx_data, key, lo, chromosome) -> None:
+    def _set_liftover(self, genomic_tx_data, key, chromosome) -> None:
         """Update genomic_tx_data to have hg38 coordinates.
 
         :param dict genomic_tx_data:
@@ -541,14 +534,14 @@ class UTA:
         :param LiftOver lo: LiftOver object to convert coordinates
         :param str chromosome: Chromosome
         """
-        liftover_start_i = self.get_liftover(lo, chromosome,
+        liftover_start_i = self.get_liftover(chromosome,
                                              genomic_tx_data[key][0])
         if liftover_start_i is None:
             logger.warning(f"Unable to liftover position "
                            f"{genomic_tx_data[key][0]} on {chromosome}")
             return None
 
-        liftover_end_i = self.get_liftover(lo, chromosome,
+        liftover_end_i = self.get_liftover(chromosome,
                                            genomic_tx_data[key][1])
         if liftover_end_i is None:
             logger.warning(f"Unable to liftover position "

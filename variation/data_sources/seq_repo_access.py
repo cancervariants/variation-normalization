@@ -22,84 +22,35 @@ class SeqRepoAccess:
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
         self.cache = dict()
 
-    def sequence_at_position(self, transcript: str, pos: int) -> Optional[str]:
-        """Return sequence at a position for a given transcript.
+    def get_sequence(self, transcript, start, end=None) -> Optional[str]:
+        """Return sequence for transcript at given positions.
 
-        :param str transcript: Transcript accession
-        :param int pos: The position to search on
-        :return: A sequence (protein or nucleotide)
-        """
-        try:
-            sequence = self._get_sequence(transcript)
-            if len(sequence) < pos - 1:
-                logger.warning(f"Position {pos} exceeds {transcript} length")
-                return None
-            else:
-                try:
-                    return sequence[pos - 1]
-                except IndexError:
-                    logger.warning(f"Position {pos} not found in transcript "
-                                   f"{transcript}")
-                    return None
-        except KeyError:
-            logger.warning(f"Accession {transcript} not found in SeqRepo")
-            return None
-
-    def get_sequence(self, transcript: str, start: int, end: int)\
-            -> Optional[str]:
-        """Return sequence from start and end position for a transcript.
-
-        :param str transcript: Transcript accession
-        :param int start: Start position
-        :param int end: End position
-        """
-        try:
-            sequence = self._get_sequence(transcript)
-            len_of_sequence = len(sequence)
-            if len_of_sequence < start - 1:
-                logger.warning(f"Position {start-1} exceeds"
-                               f" {transcript} length")
-                return None
-            elif len_of_sequence < end:
-                logger.warning(f"Position {end} exceeds"
-                               f" {transcript} length")
-                return None
-            else:
-                try:
-                    return sequence[start - 1:end]
-                except IndexError:
-                    logger.warning(f"Positions {start -1} to {end} not found "
-                                   f"in transcript {transcript}")
-                    return None
-        except KeyError:
-            logger.warning(f"Accession {transcript} not found in SeqRepo")
-            return None
-
-    def len_of_sequence(self, transcript: str) -> int:
-        """Return the length of a transcript's sequence.
-
-        :param str transcript: Transcript to find sequence length of
-        :return: Length of transcript
-        """
-        try:
-            sequence = self._get_sequence(transcript)
-            return len(sequence)
-        except KeyError:
-            logger.warning(f"Accession {transcript} not found in SeqRepo")
-            return 0
-
-    def _get_sequence(self, transcript) -> str:
-        """Return sequence for a transcript.
-
-        :param str transcript: Transcript accession
+        :param str transcript: Accession
+        :param int start: Start pos change
+        :param int end: End pos change
         :return: Sequence
         """
-        if transcript in self.cache.keys():
-            return self.cache[transcript]
-        else:
-            sequence = self.seq_repo_client.fetch(transcript)
-            self.cache[transcript] = sequence
-            return sequence
+        if end is None:
+            end = start
+
+        try:
+            return self.seq_repo_client.fetch(transcript, start=start - 1,
+                                              end=end)
+        except TypeError:
+            try:
+                start = int(start)
+                end = int(end)
+                return self.seq_repo_client.fetch(transcript,
+                                                  start=start - 1, end=end)
+            except ValueError as e:
+                logger.warning(e)
+                return None
+        except KeyError:
+            logger.warning(f"Accession {transcript} not found in SeqRepo")
+            return None
+        except ValueError as e:
+            logger.warning(f"{transcript}: {e}")
+            return None
 
     def aliases(self, input_str) -> List[str]:
         """Get aliases for a given input."""
