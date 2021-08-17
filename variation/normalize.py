@@ -16,6 +16,7 @@ class Normalize:
         self.seqrepo_access = seqrepo_access
         self.uta = uta
         self.warnings = list()
+        self._gene_norm_cache = dict()
 
     def normalize(self, q, validations, warnings):
         """Normalize a given variation.
@@ -97,10 +98,15 @@ class Normalize:
             gene-normalizer.
         """
         gene_symbol = gene_token.matched_value
-        response = GENE_NORMALIZER.normalize(gene_symbol)
-        if 'gene_descriptor' in response and response['gene_descriptor']:
-            return response['gene_descriptor']
-        return None
+        if gene_symbol in self._gene_norm_cache:
+            return self._gene_norm_cache[gene_symbol]
+        else:
+            response = GENE_NORMALIZER.normalize(gene_symbol)
+            if 'gene_descriptor' in response and response['gene_descriptor']:
+                gene_descriptor = response['gene_descriptor']
+                self._gene_norm_cache[gene_symbol] = gene_descriptor
+                return gene_descriptor
+            return None
 
     def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.
