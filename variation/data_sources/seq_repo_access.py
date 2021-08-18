@@ -20,7 +20,6 @@ class SeqRepoAccess:
         """
         environ['SEQREPO_LRU_CACHE_MAXSIZE'] = "none"
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
-        self.cache = dict()
 
     def get_sequence(self, transcript, start, end=None) -> Optional[str]:
         """Return sequence for transcript at given positions.
