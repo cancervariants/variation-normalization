@@ -1,5 +1,4 @@
 """A module for Amino Acid Deletion Tokenization Class."""
-import re
 from typing import Optional
 from pydantic.error_wrappers import ValidationError
 from .caches import AminoAcidCache, NucleotideCache
@@ -19,7 +18,6 @@ class AminoAcidDeletion(Tokenizer):
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile('del')
         self.parts = None
         self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
@@ -53,7 +51,7 @@ class AminoAcidDeletion(Tokenizer):
         if not input_string.endswith('del'):
             return None
 
-        parts = self.splitter.split(input_string)
+        parts = input_string.split('del')
         self._get_parts(parts)
 
         try:

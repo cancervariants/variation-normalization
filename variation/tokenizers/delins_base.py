@@ -1,5 +1,4 @@
 """A module for DelIns Tokenization Base Class."""
-import re
 from abc import abstractmethod
 from typing import Optional, Dict
 from .tokenizer import Tokenizer
@@ -18,7 +17,6 @@ class DelInsBase(Tokenizer):
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile('delins')
         self.parts = None
         self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
@@ -45,7 +43,7 @@ class DelInsBase(Tokenizer):
             'reference_sequence': None
         }
 
-        parts = self.splitter.split(input_string)
+        parts = input_string.split('delins')
         self._get_parts(parts)
 
         # TODO: implement delins range
