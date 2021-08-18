@@ -1,20 +1,19 @@
 """A module for tokenizing."""
-import re
 from typing import Iterable, List
-from .amplification import Amplification
-from .deletion import Deletion
-from .exon import Exon
-from .expression import Expression
-from .fusion import Fusion
-from .gain_of_function import GainOfFunction
-from .gene_pair import GenePair
+# from .amplification import Amplification
+# from .deletion import Deletion
+# from .exon import Exon
+# from .expression import Expression
+# from .fusion import Fusion
+# from .gain_of_function import GainOfFunction
+# from .gene_pair import GenePair
 from .gene_symbol import GeneSymbol
-from .loss_of_function import LossOfFunction
-from .overexpression import OverExpression
-from .protein_alternate import ProteinAlternate
-from .protein_frameshift import ProteinFrameshift
-from .protein_termination import ProteinTermination
-from .underexpression import UnderExpression
+# from .loss_of_function import LossOfFunction
+# from .overexpression import OverExpression
+# from .protein_alternate import ProteinAlternate
+# from .protein_frameshift import ProteinFrameshift
+# from .protein_termination import ProteinTermination
+# from .underexpression import UnderExpression
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
@@ -25,7 +24,7 @@ from .genomic_silent_mutation import GenomicSilentMutation
 from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
-from .wild_type import WildType
+# from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
 from .locus_reference_genomic import LocusReferenceGenomic
@@ -47,21 +46,19 @@ class Tokenize:
         amino_acid_cache = AminoAcidCache()
         nucleotide_cache = NucleotideCache()
 
-        self.search_term_splitter = re.compile(r'\s+')
-
         self.tokenizers = (
-            Amplification(),
-            Deletion(),
-            Exon(),
-            Expression(),
-            Fusion(),
-            GainOfFunction(),
-            GenePair(),
+            # Amplification(),
+            # Deletion(),
+            # Exon(),
+            # Expression(),
+            # Fusion(),
+            # GainOfFunction(),
+            # GenePair(),
             GeneSymbol(),
-            LossOfFunction(),
-            OverExpression(),
-            ProteinAlternate(amino_acid_cache),
-            ProteinFrameshift(amino_acid_cache),
+            # LossOfFunction(),
+            # OverExpression(),
+            # ProteinAlternate(amino_acid_cache),
+            # ProteinFrameshift(amino_acid_cache),
             AminoAcidSubstitution(amino_acid_cache),
             PolypeptideTruncation(amino_acid_cache),
             SilentMutation(amino_acid_cache),
@@ -78,12 +75,12 @@ class Tokenize:
             AminoAcidInsertion(amino_acid_cache, nucleotide_cache),
             CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
             GenomicInsertion(amino_acid_cache, nucleotide_cache),
-            ProteinTermination(amino_acid_cache),
-            UnderExpression(),
-            WildType(),
+            # ProteinTermination(amino_acid_cache),
+            # UnderExpression(),
+            # WildType(),
             HGVS(),
             ReferenceSequence(),
-            LocusReferenceGenomic(),
+            LocusReferenceGenomic()
         )
 
     def perform(self, search_string: str, warnings: List[str])\
@@ -98,17 +95,8 @@ class Tokenize:
         # Currently splits on whitespace
         # Also adds a token if an string looks like an accession
         #  ex: NC_, NM_, ENST
-        terms = self.search_term_splitter.split(search_string)
+        terms = search_string.split()
         self._add_tokens(tokens, terms, search_string, warnings)
-
-        # If reference sequence: Check description
-        if list(map(lambda t: t.token_type, tokens)) == ['ReferenceSequence']:
-            try:
-                self._add_tokens(tokens,
-                                 [search_string.split(':')[1]],
-                                 search_string, warnings)
-            except IndexError:
-                return tokens
         return tokens
 
     def _add_tokens(self, tokens, terms, search_string, warnings):
@@ -127,7 +115,8 @@ class Tokenize:
                 if res:
                     tokens.append(res)
                     token = list(map(lambda t: t.token_type, tokens))[0]
-                    if token == 'HGVS' or token == 'LocusReferenceGenomic':
+                    if token == 'HGVS' or token == 'LocusReferenceGenomic' \
+                            or token == 'ReferenceSequence':
                         # Give specific type of HGVS (i.e. protein sub)
                         if len(tokens) == 1:
                             self._add_tokens(tokens,
