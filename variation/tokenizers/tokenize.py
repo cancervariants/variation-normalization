@@ -47,6 +47,9 @@ class Tokenize:
         nucleotide_cache = NucleotideCache()
 
         self.tokenizers = (
+            HGVS(),
+            ReferenceSequence(),
+            LocusReferenceGenomic(),
             # Amplification(),
             # Deletion(),
             # Exon(),
@@ -74,13 +77,10 @@ class Tokenize:
             GenomicDeletion(amino_acid_cache, nucleotide_cache),
             AminoAcidInsertion(amino_acid_cache, nucleotide_cache),
             CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
-            GenomicInsertion(amino_acid_cache, nucleotide_cache),
+            GenomicInsertion(amino_acid_cache, nucleotide_cache)
             # ProteinTermination(amino_acid_cache),
             # UnderExpression(),
             # WildType(),
-            HGVS(),
-            ReferenceSequence(),
-            LocusReferenceGenomic()
         )
 
     def perform(self, search_string: str, warnings: List[str])\
