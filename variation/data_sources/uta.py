@@ -34,6 +34,7 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        self._create_genomic_table()
         self.liftover = LiftOver('hg19', 'hg38')
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
@@ -113,6 +114,51 @@ class UTA:
             password=password,
             application_name='variation'
         )
+
+    def _create_genomic_table(self):
+        """Create table containing genomic accession information."""
+        check_table_exists = (
+            f"""
+            SELECT EXISTS (
+               SELECT FROM information_schema.tables
+               WHERE table_schema = '{self.schema}'
+               AND table_name = 'genomic'
+            );
+            """
+        )
+        self.cursor.execute(check_table_exists)
+        genomic_table_exists = self.cursor.fetchall()[0][0]
+        if not genomic_table_exists:
+            create_genomic_table = (
+                f"""
+                CREATE TABLE {self.schema}.genomic AS
+                    SELECT t.hgnc, aes.alt_ac, aes.alt_aln_method,
+                        aes.alt_strand, ae.start_i AS alt_start_i,
+                        ae.end_i AS alt_end_i
+                    FROM ((((({self.schema}.transcript t
+                        JOIN {self.schema}.exon_set tes ON (((t.ac = tes.tx_ac)
+                            AND (tes.alt_aln_method = 'transcript'::text))))
+                        JOIN {self.schema}.exon_set aes ON (((t.ac = aes.tx_ac)
+                            AND (aes.alt_aln_method <> 'transcript'::text))))
+                        JOIN {self.schema}.exon te ON
+                            ((tes.exon_set_id = te.exon_set_id)))
+                        JOIN {self.schema}.exon ae ON
+                            (((aes.exon_set_id = ae.exon_set_id)
+                            AND (te.ord = ae.ord))))
+                        LEFT JOIN {self.schema}.exon_aln ea ON
+                            (((te.exon_id = ea.tx_exon_id) AND
+                            (ae.exon_id = ea.alt_exon_id))));
+                """
+            )
+            self.cursor.execute(create_genomic_table)
+
+            indexes = [
+                f"""CREATE INDEX alt_pos_index ON {self.schema}.genomic (alt_ac, alt_start_i, alt_end_i);""",  # noqa: E501
+                f"""CREATE INDEX gene_alt_index ON {self.schema}.genomic (hgnc, alt_ac);"""  # noqa: E501
+                f"""CREATE INDEX alt_ac_index ON {self.schema}.genomic (alt_ac);"""  # noqa: E501
+            ]
+            for create_index in indexes:
+                self.cursor.execute(create_index)
 
     def get_cds_start_end(self, ac) \
             -> Optional[Dict[int, int]]:
@@ -367,7 +413,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT alt_ac
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.genomic
             WHERE hgnc = '{gene}'
             AND alt_ac LIKE 'NC_00%'
             ORDER BY alt_ac DESC
@@ -392,7 +438,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT hgnc
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.genomic
             WHERE alt_ac = '{ac}'
             AND {start_pos} BETWEEN alt_start_i AND alt_end_i
             AND {end_pos} BETWEEN alt_start_i AND alt_end_i
@@ -500,10 +546,10 @@ class UTA:
         # Change alt_ac to most recent
         query = (
             f"""
-            SELECT ac
-            FROM {self.schema}.seq_anno
-            WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
-            ORDER BY ac
+            SELECT alt_ac
+            FROM {self.schema}.genomic
+            WHERE alt_ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
+            ORDER BY alt_ac;
             """
         )
         self.cursor.execute(query)
