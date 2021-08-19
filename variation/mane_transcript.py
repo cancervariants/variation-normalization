@@ -530,11 +530,7 @@ class MANETranscript:
             else:
                 return None
         chromosome, assembly = descr
-
-        if start_pos == end_pos:
-            is_same_pos = True
-        else:
-            is_same_pos = False
+        is_same_pos = start_pos == end_pos
 
         # Coordinate liftover
         if assembly < 'GRCh37':
