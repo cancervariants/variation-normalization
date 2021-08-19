@@ -28,11 +28,6 @@ if 'VARIATION_NORM_EB_PROD' in environ:
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-# Default DynamoDB url is http://localhost:8000
-# To use a different connection, set `GENE_NORM_DB_URL`
-from gene.query import QueryHandler as GeneQueryHandler  # noqa: E402, F811
-GENE_NORMALIZER = GeneQueryHandler()
-
 
 def data_download(path, domain, dir, fn):
     """Download files using FTP.

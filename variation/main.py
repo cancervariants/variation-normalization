@@ -1,48 +1,14 @@
 """Main application for FastAPI."""
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from variation.to_vrs import ToVRS
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
-from variation.normalize import Normalize
-from variation.classifiers import Classify
-from variation.tokenizers import Tokenize
-from variation.validators import Validate
-from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
-    UTA, MANETranscriptMappings
-from variation.mane_transcript import MANETranscript
-from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
-from .schemas.ga4gh_vrs import Text
 from .version import __version__
 from datetime import datetime
 import html
+from variation.query import QueryHandler
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
-
-tokenizer = Tokenize()
-classifier = Classify()
-seqrepo_access = SeqRepoAccess()
-transcript_mappings = TranscriptMappings()
-gene_symbol = GeneSymbol()
-amino_acid_cache = AminoAcidCache()
-uta = UTA()
-mane_transcript_mappings = MANETranscriptMappings()
-dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-tlr = Translator(data_proxy=dp)
-mane_transcript = MANETranscript(seqrepo_access, transcript_mappings,
-                                 mane_transcript_mappings, uta)
-validator = Validate(seqrepo_access, transcript_mappings, gene_symbol,
-                     mane_transcript, uta, dp, tlr, amino_acid_cache)
-translator = Translate()
-
-
-to_vrs = ToVRS(tokenizer, classifier, seqrepo_access, transcript_mappings,
-               gene_symbol, amino_acid_cache, uta, mane_transcript_mappings,
-               mane_transcript, validator, translator)
-normalizer = Normalize(seqrepo_access, uta)
+query_handler = QueryHandler()
 
 
 def custom_openapi():
@@ -80,20 +46,14 @@ q_description = "Variation to translate."
          description=translate_description,
          response_model_exclude_none=True
          )
-def translate(q: str = Query(..., description=q_description)):
+def to_vrs(q: str = Query(..., description=q_description)):
     """Return a VRS-like representation of all validated variations for the search term.  # noqa: E501, D400
 
-    :param str q: The variation to search on
-    :return: TranslationResponseSchema for variation
+    :param str q: The variation to translate
+    :return: ToVRSService model for variation
     """
-    validations, warnings = to_vrs.get_validations(html.unescape(q))
-    translations, warnings = to_vrs.get_translations(validations, warnings)
-
-    if not translations:
-        if q and q.strip():
-            translations = [Text(definition=q)]
-        else:
-            translations = None
+    translations, warnings = \
+        query_handler.to_vrs(html.unescape(q))
 
     return ToVRSService(
         search_term=q,
@@ -126,14 +86,15 @@ def normalize(q: str = Query(..., description=q_description)):
     :param q: Variation to normalize
     :return: NormalizeService for variation
     """
-    validations, warnings = to_vrs.get_validations(q, normalize_endpoint=True)
-    normalize_resp = normalizer.normalize(html.unescape(q),
-                                          validations,
-                                          warnings)
+    normalize_resp = \
+        query_handler.normalize(html.unescape(q))
+    warnings = query_handler.normalize_handler.warnings if \
+        query_handler.normalize_handler.warnings else None
+
     return NormalizeService(
         variation_query=q,
         variation_descriptor=normalize_resp,
-        warnings=normalizer.warnings if normalizer.warnings else None,
+        warnings=warnings,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
