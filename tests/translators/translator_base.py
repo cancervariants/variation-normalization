@@ -1,7 +1,9 @@
 """A module for testing translator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variation.tokenizers import Tokenize
+from variation.tokenizers import Tokenize, GeneSymbol
+from variation.tokenizers.caches import AminoAcidCache
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TranslatorBase:
@@ -15,7 +17,9 @@ class TranslatorBase:
             self.fixture_name(),
             {'tests': []}
         )
-        self.tokenizer = Tokenize()
+        amino_acid_cache = AminoAcidCache()
+        gene_symbol = GeneSymbol(GeneQueryHandler())
+        self.tokenizer = Tokenize(amino_acid_cache, gene_symbol)
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
         self.translator = self.translator_instance()
