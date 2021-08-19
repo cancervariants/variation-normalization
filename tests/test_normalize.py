@@ -1,22 +1,10 @@
 """Module for testing the normalize endpoint."""
 import pytest
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from variation.normalize import Normalize
+from variation.query import QueryHandler
 from variation.schemas.ga4gh_vrsatile import VariationDescriptor
-from variation.to_vrs import ToVRS
-from variation.main import normalize as normalize_get_response
-from variation.main import translate as to_vrs_get_response
-from variation.classifiers import Classify
-from variation.tokenizers import Tokenize
-from variation.validators import Validate
-from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
-    UTA, MANETranscriptMappings
-from variation.mane_transcript import MANETranscript
-from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import GeneSymbolCache, AminoAcidCache
 from datetime import datetime
+from variation.main import normalize as normalize_get_response
+from variation.main import to_vrs as to_vrs_get_response
 import copy
 
 
@@ -26,40 +14,13 @@ def test_normalize():
     class TestNormalize:
 
         def __init__(self):
-            tokenizer = Tokenize()
-            classifier = Classify()
-            seqrepo_access = SeqRepoAccess()
-            transcript_mappings = TranscriptMappings()
-            gene_symbol = GeneSymbol(GeneSymbolCache())
-            amino_acid_cache = AminoAcidCache()
-            uta = UTA()
-            mane_transcript_mappings = MANETranscriptMappings()
-            dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-            tlr = Translator(data_proxy=dp)
-            mane_transcript = MANETranscript(seqrepo_access,
-                                             transcript_mappings,
-                                             mane_transcript_mappings, uta)
-            validator = Validate(seqrepo_access, transcript_mappings,
-                                 gene_symbol, mane_transcript, uta,
-                                 dp, tlr, amino_acid_cache)
-            translator = Translate()
+            self.query_handler = QueryHandler()
 
-            self.to_vrs = ToVRS(tokenizer, classifier, seqrepo_access,
-                                transcript_mappings, gene_symbol,
-                                amino_acid_cache, uta,
-                                mane_transcript_mappings, mane_transcript,
-                                validator, translator)
-            self.test_normalize = Normalize(seqrepo_access, uta)
+        def to_vrs(self, q):
+            return self.query_handler.to_vrs(q)
 
         def normalize(self, q):
-            validations, warnings = self.to_vrs.get_validations(
-                q, normalize_endpoint=True
-            )
-            resp = \
-                self.test_normalize.normalize(q,
-                                              validations,
-                                              warnings)
-            return resp
+            return self.query_handler.normalize(q)
 
     return TestNormalize()
 

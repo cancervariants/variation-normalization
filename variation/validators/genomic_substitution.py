@@ -54,7 +54,7 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
 
                 if not errors:
                     ref_nuc = \
-                        self.seqrepo_access.sequence_at_position(t, s.position)
+                        self.seqrepo_access.get_sequence(t, s.position)
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 

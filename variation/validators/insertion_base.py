@@ -131,9 +131,9 @@ class InsertionBase(Validator):
         :param Token s: Classification token
         :param list errors: List of errors
         """
-        len_of_seq = self.seqrepo_access.len_of_sequence(t)
-        is_len_lte_start = len_of_seq <= int(s.start_pos_flank)
-        is_len_lte_end = len_of_seq <= int(s.end_pos_flank)
+        sequence = \
+            self.seqrepo_access.get_sequence(t, s.start_pos_flank,
+                                             s.end_pos_flank)
 
-        if is_len_lte_end or is_len_lte_start:
+        if sequence is None:
             errors.append('Sequence index error')

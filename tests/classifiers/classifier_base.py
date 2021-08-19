@@ -2,6 +2,9 @@
 import yaml
 from variation.tokenizers import Tokenize
 from tests import PROJECT_ROOT
+from variation.tokenizers.caches import AminoAcidCache
+from variation.tokenizers import GeneSymbol
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class ClassifierBase:
@@ -16,7 +19,8 @@ class ClassifierBase:
             {'should_match': [], 'should_not_match': []}
         )
         self.classifier = self.classifier_instance()
-        self.tokenizer = Tokenize()
+        self.tokenizer = Tokenize(AminoAcidCache(),
+                                  GeneSymbol(GeneQueryHandler()))
 
     def classifier_instance(self):
         """Check that the classifier_instance method is implemented."""

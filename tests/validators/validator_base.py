@@ -1,7 +1,9 @@
 """A module for testing validator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variation.tokenizers import Tokenize
+from variation.tokenizers import Tokenize, GeneSymbol
+from variation.tokenizers.caches import AminoAcidCache
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class ValidatorBase:
@@ -15,7 +17,8 @@ class ValidatorBase:
             self.fixture_name(),
             {'should_match': [], 'should_not_match': []}
         )
-        self.tokenizer = Tokenize()
+        self.tokenizer = Tokenize(AminoAcidCache(),
+                                  GeneSymbol(GeneQueryHandler()))
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
 

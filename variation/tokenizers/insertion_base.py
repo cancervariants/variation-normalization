@@ -1,5 +1,4 @@
 """A module for Insertion Tokenization Base Class."""
-import re
 from abc import abstractmethod
 from typing import Optional, Dict
 from .tokenizer import Tokenizer
@@ -18,7 +17,6 @@ class InsertionBase(Tokenizer):
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile('ins')
         self.parts = None
         self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
@@ -51,7 +49,7 @@ class InsertionBase(Tokenizer):
         if not all(conditions):
             return None
 
-        parts = self.splitter.split(input_string)
+        parts = input_string.split('ins')
         self._get_parts(parts)
         return self.return_token(self.parts)
 

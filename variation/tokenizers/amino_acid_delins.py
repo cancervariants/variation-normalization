@@ -1,5 +1,4 @@
 """A module for Amino Acid DelIns Tokenization Class."""
-import re
 from typing import Optional
 from pydantic.error_wrappers import ValidationError
 from .caches import AminoAcidCache, NucleotideCache
@@ -19,7 +18,6 @@ class AminoAcidDelIns(Tokenizer):
         :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
-        self.splitter = re.compile('delins')
         self.parts = None
         self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
@@ -51,7 +49,7 @@ class AminoAcidDelIns(Tokenizer):
             'inserted_sequence': None
         }
 
-        parts = self.splitter.split(input_string)
+        parts = input_string.split('delins')
         self._get_parts(parts)
 
         try:

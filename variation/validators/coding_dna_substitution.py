@@ -69,7 +69,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                     errors.append(f"Unable to get CDS start for {t}")
 
                 if not errors:
-                    ref_nuc = self.seqrepo_access.sequence_at_position(
+                    ref_nuc = self.seqrepo_access.get_sequence(
                         t, s.position + cds_start
                     )
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,

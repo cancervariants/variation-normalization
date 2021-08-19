@@ -28,11 +28,6 @@ if 'VARIATION_NORM_EB_PROD' in environ:
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-# Default DynamoDB url is http://localhost:8000
-# To use a different connection, set `GENE_NORM_DB_URL`
-from gene.query import QueryHandler as GeneQueryHandler  # noqa: E402, F811
-GENE_NORMALIZER = GeneQueryHandler()
-
 
 def data_download(path, domain, dir, fn):
     """Download files using FTP.
@@ -58,9 +53,6 @@ def data_download(path, domain, dir, fn):
 SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/latest"
 TRANSCRIPT_MAPPINGS_PATH = f"{APP_ROOT}/data/transcript_mapping.tsv"
 AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
-HGNC_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/hgnc_gene_symbols.txt"
-data_download(HGNC_GENE_SYMBOL_PATH, 'ftp.ebi.ac.uk',
-              'pub/databases/genenames/new/tsv/', 'hgnc_complete_set.txt')
 REFSEQ_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/refseq_gene_symbols.txt"
 data_download(REFSEQ_GENE_SYMBOL_PATH, 'ftp.ncbi.nih.gov',
               'refseq/H_sapiens/RefSeqGene/', 'LRG_RefSeqGene')

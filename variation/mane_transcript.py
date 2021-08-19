@@ -13,8 +13,6 @@ import hgvs.parser
 import logging
 import math
 from pydantic.types import StrictBool
-from pyliftover import LiftOver
-from variation.data_sources.uta import GRCH_TO_HG
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -110,9 +108,7 @@ class MANETranscript:
         # So we want to make sure version is valid
         if ac.startswith('ENST'):
             if not self.transcript_mappings.ensembl_transcript_version_to_gene_symbol.get(ac):  # noqa: E501
-                try:
-                    self.seqrepo_access.seq_repo_client.fetch(ac)
-                except KeyError:
+                if self.seqrepo_access.get_sequence(ac, 1) is None:
                     logger.warning(f"Ensembl transcript not found: {ac}")
                     return None
 
@@ -222,9 +218,9 @@ class MANETranscript:
         coding_start_site = cds_start_end[0]
 
         g_pos = g['alt_pos_change_range'][0], g['alt_pos_change_range'][1]
-        g_pos_change = g_pos[0] - result[8], result[9] - g_pos[1]
+        g_pos_change = g_pos[0] - result[5], result[6] - g_pos[1]
 
-        mane_tx_pos_range = result[6], result[7]
+        mane_tx_pos_range = result[2], result[3]
         mane_c_pos_change = (
             mane_tx_pos_range[0] + g_pos_change[0] - coding_start_site,
             mane_tx_pos_range[1] - g_pos_change[1] - coding_start_site
@@ -286,27 +282,20 @@ class MANETranscript:
             start_pos += coding_start_site
             end_pos += coding_start_site
 
-        if start_pos == end_pos:
-            ref = self.seqrepo_access.sequence_at_position(ac, start_pos)
-        else:
-            ref = self.seqrepo_access.get_sequence(ac, start_pos, end_pos)
-        if not ref:
+        ref = self.seqrepo_access.get_sequence(
+            ac, start_pos, end=end_pos if start_pos != end_pos else None
+        )
+        if ref is None:
             return False
 
         if mane_transcript:
             mane_start_pos = mane_transcript['pos'][0]
             mane_end_pos = mane_transcript['pos'][1]
-            if mane_start_pos == mane_end_pos:
-                mane_ref = self.seqrepo_access.sequence_at_position(
-                    mane_transcript['refseq'],
-                    mane_start_pos
-                )
-            else:
-                mane_ref = self.seqrepo_access.get_sequence(
-                    mane_transcript['refseq'],
-                    mane_transcript['pos'][0],
-                    mane_transcript['pos'][1]
-                )
+            mane_ref = self.seqrepo_access.get_sequence(
+                mane_transcript['refseq'],
+                mane_start_pos,
+                end=mane_end_pos if mane_start_pos != mane_end_pos else None
+            )
             if not mane_ref:
                 logger.info("Unable to validate reference for MANE Transcript")
 
@@ -329,8 +318,12 @@ class MANETranscript:
         :param int coding_start_site: coding start site for accession
         :return: `True` if positions exist on accession. `False` otherwise
         """
-        len_of_seq = self.seqrepo_access.len_of_sequence(ac)
-        return pos[0] + coding_start_site <= pos[1] + coding_start_site <= len_of_seq  # noqa: E501
+        start_pos = pos[0] + coding_start_site
+        end_pos = pos[1] + coding_start_site
+        if self.seqrepo_access.get_sequence(ac, start_pos, end_pos):
+            return True
+        else:
+            return None
 
     def get_longest_compatible_transcript(self, gene, start_pos, end_pos,
                                           start_annotation_layer,
@@ -537,17 +530,21 @@ class MANETranscript:
             else:
                 return None
         chromosome, assembly = descr
+        is_same_pos = start_pos == end_pos
 
         # Coordinate liftover
-        lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-        liftover_start_i = self.uta.get_liftover(lo, chromosome, start_pos)
+        if assembly < 'GRCh37':
+            logger.warning("Liftover only supported for GRCh37")
+            return None
+
+        liftover_start_i = self.uta.get_liftover(chromosome, start_pos)
         if liftover_start_i is None:
             return None
         else:
             start_pos = liftover_start_i[1]
 
-        if start_pos != end_pos:
-            liftover_end_i = self.uta.get_liftover(lo, chromosome, end_pos)
+        if not is_same_pos:
+            liftover_end_i = self.uta.get_liftover(chromosome, end_pos)
             if liftover_end_i is None:
                 return None
             else:

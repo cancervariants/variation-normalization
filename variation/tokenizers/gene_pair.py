@@ -4,16 +4,15 @@ from .tokenizer import Tokenizer
 from .gene_symbol import GeneSymbol
 from variation.schemas.token_response_schema import GenePairMatchToken, \
     TokenMatchType
-from .caches import GeneSymbolCache
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class GenePair(Tokenizer):
     """The gene pair class."""
 
-    def __init__(self, gene_cache: GeneSymbolCache) -> None:
+    def __init__(self) -> None:
         """Initialize the Gene Pair class."""
-        self.__gene_cache = gene_cache
-        self.__gene_matcher = GeneSymbol(gene_cache)
+        self.__gene_matcher = GeneSymbol(GeneQueryHandler())
 
     def match(self, input_string: str) -> Optional[GenePairMatchToken]:
         """Return tokens that match the input string."""
