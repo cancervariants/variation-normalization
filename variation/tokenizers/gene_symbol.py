@@ -4,15 +4,19 @@ from gene.schemas import MatchType
 from .tokenizer import Tokenizer
 from variation.schemas.token_response_schema import GeneMatchToken, \
     TokenMatchType
-from variation import GENE_NORMALIZER
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class GeneSymbol(Tokenizer):
     """Class for gene symbol tokenization."""
 
-    def __init__(self) -> None:
-        """Initialize the gene symbol tokenizer class."""
-        self.gene_normalizer = GENE_NORMALIZER
+    def __init__(self, gene_normalizer: GeneQueryHandler) -> None:
+        """Initialize the gene symbol tokenizer class.
+
+        :param QueryHandler gene_normalizer: Instance to gene normalizer
+            QueryHandler
+        """
+        self.gene_normalizer = gene_normalizer
         self._gene_cache = dict()
 
     def match(self, input_string: str) -> Optional[GeneMatchToken]:

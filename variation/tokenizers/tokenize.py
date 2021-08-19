@@ -35,17 +35,15 @@ from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from variation.schemas.token_response_schema import Token, TokenMatchType
-from .caches import AminoAcidCache, NucleotideCache
+from .caches import NucleotideCache
 
 
 class Tokenize:
     """The tokenize class."""
 
-    def __init__(self) -> None:
+    def __init__(self, amino_acid_cache, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
-        amino_acid_cache = AminoAcidCache()
         nucleotide_cache = NucleotideCache()
-
         self.tokenizers = (
             HGVS(),
             ReferenceSequence(),
@@ -57,7 +55,7 @@ class Tokenize:
             # Fusion(),
             # GainOfFunction(),
             # GenePair(),
-            GeneSymbol(),
+            gene_symbol,
             # LossOfFunction(),
             # OverExpression(),
             # ProteinAlternate(amino_acid_cache),
