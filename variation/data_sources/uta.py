@@ -1,4 +1,6 @@
-"""Module for transcript alignments and genome  assemblt liftover."""
+"""Module for transcript alignments and genome  assembly liftover.
+Variation Normalization only supports liftover from GRCh37 assembly.
+"""
 from typing import Dict, Optional, List, Tuple
 import psycopg2
 import psycopg2.extras
@@ -17,13 +19,6 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-# Assembly mappings
-GRCH_TO_HG = {
-    'GRCh37': 'hg19',
-    'GRCh38': 'hg38'
-}
-
-
 class UTA:
     """Class for accessing UTA database."""
 
@@ -39,6 +34,8 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        self._create_genomic_table()
+        self.liftover = LiftOver('hg19', 'hg38')
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
@@ -117,6 +114,51 @@ class UTA:
             password=password,
             application_name='variation'
         )
+
+    def _create_genomic_table(self):
+        """Create table containing genomic accession information."""
+        check_table_exists = (
+            f"""
+            SELECT EXISTS (
+               SELECT FROM information_schema.tables
+               WHERE table_schema = '{self.schema}'
+               AND table_name = 'genomic'
+            );
+            """
+        )
+        self.cursor.execute(check_table_exists)
+        genomic_table_exists = self.cursor.fetchall()[0][0]
+        if not genomic_table_exists:
+            create_genomic_table = (
+                f"""
+                CREATE TABLE {self.schema}.genomic AS
+                    SELECT t.hgnc, aes.alt_ac, aes.alt_aln_method,
+                        aes.alt_strand, ae.start_i AS alt_start_i,
+                        ae.end_i AS alt_end_i
+                    FROM ((((({self.schema}.transcript t
+                        JOIN {self.schema}.exon_set tes ON (((t.ac = tes.tx_ac)
+                            AND (tes.alt_aln_method = 'transcript'::text))))
+                        JOIN {self.schema}.exon_set aes ON (((t.ac = aes.tx_ac)
+                            AND (aes.alt_aln_method <> 'transcript'::text))))
+                        JOIN {self.schema}.exon te ON
+                            ((tes.exon_set_id = te.exon_set_id)))
+                        JOIN {self.schema}.exon ae ON
+                            (((aes.exon_set_id = ae.exon_set_id)
+                            AND (te.ord = ae.ord))))
+                        LEFT JOIN {self.schema}.exon_aln ea ON
+                            (((te.exon_id = ea.tx_exon_id) AND
+                            (ae.exon_id = ea.alt_exon_id))));
+                """
+            )
+            self.cursor.execute(create_genomic_table)
+
+            indexes = [
+                f"""CREATE INDEX alt_pos_index ON {self.schema}.genomic (alt_ac, alt_start_i, alt_end_i);""",  # noqa: E501
+                f"""CREATE INDEX gene_alt_index ON {self.schema}.genomic (hgnc, alt_ac);"""  # noqa: E501
+                f"""CREATE INDEX alt_ac_index ON {self.schema}.genomic (alt_ac);"""  # noqa: E501
+            ]
+            for create_index in indexes:
+                self.cursor.execute(create_index)
 
     def get_cds_start_end(self, ac) \
             -> Optional[Dict[int, int]]:
@@ -236,7 +278,8 @@ class UTA:
 
         query = (
             f"""
-            SELECT *
+            SELECT hgnc, tx_ac, tx_start_i, tx_end_i, alt_ac, alt_start_i,
+                alt_end_i, alt_strand, alt_aln_method, tx_exon_id, alt_exon_id
             FROM {self.schema}.tx_exon_aln_v
             WHERE tx_ac='{temp_ac}'
             {alt_ac_q}
@@ -266,15 +309,15 @@ class UTA:
         :return: Gene, strand, and position ranges for tx and alt_ac
         """
         gene = result[0]
-        if result[4] == -1:
+        if result[7] == -1:
             strand = '-'
         else:
             strand = '+'
-        tx_pos_range = result[6], result[7]
-        alt_pos_range = result[8], result[9]
-        alt_aln_method = result[3]
-        tx_exon_id = result[15]
-        alt_exon_id = result[16]
+        tx_pos_range = result[2], result[3]
+        alt_pos_range = result[5], result[6]
+        alt_aln_method = result[8]
+        tx_exon_id = result[9]
+        alt_exon_id = result[10]
 
         if (tx_pos_range[1] - tx_pos_range[0]) != \
                 (alt_pos_range[1] - alt_pos_range[0]):
@@ -319,7 +362,7 @@ class UTA:
             return None
 
         data['tx_ac'] = result[1]
-        data['alt_ac'] = result[2]
+        data['alt_ac'] = result[4]
         data['coding_start_site'] = coding_start_site[0]
         data['coding_end_site'] = coding_start_site[1]
         data['alt_pos_change'] = (
@@ -350,7 +393,7 @@ class UTA:
         if not data:
             return None
         data['tx_ac'] = ac
-        data['alt_ac'] = result[2]
+        data['alt_ac'] = result[4]
         data['pos_change'] = (
             pos[0] - data['tx_pos_range'][0],
             data['tx_pos_range'][1] - pos[1]
@@ -370,7 +413,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT alt_ac
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.genomic
             WHERE hgnc = '{gene}'
             AND alt_ac LIKE 'NC_00%'
             ORDER BY alt_ac DESC
@@ -395,7 +438,7 @@ class UTA:
         query = (
             f"""
             SELECT DISTINCT hgnc
-            FROM {self.schema}.tx_exon_aln_v
+            FROM {self.schema}.genomic
             WHERE alt_ac = '{ac}'
             AND {start_pos} BETWEEN alt_start_i AND alt_end_i
             AND {end_pos} BETWEEN alt_start_i AND alt_end_i
@@ -416,7 +459,7 @@ class UTA:
 
     def get_transcripts_from_gene(self, gene, start_pos, end_pos)\
             -> pd.core.frame.DataFrame:
-        """Get transcripts on p/c/g coordinate associated to a gene.
+        """Get transcripts on c coordinate associated to a gene.
 
         :param str gene: Gene symbol
         :param int start_pos: Start position change on c. coordinate
@@ -490,33 +533,30 @@ class UTA:
             return None
 
         # Get most recent assembly version position
-        lo = LiftOver(GRCH_TO_HG[assembly], 'hg38')
-
         # Liftover range
         self._set_liftover(
-            genomic_tx_data, 'alt_pos_range', lo, chromosome
+            genomic_tx_data, 'alt_pos_range', chromosome
         )
 
         # Liftover changes range
         self._set_liftover(
-            genomic_tx_data, 'alt_pos_change_range', lo, chromosome
+            genomic_tx_data, 'alt_pos_change_range', chromosome
         )
 
         # Change alt_ac to most recent
         query = (
             f"""
-            SELECT *
-            FROM {self.schema}.seq_anno
-            WHERE ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
-            ORDER BY ac
+            SELECT alt_ac
+            FROM {self.schema}.genomic
+            WHERE alt_ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
+            ORDER BY alt_ac;
             """
         )
         self.cursor.execute(query)
         nc_acs = self.cursor.fetchall()
-        genomic_tx_data['alt_ac'] = nc_acs[-1][3]
+        genomic_tx_data['alt_ac'] = nc_acs[-1][0]
 
-    @staticmethod
-    def get_liftover(lo, chromosome, pos) -> Optional[Tuple]:
+    def get_liftover(self, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
 
         :param LiftOver lo: LiftOver object to convert coordinates
@@ -525,14 +565,14 @@ class UTA:
         :return: [Target chromosome, target position, target strand,
             conversion_chain_score] for hg38 assembly
         """
-        liftover = lo.convert_coordinate(chromosome, pos)
+        liftover = self.liftover.convert_coordinate(chromosome, pos)
         if liftover is None or len(liftover) == 0:
             logger.warning(f"{pos} does not exist on {chromosome}")
             return None
         else:
             return liftover[0]
 
-    def _set_liftover(self, genomic_tx_data, key, lo, chromosome) -> None:
+    def _set_liftover(self, genomic_tx_data, key, chromosome) -> None:
         """Update genomic_tx_data to have hg38 coordinates.
 
         :param dict genomic_tx_data:
@@ -540,14 +580,14 @@ class UTA:
         :param LiftOver lo: LiftOver object to convert coordinates
         :param str chromosome: Chromosome
         """
-        liftover_start_i = self.get_liftover(lo, chromosome,
+        liftover_start_i = self.get_liftover(chromosome,
                                              genomic_tx_data[key][0])
         if liftover_start_i is None:
             logger.warning(f"Unable to liftover position "
                            f"{genomic_tx_data[key][0]} on {chromosome}")
             return None
 
-        liftover_end_i = self.get_liftover(lo, chromosome,
+        liftover_end_i = self.get_liftover(chromosome,
                                            genomic_tx_data[key][1])
         if liftover_end_i is None:
             logger.warning(f"Unable to liftover position "

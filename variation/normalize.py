@@ -1,21 +1,29 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple
-from variation import GENE_NORMALIZER
 from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from variation.schemas.ga4gh_vrs import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class Normalize:
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTA):
-        """Initialize Normalize class."""
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTA,
+                 gene_normalizer: GeneQueryHandler) -> None:
+        """Initialize Normalize class.
+
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo data queries
+        :param UTA uta: Access to UTA database and queries
+        :parm QueryHandler gene_normalizer: Access to gene-normalizer queries
+        """
         self.seqrepo_access = seqrepo_access
         self.uta = uta
         self.warnings = list()
+        self._gene_norm_cache = dict()
+        self.gene_normalizer = gene_normalizer
 
     def normalize(self, q, validations, warnings):
         """Normalize a given variation.
@@ -97,10 +105,15 @@ class Normalize:
             gene-normalizer.
         """
         gene_symbol = gene_token.matched_value
-        response = GENE_NORMALIZER.normalize(gene_symbol)
-        if 'gene_descriptor' in response and response['gene_descriptor']:
-            return response['gene_descriptor']
-        return None
+        if gene_symbol in self._gene_norm_cache:
+            return self._gene_norm_cache[gene_symbol]
+        else:
+            response = self.gene_normalizer.normalize(gene_symbol)
+            if 'gene_descriptor' in response and response['gene_descriptor']:
+                gene_descriptor = response['gene_descriptor']
+                self._gene_norm_cache[gene_symbol] = gene_descriptor
+                return gene_descriptor
+            return None
 
     def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
         """Return ref allele seq for transcript.
@@ -116,18 +129,7 @@ class Normalize:
         else:
             return None
 
-        if start and end:
-            refseq_list = list()
-            while start <= end:
-                refseq_list.append(self.seqrepo_access.sequence_at_position(
-                    identifier, start
-                ))
-                start += 1
-            try:
-                return ''.join(refseq_list)
-            except TypeError:
-                pass
-        return None
+        return self.seqrepo_access.get_sequence(identifier, start, end)
 
     def _is_token_type(self, valid_result_tokens, token_type) -> bool:
         """Return whether or not token_type is in valid_result_tokens.

@@ -38,10 +38,11 @@ class DelInsBase(Validator):
         :param Token s: Classification token
         :param list errors: List of errors
         """
-        len_of_seq = self.seqrepo_access.len_of_sequence(t)
-        is_len_lte_start = len_of_seq <= int(s.start_pos_del)
-        is_len_lte_end = \
-            s.end_pos_del and (len_of_seq <= int(s.end_pos_del))
-
-        if is_len_lte_end or is_len_lte_start:
+        if s.end_pos_del:
+            sequence = self.seqrepo_access.get_sequence(t, s.start_pos_del,
+                                                        s.end_pos_del)
+        else:
+            sequence = \
+                self.seqrepo_access.get_sequence(t, s.start_pos_del)
+        if sequence is None:
             errors.append('Sequence index error')

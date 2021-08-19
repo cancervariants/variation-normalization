@@ -97,8 +97,8 @@ coding_dna_delins:
   should_not_match:
     - query: NM_005228:c.2237_2253delinsTTGCT
     - query: ENST00000277541.6:c.7330479587395delinsACA
-    - query: NM_000551.3:c.4560delinsAA
-    - query: NM_000551.3:c.4559_4560delinsAA
+    - query: NM_000551.3:c.4561delinsAA
+    - query: NM_000551.3:c.4561_4562delinsAA
     - query: NM_000551.3:c.4560_4561delinsAA
 
 genomic_delins:
@@ -182,4 +182,4 @@ genomic_insertion:
     - query: ERBB2 g.37880993_37880994insGCTTACGTGATG
   should_not_match:
     - query: NC_000022.10:g.51304566_51304567insT
-    - query: NC_000022.10:g.51304565_51304566insT
+    - query: NC_000022.10:g.51304567_51304568insT
