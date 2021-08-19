@@ -10,6 +10,7 @@ from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
 from variation.mane_transcript import MANETranscript
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestAminoAcidSubstitutionValidator(ValidatorBase, unittest.TestCase):
@@ -23,7 +24,8 @@ class TestAminoAcidSubstitutionValidator(ValidatorBase, unittest.TestCase):
         dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
         tlr = Translator(data_proxy=dp)
         return AminoAcidSubstitution(
-            seqrepo_access, transcript_mappings, GeneSymbol(),
+            seqrepo_access, transcript_mappings,
+            GeneSymbol(GeneQueryHandler()),
             MANETranscript(seqrepo_access, transcript_mappings,
                            MANETranscriptMappings(), uta),
             uta, dp, tlr, AminoAcidCache())

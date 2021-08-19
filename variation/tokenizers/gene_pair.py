@@ -4,6 +4,7 @@ from .tokenizer import Tokenizer
 from .gene_symbol import GeneSymbol
 from variation.schemas.token_response_schema import GenePairMatchToken, \
     TokenMatchType
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class GenePair(Tokenizer):
@@ -11,7 +12,7 @@ class GenePair(Tokenizer):
 
     def __init__(self) -> None:
         """Initialize the Gene Pair class."""
-        self.__gene_matcher = GeneSymbol()
+        self.__gene_matcher = GeneSymbol(GeneQueryHandler())
 
     def match(self, input_string: str) -> Optional[GenePairMatchToken]:
         """Return tokens that match the input string."""

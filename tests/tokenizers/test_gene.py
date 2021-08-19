@@ -2,6 +2,7 @@
 import unittest
 from variation.tokenizers import GeneSymbol
 from .tokenizer_base import TokenizerBase
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
@@ -9,7 +10,7 @@ class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return the Gene Pair tokenizer instance."""
-        return GeneSymbol()
+        return GeneSymbol(GeneQueryHandler())
 
     def token_type(self):
         """Return the Gene Pair token type."""
