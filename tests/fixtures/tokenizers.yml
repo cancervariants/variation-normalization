@@ -348,3 +348,14 @@ genomic_insertion:
     - token: c.169_170insAla
     - token: g.32867861_32867862delinsT
     - token: 123_124insAGCX
+
+genomic_copy_number_loss:
+  should_match:
+    - token: g.(?_31120496)_(33339477_?)del
+    - token: g.(?_155980375)_(156013167_?)del
+  should_not_match:
+    - token: c.(?_169)_(170_?)del
+    - token: g.(31120496_?)_(?_33339477)del
+    - token: g.(?_31120496)_(33339477_?)delins
+    - token: (?_31120496)_(33339477_?)del
+    - token: g.(?_33339477)_(31120496_?)del

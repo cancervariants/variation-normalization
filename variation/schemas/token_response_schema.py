@@ -488,3 +488,23 @@ class GenomicInsertionToken(Insertion):
     token_type = 'GenomicInsertion'
     so_id = 'SO:0000667'
     molecule_context = 'genomic'
+
+
+class CopyNumberLoss(Token):
+    """Copy number loss."""
+
+    start_pos1_del = "?"
+    start_pos2_del: int
+    end_pos1_del: int
+    end_pos2_del = "?"
+    token_type: str
+    so_id = "SO:0001743"
+    molecule_context: str
+    alt_type = 'copy_number_variation'
+
+
+class GenomicCopyNumberLossToken(CopyNumberLoss):
+    """Genomic copy number loss."""
+
+    token_type = "GenomicCopyNumberLoss"
+    molecule_context = "genomic"
