@@ -2,7 +2,6 @@
 import unittest
 from variation.tokenizers import GenomicCopyNumberLoss
 from .tokenizer_base import TokenizerBase
-from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestGenomicCopyNumberLossTokenizer(TokenizerBase, unittest.TestCase):
@@ -10,7 +9,7 @@ class TestGenomicCopyNumberLossTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Genomic Copy Number Loss instance."""
-        return GenomicCopyNumberLoss(AminoAcidCache(), NucleotideCache())
+        return GenomicCopyNumberLoss()
 
     def token_type(self):
         """Return genomic copy number loss token type."""

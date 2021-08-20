@@ -1,8 +1,6 @@
 """A module for tokenizing genomic copy number loss."""
 from typing import Optional
 from .tokenizer import Tokenizer
-from .caches import AminoAcidCache, NucleotideCache
-from .tokenize_base import TokenizeBase
 from variation.schemas.token_response_schema import TokenMatchType, \
     GenomicCopyNumberLossToken
 
@@ -10,15 +8,9 @@ from variation.schemas.token_response_schema import TokenMatchType, \
 class GenomicCopyNumberLoss(Tokenizer):
     """The tokenizer class for genomic copy number loss.."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache,
-                 nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the Genomic Copy Number Loss Class.
-
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
+    def __init__(self) -> None:
+        """Initialize the Genomic Copy Number Loss Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[GenomicCopyNumberLossToken]:
         """Return tokens that match the input string."""
