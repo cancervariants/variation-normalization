@@ -5,7 +5,6 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.token_response_schema import GenomicDeletionToken
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.token_response_schema import Token
 import logging
 
 
@@ -27,29 +26,6 @@ class GenomicDeletion(DeletionBase):
         :return: List of transcript accessions
         """
         return self.get_genomic_transcripts(classification, errors)
-
-    def get_hgvs_expr(self, classification, t, s, is_hgvs) -> str:
-        """Return HGVS expression
-
-        :param Classification classification: A classification for a list of
-            tokens
-        :param str t: Transcript retrieved from transcript mapping
-        :param Token s: The classification token
-        :param bool is_hgvs: Whether or not classification is HGVS token
-        :return: hgvs expression
-        """
-        if not is_hgvs:
-            prefix = f"{t}:{s.reference_sequence.lower()}.{s.start_pos_del}"
-            if s.end_pos_del:
-                prefix += f"_{s.end_pos_del}"
-            hgvs_expr = f"{prefix}del"
-            if s.deleted_sequence:
-                hgvs_expr += f"{s.deleted_sequence}"
-        else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type == 'HGVS'][0]
-            hgvs_expr = hgvs_token.input_string
-        return hgvs_expr
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
