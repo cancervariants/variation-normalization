@@ -34,7 +34,7 @@ class ClassificationType(IntEnum):
     AMINO_ACID_INSERTION = 24
     CODING_DNA_INSERTION = 25
     GENOMIC_INSERTION = 26
-    GENOMIC_COPY_NUMBER_LOSS = 27
+    GENOMIC_UNCERTAIN_DELETION = 27
 
 
 class ConfidenceRating(IntEnum):
