@@ -1,18 +1,19 @@
-"""A module for tokenizing genomic copy number loss."""
+"""A module for tokenizing genomic uncertain deletion."""
 from typing import Optional
 from .tokenizer import Tokenizer
 from variation.schemas.token_response_schema import TokenMatchType, \
-    GenomicCopyNumberLossToken
+    GenomicUncertainDeletionToken
 
 
-class GenomicCopyNumberLoss(Tokenizer):
-    """The tokenizer class for genomic copy number loss.."""
+class GenomicUncertainDeletion(Tokenizer):
+    """The tokenizer class for genomic uncertain deletion."""
 
     def __init__(self) -> None:
-        """Initialize the Genomic Copy Number Loss Class."""
+        """Initialize the Genomic Uncertain Deletion Class."""
         self.parts = None
 
-    def match(self, input_string: str) -> Optional[GenomicCopyNumberLossToken]:
+    def match(self, input_string: str)\
+            -> Optional[GenomicUncertainDeletionToken]:
         """Return tokens that match the input string."""
         if input_string is None:
             return None
@@ -39,7 +40,7 @@ class GenomicCopyNumberLoss(Tokenizer):
         if self.parts['start_pos2_del'] is None or \
                 self.parts['end_pos1_del'] is None:
             return None
-        return GenomicCopyNumberLossToken(**self.parts)
+        return GenomicUncertainDeletionToken(**self.parts)
 
     def _get_parts(self, parts):
         """Set parts for genomic copy number loss.

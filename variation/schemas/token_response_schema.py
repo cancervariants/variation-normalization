@@ -490,21 +490,22 @@ class GenomicInsertionToken(Insertion):
     molecule_context = 'genomic'
 
 
-class CopyNumberLoss(Token):
-    """Copy number loss."""
+class UncertainDeletion(Token):
+    """Uncertain Deletion."""
 
     start_pos1_del = "?"
     start_pos2_del: int
     end_pos1_del: int
     end_pos2_del = "?"
     token_type: str
-    so_id = "SO:0001743"
+    so_id = "SO:0001906"  # TODO: Check this
     molecule_context: str
-    alt_type = 'copy_number_variation'
+    alt_type = 'uncertain_deletion'
 
 
-class GenomicCopyNumberLossToken(CopyNumberLoss):
-    """Genomic copy number loss."""
+class GenomicUncertainDeletionToken(UncertainDeletion):
+    """Genomic uncertain deletion."""
 
-    token_type = "GenomicCopyNumberLoss"
+    token_type = "GenomicUncertainDeletion"
     molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
