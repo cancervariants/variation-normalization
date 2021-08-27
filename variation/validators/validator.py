@@ -480,33 +480,53 @@ class Validator(ABC):
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
-        if alt_type == 'insertion':
-            state = alt
-            ival_end = ival_start
-        elif alt_type in ['substitution', 'deletion', 'delins',
-                          'silent_mutation', 'nonsense']:
-            if alt_type == 'silent_mutation':
-                state = self.seqrepo_access.get_sequence(
-                    ac, ival_start
+        if alt_type == 'uncertain_deletion':
+            interval = models.SequenceInterval(
+                start=models.IndefiniteRange(
+                    value=ival_start,
+                    comparator="<="
+                ),
+                end=models.IndefiniteRange(
+                    value=ival_end,
+                    comparator=">="
                 )
-            else:
-                state = alt or ''
-            ival_start -= 1
+            )
+            sstate = models.LiteralSequenceExpression(
+                sequence=""
+            )
         else:
-            errors.append(f"alt_type not supported: {alt_type}")
-            return None
+            if alt_type == 'insertion':
+                state = alt
+                ival_end = ival_start
+            elif alt_type in ['substitution', 'deletion', 'delins',
+                              'silent_mutation', 'nonsense']:
+                if alt_type == 'silent_mutation':
+                    state = self.seqrepo_access.get_sequence(
+                        ac, ival_start
+                    )
+                else:
+                    state = alt or ''
+                ival_start -= 1
+            else:
+                errors.append(f"alt_type not supported: {alt_type}")
+                return None
 
-        interval = models.SimpleInterval(start=ival_start, end=ival_end)
+            interval = models.SimpleInterval(start=ival_start, end=ival_end)
+            sstate = models.SequenceState(sequence=state)
+
         location = models.Location(sequence_id=sequence_id, interval=interval)
-        sstate = models.SequenceState(sequence=state)
         allele = models.Allele(location=location, state=sstate)
 
         try:
             allele = normalize(allele, self.dp)
         except (KeyError, AttributeError):
-            errors.append(f"vrs-python unable to normalize allele: "
-                          f"{allele.as_dict()}")
-            return None
+            # TODO: Remove this once vrs-python fixes normalize
+            if alt_type == "uncertain_deletion":
+                pass
+            else:
+                errors.append(f"vrs-python unable to normalize allele: "
+                              f"{allele.as_dict()}")
+                return None
 
         if not allele:
             errors.append(f"Unable to find allele for accession, {ac}, "
