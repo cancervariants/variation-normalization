@@ -41,13 +41,16 @@ def data_download(path, domain, dir, fn):
         with FTP(domain) as ftp:
             ftp.login()
             ftp.cwd(dir)
-            with open(f"{path}.gz", 'wb') as fp:
+            if fn.endswith('.gz') and not path.endswith('.gz'):
+                path += ".gz"
+            with open(f"{path}", 'wb') as fp:
                 ftp.retrbinary(f'RETR {fn}', fp.write)
             if fn.endswith('.gz'):
-                with gzip.open(f"{path}.gz", 'rb') as f_in:
-                    with open(path, 'wb') as f_out:
+                with gzip.open(f"{path}", 'rb') as f_in:
+                    dest = path[:-3]
+                    with open(dest, 'wb') as f_out:
                         shutil.copyfileobj(f_in, f_out)
-                remove(f"{path}.gz")
+                remove(f"{path}")
 
 
 SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/latest"
