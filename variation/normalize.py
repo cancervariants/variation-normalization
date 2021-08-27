@@ -122,11 +122,20 @@ class Normalize:
         :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
+        start = None
+        end = None
         interval = allele['location']['interval']
-        if interval['start'] != interval['end']:
-            start = interval['start'] + 1
-            end = interval['end']
-        else:
+        ival_type = interval['type']
+        if ival_type == 'SimpleInterval':
+            if interval['start'] != interval['end']:
+                start = interval['start'] + 1
+                end = interval['end']
+        elif ival_type == 'SequenceInterval':
+            if interval['start']['type'] == 'Number':
+                start = interval['start']['value'] + 1
+                end = interval['end']['value']
+
+        if start is None and end is None:
             return None
 
         return self.seqrepo_access.get_sequence(identifier, start, end)
