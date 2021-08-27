@@ -34,7 +34,8 @@ class Allele(BaseModel):
 
     id: Optional[StrictStr] = Field(alias='_id')
     location: SequenceLocation
-    state: SequenceState
+    state: Dict
+    # state: Union[SequenceState, SequeceExpression]  TODO: Change back
     type = 'Allele'
 
     class Config:

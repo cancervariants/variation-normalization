@@ -1,10 +1,10 @@
 """Module for modeling VRSATILE objects."""
 from pydantic import BaseModel, validator, root_validator
 from pydantic.types import StrictStr
-from typing import List, Optional, Dict, Any, Type, Union
+from typing import List, Optional, Dict, Any, Type
 from enum import Enum
 from gene.schemas import GeneDescriptor, Extension, check_curie
-from variation.schemas.ga4gh_vrs import Allele, Text
+# from variation.schemas.ga4gh_vrs import Allele, Text
 import re
 
 
@@ -50,7 +50,8 @@ class VariationDescriptor(BaseModel):
     id: StrictStr
     type = 'VariationDescriptor'
     value_id: Optional[StrictStr]
-    value: Optional[Union[Allele, Text]]
+    value: Dict
+    # value: Optional[Union[Allele, Text]] TODO: Change back
     label: Optional[StrictStr]
     extensions: Optional[List[Extension]]
     molecule_context: Optional[MoleculeContext]
