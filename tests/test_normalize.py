@@ -1,7 +1,7 @@
 """Module for testing the normalize endpoint."""
 import pytest
 from variation.query import QueryHandler
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 from datetime import datetime
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response

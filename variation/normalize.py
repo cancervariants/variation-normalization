@@ -1,7 +1,7 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
-from variation.schemas.ga4gh_vrs import Text
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrs_model import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
@@ -31,8 +31,8 @@ class Normalize:
         :param str q: The variation to normalize
         :param ValidationSummary validations: Invalid and valid results
         :param list warnings: List of warnings
-        :return: An allele descriptor for a valid result if one exists. Else,
-            None.
+        :return: An variation descriptor for a valid result if one exists.
+            Else, None.
         """
         if not q:
             resp, warnings = self._no_variation_entered()
