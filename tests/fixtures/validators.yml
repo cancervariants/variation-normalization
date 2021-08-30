@@ -183,3 +183,12 @@ genomic_insertion:
   should_not_match:
     - query: NC_000022.10:g.51304566_51304567insT
     - query: NC_000022.10:g.51304567_51304568insT
+
+genomic_uncertain_deletion:
+  should_match:
+    - query: NC_000023.11:g.(?_155980375)_(156013167_?)del
+    - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
+    - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
+  should_not_match:
+    - query: NC_000012.12:g.123256943_123256947del
+    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
