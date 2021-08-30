@@ -2,6 +2,7 @@
 import copy
 from typing import List, Optional, Dict
 from abc import ABC, abstractmethod
+from ga4gh.vrsatile.pydantic.vrs_model import CopyNumber
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.token_response_schema import GeneMatchToken
@@ -206,7 +207,7 @@ class Validator(ABC):
 
     @staticmethod
     def get_validation_result(classification, classification_token, is_valid,
-                              confidence_score, allele, human_description,
+                              confidence_score, variation, human_description,
                               concise_description, errors, gene_tokens,
                               identifier=None, is_mane_transcript=False)\
             -> ValidationResult:
@@ -216,13 +217,13 @@ class Validator(ABC):
         :param Token classification_token: Classification token
         :param boolean is_valid: Whether or not the classification is valid
         :param int confidence_score: The classification confidence score
-        :param dict allele: A VRS Allele object
+        :param dict variation: A VRS Variation object
         :param str human_description: A human description describing the
             variation
         :param str concise_description: HGVS expression for variation
         :param list errors: A list of errors for the classification
         :param list gene_tokens: List of GeneMatchTokens
-        :param str identifier: Identifier for allele
+        :param str identifier: Identifier for variation
         :param bool is_mane_transcript: `True` if result is MANE transcript.
             `False` otherwise.
         :return: A validation result
@@ -232,7 +233,7 @@ class Validator(ABC):
             classification_token=classification_token,
             is_valid=is_valid,
             confidence_score=confidence_score,
-            allele=allele,
+            variation=variation,
             human_description=human_description,
             concise_description=concise_description,
             errors=errors,
@@ -401,29 +402,31 @@ class Validator(ABC):
             t = hgvs_expr.split(':')[0]
         return t
 
-    def add_validation_result(self, allele, valid_alleles, results,
+    def add_validation_result(self, variation, valid_variations, results,
                               classification, s, t, gene_tokens, errors,
                               identifier=None,
                               is_mane_transcript=False) -> bool:
         """Add validation result to list of results.
 
-        :param dict allele: A VRS Allele object
-        :param list valid_alleles: A list containing current valid alleles
+        :param dict variation: A VRS Variation object
+        :param list valid_variations: A list containing current valid
+            variations
         :param list results: A list of validation results
         :param Classification classification: The classification for tokens
         :param Token s: The classification token
         :param string t: Transcript
         :param list gene_tokens: List of GeneMatchTokens
         :param list errors: A list of errors for the classification
-        :param str identifier: Identifier for allele
+        :param str identifier: Identifier for variation
         :param bool is_mane_transcript: `True` if result is MANE transcript.
             `False` otherwise.
         """
         if not errors:
-            if is_mane_transcript or (allele and allele not in valid_alleles):
+            if is_mane_transcript or \
+                    (variation and variation not in valid_variations):
                 results.append(
                     self.get_validation_result(
-                        classification, s, True, 1, allele,
+                        classification, s, True, 1, variation,
                         self.human_description(t, s),
                         self.concise_description(t, s), [],
                         gene_tokens,
@@ -431,12 +434,12 @@ class Validator(ABC):
                         is_mane_transcript=is_mane_transcript
                     )
                 )
-                valid_alleles.append(allele)
+                valid_variations.append(variation)
                 return True
         else:
             results.append(
                 self.get_validation_result(
-                    classification, s, False, 1, allele,
+                    classification, s, False, 1, variation,
                     self.human_description(t, s),
                     self.concise_description(t, s), errors,
                     gene_tokens,
@@ -539,6 +542,55 @@ class Validator(ABC):
         allele._id = ga4gh_identify(allele)
         return allele.as_dict()
 
+    def _get_chr(self, ac) -> Optional[str]:
+        """Get chromosome for accession.
+
+        :param str ac: Accession
+        :return: Chromosome
+        """
+        aliases = self.seqrepo_access.aliases(ac)
+        return ([a.split(':')[-1] for a in aliases
+                 if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
+
+    def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None)\
+            -> Optional[CopyNumber]:
+        """Return a Copy Number Variation.
+
+        :param str ac: Accession
+        :param dict allele: VRS Allele Object
+        :param str del_or_dup: `del` if deletion, `dup` if duplication
+        :param str chr: The chromosome the accession is located on
+        :return: VRS Copy Number object
+        """
+        if chr is None:
+            chr = self._get_chr(ac)
+
+        if chr is None:
+            logger.warning(f"Unable to find chromosome on {ac}")
+            return None
+
+        if chr == 'X':
+            copies = models.DefiniteRange(
+                min=0 if del_or_dup == 'del' else 2,
+                max=1 if del_or_dup == 'del' else 3
+            )
+        elif chr == 'Y':
+            copies = models.Number(
+                value=0 if del_or_dup == 'del' else 2
+            )
+        else:
+            # Chr 1-22
+            copies = models.Number(
+                value=1 if del_or_dup == 'del' else 3
+            )
+
+        cnv = models.CopyNumber(
+            subject=allele,
+            copies=copies
+        )
+        cnv._id = ga4gh_identify(cnv)
+        return cnv.as_dict()
+
     def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
                       gene_tokens, alt=None) -> None:
         """Add mane transcript information to mane_data.
@@ -590,26 +642,34 @@ class Validator(ABC):
                         s_copy.new_nucleotide += complements[nt]
                     alt = s_copy.new_nucleotide
 
-        mane_allele = self.to_vrs_allele(
+        new_allele = self.to_vrs_allele(
             mane['refseq'], mane['pos'][0], mane['pos'][1],
             coordinate, alt_type, [],
             cds_start=mane.get('coding_start_site', None), alt=alt
         )
 
-        if not mane_allele:
+        if not new_allele:
             return
 
-        allele_id = mane_allele['_id']
+        if alt_type == 'uncertain_deletion':
+            variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
+            if not variation:
+                return None
+            _id = variation['_id']
+        else:
+            variation = new_allele
+            _id = variation['_id']
 
         key = '_'.join(mane['status'].lower().split())
-        if allele_id in mane_data[key].keys():
-            mane_data[key][allele_id]['count'] += 1
+
+        if _id in mane_data[key].keys():
+            mane_data[key][_id]['count'] += 1
         else:
-            mane_data[key][allele_id] = {
+            mane_data[key][_id] = {
                 'classification_token': s_copy,
                 'accession': mane['refseq'],
                 'count': 1,
-                'allele': mane_allele,
+                'variation': variation,
                 'label': mane['refseq']  # TODO: Use VRS to translate
             }
 
@@ -639,7 +699,7 @@ class Validator(ABC):
                 if data['count'] > highest_count:
                     highest_count = data['count']
                     mane_result = data
-                    mane_allele = data['allele']
+                    mane_allele = data['variation']
                     identifier = data['accession']
 
             if mane_allele:

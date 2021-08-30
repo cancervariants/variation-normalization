@@ -53,21 +53,25 @@ class GenomicUncertainDeletion(Validator):
                                             s.end_pos1_del,
                                             s.reference_sequence, s.alt_type,
                                             errors)
+                cnv = self.to_vrs_cnv(t, allele, 'del')
+                if not cnv:
+                    errors.append(f"Unable to get CNV for {t}")
 
                 if not errors:
-                    # TODO: CHeck this
-                    #  I dont think we can get mane data for uncertain dels
                     grch38 = self.mane_transcript.g_to_grch38(
                         t, s.start_pos2_del, s.end_pos1_del)
 
-                    mane = dict(
-                        gene=None,
-                        refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
-                        ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
-                        pos=grch38['pos'],
-                        strand=None,
-                        status='GRCh38'
-                    )
+                    if grch38:
+                        mane = dict(
+                            gene=None,
+                            refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
+                            ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
+                            pos=grch38['pos'],
+                            strand=None,
+                            status='GRCh38'
+                        )
+                    else:
+                        mane = None
 
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
@@ -75,7 +79,7 @@ class GenomicUncertainDeletion(Validator):
                     )
 
                 self.add_validation_result(
-                    allele, valid_alleles, results,
+                    cnv, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 
