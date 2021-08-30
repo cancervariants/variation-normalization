@@ -1,6 +1,6 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
-from variation.schemas.ga4gh_vrs import Allele
+from ga4gh.vrsatile.pydantic.vrs_model import Allele, CopyNumber  # noqa: F401
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
 
