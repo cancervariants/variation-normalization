@@ -490,7 +490,7 @@ class Validator(ABC):
                     comparator="<="
                 ),
                 end=models.IndefiniteRange(
-                    value=ival_end,
+                    value=ival_end - 1,
                     comparator=">="
                 )
             )
@@ -585,7 +585,10 @@ class Validator(ABC):
             )
 
         cnv = models.CopyNumber(
-            subject=allele,
+            subject=models.DerivedSequenceExpression(
+                location=allele['location'],
+                reverse_complement=False  # TODO: CHANGE THIS
+            ),
             copies=copies
         )
         cnv._id = ga4gh_identify(cnv)
