@@ -42,7 +42,7 @@ class Normalize:
                 # For now, only use first valid result
                 valid_result = None
                 for r in validations.valid_results:
-                    if r.is_mane_transcript and r.allele:
+                    if r.is_mane_transcript and r.variation:
                         valid_result = r
                         break
                 if not valid_result:
@@ -51,12 +51,21 @@ class Normalize:
                     warnings.append(warning)
                     valid_result = validations.valid_results[0]
 
-                allele = valid_result.allele
-                allele_id = allele.pop('_id')
+                variation = valid_result.variation
+
+                variation_id = variation.pop('_id')
                 identifier = valid_result.identifier
-                vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    allele, identifier
-                )
+
+                if variation['type'] == 'Allele':
+                    vrs_ref_allele_seq = self.get_ref_allele_seq(
+                        variation, identifier
+                    )
+                elif variation['type'] == 'CopyNumber':
+                    vrs_ref_allele_seq = self.get_ref_allele_seq(
+                        variation['subject'], identifier
+                    )
+                else:
+                    vrs_ref_allele_seq = None
 
                 if valid_result.gene_tokens:
                     gene_token = valid_result.gene_tokens[0]
@@ -66,8 +75,8 @@ class Normalize:
 
                 resp = VariationDescriptor(
                     id=_id,
-                    value_id=allele_id,
-                    value=allele,
+                    variation_id=variation_id,
+                    variation=variation,
                     molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
                     structural_type=valid_result.classification_token.so_id,
                     vrs_ref_allele_seq=vrs_ref_allele_seq,
