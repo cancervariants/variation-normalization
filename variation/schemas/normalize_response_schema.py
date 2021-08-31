@@ -58,8 +58,8 @@ class NormalizeService(BaseModel):
                     "id": "normalize.variation:BRAF%20V600E",
                     "type": "VariationDescriptor",
                     "label": "NP_001361187.1:p.Val640Glu",
-                    "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
-                    "value": {
+                    "variation_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",  # noqa: E501
+                    "variation": {
                         "location": {
                             "interval": {
                                 "end": 640,
