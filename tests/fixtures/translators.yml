@@ -1417,18 +1417,18 @@ genomic_uncertain_deletion:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
       variations: [
         {
-          "id": "ga4gh:VCN.rIr4Dsk6TOXDANhoXJyICa3FlQnECIvE",
+          "id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
           "subject": {
             "location": {
               "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
               "interval": {
                 "start": {
-                  "value": 31120496,
+                  "value": 31120495,
                   "comparator": "<=",
                   "type": "IndefiniteRange"
                 },
                 "end": {
-                  "value": 33339476,
+                  "value": 33339477,
                   "comparator": ">=",
                   "type": "IndefiniteRange"
                 },
@@ -1450,18 +1450,18 @@ genomic_uncertain_deletion:
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
       variations: [
         {
-          "id": "ga4gh:VCN.ZXm0mNh4QGM9aDZWXG1ZDZm_y2qqKeUA",
+          "id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
           "subject": {
             "location": {
               "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
               "interval": {
                 "start": {
-                  "value": 110104900,
+                  "value": 110104899,
                   "comparator": "<=",
                   "type": "IndefiniteRange"
                 },
                 "end": {
-                  "value": 110207159,
+                  "value": 110207160,
                   "comparator": ">=",
                   "type": "IndefiniteRange"
                 },
@@ -1482,18 +1482,18 @@ genomic_uncertain_deletion:
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
       variations: [
         {
-          "id": "ga4gh:VCN.OKKydlExgYY2Z64awYO-Jmz91SDiIEod",
+          "id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
           "subject": {
             "location": {
               "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
               "interval": {
                 "start": {
-                  "value": 14076802,
+                  "value": 14076801,
                   "comparator": "<=",
                   "type": "IndefiniteRange"
                 },
                 "end": {
-                  "value": 57165208,
+                  "value": 57165209,
                   "comparator": ">=",
                   "type": "IndefiniteRange"
                 },
