@@ -486,11 +486,11 @@ class Validator(ABC):
         if alt_type == 'uncertain_deletion':
             interval = models.SequenceInterval(
                 start=models.IndefiniteRange(
-                    value=ival_start,
+                    value=ival_start - 1,
                     comparator="<="
                 ),
                 end=models.IndefiniteRange(
-                    value=ival_end - 1,
+                    value=ival_end,
                     comparator=">="
                 )
             )
