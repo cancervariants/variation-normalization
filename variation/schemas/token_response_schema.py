@@ -498,7 +498,7 @@ class UncertainDeletion(Token):
     end_pos1_del: int
     end_pos2_del = "?"
     token_type: str
-    so_id = "SO:0001743"  # TODO: Check this
+    so_id = "SO:0001743"
     molecule_context: str
     alt_type = 'uncertain_deletion'
 
