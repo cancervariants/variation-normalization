@@ -1447,6 +1447,69 @@ genomic_uncertain_deletion:
           "type": "CopyNumber"
         }
       ]
+    - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
+      variations: [
+        {
+          "id": "ga4gh:VCN.gRshXhruFQw-QdKwU4xc2iKBNLIbFNzt",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+              "interval": {
+                "start": {
+                  "value": 31138612,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 33357594,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 0,
+            "max": 1,
+            "type": "DefiniteRange"
+          },
+          "type": "CopyNumber"
+        },
+        {
+          "id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+              "interval": {
+                "start": {
+                  "value": 31120495,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 33339477,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 0,
+            "max": 1,
+            "type": "DefiniteRange"
+          },
+          "type": "CopyNumber"
+        }
+      ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
       variations: [
         {
