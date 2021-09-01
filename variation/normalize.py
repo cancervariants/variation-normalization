@@ -92,7 +92,7 @@ class Normalize:
                     warning = f"Unable to normalize {q}"
                     resp = VariationDescriptor(
                         id=_id,
-                        value=Text(definition=q)
+                        variation=Text(definition=q)
                     )
                     if not warnings:
                         warnings.append(warning)
