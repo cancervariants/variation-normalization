@@ -1,11 +1,10 @@
 """This module provides methods for handling queries."""
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Union
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
 from variation.to_vrs import ToVRS
 from variation.normalize import Normalize
 from variation.classifiers import Classify
@@ -17,7 +16,9 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from variation.schemas.ga4gh_vrs import Text, Allele
+from ga4gh.vrsatile.pydantic.vrs_model import Text, Allele, CopyNumber, \
+    Haplotype, VariationSet
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 
 
 class QueryHandler:
@@ -89,7 +90,11 @@ class QueryHandler:
             mane_transcript, validator, translator
         )
 
-    def to_vrs(self, q) -> Tuple[Optional[List[Allele]], Optional[List[str]]]:
+    def to_vrs(self, q)\
+            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+                                    List[Text], List[Haplotype],
+                                    List[VariationSet]]],
+                     Optional[List[str]]]:
         """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
 
         :param str q: The variation to translate

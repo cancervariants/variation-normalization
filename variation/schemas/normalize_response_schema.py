@@ -1,7 +1,7 @@
 """Module for normalize endpoint response schema."""
 from pydantic import BaseModel
 from pydantic.types import StrictStr
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
@@ -58,8 +58,8 @@ class NormalizeService(BaseModel):
                     "id": "normalize.variation:BRAF%20V600E",
                     "type": "VariationDescriptor",
                     "label": "NP_001361187.1:p.Val640Glu",
-                    "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
-                    "value": {
+                    "variation_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",  # noqa: E501
+                    "variation": {
                         "location": {
                             "interval": {
                                 "end": 640,

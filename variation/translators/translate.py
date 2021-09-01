@@ -1,5 +1,6 @@
 """Module for translation."""
-from variation.schemas.ga4gh_vrs import Allele
+from ga4gh.vrsatile.pydantic.vrs_model import Allele, CopyNumber,\
+    VariationSet, Haplotype
 from variation.schemas.validation_response_schema import ValidationResult
 from .translator import Translator
 from .amino_acid_substitution import AminoAcidSubstitution
@@ -18,7 +19,8 @@ from .genomic_deletion import GenomicDeletion
 from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
-from typing import List, Optional
+from .genomic_uncertain_deletion import GenomicUncertainDeletion
+from typing import List, Optional, Union
 
 
 class Translate:
@@ -42,11 +44,12 @@ class Translate:
             GenomicDeletion(),
             AminoAcidInsertion(),
             CodingDNAInsertion(),
-            GenomicInsertion()
+            GenomicInsertion(),
+            GenomicUncertainDeletion()
         ]
 
     def perform(self, res: ValidationResult) \
-            -> Optional[Allele]:
+            -> Optional[Union[Allele, CopyNumber, Haplotype, VariationSet]]:
         """Translate a valid variation query."""
         for translator in self.all_translators:
             if translator.can_translate(

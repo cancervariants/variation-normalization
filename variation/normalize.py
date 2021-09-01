@@ -1,7 +1,7 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
-from variation.schemas.ga4gh_vrs import Text
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrs_model import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
@@ -31,8 +31,8 @@ class Normalize:
         :param str q: The variation to normalize
         :param ValidationSummary validations: Invalid and valid results
         :param list warnings: List of warnings
-        :return: An allele descriptor for a valid result if one exists. Else,
-            None.
+        :return: An variation descriptor for a valid result if one exists.
+            Else, None.
         """
         if not q:
             resp, warnings = self._no_variation_entered()
@@ -42,7 +42,7 @@ class Normalize:
                 # For now, only use first valid result
                 valid_result = None
                 for r in validations.valid_results:
-                    if r.is_mane_transcript and r.allele:
+                    if r.is_mane_transcript and r.variation:
                         valid_result = r
                         break
                 if not valid_result:
@@ -51,12 +51,21 @@ class Normalize:
                     warnings.append(warning)
                     valid_result = validations.valid_results[0]
 
-                allele = valid_result.allele
-                allele_id = allele.pop('_id')
+                variation = valid_result.variation
+
+                variation_id = variation.pop('_id')
                 identifier = valid_result.identifier
-                vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    allele, identifier
-                )
+
+                if variation['type'] == 'Allele':
+                    vrs_ref_allele_seq = self.get_ref_allele_seq(
+                        variation, identifier
+                    )
+                elif variation['type'] == 'CopyNumber':
+                    vrs_ref_allele_seq = self.get_ref_allele_seq(
+                        variation['subject'], identifier
+                    )
+                else:
+                    vrs_ref_allele_seq = None
 
                 if valid_result.gene_tokens:
                     gene_token = valid_result.gene_tokens[0]
@@ -64,10 +73,13 @@ class Normalize:
                 else:
                     gene_context = None
 
+                if 'Uncertain' in valid_result.classification_token.token_type:
+                    warnings = ['Ambiguous regions cannot be normalized']
+
                 resp = VariationDescriptor(
                     id=_id,
-                    value_id=allele_id,
-                    value=allele,
+                    variation_id=variation_id,
+                    variation=variation,
                     molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
                     structural_type=valid_result.classification_token.so_id,
                     vrs_ref_allele_seq=vrs_ref_allele_seq,
@@ -80,7 +92,7 @@ class Normalize:
                     warning = f"Unable to normalize {q}"
                     resp = VariationDescriptor(
                         id=_id,
-                        value=Text(definition=q)
+                        variation=Text(definition=q)
                     )
                     if not warnings:
                         warnings.append(warning)
@@ -122,11 +134,20 @@ class Normalize:
         :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
+        start = None
+        end = None
         interval = allele['location']['interval']
-        if interval['start'] != interval['end']:
-            start = interval['start'] + 1
-            end = interval['end']
-        else:
+        ival_type = interval['type']
+        if ival_type == 'SimpleInterval':
+            if interval['start'] != interval['end']:
+                start = interval['start'] + 1
+                end = interval['end']
+        elif ival_type == 'SequenceInterval':
+            if interval['start']['type'] == 'Number':
+                start = interval['start']['value'] + 1
+                end = interval['end']['value']
+
+        if start is None and end is None:
             return None
 
         return self.seqrepo_access.get_sequence(identifier, start, end)

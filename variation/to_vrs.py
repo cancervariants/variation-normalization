@@ -1,6 +1,7 @@
 """Module for to VRS translation."""
-from typing import Tuple, Optional, List
-from variation.schemas.ga4gh_vrs import Allele
+from typing import Tuple, Optional, List, Union
+from ga4gh.vrsatile.pydantic.vrs_model import Allele, Haplotype, CopyNumber,\
+    VariationSet, Text
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
@@ -59,7 +60,10 @@ class ToVRS:
         return validations, warnings
 
     def get_translations(self, validations, warnings)\
-            -> Tuple[Optional[List[Allele]], Optional[List[str]]]:
+            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+                                    List[Text], List[Haplotype],
+                                    List[VariationSet]]],
+                     Optional[List[str]]]:
         """Return a list translations from a ValidationSummary.
 
         :param ValidationSummary validations: Valid and Invalid results
