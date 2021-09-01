@@ -73,6 +73,9 @@ class Normalize:
                 else:
                     gene_context = None
 
+                if 'Uncertain' in valid_result.classification_token.token_type:
+                    warnings = ['Ambiguous regions cannot be normalized']
+
                 resp = VariationDescriptor(
                     id=_id,
                     variation_id=variation_id,
