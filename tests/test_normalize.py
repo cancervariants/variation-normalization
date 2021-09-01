@@ -884,7 +884,7 @@ def genomic_substitution(egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.c8ePmPEstWMCAJmtg3FuPb10XDr1G_8E",
+        "variation_id": "ga4gh:VA.s_9_u_eDwRQMTK8eeWKGEQmfNjdKVuRk",
         "variation": {
             "location": {
                 "interval": {
