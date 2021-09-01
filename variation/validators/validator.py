@@ -520,15 +520,12 @@ class Validator(ABC):
         location = models.Location(sequence_id=sequence_id, interval=interval)
         allele = models.Allele(location=location, state=sstate)
 
-        try:
-            allele = normalize(allele, self.dp)
-        except (KeyError, AttributeError):
-            # TODO: Remove this once vrs-python fixes normalize
-            if alt_type == "uncertain_deletion":
-                pass
-            else:
-                errors.append(f"vrs-python unable to normalize allele: "
-                              f"{allele.as_dict()}")
+        # Ambiguous regions do not get normalized
+        if alt_type != "uncertain_deletion":
+            try:
+                allele = normalize(allele, self.dp)
+            except (KeyError, AttributeError) as e:
+                errors.append(f"vrs-python unable to normalize allele: {e}")
                 return None
 
         if not allele:
