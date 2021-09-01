@@ -1,7 +1,7 @@
 """Module for testing the normalize endpoint."""
 import pytest
 from variation.query import QueryHandler
-from variation.schemas.ga4gh_vrsatile import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 from datetime import datetime
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
@@ -32,8 +32,8 @@ def braf_gene_context():
         "id": "normalize.gene:BRAF",
         "type": "GeneDescriptor",
         "label": "BRAF",
-        "value": {
-            "id": "hgnc:1097",
+        "gene": {
+            "gene_id": "hgnc:1097",
             "type": "Gene"
         },
         "xrefs": [
@@ -103,8 +103,8 @@ def vhl_gene_context():
         "id": "normalize.gene:VHL",
         "type": "GeneDescriptor",
         "label": "VHL",
-        "value": {
-            "id": "hgnc:12687",
+        "gene": {
+            "gene_id": "hgnc:12687",
             "type": "Gene"
         },
         "xrefs": [
@@ -179,8 +179,8 @@ def erbb2_context():
         "id": "normalize.gene:ERBB2",
         "type": "GeneDescriptor",
         "label": "ERBB2",
-        "value": {
-            "id": "hgnc:3430",
+        "gene": {
+            "gene_id": "hgnc:3430",
             "type": "Gene"
         },
         "xrefs": [
@@ -262,8 +262,8 @@ def egfr_context():
         "id": "normalize.gene:EGFR",
         "type": "GeneDescriptor",
         "label": "EGFR",
-        "value": {
-            "id": "hgnc:3236",
+        "gene": {
+            "gene_id": "hgnc:3236",
             "type": "Gene"
         },
         "xrefs": [
@@ -344,8 +344,8 @@ def limk2_gene_context():
         "id": "normalize.gene:LIMK2",
         "type": "GeneDescriptor",
         "label": "LIMK2",
-        "value": {
-            "id": "hgnc:6614",
+        "gene": {
+            "gene_id": "hgnc:6614",
             "type": "Gene"
         },
         "xrefs": [
@@ -406,8 +406,8 @@ def braf_v600e(braf_gene_context):
     params = {
         "id": "normalize.variation:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
-        "value": {
+        "variation_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 640,
@@ -437,8 +437,8 @@ def vhl(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Tyr185Ter",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
-        "value": {
+        "variation_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 185,
@@ -468,8 +468,8 @@ def vhl_silent(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
-        "value": {
+        "variation_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 61,
@@ -499,8 +499,8 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.19rEOp0IBkrDkUA4gwwM-4Gde08-kBb1",
-        "value": braf_nuc_value,
+        "variation_id": "ga4gh:VA.19rEOp0IBkrDkUA4gwwM-4Gde08-kBb1",
+        "variation": braf_nuc_value,
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "T",
@@ -515,8 +515,8 @@ def nm_004448_coding_dna_delins(erbb2_context):
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.sSFX2CO2DPTvE4MqnJ5VifnaQOGS0CVb",
-        "value": {
+        "variation_id": "ga4gh:VA.sSFX2CO2DPTvE4MqnJ5VifnaQOGS0CVb",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2502,
@@ -546,8 +546,8 @@ def nc_000007_genomic_delins(braf_gene_context):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA._GzAG8_K8YwcYQk6bEvINNGM_hEViytU",
-        "value": {
+        "variation_id": "ga4gh:VA._GzAG8_K8YwcYQk6bEvINNGM_hEViytU",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2146,
@@ -577,8 +577,8 @@ def nm_000551(vhl_gene_context):
     params = {
         "id": 'normalize.variation:temp',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
-        "value": {
+        "variation_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 685,
@@ -631,8 +631,8 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
-        "value": value,
+        "variation_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
+        "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
@@ -649,8 +649,8 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
-        "value": value,
+        "variation_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
+        "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
@@ -665,8 +665,8 @@ def amino_acid_delins(egfr_context):
     params = {
         "id": 'normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.drLuUW5T542RCeDlVo4zbQ-_tcAiEnb6",
-        "value": {
+        "variation_id": "ga4gh:VA.drLuUW5T542RCeDlVo4zbQ-_tcAiEnb6",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 751,
@@ -698,8 +698,8 @@ def amino_acid_deletion_np_range(erbb2_context):
     params = {
         "id": 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.Kzk2XquE5w5Ujd_tPBLVOZcylXMP8xbW",
-        "value": {
+        "variation_id": "ga4gh:VA.Kzk2XquE5w5Ujd_tPBLVOZcylXMP8xbW",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 759,
@@ -731,8 +731,8 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.FqrZbBlsAwpXWOXiBq2glfhCvLqp4xLC",
-        "value": {
+        "variation_id": "ga4gh:VA.FqrZbBlsAwpXWOXiBq2glfhCvLqp4xLC",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2453,
@@ -762,8 +762,8 @@ def genomic_deletion(vhl_gene_context):
     params = {
         "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.uagNswLQY5rgN2c30_J3-45UMpIySM4C",
-        "value": {
+        "variation_id": "ga4gh:VA.uagNswLQY5rgN2c30_J3-45UMpIySM4C",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 510,
@@ -793,8 +793,8 @@ def amino_acid_insertion(egfr_context):
     params = {
         "id": 'normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.d3dLtsYaLYE2Yh_GENvPUtTVZWlwLnJw",
-        "value": {
+        "variation_id": "ga4gh:VA.d3dLtsYaLYE2Yh_GENvPUtTVZWlwLnJw",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 770,
@@ -823,8 +823,8 @@ def coding_dna_insertion(limk2_gene_context):
     params = {
         "id": 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.195Sg1AkyM4uQOhxLhBhANe2BUbnbEcR",
-        "value": {
+        "variation_id": "ga4gh:VA.195Sg1AkyM4uQOhxLhBhANe2BUbnbEcR",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2160,
@@ -853,8 +853,8 @@ def genomic_insertion(erbb2_context):
     params = {
         "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.qk5UNMFwxqQQWjO6CGMk3tryHBN3Sm_P",
-        "value": {
+        "variation_id": "ga4gh:VA.qk5UNMFwxqQQWjO6CGMk3tryHBN3Sm_P",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2500,
@@ -884,8 +884,8 @@ def genomic_substitution(egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.c8ePmPEstWMCAJmtg3FuPb10XDr1G_8E",
-        "value": {
+        "variation_id": "ga4gh:VA.s_9_u_eDwRQMTK8eeWKGEQmfNjdKVuRk",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 2630,
@@ -915,8 +915,8 @@ def genomic_sub_grch38():
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
-        "value": {
+        "variation_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 55181378,
@@ -945,8 +945,8 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "value_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
-        "value": {
+        "variation_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
+        "variation": {
             "location": {
                 "interval": {
                     "end": 55181378,
@@ -970,11 +970,136 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def genomic_uncertain_del_x():
+    """Create a genomic uncertain deletion on chr X test fixture."""
+    params = {
+        "id": 'normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+        "variation": {
+            "subject": {
+                "location": {
+                    "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                    "interval": {
+                        "start": {
+                            "value": 31120495,
+                            "comparator": "<=",
+                            "type": "IndefiniteRange"
+                        },
+                        "end": {
+                            "value": 33339477,
+                            "comparator": ">=",
+                            "type": "IndefiniteRange"
+                        },
+                        "type": "SequenceInterval"
+                    },
+                    "type": "SequenceLocation"
+                },
+                "reverse_complement": False,
+                "type": "DerivedSequenceExpression"
+            },
+            "copies": {
+                "min": 0,
+                "max": 1,
+                "type": "DefiniteRange"
+            },
+            "type": "CopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_uncertain_del_2():
+    """Create a genomic uncertain deletion on chr 2 test fixture."""
+    params = {
+        "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+        "variation": {
+            "subject": {
+                "location": {
+                    "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+                    "interval": {
+                        "start": {
+                            "value": 110104899,
+                            "comparator": "<=",
+                            "type": "IndefiniteRange"
+                        },
+                        "end": {
+                            "value": 110207160,
+                            "comparator": ">=",
+                            "type": "IndefiniteRange"
+                        },
+                        "type": "SequenceInterval"
+                    },
+                    "type": "SequenceLocation"
+                },
+                "reverse_complement": False,
+                "type": "DerivedSequenceExpression"
+            },
+            "copies": {
+                "value": 1,
+                "type": "Number"
+            },
+            "type": "CopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_uncertain_del_y():
+    """Create a genomic uncertain deletion on chr Y test fixture."""
+    params = {
+        "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+        "variation": {
+            "subject": {
+                "location": {
+                    "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                    "interval": {
+                        "start": {
+                            "value": 14076801,
+                            "comparator": "<=",
+                            "type": "IndefiniteRange"
+                        },
+                        "end": {
+                            "value": 57165209,
+                            "comparator": ">=",
+                            "type": "IndefiniteRange"
+                        },
+                        "type": "SequenceInterval"
+                    },
+                    "type": "SequenceLocation"
+                },
+                "reverse_complement": False,
+                "type": "DerivedSequenceExpression"
+            },
+            "copies": {
+                "value": 0,
+                "type": "Number"
+            },
+            "type": "CopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743"
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variation):
     """Check that normalize_response and test_variation are equal."""
     assert normalize_response.id == test_variation.id
     assert normalize_response.type == test_variation.type
-    assert normalize_response.value == test_variation.value
+    assert normalize_response.variation_id == test_variation.variation_id
+    assert normalize_response.variation == test_variation.variation
     assert normalize_response.molecule_context == \
            test_variation.molecule_context
     assert normalize_response.structural_type == test_variation.structural_type
@@ -986,7 +1111,7 @@ def assertion_checks(normalize_response, test_variation):
     if resp_gene_context:
         assert resp_gene_context.id == test_variation_context.id
         assert resp_gene_context.label == test_variation_context.label
-        assert resp_gene_context.value_id == test_variation_context.value_id
+        assert resp_gene_context.gene_id == test_variation_context.gene_id
         assert set(resp_gene_context.xrefs) ==\
                set(test_variation_context.xrefs)
         if test_variation_context.alternate_labels:
@@ -1283,6 +1408,31 @@ def test_genomic_insertion(test_normalize, genomic_insertion):
     assertion_checks(resp, genomic_insertion)
 
 
+def test_genomic_uncertain_deletion(test_normalize, genomic_uncertain_del_x,
+                                    genomic_uncertain_del_2,
+                                    genomic_uncertain_del_y):
+    """Test that genomic uncertain deletion normalizes correctly."""
+    # 38 Assembly
+    resp = test_normalize.normalize(
+        'NC_000023.11:g.(?_31120496)_(33339477_?)del')
+    assertion_checks(resp, genomic_uncertain_del_x)
+
+    # 37 Assembly
+    resp = test_normalize.normalize(
+        'NC_000023.10:g.(?_31138613)_(33357594_?)del')
+    assert resp.id == 'normalize.variation:NC_000023.10%3Ag.%28%3F_31138613%29_%2833357594_%3F%29del'  # noqa: E501
+    resp.id = 'normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del'  # noqa: E501
+    assertion_checks(resp, genomic_uncertain_del_x)
+
+    resp = test_normalize.normalize(
+        'NC_000002.12:g.(?_110104900)_(110207160_?)del')
+    assertion_checks(resp, genomic_uncertain_del_2)
+
+    resp = test_normalize.normalize(
+        'NC_000024.10:g.(?_14076802)_(57165209_?)del')
+    assertion_checks(resp, genomic_uncertain_del_y)
+
+
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
@@ -1300,11 +1450,11 @@ def test_no_matches(test_normalize):
     for q in queries:
         resp = test_normalize.normalize(q)
         assert resp.type == 'VariationDescriptor'
-        assert resp.value.type == 'Text'
+        assert resp.variation.type == 'Text'
 
     resp = test_normalize.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'
-    assert resp.value.definition == 'clinvar:10'
+    assert resp.variation.definition == 'clinvar:10'
 
     resp = test_normalize.normalize('   ')
     assert resp is None

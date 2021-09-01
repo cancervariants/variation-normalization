@@ -1,7 +1,7 @@
 amino_acid_substitution:
   tests:
     - query: BRAF V600E
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
           "location": {
@@ -89,7 +89,7 @@ amino_acid_substitution:
         }
       ]
     - query: braf v600e
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.u6sKlz0mMQvARmrlnt0Aksz6EbSkmL8z",
           "location": {
@@ -177,7 +177,7 @@ amino_acid_substitution:
         }
       ]
     - query: NP_004324.2:p.Val600Glu
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.mJbjSsW541oOsOtBoX36Mppr6hMjbjFr",
           "location": {
@@ -218,7 +218,7 @@ amino_acid_substitution:
 polypeptide_truncation:
   tests:
     - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
           "location": {
@@ -238,7 +238,7 @@ polypeptide_truncation:
         }
       ]
     - query: NP_000542.1:p.Tyr185Ter
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
           "location": {
@@ -258,7 +258,7 @@ polypeptide_truncation:
         }
       ]
     - query: NP_000542.1:p.(Tyr185Ter)
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
           "location": {
@@ -278,7 +278,7 @@ polypeptide_truncation:
         }
       ]
     - query: NP_000539.2:p.Gln1178Ter
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.za7tYoH27J_IdV6xlDcAWimFAQ4ORugp",
           "location": {
@@ -302,7 +302,7 @@ polypeptide_truncation:
 silent_mutation:
   tests:
     - query: NP_000542.1:p.Pro154=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.rVexjvD44WBTwBulB5OayUPby5y6Px1H",
           "location": {
@@ -322,7 +322,7 @@ silent_mutation:
         }
       ]
     - query: NP_000542.1:p.Pro61=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
           "location": {
@@ -342,7 +342,7 @@ silent_mutation:
         }
       ]
     - query: NP_000542.1:p.Glu55=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.wDFRtlaQa8RY5lYKlEXECYM23g_95yUu",
           "location": {
@@ -365,7 +365,7 @@ silent_mutation:
 coding_dna_substitution:
   tests:
     - query: NM_004333.4:c.1799T>A
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.4p_TTN1dPvgglFGsg8hxDO2FDwh5BYbe",
           "location": {
@@ -402,7 +402,7 @@ coding_dna_substitution:
         }
       ]
     - query: ENST00000288602.10:c.1799T>A
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.B159aDjjLVYYuDuTeY6foJrtX20thzP1",
           "location": {
@@ -439,12 +439,12 @@ coding_dna_substitution:
         }
       ]
     - query: NM_005502.4:c.900A>G
-      variants: []
+      variations: []
 
 genomic_substitution:
   tests:
     - query: NC_000007.13:g.140453136A>T
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.y3OnKtG-zUM-LTJHOg7IsLVfm8x3PNLI",
           "location": {
@@ -481,7 +481,7 @@ genomic_substitution:
         }
       ]
     - query: BRAF g.140453136A>T
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.y3OnKtG-zUM-LTJHOg7IsLVfm8x3PNLI",
           "location": {
@@ -518,7 +518,7 @@ genomic_substitution:
         }
       ]
     - query: BRAF V600E g.140453136A>T
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.y3OnKtG-zUM-LTJHOg7IsLVfm8x3PNLI",
           "location": {
@@ -558,7 +558,7 @@ genomic_substitution:
 coding_dna_silent_mutation:
   tests:
     - query:  NM_004333.4:c.1799=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.JTfb-8jCxV7bMjJitDqR2xu4Q-Rvbc7q",
           "location": {
@@ -598,7 +598,7 @@ coding_dna_silent_mutation:
 genomic_silent_mutation:
   tests:
     - query: NC_000007.13:g.140453136=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.d_gv3DxemrrINBM8LnjHLCX7CScUbfbZ",
           "location": {
@@ -635,7 +635,7 @@ genomic_silent_mutation:
         }
       ]
     - query: BRAF g.140453136=
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.z65Ys4mFA_ViSVPEr5SPCb8Q0n_cegHq",
           "location": {
@@ -692,7 +692,7 @@ genomic_silent_mutation:
 amino_acid_delins:
   tests:
     - query: NP_001333827.1:p.Leu747_Thr751delinsPro
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.4I9gnKdjPjtnlQyzMF6aI-gyXollCMkQ",
           "location": {
@@ -729,7 +729,7 @@ amino_acid_delins:
         }
       ]
     - query: ERBB2 G776delinsVC
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.J52bVcfOIg2AWOmsq3yy3s4FiOD1t7d3",
           "location": {
@@ -837,7 +837,7 @@ amino_acid_delins:
 coding_dna_delins:
   tests:
     - query: NM_001289937.1:c.2326_2327delinsCT
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA._Prdq6s4-XaiLyu7-xPxDCB4cWz9tyaq",
           "location": {
@@ -874,7 +874,7 @@ coding_dna_delins:
         }
       ]
     - query: ENST00000256474.2:c.364_365delinsAT
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.W-HTLniCyKtrRfozCtVVHI60K4qlAWvI",
           "location": {
@@ -911,7 +911,7 @@ coding_dna_delins:
         }
       ]
     - query: NM_000551.3:c.615delinsAA
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.HUkoxsBkK9HpQwOxjuhKu1iQ_IbRMN2i",
           "location": {
@@ -948,7 +948,7 @@ coding_dna_delins:
         }
       ]
     - query: LRG_542:c.900_901delinsAC
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA._sVoxX8FHXXt5c0D6kwAUpudvhF7Hdvz",
           "location": {
@@ -1022,7 +1022,7 @@ coding_dna_delins:
 genomic_delins:
   tests:
     - query: NC_000007.13:g.140453135_140453136delinsAT
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.mFIMSODRDoCuDbiOjoCHmOEGgvebdt2T",
           "location": {
@@ -1059,7 +1059,7 @@ genomic_delins:
         }
       ]
     - query: NC_000003.12:g.10149938delinsAA
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.-f07PmCJYlYbzBHVUQzDYWguUU4usche",
           "location": {
@@ -1099,7 +1099,7 @@ genomic_delins:
 amino_acid_deletion:
   tests:
     - query: NP_000542.1:p.Phe76del
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.P6K_G0ZM2KZdvCfG0U0P_OtHgGxZfdd9",
           "location": {
@@ -1119,7 +1119,7 @@ amino_acid_deletion:
         }
       ]
     - query: NP_000542.1:p.Arg82_Val84del
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.1ZjAyIGY2Uwb4_ItKPII33nGbvrtAQmL",
           "location": {
@@ -1142,7 +1142,7 @@ amino_acid_deletion:
 coding_dna_deletion:
   tests:
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.Ujg8i4G2LGsBtsBSypa_M1NNm1-o8tT3",
           "location": {
@@ -1182,7 +1182,7 @@ coding_dna_deletion:
 genomic_deletion:
   tests:
     - query: NC_000003.11:g.10191486_10191487delAG
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.Sdon2K3pyHaq2G6Gb1SPedoRCKompawm",
           "location": {
@@ -1222,9 +1222,9 @@ genomic_deletion:
 amino_acid_insertion:
   tests:
     - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
-      variants: []
+      variations: []
     - query: NP_005219.2:p.Asp770_Asn771insGlyLeu
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.d3dLtsYaLYE2Yh_GENvPUtTVZWlwLnJw",
           "location": {
@@ -1244,7 +1244,7 @@ amino_acid_insertion:
         }
       ]
     - query: BRAF T599_V600insV
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.vYbwb3dHIv-W42hpCEoST-xZ8kCnA9Wh",
           "location": {
@@ -1335,7 +1335,7 @@ amino_acid_insertion:
 coding_dna_insertion:
   tests:
     - query: NM_007294.3:c.2902_2903insTC
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.ACiRpocqtheayrWgLa3H9fNz09h0QDDI",
           "location": {
@@ -1375,7 +1375,7 @@ coding_dna_insertion:
 genomic_insertion:
   tests:
     - query: NC_000022.10:g.30051593_30051594insT
-      variants: [
+      variations: [
         {
           "id": "ga4gh:VA.yC7OlTrV1A1f6fLr2oRwpSWSL2_OeVz3",
           "type": "Allele",
@@ -1409,5 +1409,168 @@ genomic_insertion:
             "type": "SequenceState",
             "sequence": "TT"
           }
+        }
+      ]
+
+genomic_uncertain_deletion:
+  tests:
+    - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
+      variations: [
+        {
+          "id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+              "interval": {
+                "start": {
+                  "value": 31120495,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 33339477,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 0,
+            "max": 1,
+            "type": "DefiniteRange"
+          },
+          "type": "CopyNumber"
+        }
+      ]
+    - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
+      variations: [
+        {
+          "id": "ga4gh:VCN.gRshXhruFQw-QdKwU4xc2iKBNLIbFNzt",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+              "interval": {
+                "start": {
+                  "value": 31138612,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 33357594,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 0,
+            "max": 1,
+            "type": "DefiniteRange"
+          },
+          "type": "CopyNumber"
+        },
+        {
+          "id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+              "interval": {
+                "start": {
+                  "value": 31120495,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 33339477,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 0,
+            "max": 1,
+            "type": "DefiniteRange"
+          },
+          "type": "CopyNumber"
+        }
+      ]
+    - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
+      variations: [
+        {
+          "id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+              "interval": {
+                "start": {
+                  "value": 110104899,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 110207160,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "value": 1,
+            "type": "Number"
+          },
+          "type": "CopyNumber"
+        }
+      ]
+    - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
+      variations: [
+        {
+          "id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+          "subject": {
+            "location": {
+              "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+              "interval": {
+                "start": {
+                  "value": 14076801,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 57165209,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                },
+                "type": "SequenceInterval"
+              },
+              "type": "SequenceLocation"
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "value": 0,
+            "type": "Number"
+          },
+          "type": "CopyNumber"
         }
       ]

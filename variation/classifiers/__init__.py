@@ -25,4 +25,5 @@ from .genomic_deletion_classifier import GenomicDeletionClassifier  # noqa: F401
 from .amino_acid_insertion_classifier import AminoAcidInsertionClassifier  # noqa: F401, E501
 from .coding_dna_insertion_classifier import CodingDNAInsertionClassifier  # noqa: F401, E501
 from .genomic_insertion_classifier import GenomicInsertionClassifier  # noqa: F401, E501
+from .genomic_uncertain_deletion_classifier import GenomicUncertainDeletionClassifier  # noqa: F401, E501
 from .classify import Classify  # noqa: F401

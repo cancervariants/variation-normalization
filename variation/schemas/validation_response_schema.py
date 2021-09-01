@@ -20,7 +20,7 @@ class ValidationResult(BaseModel):
     classification_token: Optional[Token]
     is_valid: StrictBool
     confidence_score: float
-    allele: Optional[dict] = None
+    variation: Optional[dict] = None
     human_description: Optional[str]
     concise_description: str
     errors: List[str]

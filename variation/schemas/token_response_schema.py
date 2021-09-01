@@ -488,3 +488,24 @@ class GenomicInsertionToken(Insertion):
     token_type = 'GenomicInsertion'
     so_id = 'SO:0000667'
     molecule_context = 'genomic'
+
+
+class UncertainDeletion(Token):
+    """Uncertain Deletion."""
+
+    start_pos1_del = "?"
+    start_pos2_del: int
+    end_pos1_del: int
+    end_pos2_del = "?"
+    token_type: str
+    so_id = "SO:0001743"
+    molecule_context: str
+    alt_type = 'uncertain_deletion'
+
+
+class GenomicUncertainDeletionToken(UncertainDeletion):
+    """Genomic uncertain deletion."""
+
+    token_type = "GenomicUncertainDeletion"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
