@@ -565,9 +565,10 @@ class MANETranscript:
 
     def g_to_mane_c(self, ac, start_pos, end_pos, gene=None):
         """Return MANE Transcript on the c. coordinate.
-        g->GRCh38->MANE c.
-        If MANE c. cannot be found, we return the genomic coordinate on
-            GRCh38
+        If gene is provided, g->GRCh38->MANE c.
+            If MANE c. cannot be found, we return the genomic coordinate on
+                GRCh38
+        If gene is not provided, g -> GRCh38
 
         :param str ac: Transcript accession on g. coordinate
         :param int start_pos: genomic change start position
