@@ -31,7 +31,7 @@ fake-useragent==0.1.11
 fastapi==0.68.1
 frozendict==2.0.6; python_version >= '3.6'
 ga4gh.vrs[extras]==0.7.0rc3
-ga4gh.vrsatile.pydantic==0.0.2
+ga4gh.vrsatile.pydantic==0.0.1
 gene-normalizer==0.1.18
 gffutils==0.10.1
 h11==0.12.0; python_version >= '3.6'
