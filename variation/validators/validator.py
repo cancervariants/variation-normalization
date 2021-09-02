@@ -524,6 +524,8 @@ class Validator(ABC):
         if alt_type != "uncertain_deletion":
             try:
                 allele = normalize(allele, self.dp)
+                if alt_type == 'deletion':
+                    allele.state.sequence = ''
             except (KeyError, AttributeError) as e:
                 errors.append(f"vrs-python unable to normalize allele: {e}")
                 return None
