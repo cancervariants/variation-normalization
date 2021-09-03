@@ -1,9 +1,21 @@
 """Module for normalize endpoint response schema."""
+from enum import Enum
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
+
+
+class HGVSDupDelMode(str, Enum):
+    """Define options for HGVSDupDelMode.
+    This mode determines how to interpret HGVS dup/del.
+    """
+
+    DEFAULT = "default"
+    CNV = "cnv"
+    REPEATED_SEQ_EXPR = "repeated_seq_expr"
+    LITERAL_SEQ_EXPR = "literal_seq_expr"
 
 
 class ServiceMeta(BaseModel):
