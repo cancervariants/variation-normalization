@@ -7,6 +7,7 @@ from variation.schemas.token_response_schema import \
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
+from variation.schemas.normalize_response_schema import HGVSDupDelMode
 
 
 logger = logging.getLogger('variation')
@@ -31,7 +32,7 @@ class GenomicUncertainDeletion(Validator):
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
                                   normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+                                  is_identifier, hgvs_dup_del_mode) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of Tokens
@@ -53,9 +54,19 @@ class GenomicUncertainDeletion(Validator):
                                             s.end_pos1_del,
                                             s.reference_sequence, s.alt_type,
                                             errors)
-                cnv = self.to_vrs_cnv(t, allele, 'del')
-                if not cnv:
-                    errors.append(f"Unable to get CNV for {t}")
+                if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
+                        hgvs_dup_del_mode == HGVSDupDelMode.CNV:
+                    variation = self.to_vrs_cnv(t, allele, 'del')
+                    if not variation:
+                        errors.append(f"Unable to get CNV for {t}")
+                elif hgvs_dup_del_mode == HGVSDupDelMode.LITERAL_SEQ_EXPR:
+                    variation = allele
+                    if not variation:
+                        errors.append(f"Unable to get allele for {t}")
+                else:
+                    variation = None
+                    errors.append("Genomic uncertain deletions cannot have"
+                                  " repeated seq expressions")
 
                 if not errors:
                     grch38 = self.mane_transcript.g_to_grch38(
@@ -75,11 +86,12 @@ class GenomicUncertainDeletion(Validator):
 
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens
+                        s.alt_type, s, gene_tokens,
+                        hgvs_dup_del_mode=hgvs_dup_del_mode
                     )
 
                 self.add_validation_result(
-                    cnv, valid_alleles, results,
+                    variation, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 

@@ -461,7 +461,8 @@ class Validator(ABC):
             return False
 
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
-                      cds_start=None, alt=None) -> Optional[Dict]:
+                      cds_start=None, alt=None, hgvs_dup_del_mode="default")\
+            -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
         :param str ac: Accession
@@ -495,19 +496,21 @@ class Validator(ABC):
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
         if alt_type == 'uncertain_deletion':
-            interval = models.SequenceInterval(
-                start=models.IndefiniteRange(
-                    value=ival_start - 1,
-                    comparator="<="
-                ),
-                end=models.IndefiniteRange(
-                    value=ival_end,
-                    comparator=">="
+            if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
+                    hgvs_dup_del_mode == HGVSDupDelMode.CNV:
+                interval = models.SequenceInterval(
+                    start=models.IndefiniteRange(
+                        value=ival_start - 1,
+                        comparator="<="
+                    ),
+                    end=models.IndefiniteRange(
+                        value=ival_end,
+                        comparator=">="
+                    )
                 )
-            )
-            sstate = models.LiteralSequenceExpression(
-                sequence=""
-            )
+                sstate = models.LiteralSequenceExpression(
+                    sequence=""
+                )
         else:
             if alt_type == 'insertion':
                 state = alt
@@ -562,7 +565,7 @@ class Validator(ABC):
         return ([a.split(':')[-1] for a in aliases
                  if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
 
-    def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None)\
+    def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None) \
             -> Optional[CopyNumber]:
         """Return a Copy Number Variation.
 
@@ -605,7 +608,8 @@ class Validator(ABC):
         return cnv.as_dict()
 
     def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
-                      gene_tokens, alt=None) -> None:
+                      gene_tokens, alt=None,
+                      hgvs_dup_del_mode="default") -> None:
         """Add mane transcript information to mane_data.
 
         :param dict mane: MANE Transcript information
@@ -615,6 +619,10 @@ class Validator(ABC):
         :param Token s: Classification token
         :param list gene_tokens: List of GeneMatchTokens for a classification
         :param str alt: Alteration
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to interpret HGVS dup/del expressions
+            in VRS.
         """
         if not mane:
             return
@@ -656,7 +664,12 @@ class Validator(ABC):
             return
 
         if alt_type == 'uncertain_deletion':
-            variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
+            if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
+                    hgvs_dup_del_mode == HGVSDupDelMode.CNV:
+                variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
+            else:
+                variation = new_allele
+
             if not variation:
                 return None
             _id = variation['_id']
