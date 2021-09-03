@@ -50,10 +50,11 @@ class GenomicUncertainDeletion(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                allele = self.to_vrs_allele(t, s.start_pos2_del,
-                                            s.end_pos1_del,
-                                            s.reference_sequence, s.alt_type,
-                                            errors)
+                allele = self.to_vrs_allele(
+                    t, s.start_pos2_del, s.end_pos1_del,
+                    s.reference_sequence, s.alt_type, errors,
+                    hgvs_dup_del_mode=hgvs_dup_del_mode
+                )
                 if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
                         hgvs_dup_del_mode == HGVSDupDelMode.CNV:
                     variation = self.to_vrs_cnv(t, allele, 'del')
