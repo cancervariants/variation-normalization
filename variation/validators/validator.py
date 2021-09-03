@@ -496,8 +496,9 @@ class Validator(ABC):
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
         if alt_type == 'uncertain_deletion':
-            if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
-                    hgvs_dup_del_mode == HGVSDupDelMode.CNV:
+            if hgvs_dup_del_mode in [HGVSDupDelMode.DEFAULT,
+                                     HGVSDupDelMode.CNV,
+                                     HGVSDupDelMode.LITERAL_SEQ_EXPR]:
                 interval = models.SequenceInterval(
                     start=models.IndefiniteRange(
                         value=ival_start - 1,
@@ -511,6 +512,10 @@ class Validator(ABC):
                 sstate = models.LiteralSequenceExpression(
                     sequence=""
                 )
+            else:
+                logger.warning("uncertain deletion cannot be represented as"
+                               " a repeated_seq_expr")
+                return None
         else:
             if alt_type == 'insertion':
                 state = alt
@@ -667,8 +672,12 @@ class Validator(ABC):
             if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
                     hgvs_dup_del_mode == HGVSDupDelMode.CNV:
                 variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
-            else:
+            elif hgvs_dup_del_mode == HGVSDupDelMode.LITERAL_SEQ_EXPR:
                 variation = new_allele
+            else:
+                logger.warning("uncertain deletion cannot be represented as"
+                               " a repeated_seq_expr")
+                return None
 
             if not variation:
                 return None
