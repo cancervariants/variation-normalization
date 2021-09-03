@@ -21,6 +21,7 @@ from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
 from bioutils.accessions import coerce_namespace
+from variation.schemas.normalize_response_schema import HGVSDupDelMode  # noqa: F401, E501
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -130,7 +131,8 @@ class Validator(ABC):
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
                                   normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+                                  is_identifier, hgvs_dup_del_mode)\
+            -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -144,10 +146,15 @@ class Validator(ABC):
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         raise NotImplementedError
 
-    def validate(self, classification: Classification, normalize_endpoint) \
+    def validate(self, classification: Classification, normalize_endpoint,
+                 hgvs_dup_del_mode) \
             -> List[ValidationResult]:
         """Return validation result for a given classification.
 
@@ -155,6 +162,10 @@ class Validator(ABC):
             tokens
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         :return: Validation Result's containing valid and invalid results
         """
         results = list()
@@ -201,7 +212,7 @@ class Validator(ABC):
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, normalize_endpoint, mane_data_found,
-            is_identifier
+            is_identifier, hgvs_dup_del_mode
         )
         return results
 
