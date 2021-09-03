@@ -74,7 +74,8 @@ class Validate:
         ]
 
     def perform(self, classifications: List[Classification],
-                normalize_endpoint, warnings=None) \
+                normalize_endpoint, warnings=None,
+                hgvs_dup_del_mode="default") \
             -> ValidationSummary:
         """Validate a list of classifications."""
         valid_possibilities = list()
@@ -88,7 +89,8 @@ class Validate:
                 if validator.validates_classification_type(
                         classification.classification_type):
                     results = validator.validate(classification,
-                                                 normalize_endpoint)
+                                                 normalize_endpoint,
+                                                 hgvs_dup_del_mode)
                     for res in results:
                         if res.is_valid:
                             found_classification = True
