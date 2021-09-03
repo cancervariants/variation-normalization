@@ -1,6 +1,6 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type, Optional
+from typing import List, Union, Dict, Any, Type, Optional, Literal
 from enum import IntEnum, Enum
 
 
@@ -490,17 +490,44 @@ class GenomicInsertionToken(Insertion):
     molecule_context = 'genomic'
 
 
-class UncertainDeletion(Token):
-    """Uncertain Deletion."""
+class DeletionRangeAltType(str, Enum):
+    """Define alt_types for Deletion Range Tokens."""
 
-    start_pos1_del = "?"
+    DELETION_RANGE = "deletion_range"
+    UNCERTAIN_DELETION = "uncertain_deletion"
+
+
+class DeletionRange(Token):
+    """Deletions of the form (pos_pos)_(pos_pos)."""
+
+    start_pos1_del: Union[int, str]
     start_pos2_del: int
     end_pos1_del: int
-    end_pos2_del = "?"
+    end_pos2_del: Union[int, str]
     token_type: str
     so_id = "SO:0001743"
     molecule_context: str
-    alt_type = 'uncertain_deletion'
+    alt_type: DeletionRangeAltType = DeletionRangeAltType.DELETION_RANGE
+
+
+class GenomicDeletionRangeToken(DeletionRange):
+    """Genomic deletion range token."""
+
+    token_type = "GenomicDeletionRange"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class UncertainDeletion(DeletionRange):
+    """Uncertain Deletion."""
+
+    start_pos1_del: Literal['?'] = "?"
+    start_pos2_del: int
+    end_pos1_del: int
+    end_pos2_del: Literal['?'] = "?"
+    token_type: str
+    molecule_context: str
+    alt_type = DeletionRangeAltType.UNCERTAIN_DELETION
 
 
 class GenomicUncertainDeletionToken(UncertainDeletion):
