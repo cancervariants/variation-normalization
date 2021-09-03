@@ -1,49 +1,14 @@
 """A module for tokenizing genomic uncertain deletion."""
-from typing import Optional
-from .tokenizer import Tokenizer
-from variation.schemas.token_response_schema import TokenMatchType, \
+from variation.schemas.token_response_schema import \
     GenomicUncertainDeletionToken
+from variation.tokenizers.deletion_range_base import DeletionRangeBase
 
 
-class GenomicUncertainDeletion(Tokenizer):
+class GenomicUncertainDeletion(DeletionRangeBase):
     """The tokenizer class for genomic uncertain deletion."""
 
-    def __init__(self) -> None:
-        """Initialize the Genomic Uncertain Deletion Class."""
-        self.parts = None
-
-    def match(self, input_string: str)\
-            -> Optional[GenomicUncertainDeletionToken]:
-        """Return tokens that match the input string."""
-        if input_string is None:
-            return None
-
-        self.parts = {
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value,
-            'start_pos2_del': None,
-            'end_pos1_del': None
-        }
-
-        input_string = str(input_string).lower()
-        conditions = (
-            input_string.endswith('del'),
-            input_string.startswith('g.'),
-            input_string.count('_') == 3
-        )
-        if not all(conditions):
-            return None
-
-        parts = input_string.split('_')
-        self._get_parts(parts)
-        if self.parts['start_pos2_del'] is None or \
-                self.parts['end_pos1_del'] is None:
-            return None
-        return GenomicUncertainDeletionToken(**self.parts)
-
     def _get_parts(self, parts):
-        """Set parts for genomic copy number loss.
+        """Set parts for genomic uncertain deletion.
 
         :param list parts: Parts of input string
         """
@@ -67,3 +32,14 @@ class GenomicUncertainDeletion(Tokenizer):
                     self.parts['start_pos2_del'] = parts[1]
                     self.parts['end_pos1_del'] = parts[2]
         return None
+
+    def return_token(self, params):
+        """Return Genomic Uncertain Deletion token."""
+        if params['start_pos2_del'] is None or \
+                params['end_pos1_del'] is None:
+            return None
+
+        if params['reference_sequence'] == 'g':
+            params['start_pos1_del'] = "?"
+            params['end_pos2_del'] = "?"
+            return GenomicUncertainDeletionToken(**params)
