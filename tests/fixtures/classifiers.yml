@@ -287,3 +287,12 @@ genomic_uncertain_deletion:
   should_not_match:
     - query: GENE (?_155980375)_(156013167_?)del
     - query: accession:g.(?_155980375)_(156013167_?)del
+
+genomic_deletion_range:
+  should_match:
+    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del
+      confidence: ConfidenceRating.EXACT
+    - query: BRAF g.(31060227_31100351)_(33274278_33417151)del
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: GENE (?_31120496)_(33339477_?)del
