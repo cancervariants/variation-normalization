@@ -11,8 +11,10 @@ class GenomicDeletionRange(DeletionRangeBase):
 
         :param list parts: Parts of input string
         """
+        if len(parts) != 4:
+            return None
+
         conditions = (
-            len(parts) == 4,
             parts[0].startswith('g.('),
             parts[1].endswith(')'),
             parts[2].startswith('('),
