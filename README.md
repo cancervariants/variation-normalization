@@ -14,7 +14,7 @@ Variation Normalization is limited to substitution, deletion, insertion, and del
 The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/1.1.1/terms_and_model.html#allele).
 
 #### /normalize
-The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found.
+The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 
 ## Backend Services
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
@@ -71,9 +71,13 @@ Variation Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/ma
 ![image](biomart.png)
 
 ### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must load all sources _and_ merged concepts by running:
 
-To setup, follow the instructions from the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md). 
+```commandline
+python3 -m gene.cli --update_all --update_merged
+```
+
+You must have Gene Normalization's DynamoDB running for the application to work. For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### Init coding style tests
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
