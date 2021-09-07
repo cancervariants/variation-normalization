@@ -565,9 +565,10 @@ class MANETranscript:
 
     def g_to_mane_c(self, ac, start_pos, end_pos, gene=None):
         """Return MANE Transcript on the c. coordinate.
-        g->GRCh38->MANE c.
-        If MANE c. cannot be found, we return the genomic coordinate on
-            GRCh38
+        If gene is provided, g->GRCh38->MANE c.
+            If MANE c. cannot be found, we return the genomic coordinate on
+                GRCh38
+        If gene is not provided, g -> GRCh38
 
         :param str ac: Transcript accession on g. coordinate
         :param int start_pos: genomic change start position
@@ -575,39 +576,29 @@ class MANETranscript:
         :param str gene: Gene symbol
         :return: MANE Transcripts with cDNA change on c. coordinate
         """
+        # If gene not provided, return GRCh38
+        if not gene:
+            grch38 = self.g_to_grch38(ac, start_pos, end_pos)
+            if not grch38:
+                return None
+
+            return dict(
+                gene=None,
+                refseq=grch38['ac'],
+                ensembl=None,
+                coding_start_site=None,
+                coding_end_site=None,
+                pos=grch38['pos'],
+                strand=None,
+                status='GRCh38'
+            )
+
         if not self.uta.validate_genomic_ac(ac):
             logger.warning(f"Genomic accession does not exist: {ac}")
             return None
 
-        if not gene:
-            gene_symbol = self.uta.get_gene_from_ac(ac, start_pos, end_pos)
-            if not gene_symbol:
-                return None
-
-            if len(gene_symbol) != 1:
-                # Return GRCh38
-                grch38 = self.g_to_grch38(ac, start_pos, end_pos)
-                if not grch38:
-                    return None
-
-                return dict(
-                    gene=None,
-                    refseq=grch38['ac'],  # TODO: Is this always refseq
-                    ensembl=None,
-                    coding_start_site=None,
-                    coding_end_site=None,
-                    pos=grch38['pos'],
-                    strand=None,
-                    status='GRCh38'
-                )
-
-            # Exactly one gene found for an accession
-            gene_symbol = gene_symbol[0][0]
-        else:
-            gene_symbol = gene
-
         mane_data =\
-            self.mane_transcript_mappings.get_gene_mane_data(gene_symbol)
+            self.mane_transcript_mappings.get_gene_mane_data(gene)
         if not mane_data:
             return None
         mane_data_len = len(mane_data)

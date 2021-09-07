@@ -524,6 +524,8 @@ class Validator(ABC):
         if alt_type != "uncertain_deletion":
             try:
                 allele = normalize(allele, self.dp)
+                if alt_type == 'deletion':
+                    allele.state.sequence = ''
             except (KeyError, AttributeError) as e:
                 errors.append(f"vrs-python unable to normalize allele: {e}")
                 return None
@@ -607,40 +609,31 @@ class Validator(ABC):
             return
 
         s_copy = copy.deepcopy(s)
-        if coordinate == 'g':
-            if not gene_tokens and mane['gene']:
-                gene_tokens.append(GeneMatchToken(
-                    token=mane['gene'],
-                    input_string=mane['gene'],
-                    matched_value=mane['gene'],
-                    match_type=token_schema.TokenMatchType.SYMBOL
-                ))
+        if coordinate == 'g' and mane['status'].lower() != 'grch38':
+            s_copy.molecule_context = 'transcript'
+            s_copy.reference_sequence = 'c'
+            coordinate = s_copy.reference_sequence
 
-            if mane['status'].lower() != 'grch38':
-                s_copy.molecule_context = 'transcript'
-                s_copy.reference_sequence = 'c'
-                coordinate = s_copy.reference_sequence
+            if isinstance(s_copy,
+                          token_schema.GenomicSubstitutionToken) and \
+                    mane['strand'] == '-':
+                ref_rev = s_copy.ref_nucleotide[::-1]
+                alt_rev = s_copy.new_nucleotide[::-1]
 
-                if isinstance(s_copy,
-                              token_schema.GenomicSubstitutionToken) and \
-                        mane['strand'] == '-':
-                    ref_rev = s_copy.ref_nucleotide[::-1]
-                    alt_rev = s_copy.new_nucleotide[::-1]
+                complements = {
+                    'A': 'T',
+                    'T': 'A',
+                    'C': 'G',
+                    'G': 'C'
+                }
 
-                    complements = {
-                        'A': 'T',
-                        'T': 'A',
-                        'C': 'G',
-                        'G': 'C'
-                    }
-
-                    s_copy.ref_nucleotide = ''
-                    s_copy.new_nucleotide = ''
-                    for nt in ref_rev:
-                        s_copy.ref_nucleotide += complements[nt]
-                    for nt in alt_rev:
-                        s_copy.new_nucleotide += complements[nt]
-                    alt = s_copy.new_nucleotide
+                s_copy.ref_nucleotide = ''
+                s_copy.new_nucleotide = ''
+                for nt in ref_rev:
+                    s_copy.ref_nucleotide += complements[nt]
+                for nt in alt_rev:
+                    s_copy.new_nucleotide += complements[nt]
+                alt = s_copy.new_nucleotide
 
         new_allele = self.to_vrs_allele(
             mane['refseq'], mane['pos'][0], mane['pos'][1],
