@@ -359,3 +359,24 @@ genomic_uncertain_deletion:
     - token: g.(?_31120496)_(33339477_?)delins
     - token: (?_31120496)_(33339477_?)del
     - token: g.(?_33339477)_(31120496_?)del
+
+genomic_duplication:
+  should_match:
+    - token: g.2087938_2087948dup
+    - token: g.49531262dup
+  should_not_match:
+    - token: 49531262dup
+    - token: dupdup
+    - token: g.2087948_2087938dup
+    - token: g.(?_30417576)_(31394018_?)dup
+    - token: g.(31060227_31100351)_(33274278_33417151)dup
+    - token: g.(?_154021812)_154092209dup
+
+genomic_duplication_range:
+  should_match:
+    - token: g.(?_30417576)_(31394018_?)dup
+    - token: g.(31060227_31100351)_(33274278_33417151)dup
+    - token: g.(?_154021812)_154092209dup
+  should_not_match:
+    - token: g.2087938_2087948dup
+    - token: g.49531262dup

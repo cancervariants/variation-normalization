@@ -1,6 +1,6 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type, Optional
+from typing import List, Union, Dict, Any, Type, Optional, Literal
 from enum import IntEnum, Enum
 
 
@@ -509,3 +509,47 @@ class GenomicUncertainDeletionToken(UncertainDeletion):
     token_type = "GenomicUncertainDeletion"
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class DuplicationAltType(str, Enum):
+    """Define alt types for duplications."""
+
+    DUPLICATION = "duplication"
+    DUPLICATION_RANGE = "duplication_range"
+
+
+class Duplication(Token):
+    """Duplications."""
+
+    start_pos1_dup: Union[Literal['?'], int]
+    start_pos2_dup: Optional[int]
+    token_type: str
+    so_id = "SO:1000035"
+    molecule_context: str
+    alt_type: DuplicationAltType
+
+
+class GenomicDuplicationToken(Duplication):
+    """Genomic duplication token schema."""
+
+    token_type = "GenomicDuplication"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    alt_type = DuplicationAltType.DUPLICATION
+
+
+class DuplicationRange(Duplication):
+    """Duplications of the form (#_#)_(#_#)dup"""
+
+    end_pos1_dup: int
+    end_pos2_dup: Optional[Union[Literal['?'], int]]
+    so_id = "SO:0001742"  # check: Copy Number gain?
+
+
+class GenomicDuplicationRangeToken(Duplication):
+    """Genomic Duplication Range token schema"""
+
+    token_type = "GenomicDuplicationRange"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    alt_type = DuplicationAltType.DUPLICATION_RANGE
