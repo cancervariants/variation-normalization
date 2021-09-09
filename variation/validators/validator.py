@@ -450,7 +450,8 @@ class Validator(ABC):
             return False
 
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
-                      cds_start=None, alt=None) -> Optional[Dict]:
+                      cds_start=None, alt=None, ival_start_type=None,
+                      ival_end_type=None, ival=None) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
         :param str ac: Accession
@@ -484,16 +485,33 @@ class Validator(ABC):
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
         if alt_type in ['uncertain_deletion', 'uncertain_duplication']:
-            interval = models.SequenceInterval(
-                start=models.IndefiniteRange(
+            if not ival_start_type:
+                start_ival = models.IndefiniteRange(
                     value=ival_start - 1,
                     comparator="<="
-                ),
-                end=models.IndefiniteRange(
+                )
+            else:
+                if ival_start_type == 'Number':
+                    start_ival = models.Number(
+                        value=ival_start - 1
+                    )
+
+            if not ival_end_type:
+                end_ival = models.IndefiniteRange(
                     value=ival_end,
                     comparator=">="
                 )
+            else:
+                if ival_end_type == 'Number':
+                    end_ival = models.Number(
+                        value=ival_end
+                    )
+
+            interval = models.SequenceInterval(
+                start=start_ival,
+                end=end_ival
             )
+
             sstate = models.LiteralSequenceExpression(
                 sequence=""
             )
@@ -511,27 +529,35 @@ class Validator(ABC):
                     state = alt or ''
                 ival_start -= 1
             elif alt_type in ['duplication', 'duplication_range']:
-                ref = self.seqrepo_access.get_sequence(ac, ival_start,
-                                                       ival_end)
-                if ref is not None:
-                    state = ref + ref
+                if ival is None:
+                    ref = self.seqrepo_access.get_sequence(ac, ival_start,
+                                                           ival_end)
+                    if ref is not None:
+                        state = ref + ref
+                    else:
+                        errors.append(f"Unable to get sequence on {ac} from "
+                                      f"{ival_start} to {ival_end}")
+                        return None
+                    ival_start -= 1
                 else:
-                    errors.append(f"Unable to get sequence on {ac} from "
-                                  f"{ival_start} to {ival_end}")
-                    return None
-                ival_start -= 1
+                    state = ''  # TODO: Check
             else:
                 errors.append(f"alt_type not supported: {alt_type}")
                 return None
 
-            interval = models.SimpleInterval(start=ival_start, end=ival_end)
+            if ival is None:
+                interval = models.SimpleInterval(start=ival_start,
+                                                 end=ival_end)
+            else:
+                interval = ival
             sstate = models.SequenceState(sequence=state)
 
         location = models.Location(sequence_id=sequence_id, interval=interval)
         allele = models.Allele(location=location, state=sstate)
 
         # Ambiguous regions do not get normalized
-        if alt_type not in ["uncertain_deletion", "uncertain_duplication"]:
+        if alt_type not in ["uncertain_deletion", "uncertain_duplication",
+                            "duplication_range"]:
             try:
                 allele = normalize(allele, self.dp)
                 if alt_type == 'deletion':
