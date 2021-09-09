@@ -524,6 +524,7 @@ class DuplicationAltType(str, Enum):
 
     DUPLICATION = "duplication"
     DUPLICATION_RANGE = "duplication_range"
+    UNCERTAIN_DUPLICATION = "uncertain_duplication"
 
 
 class Duplication(Token):
@@ -554,10 +555,9 @@ class DuplicationRange(Duplication):
     so_id = "SO:0001742"  # check: Copy Number gain?
 
 
-class GenomicDuplicationRangeToken(Duplication):
+class GenomicDuplicationRangeToken(DuplicationRange):
     """Genomic Duplication Range token schema"""
 
     token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    alt_type = DuplicationAltType.DUPLICATION_RANGE
