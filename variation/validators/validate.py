@@ -22,6 +22,7 @@ from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
+from .genomic_duplication import GenomicDuplication
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from typing import List
@@ -70,7 +71,8 @@ class Validate:
             AminoAcidInsertion(*amino_acid_params),
             CodingDNAInsertion(*params),
             GenomicInsertion(*params),
-            GenomicUncertainDeletion(*params)
+            GenomicUncertainDeletion(*params),
+            GenomicDuplication(*params)
         ]
 
     def perform(self, classifications: List[Classification],

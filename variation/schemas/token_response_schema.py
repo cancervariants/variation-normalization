@@ -14,6 +14,14 @@ class TokenMatchType(IntEnum):
     UNSPECIFIED = 5
 
 
+class TokenType(str, Enum):
+    """Define token types."""
+
+    # TODO: Add other token types
+    GENOMIC_DUPLICATION = "GenomicDuplication"
+    GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
+
+
 class Token(BaseModel):
     """A string from a given query."""
 
@@ -523,7 +531,7 @@ class Duplication(Token):
 
     start_pos1_dup: Union[Literal['?'], int]
     start_pos2_dup: Optional[int]
-    token_type: str
+    token_type: TokenType
     so_id = "SO:1000035"
     molecule_context: str
     alt_type: DuplicationAltType
@@ -532,7 +540,7 @@ class Duplication(Token):
 class GenomicDuplicationToken(Duplication):
     """Genomic duplication token schema."""
 
-    token_type = "GenomicDuplication"
+    token_type = TokenType.GENOMIC_DUPLICATION
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     alt_type = DuplicationAltType.DUPLICATION
@@ -549,7 +557,7 @@ class DuplicationRange(Duplication):
 class GenomicDuplicationRangeToken(Duplication):
     """Genomic Duplication Range token schema"""
 
-    token_type = "GenomicDuplicationRange"
+    token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     alt_type = DuplicationAltType.DUPLICATION_RANGE
