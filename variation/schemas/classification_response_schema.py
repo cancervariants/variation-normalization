@@ -35,6 +35,7 @@ class ClassificationType(IntEnum):
     CODING_DNA_INSERTION = 25
     GENOMIC_INSERTION = 26
     GENOMIC_UNCERTAIN_DELETION = 27
+    GENOMIC_DUPLICATION = 28
 
 
 class ConfidenceRating(IntEnum):
