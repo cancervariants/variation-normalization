@@ -3,7 +3,8 @@ from .validator import Validator
 from variation.schemas.classification_response_schema import \
     ClassificationType
 from variation.schemas.token_response_schema import \
-    GenomicDuplicationToken, GenomicDuplicationRangeToken, TokenType  # noqa: F401, E501
+    TokenType, DuplicationAltType,\
+    GenomicDuplicationToken, GenomicDuplicationRangeToken  # noqa: F401
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
@@ -51,6 +52,7 @@ class GenomicDuplication(Validator):
 
                 start = None
                 end = None
+                variation = None
 
                 if s.token_type == TokenType.GENOMIC_DUPLICATION:
                     start = s.start_pos1_dup
@@ -61,11 +63,24 @@ class GenomicDuplication(Validator):
                         # Format: #_#dup
                         end = s.start_pos2_dup
 
-                    allele = self.to_vrs_allele(t, start, end,
-                                                s.reference_sequence,
-                                                s.alt_type, errors)
+                    variation = self.to_vrs_allele(
+                        t, start, end, s.reference_sequence,
+                        s.alt_type, errors)
                 elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-                    pass
+                    if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+                        # TODO: How do i represent this
+                        pass
+                    else:
+                        if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
+                            start = s.start_pos2_dup
+                            end = s.end_pos1_dup
+
+                            allele = self.to_vrs_allele(t, start, end,
+                                                        s.reference_sequence,
+                                                        s.alt_type, errors)
+                            variation = self.to_vrs_cnv(t, allele, 'dup')
+                            if not variation:
+                                errors.append(f"Unable to get CNV for {t}")
                 else:
                     errors.append(f"Token type not supported: {s.token_type}")
 
@@ -96,7 +111,7 @@ class GenomicDuplication(Validator):
                     )
 
                 self.add_validation_result(
-                    allele, valid_alleles, results,
+                    variation, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 

@@ -483,7 +483,7 @@ class Validator(ABC):
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
-        if alt_type == 'uncertain_deletion':
+        if alt_type in ['uncertain_deletion', 'uncertain_duplication']:
             interval = models.SequenceInterval(
                 start=models.IndefiniteRange(
                     value=ival_start - 1,
@@ -531,7 +531,7 @@ class Validator(ABC):
         allele = models.Allele(location=location, state=sstate)
 
         # Ambiguous regions do not get normalized
-        if alt_type != "uncertain_deletion":
+        if alt_type not in ["uncertain_deletion", "uncertain_duplication"]:
             try:
                 allele = normalize(allele, self.dp)
                 if alt_type == 'deletion':
@@ -596,7 +596,7 @@ class Validator(ABC):
         cnv = models.CopyNumber(
             subject=models.DerivedSequenceExpression(
                 location=allele['location'],
-                reverse_complement=False  # TODO: CHANGE THIS
+                reverse_complement=False
             ),
             copies=copies
         )
