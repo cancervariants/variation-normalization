@@ -2,7 +2,8 @@
 from abc import abstractmethod
 from typing import Optional
 from .tokenizer import Tokenizer
-from variation.schemas.token_response_schema import Duplication, TokenMatchType
+from variation.schemas.token_response_schema import Duplication, \
+    TokenMatchType, DuplicationAltType
 
 
 class DuplicationBase(Tokenizer):
@@ -25,7 +26,8 @@ class DuplicationBase(Tokenizer):
             'start_pos2_dup': None,
             'end_pos1_dup': None,
             'end_pos2_dup': None,
-            'reference_sequence': None
+            'reference_sequence': None,
+            'alt_type': DuplicationAltType.DUPLICATION
         }
 
         input_string = str(input_string).lower()
