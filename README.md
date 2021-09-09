@@ -7,7 +7,13 @@ Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
 
-Variation Normalization is limited to substitution, deletion, insertion, and deletion-insertion variants located on p., c., and g. coordinates. We can represent ambiguous deletions on the g. coordinate for HGVS representations. We also support HGVS representations and text representation (ex: `BRAF V600E`). We are working towards adding more types of variants, coordinates, and representations.
+Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
+
+* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
+* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
+* **genomic (g.)**: substitution, deletion, insertion, deletion-insertion, ambiguous deletions (only HGVS)
+
+We are working towards adding more types of variants, coordinates, and representations.
 
 ### Endpoints
 #### /toVRS
