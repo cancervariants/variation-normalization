@@ -510,6 +510,11 @@ class Validator(ABC):
                 else:
                     state = alt or ''
                 ival_start -= 1
+            elif alt_type in ['duplication', 'duplication_range']:
+                ref = self.seqrepo_access.get_sequence(ac, ival_start,
+                                                       ival_end)
+                state = ref + ref
+                ival_start -= 1
             else:
                 errors.append(f"alt_type not supported: {alt_type}")
                 return None
