@@ -61,8 +61,8 @@ class GenomicDuplication(DuplicationBase):
                         # Format is #_(#_?)dup
                         for part_ix, parts_field in [
                             (0, 'start_pos1_dup'),
-                            (2, 'end_pos1_dup'),
-                            (3, 'end_pos2_dup')
+                            (1, 'end_pos1_dup'),
+                            (2, 'end_pos2_dup')
                         ]:
                             part_val = self._check_uncertain_or_int(
                                 parts[part_ix])
