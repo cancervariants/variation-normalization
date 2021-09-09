@@ -8,6 +8,7 @@ from variation.schemas.token_response_schema import \
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
+from ga4gh.vrs import models
 
 
 logger = logging.getLogger('variation')
@@ -68,8 +69,20 @@ class GenomicDuplication(Validator):
                         s.alt_type, errors)
                 elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
                     if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
-                        # TODO: How do i represent this
-                        pass
+                        ival = models.SequenceInterval(
+                            start=models.DefiniteRange(
+                                min=s.start_pos1_dup - 1,
+                                max=s.start_pos2_dup - 1),
+                            end=models.DefiniteRange(
+                                min=s.end_pos1_dup + 1,
+                                max=s.end_pos2_dup + 1)
+                        )
+                        allele = self.to_vrs_allele(
+                            t, 0, 0, s.reference_sequence, s.alt_type, errors,
+                            ival=ival)
+                        variation = self.to_vrs_cnv(t, allele, 'dup')
+                        if not variation:
+                            errors.append(f"Unable to get CNV for {t}")
                     else:
                         if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                             start = s.start_pos2_dup
@@ -81,35 +94,57 @@ class GenomicDuplication(Validator):
                             variation = self.to_vrs_cnv(t, allele, 'dup')
                             if not variation:
                                 errors.append(f"Unable to get CNV for {t}")
+                        elif s.start_pos1_dup == '?' and \
+                                s.start_pos2_dup != '?' and \
+                                s.end_pos1_dup != '?' and \
+                                s.end_pos2_dup is None:
+                            start = s.start_pos2_dup
+                            end = s.end_pos1_dup
+
+                            allele = self.to_vrs_allele(
+                                t, start, end, s.reference_sequence,
+                                s.alt_type, errors, ival_end_type='Number')
+                        elif s.start_pos1_dup != '?' and \
+                                s.start_pos2_dup is None and \
+                                s.end_pos1_dup != '?' and\
+                                s.end_pos2_dup == '?':
+                            start = s.end_pos1_dup
+                            end = s.end_pos1_dup
+
+                            allele = self.to_vrs_allele(
+                                t, start, end, s.reference_sequence,
+                                s.alt_type, errors, ival_start_type='Number'
+                            )
                 else:
                     errors.append(f"Token type not supported: {s.token_type}")
 
                 if not errors:
                     if not gene_tokens:
-                        # If no gene tokens, get GRCh38
-                        grch38 = self.mane_transcript.g_to_grch38(
-                            t, start, end)
-
-                        if grch38:
-                            mane = dict(
-                                gene=None,
-                                refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
-                                ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
-                                pos=grch38['pos'],
-                                strand=None,
-                                status='GRCh38'
-                            )
-                        else:
+                        if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
+                                and s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
+                            # TODO
                             mane = None
-                    else:
-                        # TODO
-                        mane = None
+                        else:
+                            # If no gene tokens, get GRCh38
+                            grch38 = self.mane_transcript.g_to_grch38(
+                                t, start, end)
 
-                    self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens
-                    )
+                            if grch38:
+                                mane = dict(
+                                    gene=None,
+                                    refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
+                                    ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
+                                    pos=grch38['pos'],
+                                    strand=None,
+                                    status='GRCh38'
+                                )
+                            else:
+                                mane = None
 
+                        self.add_mane_data(
+                            mane, mane_data_found, s.reference_sequence,
+                            s.alt_type, s, gene_tokens
+                        )
                 self.add_validation_result(
                     variation, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
