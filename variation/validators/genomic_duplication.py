@@ -78,9 +78,6 @@ class GenomicDuplication(Validator):
                                 min=s.end_pos1_dup + 1,
                                 max=s.end_pos2_dup + 1)
                         )
-                        allele = self.to_vrs_allele_ranges(
-                            s, t, s.reference_sequence, s.alt_type,
-                            errors, ival)
                     else:
                         if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                             start = s.start_pos2_dup
@@ -96,9 +93,6 @@ class GenomicDuplication(Validator):
                                     comparator=">="
                                 )
                             )
-                            allele = self.to_vrs_allele_ranges(
-                                s, t, s.reference_sequence, s.alt_type,
-                                errors, ival)
                         elif s.start_pos1_dup == '?' and \
                                 s.start_pos2_dup != '?' and \
                                 s.end_pos1_dup != '?' and \
@@ -113,10 +107,6 @@ class GenomicDuplication(Validator):
                                     comparator="<="
                                 ),
                                 end=models.Number(value=end)
-                            )
-                            allele = self.to_vrs_allele_ranges(
-                                s, t, s.reference_sequence, s.alt_type,
-                                errors, ival
                             )
                         elif s.start_pos1_dup != '?' and \
                                 s.start_pos2_dup is None and \
@@ -134,12 +124,14 @@ class GenomicDuplication(Validator):
                                 ),
 
                             )
-                            allele = self.to_vrs_allele_ranges(
-                                s, t, s.reference_sequence, s.alt_type,
-                                errors, ival
-                            )
                         else:
+                            errors.append("Not yet supported")
                             allele = None
+
+                    allele = self.to_vrs_allele_ranges(
+                        s, t, s.reference_sequence, s.alt_type,
+                        errors, ival
+                    )
                     if allele is None:
                         errors.append("Unable to get allele")
                         return None
