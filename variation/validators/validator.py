@@ -544,8 +544,7 @@ class Validator(ABC):
         return allele.as_dict()
 
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
-                      cds_start=None, alt=None, ival_start_type=None,
-                      ival_end_type=None, ival=None) -> Optional[Dict]:
+                      cds_start=None, alt=None) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
         :param str ac: Accession
@@ -566,74 +565,34 @@ class Validator(ABC):
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
-        if alt_type in ['uncertain_deletion', 'uncertain_duplication']:
-            if not ival_start_type:
-                start_ival = models.IndefiniteRange(
-                    value=ival_start - 1,
-                    comparator="<="
+        if alt_type == 'insertion':
+            state = alt
+            ival_end = ival_start
+        elif alt_type in ['substitution', 'deletion', 'delins',
+                          'silent_mutation', 'nonsense']:
+            if alt_type == 'silent_mutation':
+                state = self.seqrepo_access.get_sequence(
+                    ac, ival_start
                 )
             else:
-                if ival_start_type == 'Number':
-                    start_ival = models.Number(
-                        value=ival_start - 1
-                    )
-
-            if not ival_end_type:
-                end_ival = models.IndefiniteRange(
-                    value=ival_end,
-                    comparator=">="
-                )
+                state = alt or ''
+            ival_start -= 1
+        elif alt_type == 'duplication':
+            ref = self.seqrepo_access.get_sequence(ac, ival_start,
+                                                   ival_end)
+            if ref is not None:
+                state = ref + ref
             else:
-                if ival_end_type == 'Number':
-                    end_ival = models.Number(
-                        value=ival_end
-                    )
-
-            interval = models.SequenceInterval(
-                start=start_ival,
-                end=end_ival
-            )
-
-            # TODO: Check
-            sstate = models.LiteralSequenceExpression(
-                sequence=""
-            )
-        else:
-            if alt_type == 'insertion':
-                state = alt
-                ival_end = ival_start
-            elif alt_type in ['substitution', 'deletion', 'delins',
-                              'silent_mutation', 'nonsense']:
-                if alt_type == 'silent_mutation':
-                    state = self.seqrepo_access.get_sequence(
-                        ac, ival_start
-                    )
-                else:
-                    state = alt or ''
-                ival_start -= 1
-            elif alt_type in ['duplication', 'duplication_range']:
-                if ival is None:
-                    ref = self.seqrepo_access.get_sequence(ac, ival_start,
-                                                           ival_end)
-                    if ref is not None:
-                        state = ref + ref
-                    else:
-                        errors.append(f"Unable to get sequence on {ac} from "
-                                      f"{ival_start} to {ival_end}")
-                        return None
-                    ival_start -= 1
-                else:
-                    state = ''  # TODO: Check
-            else:
-                errors.append(f"alt_type not supported: {alt_type}")
+                errors.append(f"Unable to get sequence on {ac} from "
+                              f"{ival_start} to {ival_end}")
                 return None
+            ival_start -= 1
+        else:
+            errors.append(f"alt_type not supported: {alt_type}")
+            return None
 
-            if ival is None:
-                interval = models.SimpleInterval(start=ival_start,
-                                                 end=ival_end)
-            else:
-                interval = ival
-            sstate = models.SequenceState(sequence=state)
+        interval = models.SimpleInterval(start=ival_start, end=ival_end)
+        sstate = models.SequenceState(sequence=state)
         return self._vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def _get_chr(self, ac) -> Optional[str]:
