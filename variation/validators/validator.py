@@ -475,6 +475,74 @@ class Validator(ABC):
                 end += cds_start
         return start, end
 
+    def to_vrs_allele_ranges(self, s, ac, coordinate, alt_type, errors, ival,
+                             cds_start=None, alt=None)\
+            -> Optional[Dict]:
+        """Translate variation ranges to VRS Allele Object.
+
+
+        :param Token s: The classification token
+        :param str ac: Accession
+        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
+        :param str alt_type: Type of alteration
+        :param list errors: List of errors
+        :param int cds_start: Coding start site
+        :param str alt: Alteration
+        :param ga4gh.models.SequenceInterval ival: Sequence Interval
+        """
+        if coordinate == 'c':
+            # TODO: Once we add support for ranges on c. coord
+            return None
+
+        if alt_type in ['uncertain_deletion', 'uncertain_duplication']:
+            # TODO: Check
+            sstate = models.LiteralSequenceExpression(
+                sequence=""
+            )
+        elif alt_type == 'duplication_range':
+            # TODO: Check
+            sstate = models.SequenceState(sequence='')
+        else:
+            errors.append("No state")
+            return None
+
+        return self._vrs_allele(ac, ival, sstate, alt_type, errors)
+
+    def _vrs_allele(self, ac, interval, sstate, alt_type, errors)\
+            -> Optional[Dict]:
+        """Create a VRS Allele object.
+
+        :param str ac: Accession
+        :param interval: Sequence Interval
+        :param sstate: State
+        :param str alt_type: Type of alteration
+        :param list errors: List of errors
+        """
+        sequence_id = coerce_namespace(ac)
+        location = models.Location(sequence_id=sequence_id, interval=interval)
+        allele = models.Allele(location=location, state=sstate)
+
+        # Ambiguous regions do not get normalized
+        if alt_type not in ["uncertain_deletion", "uncertain_duplication",
+                            "duplication_range"]:
+            try:
+                allele = normalize(allele, self.dp)
+                if alt_type == 'deletion':
+                    allele.state.sequence = ''
+            except (KeyError, AttributeError) as e:
+                errors.append(f"vrs-python unable to normalize allele: {e}")
+                return None
+
+        if not allele:
+            errors.append("Unable to get allele")
+            return None
+
+        seq_id = self.dp.translate_sequence_identifier(
+            allele.location.sequence_id._value, "ga4gh")[0]
+        allele.location.sequence_id = seq_id
+        allele._id = ga4gh_identify(allele)
+        return allele.as_dict()
+
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
                       cds_start=None, alt=None, ival_start_type=None,
                       ival_end_type=None, ival=None) -> Optional[Dict]:
@@ -490,7 +558,6 @@ class Validator(ABC):
         :param str alt: Alteration
         :return: VRS Allele Object
         """
-        sequence_id = coerce_namespace(ac)
         ival_coords = self._get_ival_start_end(coordinate, start, end,
                                                cds_start, errors)
         if not ival_coords:
@@ -527,6 +594,7 @@ class Validator(ABC):
                 end=end_ival
             )
 
+            # TODO: Check
             sstate = models.LiteralSequenceExpression(
                 sequence=""
             )
@@ -566,31 +634,7 @@ class Validator(ABC):
             else:
                 interval = ival
             sstate = models.SequenceState(sequence=state)
-
-        location = models.Location(sequence_id=sequence_id, interval=interval)
-        allele = models.Allele(location=location, state=sstate)
-
-        # Ambiguous regions do not get normalized
-        if alt_type not in ["uncertain_deletion", "uncertain_duplication",
-                            "duplication_range"]:
-            try:
-                allele = normalize(allele, self.dp)
-                if alt_type == 'deletion':
-                    allele.state.sequence = ''
-            except (KeyError, AttributeError) as e:
-                errors.append(f"vrs-python unable to normalize allele: {e}")
-                return None
-
-        if not allele:
-            errors.append(f"Unable to find allele for accession, {ac}, "
-                          f"and position ({start}, {end})")
-            return None
-
-        seq_id = self.dp.translate_sequence_identifier(
-            allele.location.sequence_id._value, "ga4gh")[0]
-        allele.location.sequence_id = seq_id
-        allele._id = ga4gh_identify(allele)
-        return allele.as_dict()
+        return self._vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def _get_chr(self, ac) -> Optional[str]:
         """Get chromosome for accession.
