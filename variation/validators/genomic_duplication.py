@@ -68,6 +68,7 @@ class GenomicDuplication(Validator):
                         t, start, end, s.reference_sequence,
                         s.alt_type, errors)
                 elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
+                    # TODO: Check if ranges should be CNVs or Alleles
                     if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
                         ival = models.SequenceInterval(
                             start=models.DefiniteRange(
@@ -77,44 +78,74 @@ class GenomicDuplication(Validator):
                                 min=s.end_pos1_dup + 1,
                                 max=s.end_pos2_dup + 1)
                         )
-                        allele = self.to_vrs_allele(
-                            t, 0, 0, s.reference_sequence, s.alt_type, errors,
-                            ival=ival)
-                        variation = self.to_vrs_cnv(t, allele, 'dup')
-                        if not variation:
-                            errors.append(f"Unable to get CNV for {t}")
+                        allele = self.to_vrs_allele_ranges(
+                            s, t, s.reference_sequence, s.alt_type,
+                            errors, ival)
                     else:
                         if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                             start = s.start_pos2_dup
                             end = s.end_pos1_dup
 
-                            allele = self.to_vrs_allele(t, start, end,
-                                                        s.reference_sequence,
-                                                        s.alt_type, errors)
-                            variation = self.to_vrs_cnv(t, allele, 'dup')
-                            if not variation:
-                                errors.append(f"Unable to get CNV for {t}")
+                            ival = models.SequenceInterval(
+                                start=models.IndefiniteRange(
+                                    value=start - 1,
+                                    comparator="<="
+                                ),
+                                end=models.IndefiniteRange(
+                                    value=end,
+                                    comparator=">="
+                                )
+                            )
+                            allele = self.to_vrs_allele_ranges(
+                                s, t, s.reference_sequence, s.alt_type,
+                                errors, ival)
                         elif s.start_pos1_dup == '?' and \
                                 s.start_pos2_dup != '?' and \
                                 s.end_pos1_dup != '?' and \
                                 s.end_pos2_dup is None:
+                            # format: (?_#)_#
                             start = s.start_pos2_dup
                             end = s.end_pos1_dup
 
-                            allele = self.to_vrs_allele(
-                                t, start, end, s.reference_sequence,
-                                s.alt_type, errors, ival_end_type='Number')
+                            ival = models.SequenceInterval(
+                                start=models.IndefiniteRange(
+                                    value=start - 1,
+                                    comparator="<="
+                                ),
+                                end=models.Number(value=end)
+                            )
+                            allele = self.to_vrs_allele_ranges(
+                                s, t, s.reference_sequence, s.alt_type,
+                                errors, ival
+                            )
                         elif s.start_pos1_dup != '?' and \
                                 s.start_pos2_dup is None and \
                                 s.end_pos1_dup != '?' and\
                                 s.end_pos2_dup == '?':
+                            # format: #_(#_?)
                             start = s.end_pos1_dup
                             end = s.end_pos1_dup
 
-                            allele = self.to_vrs_allele(
-                                t, start, end, s.reference_sequence,
-                                s.alt_type, errors, ival_start_type='Number'
+                            ival = models.SequenceInterval(
+                                start=models.Number(value=start),
+                                end=models.IndefiniteRange(
+                                    value=end,
+                                    comparator=">="
+                                ),
+
                             )
+                            allele = self.to_vrs_allele_ranges(
+                                s, t, s.reference_sequence, s.alt_type,
+                                errors, ival
+                            )
+                        else:
+                            allele = None
+                    if allele is None:
+                        errors.append("Unable to get allele")
+                        return None
+                    variation = self.to_vrs_cnv(t, allele, 'dup')
+                    if not variation:
+                        errors.append(f"Unable to get CNV for {t}")
                 else:
                     errors.append(f"Token type not supported: {s.token_type}")
 
