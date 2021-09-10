@@ -1,6 +1,6 @@
 """Module for Validation."""
 import copy
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
 from ga4gh.vrsatile.pydantic.vrs_model import CopyNumber
 from variation.schemas.classification_response_schema import Classification, \
@@ -449,6 +449,32 @@ class Validator(ABC):
             )
             return False
 
+    def _get_ival_start_end(self, coordinate, start, end, cds_start,
+                            errors) -> Optional[Tuple[int, int]]:
+        """Get ival_start and ival_end coordinates.
+
+        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
+        :param int start: Start position change
+        :param int end: End position change
+        :param int cds_start: Coding start site
+        :param list errors: List of errors
+        :return: Tuple[ival_start, ival_end]
+        """
+        try:
+            start = int(start)
+            if end is None:
+                end = start
+            end = int(end)
+        except (ValueError, TypeError):
+            errors.append("Start/End must be valid ints")
+            return None
+
+        if coordinate == 'c':
+            if cds_start:
+                start += cds_start
+                end += cds_start
+        return start, end
+
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
                       cds_start=None, alt=None, ival_start_type=None,
                       ival_end_type=None, ival=None) -> Optional[Dict]:
@@ -465,22 +491,11 @@ class Validator(ABC):
         :return: VRS Allele Object
         """
         sequence_id = coerce_namespace(ac)
-        try:
-            start = int(start)
-            if end is None:
-                end = start
-            end = int(end)
-        except (ValueError, TypeError):
-            errors.append("Start/End must be valid ints")
+        ival_coords = self._get_ival_start_end(coordinate, start, end,
+                                               cds_start, errors)
+        if not ival_coords:
             return None
-
-        if coordinate == 'c':
-            if cds_start:
-                start += cds_start
-                end += cds_start
-
-        ival_start = start
-        ival_end = end
+        ival_start, ival_end = ival_coords
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
