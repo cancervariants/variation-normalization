@@ -112,12 +112,19 @@ class QueryHandler:
                 translations = None
         return translations, warnings
 
-    def normalize(self, q) -> VariationDescriptor:
+    def normalize(self, q, hgvs_dup_del_mode="default") -> VariationDescriptor:
         """Return normalized Variation Descriptor for variation.
 
         :param q: Variation to normalize
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to interpret HGVS dup/del expressions
+            in VRS.
         :return: Variation Descriptor for variation
         """
         validations, warnings = \
-            self.to_vrs_handler.get_validations(q, normalize_endpoint=True)
+            self.to_vrs_handler.get_validations(
+                q, normalize_endpoint=True,
+                hgvs_dup_del_mode=hgvs_dup_del_mode
+            )
         return self.normalize_handler.normalize(q, validations, warnings)

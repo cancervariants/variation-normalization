@@ -21,6 +21,7 @@ from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
 from bioutils.accessions import coerce_namespace
+from variation.schemas.normalize_response_schema import HGVSDupDelMode  # noqa: F401, E501
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -130,7 +131,8 @@ class Validator(ABC):
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
                                   normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+                                  is_identifier, hgvs_dup_del_mode)\
+            -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -144,10 +146,15 @@ class Validator(ABC):
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         raise NotImplementedError
 
-    def validate(self, classification: Classification, normalize_endpoint) \
+    def validate(self, classification: Classification, normalize_endpoint,
+                 hgvs_dup_del_mode="default") \
             -> List[ValidationResult]:
         """Return validation result for a given classification.
 
@@ -155,6 +162,10 @@ class Validator(ABC):
             tokens
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         :return: Validation Result's containing valid and invalid results
         """
         results = list()
@@ -201,7 +212,7 @@ class Validator(ABC):
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, normalize_endpoint, mane_data_found,
-            is_identifier
+            is_identifier, hgvs_dup_del_mode
         )
         return results
 
@@ -480,7 +491,6 @@ class Validator(ABC):
             -> Optional[Dict]:
         """Translate variation ranges to VRS Allele Object.
 
-
         :param Token s: The classification token
         :param str ac: Accession
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
@@ -544,7 +554,8 @@ class Validator(ABC):
         return allele.as_dict()
 
     def to_vrs_allele(self, ac, start, end, coordinate, alt_type, errors,
-                      cds_start=None, alt=None) -> Optional[Dict]:
+                      cds_start=None, alt=None, hgvs_dup_del_mode="default")\
+            -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
         :param str ac: Accession
@@ -684,7 +695,8 @@ class Validator(ABC):
         return None
 
     def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
-                      gene_tokens, alt=None, mane_variation=None) -> None:
+                      gene_tokens, alt=None, mane_variation=None,
+                      hgvs_dup_del_mode="default") -> None:
         """Add mane transcript information to mane_data.
 
         :param dict mane: MANE Transcript information
@@ -714,17 +726,28 @@ class Validator(ABC):
             if not new_allele:
                 return
 
-            if alt_type in ['uncertain_deletion', 'duplication']:
-                if 'uncertain_deletion' == alt_type:
+            if alt_type == 'uncertain_deletion':
+                if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
+                        hgvs_dup_del_mode == HGVSDupDelMode.CNV:
                     variation = self.to_vrs_cnv(mane['refseq'], new_allele,
                                                 'del', uncertain=True)
+                elif hgvs_dup_del_mode == HGVSDupDelMode.LITERAL_SEQ_EXPR:
+                    variation = new_allele
                 else:
-                    variation = self.to_vrs_cnv(mane['refseq'], new_allele,
-                                                'dup', uncertain=False)
-                if not variation:
+                    logger.warning(
+                        "uncertain deletion cannot be represented as"
+                        " a repeated_seq_expr")
                     return None
+            elif alt_type == 'duplication':
+                # TODO: HGVS dup del mode
+                variation = self.to_vrs_cnv(mane['refseq'], new_allele,
+                                            'dup', uncertain=False)
             else:
-                variation = new_allele
+                logger.warning(f"alt_type not supported {alt_type}")
+                return None
+
+            if not variation:
+                return None
         else:
             variation = mane_variation
 

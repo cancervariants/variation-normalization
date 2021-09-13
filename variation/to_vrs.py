@@ -38,13 +38,18 @@ class ToVRS:
         self.validator = validator
         self.translator = translator
 
-    def get_validations(self, q, normalize_endpoint=False)\
+    def get_validations(self, q, normalize_endpoint=False,
+                        hgvs_dup_del_mode="default")\
             -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to interpret HGVS dup/del expressions
+            in VRS.
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
@@ -53,7 +58,8 @@ class ToVRS:
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
-            classifications, normalize_endpoint, warnings
+            classifications, normalize_endpoint, warnings,
+            hgvs_dup_del_mode=hgvs_dup_del_mode
         )
         if not warnings:
             warnings = validations.warnings
