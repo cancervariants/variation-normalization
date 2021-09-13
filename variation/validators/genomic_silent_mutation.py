@@ -26,9 +26,10 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         return self.get_genomic_transcripts(classification, errors)
 
     def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results,
-                                  gene_tokens, normalize_endpoint,
-                                  mane_data_found, is_identifier) -> None:
+                                  classification, results, gene_tokens,
+                                  normalize_endpoint, mane_data_found,
+                                  is_identifier, hgvs_dup_del_mode)\
+            -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -42,6 +43,10 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
