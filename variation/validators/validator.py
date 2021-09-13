@@ -647,22 +647,8 @@ class Validator(ABC):
         cnv._id = ga4gh_identify(cnv)
         return cnv.as_dict()
 
-    def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
-                      gene_tokens, alt=None) -> None:
-        """Add mane transcript information to mane_data.
-
-        :param dict mane: MANE Transcript information
-        :param dict mane_data: MANE Transcript data found for given query
-        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param str alt_type: Type of alteration
-        :param Token s: Classification token
-        :param list gene_tokens: List of GeneMatchTokens for a classification
-        :param str alt: Alteration
-        """
-        if not mane:
-            return
-
-        s_copy = copy.deepcopy(s)
+    def _get_coord_alt(self, coordinate, mane, s_copy):
+        """Get coordinate and alteration"""
         if coordinate == 'g' and mane['status'].lower() != 'grch38':
             s_copy.molecule_context = 'transcript'
             s_copy.reference_sequence = 'c'
@@ -688,25 +674,52 @@ class Validator(ABC):
                 for nt in alt_rev:
                     s_copy.new_nucleotide += complements[nt]
                 alt = s_copy.new_nucleotide
+            else:
+                alt = None
+            return coordinate, alt
+        return None
 
-        new_allele = self.to_vrs_allele(
-            mane['refseq'], mane['pos'][0], mane['pos'][1],
-            coordinate, alt_type, [],
-            cds_start=mane.get('coding_start_site', None), alt=alt
-        )
+    def add_mane_data(self, mane, mane_data, coordinate, alt_type, s,
+                      gene_tokens, alt=None, mane_variation=None) -> None:
+        """Add mane transcript information to mane_data.
 
-        if not new_allele:
-            return
+        :param dict mane: MANE Transcript information
+        :param dict mane_data: MANE Transcript data found for given query
+        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
+        :param str alt_type: Type of alteration
+        :param Token s: Classification token
+        :param list gene_tokens: List of GeneMatchTokens for a classification
+        :param str alt: Alteration
+        """
+        if not mane:
+            return None
 
-        if alt_type == 'uncertain_deletion':
-            variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
-            if not variation:
-                return None
-            _id = variation['_id']
+        s_copy = copy.deepcopy(s)
+        coord_alt = self._get_coord_alt(coordinate, mane, s_copy)
+        if coord_alt:
+            coordinate = coord_alt[0] if coord_alt[0] else coordinate
+            alt = coord_alt[1] if coord_alt[1] else alt
+
+        if mane_variation is None:
+            new_allele = self.to_vrs_allele(
+                mane['refseq'], mane['pos'][0], mane['pos'][1],
+                coordinate, alt_type, [],
+                cds_start=mane.get('coding_start_site', None), alt=alt
+            )
+
+            if not new_allele:
+                return
+
+            if alt_type == 'uncertain_deletion':
+                variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
+                if not variation:
+                    return None
+            else:
+                variation = new_allele
         else:
-            variation = new_allele
-            _id = variation['_id']
+            variation = mane_variation
 
+        _id = variation['_id']
         key = '_'.join(mane['status'].lower().split())
 
         if _id in mane_data[key].keys():

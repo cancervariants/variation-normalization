@@ -121,8 +121,7 @@ class GenomicDuplication(Validator):
                                 end=models.IndefiniteRange(
                                     value=end,
                                     comparator=">="
-                                ),
-
+                                )
                             )
                         else:
                             errors.append("Not yet supported")
@@ -141,12 +140,61 @@ class GenomicDuplication(Validator):
                 else:
                     errors.append(f"Token type not supported: {s.token_type}")
 
+                mane = None
                 if not errors:
                     if not gene_tokens:
                         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
                                 and s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
-                            # TODO
-                            mane = None
+
+                            start_grch38 = self.mane_transcript.g_to_grch38(
+                                t, s.start_pos1_dup, s.start_pos2_dup
+                            )['pos']
+                            end_grch38 = self.mane_transcript.g_to_grch38(
+                                t, s.end_pos1_dup, s.end_pos2_dup
+                            )['pos']
+
+                            for pos in [start_grch38[0], start_grch38[1],
+                                        end_grch38[0], end_grch38[1]]:
+                                self._check_index(t, pos, errors)
+
+                            if not errors:
+                                ival = models.SequenceInterval(
+                                    start=models.DefiniteRange(
+                                        min=start_grch38[0] - 1,
+                                        max=start_grch38[1] - 1
+                                    ),
+                                    end=models.DefiniteRange(
+                                        min=end_grch38[0] + 1,
+                                        max=end_grch38[1] + 1
+                                    )
+                                )
+
+                                allele = self.to_vrs_allele_ranges(
+                                    s, t, s.reference_sequence, s.alt_type,
+                                    errors, ival
+                                )
+
+                                if allele is None:
+                                    errors.append("Unable to get allele")
+                                    return None
+                                mane_variation = self.to_vrs_cnv(t, allele,
+                                                                 'dup')
+                                if not mane_variation:
+                                    errors.append(f"Unable to get CNV for {t}")
+                                else:
+                                    grch38 = dict(
+                                        gene=None,
+                                        refseq=t if t.startswith('NC') else None,  # noqa: E501
+                                        ensembl=t if t.startswith('ENSG') else None,  # noqa: E501
+                                        pos=None,
+                                        strand=None,
+                                        status='GRCh38'
+                                    )
+
+                                    self.add_mane_data(
+                                        grch38, mane_data_found, s.reference_sequence,  # noqa: E501
+                                        s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
+                                    )
                         else:
                             # If no gene tokens, get GRCh38
                             grch38 = self.mane_transcript.g_to_grch38(
@@ -180,6 +228,12 @@ class GenomicDuplication(Validator):
             mane_data_found, valid_alleles, results,
             classification, gene_tokens
         )
+
+    def _check_index(self, ac, pos, errors):
+        seq = self.seqrepo_access.get_sequence(ac, pos)
+        if not seq:
+            errors.append(f"Pos {pos} not found on {ac}")
+        return seq
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
