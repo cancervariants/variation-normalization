@@ -460,6 +460,18 @@ class Validator(ABC):
             )
             return False
 
+    def _get_start_indef_range(self, start):
+        return models.IndefiniteRange(value=start - 1, comparator="<=")
+
+    def _get_end_indef_range(self, end):
+        return models.IndefiniteRange(value=end, comparator=">=")
+
+    def _get_ival_certain_range(self, start1, start2, end1, end2):
+        return models.SequenceInterval(
+            start=models.DefiniteRange(min=start1 - 1, max=start2 - 1),
+            end=models.DefiniteRange(min=end1 + 1, max=end2 + 1)
+        )
+
     def _get_ival_start_end(self, coordinate, start, end, cds_start,
                             errors) -> Optional[Tuple[int, int]]:
         """Get ival_start and ival_end coordinates.
@@ -518,6 +530,10 @@ class Validator(ABC):
 
         return self._vrs_allele(ac, ival, sstate, alt_type, errors)
 
+    def _get_sequence_loc(self, ac, interval):
+        return models.Location(sequence_id=coerce_namespace(ac),
+                               interval=interval)
+
     def _vrs_allele(self, ac, interval, sstate, alt_type, errors)\
             -> Optional[Dict]:
         """Create a VRS Allele object.
@@ -528,8 +544,7 @@ class Validator(ABC):
         :param str alt_type: Type of alteration
         :param list errors: List of errors
         """
-        sequence_id = coerce_namespace(ac)
-        location = models.Location(sequence_id=sequence_id, interval=interval)
+        location = self._get_sequence_loc(ac, interval)
         allele = models.Allele(location=location, state=sstate)
 
         # Ambiguous regions do not get normalized
@@ -633,24 +648,20 @@ class Validator(ABC):
             logger.warning(f"Unable to find chromosome on {ac}")
             return None
 
-        if uncertain:
-            if chr == 'X':
-                copies = models.DefiniteRange(
-                    min=0 if del_or_dup == 'del' else 2,
-                    max=1 if del_or_dup == 'del' else 3
-                )
-            elif chr == 'Y':
-                copies = models.Number(
-                    value=0 if del_or_dup == 'del' else 2
-                )
-            else:
-                # Chr 1-22
-                copies = models.Number(
-                    value=1 if del_or_dup == 'del' else 3
-                )
+        if chr == 'X':
+            copies = models.DefiniteRange(
+                min=0 if del_or_dup == 'del' else 2,
+                max=1 if del_or_dup == 'del' else 3
+            )
+        elif chr == 'Y':
+            copies = models.Number(
+                value=0 if del_or_dup == 'del' else 2
+            )
         else:
-            # TODO: Check
-            copies = models.Number(value=1)
+            # Chr 1-22
+            copies = models.Number(
+                value=1 if del_or_dup == 'del' else 3
+            )
 
         cnv = models.CopyNumber(
             subject=models.DerivedSequenceExpression(

@@ -5,7 +5,7 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.token_response_schema import \
     TokenType, DuplicationAltType,\
     GenomicDuplicationToken, GenomicDuplicationRangeToken  # noqa: F401
-from typing import List, Optional
+from typing import List, Optional, Dict
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
 from ga4gh.vrs import models
@@ -59,105 +59,10 @@ class GenomicDuplication(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                start = None
-                end = None
-                variation = None
-
-                if s.token_type == TokenType.GENOMIC_DUPLICATION:
-                    start = s.start_pos1_dup
-                    if s.start_pos2_dup is None:
-                        # Format: #dup
-                        end = s.start_pos1_dup
-                    else:
-                        # Format: #_#dup
-                        end = s.start_pos2_dup
-
-                    allele = self.to_vrs_allele(
-                        t, start, end, s.reference_sequence,
-                        s.alt_type, errors)
-
-                    if allele is None:
-                        errors.append("Unable to get allele")
-                        return None
-                    variation = self.to_vrs_cnv(t, allele, 'dup',
-                                                uncertain=False)
-                    if not variation:
-                        errors.append(f"Unable to get CNV for {t}")
-                elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-                    # TODO: Check if ranges should be CNVs or Alleles
-                    if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
-                        uncertain = True
-                        ival = models.SequenceInterval(
-                            start=models.DefiniteRange(
-                                min=s.start_pos1_dup - 1,
-                                max=s.start_pos2_dup - 1),
-                            end=models.DefiniteRange(
-                                min=s.end_pos1_dup + 1,
-                                max=s.end_pos2_dup + 1)
-                        )
-                    else:
-                        uncertain = False
-                        if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
-                            start = s.start_pos2_dup
-                            end = s.end_pos1_dup
-
-                            ival = models.SequenceInterval(
-                                start=models.IndefiniteRange(
-                                    value=start - 1,
-                                    comparator="<="
-                                ),
-                                end=models.IndefiniteRange(
-                                    value=end,
-                                    comparator=">="
-                                )
-                            )
-                        elif s.start_pos1_dup == '?' and \
-                                s.start_pos2_dup != '?' and \
-                                s.end_pos1_dup != '?' and \
-                                s.end_pos2_dup is None:
-                            # format: (?_#)_#
-                            start = s.start_pos2_dup
-                            end = s.end_pos1_dup
-
-                            ival = models.SequenceInterval(
-                                start=models.IndefiniteRange(
-                                    value=start - 1,
-                                    comparator="<="
-                                ),
-                                end=models.Number(value=end)
-                            )
-                        elif s.start_pos1_dup != '?' and \
-                                s.start_pos2_dup is None and \
-                                s.end_pos1_dup != '?' and\
-                                s.end_pos2_dup == '?':
-                            # format: #_(#_?)
-                            start = s.end_pos1_dup
-                            end = s.end_pos1_dup
-
-                            ival = models.SequenceInterval(
-                                start=models.Number(value=start),
-                                end=models.IndefiniteRange(
-                                    value=end,
-                                    comparator=">="
-                                )
-                            )
-                        else:
-                            errors.append("Not yet supported")
-                            allele = None
-
-                    allele = self.to_vrs_allele_ranges(
-                        s, t, s.reference_sequence, s.alt_type,
-                        errors, ival
-                    )
-                    if allele is None:
-                        errors.append("Unable to get allele")
-                        return None
-                    variation = self.to_vrs_cnv(t, allele, 'dup',
-                                                uncertain=uncertain)
-                    if not variation:
-                        errors.append(f"Unable to get CNV for {t}")
-                else:
-                    errors.append(f"Token type not supported: {s.token_type}")
+                result = self._get_variation(s, t, errors)
+                variation = result['variation']
+                start = result['start']
+                end = result['end']
 
                 mane = None
                 if not errors:
@@ -177,39 +82,18 @@ class GenomicDuplication(Validator):
                                 self._check_index(t, pos, errors)
 
                             if not errors:
-                                ival = models.SequenceInterval(
-                                    start=models.DefiniteRange(
-                                        min=start_grch38[0] - 1,
-                                        max=start_grch38[1] - 1
-                                    ),
-                                    end=models.DefiniteRange(
-                                        min=end_grch38[0] + 1,
-                                        max=end_grch38[1] + 1
-                                    )
+                                ival = self._get_ival_certain_range(
+                                    start_grch38[0], start_grch38[1],
+                                    end_grch38[0], end_grch38[1]
                                 )
-
                                 allele = self.to_vrs_allele_ranges(
                                     s, t, s.reference_sequence, s.alt_type,
                                     errors, ival
                                 )
-
-                                if allele is None:
-                                    errors.append("Unable to get allele")
-                                    return None
-                                mane_variation = self.to_vrs_cnv(
-                                    t, allele, 'dup', uncertain=False)
-                                if not mane_variation:
-                                    errors.append(f"Unable to get CNV for {t}")
-                                else:
-                                    grch38 = dict(
-                                        gene=None,
-                                        refseq=t if t.startswith('NC') else None,  # noqa: E501
-                                        ensembl=t if t.startswith('ENSG') else None,  # noqa: E501
-                                        pos=None,
-                                        strand=None,
-                                        status='GRCh38'
-                                    )
-
+                                mane_variation = self._allele_to_cnv(
+                                    t, allele, False, errors)
+                                if mane_variation:
+                                    grch38 = self._grch38_dict(t, None)
                                     self.add_mane_data(
                                         grch38, mane_data_found, s.reference_sequence,  # noqa: E501
                                         s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
@@ -224,14 +108,8 @@ class GenomicDuplication(Validator):
                                     self._check_index(grch38['ac'], pos,
                                                       errors)
                                 if not errors:
-                                    mane = dict(
-                                        gene=None,
-                                        refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
-                                        ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
-                                        pos=grch38['pos'],
-                                        strand=None,
-                                        status='GRCh38'
-                                    )
+                                    mane = self._grch38_dict(grch38['ac'],
+                                                             grch38['pos'])
                                 else:
                                     mane = None
                             else:
@@ -254,7 +132,105 @@ class GenomicDuplication(Validator):
             classification, gene_tokens
         )
 
+    def _get_variation(self, s, t, errors) -> Optional[Dict]:
+        """Get variation data."""
+        variation, start, end = None, None, None
+        if s.token_type == TokenType.GENOMIC_DUPLICATION:
+            start = s.start_pos1_dup
+            if s.start_pos2_dup is None:
+                # Format: #dup
+                end = s.start_pos1_dup
+            else:
+                # Format: #_#dup
+                end = s.start_pos2_dup
+            allele = self.to_vrs_allele(
+                t, start, end, s.reference_sequence,
+                s.alt_type, errors)
+            variation = self._allele_to_cnv(t, allele, False, errors)
+        elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
+            # TODO: Check if ranges should be CNVs or Alleles
+            if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+                uncertain = True
+                ival = self._get_ival_certain_range(
+                    s.start_pos1_dup, s.start_pos2_dup,
+                    s.end_pos1_dup, s.end_pos2_dup
+                )
+            else:
+                uncertain = False
+                if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
+                    start = s.start_pos2_dup
+                    end = s.end_pos1_dup
+
+                    ival = models.SequenceInterval(
+                        start=self._get_start_indef_range(start),
+                        end=self._get_end_indef_range(end)
+                    )
+                elif s.start_pos1_dup == '?' and \
+                        s.start_pos2_dup != '?' and \
+                        s.end_pos1_dup != '?' and \
+                        s.end_pos2_dup is None:
+                    # format: (?_#)_#
+                    start = s.start_pos2_dup
+                    end = s.end_pos1_dup
+
+                    ival = models.SequenceInterval(
+                        start=self._get_start_indef_range(start),  # noqa: E501
+                        end=models.Number(value=end)
+                    )
+                elif s.start_pos1_dup != '?' and \
+                        s.start_pos2_dup is None and \
+                        s.end_pos1_dup != '?' and \
+                        s.end_pos2_dup == '?':
+                    # format: #_(#_?)
+                    start = s.end_pos1_dup
+                    end = s.end_pos1_dup
+
+                    ival = models.SequenceInterval(
+                        start=models.Number(value=start),
+                        end=self._get_end_indef_range(end)
+                    )
+                else:
+                    errors.append("Not yet supported")
+                    allele = None
+
+            allele = self.to_vrs_allele_ranges(
+                s, t, s.reference_sequence, s.alt_type,
+                errors, ival
+            )
+            variation = self._allele_to_cnv(t, allele, uncertain, errors)
+        else:
+            errors.append(f"Token type not supported: {s.token_type}")
+
+        return {
+            'start': start,
+            'end': end,
+            'variation': variation
+        }
+
+    def _grch38_dict(self, ac, pos):
+        """Create dict for normalized concepts"""
+        return dict(
+            gene=None,
+            refseq=ac if ac.startswith('NC') else None,
+            ensembl=ac if ac.startswith('ENSG') else None,
+            pos=pos,
+            strand=None,
+            status='GRCh38'
+        )
+
+    def _allele_to_cnv(self, ac, allele, uncertain, errors):
+        """Convert allele to cnv"""
+        variation = None
+        if allele is None:
+            errors.append("Unable to get Allele")
+        else:
+            variation = self.to_vrs_cnv(ac, allele, 'dup', uncertain=uncertain)
+            if not variation:
+                errors.append("Unable to get CNV")
+        return variation
+
     def _check_index(self, ac, pos, errors):
+        """Check that index aactually exists"""
         seq = self.seqrepo_access.get_sequence(ac, pos)
         if not seq:
             errors.append(f"Pos {pos} not found on {ac}")
