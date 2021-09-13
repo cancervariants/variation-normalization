@@ -605,7 +605,7 @@ class Validator(ABC):
         return ([a.split(':')[-1] for a in aliases
                  if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
 
-    def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None)\
+    def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None, uncertain=True)\
             -> Optional[CopyNumber]:
         """Return a Copy Number Variation.
 
@@ -622,20 +622,24 @@ class Validator(ABC):
             logger.warning(f"Unable to find chromosome on {ac}")
             return None
 
-        if chr == 'X':
-            copies = models.DefiniteRange(
-                min=0 if del_or_dup == 'del' else 2,
-                max=1 if del_or_dup == 'del' else 3
-            )
-        elif chr == 'Y':
-            copies = models.Number(
-                value=0 if del_or_dup == 'del' else 2
-            )
+        if uncertain:
+            if chr == 'X':
+                copies = models.DefiniteRange(
+                    min=0 if del_or_dup == 'del' else 2,
+                    max=1 if del_or_dup == 'del' else 3
+                )
+            elif chr == 'Y':
+                copies = models.Number(
+                    value=0 if del_or_dup == 'del' else 2
+                )
+            else:
+                # Chr 1-22
+                copies = models.Number(
+                    value=1 if del_or_dup == 'del' else 3
+                )
         else:
-            # Chr 1-22
-            copies = models.Number(
-                value=1 if del_or_dup == 'del' else 3
-            )
+            # TODO: Check
+            copies = models.Number(value=1)
 
         cnv = models.CopyNumber(
             subject=models.DerivedSequenceExpression(
@@ -710,8 +714,13 @@ class Validator(ABC):
             if not new_allele:
                 return
 
-            if alt_type == 'uncertain_deletion':
-                variation = self.to_vrs_cnv(mane['refseq'], new_allele, 'del')
+            if alt_type in ['uncertain_deletion', 'duplication']:
+                if 'uncertain_deletion' == alt_type:
+                    variation = self.to_vrs_cnv(mane['refseq'], new_allele,
+                                                'del', uncertain=True)
+                else:
+                    variation = self.to_vrs_cnv(mane['refseq'], new_allele,
+                                                'dup', uncertain=False)
                 if not variation:
                     return None
             else:

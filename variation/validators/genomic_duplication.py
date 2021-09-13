@@ -64,12 +64,21 @@ class GenomicDuplication(Validator):
                         # Format: #_#dup
                         end = s.start_pos2_dup
 
-                    variation = self.to_vrs_allele(
+                    allele = self.to_vrs_allele(
                         t, start, end, s.reference_sequence,
                         s.alt_type, errors)
+
+                    if allele is None:
+                        errors.append("Unable to get allele")
+                        return None
+                    variation = self.to_vrs_cnv(t, allele, 'dup',
+                                                uncertain=False)
+                    if not variation:
+                        errors.append(f"Unable to get CNV for {t}")
                 elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
                     # TODO: Check if ranges should be CNVs or Alleles
                     if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+                        uncertain = True
                         ival = models.SequenceInterval(
                             start=models.DefiniteRange(
                                 min=s.start_pos1_dup - 1,
@@ -79,6 +88,7 @@ class GenomicDuplication(Validator):
                                 max=s.end_pos2_dup + 1)
                         )
                     else:
+                        uncertain = False
                         if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                             start = s.start_pos2_dup
                             end = s.end_pos1_dup
@@ -134,7 +144,8 @@ class GenomicDuplication(Validator):
                     if allele is None:
                         errors.append("Unable to get allele")
                         return None
-                    variation = self.to_vrs_cnv(t, allele, 'dup')
+                    variation = self.to_vrs_cnv(t, allele, 'dup',
+                                                uncertain=uncertain)
                     if not variation:
                         errors.append(f"Unable to get CNV for {t}")
                 else:
@@ -177,8 +188,8 @@ class GenomicDuplication(Validator):
                                 if allele is None:
                                     errors.append("Unable to get allele")
                                     return None
-                                mane_variation = self.to_vrs_cnv(t, allele,
-                                                                 'dup')
+                                mane_variation = self.to_vrs_cnv(
+                                    t, allele, 'dup', uncertain=False)
                                 if not mane_variation:
                                     errors.append(f"Unable to get CNV for {t}")
                                 else:
@@ -201,14 +212,20 @@ class GenomicDuplication(Validator):
                                 t, start, end)
 
                             if grch38:
-                                mane = dict(
-                                    gene=None,
-                                    refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
-                                    ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
-                                    pos=grch38['pos'],
-                                    strand=None,
-                                    status='GRCh38'
-                                )
+                                for pos in [grch38['pos'][0], grch38['pos'][1]]:  # noqa: E501
+                                    self._check_index(grch38['ac'], pos,
+                                                      errors)
+                                if not errors:
+                                    mane = dict(
+                                        gene=None,
+                                        refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
+                                        ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
+                                        pos=grch38['pos'],
+                                        strand=None,
+                                        status='GRCh38'
+                                    )
+                                else:
+                                    mane = None
                             else:
                                 mane = None
 
