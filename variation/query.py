@@ -14,6 +14,7 @@ from variation.translators import Translate
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
     UTA, MANETranscriptMappings
 from variation.mane_transcript import MANETranscript
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_model import Text, Allele, CopyNumber, \
@@ -43,6 +44,8 @@ class QueryHandler:
             seqrepo_data_path=seqrepo_data_path
         )
         self.uta = UTA(db_url=uta_db_url, db_pwd=uta_db_pwd)
+        self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
+        self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access, self.dp)
         self.to_vrs_handler = self._init_to_vrs()
         self.normalize_handler = Normalize(
             self.seqrepo_access, self.uta, self.gene_normalizer
@@ -73,15 +76,16 @@ class QueryHandler:
         mane_transcript_mappings = MANETranscriptMappings(
             mane_data_path=mane_data_path
         )
-        dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
+
+        tlr = Translator(data_proxy=self.dp)
         mane_transcript = MANETranscript(
             self.seqrepo_access, transcript_mappings,
             mane_transcript_mappings, self.uta
         )
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, self.uta, dp, tlr, amino_acid_cache
+            mane_transcript, self.uta, self.dp, tlr, self.hgvs_dup_del_mode,
+            amino_acid_cache
         )
         translator = Translate()
         return ToVRS(
