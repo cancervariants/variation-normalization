@@ -3,6 +3,7 @@ from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
 from variation.mane_transcript import MANETranscript
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
@@ -36,6 +37,7 @@ class Validate:
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 hgvs_dup_del_mode: HGVSDupDelMode,
                  amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validate class.
 
@@ -50,7 +52,7 @@ class Validate:
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr
+            mane_transcript, uta, dp, tlr, hgvs_dup_del_mode
         ]
         amino_acid_params = params[:]
         amino_acid_params.append(amino_acid_cache)

@@ -59,7 +59,7 @@ class GenomicDuplication(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors)
+                result = self._get_variation(s, t, errors, hgvs_dup_del_mode)
                 variation = result['variation']
                 start = result['start']
                 end = result['end']
@@ -91,7 +91,8 @@ class GenomicDuplication(Validator):
                                     errors, ival
                                 )
                                 mane_variation = self._allele_to_cnv(
-                                    t, allele, False, errors)
+                                    t, s.alt_type, allele, False, errors,
+                                    hgvs_dup_del_mode)
                                 if mane_variation:
                                     grch38 = self._grch38_dict(t, None)
                                     self.add_mane_data(
@@ -132,7 +133,8 @@ class GenomicDuplication(Validator):
             classification, gene_tokens
         )
 
-    def _get_variation(self, s, t, errors) -> Optional[Dict]:
+    def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
+            -> Optional[Dict]:
         """Get variation data."""
         variation, start, end = None, None, None
         if s.token_type == TokenType.GENOMIC_DUPLICATION:
@@ -146,11 +148,17 @@ class GenomicDuplication(Validator):
             allele = self.to_vrs_allele(
                 t, start, end, s.reference_sequence,
                 s.alt_type, errors)
-            variation = self._allele_to_cnv(t, allele, False, errors)
+            variation = self._allele_to_cnv(
+                t, s.alt_type, allele, False, errors, hgvs_dup_del_mode,
+                pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # TODO: Check if ranges should be CNVs or Alleles
             if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+                # (#_#)_(#_#)
                 uncertain = True
+                start = s.start_pos1_dup
+                end = s.end_pos2_dup
+
                 ival = self._get_ival_certain_range(
                     s.start_pos1_dup, s.start_pos2_dup,
                     s.end_pos1_dup, s.end_pos2_dup
@@ -197,7 +205,13 @@ class GenomicDuplication(Validator):
                 s, t, s.reference_sequence, s.alt_type,
                 errors, ival
             )
-            variation = self._allele_to_cnv(t, allele, uncertain, errors)
+            if start is not None and end is not None:
+                pos = start, end
+            else:
+                pos = None
+            variation = self._allele_to_cnv(
+                t, s.alt_type, allele, uncertain, errors,
+                hgvs_dup_del_mode, pos=pos)
         else:
             errors.append(f"Token type not supported: {s.token_type}")
 
@@ -218,13 +232,16 @@ class GenomicDuplication(Validator):
             status='GRCh38'
         )
 
-    def _allele_to_cnv(self, ac, allele, uncertain, errors):
+    def _allele_to_cnv(self, ac, alt_type, allele, uncertain, errors,
+                       hgvs_dup_del_mode, pos=None):
         """Convert allele to cnv"""
         variation = None
         if allele is None:
             errors.append("Unable to get Allele")
         else:
-            variation = self.to_vrs_cnv(ac, allele, 'dup', uncertain=uncertain)
+            variation = self.hgvs_dup_del_mode.default_mode(
+                ac, alt_type, pos, 'dup', allele['location'], allele=allele
+            )
             if not variation:
                 errors.append("Unable to get CNV")
         return variation

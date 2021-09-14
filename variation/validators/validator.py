@@ -12,6 +12,7 @@ from variation.schemas.validation_response_schema import ValidationResult, \
 from variation.tokenizers import GeneSymbol
 from variation.data_sources import SeqRepoAccess, TranscriptMappings
 from variation.mane_transcript import MANETranscript
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
@@ -21,7 +22,8 @@ from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
 from bioutils.accessions import coerce_namespace
-from variation.schemas.normalize_response_schema import HGVSDupDelMode  # noqa: F401, E501
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum  # noqa: F401, E501
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -34,7 +36,8 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator) -> None:
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 hgvs_dup_del_mode: HGVSDupDelMode) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -54,6 +57,7 @@ class Validator(ABC):
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
+        self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     @abstractmethod
     def is_token_instance(self, t) -> bool:
@@ -738,11 +742,16 @@ class Validator(ABC):
                 return
 
             if alt_type == 'uncertain_deletion':
-                if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
-                        hgvs_dup_del_mode == HGVSDupDelMode.CNV:
-                    variation = self.to_vrs_cnv(mane['refseq'], new_allele,
-                                                'del', uncertain=True)
-                elif hgvs_dup_del_mode == HGVSDupDelMode.LITERAL_SEQ_EXPR:
+                if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT or \
+                        hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
+                    variation = self.hgvs_dup_del_mode.default_mode(
+                        mane['refseq'], s.alt_type,
+                        (mane['pos'][0], mane['pos'][1]),
+                        'del', new_allele['location']
+                    )
+                    # variation = self.to_vrs_cnv(mane['refseq'], new_allele,
+                    #                             'del', uncertain=True)
+                elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                     variation = new_allele
                 else:
                     logger.warning(
@@ -751,11 +760,13 @@ class Validator(ABC):
                     return None
             elif alt_type == 'duplication':
                 # TODO: HGVS dup del mode
-                variation = self.to_vrs_cnv(mane['refseq'], new_allele,
-                                            'dup', uncertain=False)
+                variation = self.hgvs_dup_del_mode.default_mode(
+                    mane['refseq'], s.alt_type,
+                    (mane['pos'][0], mane['pos'][1]), 'dup',
+                    new_allele['location'], allele=new_allele
+                )
             else:
-                logger.warning(f"alt_type not supported {alt_type}")
-                return None
+                variation = new_allele
 
             if not variation:
                 return None
