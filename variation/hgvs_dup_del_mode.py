@@ -109,11 +109,17 @@ class HGVSDupDelMode:
         :param dict location: VRS SequenceLocation
         :return: VRS Allele object represented as a dict
         """
-        # TODO: Check
+        if 'range' in alt_type:
+            # Ranges should return an error
+            return None
+
         if alt_type == 'duplication':
-            count = models.Number(value=1)
+            count = models.Number(value=2)
+        elif alt_type == 'deletion':
+            count = models.Number(value=0)
         else:
             return None
+
         seq_expr = models.RepeatedSequenceExpression(
             seq_expr=models.DerivedSequenceExpression(
                 location=location,
