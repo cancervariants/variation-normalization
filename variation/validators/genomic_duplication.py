@@ -65,65 +65,9 @@ class GenomicDuplication(Validator):
                 end = result['end']
 
                 if not errors:
-                    if not gene_tokens:
-                        if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
-                                and s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
-
-                            start_grch38 = self.mane_transcript.g_to_grch38(
-                                t, s.start_pos1_dup, s.start_pos2_dup
-                            )['pos']
-                            end_grch38 = self.mane_transcript.g_to_grch38(
-                                t, s.end_pos1_dup, s.end_pos2_dup
-                            )['pos']
-
-                            for pos in [start_grch38[0], start_grch38[1],
-                                        end_grch38[0], end_grch38[1]]:
-                                self._check_index(t, pos, errors)
-
-                            if not errors:
-                                ival = self._get_ival_certain_range(
-                                    start_grch38[0], start_grch38[1],
-                                    end_grch38[0], end_grch38[1]
-                                )
-                                allele = self.to_vrs_allele_ranges(
-                                    s, t, s.reference_sequence, s.alt_type,
-                                    errors, ival
-                                )
-                                mane_variation = self._interpret_variation(
-                                    t, s.alt_type, allele, errors,
-                                    hgvs_dup_del_mode)
-                                if mane_variation:
-                                    grch38 = self._grch38_dict(t, None)
-                                    self.add_mane_data(
-                                        grch38, mane_data_found, s.reference_sequence,  # noqa: E501
-                                        s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
-                                    )
-                        else:
-                            # If no gene tokens, get GRCh38
-                            grch38 = self.mane_transcript.g_to_grch38(
-                                t, start, end)
-
-                            if grch38:
-                                for pos in [grch38['pos'][0], grch38['pos'][1]]:  # noqa: E501
-                                    self._check_index(grch38['ac'], pos,
-                                                      errors)
-                                if not errors:
-                                    allele = self.to_vrs_allele(
-                                        grch38['ac'], grch38['pos'][0],
-                                        grch38['pos'][1], s.reference_sequence,
-                                        s.alt_type, errors
-                                    )
-                                    grch38_variation = \
-                                        self._interpret_variation(
-                                            grch38['ac'], s.alt_type, allele,
-                                            errors, hgvs_dup_del_mode
-                                        )
-
-                                    if grch38_variation:
-                                        self._add_to_mane_data(
-                                            grch38['ac'], s, grch38_variation,
-                                            mane_data_found, 'GRCh38'
-                                        )
+                    self._get_normalize_variation(
+                        gene_tokens, s, t, errors, hgvs_dup_del_mode,
+                        mane_data_found, start, end)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -137,22 +81,6 @@ class GenomicDuplication(Validator):
             mane_data_found, valid_alleles, results,
             classification, gene_tokens
         )
-
-    def _add_to_mane_data(self, ac, s, variation, mane_data, status):
-        """Add variation to mane data."""
-        _id = variation['_id']
-        key = '_'.join(status.lower().split())
-
-        if _id in mane_data[key].keys():
-            mane_data[key][_id]['count'] += 1
-        else:
-            mane_data[key][_id] = {
-                'classification_token': s,
-                'accession': ac,
-                'count': 1,
-                'variation': variation,
-                'label': ac  # TODO: Use VRS to translate
-            }
 
     def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
             -> Optional[Dict]:
@@ -242,6 +170,85 @@ class GenomicDuplication(Validator):
             'variation': variation
         }
 
+    def _add_to_mane_data(self, ac, s, variation, mane_data, status):
+        """Add variation to mane data."""
+        _id = variation['_id']
+        key = '_'.join(status.lower().split())
+
+        if _id in mane_data[key].keys():
+            mane_data[key][_id]['count'] += 1
+        else:
+            mane_data[key][_id] = {
+                'classification_token': s,
+                'accession': ac,
+                'count': 1,
+                'variation': variation,
+                'label': ac  # TODO: Use VRS to translate
+            }
+
+    def _get_normalize_variation(self, gene_tokens, s, t, errors,
+                                 hgvs_dup_del_mode, mane_data_found, start,
+                                 end):
+        """Get variation that will be returned in normalize endpoint."""
+        if not gene_tokens:
+            if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
+                    and s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
+
+                start_grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos1_dup, s.start_pos2_dup
+                )['pos']
+                end_grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.end_pos1_dup, s.end_pos2_dup
+                )['pos']
+
+                for pos in [start_grch38[0], start_grch38[1],
+                            end_grch38[0], end_grch38[1]]:
+                    self._check_index(t, pos, errors)
+
+                if not errors:
+                    ival = self._get_ival_certain_range(
+                        start_grch38[0], start_grch38[1],
+                        end_grch38[0], end_grch38[1]
+                    )
+                    allele = self.to_vrs_allele_ranges(
+                        s, t, s.reference_sequence, s.alt_type,
+                        errors, ival
+                    )
+                    mane_variation = self._interpret_variation(
+                        t, s.alt_type, allele, errors,
+                        hgvs_dup_del_mode)
+                    if mane_variation:
+                        grch38 = self._grch38_dict(t, None)
+                        self.add_mane_data(
+                            grch38, mane_data_found, s.reference_sequence,  # noqa: E501
+                            s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
+                        )
+            else:
+                # If no gene tokens, get GRCh38
+                grch38 = self.mane_transcript.g_to_grch38(
+                    t, start, end)
+
+                if grch38:
+                    for pos in [grch38['pos'][0], grch38['pos'][1]]:  # noqa: E501
+                        self._check_index(grch38['ac'], pos, errors)
+                    if not errors:
+                        allele = self.to_vrs_allele(
+                            grch38['ac'], grch38['pos'][0],
+                            grch38['pos'][1], s.reference_sequence,
+                            s.alt_type, errors
+                        )
+                        grch38_variation = \
+                            self._interpret_variation(
+                                grch38['ac'], s.alt_type, allele,
+                                errors, hgvs_dup_del_mode
+                            )
+
+                        if grch38_variation:
+                            self._add_to_mane_data(
+                                grch38['ac'], s, grch38_variation,
+                                mane_data_found, 'GRCh38'
+                            )
+
     def _grch38_dict(self, ac, pos):
         """Create dict for normalized concepts"""
         return dict(
@@ -280,7 +287,7 @@ class GenomicDuplication(Validator):
         return variation
 
     def _check_index(self, ac, pos, errors):
-        """Check that index aactually exists"""
+        """Check that index actually exists"""
         seq = self.seqrepo_access.get_sequence(ac, pos)
         if not seq:
             errors.append(f"Pos {pos} not found on {ac}")
