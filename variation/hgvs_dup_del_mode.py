@@ -53,7 +53,8 @@ class HGVSDupDelMode:
         if 'uncertain' in alt_type:
             variation = self.cnv_mode(ac, del_or_dup,
                                       location, chromosome=chromosome)
-        elif pos and (pos[1] - pos[0] > 100):
+        elif pos and (pos[1] - pos[0] > 100) and 'range' not in alt_type:
+            # TODO: Check if ok to keep second condition
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
             variation = self.literal_seq_expr_mode(allele)

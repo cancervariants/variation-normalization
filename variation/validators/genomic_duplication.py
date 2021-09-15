@@ -101,10 +101,8 @@ class GenomicDuplication(Validator):
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
                 pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            # TODO: Check if ranges should be CNVs or Alleles
             if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
                 # (#_#)_(#_#)
-                uncertain = True
                 start = s.start_pos1_dup
                 end = s.end_pos2_dup
 
@@ -113,7 +111,6 @@ class GenomicDuplication(Validator):
                     s.end_pos1_dup, s.end_pos2_dup
                 )
             else:
-                uncertain = False
                 if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                     start = s.start_pos2_dup
                     end = s.end_pos1_dup
@@ -155,11 +152,11 @@ class GenomicDuplication(Validator):
                 errors, ival
             )
             if start is not None and end is not None:
-                pos = start, end
+                pos = (start, end)
             else:
                 pos = None
             variation = self._interpret_variation(
-                t, s.alt_type, allele, uncertain, errors,
+                t, s.alt_type, allele, errors,
                 hgvs_dup_del_mode, pos=pos)
         else:
             errors.append(f"Token type not supported: {s.token_type}")
@@ -191,38 +188,94 @@ class GenomicDuplication(Validator):
                                  end):
         """Get variation that will be returned in normalize endpoint."""
         if not gene_tokens:
-            if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
-                    and s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
+            if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
+                if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
+                    start_grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos1_dup, s.start_pos2_dup
+                    )['pos']
+                    end_grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.end_pos1_dup, s.end_pos2_dup
+                    )['pos']
 
-                start_grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos1_dup, s.start_pos2_dup
-                )['pos']
-                end_grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.end_pos1_dup, s.end_pos2_dup
-                )['pos']
+                    for pos in [start_grch38[0], start_grch38[1],
+                                end_grch38[0], end_grch38[1]]:
+                        self._check_index(t, pos, errors)
 
-                for pos in [start_grch38[0], start_grch38[1],
-                            end_grch38[0], end_grch38[1]]:
-                    self._check_index(t, pos, errors)
-
-                if not errors:
-                    ival = self._get_ival_certain_range(
-                        start_grch38[0], start_grch38[1],
-                        end_grch38[0], end_grch38[1]
-                    )
-                    allele = self.to_vrs_allele_ranges(
-                        s, t, s.reference_sequence, s.alt_type,
-                        errors, ival
-                    )
-                    mane_variation = self._interpret_variation(
-                        t, s.alt_type, allele, errors,
-                        hgvs_dup_del_mode)
-                    if mane_variation:
-                        grch38 = self._grch38_dict(t, None)
-                        self.add_mane_data(
-                            grch38, mane_data_found, s.reference_sequence,  # noqa: E501
-                            s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
+                    if not errors:
+                        ival = self._get_ival_certain_range(
+                            start_grch38[0], start_grch38[1],
+                            end_grch38[0], end_grch38[1]
                         )
+                        allele = self.to_vrs_allele_ranges(
+                            s, t, s.reference_sequence, s.alt_type,
+                            errors, ival
+                        )
+                        mane_variation = self._interpret_variation(
+                            t, s.alt_type, allele, errors,
+                            hgvs_dup_del_mode)
+                        if mane_variation:
+                            grch38 = self._grch38_dict(t, None)
+                            self.add_mane_data(
+                                grch38, mane_data_found, s.reference_sequence,  # noqa: E501
+                                s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
+                            )
+                else:
+                    start, end = None, None
+                    if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
+                        grch38 = self.mane_transcript.g_to_grch38(
+                            t, s.start_pos2_dup, s.end_pos1_dup)
+                        if grch38:
+                            start, end = grch38['pos']
+                            ival = models.SequenceInterval(
+                                start=self._get_start_indef_range(start),
+                                end=self._get_end_indef_range(end)
+                            )
+                    elif s.start_pos1_dup == '?' and \
+                            s.start_pos2_dup != '?' and \
+                            s.end_pos1_dup != '?' and \
+                            s.end_pos2_dup is None:
+                        # format: (?_#)_#
+                        grch38 = self.mane_transcript.g_to_grch38(
+                            t, s.start_pos2_dup, s.end_pos1_dup)
+                        start, end = grch38['pos']
+
+                        ival = models.SequenceInterval(
+                            start=self._get_start_indef_range(start),
+                            end=models.Number(value=end)
+                        )
+                    elif s.start_pos1_dup != '?' and \
+                            s.start_pos2_dup is None and \
+                            s.end_pos1_dup != '?' and \
+                            s.end_pos2_dup == '?':
+                        # format: #_(#_?)
+                        grch38 = self.mane_transcript.g_to_grch38(
+                            t, s.start_pos1_dup, s.end_pos1_dup)
+                        start, end = grch38['pos']
+
+                        ival = models.SequenceInterval(
+                            start=models.Number(value=start),
+                            end=self._get_end_indef_range(end)
+                        )
+                    else:
+                        errors.append("Not yet supported")
+
+                    if not errors:
+                        allele = self.to_vrs_allele_ranges(
+                            s, t, s.reference_sequence,
+                            s.alt_type, errors, ival)
+                        if start is not None and end is not None:
+                            pos = (start, end)
+                        else:
+                            pos = None
+                        grch38_variation = self._interpret_variation(
+                            t, s.alt_type, allele, errors, hgvs_dup_del_mode
+                        )
+
+                        if grch38_variation:
+                            self._add_to_mane_data(
+                                grch38['ac'], s, grch38_variation,
+                                mane_data_found, 'GRCh38'
+                            )
             else:
                 # If no gene tokens, get GRCh38
                 grch38 = self.mane_transcript.g_to_grch38(
