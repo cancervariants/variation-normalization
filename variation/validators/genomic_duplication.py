@@ -64,7 +64,6 @@ class GenomicDuplication(Validator):
                 start = result['start']
                 end = result['end']
 
-                mane = None
                 if not errors:
                     if not gene_tokens:
                         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE\
@@ -90,8 +89,8 @@ class GenomicDuplication(Validator):
                                     s, t, s.reference_sequence, s.alt_type,
                                     errors, ival
                                 )
-                                mane_variation = self._allele_to_cnv(
-                                    t, s.alt_type, allele, False, errors,
+                                mane_variation = self._interpret_variation(
+                                    t, s.alt_type, allele, errors,
                                     hgvs_dup_del_mode)
                                 if mane_variation:
                                     grch38 = self._grch38_dict(t, None)
@@ -109,17 +108,23 @@ class GenomicDuplication(Validator):
                                     self._check_index(grch38['ac'], pos,
                                                       errors)
                                 if not errors:
-                                    mane = self._grch38_dict(grch38['ac'],
-                                                             grch38['pos'])
-                                else:
-                                    mane = None
-                            else:
-                                mane = None
+                                    allele = self.to_vrs_allele(
+                                        grch38['ac'], grch38['pos'][0],
+                                        grch38['pos'][1], s.reference_sequence,
+                                        s.alt_type, errors
+                                    )
+                                    grch38_variation = \
+                                        self._interpret_variation(
+                                            grch38['ac'], s.alt_type, allele,
+                                            errors, hgvs_dup_del_mode
+                                        )
 
-                        self.add_mane_data(
-                            mane, mane_data_found, s.reference_sequence,
-                            s.alt_type, s, gene_tokens
-                        )
+                                    if grch38_variation:
+                                        self._add_to_mane_data(
+                                            grch38['ac'], s, grch38_variation,
+                                            mane_data_found, 'GRCh38'
+                                        )
+
                 self.add_validation_result(
                     variation, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
@@ -132,6 +137,22 @@ class GenomicDuplication(Validator):
             mane_data_found, valid_alleles, results,
             classification, gene_tokens
         )
+
+    def _add_to_mane_data(self, ac, s, variation, mane_data, status):
+        """Add variation to mane data."""
+        _id = variation['_id']
+        key = '_'.join(status.lower().split())
+
+        if _id in mane_data[key].keys():
+            mane_data[key][_id]['count'] += 1
+        else:
+            mane_data[key][_id] = {
+                'classification_token': s,
+                'accession': ac,
+                'count': 1,
+                'variation': variation,
+                'label': ac  # TODO: Use VRS to translate
+            }
 
     def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
             -> Optional[Dict]:
@@ -148,8 +169,8 @@ class GenomicDuplication(Validator):
             allele = self.to_vrs_allele(
                 t, start, end, s.reference_sequence,
                 s.alt_type, errors)
-            variation = self._allele_to_cnv(
-                t, s.alt_type, allele, False, errors, hgvs_dup_del_mode,
+            variation = self._interpret_variation(
+                t, s.alt_type, allele, errors, hgvs_dup_del_mode,
                 pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # TODO: Check if ranges should be CNVs or Alleles
@@ -209,7 +230,7 @@ class GenomicDuplication(Validator):
                 pos = start, end
             else:
                 pos = None
-            variation = self._allele_to_cnv(
+            variation = self._interpret_variation(
                 t, s.alt_type, allele, uncertain, errors,
                 hgvs_dup_del_mode, pos=pos)
         else:
@@ -232,18 +253,30 @@ class GenomicDuplication(Validator):
             status='GRCh38'
         )
 
-    def _allele_to_cnv(self, ac, alt_type, allele, uncertain, errors,
-                       hgvs_dup_del_mode, pos=None):
-        """Convert allele to cnv"""
+    def _interpret_variation(self, ac, alt_type, allele, errors,
+                             hgvs_dup_del_mode, pos=None):
+        """Interpret variation using HGVSDupDelMode"""
         variation = None
         if allele is None:
             errors.append("Unable to get Allele")
         else:
-            variation = self.hgvs_dup_del_mode.default_mode(
-                ac, alt_type, pos, 'dup', allele['location'], allele=allele
-            )
+            if hgvs_dup_del_mode == 'default':
+                variation = self.hgvs_dup_del_mode.default_mode(
+                    ac, alt_type, pos, 'dup', allele['location'], allele=allele
+                )
+            elif hgvs_dup_del_mode == 'cnv':
+                variation = self.hgvs_dup_del_mode.cnv_mode(
+                    ac, 'dup', allele['location']
+                )
+            elif hgvs_dup_del_mode == 'repeated_seq_expr':
+                variation = self.hgvs_dup_del_mode.repeated_seq_expr_mode(
+                    alt_type, allele['location']
+                )
+            elif hgvs_dup_del_mode == 'literal_seq_expr':
+                variation = \
+                    self.hgvs_dup_del_mode.literal_seq_expr_mode(allele)
             if not variation:
-                errors.append("Unable to get CNV")
+                errors.append("Unable to get VRS Variation")
         return variation
 
     def _check_index(self, ac, pos, errors):
