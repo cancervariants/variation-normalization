@@ -101,51 +101,7 @@ class GenomicDuplication(Validator):
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
                 pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
-                # (#_#)_(#_#)
-                start = s.start_pos1_dup
-                end = s.end_pos2_dup
-
-                ival = self._get_ival_certain_range(
-                    s.start_pos1_dup, s.start_pos2_dup,
-                    s.end_pos1_dup, s.end_pos2_dup
-                )
-            else:
-                if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
-                    start = s.start_pos2_dup
-                    end = s.end_pos1_dup
-
-                    ival = models.SequenceInterval(
-                        start=self._get_start_indef_range(start),
-                        end=self._get_end_indef_range(end)
-                    )
-                elif s.start_pos1_dup == '?' and \
-                        s.start_pos2_dup != '?' and \
-                        s.end_pos1_dup != '?' and \
-                        s.end_pos2_dup is None:
-                    # format: (?_#)_#
-                    start = s.start_pos2_dup
-                    end = s.end_pos1_dup
-
-                    ival = models.SequenceInterval(
-                        start=self._get_start_indef_range(start),  # noqa: E501
-                        end=models.Number(value=end)
-                    )
-                elif s.start_pos1_dup != '?' and \
-                        s.start_pos2_dup is None and \
-                        s.end_pos1_dup != '?' and \
-                        s.end_pos2_dup == '?':
-                    # format: #_(#_?)
-                    start = s.end_pos1_dup
-                    end = s.end_pos1_dup
-
-                    ival = models.SequenceInterval(
-                        start=models.Number(value=start),
-                        end=self._get_end_indef_range(end)
-                    )
-                else:
-                    errors.append("Not yet supported")
-                    allele = None
+            ival, _ = self._get_ival(t, s, errors)
 
             allele = self.to_vrs_allele_ranges(
                 s, t, s.reference_sequence, s.alt_type,
@@ -220,44 +176,7 @@ class GenomicDuplication(Validator):
                                 s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
                             )
                 else:
-                    start, end = None, None
-                    if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
-                        grch38 = self.mane_transcript.g_to_grch38(
-                            t, s.start_pos2_dup, s.end_pos1_dup)
-                        if grch38:
-                            start, end = grch38['pos']
-                            ival = models.SequenceInterval(
-                                start=self._get_start_indef_range(start),
-                                end=self._get_end_indef_range(end)
-                            )
-                    elif s.start_pos1_dup == '?' and \
-                            s.start_pos2_dup != '?' and \
-                            s.end_pos1_dup != '?' and \
-                            s.end_pos2_dup is None:
-                        # format: (?_#)_#
-                        grch38 = self.mane_transcript.g_to_grch38(
-                            t, s.start_pos2_dup, s.end_pos1_dup)
-                        start, end = grch38['pos']
-
-                        ival = models.SequenceInterval(
-                            start=self._get_start_indef_range(start),
-                            end=models.Number(value=end)
-                        )
-                    elif s.start_pos1_dup != '?' and \
-                            s.start_pos2_dup is None and \
-                            s.end_pos1_dup != '?' and \
-                            s.end_pos2_dup == '?':
-                        # format: #_(#_?)
-                        grch38 = self.mane_transcript.g_to_grch38(
-                            t, s.start_pos1_dup, s.end_pos1_dup)
-                        start, end = grch38['pos']
-
-                        ival = models.SequenceInterval(
-                            start=models.Number(value=start),
-                            end=self._get_end_indef_range(end)
-                        )
-                    else:
-                        errors.append("Not yet supported")
+                    ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
 
                     if not errors:
                         allele = self.to_vrs_allele_ranges(
@@ -345,6 +264,91 @@ class GenomicDuplication(Validator):
         if not seq:
             errors.append(f"Pos {pos} not found on {ac}")
         return seq
+
+    def _get_ival(self, t, s, errors, is_norm=False):
+        """Get ival for ranges."""
+        ival = None
+        start = None
+        end = None
+        grch38 = None
+        if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+            # (#_#)_(#_#)
+            if is_norm:
+                grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos1_dup, s.end_pos2_dup
+                )
+                if grch38:
+                    start, end = grch38['pos']
+            else:
+                start = s.start_pos1_dup
+                end = s.end_pos2_dup
+
+            if start and end:
+                ival = self._get_ival_certain_range(
+                    s.start_pos1_dup, s.start_pos2_dup,
+                    s.end_pos1_dup, s.end_pos2_dup
+                )
+        else:
+            if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
+                # format: (?_#)_(#_?)
+                if is_norm:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos2_dup, s.end_pos1_dup
+                    )
+                    if grch38:
+                        start, end = grch38['pos']
+                else:
+                    start = s.start_pos2_dup
+                    end = s.end_pos1_dup
+
+                if start and end:
+                    ival = models.SequenceInterval(
+                        start=self._get_start_indef_range(start),
+                        end=self._get_end_indef_range(end)
+                    )
+            elif s.start_pos1_dup == '?' and \
+                    s.start_pos2_dup != '?' and \
+                    s.end_pos1_dup != '?' and \
+                    s.end_pos2_dup is None:
+                # format: (?_#)_#
+                if is_norm:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos2_dup, s.end_pos1_dup
+                    )
+                    if grch38:
+                        start, end = grch38['pos']
+                else:
+                    start = s.start_pos2_dup
+                    end = s.end_pos1_dup
+
+                if start and end:
+                    ival = models.SequenceInterval(
+                        start=self._get_start_indef_range(start),  # noqa: E501
+                        end=models.Number(value=end)
+                    )
+            elif s.start_pos1_dup != '?' and \
+                    s.start_pos2_dup is None and \
+                    s.end_pos1_dup != '?' and \
+                    s.end_pos2_dup == '?':
+                # format: #_(#_?)
+                if is_norm:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos2_dup, s.end_pos1_dup
+                    )
+                    if grch38:
+                        start, end = grch38['pos']
+                else:
+                    start = s.end_pos1_dup
+                    end = s.end_pos1_dup
+
+                if start and end:
+                    ival = models.SequenceInterval(
+                        start=models.Number(value=start),
+                        end=self._get_end_indef_range(end)
+                    )
+            else:
+                errors.append("Not yet supported")
+        return ival, grch38
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
