@@ -27,7 +27,7 @@ class GeneSymbol(Tokenizer):
 
         norm_resp = self.gene_normalizer.normalize(upper_input)
 
-        norm_match_type = norm_resp['match_type']
+        norm_match_type = norm_resp.match_type
         if norm_match_type == MatchType.CONCEPT_ID:
             match_type = TokenMatchType.ID
         elif norm_match_type == MatchType.SYMBOL:
