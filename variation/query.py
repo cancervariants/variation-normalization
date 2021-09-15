@@ -45,7 +45,7 @@ class QueryHandler:
         )
         self.uta = UTA(db_url=uta_db_url, db_pwd=uta_db_pwd)
         self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
-        self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access, self.dp)
+        self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         self.to_vrs_handler = self._init_to_vrs()
         self.normalize_handler = Normalize(
             self.seqrepo_access, self.uta, self.gene_normalizer
