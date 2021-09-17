@@ -5,7 +5,7 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.token_response_schema import \
     TokenType, DuplicationAltType,\
     GenomicDuplicationToken, GenomicDuplicationRangeToken  # noqa: F401
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
 from ga4gh.vrs import models
@@ -84,7 +84,15 @@ class GenomicDuplication(Validator):
 
     def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
             -> Optional[Dict]:
-        """Get variation data."""
+        """Get variation data.
+
+        :param Token s: Classification token
+        :param str t: Accession
+        :param list errors: List of errors
+        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
+            HGVS duplications and deletions
+        :return: Dictionary containing start/end position changes and variation
+        """
         variation, start, end = None, None, None
         if s.token_type == TokenType.GENOMIC_DUPLICATION:
             start = s.start_pos1_dup
@@ -123,8 +131,15 @@ class GenomicDuplication(Validator):
             'variation': variation
         }
 
-    def _add_to_mane_data(self, ac, s, variation, mane_data, status):
-        """Add variation to mane data."""
+    def _add_to_mane_data(self, ac, s, variation, mane_data, status) -> None:
+        """Add variation to mane data for normalize endpoint.
+
+        :param str ac: Accession
+        :param Token s: Classification token
+        :param dict variation: VRS Variation object
+        :param dict mane_data: MANE Transcript data found for given query
+        :param str status: Status for variation (GRCh38, MANE Select, etc)
+        """
         _id = variation['_id']
         key = '_'.join(status.lower().split())
 
@@ -141,8 +156,18 @@ class GenomicDuplication(Validator):
 
     def _get_normalize_variation(self, gene_tokens, s, t, errors,
                                  hgvs_dup_del_mode, mane_data_found, start,
-                                 end):
-        """Get variation that will be returned in normalize endpoint."""
+                                 end) -> None:
+        """Get variation that will be returned in normalize endpoint.
+
+        :param list gene_tokens: List of gene tokens
+        :param Token s: Classification token
+        :param str t: Accession
+        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
+            HGVS duplications and deletions
+        :param dict mane_data_found: MANE Transcript data found for given query
+        :param int start: Start pos change
+        :param int end: End pos change
+        """
         if not gene_tokens:
             if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
                 if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
@@ -221,8 +246,13 @@ class GenomicDuplication(Validator):
                                 mane_data_found, 'GRCh38'
                             )
 
-    def _grch38_dict(self, ac, pos):
-        """Create dict for normalized concepts"""
+    def _grch38_dict(self, ac, pos) -> Dict:
+        """Create dict for normalized concepts
+
+        :param str ac: Acession
+        :param tuple pos: Position changes
+        :return: GRCh38 data
+        """
         return dict(
             gene=None,
             refseq=ac if ac.startswith('NC') else None,
@@ -233,8 +263,18 @@ class GenomicDuplication(Validator):
         )
 
     def _interpret_variation(self, ac, alt_type, allele, errors,
-                             hgvs_dup_del_mode, pos=None):
-        """Interpret variation using HGVSDupDelMode"""
+                             hgvs_dup_del_mode, pos=None) -> Dict:
+        """Interpret variation using HGVSDupDelMode
+
+        :param str ac: Accession
+        :param str alt_type: Alteration type
+        :param dict allele: VRS Allele object
+        :param list errors: List of errors
+        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
+            HGVS duplications and deletions
+        :param tuple pos: Position changes
+        :return: VRS Variation object
+        """
         variation = None
         if allele is None:
             errors.append("Unable to get Allele")
@@ -258,15 +298,31 @@ class GenomicDuplication(Validator):
                 errors.append("Unable to get VRS Variation")
         return variation
 
-    def _check_index(self, ac, pos, errors):
-        """Check that index actually exists"""
+    def _check_index(self, ac, pos, errors) -> Optional[str]:
+        """Check that index actually exists
+
+        :param str ac: Accession
+        :param tuple pos: Position changes
+        :param list errors: List of errors
+        :return: Sequence
+        """
         seq = self.seqrepo_access.get_sequence(ac, pos)
         if not seq:
             errors.append(f"Pos {pos} not found on {ac}")
         return seq
 
-    def _get_ival(self, t, s, errors, is_norm=False):
-        """Get ival for ranges."""
+    def _get_ival(self, t, s, errors, is_norm=False)\
+            -> Optional[Tuple[models.SequenceInterval, Dict]]:
+        """Get ival for variations with ranges.
+
+        :param str t: Accession
+        :param Token t: Classification token
+        :param list errors: List of errors
+        :param bool is_norm: `True` if normalize endpoint is being used.
+            `False` otherwise.
+        :return: Sequence Interval and GRCh38 data if normalize endpoint
+            is being used
+        """
         ival = None
         start = None
         end = None
