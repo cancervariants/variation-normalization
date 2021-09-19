@@ -9,6 +9,14 @@ from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
 from ga4gh.vrs import models
+from variation.schemas.normalize_response_schema \
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
+from variation.tokenizers import GeneSymbol
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 
 
 logger = logging.getLogger('variation')
@@ -17,6 +25,27 @@ logger.setLevel(logging.DEBUG)
 
 class GenomicDuplication(Validator):
     """The Genomic Duplication Validator class."""
+
+    def __init__(self, seq_repo_access: SeqRepoAccess,
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol,
+                 mane_transcript: MANETranscript,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator):
+        """Initialize the Genomic Duplication validator.
+
+        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
+        :param TranscriptMappings transcript_mappings: Access to transcript
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
+        """
+        super().__init__(
+            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
+            uta, dp, tlr
+        )
+        self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
@@ -162,8 +191,8 @@ class GenomicDuplication(Validator):
         :param list gene_tokens: List of gene tokens
         :param Token s: Classification token
         :param str t: Accession
-        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
-            HGVS duplications and deletions
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
+            interpreting HGVS duplications and deletions
         :param dict mane_data_found: MANE Transcript data found for given query
         :param int start: Start pos change
         :param int end: End pos change
@@ -270,8 +299,8 @@ class GenomicDuplication(Validator):
         :param str alt_type: Alteration type
         :param dict allele: VRS Allele object
         :param list errors: List of errors
-        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
-            HGVS duplications and deletions
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
+            interpreting HGVS duplications and deletions
         :param tuple pos: Position changes
         :return: VRS Variation object
         """
@@ -279,19 +308,19 @@ class GenomicDuplication(Validator):
         if allele is None:
             errors.append("Unable to get Allele")
         else:
-            if hgvs_dup_del_mode == 'default':
+            if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
                 variation = self.hgvs_dup_del_mode.default_mode(
                     ac, alt_type, pos, 'dup', allele['location'], allele=allele
                 )
-            elif hgvs_dup_del_mode == 'cnv':
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
                 variation = self.hgvs_dup_del_mode.cnv_mode(
                     ac, 'dup', allele['location']
                 )
-            elif hgvs_dup_del_mode == 'repeated_seq_expr':
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
                 variation = self.hgvs_dup_del_mode.repeated_seq_expr_mode(
                     alt_type, allele['location']
                 )
-            elif hgvs_dup_del_mode == 'literal_seq_expr':
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                 variation = \
                     self.hgvs_dup_del_mode.literal_seq_expr_mode(allele)
             if not variation:
@@ -389,7 +418,7 @@ class GenomicDuplication(Validator):
                 # format: #_(#_?)
                 if is_norm:
                     grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos2_dup, s.end_pos1_dup
+                        t, s.start_pos1_dup, s.end_pos1_dup
                     )
                     if grch38:
                         start, end = grch38['pos']
