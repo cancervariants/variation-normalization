@@ -7,7 +7,14 @@ from variation.schemas.token_response_schema import \
 from typing import List, Optional
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
-from variation.schemas.normalize_response_schema import HGVSDupDelMode
+from variation.schemas.normalize_response_schema \
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
+from variation.tokenizers import GeneSymbol
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
 
 logger = logging.getLogger('variation')
@@ -16,6 +23,27 @@ logger.setLevel(logging.DEBUG)
 
 class GenomicUncertainDeletion(Validator):
     """The Genomic UncertainDeletion Validator class."""
+
+    def __init__(self, seq_repo_access: SeqRepoAccess,
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol,
+                 mane_transcript: MANETranscript,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator):
+        """Initialize the Genomic Uncertain Deletion validator.
+
+        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
+        :param TranscriptMappings transcript_mappings: Access to transcript
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
+        """
+        super().__init__(
+            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
+            uta, dp, tlr
+        )
+        self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
     def get_transcripts(self, gene_tokens, classification, errors)\
             -> Optional[List[str]]:
@@ -72,13 +100,13 @@ class GenomicUncertainDeletion(Validator):
                     s, t, s.reference_sequence, s.alt_type, errors,
                     ival
                 )
-                if hgvs_dup_del_mode == HGVSDupDelMode.DEFAULT or \
+                if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT or \
                         hgvs_dup_del_mode == HGVSDupDelMode.CNV:
                     variation = self.to_vrs_cnv(t, allele, 'del',
                                                 uncertain=True)
                     if not variation:
                         errors.append(f"Unable to get CNV for {t}")
-                elif hgvs_dup_del_mode == HGVSDupDelMode.LITERAL_SEQ_EXPR:
+                elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                     variation = allele
                     if not variation:
                         errors.append(f"Unable to get allele for {t}")
