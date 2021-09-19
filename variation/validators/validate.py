@@ -52,7 +52,7 @@ class Validate:
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr, hgvs_dup_del_mode
+            mane_transcript, uta, dp, tlr
         ]
         amino_acid_params = params[:]
         amino_acid_params.append(amino_acid_cache)

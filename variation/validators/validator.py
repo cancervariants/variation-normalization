@@ -12,7 +12,6 @@ from variation.schemas.validation_response_schema import ValidationResult, \
 from variation.tokenizers import GeneSymbol
 from variation.data_sources import SeqRepoAccess, TranscriptMappings
 from variation.mane_transcript import MANETranscript
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import hgvs.parser
@@ -36,8 +35,7 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 hgvs_dup_del_mode: HGVSDupDelMode) -> None:
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -57,7 +55,6 @@ class Validator(ABC):
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
-        self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     @abstractmethod
     def is_token_instance(self, t) -> bool:

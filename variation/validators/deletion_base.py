@@ -1,6 +1,13 @@
 """The module for Deletion Validation."""
 from typing import Optional
 from variation.validators.validator import Validator
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
+from variation.tokenizers import GeneSymbol
+from variation.mane_transcript import MANETranscript
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+
 import logging
 
 logger = logging.getLogger('variation')
@@ -9,6 +16,27 @@ logger.setLevel(logging.DEBUG)
 
 class DeletionBase(Validator):
     """The Deletion Validator Base class."""
+
+    def __init__(self, seq_repo_access: SeqRepoAccess,
+                 transcript_mappings: TranscriptMappings,
+                 gene_symbol: GeneSymbol,
+                 mane_transcript: MANETranscript,
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator):
+        """Initialize the Deletion Base validator.
+
+        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
+        :param TranscriptMappings transcript_mappings: Access to transcript
+            mappings
+        :param GeneSymbol gene_symbol: Gene symbol tokenizer
+        :param MANETranscript mane_transcript: Access MANE Transcript
+            information
+        :param UTA uta: Access to UTA queries
+        """
+        super().__init__(
+            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
+            uta, dp, tlr
+        )
+        self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
     def get_reference_sequence(self, ac, start, end, errors, cds_start=None)\
             -> Optional[str]:
