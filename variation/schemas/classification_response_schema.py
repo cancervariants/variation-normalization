@@ -36,6 +36,7 @@ class ClassificationType(IntEnum):
     GENOMIC_INSERTION = 26
     GENOMIC_UNCERTAIN_DELETION = 27
     GENOMIC_DUPLICATION = 28
+    GENOMIC_DELETION_RANGE = 29
 
 
 class ConfidenceRating(IntEnum):
