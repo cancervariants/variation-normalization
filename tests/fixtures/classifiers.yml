@@ -305,3 +305,12 @@ genomic_duplication:
   should_not_match:
     - query: foo (?_30417576)_(31394018_?)dup
     - query: Accession:g.49531262dup
+
+genomic_deletion_range:
+  should_match:
+    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del
+      confidence: ConfidenceRating.EXACT
+    - query: BRAF g.(31060227_31100351)_(33274278_33417151)del
+      confidence: ConfidenceRating.EXACT
+  should_not_match:
+    - query: GENE (?_31120496)_(33339477_?)del

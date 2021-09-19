@@ -1,0 +1,59 @@
+"""A module for tokenizing genomic deletion ranges."""
+from typing import Dict
+from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import TokenMatchType
+from abc import abstractmethod
+
+
+class DeletionRangeBase(Tokenizer):
+    """The tokenizer class for genomic deletion range."""
+
+    def __init__(self) -> None:
+        """Initialize the Genomic Deletion Range Class."""
+        self.parts = None
+
+    def match(self, input_string: str):
+        """Return tokens that match the input string."""
+        if input_string is None:
+            return None
+
+        self.parts = {
+            'token': input_string,
+            'input_string': input_string,
+            'match_type': TokenMatchType.UNSPECIFIED.value,
+            'start_pos1_del': None,
+            'start_pos2_del': None,
+            'end_pos1_del': None,
+            'end_pos2_del': None,
+            'reference_sequence': None
+        }
+
+        input_string = str(input_string).lower()
+        if not input_string.endswith('del') and input_string.count('_') != 3:
+            return None
+
+        if input_string.startswith('g.'):
+            self.parts['reference_sequence'] = 'g'
+        elif input_string.startswith('c.'):
+            self.parts['reference_sequence'] = 'c'
+        elif input_string.startswith('p.'):
+            self.parts['reference_sequence'] = 'p'
+        else:
+            return None
+
+        parts = input_string.split('_')
+        self._get_parts(parts)
+        return self.return_token(self.parts)
+
+    @abstractmethod
+    def _get_parts(self, parts):
+        """Set parts for genomic deletion range
+
+        :param list parts: Parts of input string
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def return_token(self, params: Dict[str, str]):
+        """Return token instance."""
+        raise NotImplementedError

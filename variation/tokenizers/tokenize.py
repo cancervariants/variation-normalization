@@ -36,6 +36,7 @@ from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
+from .genomic_deletion_range import GenomicDeletionRange
 from variation.schemas.token_response_schema import Token, TokenMatchType
 from .caches import NucleotideCache
 
@@ -79,7 +80,8 @@ class Tokenize:
             CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
             GenomicInsertion(amino_acid_cache, nucleotide_cache),
             GenomicUncertainDeletion(),
-            GenomicDuplication()
+            GenomicDuplication(),
+            GenomicDeletionRange()
             # ProteinTermination(amino_acid_cache),
             # UnderExpression(),
             # WildType(),

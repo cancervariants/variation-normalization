@@ -16,7 +16,7 @@ from variation.classifiers import ComplexClassifier, ExpressionClassifier, \
     GenomicDeletionClassifier, AminoAcidInsertionClassifier, \
     CodingDNAInsertionClassifier, GenomicInsertionClassifier, \
     GenomicUncertainDeletionClassifier, GenomicDuplicationClassifier, \
-    Classifier
+    GenomicDeletionRangeClassifier, Classifier
 
 
 class Classify:
@@ -50,7 +50,8 @@ class Classify:
             CodingDNAInsertionClassifier(),
             GenomicInsertionClassifier(),
             GenomicUncertainDeletionClassifier(),
-            GenomicDuplicationClassifier()
+            GenomicDuplicationClassifier(),
+            GenomicDeletionRangeClassifier()
         ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
