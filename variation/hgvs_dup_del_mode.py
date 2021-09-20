@@ -50,10 +50,10 @@ class HGVSDupDelMode:
         :param dict allele: VRS Allele object represented as a dict
         :return: VRS Variation object represented as a dict
         """
-        if 'uncertain' in alt_type:
+        if 'uncertain' in alt_type or 'range' in alt_type:
             variation = self.cnv_mode(ac, del_or_dup,
                                       location, chromosome=chromosome)
-        elif pos and (pos[1] - pos[0] > 100) and 'range' not in alt_type:
+        elif pos and (pos[1] - pos[0] > 100):
             # TODO: Check if ok to keep second condition
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
