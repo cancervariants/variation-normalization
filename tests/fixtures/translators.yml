@@ -1756,3 +1756,138 @@ genomic_uncertain_deletion:
           "type": "CopyNumber"
         }
       ]
+
+genomic_duplication:
+  tests:
+    - query: NC_000003.12:g.49531262dup
+      variations: [
+        {
+          "_id": "ga4gh:VA.GEhb3s5YP5xr5wqrVLT-1h9xryBdj9Ia",
+          "type": "Allele",
+          "location": {
+            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "interval": {
+              "type": "SimpleInterval",
+              "start": 49531260,
+              "end": 49531262,
+            },
+            "type": "SequenceLocation",
+          },
+          "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": "GGG"
+          }
+        }
+      ]
+    - query: NC_000016.10:g.2087938_2087948dup
+      variations: [
+        {
+          "_id": "ga4gh:VA.AFhoQKzjhj87w-Yx0Mfz1yRU31Wul9oi",
+          "type": "Allele",
+          "location": {
+            "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+            "interval": {
+              "type": "SimpleInterval",
+              "start": 2087937,
+              "end": 2087948,
+            },
+            "type": "SequenceLocation",
+          },
+          "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": "AAAGGTAGGGCAAAGGTAGGGC"
+          }
+        }
+      ]
+    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
+      variations: [
+        {
+          "_id": "ga4gh:VA.FVO5KRS7ak43abkl08E6u24xJO2mkdui",
+          "type": "Allele",
+          "location": {
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "min": 31060226,
+                "max": 31100350,
+                "type": "DefiniteRange"
+              },
+              "end": {
+                "min": 33274279,
+                "max": 33417152,
+                "type": "DefiniteRange"
+              },
+            },
+            "type": "SequenceLocation",
+          },
+          "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": ""
+          }
+        }
+      ]
+    - query: NC_000023.11:g.(?_154021812)_154092209dup
+      variations: [
+        {
+          "_id": "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-",
+          "type": "CopyNumber",
+          "subject": {
+            "location": {
+              "type": "SequenceLocation",
+              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+              "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                  "value": 154021811,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 154092209,
+                  "type": "Number"
+                }
+              }
+            },
+            "reverse_complement": false,
+            "type": "DerivedSequenceExpression"
+          },
+          "copies": {
+            "min": 2,
+            "max": 3,
+            "type": "DefiniteRange"
+          }
+        }
+      ]
+    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
+      variations: [
+        {
+          "_id": "ga4gh:VCN.3rvfUmiIb4hSxVQhXKOonuOY6Q3xTkKx",
+          "type": "CopyNumber",
+          "subject": {
+            "location": {
+              "type": "SequenceLocation",
+              "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
+              "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                  "value": 30417575,
+                  "comparator": "<=",
+                  "type": "IndefiniteRange"
+                },
+                "end": {
+                  "value": 31394018,
+                  "comparator": ">=",
+                  "type": "IndefiniteRange"
+                }
+              }
+            },
+          "reverse_complement": false,
+          "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+          "value": 3,
+          "type": "Number"
+        }
+      }
+    ]

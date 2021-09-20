@@ -59,7 +59,8 @@ class TranslatorBase:
                             del variation['location']['id']
                     elif variation['type'] == 'CopyNumber':
                         variation['subject'] = variation['subject']
-                        del variation['subject']['location']['id']
+                        if 'id' in variation['subject']['location'].keys():
+                            del variation['subject']['location']['id']
 
                     if variation not in found:
                         found.append(variation)
