@@ -57,7 +57,7 @@ class HGVSDupDelMode:
             # TODO: Check if ok to keep second condition
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
-            variation = self.literal_seq_expr_mode(allele)
+            variation = self.literal_seq_expr_mode(allele, alt_type)
         return variation
 
     def cnv_mode(self, ac, del_or_dup, location, chromosome=None)\
@@ -135,12 +135,16 @@ class HGVSDupDelMode:
         )
         return self._ga4gh_identify_variation(variation)
 
-    def literal_seq_expr_mode(self, allele) -> Optional[Dict]:
+    def literal_seq_expr_mode(self, allele, alt_type) -> Optional[Dict]:
         """Return a VRS Allele with a normalized LiteralSequenceExpression.
 
         :param dict allele: normalized VRS Allele object represented as a dict
+        :param str alt_type: Alteration type
         :return: VRS Allele object represented as a dict
         """
+        if 'range' in alt_type:
+            return None
+
         if allele:
             # TODO: I don't believe we'll have to do this once
             #  We are able to normalize LSE in vrs-python

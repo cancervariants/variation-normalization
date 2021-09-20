@@ -322,7 +322,8 @@ class GenomicDuplication(Validator):
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                 variation = \
-                    self.hgvs_dup_del_mode.literal_seq_expr_mode(allele)
+                    self.hgvs_dup_del_mode.literal_seq_expr_mode(allele,
+                                                                 alt_type)
             if not variation:
                 errors.append("Unable to get VRS Variation")
         return variation
