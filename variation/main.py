@@ -2,7 +2,6 @@
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
-from variation.schemas.normalize_response_schema import HGVSDupDelMode
 from .version import __version__
 from datetime import datetime
 import html
@@ -98,19 +97,11 @@ def normalize(q: str = Query(..., description=q_description),
         in VRS.
     :return: NormalizeService for variation
     """
-    hgvs_dup_del_mode_optins = \
-        [mode.value for mode in HGVSDupDelMode.__members__.values()]
-    hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
-    if hgvs_dup_del_mode in hgvs_dup_del_mode_optins:
-        normalize_resp = \
-            query_handler.normalize(html.unescape(q),
-                                    hgvs_dup_del_mode=hgvs_dup_del_mode)
-        warnings = query_handler.normalize_handler.warnings if \
-            query_handler.normalize_handler.warnings else None
-    else:
-        normalize_resp = None
-        warnings = [f"hgvs_dup_del_mode must be one of: "
-                    f"{hgvs_dup_del_mode_optins}"]
+    normalize_resp = \
+        query_handler.normalize(html.unescape(q),
+                                hgvs_dup_del_mode=hgvs_dup_del_mode)
+    warnings = query_handler.normalize_handler.warnings if \
+        query_handler.normalize_handler.warnings else None
 
     return NormalizeService(
         variation_query=q,
