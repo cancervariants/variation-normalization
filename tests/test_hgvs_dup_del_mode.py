@@ -12,10 +12,14 @@ def test_normalize():
 
         def __init__(self):
             self.query_handler = QueryHandler()
+            self.warnings = []
 
         def normalize(self, q, hgvs_dup_del_mode="default"):
-            return self.query_handler.normalize(
+            resp = self.query_handler.normalize(
                 q, hgvs_dup_del_mode=hgvs_dup_del_mode)
+            self.warnings = \
+                self.query_handler.normalize_handler.warnings
+            return resp
     return TestNormalize()
 
 
@@ -342,6 +346,134 @@ def genomic_dup4_rse_lse(genomic_dup4):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def genomic_dup5():
+    """Create test fixture containing params for genomic dup VD."""
+    params = {
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_154021812%29_154092209dup",  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001742",
+        "vrs_ref_allele_seq": None
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_dup5_default(genomic_dup5):
+    """Create a test fixture for genomic dup default and cnv."""
+    genomic_dup5["variation"] = {
+        "type": "CopyNumber",
+        "subject": {
+            "location": {
+                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {
+                        "value": 154021811,
+                        "comparator": "<=",
+                        "type": "IndefiniteRange"
+                    },
+                    "end": {
+                        "value": 154092209,
+                        "type": "Number"
+                    }
+                },
+                "type": "SequenceLocation",
+            },
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "DefiniteRange",
+            "min": 2,
+            "max": 3
+        }
+    }
+    genomic_dup5["variation_id"] = "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-"
+    return VariationDescriptor(**genomic_dup5)
+
+
+@pytest.fixture(scope='module')
+def genomic_dup5_rse_lse(genomic_dup5):
+    """Create test fixture for genomic dup rse and lse."""
+    params = {
+        "id": genomic_dup5["id"],
+        "type": genomic_dup5["type"],
+        "variation": {
+            "type": "Text",
+            "definition": "NC_000023.11:g.(?_154021812)_154092209dup"
+        }
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_dup6():
+    """Create test fixture containing params for genomic dup VD."""
+    params = {
+        "id": "normalize.variation:NC_000023.11%3Ag.154021812_%28154092209_%3F%29dup",  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001742",
+        "vrs_ref_allele_seq": None
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_dup6_default(genomic_dup6):
+    """Create a test fixture for genomic dup default and cnv."""
+    genomic_dup6["variation"] = {
+        "type": "CopyNumber",
+        "subject": {
+            "location": {
+                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {
+                        "value": 154021811,
+                        "type": "Number"
+                    },
+                    "end": {
+                        "value": 154092209,
+                        "comparator": ">=",
+                        "type": "IndefiniteRange"
+                    }
+                },
+                "type": "SequenceLocation",
+            },
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "DefiniteRange",
+            "min": 2,
+            "max": 3
+        }
+    }
+    genomic_dup6["variation_id"] = "ga4gh:VCN.Rekk_MmUQ777V76S51x7nZGjh4U3LkLy"
+    return VariationDescriptor(**genomic_dup6)
+
+
+@pytest.fixture(scope='module')
+def genomic_dup6_rse_lse(genomic_dup6):
+    """Create test fixture for genomic dup rse and lse."""
+    params = {
+        "id": genomic_dup6["id"],
+        "type": genomic_dup6["type"],
+        "variation": {
+            "type": "Text",
+            "definition": "NC_000023.11:g.154021812_(154092209_?)dup"
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def test_genomic_dup1(test_normalize, genomic_dup1_default,
                       genomic_dup1_cnv, genomic_dup1_rse):
     """Test that genomic duplication works correctly."""
@@ -413,11 +545,62 @@ def test_genomic_dup4(test_normalize, genomic_dup4_default,
     assertion_checks(resp, genomic_dup4_rse_lse)
 
 
-# def test_genomic_dup5(test_normalize):
-#     """Test that genomic duplication works correctly."""
-#     q = "NC_000023.11:g.(?_154021812)_154092209dup"
-#
-#
-# def test_genomic_dup6(test_normalize):
-#     """Test that genomic duplication works correctly."""
-#     q = "NC_000023.11:g.154021812_(154092209_?)dup"
+def test_genomic_dup5(test_normalize, genomic_dup5_default,
+                      genomic_dup5_rse_lse):
+    """Test that genomic duplication works correctly."""
+    q = "NC_000023.11:g.(?_154021812)_154092209dup"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup5_default)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup5_default)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup5_rse_lse)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup5_rse_lse)
+
+
+def test_genomic_dup6(test_normalize, genomic_dup6_default,
+                      genomic_dup6_rse_lse):
+    """Test that genomic duplication works correctly."""
+    q = "NC_000023.11:g.154021812_(154092209_?)dup"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup6_default)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup6_default)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup6_rse_lse)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup6_rse_lse)
+
+
+def test_parameters(test_normalize):
+    """Check that valid and invalid parameters work as intended."""
+    q = "NC_000003.12:g.49531262dup"
+    warnings = ["hgvs_dup_del_mode must be one of: ['default', 'cnv', "
+                "'repeated_seq_expr', 'literal_seq_expr']"]
+    resp = test_normalize.normalize(q, "copy_number")
+    assert resp is None
+    assert test_normalize.warnings == warnings
+
+    resp = test_normalize.normalize(q, "repeated_seq_exprs")
+    assert resp is None
+    assert test_normalize.warnings == warnings
+
+    warnings = ["hgvs_dup_del_mode cannot be None"]
+    resp = test_normalize.normalize(q, '')
+    assert resp is None
+    assert test_normalize.warnings == warnings
+
+    resp = test_normalize.normalize(q, None)
+    assert resp is None
+    assert test_normalize.warnings == warnings
+
+    resp = test_normalize.normalize(q, " CnV ")
+    assert resp is not None
+    assert test_normalize.warnings == []
