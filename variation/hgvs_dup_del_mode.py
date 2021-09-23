@@ -4,6 +4,8 @@ from typing import Optional, Dict
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -18,6 +20,17 @@ class HGVSDupDelMode:
         :param SeqRepoAccess seqrepo_access: Access to seqrepo
         """
         self.seqrepo_access = seqrepo_access
+        self.valid_modes = [mode.value for mode in
+                            HGVSDupDelModeEnum.__members__.values()]
+
+    def is_valid_mode(self, mode) -> bool:
+        """Determine if mode is a valid input.
+
+        :param str mode: Entered mode
+        :return: `True` if valid mode. `False` otherwise.
+        """
+        hgvs_dup_del_mode = mode.strip().lower()
+        return hgvs_dup_del_mode in self.valid_modes
 
     def _get_chr(self, ac) -> Optional[str]:
         """Get chromosome for accession.
