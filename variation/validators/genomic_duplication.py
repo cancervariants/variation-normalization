@@ -423,8 +423,9 @@ class GenomicDuplication(Validator):
                     )
                     if grch38:
                         start, end = grch38['pos']
+                        start -= 1
                 else:
-                    start = s.end_pos1_dup
+                    start = s.end_pos1_dup - 1
                     end = s.end_pos1_dup
 
                 if start and end:
