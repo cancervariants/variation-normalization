@@ -55,26 +55,27 @@ class Normalize:
 
                 variation_id = variation.pop('_id')
                 identifier = valid_result.identifier
+                token_type = \
+                    valid_result.classification_token.token_type.lower()
 
-                if variation['type'] == 'Allele':
-                    vrs_ref_allele_seq = self.get_ref_allele_seq(
-                        variation, identifier
-                    )
-                elif variation['type'] == 'CopyNumber':
-                    vrs_ref_allele_seq = self.get_ref_allele_seq(
-                        variation['subject'], identifier
-                    )
-                else:
-                    vrs_ref_allele_seq = None
+                vrs_ref_allele_seq = None
+                if 'uncertain' in token_type:
+                    warnings = ['Ambiguous regions cannot be normalized']
+                elif 'range' not in token_type:
+                    if variation['type'] == 'Allele':
+                        vrs_ref_allele_seq = self.get_ref_allele_seq(
+                            variation, identifier
+                        )
+                    elif variation['type'] == 'CopyNumber':
+                        vrs_ref_allele_seq = self.get_ref_allele_seq(
+                            variation['subject'], identifier
+                        )
 
                 if valid_result.gene_tokens:
                     gene_token = valid_result.gene_tokens[0]
                     gene_context = self.get_gene_descriptor(gene_token)
                 else:
                     gene_context = None
-
-                if 'Uncertain' in valid_result.classification_token.token_type:
-                    warnings = ['Ambiguous regions cannot be normalized']
 
                 resp = VariationDescriptor(
                     id=_id,
