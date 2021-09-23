@@ -142,7 +142,7 @@ class HGVSDupDelMode:
         :param str alt_type: Alteration type
         :return: VRS Allele object represented as a dict
         """
-        if 'range' in alt_type:
+        if 'range' in alt_type or 'uncertain' in alt_type:
             return None
 
         if allele:
