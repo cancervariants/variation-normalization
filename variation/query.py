@@ -116,7 +116,8 @@ class QueryHandler:
                 translations = None
         return translations, warnings
 
-    def normalize(self, q, hgvs_dup_del_mode="default") -> VariationDescriptor:
+    def normalize(self, q, hgvs_dup_del_mode="default")\
+            -> Optional[VariationDescriptor]:
         """Return normalized Variation Descriptor for variation.
 
         :param q: Variation to normalize
@@ -126,9 +127,22 @@ class QueryHandler:
             in VRS.
         :return: Variation Descriptor for variation
         """
-        validations, warnings = \
-            self.to_vrs_handler.get_validations(
-                q, normalize_endpoint=True,
-                hgvs_dup_del_mode=hgvs_dup_del_mode
-            )
-        return self.normalize_handler.normalize(q, validations, warnings)
+        if hgvs_dup_del_mode:
+            hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
+            if not self.hgvs_dup_del_mode.is_valid_mode(hgvs_dup_del_mode):
+                self.normalize_handler.warnings = \
+                    [f"hgvs_dup_del_mode must be one of: "
+                     f"{self.hgvs_dup_del_mode.valid_modes}"]
+                return None
+            else:
+                validations, warnings = \
+                    self.to_vrs_handler.get_validations(
+                        q, normalize_endpoint=True,
+                        hgvs_dup_del_mode=hgvs_dup_del_mode
+                    )
+                return self.normalize_handler.normalize(q, validations,
+                                                        warnings)
+        else:
+            self.normalize_handler.warnings = \
+                ["hgvs_dup_del_mode cannot be None"]
+            return None
