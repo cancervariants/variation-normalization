@@ -192,16 +192,21 @@ class HGVSDupDelMode:
         :param tuple pos: Position changes
         :return: VRS Variation object
         """
+        if 'deletion' in alt_type:
+            del_or_dup = 'del'
+        else:
+            del_or_dup = 'dup'
         variation = None
         if allele is None:
             errors.append("Unable to get Allele")
         else:
             if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
                 variation = self.default_mode(
-                    ac, alt_type, pos, 'dup', allele['location'], allele=allele
+                    ac, alt_type, pos, del_or_dup,
+                    allele['location'], allele=allele
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
-                variation = self.cnv_mode(ac, 'dup', allele['location'])
+                variation = self.cnv_mode(ac, del_or_dup, allele['location'])
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
                 variation = self.repeated_seq_expr_mode(
                     alt_type, allele['location']
