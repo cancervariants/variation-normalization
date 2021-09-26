@@ -474,6 +474,265 @@ def genomic_dup6_rse_lse(genomic_dup6):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def genomic_del1():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:NC_000003.11%3Ag.10191495del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "T"
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_del1_default(genomic_del1):
+    """Create a test fixture for genomic del default and LSE."""
+    genomic_del1["variation_id"] = "ga4gh:VA.yahcBIB2mO-Vlp3UGssoASAzYy1WY-ad"
+    genomic_del1["variation"] = {
+        "type": "Allele",
+        "location": {
+            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "interval": {
+                "type": "SimpleInterval",
+                "start": 10149810,
+                "end": 10149811,
+            },
+            "type": "SequenceLocation",
+        },
+        "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": ""
+        }
+    }
+    return VariationDescriptor(**genomic_del1)
+
+
+@pytest.fixture(scope='module')
+def genomic_del1_cnv(genomic_del1):
+    """Create a test fixture for genomic del CNV."""
+    genomic_del1["variation"] = {
+        "type": "CopyNumber",
+        "subject": {
+            "location": {
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "interval": {
+                    "type": "SimpleInterval",
+                    "start": 10149810,
+                    "end": 10149811,
+                },
+                "type": "SequenceLocation",
+            },
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 1
+        }
+    }
+    genomic_del1["variation_id"] = "ga4gh:VCN.RcEZ9NrDwmYgL45gZpUABrd4fR6O7zM0"
+    return VariationDescriptor(**genomic_del1)
+
+
+@pytest.fixture(scope='module')
+def genomic_del1_rse(genomic_del1):
+    """Create a test fixture for genomic del RSE."""
+    seq_loc = {
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SimpleInterval",
+            "start": 10149810,
+            "end": 10149811,
+        },
+        "type": "SequenceLocation",
+    }
+    genomic_del1["variation"] = {
+        "type": "Allele",
+        "location": seq_loc,
+        "state": {
+            "type": "RepeatedSequenceExpression",
+            "seq_expr": {
+                "type": "DerivedSequenceExpression",
+                "location": seq_loc,
+                "reverse_complement": False
+            },
+            "count": {
+                "type": "Number",
+                "value": 0
+            }
+        }
+    }
+    genomic_del1["variation_id"] = "ga4gh:VA.0zNnXFB8EaWWu7CtbzIbbiedNiovw8CC"
+    return VariationDescriptor(**genomic_del1)
+
+
+@pytest.fixture(scope='module')
+def genomic_del2():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:NC_000003.11%3Ag.10188279_10188297del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT"
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_del2_default(genomic_del2):
+    """Create a test fixture for genomic del default and LSE."""
+    genomic_del2["variation_id"] = "ga4gh:VA.VGGqV6SjfLH3AfPMA8322Chq_Y4QNp5_"
+    genomic_del2["variation"] = {
+        "type": "Allele",
+        "location": {
+            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "interval": {
+                "type": "SimpleInterval",
+                "start": 10146594,
+                "end": 10146613,
+            },
+            "type": "SequenceLocation",
+        },
+        "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": ""
+        }
+    }
+    return VariationDescriptor(**genomic_del2)
+
+
+@pytest.fixture(scope='module')
+def genomic_del2_cnv(genomic_del2):
+    """Create a test fixture for genomic del CNV."""
+    genomic_del2["variation"] = {
+        "type": "CopyNumber",
+        "subject": {
+            "location": {
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "interval": {
+                    "type": "SimpleInterval",
+                    "start": 10146594,
+                    "end": 10146613,
+                },
+                "type": "SequenceLocation",
+            },
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 1
+        }
+    }
+    genomic_del2["variation_id"] = "ga4gh:VCN.xWlKFaMA2EcgK0yrgib96JJRZUgJoolg"
+    return VariationDescriptor(**genomic_del2)
+
+
+@pytest.fixture(scope='module')
+def genomic_del2_rse(genomic_del2):
+    """Create a test fixture for genomic del RSE."""
+    seq_loc = {
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SimpleInterval",
+            "start": 10146594,
+            "end": 10146613,
+        },
+        "type": "SequenceLocation",
+    }
+    genomic_del2["variation"] = {
+        "type": "Allele",
+        "location": seq_loc,
+        "state": {
+            "type": "RepeatedSequenceExpression",
+            "seq_expr": {
+                "type": "DerivedSequenceExpression",
+                "location": seq_loc,
+                "reverse_complement": False
+            },
+            "count": {
+                "type": "Number",
+                "value": 0
+            }
+        }
+    }
+    genomic_del2["variation_id"] = "ga4gh:VA.gmPJJDG_Yhrji3Ie6-WtvI3LvnNWtAN1"
+    return VariationDescriptor(**genomic_del2)
+
+
+@pytest.fixture(scope='module')
+def genomic_del4():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del",  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743",
+        "vrs_ref_allele_seq": None
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_del4_default(genomic_del4):
+    """Create a test fixture for genomic del default and cnv."""
+    genomic_del4["variation"] = {
+        "type": "CopyNumber",
+        "subject": {
+            "location": {
+                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {
+                        "value": 31120495,
+                        "comparator": "<=",
+                        "type": "IndefiniteRange"
+                    },
+                    "end": {
+                        "value": 33339477,
+                        "comparator": ">=",
+                        "type": "IndefiniteRange"
+                    }
+                },
+                "type": "SequenceLocation",
+            },
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "DefiniteRange",
+            "min": 0,
+            "max": 1
+        }
+    }
+    genomic_del4["variation_id"] = "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk"
+    return VariationDescriptor(**genomic_del4)
+
+
+@pytest.fixture(scope='module')
+def genomic_del4_rse_lse(genomic_del4):
+    """Create test fixture for genomic dup rse and lse."""
+    params = {
+        "id": genomic_del4["id"],
+        "type": genomic_del4["type"],
+        "variation": {
+            "type": "Text",
+            "definition": "NC_000023.11:g.(?_31120496)_(33339477_?)del"
+        }
+    }
+    return VariationDescriptor(**params)
+
+
 def test_genomic_dup1(test_normalize, genomic_dup1_default,
                       genomic_dup1_cnv, genomic_dup1_rse):
     """Test that genomic duplication works correctly."""
@@ -577,6 +836,71 @@ def test_genomic_dup6(test_normalize, genomic_dup6_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse)
+
+
+def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
+                      genomic_del1_rse):
+    """Test that genomic deletion works correctly."""
+    q = "NC_000003.11:g.10191495del"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del1_default)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del1_cnv)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del1_rse)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del1_default)
+
+
+def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
+                      genomic_del2_rse):
+    """Test that genomic deletion works correctly."""
+    q = "NC_000003.11:g.10188279_10188297del"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del2_default)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del2_cnv)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del2_rse)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del2_default)
+
+
+# def test_genomic_del3(test_normalize):
+#     """Test that genomic deletion works correctly."""
+#     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"
+
+
+def test_genomic_del4(test_normalize, genomic_del4_default,
+                      genomic_del4_rse_lse):
+    """Test that genomic deletion works correctly."""
+    q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del4_default)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del4_default)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del4_rse_lse)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del4_rse_lse)
+
+# def test_genomic_del5(test_normalize):
+#     """Test that genomic deletion works correctly."""
+#     q = "NC_000023.11:g.(?_18575354)_18653629del"
+
+
+# def test_genomic_del6(test_normalize):
+#     """Test that genomic deletion works correctly."""
+#     q = "NC_000006.12:g.133462764_(133464858_?)del"
 
 
 def test_parameters(test_normalize):
