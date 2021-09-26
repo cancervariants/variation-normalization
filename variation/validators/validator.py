@@ -734,54 +734,37 @@ class Validator(ABC):
                 coordinate, alt_type, [],
                 cds_start=mane.get('coding_start_site', None), alt=alt
             )
-
-            if not new_allele:
-                return
-
-            if alt_type == 'uncertain_deletion':
-                if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT or \
-                        hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
-                    variation = self.hgvs_dup_del_mode.default_mode(
-                        mane['refseq'], s.alt_type,
-                        (mane['pos'][0], mane['pos'][1]),
-                        'del', new_allele['location']
-                    )
-                    # variation = self.to_vrs_cnv(mane['refseq'], new_allele,
-                    #                             'del', uncertain=True)
-                elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
-                    variation = new_allele
-                else:
-                    logger.warning(
-                        "uncertain deletion cannot be represented as"
-                        " a repeated_seq_expr")
-                    return None
-            elif alt_type == 'duplication':
-                # TODO: HGVS dup del mode
-                variation = self.hgvs_dup_del_mode.default_mode(
-                    mane['refseq'], s.alt_type,
-                    (mane['pos'][0], mane['pos'][1]), 'dup',
-                    new_allele['location'], allele=new_allele
-                )
-            else:
-                variation = new_allele
-
-            if not variation:
-                return None
+            variation = new_allele
         else:
             variation = mane_variation
 
+        if not variation:
+            return None
+
+        self._add_dict_to_mane_data(mane['refseq'], s_copy, variation,
+                                    mane_data, mane['status'])
+
+    def _add_dict_to_mane_data(self, ac, s, variation, mane_data, status):
+        """Add variation data to mane data for normalize endpoint.
+
+        :param str ac: Accession
+        :param Token s: Classification token
+        :param dict variation: VRS Variation object
+        :param dict mane_data: MANE Transcript data found for given query
+        :param str status: Status for variation (GRCh38, MANE Select, etc)
+        """
         _id = variation['_id']
-        key = '_'.join(mane['status'].lower().split())
+        key = '_'.join(status.lower().split())
 
         if _id in mane_data[key].keys():
             mane_data[key][_id]['count'] += 1
         else:
             mane_data[key][_id] = {
-                'classification_token': s_copy,
-                'accession': mane['refseq'],
+                'classification_token': s,
+                'accession': ac,
                 'count': 1,
                 'variation': variation,
-                'label': mane['refseq']  # TODO: Use VRS to translate
+                'label': ac  # TODO: Use VRS to translate
             }
 
     def add_mane_to_validation_results(self, mane_data, valid_alleles,
@@ -821,3 +804,32 @@ class Validator(ABC):
                     identifier=identifier, is_mane_transcript=True
                 )
                 return
+
+    def _check_index(self, ac, pos, errors) -> Optional[str]:
+        """Check that index actually exists
+
+        :param str ac: Accession
+        :param tuple pos: Position changes
+        :param list errors: List of errors
+        :return: Sequence
+        """
+        seq = self.seqrepo_access.get_sequence(ac, pos)
+        if not seq:
+            errors.append(f"Pos {pos} not found on {ac}")
+        return seq
+
+    def _grch38_dict(self, ac, pos) -> Dict:
+        """Create dict for normalized concepts
+
+        :param str ac: Acession
+        :param tuple pos: Position changes
+        :return: GRCh38 data
+        """
+        return dict(
+            gene=None,
+            refseq=ac if ac.startswith('NC') else None,
+            ensembl=ac if ac.startswith('ENSG') else None,
+            pos=pos,
+            strand=None,
+            status='GRCh38'
+        )

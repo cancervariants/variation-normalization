@@ -158,29 +158,6 @@ class GenomicDuplication(Validator):
             'variation': variation
         }
 
-    def _add_to_mane_data(self, ac, s, variation, mane_data, status) -> None:
-        """Add variation to mane data for normalize endpoint.
-
-        :param str ac: Accession
-        :param Token s: Classification token
-        :param dict variation: VRS Variation object
-        :param dict mane_data: MANE Transcript data found for given query
-        :param str status: Status for variation (GRCh38, MANE Select, etc)
-        """
-        _id = variation['_id']
-        key = '_'.join(status.lower().split())
-
-        if _id in mane_data[key].keys():
-            mane_data[key][_id]['count'] += 1
-        else:
-            mane_data[key][_id] = {
-                'classification_token': s,
-                'accession': ac,
-                'count': 1,
-                'variation': variation,
-                'label': ac  # TODO: Use VRS to translate
-            }
-
     def _get_normalize_variation(self, gene_tokens, s, t, errors,
                                  hgvs_dup_del_mode, mane_data_found, start,
                                  end) -> None:
@@ -247,7 +224,7 @@ class GenomicDuplication(Validator):
                             )
 
                         if grch38_variation:
-                            self._add_to_mane_data(
+                            self._add_dict_to_mane_data(
                                 grch38['ac'], s, grch38_variation,
                                 mane_data_found, 'GRCh38'
                             )
@@ -272,39 +249,10 @@ class GenomicDuplication(Validator):
                             )
 
                         if grch38_variation:
-                            self._add_to_mane_data(
+                            self._add_dict_to_mane_data(
                                 grch38['ac'], s, grch38_variation,
                                 mane_data_found, 'GRCh38'
                             )
-
-    def _grch38_dict(self, ac, pos) -> Dict:
-        """Create dict for normalized concepts
-
-        :param str ac: Acession
-        :param tuple pos: Position changes
-        :return: GRCh38 data
-        """
-        return dict(
-            gene=None,
-            refseq=ac if ac.startswith('NC') else None,
-            ensembl=ac if ac.startswith('ENSG') else None,
-            pos=pos,
-            strand=None,
-            status='GRCh38'
-        )
-
-    def _check_index(self, ac, pos, errors) -> Optional[str]:
-        """Check that index actually exists
-
-        :param str ac: Accession
-        :param tuple pos: Position changes
-        :param list errors: List of errors
-        :return: Sequence
-        """
-        seq = self.seqrepo_access.get_sequence(ac, pos)
-        if not seq:
-            errors.append(f"Pos {pos} not found on {ac}")
-        return seq
 
     def _get_ival(self, t, s, errors, is_norm=False)\
             -> Optional[Tuple[models.SequenceInterval, Dict]]:
