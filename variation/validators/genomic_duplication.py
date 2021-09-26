@@ -9,8 +9,6 @@ from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
 from ga4gh.vrs import models
-from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.tokenizers import GeneSymbol
@@ -134,7 +132,7 @@ class GenomicDuplication(Validator):
             allele = self.to_vrs_allele(
                 t, start, end, s.reference_sequence,
                 s.alt_type, errors)
-            variation = self._interpret_variation(
+            variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
                 pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
@@ -148,7 +146,7 @@ class GenomicDuplication(Validator):
                 pos = (start, end)
             else:
                 pos = None
-            variation = self._interpret_variation(
+            variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors,
                 hgvs_dup_del_mode, pos=pos)
         else:
@@ -220,9 +218,11 @@ class GenomicDuplication(Validator):
                             s, t, s.reference_sequence, s.alt_type,
                             errors, ival
                         )
-                        mane_variation = self._interpret_variation(
-                            t, s.alt_type, allele, errors,
-                            hgvs_dup_del_mode)
+                        mane_variation = \
+                            self.hgvs_dup_del_mode.interpret_variation(
+                                t, s.alt_type, allele, errors,
+                                hgvs_dup_del_mode
+                            )
                         if mane_variation:
                             grch38 = self._grch38_dict(t, None)
                             self.add_mane_data(
@@ -240,9 +240,11 @@ class GenomicDuplication(Validator):
                             pos = (start, end)
                         else:
                             pos = None
-                        grch38_variation = self._interpret_variation(
-                            t, s.alt_type, allele, errors, hgvs_dup_del_mode
-                        )
+                        grch38_variation = \
+                            self.hgvs_dup_del_mode.interpret_variation(
+                                t, s.alt_type, allele, errors,
+                                hgvs_dup_del_mode
+                            )
 
                         if grch38_variation:
                             self._add_to_mane_data(
@@ -264,7 +266,7 @@ class GenomicDuplication(Validator):
                             s.alt_type, errors
                         )
                         grch38_variation = \
-                            self._interpret_variation(
+                            self.hgvs_dup_del_mode.interpret_variation(
                                 grch38['ac'], s.alt_type, allele,
                                 errors, hgvs_dup_del_mode
                             )
@@ -290,43 +292,6 @@ class GenomicDuplication(Validator):
             strand=None,
             status='GRCh38'
         )
-
-    def _interpret_variation(self, ac, alt_type, allele, errors,
-                             hgvs_dup_del_mode, pos=None) -> Dict:
-        """Interpret variation using HGVSDupDelMode
-
-        :param str ac: Accession
-        :param str alt_type: Alteration type
-        :param dict allele: VRS Allele object
-        :param list errors: List of errors
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
-            interpreting HGVS duplications and deletions
-        :param tuple pos: Position changes
-        :return: VRS Variation object
-        """
-        variation = None
-        if allele is None:
-            errors.append("Unable to get Allele")
-        else:
-            if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
-                variation = self.hgvs_dup_del_mode.default_mode(
-                    ac, alt_type, pos, 'dup', allele['location'], allele=allele
-                )
-            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
-                variation = self.hgvs_dup_del_mode.cnv_mode(
-                    ac, 'dup', allele['location']
-                )
-            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
-                variation = self.hgvs_dup_del_mode.repeated_seq_expr_mode(
-                    alt_type, allele['location']
-                )
-            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
-                variation = \
-                    self.hgvs_dup_del_mode.literal_seq_expr_mode(allele,
-                                                                 alt_type)
-            if not variation:
-                errors.append("Unable to get VRS Variation")
-        return variation
 
     def _check_index(self, ac, pos, errors) -> Optional[str]:
         """Check that index actually exists
