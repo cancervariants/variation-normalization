@@ -178,3 +178,36 @@ class HGVSDupDelMode:
         else:
             variation._id = ga4gh_identify(variation)
             return variation.as_dict()
+
+    def interpret_variation(self, ac, alt_type, allele, errors,
+                            hgvs_dup_del_mode, pos=None) -> Dict:
+        """Interpret variation using HGVSDupDelMode
+
+        :param str ac: Accession
+        :param str alt_type: Alteration type
+        :param dict allele: VRS Allele object
+        :param list errors: List of errors
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
+            interpreting HGVS duplications and deletions
+        :param tuple pos: Position changes
+        :return: VRS Variation object
+        """
+        variation = None
+        if allele is None:
+            errors.append("Unable to get Allele")
+        else:
+            if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
+                variation = self.default_mode(
+                    ac, alt_type, pos, 'dup', allele['location'], allele=allele
+                )
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
+                variation = self.cnv_mode(ac, 'dup', allele['location'])
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
+                variation = self.repeated_seq_expr_mode(
+                    alt_type, allele['location']
+                )
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
+                variation = self.literal_seq_expr_mode(allele, alt_type)
+            if not variation:
+                errors.append("Unable to get VRS Variation")
+        return variation
