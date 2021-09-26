@@ -55,28 +55,31 @@ class GenomicDeletion(DeletionBase):
             for t in transcripts:
                 errors = list()
                 t = self.get_accession(t, classification)
+                start, end = s.start_pos_del, None
+                if s.end_pos_del is None:
+                    end = start
+                else:
+                    end = s.end_pos_del
 
                 allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
                                             s.reference_sequence, s.alt_type,
                                             errors)
 
+                variation = self.hgvs_dup_del_mode.interpret_variation(
+                    t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                    pos=(start, end)
+                )
+
                 if not errors:
                     self.check_reference_sequence(t, s, errors)
 
                 if not errors:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        normalize_endpoint=normalize_endpoint
-                    )
-                    self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens
-                    )
+                    self._get_normalize_variation(
+                        gene_tokens, s, t, errors, hgvs_dup_del_mode,
+                        mane_data_found, start, end, normalize_endpoint)
 
                 self.add_validation_result(
-                    allele, valid_alleles, results,
+                    variation, valid_alleles, results,
                     classification, s, t, gene_tokens, errors
                 )
 
@@ -87,6 +90,61 @@ class GenomicDeletion(DeletionBase):
             mane_data_found, valid_alleles, results,
             classification, gene_tokens
         )
+
+    def _get_normalize_variation(self, gene_tokens, s, t, errors,
+                                 hgvs_dup_del_mode, mane_data_found, start,
+                                 end, normalize_endpoint) -> None:
+        """Get variation that will be returned in normalize endpoint.
+
+        :param list gene_tokens: List of gene tokens
+        :param Token s: Classification token
+        :param str t: Accession
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
+            interpreting HGVS duplications and deletions
+        :param dict mane_data_found: MANE Transcript data found for given query
+        :param int start: Start pos change
+        :param int end: End pos change
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
+        """
+        if not gene_tokens:
+            grch38 = self.mane_transcript.g_to_grch38(t, start, end)
+
+            if grch38:
+                for pos in [grch38['pos'][0], grch38['pos'][1]]:
+                    self._check_index(grch38['ac'], pos, errors)
+
+                if not errors:
+                    allele = self.to_vrs_allele(
+                        grch38['ac'], grch38['pos'][0],
+                        grch38['pos'][1], s.reference_sequence,
+                        s.alt_type, errors
+                    )
+                    grch38_variation = \
+                        self.hgvs_dup_del_mode.interpret_variation(
+                            grch38['ac'], s.alt_type, allele,
+                            errors, hgvs_dup_del_mode
+                        )
+
+                    if grch38_variation:
+                        self._add_dict_to_mane_data(
+                            grch38['ac'], s, grch38_variation,
+                            mane_data_found, 'GRCh38'
+                        )
+        else:
+            # TODO
+            pass
+            # mane = self.mane_transcript.get_mane_transcript(
+            #     t, s.start_pos_del, s.end_pos_del,
+            #     s.reference_sequence,
+            #     gene=gene_tokens[0].token if gene_tokens else None,
+            #     normalize_endpoint=normalize_endpoint
+            # )
+            #
+            # self.add_mane_data(
+            #     mane, mane_data_found, s.reference_sequence,
+            #     s.alt_type, s, gene_tokens
+            # )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
