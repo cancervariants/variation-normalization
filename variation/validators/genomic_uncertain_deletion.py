@@ -4,11 +4,9 @@ from variation.schemas.classification_response_schema import \
     ClassificationType
 from variation.schemas.token_response_schema import \
     GenomicUncertainDeletionToken
-from typing import List, Optional
+from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
-from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.tokenizers import GeneSymbol
@@ -86,56 +84,15 @@ class GenomicUncertainDeletion(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                ival = models.SequenceInterval(
-                    start=models.IndefiniteRange(
-                        value=s.start_pos2_del - 1,
-                        comparator="<="
-                    ),
-                    end=models.IndefiniteRange(
-                        value=s.end_pos1_del,
-                        comparator=">="
-                    )
-                )
-                allele = self.to_vrs_allele_ranges(
-                    s, t, s.reference_sequence, s.alt_type, errors,
-                    ival
-                )
-                if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT or \
-                        hgvs_dup_del_mode == HGVSDupDelMode.CNV:
-                    variation = self.to_vrs_cnv(t, allele, 'del',
-                                                uncertain=True)
-                    if not variation:
-                        errors.append(f"Unable to get CNV for {t}")
-                elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
-                    variation = allele
-                    if not variation:
-                        errors.append(f"Unable to get allele for {t}")
-                else:
-                    variation = None
-                    errors.append("Genomic uncertain deletions cannot have"
-                                  " repeated seq expressions")
+                result = self._get_variation(s, t, errors, hgvs_dup_del_mode)
+                variation = result['variation']
+                start = result['start']
+                end = result['end']
 
                 if not errors:
-                    grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos2_del, s.end_pos1_del)
-
-                    if grch38:
-                        mane = dict(
-                            gene=None,
-                            refseq=grch38['ac'] if grch38['ac'].startswith('NC') else None,  # noqa: E501
-                            ensembl=grch38['ac'] if grch38['ac'].startswith('ENSG') else None,  # noqa: E501
-                            pos=grch38['pos'],
-                            strand=None,
-                            status='GRCh38'
-                        )
-                    else:
-                        mane = None
-
-                    self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens,
-                        hgvs_dup_del_mode=hgvs_dup_del_mode
-                    )
+                    self._get_normalize_variation(
+                        gene_tokens, s, t, errors, hgvs_dup_del_mode,
+                        mane_data_found, start, end)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -149,6 +106,107 @@ class GenomicUncertainDeletion(Validator):
             mane_data_found, valid_alleles, results,
             classification, gene_tokens
         )
+
+    def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
+            -> Optional[Dict]:
+        """Get variation data.
+
+        :param Token s: Classification token
+        :param str t: Accession
+        :param list errors: List of errors
+        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
+            HGVS duplications and deletions
+        :return: Dictionary containing start/end position changes and variation
+        """
+        variation, start, end = None, None, None
+        ival, _ = self._get_ival(t, s, errors)
+
+        allele = self.to_vrs_allele_ranges(
+            s, t, s.reference_sequence, s.alt_type,
+            errors, ival
+        )
+        if start is not None and end is not None:
+            pos = (start, end)
+        else:
+            pos = None
+        variation = self.hgvs_dup_del_mode.interpret_variation(
+            t, s.alt_type, allele, errors,
+            hgvs_dup_del_mode, pos=pos)
+
+        return {
+            'start': start,
+            'end': end,
+            'variation': variation
+        }
+
+    def _get_normalize_variation(self, gene_tokens, s, t, errors,
+                                 hgvs_dup_del_mode, mane_data_found, start,
+                                 end) -> None:
+        """Get variation that will be returned in normalize endpoint.
+
+        :param list gene_tokens: List of gene tokens
+        :param Token s: Classification token
+        :param str t: Accession
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
+            interpreting HGVS duplications and deletions
+        :param dict mane_data_found: MANE Transcript data found for given query
+        :param int start: Start pos change
+        :param int end: End pos change
+        """
+        if not gene_tokens:
+            ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+
+            if not errors:
+                allele = self.to_vrs_allele_ranges(
+                    s, t, s.reference_sequence,
+                    s.alt_type, errors, ival)
+
+                grch38_variation = \
+                    self.hgvs_dup_del_mode.interpret_variation(
+                        t, s.alt_type, allele, errors,
+                        hgvs_dup_del_mode
+                    )
+
+                if grch38_variation:
+                    self._add_dict_to_mane_data(
+                        grch38['ac'], s, grch38_variation,
+                        mane_data_found, 'GRCh38'
+                    )
+
+    def _get_ival(self, t, s, errors, is_norm=False)\
+            -> Optional[Tuple[models.SequenceInterval, Dict]]:
+        """Get ival for variations with ranges.
+
+        :param str t: Accession
+        :param Token t: Classification token
+        :param list errors: List of errors
+        :param bool is_norm: `True` if normalize endpoint is being used.
+            `False` otherwise.
+        :return: Sequence Interval and GRCh38 data if normalize endpoint
+            is being used
+        """
+        ival = None
+        start = None
+        end = None
+        grch38 = None
+        if s.start_pos1_del == '?' and s.end_pos2_del == '?':
+            # format: (?_#)_(#_?)
+            if is_norm:
+                grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos2_del, s.end_pos1_del
+                )
+                if grch38:
+                    start, end = grch38['pos']
+            else:
+                start = s.start_pos2_del
+                end = s.end_pos1_del
+
+            if start and end:
+                ival = models.SequenceInterval(
+                    start=self._get_start_indef_range(start),
+                    end=self._get_end_indef_range(end)
+                )
+        return ival, grch38
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
