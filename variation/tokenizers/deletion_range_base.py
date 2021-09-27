@@ -29,7 +29,7 @@ class DeletionRangeBase(Tokenizer):
         }
 
         input_string = str(input_string).lower()
-        if not input_string.endswith('del') and input_string.count('_') != 3:
+        if not input_string.endswith('del'):
             return None
 
         if input_string.startswith('g.'):
