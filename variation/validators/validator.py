@@ -516,15 +516,12 @@ class Validator(ABC):
         if coordinate == 'c':
             # TODO: Once we add support for ranges on c. coord
             return None
-
-        if alt_type in ['uncertain_deletion', 'uncertain_duplication']:
+        if alt_type in ['uncertain_deletion', 'uncertain_duplication',
+                        'duplication_range', 'deletion_range']:
             # TODO: Check
             sstate = models.LiteralSequenceExpression(
                 sequence=""
             )
-        elif alt_type == 'duplication_range':
-            # TODO: Check
-            sstate = models.SequenceState(sequence='')
         else:
             errors.append("No state")
             return None
@@ -550,7 +547,7 @@ class Validator(ABC):
 
         # Ambiguous regions do not get normalized
         if alt_type not in ["uncertain_deletion", "uncertain_duplication",
-                            "duplication_range"]:
+                            "duplication_range", "deletion_range"]:
             try:
                 allele = normalize(allele, self.dp)
                 if alt_type == 'deletion':

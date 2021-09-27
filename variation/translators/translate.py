@@ -19,6 +19,7 @@ from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
+from .genomic_deletion_range import GenomicDeletionRange
 from typing import List, Optional, Dict
 
 
@@ -44,6 +45,7 @@ class Translate:
             AminoAcidInsertion(),
             CodingDNAInsertion(),
             GenomicInsertion(),
+            GenomicDeletionRange(),
             GenomicUncertainDeletion(),
             GenomicDuplication()
         ]
