@@ -272,21 +272,27 @@ class GenomicDuplication(Validator):
         grch38 = None
         if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
+            start1, start2, end1, end2 = None, None, None, None
             if is_norm:
-                grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos1_dup, s.end_pos2_dup
+                grch38_start = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos1_dup, s.start_pos2_dup
                 )
-                if grch38:
-                    start, end = grch38['pos']
-            else:
-                start = s.start_pos1_dup
-                end = s.end_pos2_dup
+                if grch38_start:
+                    start1, start2 = grch38_start['pos']
 
-            if start and end:
-                ival = self._get_ival_certain_range(
-                    s.start_pos1_dup, s.start_pos2_dup,
-                    s.end_pos1_dup, s.end_pos2_dup
-                )
+                    grch38_end = self.mane_transcript.g_to_grch38(
+                        t, s.end_pos1_dup, s.end_pos2_dup
+                    )
+                    if grch38_end:
+                        end1, end2 = grch38_end['pos']
+                        grch38 = grch38_end
+            else:
+                start1 = s.start_pos1_dup
+                start2 = s.start_pos2_dup
+                end1 = s.end_pos1_dup
+                end2 = s.end_pos2_dup
+            if start1 and start2 and end1 and end2:
+                ival = self._get_ival_certain_range(start1, start2, end1, end2)
         else:
             if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                 # format: (?_#)_(#_?)
