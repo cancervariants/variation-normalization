@@ -530,10 +530,10 @@ class GenomicDeletionRangeToken(DeletionRange):
 class UncertainDeletion(DeletionRange):
     """Uncertain Deletion."""
 
-    start_pos1_del: Literal['?'] = "?"
-    start_pos2_del: int
+    start_pos1_del: Optional[Union[Literal['?'], int]]
+    start_pos2_del: Optional[int]
     end_pos1_del: int
-    end_pos2_del: Literal['?'] = "?"
+    end_pos2_del: Optional[Union[Literal['?'], int]]
     token_type: str
     molecule_context: str
     alt_type: Literal[DeletionAltType.UNCERTAIN_DELETION] = DeletionAltType.UNCERTAIN_DELETION  # noqa: E501
