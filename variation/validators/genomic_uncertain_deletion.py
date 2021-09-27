@@ -206,6 +206,49 @@ class GenomicUncertainDeletion(Validator):
                     start=self._get_start_indef_range(start),
                     end=self._get_end_indef_range(end)
                 )
+        elif s.start_pos1_del == '?' and \
+                s.start_pos2_del != '?' and \
+                s.end_pos1_del != '?' and \
+                s.end_pos2_del is None:
+            # format: (?_#)_#
+            if is_norm:
+                grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos2_del, s.end_pos1_del
+                )
+                if grch38:
+                    start, end = grch38['pos']
+            else:
+                start = s.start_pos2_del
+                end = s.end_pos1_del
+
+            if start and end:
+                ival = models.SequenceInterval(
+                    start=self._get_start_indef_range(start),  # noqa: E501
+                    end=models.Number(value=end)
+                )
+        elif s.start_pos1_del != '?' and \
+                s.start_pos2_del is None and \
+                s.end_pos1_del != '?' and \
+                s.end_pos2_del == '?':
+            # format: #_(#_?)
+            if is_norm:
+                grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos1_del, s.end_pos1_del
+                )
+                if grch38:
+                    start, end = grch38['pos']
+                    start -= 1
+            else:
+                start = s.end_pos1_del - 1
+                end = s.end_pos1_del
+
+            if start and end:
+                ival = models.SequenceInterval(
+                    start=models.Number(value=start),
+                    end=self._get_end_indef_range(end)
+                )
+        else:
+            errors.append("Not yet supported")
         return ival, grch38
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:

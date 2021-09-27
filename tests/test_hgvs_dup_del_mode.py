@@ -866,7 +866,7 @@ def genomic_del5_rse_lse(genomic_del5):
 def genomic_del6():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",  # noqa: E501
+        "id": "normalize.variation:NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
