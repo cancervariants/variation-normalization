@@ -193,7 +193,6 @@ class GenomicUncertainDeletion(Validator):
             is_grch38_assembly = self._is_grch38_assembly(t)
         else:
             is_grch38_assembly = None
-
         if s.start_pos1_del == '?' and s.end_pos2_del == '?':
             # format: (?_#)_(#_?)
             if is_norm:
@@ -249,13 +248,13 @@ class GenomicUncertainDeletion(Validator):
                     )
                 else:
                     grch38 = dict(
-                        ac=t, pos=(s.end_pos1_del - 1, s.end_pos1_del)
+                        ac=t, pos=(s.start_pos1_del, s.end_pos1_del)
                     )
                 if grch38:
                     start, end = grch38['pos']
                     start -= 1
             else:
-                start = s.end_pos1_del - 1
+                start = s.start_pos1_del - 1
                 end = s.end_pos1_del
 
             if start and end:
