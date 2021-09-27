@@ -830,3 +830,11 @@ class Validator(ABC):
             strand=None,
             status='GRCh38'
         )
+
+    def _is_grch38_assembly(self, t) -> bool:
+        """Return whether or not accession is GRCh38 assembly.
+
+        :param str t: Accession
+        :return: `True` if accession is GRCh38 assembly. `False` otherwise
+        """
+        return 'GRCh38' in [a for a in self.dp.get_metadata(t)['aliases'] if a.startswith('GRCh')][0]  # noqa: E501

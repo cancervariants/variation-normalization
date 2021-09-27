@@ -158,7 +158,7 @@ class GenomicUncertainDeletion(Validator):
 
             if not errors:
                 allele = self.to_vrs_allele_ranges(
-                    s, t, s.reference_sequence,
+                    s, grch38['ac'], s.reference_sequence,
                     s.alt_type, errors, ival)
 
                 grch38_variation = \
@@ -189,12 +189,20 @@ class GenomicUncertainDeletion(Validator):
         start = None
         end = None
         grch38 = None
+        if is_norm:
+            is_grch38_assembly = self._is_grch38_assembly(t)
+        else:
+            is_grch38_assembly = None
+
         if s.start_pos1_del == '?' and s.end_pos2_del == '?':
             # format: (?_#)_(#_?)
             if is_norm:
-                grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos2_del, s.end_pos1_del
-                )
+                if not is_grch38_assembly:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos2_del, s.end_pos1_del
+                    )
+                else:
+                    grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
                 if grch38:
                     start, end = grch38['pos']
             else:
@@ -212,9 +220,12 @@ class GenomicUncertainDeletion(Validator):
                 s.end_pos2_del is None:
             # format: (?_#)_#
             if is_norm:
-                grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos2_del, s.end_pos1_del
-                )
+                if not is_grch38_assembly:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos2_del, s.end_pos1_del
+                    )
+                else:
+                    grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
                 if grch38:
                     start, end = grch38['pos']
             else:
@@ -232,9 +243,14 @@ class GenomicUncertainDeletion(Validator):
                 s.end_pos2_del == '?':
             # format: #_(#_?)
             if is_norm:
-                grch38 = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos1_del, s.end_pos1_del
-                )
+                if not is_grch38_assembly:
+                    grch38 = self.mane_transcript.g_to_grch38(
+                        t, s.start_pos1_del, s.end_pos1_del
+                    )
+                else:
+                    grch38 = dict(
+                        ac=t, pos=(s.end_pos1_del - 1, s.end_pos1_del)
+                    )
                 if grch38:
                     start, end = grch38['pos']
                     start -= 1
