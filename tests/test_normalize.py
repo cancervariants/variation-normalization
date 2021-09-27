@@ -1615,14 +1615,14 @@ def test_no_matches(test_normalize):
 
 def test_service_meta():
     """Test that service meta info populates correctly."""
-    response = normalize_get_response('BRAF v600e')
+    response = normalize_get_response('BRAF v600e', 'default')
     service_meta = response.service_meta_
     assert service_meta.name == "variation-normalizer"
     assert service_meta.version
     assert isinstance(service_meta.response_datetime, datetime)
     assert service_meta.url == 'https://github.com/cancervariants/variation-normalization'  # noqa: E501
 
-    response = normalize_get_response('this-wont-normalize')
+    response = normalize_get_response('this-wont-normalize', 'default')
     service_meta = response.service_meta_
     assert service_meta.name == "variation-normalizer"
     assert service_meta.version
