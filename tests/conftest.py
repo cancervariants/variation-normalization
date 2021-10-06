@@ -1,9 +1,10 @@
 """Create methods used throughout tests."""
 
 
-def assertion_checks(normalize_response, test_variation):
+def assertion_checks(normalize_response, test_variation, ignore_id=False):
     """Check that normalize_response and test_variation are equal."""
-    assert normalize_response.id == test_variation.id
+    if not ignore_id:
+        assert normalize_response.id == test_variation.id
     assert normalize_response.type == test_variation.type
     assert normalize_response.variation_id == test_variation.variation_id
     assert normalize_response.variation == test_variation.variation

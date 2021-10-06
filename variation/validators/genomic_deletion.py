@@ -108,7 +108,10 @@ class GenomicDeletion(DeletionBase):
             used. `False` otherwise.
         """
         if not gene_tokens:
-            grch38 = self.mane_transcript.g_to_grch38(t, start, end)
+            if not self._is_grch38_assembly(t):
+                grch38 = self.mane_transcript.g_to_grch38(t, start, end)
+            else:
+                grch38 = dict(ac=t, pos=(start, end))
 
             if grch38:
                 for pos in [grch38['pos'][0], grch38['pos'][1]]:
