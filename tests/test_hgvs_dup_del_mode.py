@@ -478,7 +478,7 @@ def genomic_dup6_rse_lse(genomic_dup6):
 def genomic_del1():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000003.11%3Ag.10191495del",
+        "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -575,7 +575,7 @@ def genomic_del1_rse(genomic_del1):
 def genomic_del2():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000003.11%3Ag.10188279_10188297del",
+        "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -928,7 +928,7 @@ def genomic_del6_rse_lse(genomic_del6):
 def test_genomic_dup1(test_normalize, genomic_dup1_default,
                       genomic_dup1_cnv, genomic_dup1_rse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000003.12:g.49531262dup"
+    q = "NC_000003.12:g.49531262dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup1_default)
 
@@ -944,11 +944,27 @@ def test_genomic_dup1(test_normalize, genomic_dup1_default,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup1_default)
 
+    q = "NC_000003.11:g.49568695dup"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup1_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup1_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup1_cnv, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup1_rse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup1_default, ignore_id=True)
+
 
 def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
                       genomic_dup2_rse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000016.10:g.2087938_2087948dup"
+    q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup2_default)
 
@@ -961,11 +977,24 @@ def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup2_default)
 
+    q = "NC_000016.9:g.2137939_2137949dup"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup2_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup2_cnv, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup2_rse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup2_default, ignore_id=True)
+
 
 def test_genomic_dup3(test_normalize, genomic_dup3_default,
                       genomic_dup3_rse_lse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"
+    q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup3_default)
 
@@ -977,12 +1006,25 @@ def test_genomic_dup3(test_normalize, genomic_dup3_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse)
+
+    q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup3_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup3_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup3_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup3_rse_lse, ignore_id=True)
 
 
 def test_genomic_dup4(test_normalize, genomic_dup4_default,
                       genomic_dup4_rse_lse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"
+    q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup4_default)
 
@@ -994,12 +1036,26 @@ def test_genomic_dup4(test_normalize, genomic_dup4_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse)
+
+    q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup4_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup4_default, ignore_id=True)
+
+    genomic_dup4_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup4_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup4_rse_lse, ignore_id=True)
 
 
 def test_genomic_dup5(test_normalize, genomic_dup5_default,
                       genomic_dup5_rse_lse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000023.11:g.(?_154021812)_154092209dup"
+    q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup5_default)
 
@@ -1011,12 +1067,26 @@ def test_genomic_dup5(test_normalize, genomic_dup5_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse)
+
+    q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 38
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup5_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup5_default, ignore_id=True)
+
+    genomic_dup5_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup5_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup5_rse_lse, ignore_id=True)
 
 
 def test_genomic_dup6(test_normalize, genomic_dup6_default,
                       genomic_dup6_rse_lse):
     """Test that genomic duplication works correctly."""
-    q = "NC_000023.11:g.154021812_(154092209_?)dup"
+    q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup6_default)
 
@@ -1029,11 +1099,25 @@ def test_genomic_dup6(test_normalize, genomic_dup6_default,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse)
 
+    q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_dup6_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_dup6_default, ignore_id=True)
+
+    genomic_dup6_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_dup6_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_dup6_rse_lse, ignore_id=True)
+
 
 def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
                       genomic_del1_rse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000003.11:g.10191495del"
+    q = "NC_000003.12:g.10149811del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del1_default)
 
@@ -1046,11 +1130,24 @@ def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del1_default)
 
+    q = "NC_000003.11:g.10191495del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del1_cnv, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del1_rse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
 
 def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
                       genomic_del2_rse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000003.11:g.10188279_10188297del"
+    q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del2_default)
 
@@ -1063,11 +1160,24 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del2_default)
 
+    q = "NC_000003.11:g.10188279_10188297del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del2_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del2_cnv, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del2_rse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del2_default, ignore_id=True)
+
 
 def test_genomic_del3(test_normalize, genomic_del3_default,
                       genomic_del3_rse_lse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"
+    q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del3_default)
 
@@ -1079,12 +1189,25 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse)
+
+    q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del3_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del3_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del3_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del3_rse_lse, ignore_id=True)
 
 
 def test_genomic_del4(test_normalize, genomic_del4_default,
                       genomic_del4_rse_lse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"
+    q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del4_default)
 
@@ -1096,12 +1219,26 @@ def test_genomic_del4(test_normalize, genomic_del4_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse)
+
+    q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del4_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del4_default, ignore_id=True)
+
+    genomic_del4_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del4_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del4_rse_lse, ignore_id=True)
 
 
 def test_genomic_del5(test_normalize, genomic_del5_default,
                       genomic_del5_rse_lse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000023.11:g.(?_18575354)_18653629del"
+    q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del5_default)
 
@@ -1113,12 +1250,26 @@ def test_genomic_del5(test_normalize, genomic_del5_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse)
+
+    q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del5_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del5_default, ignore_id=True)
+
+    genomic_del5_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del5_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del5_rse_lse, ignore_id=True)
 
 
 def test_genomic_del6(test_normalize, genomic_del6_default,
                       genomic_del6_rse_lse):
     """Test that genomic deletion works correctly."""
-    q = "NC_000006.12:g.133462764_(133464858_?)del"
+    q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_del6_default)
 
@@ -1130,6 +1281,20 @@ def test_genomic_del6(test_normalize, genomic_del6_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse)
+
+    q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del6_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del6_default, ignore_id=True)
+
+    genomic_del6_rse_lse.variation.definition = q
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del6_rse_lse, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "literal_seq_expr")
+    assertion_checks(resp, genomic_del6_rse_lse, ignore_id=True)
 
 
 def test_parameters(test_normalize):

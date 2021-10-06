@@ -1222,20 +1222,20 @@ def grch38_genomic_deletion():
     params = {
         "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Id8H1AfB1DsgBPZnWJD3X4AyrpelKegQ",
+        "variation_id": "ga4gh:VA.VGGqV6SjfLH3AfPMA8322Chq_Y4QNp5_",
         "variation": {
             "location": {
-                "interval": {
-                    "end": 10146613,
-                    "start": 10146594,
-                    "type": "SimpleInterval"
-                },
                 "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                "type": "SequenceLocation"
+                "interval": {
+                    "type": "SimpleInterval",
+                    "start": 10146594,
+                    "end": 10146613,
+                },
+                "type": "SequenceLocation",
             },
             "state": {
-                "sequence": "",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression",
+                "sequence": ""
             },
             "type": "Allele"
         },
