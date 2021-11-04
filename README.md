@@ -4,40 +4,83 @@ Services and guidelines for normalizing variation terms into [VRS (v1.1.1)](http
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
+Installing with pip:
+
+```commandline
+pip install variation-normalizer
+```
+
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
-
-Variation Normalization is limited to substitution, deletion, insertion, and deletion-insertion variants located on p., c., and g. coordinates. We can represent ambiguous deletions on the g. coordinate for HGVS representations. We also support HGVS representations and text representation (ex: `BRAF V600E`). We are working towards adding more types of variants, coordinates, and representations.
 
 ### Endpoints
 #### /toVRS
 The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/1.1.1/terms_and_model.html#allele).
 
 #### /normalize
-The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found.
+The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. 
+
+The steps for retrieving MANE Transcript data is as follows:
+1. Map starting annotation layer to genomic
+2. Liftover to preferred GRCh38\
+    *We only support lifting over from GRCh37.*
+3. Select preferred compatible annotation
+    1. MANE Select
+    2. MANE Plus Clinical
+    3. Longest Compatible Remaining Transcript
+4. Map back to starting annotation layer
+
+#### Limitations
+Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
+
+* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
+* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion\
+    *Note: c. coordinates will be returned as r. coordinates in the VRS and VRSATILE objects*
+* **genomic (g.)**: substitution, deletion, insertion, deletion-insertion\
+    *Note: If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.*
+
+We are working towards adding more types of variants, coordinates, and representations.
 
 ## Backend Services
+
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
-### Installation
-#### Installing with pip
+Once pipenv is installed:
 ```commandline
-pip install variation-normalizer
+pipenv shell
+pipenv lock
+pipenv sync
 ```
 
+### Setting up Gene Normalizer
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
+
+You must run the following when loading the database:
+
+```commandline
+python3 -m gene.cli --update_all --update_merged
+```
+
+For more information, visit see the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
+
+
+### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
+
+Variation Normalizer uses seqrepo to retrieve sequences at given positions on a transcript. 
 
 From the _root_ directory:
 ```
-pipenv shell
-pipenv lock && pipenv sync
 pip install seqrepo
 sudo mkdir /usr/local/share/seqrepo
 sudo chown $USER /usr/local/share/seqrepo
 seqrepo pull -i 2021-01-29
 ```
 
+### UTA
 Variation Normalizer also uses [uta](https://github.com/biocommons/uta).
+
+Variation Normalizer uses UTA to retrieve MANE Transcript data.
 
 _The following commands will likely need modification appropriate for the installation environment._
 1. Install [PostgreSQL](https://www.postgresql.org/)
@@ -60,21 +103,40 @@ To connect to the UTA database, you can use the default url (`postgresql://uta_a
 
 If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host/database/schema`.
 
-### Data
-Variation Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to retrieve `variation/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
+### PyLiftover
+
+Variation Normalizer uses [PyLiftover](https://github.com/konstantint/pyliftover) to convert GRCh37 coordinates to GRCh38 coordinates.
+
+## Data
+
+### RefSeq
+
+Variation Normalizer uses RefSeq data found at [FTP site](https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/RefSeqGene/LRG_RefSeqGene).
+
+This data helps with free text variations in order to get all RefSeq accessions that correspond to a given gene.
+
+### Ensembl BioMart
+Variation Normalizer uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to retrieve `variation/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
+
+This data helps with free text variations in order to get all Ensembl accessions that correspond to a given gene.
 
 ![image](biomart.png)
 
-### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
+### MANE Data
 
-You must run the following when loading the database:
+Variation Normalizer uses MANE data from RefSeq's [FTP site](https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/current/). 
+
+## Starting the Variation Normalization Service Locally
+`gene-normalizer`s dynamodb and the `uta` database must be running.
+
+To start the service, run the following:
 
 ```commandline
-python3 -m gene.cli --update_all --update_merged
+uvicorn variation.main:app --reload
 ```
 
-For more information, visit see the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
+Next, view the OpenAPI docs on your local machine:
+http://127.0.0.1:8000/variation
 
 ### Init coding style tests
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
@@ -99,12 +161,3 @@ From the _root_ directory of the repository:
 ```
 pytest tests/
 ```
-
-### Starting the Variation Normalization Service Locally
-`gene-normalizer`s dynamodb must be running and run the following:
-
-```
-uvicorn variation.main:app --reload
-```
-Next, view the OpenAPI docs on your local machine:
-http://127.0.0.1:8000/variation
