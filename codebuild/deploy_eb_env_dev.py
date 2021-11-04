@@ -7,7 +7,7 @@ terminate_time = 12
 eb_app_name = "VariationNormalization"
 eb_env_name = "VariationNormalization-dev-env"
 sc_product_id = "prod-mmw6ymv2ntzl2"
-print(f'Launching new Service Catalog Product for staging environment: '
+print(f'Launching new Service Catalog Product for dev environment: '
       f'{eb_app_name}')
 sc_product_artifacts = \
     servicecatalog.list_provisioning_artifacts(ProductId=sc_product_id)
@@ -49,5 +49,6 @@ try:
         eb_provisioned_product_status = \
             product_status['ProvisionedProductDetail']['Status']
         print(eb_provisioned_product_status)
-except:  # noqa: E722
+except Exception as e:  # noqa: E722
+    print(e)
     print("The EB environment is already running...")
