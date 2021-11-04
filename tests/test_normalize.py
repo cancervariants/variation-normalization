@@ -32,10 +32,7 @@ def braf_gene_context():
         "id": "normalize.gene:BRAF",
         "type": "GeneDescriptor",
         "label": "BRAF",
-        "gene": {
-            "gene_id": "hgnc:1097",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:1097",
         "xrefs": [
             "ncbigene:673",
             "ensembl:ENSG00000157764"
@@ -103,10 +100,7 @@ def vhl_gene_context():
         "id": "normalize.gene:VHL",
         "type": "GeneDescriptor",
         "label": "VHL",
-        "gene": {
-            "gene_id": "hgnc:12687",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:12687",
         "xrefs": [
             "ncbigene:7428",
             "ensembl:ENSG00000134086"
@@ -179,10 +173,7 @@ def erbb2_context():
         "id": "normalize.gene:ERBB2",
         "type": "GeneDescriptor",
         "label": "ERBB2",
-        "gene": {
-            "gene_id": "hgnc:3430",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3430",
         "xrefs": [
             "ncbigene:2064",
             "ensembl:ENSG00000141736"
@@ -262,10 +253,7 @@ def egfr_context():
         "id": "normalize.gene:EGFR",
         "type": "GeneDescriptor",
         "label": "EGFR",
-        "gene": {
-            "gene_id": "hgnc:3236",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3236",
         "xrefs": [
             "ncbigene:1956",
             "ensembl:ENSG00000146648"
@@ -344,10 +332,7 @@ def limk2_gene_context():
         "id": "normalize.gene:LIMK2",
         "type": "GeneDescriptor",
         "label": "LIMK2",
-        "gene": {
-            "gene_id": "hgnc:6614",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:6614",
         "xrefs": [
             "ncbigene:3985",
             "ensembl:ENSG00000182541"

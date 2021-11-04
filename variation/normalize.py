@@ -121,8 +121,8 @@ class Normalize:
             return self._gene_norm_cache[gene_symbol]
         else:
             response = self.gene_normalizer.normalize(gene_symbol)
-            if 'gene_descriptor' in response and response['gene_descriptor']:
-                gene_descriptor = response['gene_descriptor']
+            if response.gene_descriptor:
+                gene_descriptor = response.gene_descriptor
                 self._gene_norm_cache[gene_symbol] = gene_descriptor
                 return gene_descriptor
             return None
