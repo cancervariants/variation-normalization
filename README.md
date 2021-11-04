@@ -30,16 +30,11 @@ Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocom
 From the _root_ directory:
 ```
 pipenv shell
-pipenv lock
-pipenv sync
-cd variation
+pipenv lock && pipenv sync
 pip install seqrepo
-mkdir -p data/seqrepo
-seqrepo -r data/seqrepo pull -i 2021-01-29
-sudo chmod -R u+w data/seqrepo
-cd data/seqrepo
-seqrepo_date_dir=$(ls -d */)
-sudo mv $seqrepo_date_dir latest
+sudo mkdir /usr/local/share/seqrepo
+sudo chown $USER /usr/local/share/seqrepo
+seqrepo pull -i 2021-01-29
 ```
 
 Variation Normalizer also uses [uta](https://github.com/biocommons/uta).
