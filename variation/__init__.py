@@ -53,7 +53,7 @@ def data_download(path, domain, dir, fn):
                 remove(f"{path}")
 
 
-SEQREPO_DATA_PATH = f"{APP_ROOT}/data/seqrepo/latest"
+SEQREPO_DATA_PATH = "/usr/local/share/seqrepo/latest"
 TRANSCRIPT_MAPPINGS_PATH = f"{APP_ROOT}/data/transcript_mapping.tsv"
 AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
 REFSEQ_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/refseq_gene_symbols.txt"
