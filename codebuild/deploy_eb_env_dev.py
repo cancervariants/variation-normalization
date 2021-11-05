@@ -51,4 +51,4 @@ try:
         print(eb_provisioned_product_status)
 except Exception as e:  # noqa: E722
     print(e)
-    print("The EB environment is already running...")
+    print("The EB environment is already running....")
