@@ -68,7 +68,13 @@ Variation Normalization uses [Ensembl BioMart](http://www.ensembl.org/biomart/ma
 ### Setting up Gene Normalizer
 Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
 
-To setup, follow the instructions from the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md). 
+You must run the following when loading the database:
+
+```commandline
+python3 -m gene.cli --update_all --update_merged
+```
+
+For more information, visit see the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### Init coding style tests
 Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
