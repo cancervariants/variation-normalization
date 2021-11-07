@@ -47,9 +47,9 @@ def test_mane_transcript():
                 ac, start_pos, end_pos, start_annotation_layer
             )
 
-        def g_to_mane_c(self, ac, start_pos, end_pos):
+        def g_to_mane_c(self, ac, start_pos, end_pos, gene=None):
             return self.test_mane_transcript.g_to_mane_c(ac, start_pos,
-                                                         end_pos)
+                                                         end_pos, gene=gene)
 
     return TestMANETranscript()
 
@@ -147,6 +147,21 @@ def egfr_l858r_mane_c():
         'coding_start_site': 261,
         'coding_end_site': 3894,
         'gene': 'EGFR'
+    }
+
+
+@pytest.fixture(scope='module')
+def grch38():
+    """Create a test fixture for grch38 responses."""
+    return {
+        "gene": None,
+        "refseq": "NC_000007.14",
+        "ensembl": None,
+        "coding_start_site": None,
+        "coding_end_site": None,
+        "pos": (55191822, 55191822),
+        "strand": None,
+        "status": "GRCh38"
     }
 
 
@@ -348,17 +363,30 @@ def test_c_to_mane_c(test_mane_transcript, braf_v600e_mane_c,
 
 
 def test_g_to_mane_c(test_mane_transcript, egfr_l858r_mane_c,
-                     braf_v600e_mane_c):
+                     braf_v600e_mane_c, grch38):
     """Test that g_to_mane_c method works correctly."""
-    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515, None)
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515, None,
+                                              gene='EGFR')
     assert mane_c == egfr_l858r_mane_c
 
     mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515,
-                                              55259515)
+                                              55259515, gene='EGFR')
     assert mane_c == egfr_l858r_mane_c
 
-    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 140453136, None)
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 140453136, None,
+                                              gene='BRAF')
     assert mane_c == braf_v600e_mane_c
+
+    resp = test_mane_transcript.g_to_mane_c('NC_000007.13', 55259515, None)
+    assert resp == grch38
+
+    resp = test_mane_transcript.g_to_mane_c('NC_000007.13', 140453136, None)
+    grch38["pos"] = (140753336, 140753336)
+    assert resp == grch38
+
+    resp = test_mane_transcript.g_to_mane_c('NC_000007.14', 140753336, None)
+    grch38["pos"] = (140753336, 140753336)
+    assert resp == grch38
 
 
 def test_no_matches(test_mane_transcript):

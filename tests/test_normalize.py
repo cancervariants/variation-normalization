@@ -32,10 +32,7 @@ def braf_gene_context():
         "id": "normalize.gene:BRAF",
         "type": "GeneDescriptor",
         "label": "BRAF",
-        "gene": {
-            "gene_id": "hgnc:1097",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:1097",
         "xrefs": [
             "ncbigene:673",
             "ensembl:ENSG00000157764"
@@ -103,10 +100,7 @@ def vhl_gene_context():
         "id": "normalize.gene:VHL",
         "type": "GeneDescriptor",
         "label": "VHL",
-        "gene": {
-            "gene_id": "hgnc:12687",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:12687",
         "xrefs": [
             "ncbigene:7428",
             "ensembl:ENSG00000134086"
@@ -179,10 +173,7 @@ def erbb2_context():
         "id": "normalize.gene:ERBB2",
         "type": "GeneDescriptor",
         "label": "ERBB2",
-        "gene": {
-            "gene_id": "hgnc:3430",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3430",
         "xrefs": [
             "ncbigene:2064",
             "ensembl:ENSG00000141736"
@@ -262,10 +253,7 @@ def egfr_context():
         "id": "normalize.gene:EGFR",
         "type": "GeneDescriptor",
         "label": "EGFR",
-        "gene": {
-            "gene_id": "hgnc:3236",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3236",
         "xrefs": [
             "ncbigene:1956",
             "ensembl:ENSG00000146648"
@@ -344,10 +332,7 @@ def limk2_gene_context():
         "id": "normalize.gene:LIMK2",
         "type": "GeneDescriptor",
         "label": "LIMK2",
-        "gene": {
-            "gene_id": "hgnc:6614",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:6614",
         "xrefs": [
             "ncbigene:3985",
             "ensembl:ENSG00000182541"
@@ -731,7 +716,7 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.FqrZbBlsAwpXWOXiBq2glfhCvLqp4xLC",
+        "variation_id": "ga4gh:VA.pMmAfNtE5g3O3gZ6E9e-uyXJtwbN9whN",
         "variation": {
             "location": {
                 "interval": {
@@ -743,7 +728,7 @@ def coding_dna_deletion(erbb2_context):
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "T",
+                "sequence": "",
                 "type": "SequenceState"
             },
             "type": "Allele"
@@ -1094,6 +1079,189 @@ def genomic_uncertain_del_y():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope='module')
+def grch38_braf_genom_sub():
+    """Create a genomic substitution GRCh38 test fixture for BRAF."""
+    params = {
+        "id": 'normalize.variation:NC_000007.13%3Ag.140453136A%3ET',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.HaPTmn-rrjRoZnIVw1I4AZPa6YHa2ojh",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 140753336,
+                    "start": 140753335,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "T",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001483",
+        "vrs_ref_allele_seq": "A"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def grch38_braf_genom_silent_mutation():
+    """Create a genomic silent mutation GRCh38 test fixture for BRAF."""
+    params = {
+        "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.VkKteRkWR9MncFR3j4EICtAfdD4ZwR-1",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 140753336,
+                    "start": 140753335,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "A",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0002073",
+        "vrs_ref_allele_seq": "A"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def grch38_genomic_delins1():
+    """Create a test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
+    params = {
+        "id":
+            'normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.5cmrRcsVIUBiFii-tOHhxNPNA3OB69fe",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 140753336,
+                    "start": 140753334,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "AT",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "CA"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def grch38_genomic_delins2():
+    """Create a test fixture for NC_000003.12:g.10149938delinsAA."""
+    params = {
+        "id": 'normalize.variation:NC_000003.12%3Ag.10149938delinsAA',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.-f07PmCJYlYbzBHVUQzDYWguUU4usche",
+        "variation": {
+            "location": {
+                "interval": {
+                    "start": 10149937,
+                    "end": 10149938,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "AA",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "C"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def grch38_genomic_deletion():
+    """Create a test fixture for NC_000003.11:g.10188279_10188297del."""
+    params = {
+        "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.Id8H1AfB1DsgBPZnWJD3X4AyrpelKegQ",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 10146613,
+                    "start": 10146594,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def grch38_genomic_insertion():
+    """Create a test fixture for
+    NC_000017.10:g.37880993_37880994insGCTTACGTGATG.
+    """
+    params = {
+        "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.HxgI7LQ80HI0Q3t1letlRiWSNz8C8ea-",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 39724743,
+                    "start": 39724731,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "TACGTGATGGCTTACGTGATGGCT",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000667",
+        "vrs_ref_allele_seq": "TACGTGATGGCT"
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variation):
     """Check that normalize_response and test_variation are equal."""
     assert normalize_response.id == test_variation.id
@@ -1169,7 +1337,7 @@ def test_silent_mutation(test_normalize, vhl_silent):
 
 def test_coding_dna_and_genomic_substitution(
         test_normalize, braf_v600e_nucleotide, genomic_substitution,
-        genomic_sub_grch38, egfr_grch38_sub):
+        genomic_sub_grch38, egfr_grch38_sub, grch38_braf_genom_sub):
     """Test that coding dna and genomic substitutions normalize correctly."""
     resp = test_normalize.normalize('NM_004333.4:c.1799T>A')
     assertion_checks(resp, braf_v600e_nucleotide)
@@ -1199,9 +1367,7 @@ def test_coding_dna_and_genomic_substitution(
     assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = test_normalize.normalize('NC_000007.13:g.140453136A>T')
-    assert resp.id == 'normalize.variation:NC_000007.13%3Ag.140453136A%3ET'
-    resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, grch38_braf_genom_sub)
 
     # TODO: Issue 99
     resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
@@ -1259,10 +1425,11 @@ def test_coding_dna_silent_mutation(test_normalize,
 
 
 def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
-                                 braf_gene_context):
+                                 braf_gene_context,
+                                 grch38_braf_genom_silent_mutation):
     """Test that genomic silent mutation normalizes correctly."""
     resp = test_normalize.normalize('NC_000007.13:g.140453136=')
-    assertion_checks(resp, nc_000007_silent_mutation)
+    assertion_checks(resp, grch38_braf_genom_silent_mutation)
 
     resp = test_normalize.normalize('BRAF g.140453136=')
     assert resp.id == 'normalize.variation:BRAF%20g.140453136%3D'
@@ -1284,16 +1451,16 @@ def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,
 
 
 def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
-                        nm_000551):
+                        nm_000551, grch38_genomic_delins1,
+                        grch38_genomic_delins2):
     """Test that Genomic DelIns normalizes correctly."""
     resp = test_normalize.normalize(
         'NC_000007.13:g.140453135_140453136delinsAT'
     )
-    assertion_checks(resp, nc_000007_genomic_delins)
+    assertion_checks(resp, grch38_genomic_delins1)
 
     resp = test_normalize.normalize('NC_000003.12:g.10149938delinsAA')
-    nm_000551.id = 'normalize.variation:NC_000003.12%3Ag.10149938delinsAA'
-    assertion_checks(resp, nm_000551)
+    assertion_checks(resp, grch38_genomic_delins2)
 
 
 def test_amino_acid_delins(test_normalize, amino_acid_delins):
@@ -1342,10 +1509,11 @@ def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
     assertion_checks(resp, coding_dna_deletion)
 
 
-def test_genomic_deletion(test_normalize, genomic_deletion):
+def test_genomic_deletion(test_normalize, genomic_deletion,
+                          grch38_genomic_deletion):
     """Test that genomic deletion normalizes correctly."""
     resp = test_normalize.normalize('NC_000003.11:g.10188279_10188297del')
-    assertion_checks(resp, genomic_deletion)
+    assertion_checks(resp, grch38_genomic_deletion)
 
     resp = test_normalize.normalize('VHL g.10188279_10188297del')
     assert resp.id == 'normalize.variation:VHL%20g.10188279_10188297del'
@@ -1395,10 +1563,11 @@ def test_coding_dna_insertion(test_normalize, coding_dna_insertion):
     assertion_checks(resp, coding_dna_insertion)
 
 
-def test_genomic_insertion(test_normalize, genomic_insertion):
+def test_genomic_insertion(test_normalize, genomic_insertion,
+                           grch38_genomic_insertion):
     """Test that genomic insertion normalizes correctly."""
     resp = test_normalize.normalize('NC_000017.10:g.37880993_37880994insGCTTACGTGATG')  # noqa: E501
-    assertion_checks(resp, genomic_insertion)
+    assertion_checks(resp, grch38_genomic_insertion)
 
     resp = test_normalize.normalize('ERBB2 g.37880993_37880994insGCTTACGTGATG')
     assert resp.id ==\
