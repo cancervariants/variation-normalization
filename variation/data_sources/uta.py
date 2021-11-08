@@ -373,6 +373,13 @@ class UTA:
             data['alt_pos_range'][0] + data['alt_pos_change'][0],
             data['alt_pos_range'][1] - data['alt_pos_change'][1]
         )
+
+        if data['strand'] == '-':
+            data['alt_pos_change_range'] = (
+                data['alt_pos_range'][1] - data['alt_pos_change'][0],
+                data['alt_pos_range'][0] + data['alt_pos_change'][1]
+            )
+
         return data
 
     def get_genomic_tx_data(self, ac, pos) -> Optional[Dict]:
