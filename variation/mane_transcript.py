@@ -218,9 +218,12 @@ class MANETranscript:
         coding_start_site = cds_start_end[0]
 
         g_pos = g['alt_pos_change_range'][0], g['alt_pos_change_range'][1]
-        g_pos_change = g_pos[0] - result[5], result[6] - g_pos[1]
+        mane_g_pos = result[5], result[6]
+        g_pos_change = g_pos[0] - mane_g_pos[0], mane_g_pos[1] - g_pos[1]
         if mane_data["chr_strand"] == "-":
-            g_pos_change = (g_pos_change[1] + 1, g_pos_change[0] - 1)
+            g_pos_change = (
+                mane_g_pos[1] - g_pos[0], g_pos[1] - mane_g_pos[0]
+            )
 
         mane_tx_pos_range = result[2], result[3]
         mane_c_pos_change = (
