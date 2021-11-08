@@ -373,6 +373,19 @@ def test_g_to_mane_c(test_mane_transcript, egfr_l858r_mane_c,
                                               55259515, gene='EGFR')
     assert mane_c == egfr_l858r_mane_c
 
+    mane_c = test_mane_transcript.g_to_mane_c('NC_000012.11', 25398284, None,
+                                              gene='KRAS')
+    assert mane_c == {
+        'refseq': 'NM_004985.5',
+        'ensembl': 'ENST00000311936.8',
+        'pos': (35, 35),
+        'status': 'MANE Select',
+        'strand': '-',
+        'coding_start_site': 190,
+        'coding_end_site': 757,
+        'gene': 'KRAS'
+    }
+
     mane_c = test_mane_transcript.g_to_mane_c('NC_000007.13', 140453136, None,
                                               gene='BRAF')
     assert mane_c == braf_v600e_mane_c
