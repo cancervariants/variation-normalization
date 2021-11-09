@@ -217,8 +217,13 @@ class MANETranscript:
             return None
         coding_start_site = cds_start_end[0]
 
-        g_pos = g['alt_pos_change_range'][0], g['alt_pos_change_range'][1]
-        g_pos_change = g_pos[0] - result[5], result[6] - g_pos[1]
+        g_pos = g['alt_pos_change_range']  # start/end genomic change
+        mane_g_pos = result[5], result[6]  # alt_start_i, alt_end_i
+        g_pos_change = g_pos[0] - mane_g_pos[0], mane_g_pos[1] - g_pos[1]
+        if mane_data["chr_strand"] == "-":
+            g_pos_change = (
+                mane_g_pos[1] - g_pos[0], g_pos[1] - mane_g_pos[0]
+            )
 
         mane_tx_pos_range = result[2], result[3]
         mane_c_pos_change = (
@@ -454,7 +459,7 @@ class MANETranscript:
             g = self._c_to_g(c_ac, c_pos)
             if g is None:
                 return None
-            # Go from g -> mane transcript
+            # Get mane data for gene
             mane_data = \
                 self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
             if not mane_data:
@@ -614,12 +619,14 @@ class MANETranscript:
             mane_tx_genomic_data = None
             if grch38:
                 # GRCh38 -> MANE C
+                g_pos = grch38['pos']
                 mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
                     mane_c_ac, None, grch38['pos'][0], grch38['pos'][1]
                 )
 
             if not grch38 or not mane_tx_genomic_data:
-                # GRCh38 did not work, so let's try original assembly
+                # GRCh38 did not work, so let's try original assembly (37)
+                g_pos = start_pos, end_pos
                 mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
                     mane_c_ac, ac, start_pos, end_pos
                 )
@@ -629,16 +636,19 @@ class MANETranscript:
                     logger.info("Not using most recent assembly")
 
             tx_pos_range = mane_tx_genomic_data['tx_pos_range']
-            alt_pos_change = mane_tx_genomic_data['alt_pos_change']
+            mane_g_pos = mane_tx_genomic_data['alt_pos_range']
+            g_pos_change = g_pos[0] - mane_g_pos[0], mane_g_pos[1] - g_pos[1]
             coding_start_site = mane_tx_genomic_data['coding_start_site']
             coding_end_site = mane_tx_genomic_data['coding_end_site']
 
             if mane_tx_genomic_data['strand'] == '-':
-                alt_pos_change = (alt_pos_change[1] + 1, alt_pos_change[0] - 1)
+                g_pos_change = (
+                    mane_g_pos[1] - g_pos[0] + 1, g_pos[1] - mane_g_pos[0] - 1
+                )
 
             mane_c_pos_change = (
-                tx_pos_range[0] + alt_pos_change[0] - coding_start_site,
-                tx_pos_range[1] - alt_pos_change[1] - coding_start_site
+                tx_pos_range[0] + g_pos_change[0] - coding_start_site,
+                tx_pos_range[1] - g_pos_change[1] - coding_start_site
             )
 
             if not self._validate_index(mane_c_ac, mane_c_pos_change,
