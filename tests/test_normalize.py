@@ -33,10 +33,7 @@ def braf_gene_context():
         "id": "normalize.gene:BRAF",
         "type": "GeneDescriptor",
         "label": "BRAF",
-        "gene": {
-            "gene_id": "hgnc:1097",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:1097",
         "xrefs": [
             "ncbigene:673",
             "ensembl:ENSG00000157764"
@@ -104,10 +101,7 @@ def vhl_gene_context():
         "id": "normalize.gene:VHL",
         "type": "GeneDescriptor",
         "label": "VHL",
-        "gene": {
-            "gene_id": "hgnc:12687",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:12687",
         "xrefs": [
             "ncbigene:7428",
             "ensembl:ENSG00000134086"
@@ -180,10 +174,7 @@ def erbb2_context():
         "id": "normalize.gene:ERBB2",
         "type": "GeneDescriptor",
         "label": "ERBB2",
-        "gene": {
-            "gene_id": "hgnc:3430",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3430",
         "xrefs": [
             "ncbigene:2064",
             "ensembl:ENSG00000141736"
@@ -263,10 +254,7 @@ def egfr_context():
         "id": "normalize.gene:EGFR",
         "type": "GeneDescriptor",
         "label": "EGFR",
-        "gene": {
-            "gene_id": "hgnc:3236",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:3236",
         "xrefs": [
             "ncbigene:1956",
             "ensembl:ENSG00000146648"
@@ -345,10 +333,7 @@ def limk2_gene_context():
         "id": "normalize.gene:LIMK2",
         "type": "GeneDescriptor",
         "label": "LIMK2",
-        "gene": {
-            "gene_id": "hgnc:6614",
-            "type": "Gene"
-        },
+        "gene_id": "hgnc:6614",
         "xrefs": [
             "ncbigene:3985",
             "ensembl:ENSG00000182541"
@@ -428,6 +413,105 @@ def braf_v600e(braf_gene_context):
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": braf_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def dis3_p63a():
+    """Create DIS3 P63A test fixture."""
+    params = {
+        "id": "normalize.variation:DIS3%20P63A",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.JGmgA6fdzSfmnqrHFgjkpqCY28vdcg9_",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 63,
+                    "start": 62,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.mlWsxfPKINN3o300stAI8oqN5U7P6kEu",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "A",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "gene_context": {
+            "id": "normalize.gene:DIS3",
+            "type": "GeneDescriptor",
+            "label": "DIS3",
+            "xrefs": [
+                "ensembl:ENSG00000083520",
+                "ncbigene:22894"
+            ],
+            "alternate_labels": [
+                "dis3p",
+                "RRP44",
+                "KIAA1008",
+                "2810028N01Rik",
+                "EXOSC11"
+            ],
+            "extensions": [
+                {
+                    "name": "symbol_status",
+                    "value": "approved",
+                    "type": "Extension"
+                },
+                {
+                    "name": "approved_name",
+                    "value": "DIS3 homolog, exosome endoribonuclease and 3'-5' exoribonuclease",  # noqa: E501
+                    "type": "Extension"
+                },
+                {
+                    "name": "chromosome_location",
+                    "value": {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "q21.33",
+                            "end": "q21.33"
+                        },
+                        "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
+                        "type": "ChromosomeLocation",
+                        "chr": "13"
+                    },
+                    "type": "Extension"
+                },
+                {
+                    "name": "associated_with",
+                    "value": [
+                        "vega:OTTHUMG00000017070",
+                        "ccds:CCDS9447",
+                        "orphanet:470196",
+                        "ena.embl:AB023225",
+                        "ccds:CCDS45057",
+                        "omim:607533",
+                        "pubmed:11935316",
+                        "refseq:NM_014953",
+                        "uniprot:Q9Y2L1",
+                        "ccds:CCDS81772",
+                        "ucsc:uc001vix.6",
+                        "pubmed:9562621"
+                    ],
+                    "type": "Extension"
+                },
+                {
+                    "name": "previous_symbols",
+                    "value": [
+                        "KIAA1008"
+                    ],
+                    "type": "Extension"
+                }
+            ],
+            "gene_id": "hgnc:20604"
+        },
+        "vrs_ref_allele_seq": "P"
     }
     return VariationDescriptor(**params)
 
@@ -1278,7 +1362,7 @@ def grch38_genomic_insertion():
     return VariationDescriptor(**params)
 
 
-def test_amino_acid_substitution(test_normalize, braf_v600e):
+def test_amino_acid_substitution(test_normalize, braf_v600e, dis3_p63a):
     """Test that amino acid substitutions normalize correctly."""
     resp = test_normalize.normalize('     BRAF      V600E    ')
     assertion_checks(resp, braf_v600e)
@@ -1299,6 +1383,9 @@ def test_amino_acid_substitution(test_normalize, braf_v600e):
     assert resp.id == 'normalize.variation:NP_001365404.1%3Ap.Val512Glu'
     resp.id = braf_id
     assertion_checks(resp, braf_v600e)
+
+    resp = test_normalize.normalize('DIS3 P63A')
+    assertion_checks(resp, dis3_p63a)
 
 
 def test_polypeptide_truncation(test_normalize, vhl):

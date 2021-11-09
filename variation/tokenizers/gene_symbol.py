@@ -27,12 +27,7 @@ class GeneSymbol(Tokenizer):
 
         norm_resp = self.gene_normalizer.normalize(upper_input)
 
-        # TODO: Fix gene-normalizer response
-        try:
-            norm_match_type = norm_resp.match_type
-        except AttributeError:
-            norm_match_type = norm_resp['match_type']
-
+        norm_match_type = norm_resp.match_type
         if norm_match_type == MatchType.CONCEPT_ID:
             match_type = TokenMatchType.ID
         elif norm_match_type == MatchType.SYMBOL:
@@ -45,7 +40,7 @@ class GeneSymbol(Tokenizer):
             match_type = TokenMatchType.UNSPECIFIED
 
         if match_type != TokenMatchType.UNSPECIFIED:
-            label = norm_resp['gene_descriptor']['label']
+            label = norm_resp.gene_descriptor.label
         else:
             label = upper_input
 
