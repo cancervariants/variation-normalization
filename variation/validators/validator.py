@@ -585,7 +585,10 @@ class Validator(ABC):
                                                cds_start, errors)
         if not ival_coords:
             return None
-        ival_start, ival_end = ival_coords
+        if ival_coords[0] > ival_coords[1]:
+            ival_end, ival_start = ival_coords
+        else:
+            ival_start, ival_end = ival_coords
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
