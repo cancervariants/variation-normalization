@@ -175,7 +175,7 @@ class GenomicDuplication(Validator):
         :param int end: End pos change
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            # Unambiguous
+            # Ambiguous
             if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
                 start_grch38_data = self.mane_transcript.g_to_grch38(
                     t, s.start_pos1_dup, s.start_pos2_dup
@@ -240,9 +240,13 @@ class GenomicDuplication(Validator):
                 )
 
                 if mane:
+                    s.reference_sequence = 'c'
+                    s.molecule_context = 'transcript'
+                    s.so_id = 'SO:0000159'
+
                     allele = self.to_vrs_allele(
                         mane['refseq'], mane['pos'][0], mane['pos'][1],
-                        'c', s.alt_type, errors,
+                        s.reference_sequence, s.alt_type, errors,
                         cds_start=mane['coding_start_site']
                     )
 
