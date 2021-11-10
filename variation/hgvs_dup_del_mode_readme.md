@@ -24,4 +24,10 @@ This mode helps us interpret deletions and duplications that are represented as 
 
 # Notes
 
+- Ambiguous ranges are of the form:
+    - `(#_#)_(#_#)`
+    - `(?_#)_(#_?)`
+    - `(?_#)_#`
+    - `#_(#_?)`
 - We do not normalize any ambiguous ranges
+- We do not change the molecular context for ambiguous ranges.
