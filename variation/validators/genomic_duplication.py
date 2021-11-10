@@ -136,7 +136,9 @@ class GenomicDuplication(Validator):
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
                 pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            ival, _ = self._get_ival(t, s, errors)
+            ival, grch38 = self._get_ival(t, s, errors)
+            if grch38:
+                t = grch38['ac']
 
             allele = self.to_vrs_allele_ranges(
                 s, t, s.reference_sequence, s.alt_type,
@@ -175,12 +177,14 @@ class GenomicDuplication(Validator):
         if not gene_tokens:
             if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
                 if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
-                    start_grch38 = self.mane_transcript.g_to_grch38(
+                    start_grch38_data = self.mane_transcript.g_to_grch38(
                         t, s.start_pos1_dup, s.start_pos2_dup
-                    )['pos']
+                    )
+                    start_grch38 = start_grch38_data['pos']
                     end_grch38 = self.mane_transcript.g_to_grch38(
                         t, s.end_pos1_dup, s.end_pos2_dup
                     )['pos']
+                    t = start_grch38_data['ac']
 
                     for pos in [start_grch38[0], start_grch38[1],
                                 end_grch38[0], end_grch38[1]]:
@@ -208,6 +212,8 @@ class GenomicDuplication(Validator):
                             )
                 else:
                     ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+                    if grch38:
+                        t = grch38['ac']
 
                     if not errors:
                         allele = self.to_vrs_allele_ranges(
@@ -229,7 +235,6 @@ class GenomicDuplication(Validator):
                                 mane_data_found, 'GRCh38'
                             )
             else:
-                # If no gene tokens, get GRCh38
                 grch38 = self.mane_transcript.g_to_grch38(
                     t, start, end)
 
