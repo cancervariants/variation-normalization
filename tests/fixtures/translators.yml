@@ -1275,7 +1275,7 @@ genomic_deletion:
     - query: NC_000003.11:g.10191486_10191487delAG
       variations: [
         {
-          "_id": "ga4gh:VA.PcUd92rbhoZxkQMNP9_UOOWHd19LAMdP",
+          "_id": "ga4gh:VA.BXSqYryqjtncUNX06rw7_0AYzfmt60ef",
           "location": {
             "interval": {
               "end": 10149803,
@@ -1287,12 +1287,12 @@ genomic_deletion:
           },
           "state": {
             "sequence": "",
-            "type": "SequenceState"
+            "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         },
         {
-          "_id": "ga4gh:VA.46ZSku6zg54ZWx0Lfp3azV3PV-a1iYbB",
+          "_id": "ga4gh:VA.CUSDw6aHx7lqcrKKSpPId4XuLw4k69yt",
           "location": {
             "interval": {
               "end": 10191487,
@@ -1304,7 +1304,7 @@ genomic_deletion:
           },
           "state": {
             "sequence": "",
-            "type": "SequenceState"
+            "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         }
@@ -1324,7 +1324,7 @@ genomic_deletion:
           },
           "state": {
             "sequence": "",
-            "type": "SequenceState"
+            "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         },
@@ -1341,7 +1341,7 @@ genomic_deletion:
           },
           "state": {
             "sequence": "",
-            "type": "SequenceState"
+            "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         }
@@ -1802,28 +1802,33 @@ genomic_duplication:
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
       variations: [
         {
-          "_id": "ga4gh:VA.FVO5KRS7ak43abkl08E6u24xJO2mkdui",
-          "type": "Allele",
-          "location": {
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-              "type": "SequenceInterval",
-              "start": {
-                "min": 31060226,
-                "max": 31100350,
-                "type": "DefiniteRange"
+          "_id": "ga4gh:VCN.IgQATuKrM_J5MDHm2VemKThFOkzz-7AZ",
+          "type": "CopyNumber",
+          "subject": {
+              "location": {
+                  "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                  "interval": {
+                      "type": "SequenceInterval",
+                      "start": {
+                          "min": 31060226,
+                          "max": 31100350,
+                          "type": "DefiniteRange"
+                      },
+                      "end": {
+                          "min": 33274279,
+                          "max": 33417152,
+                          "type": "DefiniteRange"
+                      }
+                  },
+                  "type": "SequenceLocation",
               },
-              "end": {
-                "min": 33274279,
-                "max": 33417152,
-                "type": "DefiniteRange"
-              },
-            },
-            "type": "SequenceLocation",
+              "reverse_complement": False,
+              "type": "DerivedSequenceExpression"
           },
-          "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": ""
+          "copies": {
+              "type": "DefiniteRange",
+              "min": 2,
+              "max": 3
           }
         }
       ]

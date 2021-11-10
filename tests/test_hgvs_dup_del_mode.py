@@ -799,6 +799,88 @@ def genomic_del4_rse_lse(genomic_del4):
 
 
 @pytest.fixture(scope='module')
+def genomic_uncertain_del_2():
+    """Create a genomic uncertain deletion on chr 2 test fixture."""
+    params = {
+        "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+        "variation": {
+            "subject": {
+                "location": {
+                    "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+                    "interval": {
+                        "start": {
+                            "value": 110104899,
+                            "comparator": "<=",
+                            "type": "IndefiniteRange"
+                        },
+                        "end": {
+                            "value": 110207160,
+                            "comparator": ">=",
+                            "type": "IndefiniteRange"
+                        },
+                        "type": "SequenceInterval"
+                    },
+                    "type": "SequenceLocation"
+                },
+                "reverse_complement": False,
+                "type": "DerivedSequenceExpression"
+            },
+            "copies": {
+                "value": 1,
+                "type": "Number"
+            },
+            "type": "CopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_uncertain_del_y():
+    """Create a genomic uncertain deletion on chr Y test fixture."""
+    params = {
+        "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+        "variation": {
+            "subject": {
+                "location": {
+                    "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                    "interval": {
+                        "start": {
+                            "value": 14076801,
+                            "comparator": "<=",
+                            "type": "IndefiniteRange"
+                        },
+                        "end": {
+                            "value": 57165209,
+                            "comparator": ">=",
+                            "type": "IndefiniteRange"
+                        },
+                        "type": "SequenceInterval"
+                    },
+                    "type": "SequenceLocation"
+                },
+                "reverse_complement": False,
+                "type": "DerivedSequenceExpression"
+            },
+            "copies": {
+                "value": 0,
+                "type": "Number"
+            },
+            "type": "CopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743"
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
 def genomic_del5():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -921,6 +1003,37 @@ def genomic_del6_rse_lse(genomic_del6):
             "type": "Text",
             "definition": "NC_000006.12:g.133462764_(133464858_?)del"
         }
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_deletion(vhl_gene_context):
+    """Create test fixture for genomic deletion range."""
+    params = {
+        "id": 'normalize.variation:VHL%20g.10188279_10188297del',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.uagNswLQY5rgN2c30_J3-45UMpIySM4C",
+        "variation": {
+            "location": {
+                "interval": {
+                    "end": 510,
+                    "start": 491,
+                    "type": "SimpleInterval"
+                },
+                "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "",
+                "type": "SequenceState"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "transcript",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
+        "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)
 
@@ -1174,6 +1287,10 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del2_default, ignore_id=True)
 
+    # Free text
+    resp = test_normalize.normalize('VHL g.10188279_10188297del')
+    assertion_checks(resp, genomic_deletion)
+
 
 def test_genomic_del3(test_normalize, genomic_del3_default,
                       genomic_del3_rse_lse):
@@ -1207,7 +1324,8 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
 
 
 def test_genomic_del4(test_normalize, genomic_del4_default,
-                      genomic_del4_rse_lse):
+                      genomic_del4_rse_lse, genomic_uncertain_del_2,
+                      genomic_uncertain_del_y):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = test_normalize.normalize(q, "default")
@@ -1235,6 +1353,14 @@ def test_genomic_del4(test_normalize, genomic_del4_default,
 
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, ignore_id=True)
+
+    q = "NC_000002.12:g.(?_110104900)_(110207160_?)del"
+    resp = test_normalize.normalize(q)
+    assertion_checks(resp, genomic_uncertain_del_2)
+
+    q = "NC_000024.10:g.(?_14076802)_(57165209_?)del"
+    resp = test_normalize.normalize(q)
+    assertion_checks(resp, genomic_uncertain_del_y)
 
 
 def test_genomic_del5(test_normalize, genomic_del5_default,

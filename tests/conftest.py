@@ -1,4 +1,78 @@
 """Create methods used throughout tests."""
+import pytest
+
+
+@pytest.fixture(scope='session')
+def vhl_gene_context():
+    """Create a VHL gene context."""
+    return {
+        "id": "normalize.gene:VHL",
+        "type": "GeneDescriptor",
+        "label": "VHL",
+        "gene_id": "hgnc:12687",
+        "xrefs": [
+            "ncbigene:7428",
+            "ensembl:ENSG00000134086"
+        ],
+        "alternate_labels": [
+            "HRCA1",
+            "VHL1",
+            "RCA1",
+            "pVHL"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "von Hippel-Lindau tumor suppressor"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "ucsc:uc003bvc.4",
+                    "pubmed:9671762",
+                    "refseq:NM_000551",
+                    "cosmic:VHL",
+                    "omim:608537",
+                    "vega:OTTHUMG00000128668",
+                    "ccds:CCDS2598",
+                    "ena.embl:L15409",
+                    "orphanet:120467",
+                    "ccds:CCDS2597",
+                    "uniprot:P40337"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id":
+                        "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "3",
+                    "interval": {
+                        "end": "p25.3",
+                        "start": "p25.3",
+                        "type": "CytobandInterval"
+                    }
+                }
+            },
+            {
+                "name": "previous_symbols",
+                "value": [
+                    "RCA1"
+                ],
+                "type": "Extension"
+            }
+        ]
+    }
 
 
 def assertion_checks(normalize_response, test_variation, ignore_id=False):
