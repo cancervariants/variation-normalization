@@ -107,7 +107,32 @@ class GenomicDeletion(DeletionBase):
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
         """
-        if not gene_tokens:
+        if gene_tokens:
+            mane = self.mane_transcript.get_mane_transcript(
+                t, s.start_pos_del, s.end_pos_del,
+                s.reference_sequence,
+                gene=gene_tokens[0].token,
+                normalize_endpoint=normalize_endpoint
+            )
+
+            if mane:
+                allele = self.to_vrs_allele(
+                    mane['refseq'], mane['pos'][0], mane['pos'][1],
+                    'c', s.alt_type, errors,
+                    cds_start=mane['coding_start_site']
+                )
+                mane_variation = self.hgvs_dup_del_mode.interpret_variation(
+                    t, s.alt_type, allele,
+                    errors, hgvs_dup_del_mode
+                )
+
+                if mane_variation:
+                    self._add_dict_to_mane_data(
+                        mane['refseq'], s, mane_variation,
+                        mane_data_found, mane['status']
+                    )
+        else:
+            # No gene provided, then use GRCh38 assesmbly
             if not self._is_grch38_assembly(t):
                 grch38 = self.mane_transcript.g_to_grch38(t, start, end)
             else:
@@ -119,8 +144,8 @@ class GenomicDeletion(DeletionBase):
 
                 if not errors:
                     allele = self.to_vrs_allele(
-                        grch38['ac'], grch38['pos'][0],
-                        grch38['pos'][1], s.reference_sequence,
+                        grch38['ac'], int(grch38['pos'][0]),
+                        int(grch38['pos'][1]), s.reference_sequence,
                         s.alt_type, errors
                     )
                     grch38_variation = \
@@ -134,20 +159,6 @@ class GenomicDeletion(DeletionBase):
                             grch38['ac'], s, grch38_variation,
                             mane_data_found, 'GRCh38'
                         )
-        else:
-            # TODO
-            pass
-            # mane = self.mane_transcript.get_mane_transcript(
-            #     t, s.start_pos_del, s.end_pos_del,
-            #     s.reference_sequence,
-            #     gene=gene_tokens[0].token if gene_tokens else None,
-            #     normalize_endpoint=normalize_endpoint
-            # )
-            #
-            # self.add_mane_data(
-            #     mane, mane_data_found, s.reference_sequence,
-            #     s.alt_type, s, gene_tokens
-            # )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.

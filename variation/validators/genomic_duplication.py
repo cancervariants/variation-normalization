@@ -174,72 +174,94 @@ class GenomicDuplication(Validator):
         :param int start: Start pos change
         :param int end: End pos change
         """
-        if not gene_tokens:
-            if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-                if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
-                    start_grch38_data = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos1_dup, s.start_pos2_dup
+        if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
+            # Unambiguous
+            if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
+                start_grch38_data = self.mane_transcript.g_to_grch38(
+                    t, s.start_pos1_dup, s.start_pos2_dup
+                )
+                start_grch38 = start_grch38_data['pos']
+                end_grch38 = self.mane_transcript.g_to_grch38(
+                    t, s.end_pos1_dup, s.end_pos2_dup
+                )['pos']
+                t = start_grch38_data['ac']
+
+                for pos in [start_grch38[0], start_grch38[1],
+                            end_grch38[0], end_grch38[1]]:
+                    self._check_index(t, pos, errors)
+
+                if not errors:
+                    ival = self._get_ival_certain_range(
+                        start_grch38[0], start_grch38[1],
+                        end_grch38[0], end_grch38[1]
                     )
-                    start_grch38 = start_grch38_data['pos']
-                    end_grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.end_pos1_dup, s.end_pos2_dup
-                    )['pos']
-                    t = start_grch38_data['ac']
-
-                    for pos in [start_grch38[0], start_grch38[1],
-                                end_grch38[0], end_grch38[1]]:
-                        self._check_index(t, pos, errors)
-
-                    if not errors:
-                        ival = self._get_ival_certain_range(
-                            start_grch38[0], start_grch38[1],
-                            end_grch38[0], end_grch38[1]
+                    allele = self.to_vrs_allele_ranges(
+                        s, t, s.reference_sequence, s.alt_type,
+                        errors, ival
+                    )
+                    mane_variation = \
+                        self.hgvs_dup_del_mode.interpret_variation(
+                            t, s.alt_type, allele, errors,
+                            hgvs_dup_del_mode
                         )
-                        allele = self.to_vrs_allele_ranges(
-                            s, t, s.reference_sequence, s.alt_type,
-                            errors, ival
+                    if mane_variation:
+                        grch38 = self._grch38_dict(t, None)
+                        self.add_mane_data(
+                            grch38, mane_data_found, s.reference_sequence,  # noqa: E501
+                            s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
                         )
-                        mane_variation = \
-                            self.hgvs_dup_del_mode.interpret_variation(
-                                t, s.alt_type, allele, errors,
-                                hgvs_dup_del_mode
-                            )
-                        if mane_variation:
-                            grch38 = self._grch38_dict(t, None)
-                            self.add_mane_data(
-                                grch38, mane_data_found, s.reference_sequence,  # noqa: E501
-                                s.alt_type, s, gene_tokens, mane_variation=mane_variation  # noqa: E501
-                            )
-                else:
-                    ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
-                    if grch38:
-                        t = grch38['ac']
+            else:
+                ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+                if grch38:
+                    t = grch38['ac']
 
-                    if not errors:
-                        allele = self.to_vrs_allele_ranges(
-                            s, t, s.reference_sequence,
-                            s.alt_type, errors, ival)
-                        if start is not None and end is not None:
-                            pos = (start, end)
-                        else:
-                            pos = None
-                        grch38_variation = \
-                            self.hgvs_dup_del_mode.interpret_variation(
-                                t, s.alt_type, allele, errors,
-                                hgvs_dup_del_mode
-                            )
+                if not errors:
+                    allele = self.to_vrs_allele_ranges(
+                        s, t, s.reference_sequence,
+                        s.alt_type, errors, ival)
 
-                        if grch38_variation:
-                            self._add_dict_to_mane_data(
-                                grch38['ac'], s, grch38_variation,
-                                mane_data_found, 'GRCh38'
-                            )
+                    grch38_variation = \
+                        self.hgvs_dup_del_mode.interpret_variation(
+                            t, s.alt_type, allele, errors,
+                            hgvs_dup_del_mode
+                        )
+
+                    if grch38_variation:
+                        self._add_dict_to_mane_data(
+                            grch38['ac'], s, grch38_variation,
+                            mane_data_found, 'GRCh38'
+                        )
+        else:
+            # Unambiguous
+            if gene_tokens:
+                mane = self.mane_transcript.get_mane_transcript(
+                    t, start, end, s.reference_sequence,
+                    gene=gene_tokens[0].token, normalize_endpoint=True
+                )
+
+                if mane:
+                    allele = self.to_vrs_allele(
+                        mane['refseq'], mane['pos'][0], mane['pos'][1],
+                        'c', s.alt_type, errors,
+                        cds_start=mane['coding_start_site']
+                    )
+
+                    mane_variation = self.hgvs_dup_del_mode.interpret_variation(  # noqa: #501
+                        t, s.alt_type, allele,
+                        errors, hgvs_dup_del_mode
+                    )
+
+                    if mane_variation:
+                        self._add_dict_to_mane_data(
+                            mane['refseq'], s, mane_variation,
+                            mane_data_found, mane['status']
+                        )
             else:
                 grch38 = self.mane_transcript.g_to_grch38(
                     t, start, end)
 
                 if grch38:
-                    for pos in [grch38['pos'][0], grch38['pos'][1]]:  # noqa: E501
+                    for pos in [grch38['pos'][0], grch38['pos'][1]]:
                         self._check_index(grch38['ac'], pos, errors)
                     if not errors:
                         allele = self.to_vrs_allele(

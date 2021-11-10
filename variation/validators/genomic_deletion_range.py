@@ -150,30 +150,26 @@ class GenomicDeletionRange(Validator):
         :param int start: Start pos change
         :param int end: End pos change
         """
-        if not gene_tokens:
-            ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
-            if grch38:
-                t = grch38['ac']
+        ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+        if grch38:
+            t = grch38['ac']
 
-            if not errors:
-                allele = self.to_vrs_allele_ranges(
-                    s, t, s.reference_sequence,
-                    s.alt_type, errors, ival)
+        if not errors:
+            allele = self.to_vrs_allele_ranges(
+                s, t, s.reference_sequence,
+                s.alt_type, errors, ival)
 
-                grch38_variation = \
-                    self.hgvs_dup_del_mode.interpret_variation(
-                        t, s.alt_type, allele, errors,
-                        hgvs_dup_del_mode
-                    )
+            grch38_variation = \
+                self.hgvs_dup_del_mode.interpret_variation(
+                    t, s.alt_type, allele, errors,
+                    hgvs_dup_del_mode
+                )
 
-                if grch38_variation:
-                    self._add_dict_to_mane_data(
-                        grch38['ac'], s, grch38_variation,
-                        mane_data_found, 'GRCh38'
-                    )
-        else:
-            # TODO
-            pass
+            if grch38_variation:
+                self._add_dict_to_mane_data(
+                    grch38['ac'], s, grch38_variation,
+                    mane_data_found, 'GRCh38'
+                )
 
     def _get_ival(self, t, s, errors, is_norm=False)\
             -> Optional[Tuple[models.SequenceInterval, Dict]]:
