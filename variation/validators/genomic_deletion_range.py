@@ -112,7 +112,9 @@ class GenomicDeletionRange(Validator):
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
-        ival, _ = self._get_ival(t, s, errors)
+        ival, grch38 = self._get_ival(t, s, errors)
+        if grch38:
+            t = grch38['ac']
 
         allele = self.to_vrs_allele_ranges(
             s, t, s.reference_sequence, s.alt_type,
@@ -150,6 +152,8 @@ class GenomicDeletionRange(Validator):
         """
         if not gene_tokens:
             ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+            if grch38:
+                t = grch38['ac']
 
             if not errors:
                 allele = self.to_vrs_allele_ranges(

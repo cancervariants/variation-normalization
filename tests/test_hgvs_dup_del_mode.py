@@ -1014,6 +1014,7 @@ def test_genomic_dup3(test_normalize, genomic_dup3_default,
     resp = test_normalize.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup3_default, ignore_id=True)
 
+    genomic_dup3_rse_lse.variation.definition = q
     resp = test_normalize.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, ignore_id=True)
 
@@ -1197,6 +1198,7 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
     resp = test_normalize.normalize(q, "cnv")
     assertion_checks(resp, genomic_del3_default, ignore_id=True)
 
+    genomic_del3_rse_lse.variation.definition = q
     resp = test_normalize.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, ignore_id=True)
 
