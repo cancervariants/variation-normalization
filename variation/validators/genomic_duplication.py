@@ -242,7 +242,7 @@ class GenomicDuplication(Validator):
                 if mane:
                     s.reference_sequence = 'c'
                     s.molecule_context = 'transcript'
-                    s.so_id = 'SO:0000159'
+                    s.so_id = 'SO:1000035'
 
                     allele = self.to_vrs_allele(
                         mane['refseq'], mane['pos'][0], mane['pos'][1],
