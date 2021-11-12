@@ -61,14 +61,21 @@ class GenomicDeletion(DeletionBase):
                 else:
                     end = s.end_pos_del
 
-                allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
-                                            s.reference_sequence, s.alt_type,
-                                            errors)
+                if gene_tokens:
+                    self._validate_gene_pos(gene_tokens[0].token, t, start,
+                                            end, errors)
 
-                variation = self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                    pos=(start, end)
-                )
+                if not errors:
+                    allele = self.to_vrs_allele(
+                        t, s.start_pos_del, s.end_pos_del,
+                        s.reference_sequence, s.alt_type, errors)
+
+                    variation = self.hgvs_dup_del_mode.interpret_variation(
+                        t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                        pos=(start, end)
+                    )
+                else:
+                    variation = None
 
                 if not errors:
                     self.check_reference_sequence(t, s, errors)
