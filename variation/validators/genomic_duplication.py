@@ -86,7 +86,9 @@ class GenomicDuplication(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors, hgvs_dup_del_mode)
+                result = self._get_variation(
+                    s, t, errors, hgvs_dup_del_mode,
+                    gene=gene_tokens[0].token if gene_tokens else None)
                 variation = result['variation']
                 start = result['start']
                 end = result['end']
@@ -109,7 +111,7 @@ class GenomicDuplication(Validator):
             classification, gene_tokens
         )
 
-    def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
+    def _get_variation(self, s, t, errors, hgvs_dup_del_mode, gene=None)\
             -> Optional[Dict]:
         """Get variation data.
 
@@ -129,17 +131,22 @@ class GenomicDuplication(Validator):
             else:
                 # Format: #_#dup
                 end = s.start_pos2_dup
-            allele = self.to_vrs_allele(
-                t, start, end, s.reference_sequence,
-                s.alt_type, errors)
-            variation = self.hgvs_dup_del_mode.interpret_variation(
-                t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                pos=(start, end))
+
+            if gene:
+                self._validate_gene_pos(gene, t, start, end, errors)
+
+            if not errors:
+                allele = self.to_vrs_allele(
+                    t, start, end, s.reference_sequence,
+                    s.alt_type, errors)
+                variation = self.hgvs_dup_del_mode.interpret_variation(
+                    t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                    pos=(start, end))
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             ival, grch38 = self._get_ival(t, s, errors)
             if grch38:
                 t = grch38['ac']
-
+            # TODO: Validate gene pos?
             allele = self.to_vrs_allele_ranges(
                 s, t, s.reference_sequence, s.alt_type,
                 errors, ival
@@ -175,7 +182,6 @@ class GenomicDuplication(Validator):
         :param int end: End pos change
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            # Ambiguous
             if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:  # noqa: E501
                 start_grch38_data = self.mane_transcript.g_to_grch38(
                     t, s.start_pos1_dup, s.start_pos2_dup
@@ -188,6 +194,7 @@ class GenomicDuplication(Validator):
 
                 for pos in [start_grch38[0], start_grch38[1],
                             end_grch38[0], end_grch38[1]]:
+                    # TODO: Check index on gene?
                     self._check_index(t, pos, errors)
 
                 if not errors:
@@ -215,6 +222,8 @@ class GenomicDuplication(Validator):
                 if grch38:
                     t = grch38['ac']
 
+                # TODO: Check index on gene?
+
                 if not errors:
                     allele = self.to_vrs_allele_ranges(
                         s, t, s.reference_sequence,
@@ -234,9 +243,14 @@ class GenomicDuplication(Validator):
         else:
             # Unambiguous
             if gene_tokens:
+                gene = gene_tokens[0].token
+                self._validate_gene_pos(gene, t, start, end, errors)
+                if errors:
+                    return
+
                 mane = self.mane_transcript.get_mane_transcript(
                     t, start, end, s.reference_sequence,
-                    gene=gene_tokens[0].token, normalize_endpoint=True
+                    gene=gene, normalize_endpoint=True
                 )
 
                 if mane:

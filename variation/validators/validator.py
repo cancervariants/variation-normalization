@@ -632,6 +632,27 @@ class Validator(ABC):
         return ([a.split(':')[-1] for a in aliases
                  if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
 
+    def _validate_gene_pos(self, gene, alt_ac, start, end, errors) -> None:
+        """Validate whether free text genomic query is valid input.
+        If invalid input, add error to list of errors
+
+        :param str gene: Queried gene
+        :param str alt_ac: Genomic accession
+        :param int start: Queried genomic start position (1-based)
+        :param int end: Queried genomic end position (1-based)
+        :param list errors: List of errors
+        """
+        gene_start_end = self.uta.get_gene_start_end(gene, alt_ac)
+        if not gene_start_end:
+            errors.append(f"Could not find gene, {gene}, and alt_ac, "
+                          f"{alt_ac}, in UTA db")
+        else:
+            gene_start, gene_end = gene_start_end
+            if not (gene_start <= start <= gene_end):
+                errors.append(f"Start position {start} out of index")
+            elif not (gene_start <= end <= gene_end):
+                errors.append(f"End position {end} out of index")
+
     def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None, uncertain=True)\
             -> Optional[CopyNumber]:
         """Return a Copy Number Variation.

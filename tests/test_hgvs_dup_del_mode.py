@@ -1607,6 +1607,15 @@ def test_genomic_dup1(test_normalize, genomic_dup1_default,
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup1_free_text_default, ignore_id=True)
 
+    # Invalid
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140219337dup", "default")
+    assert resp.variation.type == "Text"
+
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.141024929dup", "default")
+    assert resp.variation.type == "Text"
+
 
 def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
                       genomic_dup2_rse, genomic_dup2_free_text_default,
@@ -1651,6 +1660,15 @@ def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
 
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup2_free_text_default, ignore_id=True)
+
+    # Invalid
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140219337_140924929dup", "default")
+    assert resp.variation.type == "Text"
+
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140719326_141024929dup", "default")
+    assert resp.variation.type == "Text"
 
 
 def test_genomic_dup3(test_normalize, genomic_dup3_default,
@@ -1821,6 +1839,15 @@ def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del1_free_text_default, ignore_id=True)
 
+    # Invalid
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140219337del", "default")
+    assert resp.variation.type == "Text"
+
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.141024929del", "default")
+    assert resp.variation.type == "Text"
+
 
 def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
                       genomic_del2_rse, genomic_del2_free_text_default,
@@ -1865,6 +1892,15 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
 
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del2_free_text_default, ignore_id=True)
+
+    # Invalid
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140219337_140924929del", "default")
+    assert resp.variation.type == "Text"
+
+    # Pos out of range for BRAF
+    resp = test_normalize.normalize("BRAF g.140719326_141024929del", "default")
+    assert resp.variation.type == "Text"
 
 
 def test_genomic_del3(test_normalize, genomic_del3_default,
