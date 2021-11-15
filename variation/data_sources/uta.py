@@ -636,32 +636,21 @@ class UTA:
         :param str alt_ac: Genomic accession
         :return: Gene's start and end positions
         """
-
-        def _get_query(select_stmt: str) -> str:
-            """Return query for gene coordinates
-
-            :param str select_stmt: Select statement for query
-            :return: Query for retrieving gene coordinates
+        query = (
+            f"""
+            SELECT MIN(alt_start_i), MAX(alt_end_i)
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE alt_ac = '{alt_ac}'
+            AND hgnc = '{gene}'
+            AND alt_aln_method = 'splign'
             """
-            return (
-                f"""
-                {select_stmt}
-                FROM {self.schema}.tx_exon_aln_v
-                WHERE alt_ac = '{alt_ac}'
-                AND hgnc = '{gene}'
-                AND alt_aln_method = 'splign'
-                """
-            )
-        self.cursor.execute(_get_query("SELECT MIN(alt_start_i)"))
-        start = self.cursor.fetchone()
-        if start is None:
+        )
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        if result[0] is None and result[1] is None:
             return None
-
-        self.cursor.execute(_get_query("SELECT MAX(alt_end_i)"))
-        end = self.cursor.fetchone()
-        if end is None:
-            return None
-        return start[0], end[0]
+        else:
+            return result[0], result[1]
 
 
 class ParseResult(urlparse.ParseResult):
