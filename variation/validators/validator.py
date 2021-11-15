@@ -632,14 +632,19 @@ class Validator(ABC):
         return ([a.split(':')[-1] for a in aliases
                  if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
 
-    def _validate_gene_pos(self, gene, alt_ac, start, end, errors) -> None:
+    def _validate_gene_pos(self, gene, alt_ac, pos1, pos2, errors,
+                           pos3=None, pos4=None,
+                           residue_mode="residue") -> None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
 
         :param str gene: Queried gene
         :param str alt_ac: Genomic accession
-        :param int start: Queried genomic start position (1-based)
-        :param int end: Queried genomic end position (1-based)
+        :param int pos1: Queried genomic position
+        :param int pos2: Queried genomic position
+        :param int pos3: Queried genomic position
+        :param int pos4: Queried genomic position
+        :param str residue_mode: Must be either `inter-residue` or `residue`
         :param list errors: List of errors
         """
         gene_start_end = self.uta.get_gene_start_end(gene, alt_ac)
@@ -648,10 +653,13 @@ class Validator(ABC):
                           f"{alt_ac}, in UTA db")
         else:
             gene_start, gene_end = gene_start_end
-            if not (gene_start <= start <= gene_end):
-                errors.append(f"Start position {start} out of index")
-            elif not (gene_start <= end <= gene_end):
-                errors.append(f"End position {end} out of index")
+            for pos in [pos1, pos2, pos3, pos4]:
+                if pos not in ["?", None]:
+                    if residue_mode == "residue":
+                        pos -= 1
+                    if not (gene_start <= pos <= gene_end):
+                        errors.append(f"Position {pos} out of index on "
+                                      f"{alt_ac} on gene, {gene}")
 
     def to_vrs_cnv(self, ac, allele, del_or_dup, chr=None, uncertain=True)\
             -> Optional[CopyNumber]:
