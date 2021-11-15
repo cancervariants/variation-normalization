@@ -88,6 +88,15 @@ class GenomicUncertainDeletion(DeletionRangeBase):
             )
             if not all(conditions):
                 try:
+                    prev_val = None
+                    for field in ['start_pos1_del', 'start_pos2_del',
+                                  'end_pos1_del', 'end_pos2_del']:
+                        val = self.parts[field]
+                        if val not in ["?", None]:
+                            if prev_val is not None:
+                                if prev_val > val:
+                                    return
+                            prev_val = val
                     return GenomicUncertainDeletionToken(**params)
                 except ValidationError:
                     return None

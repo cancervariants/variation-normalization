@@ -35,11 +35,19 @@ class GenomicDeletionRange(DeletionRangeBase):
             except ValueError:
                 return None
             else:
-                if parts[0] < parts[1] < parts[2] < parts[3]:
-                    self.parts['start_pos1_del'] = parts[0]
-                    self.parts['start_pos2_del'] = parts[1]
-                    self.parts['end_pos1_del'] = parts[2]
-                    self.parts['end_pos2_del'] = parts[3]
+                prev_val = None
+                for i in range(4):
+                    val = parts[i]
+                    if val not in ["?", None]:
+                        if prev_val is not None:
+                            if prev_val > val:
+                                return None
+                    prev_val = val
+
+                self.parts['start_pos1_del'] = parts[0]
+                self.parts['start_pos2_del'] = parts[1]
+                self.parts['end_pos1_del'] = parts[2]
+                self.parts['end_pos2_del'] = parts[3]
         return None
 
     def return_token(self, params):
