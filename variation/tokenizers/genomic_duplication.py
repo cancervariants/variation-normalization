@@ -99,7 +99,20 @@ class GenomicDuplication(DuplicationBase):
         if self.parts['reference_sequence'] == 'g':
             if self.parts['end_pos1_dup'] is None and \
                     self.parts['end_pos2_dup'] is None:
+
+                if self.parts['start_pos2_dup'] and self.parts['start_pos1_dup'] > self.parts['start_pos2_dup']:  # noqa: E501
+                    return
+
                 self.parts['alt_type'] = DuplicationAltType.DUPLICATION
                 return GenomicDuplicationToken(**self.parts)
             else:
+                prev_val = None
+                for field in ['start_pos1_dup', 'start_pos2_dup',
+                              'end_pos1_dup', 'end_pos2_dup']:
+                    val = self.parts[field]
+                    if val not in ["?", None]:
+                        if prev_val is not None:
+                            if prev_val > val:
+                                return
+                        prev_val = val
                 return GenomicDuplicationRangeToken(**self.parts)

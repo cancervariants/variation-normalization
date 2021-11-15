@@ -77,6 +77,10 @@ class DeletionBase(Tokenizer):
         else:
             end_pos_del = None
 
+        if start_pos_del and end_pos_del:
+            if start_pos_del > end_pos_del:
+                return
+
         self.parts['start_pos_del'] = start_pos_del
         self.parts['end_pos_del'] = end_pos_del
         self.parts['reference_sequence'] = reference_sequence
