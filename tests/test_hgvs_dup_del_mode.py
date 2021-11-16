@@ -2072,10 +2072,9 @@ def genomic_del5():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del5_default(genomic_del5):
-    """Create a test fixture for genomic del default and cnv."""
-    genomic_del5["variation"] = {
+def genomic_del5_copy_number(params):
+    """Create genomic del5 copy number"""
+    params["variation"] = {
         "type": "CopyNumber",
         "subject": {
             "location": {
@@ -2103,7 +2102,13 @@ def genomic_del5_default(genomic_del5):
             "max": 1
         }
     }
-    genomic_del5["variation_id"] = "ga4gh:VCN._RIw5UC5bZeLeHnBLYAow7Ml-lv2nKJW"
+    params["variation_id"] = "ga4gh:VCN._RIw5UC5bZeLeHnBLYAow7Ml-lv2nKJW"
+
+
+@pytest.fixture(scope='module')
+def genomic_del5_default(genomic_del5):
+    """Create a test fixture for genomic del default and cnv."""
+    genomic_del5_copy_number(genomic_del5)
     return VariationDescriptor(**genomic_del5)
 
 
@@ -2113,6 +2118,111 @@ def genomic_del5_rse_lse(genomic_del5):
     params = {
         "id": genomic_del5["id"],
         "type": genomic_del5["type"],
+        "variation": {
+            "type": "Text",
+            "definition": "NC_000023.11:g.(?_18575354)_18653629del"
+        }
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_del5_free_text():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:CDKL5%20g.%28%3F_18575354%29_18653629del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743",
+        "vrs_ref_allele_seq": None,
+        "gene_context": {
+            "id": "normalize.gene:CDKL5",
+            "type": "GeneDescriptor",
+            "label": "CDKL5",
+            "xrefs": [
+                "ensembl:ENSG00000008086",
+                "ncbigene:6792"
+            ],
+            "alternate_labels": [
+                "STK9",
+                "ISSX",
+                "EIEE2",
+                "CFAP247",
+                "DEE2"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "approved_name",
+                    "value": "cyclin dependent kinase like 5"
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p22.13",
+                            "end": "p22.13"
+                        },
+                        "_id": "ga4gh:VCL.BzhQOPmaVZVLol6JOVltNZrsv0XRekWR",
+                        "type": "ChromosomeLocation",
+                        "chr": "X"
+                    }
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "orphanet:119297",
+                        "ena.embl:Y15057",
+                        "pubmed:16935860",
+                        "ccds:CCDS83458",
+                        "omim:300203",
+                        "vega:OTTHUMG00000021214",
+                        "uniprot:O76039",
+                        "pubmed:9721213",
+                        "refseq:NM_003159",
+                        "ccds:CCDS14186",
+                        "iuphar:1986",
+                        "ucsc:uc004cyn.4"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "previous_symbols",
+                    "value": [
+                        "STK9"
+                    ]
+                }
+            ],
+            "gene_id": "hgnc:11411"
+        }
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_del5_free_text_default(genomic_del5_free_text):
+    """Create a test fixture for genomic del default and cnv."""
+    genomic_del5_copy_number(genomic_del5_free_text)
+    return VariationDescriptor(**genomic_del5_free_text)
+
+
+@pytest.fixture(scope='module')
+def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
+    """Create test fixture for genomic del rse and lse."""
+    params = {
+        "id": genomic_del5_free_text["id"],
+        "type": genomic_del5_free_text["type"],
         "variation": {
             "type": "Text",
             "definition": "NC_000023.11:g.(?_18575354)_18653629del"
@@ -2136,10 +2246,9 @@ def genomic_del6():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del6_default(genomic_del6):
-    """Create a test fixture for genomic del default and cnv."""
-    genomic_del6["variation"] = {
+def genomic_del6_copy_number(params):
+    """Create genomic del6 copy number"""
+    params["variation"] = {
         "type": "CopyNumber",
         "subject": {
             "location": {
@@ -2166,7 +2275,13 @@ def genomic_del6_default(genomic_del6):
             "value": 1
         }
     }
-    genomic_del6["variation_id"] = "ga4gh:VCN.F3U6Rmov1WO2mhmRHWumJb-YALOMkeeI"
+    params["variation_id"] = "ga4gh:VCN.F3U6Rmov1WO2mhmRHWumJb-YALOMkeeI"
+
+
+@pytest.fixture(scope='module')
+def genomic_del6_default(genomic_del6):
+    """Create a test fixture for genomic del default and cnv."""
+    genomic_del6_copy_number(genomic_del6)
     return VariationDescriptor(**genomic_del6)
 
 
@@ -2179,6 +2294,111 @@ def genomic_del6_rse_lse(genomic_del6):
         "variation": {
             "type": "Text",
             "definition": "NC_000006.12:g.133462764_(133464858_?)del"
+        }
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def genomic_del6_free_text():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:EYA4%20g.133462764_%28133464858_%3F%29del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001743",
+        "vrs_ref_allele_seq": None,
+        "gene_context": {
+            "id": "normalize.gene:EYA4",
+            "type": "GeneDescriptor",
+            "label": "EYA4",
+            "xrefs": [
+                "ensembl:ENSG00000112319",
+                "ncbigene:2070"
+            ],
+            "alternate_labels": [
+                "CMD1J",
+                "DFNA10"
+            ],
+            "extensions": [
+                {
+                    "type": "Extension",
+                    "name": "symbol_status",
+                    "value": "approved"
+                },
+                {
+                    "type": "Extension",
+                    "name": "approved_name",
+                    "value": "EYA transcriptional coactivator "
+                             "and phosphatase 4"
+                },
+                {
+                    "type": "Extension",
+                    "name": "chromosome_location",
+                    "value": {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "q23.2",
+                            "end": "q23.2"
+                        },
+                        "_id": "ga4gh:VCL.h3RPutxMQk5_6dIPcN5GL8KRahoTi9fm",
+                        "type": "ChromosomeLocation",
+                        "chr": "6"
+                    }
+                },
+                {
+                    "type": "Extension",
+                    "name": "associated_with",
+                    "value": [
+                        "pubmed:9887327",
+                        "ccds:CCDS43506",
+                        "ccds:CCDS75521",
+                        "pubmed:11159937",
+                        "ucsc:uc011ecs.3",
+                        "orphanet:121654",
+                        "ccds:CCDS75523",
+                        "omim:603550",
+                        "refseq:NM_004100",
+                        "ccds:CCDS5165",
+                        "ena.embl:Y17114",
+                        "vega:OTTHUMG00000015602",
+                        "uniprot:O95677"
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "previous_symbols",
+                    "value": [
+                        "CMD1J",
+                        "DFNA10"
+                    ]
+                }
+            ],
+            "gene_id": "hgnc:3522"
+        }
+    }
+    return params
+
+
+@pytest.fixture(scope='module')
+def genomic_del6_free_text_default(genomic_del6_free_text):
+    """Create a test fixture for genomic del default and cnv."""
+    genomic_del6_copy_number(genomic_del6_free_text)
+    return VariationDescriptor(**genomic_del6_free_text)
+
+
+@pytest.fixture(scope='module')
+def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
+    """Create test fixture for genomic del rse and lse."""
+    params = {
+        "id": genomic_del6_free_text["id"],
+        "type": genomic_del6_free_text["type"],
+        "variation": {
+            "type": "Text",
+            "definition": "EYA4 g.133462764_(133464858_?)del"
         }
     }
     return VariationDescriptor(**params)
@@ -2229,7 +2449,10 @@ def test_genomic_dup1(test_normalize, genomic_dup1_default,
     assertion_checks(resp, genomic_dup1_default, ignore_id=True)
 
     # Free Text
-    for q in ["DAG1 g.49568695dup", "DAG1 g.49531262dup"]:
+    for q in [
+        "DAG1 g.49568695dup",  # 37
+        "DAG1 g.49531262dup"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
         assertion_checks(resp, genomic_dup1_free_text_default, ignore_id=True)
 
@@ -2247,7 +2470,7 @@ def test_genomic_dup1(test_normalize, genomic_dup1_default,
 
     # Invalid
     invalid_queries = [
-        # "NC_000007.13:g.140413127dup", "NC_000007.13:g.140624731dup",
+        # "NC_000007.13:g.140413127dup",
         "BRAF g.140219337dup", "BRAF g.141024929dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2284,7 +2507,10 @@ def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
     assertion_checks(resp, genomic_dup2_default, ignore_id=True)
 
     # Free text
-    for q in ["DMD g.33229407_33229410dup", "DMD g.33211290_33211293dup"]:
+    for q in [
+        "DMD g.33229407_33229410dup",  # 37
+        "DMD g.33211290_33211293dup"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
         assertion_checks(resp, genomic_dup2_free_text_default, ignore_id=True)
 
@@ -2300,7 +2526,6 @@ def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
     # Invalid
     invalid_queries = [
         # "NC_000007.13:g.140413127_140413130dup",
-        # "NC_000007.13:g.140413130_140624731dup",
         "BRAF g.140219337_140924929dup", "BRAF g.140719326_141024929dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2338,7 +2563,7 @@ def test_genomic_dup3(test_normalize, genomic_dup3_default,
     assertion_checks(resp, genomic_dup3_rse_lse, ignore_id=True)
 
     # Free Text
-    q = "DMD g.(31147274_31147278)_(31182737_31182739)dup"
+    q = "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
     resp = test_normalize.normalize(q, "default")
     assertion_checks(resp, genomic_dup3_free_text_default, ignore_id=True)
 
@@ -2448,19 +2673,22 @@ def test_genomic_dup5(test_normalize, genomic_dup5_default,
     assertion_checks(resp, genomic_dup5_rse_lse, ignore_id=True)
 
     # Free Text
-    q = "MECP2 g.(?_154021812)_154092209dup"  # 38
-    # TODO: 37
-    resp = test_normalize.normalize(q, "default")
-    assertion_checks(resp, genomic_dup5_free_text_default, ignore_id=True)
+    for q in [
+        # "MECP2 g.(?_153287263)_153357667dup",  # 37
+        "MECP2 g.(?_154021812)_154092209dup"  # 38
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_dup5_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "cnv")
-    assertion_checks(resp, genomic_dup5_free_text_default, ignore_id=True)
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_dup5_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "repeated_seq_expr")
-    assertion_checks(resp, genomic_dup5_free_text_rse_lse, ignore_id=True)
+        genomic_dup5_free_text_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        assertion_checks(resp, genomic_dup5_free_text_rse_lse, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "literal_seq_expr")
-    assertion_checks(resp, genomic_dup5_free_text_rse_lse, ignore_id=True)
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_dup5_free_text_rse_lse, ignore_id=True)
 
     # Invalid
     for q in [
@@ -2678,7 +2906,7 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
     # Invalid
     invalid_queries = [
         "EFNB1 g.(68048863_68048870)_(68842150_68842152)del",  # 37
-        "EFNB1 g.(68829022_68829030)_(68842150_68842161)del"
+        "EFNB1 g.(68829022_68829030)_(68842150_68842161)del"  # 38
     ]
     assert_text_variation(invalid_queries, test_normalize)
 
@@ -2749,7 +2977,8 @@ def test_genomic_del4(test_normalize, genomic_del4_default,
 
 
 def test_genomic_del5(test_normalize, genomic_del5_default,
-                      genomic_del5_rse_lse):
+                      genomic_del5_rse_lse, genomic_del5_free_text_default,
+                      genomic_del5_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = test_normalize.normalize(q, "default")
@@ -2779,11 +3008,35 @@ def test_genomic_del5(test_normalize, genomic_del5_default,
     assertion_checks(resp, genomic_del5_rse_lse, ignore_id=True)
 
     # TODO: Free text
-    # TODO: invalid
+    for q in [
+        # "CDKL5 g.(?_18593474)_18671749del",
+        "CDKL5 g.(?_18575354)_18653629del"
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_del5_free_text_default, ignore_id=True)
+
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_del5_free_text_default, ignore_id=True)
+
+        genomic_del5_free_text_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        assertion_checks(resp, genomic_del5_free_text_rse_lse, ignore_id=True)
+
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_del5_free_text_rse_lse, ignore_id=True)
+
+    # Invalid
+    invalid_queries = [
+        "CDKL5  g.(?_18443702)_18671700del",  # 37
+        "CDKL5  g.(?_18425585)_18653631del",  # 38
+        "CDKL5  g.(?_18425582)_18653500del"  # 38
+    ]
+    assert_text_variation(invalid_queries, test_normalize)
 
 
 def test_genomic_del6(test_normalize, genomic_del6_default,
-                      genomic_del6_rse_lse):
+                      genomic_del6_rse_lse, genomic_del6_free_text_default,
+                      genomic_del6_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = test_normalize.normalize(q, "default")
@@ -2813,7 +3066,30 @@ def test_genomic_del6(test_normalize, genomic_del6_default,
     assertion_checks(resp, genomic_del6_rse_lse, ignore_id=True)
 
     # TODO: Free text
-    # TODO: invalid
+    for q in [
+        "EYA4 g.133462764_(133464858_?)del"  # 38
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_del6_free_text_default, ignore_id=True)
+
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_del6_free_text_default, ignore_id=True)
+
+        genomic_del6_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        assertion_checks(resp, genomic_del6_free_text_rse_lse, ignore_id=True)
+
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_del6_free_text_rse_lse, ignore_id=True)
+
+    # Invalid
+    invalid_queries = [
+        "EYA4 g.133561700_(133853270_?)del",  # 37
+        "EYA4 g.133561651_(133561708_?)del",  # 37
+        "EYA4 g.133240513_(133240600_?)del",  # 38
+        "EYA4 g.133240515_(133532130_?)del"  # 38
+    ]
+    assert_text_variation(invalid_queries, test_normalize)
 
 
 def test_parameters(test_normalize):
