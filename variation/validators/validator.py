@@ -652,21 +652,39 @@ class Validator(ABC):
         :param str residue_mode: Must be either `inter-residue` or `residue`
         :param list errors: List of errors
         """
-        # TODO: Check if alt_ac is 38, if not liftover.
-        #  Might already be doing this?
-        gene_start, gene_end = None, None
+        gene_start_end = {"start": None, "end": None}
         resp = self.gene_normalizer.search(gene, incl="Ensembl")
         if resp.source_matches:
             ensembl_resp = resp.source_matches[0]
             if ensembl_resp.records[0].locations:
                 ensembl_loc = ensembl_resp.records[0].locations[0]
-                gene_start = ensembl_loc.interval.start.value
-                gene_end = ensembl_loc.interval.end.value - 1
+                gene_start_end["start"] = ensembl_loc.interval.start.value
+                gene_start_end["end"] = ensembl_loc.interval.end.value - 1
 
-        if gene_start is None and gene_end is None:
+        if gene_start_end["start"] is None and gene_start_end["end"] is None:
             errors.append(f"gene-normalizer unable to find Ensembl location"
                           f"for {gene}")
         else:
+            assembly = self.uta.get_chr_assembly(alt_ac)
+            if assembly:
+                # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
+                # need to liftover to GRCh37 coords
+                chromosome, assembly = assembly
+                for key in gene_start_end.keys():
+                    gene_pos = gene_start_end[key]
+                    gene_pos_liftover = \
+                        self.uta.liftover_to_37.convert_coordinate(chromosome,
+                                                                   gene_pos)
+                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:  # noqa: E501
+                        errors.append(f"{gene_pos} does not"
+                                      f" exist on {chromosome}")
+                        return None
+                    else:
+                        gene_start_end[key] = gene_pos_liftover[0][1]
+
+            gene_start = gene_start_end["start"]
+            gene_end = gene_start_end["end"]
+
             for pos in [pos1, pos2, pos3, pos4]:
                 if pos not in ["?", None]:
                     if residue_mode == "residue":
@@ -852,7 +870,7 @@ class Validator(ABC):
         """Check that index actually exists
 
         :param str ac: Accession
-        :param tuple pos: Position changes
+        :param int pos: Position changes
         :param list errors: List of errors
         :return: Sequence
         """
