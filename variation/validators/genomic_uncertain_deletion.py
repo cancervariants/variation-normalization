@@ -86,7 +86,8 @@ class GenomicUncertainDeletion(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors, hgvs_dup_del_mode)
+                result = self._get_variation(s, t, errors, gene_tokens,
+                                             hgvs_dup_del_mode)
                 variation = result['variation']
                 start = result['start']
                 end = result['end']
@@ -109,7 +110,7 @@ class GenomicUncertainDeletion(Validator):
             classification, gene_tokens
         )
 
-    def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
+    def _get_variation(self, s, t, errors, gene_tokens, hgvs_dup_del_mode)\
             -> Optional[Dict]:
         """Get variation data.
 
@@ -121,19 +122,23 @@ class GenomicUncertainDeletion(Validator):
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
-        ival, _ = self._get_ival(t, s, errors)
+        ival, grch38 = self._get_ival(t, s, errors, gene_tokens)
 
-        allele = self.to_vrs_allele_ranges(
-            s, t, s.reference_sequence, s.alt_type,
-            errors, ival
-        )
-        if start is not None and end is not None:
-            pos = (start, end)
-        else:
-            pos = None
-        variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors,
-            hgvs_dup_del_mode, pos=pos)
+        if not errors:
+            if grch38:
+                t = grch38['ac']
+
+            allele = self.to_vrs_allele_ranges(
+                s, t, s.reference_sequence, s.alt_type,
+                errors, ival
+            )
+            if start is not None and end is not None:
+                pos = (start, end)
+            else:
+                pos = None
+            variation = self.hgvs_dup_del_mode.interpret_variation(
+                t, s.alt_type, allele, errors,
+                hgvs_dup_del_mode, pos=pos)
 
         return {
             'start': start,
@@ -156,7 +161,8 @@ class GenomicUncertainDeletion(Validator):
         :param int end: End pos change
         """
         if not gene_tokens:
-            ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
+            ival, grch38 = self._get_ival(
+                t, s, errors, gene_tokens, is_norm=True)
 
             if not errors:
                 allele = self.to_vrs_allele_ranges(
@@ -175,7 +181,7 @@ class GenomicUncertainDeletion(Validator):
                         mane_data_found, 'GRCh38'
                     )
 
-    def _get_ival(self, t, s, errors, is_norm=False)\
+    def _get_ival(self, t, s, errors, gene_tokens, is_norm=False)\
             -> Optional[Tuple[models.SequenceInterval, Dict]]:
         """Get ival for variations with ranges.
 
@@ -206,11 +212,20 @@ class GenomicUncertainDeletion(Validator):
                     grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
                 if grch38:
                     start, end = grch38['pos']
+                    t = grch38['ac']
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            if start and end:
+            if gene_tokens:
+                self._validate_gene_pos(
+                    gene_tokens[0].token, t, start, end, errors
+                )
+            else:
+                for pos in [start, end]:
+                    self._check_index(t, pos, errors)
+
+            if not errors and start and end:
                 ival = models.SequenceInterval(
                     start=self._get_start_indef_range(start),
                     end=self._get_end_indef_range(end)
@@ -229,11 +244,20 @@ class GenomicUncertainDeletion(Validator):
                     grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
                 if grch38:
                     start, end = grch38['pos']
+                    t = grch38['ac']
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            if start and end:
+            if gene_tokens:
+                self._validate_gene_pos(
+                    gene_tokens[0].token, t, start, end, errors
+                )
+            else:
+                for pos in [start, end]:
+                    self._check_index(t, pos, errors)
+
+            if not errors and start and end:
                 ival = models.SequenceInterval(
                     start=self._get_start_indef_range(start),  # noqa: E501
                     end=models.Number(value=end)
@@ -255,11 +279,20 @@ class GenomicUncertainDeletion(Validator):
                 if grch38:
                     start, end = grch38['pos']
                     start -= 1
+                    t = grch38['ac']
             else:
                 start = s.start_pos1_del - 1
                 end = s.end_pos1_del
 
-            if start and end:
+            if gene_tokens:
+                self._validate_gene_pos(
+                    gene_tokens[0].token, t, start, end, errors
+                )
+            else:
+                for pos in [start, end]:
+                    self._check_index(t, pos, errors)
+
+            if not errors and start and end:
                 ival = models.SequenceInterval(
                     start=models.Number(value=start),
                     end=self._get_end_indef_range(end)

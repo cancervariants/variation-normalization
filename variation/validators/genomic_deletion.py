@@ -62,6 +62,7 @@ class GenomicDeletion(DeletionBase):
                     end = s.end_pos_del
 
                 if gene_tokens:
+                    # Assumes residue coords
                     self._validate_gene_pos(gene_tokens[0].token, t, start,
                                             end, errors)
 
