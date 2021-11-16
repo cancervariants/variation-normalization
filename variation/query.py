@@ -84,7 +84,7 @@ class QueryHandler:
         )
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, self.uta, self.dp, tlr, self.hgvs_dup_del_mode,
+            mane_transcript, self.uta, self.dp, tlr,
             amino_acid_cache, self.gene_normalizer
         )
         translator = Translate()
