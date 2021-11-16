@@ -3,7 +3,6 @@ from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
 from variation.mane_transcript import MANETranscript
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from .amino_acid_substitution import AminoAcidSubstitution
@@ -28,6 +27,7 @@ from .genomic_deletion_range import GenomicDeletionRange
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from typing import List
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class Validate:
@@ -38,8 +38,8 @@ class Validate:
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 hgvs_dup_del_mode: HGVSDupDelMode,
-                 amino_acid_cache: AminoAcidCache) -> None:
+                 amino_acid_cache: AminoAcidCache,
+                 gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the validate class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -49,11 +49,13 @@ class Validate:
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param Translator tlr: Translator class
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr
+            mane_transcript, uta, dp, tlr, gene_normalizer
         ]
         amino_acid_params = params[:]
         amino_acid_params.append(amino_acid_cache)

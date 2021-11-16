@@ -85,13 +85,13 @@ class QueryHandler:
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
             mane_transcript, self.uta, self.dp, tlr, self.hgvs_dup_del_mode,
-            amino_acid_cache
+            amino_acid_cache, self.gene_normalizer
         )
         translator = Translate()
         return ToVRS(
             tokenizer, classifier, self.seqrepo_access, transcript_mappings,
             gene_symbol, amino_acid_cache, self.uta, mane_transcript_mappings,
-            mane_transcript, validator, translator
+            mane_transcript, validator, translator, self.gene_normalizer
         )
 
     def to_vrs(self, q)\

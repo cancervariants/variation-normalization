@@ -13,6 +13,7 @@ from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from urllib.parse import unquote
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 class ToVRS:
@@ -24,7 +25,7 @@ class ToVRS:
                  gene_symbol: GeneSymbol, amino_acid_cache: AminoAcidCache,
                  uta: UTA, mane_transcript_mappings: MANETranscriptMappings,
                  mane_transcript: MANETranscript, validator: Validate,
-                 translator: Translate):
+                 translator: Translate, gene_normalizer: GeneQueryHandler):
         """Initialize the ToVRS class."""
         self.tokenizer = tokenizer
         self.classifier = classifier
@@ -37,6 +38,7 @@ class ToVRS:
         self.mane_transcript = mane_transcript
         self.validator = validator
         self.translator = translator
+        self.gene_normalizer = gene_normalizer
 
     def get_validations(self, q, normalize_endpoint=False,
                         hgvs_dup_del_mode="default")\
