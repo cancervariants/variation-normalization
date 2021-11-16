@@ -2563,19 +2563,23 @@ def test_genomic_dup3(test_normalize, genomic_dup3_default,
     assertion_checks(resp, genomic_dup3_rse_lse, ignore_id=True)
 
     # Free Text
-    q = "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
-    resp = test_normalize.normalize(q, "default")
-    assertion_checks(resp, genomic_dup3_free_text_default, ignore_id=True)
+    for q in [
+        # TODO:  issue-176
+        # "DMD g.(31165391_31165395)_(31200854_31200856)dup",
+        "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_dup3_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "cnv")
-    assertion_checks(resp, genomic_dup3_free_text_default, ignore_id=True)
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_dup3_free_text_default, ignore_id=True)
 
-    genomic_dup3_rse_lse.variation.definition = q
-    resp = test_normalize.normalize(q, "repeated_seq_expr")
-    assertion_checks(resp, genomic_dup3_free_text_rse_lse, ignore_id=True)
+        genomic_dup3_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        assertion_checks(resp, genomic_dup3_free_text_rse_lse, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "literal_seq_expr")
-    assertion_checks(resp, genomic_dup3_free_text_rse_lse, ignore_id=True)
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_dup3_free_text_rse_lse, ignore_id=True)
 
     # Invalid
     invalid_queries = [
@@ -2618,21 +2622,23 @@ def test_genomic_dup4(test_normalize, genomic_dup4_default,
     assertion_checks(resp, genomic_dup4_rse_lse, ignore_id=True)
 
     # Free Text
-    q = "PRPF8 g.(?_1674442)_(1684571_?)dup"
-    # Add PRPF8 g.(?_1577736)_(1587865_?)dup in issue-176
-    resp = test_normalize.normalize(q, "default")
-    assertion_checks(resp, genomic_dup4_free_text_default, ignore_id=True)
+    for q in [
+        "PRPF8 g.(?_1577736)_(1587865_?)dup",  # 37
+        "PRPF8 g.(?_1674442)_(1684571_?)dup"  # 38
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_dup4_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "cnv")
-    assertion_checks(resp, genomic_dup4_free_text_default, ignore_id=True)
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_dup4_free_text_default, ignore_id=True)
 
-    genomic_dup4_rse_lse.variation.definition = q
-    resp = test_normalize.normalize(q, "repeated_seq_expr")
-    genomic_dup4_free_text_rse_lse.variation.definition = q
-    assertion_checks(resp, genomic_dup4_free_text_rse_lse, ignore_id=True)
+        genomic_dup4_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        genomic_dup4_free_text_rse_lse.variation.definition = q
+        assertion_checks(resp, genomic_dup4_free_text_rse_lse, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "literal_seq_expr")
-    assertion_checks(resp, genomic_dup4_free_text_rse_lse, ignore_id=True)
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_dup4_free_text_rse_lse, ignore_id=True)
 
     # Invalid
     invalid_queries = [
@@ -2674,7 +2680,7 @@ def test_genomic_dup5(test_normalize, genomic_dup5_default,
 
     # Free Text
     for q in [
-        # "MECP2 g.(?_153287263)_153357667dup",  # 37
+        "MECP2 g.(?_153287263)_153357667dup",  # 37
         "MECP2 g.(?_154021812)_154092209dup"  # 38
     ]:
         resp = test_normalize.normalize(q, "default")
@@ -2731,19 +2737,22 @@ def test_genomic_dup6(test_normalize, genomic_dup6_default,
     assertion_checks(resp, genomic_dup6_rse_lse, ignore_id=True)
 
     # Free Text
-    q = "MECP2 g.154021812_(154092209_?)dup"  # 38
-    # TODO: 37
-    resp = test_normalize.normalize(q, "default")
-    assertion_checks(resp, genomic_dup6_free_text_default, ignore_id=True)
+    for q in [
+        "MECP2 g.153287263_(153357667_?)dup",  # 37
+        "MECP2 g.154021812_(154092209_?)dup"  # 38
+    ]:
+        resp = test_normalize.normalize(q, "default")
+        assertion_checks(resp, genomic_dup6_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "cnv")
-    assertion_checks(resp, genomic_dup6_free_text_default, ignore_id=True)
+        resp = test_normalize.normalize(q, "cnv")
+        assertion_checks(resp, genomic_dup6_free_text_default, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "repeated_seq_expr")
-    assertion_checks(resp, genomic_dup6_free_text_rse_lse, ignore_id=True)
+        genomic_dup6_free_text_rse_lse.variation.definition = q
+        resp = test_normalize.normalize(q, "repeated_seq_expr")
+        assertion_checks(resp, genomic_dup6_free_text_rse_lse, ignore_id=True)
 
-    resp = test_normalize.normalize(q, "literal_seq_expr")
-    assertion_checks(resp, genomic_dup6_free_text_rse_lse, ignore_id=True)
+        resp = test_normalize.normalize(q, "literal_seq_expr")
+        assertion_checks(resp, genomic_dup6_free_text_rse_lse, ignore_id=True)
 
     # Invalid
     for q in [
@@ -2785,7 +2794,10 @@ def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
     assertion_checks(resp, genomic_del1_default, ignore_id=True)
 
     # Free text
-    for q in ["VHL g.10191495del", "VHL g.10149811del"]:
+    for q in [
+        "VHL g.10191495del",  # 37
+        "VHL g.10149811del"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
         assertion_checks(resp, genomic_del1_free_text_default, ignore_id=True)
 
@@ -2836,7 +2848,10 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
     assertion_checks(resp, genomic_del2_default, ignore_id=True)
 
     # Free text
-    for q in ["VHL g.10188279_10188297del", "VHL g.10146595_10146613del"]:
+    for q in [
+        "VHL g.10188279_10188297del",  # 37
+        "VHL g.10146595_10146613del"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
         assertion_checks(resp, genomic_del2_free_text_default, ignore_id=True)
 
@@ -2888,15 +2903,17 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
     assertion_checks(resp, genomic_del3_rse_lse, ignore_id=True)
 
     # Free Text
-    # TODO: 37 free text
-    for q in ["EFNB1 g.(68839265_68839268)_(68841120_68841125)del"]:
+    for q in [
+        "EFNB1 g.(68059108_68059111)_(68060963_68060968)del",  # 37
+        "EFNB1 g.(68839265_68839268)_(68841120_68841125)del"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
         assertion_checks(resp, genomic_del3_free_text_default, ignore_id=True)
 
         resp = test_normalize.normalize(q, "cnv")
         assertion_checks(resp, genomic_del3_free_text_default, ignore_id=True)
 
-        genomic_del3_rse_lse.variation.definition = q
+        genomic_del3_free_text_rse_lse.variation.definition = q
         resp = test_normalize.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del3_free_text_rse_lse, ignore_id=True)
 
@@ -2952,21 +2969,22 @@ def test_genomic_del4(test_normalize, genomic_del4_default,
     assertion_checks(resp, genomic_uncertain_del_y)
 
     # Free Text
-    # 37 NC_000002.11:g.(?_227886744)_(227890546_?)del
-    # "COL4A4 g.(?_227886744)_(227890546_?)del"
-    # 38 NC_000002.12:g.(?_227022028)_(227025830_?)del
-    for q in ["COL4A4 g.(?_227022028)_(227025830_?)del"]:
+    for q in [
+        # TODO:  issue-176
+        # "COL4A4 g.(?_227886744)_(227890546_?)del",  # 37
+        "COL4A4 g.(?_227022028)_(227025830_?)del"  # 38
+    ]:
         resp = test_normalize.normalize(q, "default")
-        assertion_checks(resp, genomic_del4_free_text_default)
+        assertion_checks(resp, genomic_del4_free_text_default, ignore_id=True)
 
         resp = test_normalize.normalize(q, "cnv")
-        assertion_checks(resp, genomic_del4_free_text_default)
+        assertion_checks(resp, genomic_del4_free_text_default, ignore_id=True)
 
         resp = test_normalize.normalize(q, "repeated_seq_expr")
-        assertion_checks(resp, genomic_del4_free_text_rse_lse)
+        assertion_checks(resp, genomic_del4_free_text_rse_lse, ignore_id=True)
 
         resp = test_normalize.normalize(q, "literal_seq_expr")
-        assertion_checks(resp, genomic_del4_free_text_rse_lse)
+        assertion_checks(resp, genomic_del4_free_text_rse_lse, ignore_id=True)
 
     # Invalid
     invalid_queries = [
@@ -3007,8 +3025,9 @@ def test_genomic_del5(test_normalize, genomic_del5_default,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, ignore_id=True)
 
-    # TODO: Free text
+    # Free text
     for q in [
+        # TODO:  issue-176
         # "CDKL5 g.(?_18593474)_18671749del",
         "CDKL5 g.(?_18575354)_18653629del"
     ]:
@@ -3065,8 +3084,10 @@ def test_genomic_del6(test_normalize, genomic_del6_default,
     resp = test_normalize.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, ignore_id=True)
 
-    # TODO: Free text
+    # Free text
     for q in [
+        # TODO:  issue-176
+        # "EYA4 g.133783902_(133785996_?)del",  # 37
         "EYA4 g.133462764_(133464858_?)del"  # 38
     ]:
         resp = test_normalize.normalize(q, "default")
