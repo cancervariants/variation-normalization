@@ -23,6 +23,7 @@ from variation.data_sources import UTA
 from bioutils.accessions import coerce_namespace
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum  # noqa: F401, E501
+from gene.query import QueryHandler as GeneQueryHandler
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -35,7 +36,8 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator) -> None:
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -45,6 +47,8 @@ class Validator(ABC):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param Translator tlr: Translator class
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
@@ -55,6 +59,7 @@ class Validator(ABC):
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
+        self.gene_normalizer = gene_normalizer
 
     @abstractmethod
     def is_token_instance(self, t) -> bool:

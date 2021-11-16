@@ -14,7 +14,7 @@ from variation.mane_transcript import MANETranscript
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
-
+from gene.query import QueryHandler as GeneQueryHandler
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -27,7 +27,8 @@ class GenomicDeletionRange(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator):
+                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler):
         """Initialize the Genomic Deletion Range validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -37,10 +38,11 @@ class GenomicDeletionRange(Validator):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr
+            uta, dp, tlr, gene_normalizer
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 

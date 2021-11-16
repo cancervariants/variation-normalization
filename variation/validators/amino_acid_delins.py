@@ -13,6 +13,7 @@ from .amino_acid_base import AminoAcidBase
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import logging
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 logger = logging.getLogger('variation')
@@ -27,6 +28,7 @@ class AminoAcidDelIns(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -38,11 +40,12 @@ class AminoAcidDelIns(Validator):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr
+            uta, dp, tlr, gene_normalizer
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
