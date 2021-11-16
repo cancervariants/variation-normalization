@@ -79,7 +79,8 @@ class GenomicDeletionRange(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors, hgvs_dup_del_mode)
+                result = self._get_variation(s, t, errors, gene_tokens,
+                                             hgvs_dup_del_mode)
                 variation = result['variation']
                 start = result['start']
                 end = result['end']
@@ -102,7 +103,7 @@ class GenomicDeletionRange(Validator):
             classification, gene_tokens
         )
 
-    def _get_variation(self, s, t, errors, hgvs_dup_del_mode)\
+    def _get_variation(self, s, t, errors, gene_tokens, hgvs_dup_del_mode)\
             -> Optional[Dict]:
         """Get variation data.
 
@@ -114,23 +115,25 @@ class GenomicDeletionRange(Validator):
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
-        ival, grch38 = self._get_ival(t, s, errors)
-        if grch38:
-            t = grch38['ac']
+        ival, grch38 = self._get_ival(t, s, errors, gene_tokens)
 
-        allele = self.to_vrs_allele_ranges(
-            s, t, s.reference_sequence, s.alt_type,
-            errors, ival
-        )
+        if not errors:
+            if grch38:
+                t = grch38['ac']
 
-        if start is not None and end is not None:
-            pos = (start, end)
-        else:
-            pos = None
+            allele = self.to_vrs_allele_ranges(
+                s, t, s.reference_sequence, s.alt_type,
+                errors, ival
+            )
 
-        variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors,
-            hgvs_dup_del_mode, pos=pos)
+            if start is not None and end is not None:
+                pos = (start, end)
+            else:
+                pos = None
+
+            variation = self.hgvs_dup_del_mode.interpret_variation(
+                t, s.alt_type, allele, errors,
+                hgvs_dup_del_mode, pos=pos)
 
         return {
             'start': start,
@@ -152,11 +155,11 @@ class GenomicDeletionRange(Validator):
         :param int start: Start pos change
         :param int end: End pos change
         """
-        ival, grch38 = self._get_ival(t, s, errors, is_norm=True)
-        if grch38:
-            t = grch38['ac']
-
+        ival, grch38 = self._get_ival(t, s, errors, gene_tokens, is_norm=True)
         if not errors:
+            if grch38:
+                t = grch38['ac']
+
             allele = self.to_vrs_allele_ranges(
                 s, t, s.reference_sequence,
                 s.alt_type, errors, ival)
@@ -173,8 +176,9 @@ class GenomicDeletionRange(Validator):
                     mane_data_found, 'GRCh38'
                 )
 
-    def _get_ival(self, t, s, errors, is_norm=False)\
-            -> Optional[Tuple[models.SequenceInterval, Dict]]:
+    def _get_ival(self, t, s, errors, gene_tokens, is_norm=False)\
+            -> Optional[Tuple[Optional[models.SequenceInterval],
+                              Optional[Dict]]]:
         """Get ival for variations with ranges.
 
         :param str t: Accession
@@ -197,16 +201,30 @@ class GenomicDeletionRange(Validator):
                 grch38_end = self.mane_transcript.g_to_grch38(
                     t, s.end_pos1_del, s.end_pos2_del
                 )
+                t = grch38_start['ac']
                 if grch38_end:
                     end1, end2 = grch38_end['pos']
                     grch38 = grch38_end  # Pos doesn't really matter in return
+                else:
+                    return ival, grch38
+            else:
+                return ival, grch38
         else:
             start1 = s.start_pos1_del
             start2 = s.start_pos2_del
             end1 = s.end_pos1_del
             end2 = s.end_pos2_del
 
-        if start1 and start2 and end1 and end2:
+        if gene_tokens:
+            self._validate_gene_pos(
+                gene_tokens[0].token, t, start1, start2, errors,
+                pos3=end1, pos4=end2
+            )
+        else:
+            for pos in [start1, start2, end1, end2]:
+                self._check_index(t, pos, errors)
+
+        if not errors and start1 and start2 and end1 and end2:
             ival = self._get_ival_certain_range(
                 start1, start2, end1, end2
             )
