@@ -652,12 +652,21 @@ class Validator(ABC):
         :param str residue_mode: Must be either `inter-residue` or `residue`
         :param list errors: List of errors
         """
-        gene_start_end = self.uta.get_gene_start_end(gene, alt_ac)
-        if not gene_start_end:
-            errors.append(f"Could not find gene, {gene}, and alt_ac, "
-                          f"{alt_ac}, in UTA db")
+        # TODO: Check if alt_ac is 38, if not liftover.
+        #  Might already be doing this?
+        gene_start, gene_end = None, None
+        resp = self.gene_normalizer.search(gene, incl="Ensembl")
+        if resp.source_matches:
+            ensembl_resp = resp.source_matches[0]
+            if ensembl_resp.records[0].locations:
+                ensembl_loc = ensembl_resp.records[0].locations[0]
+                gene_start = ensembl_loc.interval.start.value
+                gene_end = ensembl_loc.interval.end.value - 1
+
+        if gene_start is None and gene_end is None:
+            errors.append(f"gene-normalizer unable to find Ensembl location"
+                          f"for {gene}")
         else:
-            gene_start, gene_end = gene_start_end
             for pos in [pos1, pos2, pos3, pos4]:
                 if pos not in ["?", None]:
                     if residue_mode == "residue":

@@ -628,30 +628,6 @@ class UTA:
         self.cursor.execute(query)
         return self.cursor.fetchall()
 
-    def get_gene_start_end(self, gene: str,
-                           alt_ac: str) -> Optional[Tuple[int, int]]:
-        """Get a gene's start and end genomic coordinates.
-
-        :param str gene: HGNC gene symbol
-        :param str alt_ac: Genomic accession
-        :return: Gene's start and end positions
-        """
-        query = (
-            f"""
-            SELECT MIN(alt_start_i), MAX(alt_end_i)
-            FROM {self.schema}.tx_exon_aln_v
-            WHERE alt_ac = '{alt_ac}'
-            AND hgnc = '{gene}'
-            AND alt_aln_method = 'splign'
-            """
-        )
-        self.cursor.execute(query)
-        result = self.cursor.fetchone()
-        if result[0] is None and result[1] is None:
-            return None
-        else:
-            return result[0], result[1]
-
 
 class ParseResult(urlparse.ParseResult):
     """Subclass of url.ParseResult that adds database and schema methods,
