@@ -36,6 +36,7 @@ class UTA:
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         self._create_genomic_table()
         self.liftover = LiftOver('hg19', 'hg38')
+        self.liftover_to_37 = LiftOver('hg38', 'hg19')
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
