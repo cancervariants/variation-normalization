@@ -1,5 +1,6 @@
-"""The module for Deletion Validation."""
-from typing import Optional
+"""The base class for Duplication and Deletion Validation."""
+from typing import Optional, List, Dict
+from variation.schemas.token_response_schema import Token
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
@@ -9,12 +10,14 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 import logging
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-class DeletionBase(Validator):
+class DuplicationDeletionBase(Validator):
     """The Deletion Validator Base class."""
 
     def __init__(self, seq_repo_access: SeqRepoAccess,
@@ -105,3 +108,75 @@ class DeletionBase(Validator):
         if token.deleted_sequence:
             descr += f"{token.deleted_sequence}"
         return descr
+
+    def add_normalized_genomic_dup_del(
+            self, s: Token, t: str, start: int, end: int, gene: str,
+            so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
+            mane_data_found: Dict) -> None:
+        """Add normalized genomic dup or del to mane data
+
+        :param Token s: Classification token
+        :param str t: Accession
+        :param int start: Start position
+        :param int end: ENd position
+        :param str gene: Gene
+        :param str so_id: Sequence ontology id
+        :param List errors: List of errors
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
+        :param Dict mane_data_found: MANE Transcript information found
+        """
+        mane = self.mane_transcript.get_mane_transcript(
+            t, start, end, s.reference_sequence, gene=gene,
+            normalize_endpoint=True
+        )
+
+        if mane:
+            s.reference_sequence = 'c'
+            s.molecule_context = 'transcript'
+            s.so_id = so_id
+
+            allele = self.to_vrs_allele(
+                mane['refseq'], mane['pos'][0], mane['pos'][1],
+                s.reference_sequence, s.alt_type, errors,
+                cds_start=mane['coding_start_site']
+            )
+
+            mane_variation = self.hgvs_dup_del_mode.interpret_variation(
+                t, s.alt_type, allele, errors, hgvs_dup_del_mode)
+
+            if mane_variation:
+                self._add_dict_to_mane_data(
+                    mane['refseq'], s, mane_variation,
+                    mane_data_found, mane['status']
+                )
+
+    def validate_gene_or_accession_pos(self, t: str, pos_list: List,
+                                       errors: List,
+                                       gene: Optional[str] = None) -> None:
+        """Validate positions on gene or accession.
+        If not valid, add to list of errors
+
+        :param str t: Accession
+        :param List pos_list: List of positions to validate
+        :param List errors: List of errors
+        :param Optional[str] gene: Gene
+        """
+        if gene:
+            len_pos_list = len(pos_list)
+            pos1, pos2 = pos_list[0], pos_list[1]
+            if len_pos_list == 2:
+                pos3, pos4 = None, None
+            elif len_pos_list == 4:
+                pos3, pos4 = pos_list[2], pos_list[3]
+            else:
+                errors.append(f"Unexpected amount of positions:"
+                              f" {len_pos_list}")
+                return
+            self._validate_gene_pos(
+                gene, t, pos1, pos2, errors, pos3=pos3, pos4=pos4)
+        else:
+            for pos in pos_list:
+                self._check_index(t, pos, errors)
