@@ -2470,7 +2470,8 @@ def test_genomic_dup1(test_normalize, genomic_dup1_default,
 
     # Invalid
     invalid_queries = [
-        # "NC_000007.13:g.140413127dup",
+        "NC_000007.13:g.159138670dup",
+        "NC_000007.14:g.159345976dup",
         "BRAF g.140219337dup", "BRAF g.141024929dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2525,7 +2526,8 @@ def test_genomic_dup2(test_normalize, genomic_dup2_default, genomic_dup2_cnv,
 
     # Invalid
     invalid_queries = [
-        # "NC_000007.13:g.140413127_140413130dup",
+        "NC_000007.13:g.140413127_159138670dup",
+        "NC_000007.14:g.140413127_159345976dup",
         "BRAF g.140219337_140924929dup", "BRAF g.140719326_141024929dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2583,8 +2585,8 @@ def test_genomic_dup3(test_normalize, genomic_dup3_default,
 
     # Invalid
     invalid_queries = [
-        # "NC_000023.11:g.(31119221_31119227)_(31119300_31119301)dup",
-        # "NC_000023.11:g.(31119222_31119227)_(31119300_33339611)dup",
+        "NC_000023.10:g.(31119221_31119227)_(31119300_155270562)dup",
+        "NC_000023.11:g.(31119221_31119227)_(31119300_156040899)dup",
         "DMD g.(31060227_31100351)_(33274278_33417151)dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2642,6 +2644,8 @@ def test_genomic_dup4(test_normalize, genomic_dup4_default,
 
     # Invalid
     invalid_queries = [
+        "NC_000020.10:g.(?_29652252)_(63025530_?)dup",
+        "NC_000020.11:g.(?_29652252)_(64444169_?)dup",
         "PRPF8 g.(?_1650628)_(1684571_?)dup"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2698,6 +2702,8 @@ def test_genomic_dup5(test_normalize, genomic_dup5_default,
 
     # Invalid
     for q in [
+        "NC_000023.10:g.(?_153287263)_155270561dup",
+        "NC_000023.11:g.(?_154021812)_156040896dup",
         "MECP2 g.(?_154021812)_154097733dup"  # 37
         "MECP2 g.(?_154021572)_154092209dup",  # 38
     ]:
@@ -2756,6 +2762,8 @@ def test_genomic_dup6(test_normalize, genomic_dup6_default,
 
     # Invalid
     for q in [
+        "NC_000023.10:g.153287263_(155270561_?)dup",
+        "NC_000023.11:g.154021812_(156040896_?)dup",
         "MECP2 g.154021812_(154097733_?)dup"  # 37
         "MECP2 g.154021572_(154092209_?)dup",  # 38
     ]:
@@ -2812,6 +2820,8 @@ def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
 
     # Invalid
     invalid_queries = [
+        "NC_000003.11:g.198022431del",
+        "NC_000003.12:g.198295567del",
         "BRAF g.140413127del", "BRAF g.141024929del"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2866,6 +2876,8 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
 
     # Invalid
     invalid_queries = [
+        "NC_000003.12:g.10146595_198295580del",
+        "NC_000003.11:g.198022435_198022437del",
         "BRAF g.140413127_140419136del", "BRAF g.140719326_141024929del"
     ]
     assert_text_variation(invalid_queries, test_normalize)
@@ -2922,6 +2934,8 @@ def test_genomic_del3(test_normalize, genomic_del3_default,
 
     # Invalid
     invalid_queries = [
+        "NC_000023.11:g.(156040880_156040883)_(156040896_156040899)del",
+        "NC_000023.10:g.(155270550_155270555)_(155270560_155270562)del",
         "EFNB1 g.(68048863_68048870)_(68842150_68842152)del",  # 37
         "EFNB1 g.(68829022_68829030)_(68842150_68842161)del"  # 38
     ]
@@ -2988,6 +3002,8 @@ def test_genomic_del4(test_normalize, genomic_del4_default,
 
     # Invalid
     invalid_queries = [
+        "NC_000023.11:g.(?_156040899)_(156040900_?)del",
+        "NC_000024.10:g.(?_155270565)_(155270568_?)del",
         "COL4A4 g.(?_227002710)_(227003710_?)del",
         "COL4A4 g.(?_227867430)_(228029276_?)del",
     ]
@@ -3046,6 +3062,8 @@ def test_genomic_del5(test_normalize, genomic_del5_default,
 
     # Invalid
     invalid_queries = [
+        "NC_000023.10:g.(?_155270550)_155270570del",
+        "NC_000023.11:g.(?_18593474)_18671749del"
         "CDKL5  g.(?_18443702)_18671700del",  # 37
         "CDKL5  g.(?_18425585)_18653631del",  # 38
         "CDKL5  g.(?_18425582)_18653500del"  # 38
@@ -3105,6 +3123,8 @@ def test_genomic_del6(test_normalize, genomic_del6_default,
 
     # Invalid
     invalid_queries = [
+        "NC_000006.11:g.171115069_(171115080_?)del",
+        "NC_000006.12:g.170805981_(170805989_?)del"
         "EYA4 g.133561700_(133853270_?)del",  # 37
         "EYA4 g.133561651_(133561708_?)del",  # 37
         "EYA4 g.133240513_(133240600_?)del",  # 38

@@ -21,8 +21,6 @@ from ga4gh.core import ga4gh_identify
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
 from bioutils.accessions import coerce_namespace
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum  # noqa: F401, E501
 from gene.query import QueryHandler as GeneQueryHandler
 
 logger = logging.getLogger('variation')

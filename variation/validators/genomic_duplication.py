@@ -195,10 +195,16 @@ class GenomicDuplication(Validator):
                 start_grch38_data = self.mane_transcript.g_to_grch38(
                     t, s.start_pos1_dup, s.start_pos2_dup
                 )
+                if not start_grch38_data:
+                    return
                 start_grch38 = start_grch38_data['pos']
-                end_grch38 = self.mane_transcript.g_to_grch38(
+                end_grch38_data = self.mane_transcript.g_to_grch38(
                     t, s.end_pos1_dup, s.end_pos2_dup
-                )['pos']
+                )
+                if not end_grch38_data:
+                    return
+
+                end_grch38 = end_grch38_data['pos']
                 t = start_grch38_data['ac']
 
                 # Validate positions
@@ -347,6 +353,7 @@ class GenomicDuplication(Validator):
                     grch38_end = self.mane_transcript.g_to_grch38(
                         t, s.end_pos1_dup, s.end_pos2_dup
                     )
+                    t = grch38_start['ac']
                     if grch38_end:
                         end1, end2 = grch38_end['pos']
                         grch38 = grch38_end
@@ -355,8 +362,17 @@ class GenomicDuplication(Validator):
                 start2 = s.start_pos2_dup
                 end1 = s.end_pos1_dup
                 end2 = s.end_pos2_dup
+
             if start1 and start2 and end1 and end2:
-                ival = self._get_ival_certain_range(start1, start2, end1, end2)
+                if gene:
+                    self._validate_gene_pos(gene, t, start1, start2, errors,
+                                            pos3=end1, pos4=end2)
+                else:
+                    for pos in [start1, start2, end1, end2]:
+                        self._check_index(t, pos, errors)
+                if not errors:
+                    ival = self._get_ival_certain_range(
+                        start1, start2, end1, end2)
         else:
             if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                 # format: (?_#)_(#_?)
