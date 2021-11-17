@@ -165,67 +165,18 @@ class GenomicDuplication(DuplicationDeletionBase):
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
                 # (#_#)_(#_#)
-                start_grch38_data = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos1_dup, s.start_pos2_dup
+                ival, grch38 = self._get_ival(
+                    t, s, gene_tokens, errors, is_norm=True)
+                self.add_grch38_to_mane_data(
+                    t, s, errors, ival, grch38, mane_data_found,
+                    hgvs_dup_del_mode
                 )
-                if not start_grch38_data:
-                    return
-                start_grch38 = start_grch38_data['pos']
-                end_grch38_data = self.mane_transcript.g_to_grch38(
-                    t, s.end_pos1_dup, s.end_pos2_dup
-                )
-                if not end_grch38_data:
-                    return
-
-                end_grch38 = end_grch38_data['pos']
-                t = start_grch38_data['ac']
-
-                # Validate positions
-                gene = gene_tokens[0].token if gene_tokens else None
-                pos_list = [start_grch38[0], start_grch38[1],
-                            end_grch38[0], end_grch38[1]]
-                self.validate_gene_or_accession_pos(
-                    t, pos_list, errors, gene=gene)
-
-                if not errors:
-                    ival = self._get_ival_certain_range(
-                        start_grch38[0], start_grch38[1],
-                        end_grch38[0], end_grch38[1]
-                    )
-                    allele = self.to_vrs_allele_ranges(
-                        t, s.reference_sequence, s.alt_type, errors, ival)
-                    mane_variation = \
-                        self.hgvs_dup_del_mode.interpret_variation(
-                            t, s.alt_type, allele, errors,
-                            hgvs_dup_del_mode
-                        )
-                    if mane_variation:
-                        grch38 = self._grch38_dict(t, None)
-                        self.add_mane_data(
-                            grch38, mane_data_found, s.reference_sequence,
-                            s.alt_type, s, mane_variation=mane_variation
-                        )
             else:
                 ival, grch38 = self._get_ival(t, s, gene_tokens, errors,
                                               is_norm=True)
-                if not errors:
-                    if grch38:
-                        t = grch38['ac']
-
-                    allele = self.to_vrs_allele_ranges(
-                        t, s.reference_sequence, s.alt_type, errors, ival)
-
-                    grch38_variation = \
-                        self.hgvs_dup_del_mode.interpret_variation(
-                            t, s.alt_type, allele, errors,
-                            hgvs_dup_del_mode
-                        )
-
-                    if grch38_variation:
-                        self._add_dict_to_mane_data(
-                            grch38['ac'], s, grch38_variation,
-                            mane_data_found, 'GRCh38'
-                        )
+                self.add_grch38_to_mane_data(
+                    t, s, errors, ival, grch38, mane_data_found,
+                    hgvs_dup_del_mode)
         else:
             # #dup or #_#dup
             if gene_tokens:
@@ -244,8 +195,10 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, start, end)
 
                 if grch38:
-                    for pos in [grch38['pos'][0], grch38['pos'][1]]:
-                        self._check_index(grch38['ac'], pos, errors)
+                    self.validate_gene_or_accession_pos(
+                        grch38['ac'], [grch38['pos'][0], grch38['pos'][1]],
+                        errors)
+
                     if not errors:
                         allele = self.to_vrs_allele(
                             grch38['ac'], grch38['pos'][0],
@@ -283,21 +236,11 @@ class GenomicDuplication(DuplicationDeletionBase):
         gene = gene_tokens[0].token if gene_tokens else None
         if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
-            start1, start2, end1, end2 = None, None, None, None
             if is_norm:
-                grch38_start = self.mane_transcript.g_to_grch38(
-                    t, s.start_pos1_dup, s.start_pos2_dup
+                t, start1, start2, end1, end2, grch38 = self.get_grch38_pos_ac(
+                    t, s.start_pos1_dup, s.start_pos2_dup, pos3=s.end_pos1_dup,
+                    pos4=s.end_pos2_dup
                 )
-                if grch38_start:
-                    start1, start2 = grch38_start['pos']
-
-                    grch38_end = self.mane_transcript.g_to_grch38(
-                        t, s.end_pos1_dup, s.end_pos2_dup
-                    )
-                    t = grch38_start['ac']
-                    if grch38_end:
-                        end1, end2 = grch38_end['pos']
-                        grch38 = grch38_end
             else:
                 start1 = s.start_pos1_dup
                 start2 = s.start_pos2_dup
@@ -315,12 +258,9 @@ class GenomicDuplication(DuplicationDeletionBase):
             if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
                 # format: (?_#)_(#_?)
                 if is_norm:
-                    grch38 = self.mane_transcript.g_to_grch38(
+                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
                         t, s.start_pos2_dup, s.end_pos1_dup
                     )
-                    if grch38:
-                        start, end = grch38['pos']
-                        t = grch38['ac']
                 else:
                     start = s.start_pos2_dup
                     end = s.end_pos1_dup
@@ -340,12 +280,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     s.end_pos2_dup is None:
                 # format: (?_#)_#
                 if is_norm:
-                    grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos2_dup, s.end_pos1_dup
-                    )
-                    if grch38:
-                        start, end = grch38['pos']
-                        t = grch38['ac']
+                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                        t, s.start_pos2_dup, s.end_pos1_dup)
                 else:
                     start = s.start_pos2_dup
                     end = s.end_pos1_dup
@@ -365,16 +301,13 @@ class GenomicDuplication(DuplicationDeletionBase):
                     s.end_pos2_dup == '?':
                 # format: #_(#_?)
                 if is_norm:
-                    grch38 = self.mane_transcript.g_to_grch38(
+                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
                         t, s.start_pos1_dup, s.end_pos1_dup
                     )
-                    if grch38:
-                        start, end = grch38['pos']
-                        start -= 1
-                        t = grch38['ac']
                 else:
-                    start = s.end_pos1_dup - 1
+                    start = s.start_pos1_dup
                     end = s.end_pos1_dup
+                start -= 1
 
                 self.validate_gene_or_accession_pos(
                     t, [start, end], errors, gene=gene)

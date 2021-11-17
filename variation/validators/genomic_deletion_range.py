@@ -159,24 +159,8 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript data found for given query
         """
         ival, grch38 = self._get_ival(t, s, errors, gene_tokens, is_norm=True)
-        if not errors:
-            if grch38:
-                t = grch38['ac']
-
-            allele = self.to_vrs_allele_ranges(
-                t, s.reference_sequence, s.alt_type, errors, ival)
-
-            grch38_variation = \
-                self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors,
-                    hgvs_dup_del_mode
-                )
-
-            if grch38_variation:
-                self._add_dict_to_mane_data(
-                    grch38['ac'], s, grch38_variation,
-                    mane_data_found, 'GRCh38'
-                )
+        self.add_grch38_to_mane_data(
+            t, s, errors, ival, grch38, mane_data_found, hgvs_dup_del_mode)
 
     def _get_ival(
             self, t: str, s: Token, errors: List, gene_tokens: List,
@@ -196,23 +180,10 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         ival, grch38, start1, start2, end1, end2 = None, None, None, None, None, None  # noqa: E501
         # (#_#)_(#_#)
         if is_norm:
-            grch38_start = self.mane_transcript.g_to_grch38(
-                t, s.start_pos1_del, s.start_pos2_del
+            t, start1, start2, end1, end2, grch38 = self.get_grch38_pos_ac(
+                t, s.start_pos1_del, s.start_pos2_del, pos3=s.end_pos1_del,
+                pos4=s.end_pos2_del
             )
-            if grch38_start:
-                start1, start2 = grch38_start['pos']
-
-                grch38_end = self.mane_transcript.g_to_grch38(
-                    t, s.end_pos1_del, s.end_pos2_del
-                )
-                t = grch38_start['ac']
-                if grch38_end:
-                    end1, end2 = grch38_end['pos']
-                    grch38 = grch38_end  # Pos doesn't really matter in return
-                else:
-                    return ival, grch38
-            else:
-                return ival, grch38
         else:
             start1 = s.start_pos1_del
             start2 = s.start_pos2_del
