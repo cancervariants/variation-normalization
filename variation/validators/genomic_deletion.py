@@ -88,7 +88,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                 if not errors:
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, start, end, normalize_endpoint)
+                        mane_data_found, start, end)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -106,7 +106,7 @@ class GenomicDeletion(DuplicationDeletionBase):
     def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict,
-            start: int, end: int, normalize_endpoint: bool) -> None:
+            start: int, end: int) -> None:
         """Get variation that will be returned in normalize endpoint.
 
         :param List gene_tokens: List of gene tokens
@@ -117,8 +117,6 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript data found for given query
         :param int start: Start pos change
         :param int end: End pos change
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         """
         if gene_tokens:
             self.add_normalized_genomic_dup_del(
@@ -134,24 +132,9 @@ class GenomicDeletion(DuplicationDeletionBase):
             if grch38:
                 self.validate_gene_or_accession_pos(
                     grch38['ac'], [grch38['pos'][0], grch38['pos'][1]], errors)
-
-                if not errors:
-                    allele = self.to_vrs_allele(
-                        grch38['ac'], int(grch38['pos'][0]),
-                        int(grch38['pos'][1]), s.reference_sequence,
-                        s.alt_type, errors
-                    )
-                    grch38_variation = \
-                        self.hgvs_dup_del_mode.interpret_variation(
-                            grch38['ac'], s.alt_type, allele,
-                            errors, hgvs_dup_del_mode
-                        )
-
-                    if grch38_variation:
-                        self._add_dict_to_mane_data(
-                            grch38['ac'], s, grch38_variation,
-                            mane_data_found, 'GRCh38'
-                        )
+                self.add_grch38_to_mane_data(
+                    t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
+                    use_vrs_allele_range=False)
 
     def get_gene_tokens(
             self, classification: Classification) -> List[GeneMatchToken]:
