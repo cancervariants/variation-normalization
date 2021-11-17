@@ -20,6 +20,8 @@ from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_model import Text, Allele, CopyNumber, \
     Haplotype, VariationSet
 from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 class QueryHandler:
@@ -28,15 +30,15 @@ class QueryHandler:
     def __init__(self,
                  dynamodb_url: str = '',
                  dynamodb_region: str = 'us-east-2',
-                 seqrepo_data_path=SEQREPO_DATA_PATH,
-                 uta_db_url=UTA_DB_URL,
-                 uta_db_pwd=None) -> None:
+                 seqrepo_data_path: str = SEQREPO_DATA_PATH,
+                 uta_db_url: str = UTA_DB_URL,
+                 uta_db_pwd: Optional[str] = None) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene-normalizer database source.
         :param str dynamodb_region: AWS default region for gene-normalizer.
         :param str seqrepo_data_path: Path to seqrepo data directory
         :param str uta_db_url: URL for UTA database
-        :param str uta_db_pwd: Password for UTA database user
+        :param Optional[str] uta_db_pwd: Password for UTA database user
         """
         self.gene_normalizer = GeneQueryHandler(db_url=dynamodb_url,
                                                 db_region=dynamodb_region)
@@ -51,10 +53,11 @@ class QueryHandler:
             self.seqrepo_access, self.uta, self.gene_normalizer
         )
 
-    def _init_to_vrs(self, transcript_file_path=TRANSCRIPT_MAPPINGS_PATH,
-                     refseq_file_path=REFSEQ_GENE_SYMBOL_PATH,
-                     amino_acids_file_path=AMINO_ACID_PATH,
-                     mane_data_path=REFSEQ_MANE_PATH) -> ToVRS:
+    def _init_to_vrs(self,
+                     transcript_file_path: str = TRANSCRIPT_MAPPINGS_PATH,
+                     refseq_file_path: str = REFSEQ_GENE_SYMBOL_PATH,
+                     amino_acids_file_path: str = AMINO_ACID_PATH,
+                     mane_data_path: str = REFSEQ_MANE_PATH) -> ToVRS:
         """Return toVRS instance
 
         :param str transcript_file_path: Path to transcript mappings file
@@ -94,7 +97,7 @@ class QueryHandler:
             mane_transcript, validator, translator, self.gene_normalizer
         )
 
-    def to_vrs(self, q)\
+    def to_vrs(self, q: str)\
             -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
@@ -116,12 +119,14 @@ class QueryHandler:
                 translations = None
         return translations, warnings
 
-    def normalize(self, q, hgvs_dup_del_mode="default")\
-            -> Optional[VariationDescriptor]:
+    def normalize(
+            self, q: str,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+    ) -> Optional[VariationDescriptor]:
         """Return normalized Variation Descriptor for variation.
 
         :param q: Variation to normalize
-        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to interpret HGVS dup/del expressions
             in VRS.

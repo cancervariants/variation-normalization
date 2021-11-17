@@ -1,6 +1,6 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple, List
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)
 class HGVSDupDelMode:
     """Class for handling how to interpret HGVS duplications and deletions."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess):
+    def __init__(self, seqrepo_access: SeqRepoAccess) -> None:
         """Initialize HGVS Dup Del Mode.
 
         :param SeqRepoAccess seqrepo_access: Access to seqrepo
@@ -23,7 +23,7 @@ class HGVSDupDelMode:
         self.valid_modes = [mode.value for mode in
                             HGVSDupDelModeEnum.__members__.values()]
 
-    def is_valid_mode(self, mode) -> bool:
+    def is_valid_mode(self, mode: str) -> bool:
         """Determine if mode is a valid input.
 
         :param str mode: Entered mode
@@ -32,7 +32,7 @@ class HGVSDupDelMode:
         hgvs_dup_del_mode = mode.strip().lower()
         return hgvs_dup_del_mode in self.valid_modes
 
-    def _get_chr(self, ac) -> Optional[str]:
+    def _get_chr(self, ac: str) -> Optional[str]:
         """Get chromosome for accession.
 
         :param str ac: Accession
@@ -42,8 +42,10 @@ class HGVSDupDelMode:
         return ([a.split(':')[-1] for a in aliases
                  if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
 
-    def default_mode(self, ac, alt_type, pos, del_or_dup, location,
-                     chromosome=None, allele=None) -> Optional[Dict]:
+    def default_mode(self, ac: str, alt_type: str, pos: Tuple[int, int],
+                     del_or_dup: str, location: Dict,
+                     chromosome: str = None,
+                     allele: Dict = None) -> Optional[Dict]:
         """Use default characteristics to return a variation.
         If endpoints are ambiguous: cnv
             handling X chromosome, make cnv a definite range with base 1-2
@@ -67,14 +69,13 @@ class HGVSDupDelMode:
             variation = self.cnv_mode(ac, del_or_dup,
                                       location, chromosome=chromosome)
         elif pos and (pos[1] - pos[0] > 100):
-            # TODO: Check if ok to keep second condition
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
             variation = self.literal_seq_expr_mode(allele, alt_type)
         return variation
 
-    def cnv_mode(self, ac, del_or_dup, location, chromosome=None)\
-            -> Optional[Dict]:
+    def cnv_mode(self, ac: str, del_or_dup: str, location: Dict,
+                 chromosome: str = None) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
 
         :param str ac: Accession
@@ -114,7 +115,8 @@ class HGVSDupDelMode:
         )
         return self._ga4gh_identify_variation(variation)
 
-    def repeated_seq_expr_mode(self, alt_type, location) -> Optional[Dict]:
+    def repeated_seq_expr_mode(self, alt_type: str,
+                               location: Dict) -> Optional[Dict]:
         """Return a VRS Allele with a RepeatedSequenceExpression.
         The RepeatedSequenceExpression subject will be a
             DerivedSequenceExpression.
@@ -148,7 +150,8 @@ class HGVSDupDelMode:
         )
         return self._ga4gh_identify_variation(variation)
 
-    def literal_seq_expr_mode(self, allele, alt_type) -> Optional[Dict]:
+    def literal_seq_expr_mode(self, allele: Dict,
+                              alt_type: str) -> Optional[Dict]:
         """Return a VRS Allele with a normalized LiteralSequenceExpression.
 
         :param dict allele: normalized VRS Allele object represented as a dict
@@ -167,10 +170,11 @@ class HGVSDupDelMode:
             variation = None
         return self._ga4gh_identify_variation(variation)
 
-    def _ga4gh_identify_variation(self, variation) -> Optional[Dict]:
+    def _ga4gh_identify_variation(self,
+                                  variation: models.Variation) -> Optional[Dict]:  # noqa: E501
         """Return variation with GA4GH digest-based id.
 
-        :param ga4gh.models.Variation variation: VRS variation object
+        :param models.Variation variation: VRS variation object
         :return: VRS Variation with GA4GH digest-based id represented as a dict
         """
         if variation is None:
@@ -179,17 +183,19 @@ class HGVSDupDelMode:
             variation._id = ga4gh_identify(variation)
             return variation.as_dict()
 
-    def interpret_variation(self, ac, alt_type, allele, errors,
-                            hgvs_dup_del_mode, pos=None) -> Dict:
+    def interpret_variation(self, ac: str, alt_type: str, allele: Dict,
+                            errors: List,
+                            hgvs_dup_del_mode: HGVSDupDelModeEnum,
+                            pos: Optional[Tuple[int, int]] = None) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
         :param str ac: Accession
         :param str alt_type: Alteration type
         :param dict allele: VRS Allele object
-        :param list errors: List of errors
+        :param List errors: List of errors
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
-        :param tuple pos: Position changes
+        :param Optional[Tuple[int, int]] pos: Position changes
         :return: VRS Variation object
         """
         if 'deletion' in alt_type:
