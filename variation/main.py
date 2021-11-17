@@ -6,6 +6,8 @@ from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
@@ -86,8 +88,9 @@ hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
          response_model_exclude_none=True
          )
 def normalize(q: str = Query(..., description=q_description),
-              hgvs_dup_del_mode: str = Query(
-                  "default", description=hgvs_dup_del_mode_decsr)):
+              hgvs_dup_del_mode: HGVSDupDelModeEnum = Query(
+                  HGVSDupDelModeEnum.DEFAULT,
+                  description=hgvs_dup_del_mode_decsr)):
     """Return Value Object Descriptor for variation.
 
     :param str q: Variation to normalize

@@ -3,6 +3,8 @@ import pytest
 from variation.query import QueryHandler
 from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
 from tests.conftest import assertion_checks
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +16,7 @@ def test_normalize():
             self.query_handler = QueryHandler()
             self.warnings = []
 
-        def normalize(self, q, hgvs_dup_del_mode="default"):
+        def normalize(self, q, hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT):
             resp = self.query_handler.normalize(
                 q, hgvs_dup_del_mode=hgvs_dup_del_mode)
             self.warnings = \
