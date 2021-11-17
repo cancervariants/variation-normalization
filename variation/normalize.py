@@ -1,11 +1,14 @@
 """Module for Variation Normalization."""
-from typing import Optional, List, Tuple
-from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from typing import Optional, List, Tuple, Dict
+from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor, \
+    GeneDescriptor
 from ga4gh.vrsatile.pydantic.vrs_model import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
 from gene.query import QueryHandler as GeneQueryHandler
+from variation.schemas.token_response_schema import GeneMatchToken, Token
+from variation.schemas.validation_response_schema import ValidationSummary
 
 
 class Normalize:
@@ -25,12 +28,13 @@ class Normalize:
         self._gene_norm_cache = dict()
         self.gene_normalizer = gene_normalizer
 
-    def normalize(self, q, validations, warnings):
+    def normalize(self, q: str, validations: ValidationSummary,
+                  warnings: List) -> Optional[VariationDescriptor]:
         """Normalize a given variation.
 
         :param str q: The variation to normalize
         :param ValidationSummary validations: Invalid and valid results
-        :param list warnings: List of warnings
+        :param List warnings: List of warnings
         :return: An variation descriptor for a valid result if one exists.
             Else, None.
         """
@@ -110,7 +114,8 @@ class Normalize:
         logger.warning(warnings)
         return None, warnings
 
-    def get_gene_descriptor(self, gene_token):
+    def get_gene_descriptor(
+            self, gene_token: GeneMatchToken) -> Optional[GeneDescriptor]:
         """Return a GA4GH Gene Descriptor using Gene Normalization.
 
         :param GeneMatchToken gene_token: A gene token
@@ -128,10 +133,11 @@ class Normalize:
                 return gene_descriptor
             return None
 
-    def get_ref_allele_seq(self, allele, identifier) -> Optional[str]:
+    def get_ref_allele_seq(self, allele: Dict,
+                           identifier: str) -> Optional[str]:
         """Return ref allele seq for transcript.
 
-        :param dict allele: VRS Allele object
+        :param Dict allele: VRS Allele object
         :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
@@ -153,10 +159,11 @@ class Normalize:
 
         return self.seqrepo_access.get_sequence(identifier, start, end)
 
-    def _is_token_type(self, valid_result_tokens, token_type) -> bool:
+    def _is_token_type(self, valid_result_tokens: List,
+                       token_type: str) -> bool:
         """Return whether or not token_type is in valid_result_tokens.
 
-        :param list valid_result_tokens: Valid token matches
+        :param List valid_result_tokens: Valid token matches
         :param str token_type: The token's type
         :return: Whether or not token_type is in valid_result_tokens
         """
@@ -165,10 +172,11 @@ class Normalize:
                 return True
         return False
 
-    def _get_instance_type_token(self, valid_result_tokens, instance_type):
+    def _get_instance_type_token(self, valid_result_tokens: List,
+                                 instance_type: Token) -> Optional[Token]:
         """Return the tokens for a given instance type.
 
-        :param list valid_result_tokens: A list of valid tokens for the input
+        :param List valid_result_tokens: A list of valid tokens for the input
             string
         :param Token instance_type: The instance type to check
         :return: Token for a given instance type
