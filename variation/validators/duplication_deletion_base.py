@@ -206,20 +206,25 @@ class DuplicationDeletionBase(Validator):
 
     def add_grch38_to_mane_data(
             self, t: str, s: Token, errors: List,
-            ival: Tuple, grch38: Dict, mane_data_found: Dict,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum) -> None:
+            grch38: Dict, mane_data_found: Dict,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum,
+            ival: Optional[Tuple] = None,
+            use_vrs_allele_range: bool = True) -> None:
         """Add grch38 variation to mane data
 
         :param str t: Accession
         :param Token s: Classification token
         :param List errors: List of errors
-        :param Tuple ival: Interval
         :param Dict grch38: GRCh38 data
         :param Dict mane_data_found: MANE data found for initial query
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optionals[Tuple] ival: Interval
+        :param bool use_vrs_allele_range: `True` if allele should be computed
+            using `to_vrs_allele_ranges` method. `False` if allele should be
+            computed using `to_vrs_allele` method.
         """
         if errors:
             return
@@ -227,12 +232,16 @@ class DuplicationDeletionBase(Validator):
         if grch38:
             t = grch38['ac']
 
-        allele = self.to_vrs_allele_ranges(
-            t, s.reference_sequence, s.alt_type, errors, ival)
+        if use_vrs_allele_range:
+            allele = self.to_vrs_allele_ranges(
+                t, s.reference_sequence, s.alt_type, errors, ival)
+        else:
+            allele = self.to_vrs_allele(
+                t, grch38['pos'][0], grch38['pos'][1], s.reference_sequence,
+                s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors, hgvs_dup_del_mode
-        )
+            t, s.alt_type, allele, errors, hgvs_dup_del_mode)
 
         if grch38_variation:
             self._add_dict_to_mane_data(

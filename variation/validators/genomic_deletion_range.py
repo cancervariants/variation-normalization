@@ -160,7 +160,8 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         """
         ival, grch38 = self._get_ival(t, s, errors, gene_tokens, is_norm=True)
         self.add_grch38_to_mane_data(
-            t, s, errors, ival, grch38, mane_data_found, hgvs_dup_del_mode)
+            t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
+            ival=ival)
 
     def _get_ival(
             self, t: str, s: Token, errors: List, gene_tokens: List,

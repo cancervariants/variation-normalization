@@ -168,15 +168,15 @@ class GenomicDuplication(DuplicationDeletionBase):
                 ival, grch38 = self._get_ival(
                     t, s, gene_tokens, errors, is_norm=True)
                 self.add_grch38_to_mane_data(
-                    t, s, errors, ival, grch38, mane_data_found,
-                    hgvs_dup_del_mode
+                    t, s, errors, grch38, mane_data_found,
+                    hgvs_dup_del_mode, ival=ival
                 )
             else:
                 ival, grch38 = self._get_ival(t, s, gene_tokens, errors,
                                               is_norm=True)
                 self.add_grch38_to_mane_data(
-                    t, s, errors, ival, grch38, mane_data_found,
-                    hgvs_dup_del_mode)
+                    t, s, errors, grch38, mane_data_found,
+                    hgvs_dup_del_mode, ival=ival)
         else:
             # #dup or #_#dup
             if gene_tokens:
@@ -198,24 +198,10 @@ class GenomicDuplication(DuplicationDeletionBase):
                     self.validate_gene_or_accession_pos(
                         grch38['ac'], [grch38['pos'][0], grch38['pos'][1]],
                         errors)
-
-                    if not errors:
-                        allele = self.to_vrs_allele(
-                            grch38['ac'], grch38['pos'][0],
-                            grch38['pos'][1], s.reference_sequence,
-                            s.alt_type, errors
-                        )
-                        grch38_variation = \
-                            self.hgvs_dup_del_mode.interpret_variation(
-                                grch38['ac'], s.alt_type, allele,
-                                errors, hgvs_dup_del_mode
-                            )
-
-                        if grch38_variation:
-                            self._add_dict_to_mane_data(
-                                grch38['ac'], s, grch38_variation,
-                                mane_data_found, 'GRCh38'
-                            )
+                    self.add_grch38_to_mane_data(
+                        t, s, errors, grch38, mane_data_found,
+                        hgvs_dup_del_mode, use_vrs_allele_range=False
+                    )
 
     def _get_ival(
             self, t: str, s: Token, gene_tokens: List, errors: List,
