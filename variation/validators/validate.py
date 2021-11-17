@@ -28,6 +28,8 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from typing import List
 from gene.query import QueryHandler as GeneQueryHandler
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 class Validate:
@@ -81,11 +83,23 @@ class Validate:
             GenomicDuplication(*params)
         ]
 
-    def perform(self, classifications: List[Classification],
-                normalize_endpoint, warnings=None,
-                hgvs_dup_del_mode="default") \
-            -> ValidationSummary:
-        """Validate a list of classifications."""
+    def perform(
+            self, classifications: List[Classification],
+            normalize_endpoint: bool, warnings: List = None,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+    ) -> ValidationSummary:
+        """Validate a list of classifications.
+
+        :param List classifications: List of classifications
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
+        :param List warnings: List of warnings
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
+        :return: ValidationSummary containing valid and invalid results
+        """
         valid_possibilities = list()
         invalid_possibilities = list()
         if not warnings:
@@ -96,9 +110,8 @@ class Validate:
             for validator in self.validators:
                 if validator.validates_classification_type(
                         classification.classification_type):
-                    results = validator.validate(classification,
-                                                 normalize_endpoint,
-                                                 hgvs_dup_del_mode)
+                    results = validator.validate(
+                        classification, normalize_endpoint, hgvs_dup_del_mode)
                     for res in results:
                         if res.is_valid:
                             found_classification = True

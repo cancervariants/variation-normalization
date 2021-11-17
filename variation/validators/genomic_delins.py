@@ -72,7 +72,7 @@ class GenomicDelIns(DelInsBase):
 
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens, alt=s.inserted_sequence1
+                        s.alt_type, s, alt=s.inserted_sequence1
                     )
 
                 self.add_validation_result(

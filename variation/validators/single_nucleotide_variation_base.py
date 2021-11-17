@@ -71,8 +71,7 @@ class SingleNucleotideVariationBase(Validator):
                     )
 
                     self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type, s,
-                                       gene_tokens)
+                                       s.reference_sequence, s.alt_type, s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

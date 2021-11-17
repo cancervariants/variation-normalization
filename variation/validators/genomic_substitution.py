@@ -72,7 +72,7 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
 
                     self.add_mane_data(mane, mane_data_found,
                                        s.reference_sequence, s.alt_type, s,
-                                       gene_tokens, alt=s.new_nucleotide)
+                                       alt=s.new_nucleotide)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,
