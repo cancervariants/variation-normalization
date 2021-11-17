@@ -1312,7 +1312,7 @@ genomic_deletion:
     - query: VHL g.10191486_10191487delAG
       variations: [
         {
-          "_id": "ga4gh:VA.cdEPsoFoVBbfs7d0-vBDV1_lIW15tnMI",
+          "_id": "ga4gh:VA.NoUek29EIFxJ9oydhh8Y7V7jM_5zYmni",
           "location": {
             "interval": {
               "end": 550,
@@ -1329,7 +1329,7 @@ genomic_deletion:
           "type": "Allele"
         },
         {
-          "_id": "ga4gh:VA.46ZSku6zg54ZWx0Lfp3azV3PV-a1iYbB",
+          "_id": "ga4gh:VA.CUSDw6aHx7lqcrKKSpPId4XuLw4k69yt",
           "location": {
             "interval": {
               "end": 10191487,
