@@ -1,5 +1,5 @@
 """The base class for Duplication and Deletion Validation."""
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 from variation.schemas.token_response_schema import Token
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -180,3 +180,60 @@ class DuplicationDeletionBase(Validator):
         else:
             for pos in pos_list:
                 self._check_index(t, pos, errors)
+
+    def get_grch38_pos_ac(
+            self, t: str, pos1: int, pos2: int,
+            pos3: Optional[int] = None, pos4: Optional[int] = None
+    ) -> Tuple[str, int, int, Optional[int], Optional[int], Optional[Dict]]:
+        """Get GRCh38 start/end and accession
+
+        :param str t: Accession
+        :param int pos1: Position 1 (assumes 1-based)
+        :param int pos2: Position 2 (assumes 1-based)
+        :param int pos3: Position 3 (assumes 1-based)
+        :param int pos4: Position 4 (assumes 1-based)
+        :return: GRCh38 data (accession and positions)
+        """
+        grch38_start = self.mane_transcript.g_to_grch38(t, pos1, pos2)
+        if grch38_start:
+            pos1, pos2 = grch38_start['pos']
+            if pos3 is not None and pos4 is not None:
+                grch38_end = self.mane_transcript.g_to_grch38(t, pos3, pos4)
+                if grch38_end:
+                    pos3, pos4 = grch38_end['pos']
+            t = grch38_start['ac']
+        return t, pos1, pos2, pos3, pos4, grch38_start
+
+    def add_grch38_to_mane_data(
+            self, t: str, s: Token, errors: List,
+            ival: Tuple, grch38: Dict, mane_data_found: Dict,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum) -> None:
+        """Add grch38 variation to mane data
+
+        :param str t: Accession
+        :param Token s: Classification token
+        :param List errors: List of errors
+        :param Tuple ival: Interval
+        :param Dict grch38: GRCh38 data
+        :param Dict mane_data_found: MANE data found for initial query
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
+        """
+        if errors:
+            return
+
+        if grch38:
+            t = grch38['ac']
+
+        allele = self.to_vrs_allele_ranges(
+            t, s.reference_sequence, s.alt_type, errors, ival)
+
+        grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
+            t, s.alt_type, allele, errors, hgvs_dup_del_mode
+        )
+
+        if grch38_variation:
+            self._add_dict_to_mane_data(
+                grch38['ac'], s, grch38_variation, mane_data_found, 'GRCh38')

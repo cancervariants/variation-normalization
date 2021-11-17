@@ -1,5 +1,6 @@
 """The module for Genomic Uncertain Deletion Validation."""
-from .validator import Validator
+from variation.validators.duplication_deletion_base import\
+    DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
@@ -7,14 +8,7 @@ from variation.schemas.token_response_schema import \
 from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
-from variation.tokenizers import GeneSymbol
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -23,31 +17,8 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-class GenomicUncertainDeletion(Validator):
+class GenomicUncertainDeletion(DuplicationDeletionBase):
     """The Genomic UncertainDeletion Validator class."""
-
-    def __init__(self, seq_repo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler):
-        """Initialize the Genomic Uncertain Deletion validator.
-
-        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
-        :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings
-        :param GeneSymbol gene_symbol: Gene symbol tokenizer
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param UTA uta: Access to UTA queries
-        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        """
-        super().__init__(
-            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
-        )
-        self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
     def get_transcripts(self, gene_tokens: List,
                         classification: Classification,
@@ -165,23 +136,8 @@ class GenomicUncertainDeletion(Validator):
         if not gene_tokens:
             ival, grch38 = self._get_ival(
                 t, s, errors, gene_tokens, is_norm=True)
-
-            if not errors:
-                allele = self.to_vrs_allele_ranges(
-                    grch38['ac'], s.reference_sequence, s.alt_type,
-                    errors, ival)
-
-                grch38_variation = \
-                    self.hgvs_dup_del_mode.interpret_variation(
-                        t, s.alt_type, allele, errors,
-                        hgvs_dup_del_mode
-                    )
-
-                if grch38_variation:
-                    self._add_dict_to_mane_data(
-                        grch38['ac'], s, grch38_variation,
-                        mane_data_found, 'GRCh38'
-                    )
+            self.add_grch38_to_mane_data(t, s, errors, ival, grch38,
+                                         mane_data_found, hgvs_dup_del_mode)
 
     def _get_ival(
             self, t: str, s: Token, errors: List, gene_tokens: List,
@@ -198,36 +154,20 @@ class GenomicUncertainDeletion(Validator):
             is being used
         """
         ival = None
-        start = None
-        end = None
         grch38 = None
-        if is_norm:
-            is_grch38_assembly = self._is_grch38_assembly(t)
-        else:
-            is_grch38_assembly = None
+        gene = gene_tokens[0].token if gene_tokens else None
         if s.start_pos1_del == '?' and s.end_pos2_del == '?':
             # format: (?_#)_(#_?)
             if is_norm:
-                if not is_grch38_assembly:
-                    grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos2_del, s.end_pos1_del
-                    )
-                else:
-                    grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
-                if grch38:
-                    start, end = grch38['pos']
-                    t = grch38['ac']
+                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, s.start_pos2_del, s.end_pos1_del
+                )
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            if gene_tokens:
-                self._validate_gene_pos(
-                    gene_tokens[0].token, t, start, end, errors
-                )
-            else:
-                for pos in [start, end]:
-                    self._check_index(t, pos, errors)
+            self.validate_gene_or_accession_pos(
+                t, [start, end], errors, gene=gene)
 
             if not errors and start and end:
                 ival = models.SequenceInterval(
@@ -240,26 +180,16 @@ class GenomicUncertainDeletion(Validator):
                 s.end_pos2_del is None:
             # format: (?_#)_#
             if is_norm:
-                if not is_grch38_assembly:
-                    grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos2_del, s.end_pos1_del
-                    )
-                else:
-                    grch38 = dict(ac=t, pos=(s.start_pos2_del, s.end_pos1_del))
-                if grch38:
-                    start, end = grch38['pos']
-                    t = grch38['ac']
+                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, s.start_pos2_del, s.end_pos1_del
+                )
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            if gene_tokens:
-                self._validate_gene_pos(
-                    gene_tokens[0].token, t, start, end, errors
-                )
-            else:
-                for pos in [start, end]:
-                    self._check_index(t, pos, errors)
+            self.validate_gene_or_accession_pos(
+                t, [start, end], errors, gene=gene
+            )
 
             if not errors and start and end:
                 ival = models.SequenceInterval(
@@ -272,29 +202,17 @@ class GenomicUncertainDeletion(Validator):
                 s.end_pos2_del == '?':
             # format: #_(#_?)
             if is_norm:
-                if not is_grch38_assembly:
-                    grch38 = self.mane_transcript.g_to_grch38(
-                        t, s.start_pos1_del, s.end_pos1_del
-                    )
-                else:
-                    grch38 = dict(
-                        ac=t, pos=(s.start_pos1_del, s.end_pos1_del)
-                    )
-                if grch38:
-                    start, end = grch38['pos']
-                    start -= 1
-                    t = grch38['ac']
-            else:
-                start = s.start_pos1_del - 1
-                end = s.end_pos1_del
-
-            if gene_tokens:
-                self._validate_gene_pos(
-                    gene_tokens[0].token, t, start, end, errors
+                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, s.start_pos1_del, s.end_pos1_del
                 )
             else:
-                for pos in [start, end]:
-                    self._check_index(t, pos, errors)
+                start = s.start_pos1_del
+                end = s.end_pos1_del
+
+            start -= 1
+
+            self.validate_gene_or_accession_pos(
+                t, [start, end], errors, gene=gene)
 
             if not errors and start and end:
                 ival = models.SequenceInterval(
