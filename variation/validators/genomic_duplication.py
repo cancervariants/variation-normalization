@@ -1,5 +1,6 @@
 """The module for Genomic Duplication Validation."""
-from .validator import Validator
+from variation.validators.duplication_deletion_base import\
+    DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
@@ -9,13 +10,6 @@ from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
 from ga4gh.vrs import models
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
-from variation.tokenizers import GeneSymbol
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -23,31 +17,8 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-class GenomicDuplication(Validator):
+class GenomicDuplication(DuplicationDeletionBase):
     """The Genomic Duplication Validator class."""
-
-    def __init__(self, seq_repo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler):
-        """Initialize the Genomic Duplication validator.
-
-        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
-        :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings
-        :param GeneSymbol gene_symbol: Gene symbol tokenizer
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param UTA uta: Access to UTA queries
-        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        """
-        super().__init__(
-            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
-        )
-        self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
     def get_transcripts(self, gene_tokens: List,
                         classification: Classification,
@@ -140,12 +111,8 @@ class GenomicDuplication(Validator):
                 # Format: #_#dup
                 end = s.start_pos2_dup
 
-            # Validate positions
-            if gene:
-                self._validate_gene_pos(gene, t, start, end, errors)
-            else:
-                for pos in [start, end]:
-                    self._check_index(t, pos, errors)
+            self.validate_gene_or_accession_pos(
+                t, [start, end], errors, gene=gene)
 
             if not errors:
                 allele = self.to_vrs_allele(
@@ -214,16 +181,11 @@ class GenomicDuplication(Validator):
                 t = start_grch38_data['ac']
 
                 # Validate positions
-                if gene_tokens:
-                    self._validate_gene_pos(
-                        gene_tokens[0].token, t, start_grch38[0],
-                        start_grch38[1], errors, pos3=end_grch38[0],
-                        pos4=end_grch38[1]
-                    )
-                else:
-                    for pos in [start_grch38[0], start_grch38[1],
-                                end_grch38[0], end_grch38[1]]:
-                        self._check_index(t, pos, errors)
+                gene = gene_tokens[0].token if gene_tokens else None
+                pos_list = [start_grch38[0], start_grch38[1],
+                            end_grch38[0], end_grch38[1]]
+                self.validate_gene_or_accession_pos(
+                    t, pos_list, errors, gene=gene)
 
                 if not errors:
                     ival = self._get_ival_certain_range(
@@ -274,32 +236,9 @@ class GenomicDuplication(Validator):
                 if errors:
                     return
 
-                mane = self.mane_transcript.get_mane_transcript(
-                    t, start, end, s.reference_sequence,
-                    gene=gene, normalize_endpoint=True
-                )
-
-                if mane:
-                    s.reference_sequence = 'c'
-                    s.molecule_context = 'transcript'
-                    s.so_id = 'SO:1000035'
-
-                    allele = self.to_vrs_allele(
-                        mane['refseq'], mane['pos'][0], mane['pos'][1],
-                        s.reference_sequence, s.alt_type, errors,
-                        cds_start=mane['coding_start_site']
-                    )
-
-                    mane_variation = self.hgvs_dup_del_mode.interpret_variation(  # noqa: #501
-                        t, s.alt_type, allele,
-                        errors, hgvs_dup_del_mode
-                    )
-
-                    if mane_variation:
-                        self._add_dict_to_mane_data(
-                            mane['refseq'], s, mane_variation,
-                            mane_data_found, mane['status']
-                        )
+                self.add_normalized_genomic_dup_del(
+                    s, t, start, end, gene_tokens[0].token, 'SO:1000035',
+                    errors, hgvs_dup_del_mode, mane_data_found)
             else:
                 grch38 = self.mane_transcript.g_to_grch38(
                     t, start, end)
@@ -340,10 +279,7 @@ class GenomicDuplication(Validator):
         :return: Sequence Interval and GRCh38 data if normalize endpoint
             is being used
         """
-        ival = None
-        start = None
-        end = None
-        grch38 = None
+        ival, start, end, grch38 = None, None, None, None
         gene = gene_tokens[0].token if gene_tokens else None
         if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
@@ -369,12 +305,9 @@ class GenomicDuplication(Validator):
                 end2 = s.end_pos2_dup
 
             if start1 and start2 and end1 and end2:
-                if gene:
-                    self._validate_gene_pos(gene, t, start1, start2, errors,
-                                            pos3=end1, pos4=end2)
-                else:
-                    for pos in [start1, start2, end1, end2]:
-                        self._check_index(t, pos, errors)
+                self.validate_gene_or_accession_pos(
+                    t, [start1, start2, end1, end2], errors, gene=gene)
+
                 if not errors:
                     ival = self._get_ival_certain_range(
                         start1, start2, end1, end2)
@@ -393,11 +326,8 @@ class GenomicDuplication(Validator):
                     end = s.end_pos1_dup
 
                 # Validate positions
-                if gene:
-                    self._validate_gene_pos(gene, t, start, end, errors)
-                else:
-                    for pos in [start, end]:
-                        self._check_index(t, pos, errors)
+                self.validate_gene_or_accession_pos(
+                    t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
@@ -421,11 +351,8 @@ class GenomicDuplication(Validator):
                     end = s.end_pos1_dup
 
                 # Validate positions
-                if gene:
-                    self._validate_gene_pos(gene, t, start, end, errors)
-                else:
-                    for pos in [start, end]:
-                        self._check_index(t, pos, errors)
+                self.validate_gene_or_accession_pos(
+                    t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
@@ -449,12 +376,8 @@ class GenomicDuplication(Validator):
                     start = s.end_pos1_dup - 1
                     end = s.end_pos1_dup
 
-                # Validate positions
-                if gene:
-                    self._validate_gene_pos(gene, t, start, end, errors)
-                else:
-                    for pos in [start, end]:
-                        self._check_index(t, pos, errors)
+                self.validate_gene_or_accession_pos(
+                    t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(

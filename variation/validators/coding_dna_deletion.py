@@ -1,5 +1,6 @@
 """The module for Coding DNA Deletion Validation."""
-from variation.validators.deletion_base import DeletionBase
+from variation.validators.duplication_deletion_base import\
+    DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType
 from variation.schemas.token_response_schema import CodingDNADeletionToken
@@ -12,7 +13,7 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-class CodingDNADeletion(DeletionBase):
+class CodingDNADeletion(DuplicationDeletionBase):
     """The Coding DNA Deletion Validator class."""
 
     def get_transcripts(self, gene_tokens, classification, errors)\

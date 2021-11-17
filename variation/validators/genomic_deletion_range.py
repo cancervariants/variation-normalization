@@ -1,5 +1,4 @@
 """The module for Genomic Deletion Range Validation."""
-from .validator import Validator
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
@@ -17,12 +16,13 @@ from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-
+from variation.validators.duplication_deletion_base import\
+    DuplicationDeletionBase
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
 
-class GenomicDeletionRange(Validator):
+class GenomicDeletionRange(DuplicationDeletionBase):
     """The Genomic Deletion Range Validator class."""
 
     def __init__(self, seq_repo_access: SeqRepoAccess,
@@ -91,9 +91,8 @@ class GenomicDeletionRange(Validator):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors, gene_tokens,
-                                             hgvs_dup_del_mode)
-                variation = result['variation']
+                variation = self._get_variation(
+                    s, t, errors, gene_tokens, hgvs_dup_del_mode)
 
                 if not errors:
                     self._get_normalize_variation(
@@ -144,12 +143,7 @@ class GenomicDeletionRange(Validator):
             variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors,
                 hgvs_dup_del_mode, pos=pos)
-
-        return {
-            'start': start,
-            'end': end,
-            'variation': variation
-        }
+        return variation
 
     def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
@@ -225,14 +219,9 @@ class GenomicDeletionRange(Validator):
             end1 = s.end_pos1_del
             end2 = s.end_pos2_del
 
-        if gene_tokens:
-            self._validate_gene_pos(
-                gene_tokens[0].token, t, start1, start2, errors,
-                pos3=end1, pos4=end2
-            )
-        else:
-            for pos in [start1, start2, end1, end2]:
-                self._check_index(t, pos, errors)
+        gene = gene_tokens[0].token if gene_tokens else None
+        self.validate_gene_or_accession_pos(
+            t, [start1, start2, end1, end2], errors, gene=gene)
 
         if not errors and start1 and start2 and end1 and end2:
             ival = self._get_ival_certain_range(
