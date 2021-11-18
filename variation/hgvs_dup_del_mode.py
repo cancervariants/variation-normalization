@@ -162,9 +162,6 @@ class HGVSDupDelMode:
             return None
 
         if allele:
-            # TODO: I don't believe we'll have to do this once
-            #  We are able to normalize LSE in vrs-python
-            allele['state']['type'] = 'LiteralSequenceExpression'
             variation = models.Allele(**allele)
         else:
             variation = None
