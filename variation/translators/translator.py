@@ -1,7 +1,7 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
-from ga4gh.vrsatile.pydantic.vrs_model import Allele, CopyNumber  # noqa: F401
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, CopyNumber
 from pydantic.error_wrappers import ValidationError
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
