@@ -1,8 +1,8 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple, Dict
-from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor, \
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     GeneDescriptor
-from ga4gh.vrsatile.pydantic.vrs_model import Text
+from ga4gh.vrsatile.pydantic.vrs_models import Text
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
@@ -87,7 +87,7 @@ class Normalize:
                     variation=variation,
                     molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
                     structural_type=valid_result.classification_token.so_id,
-                    vrs_ref_allele_seq=vrs_ref_allele_seq,
+                    vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,  # noqa: E501
                     gene_context=gene_context
                 )
             else:
@@ -145,11 +145,7 @@ class Normalize:
         end = None
         interval = allele['location']['interval']
         ival_type = interval['type']
-        if ival_type == 'SimpleInterval':
-            if interval['start'] != interval['end']:
-                start = interval['start'] + 1
-                end = interval['end']
-        elif ival_type == 'SequenceInterval':
+        if ival_type == 'SequenceInterval':
             if interval['start']['type'] == 'Number':
                 start = interval['start']['value'] + 1
                 end = interval['end']['value']

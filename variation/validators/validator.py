@@ -665,8 +665,10 @@ class Validator(ABC):
             errors.append(f"alt_type not supported: {alt_type}")
             return None
 
-        interval = models.SimpleInterval(start=ival_start, end=ival_end)
-        sstate = models.SequenceState(sequence=state)
+        interval = models.SequenceInterval(
+            start=models.Number(value=ival_start),
+            end=models.Number(value=ival_end))
+        sstate = models.LiteralSequenceExpression(sequence=state)
         return self._vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def _get_chr(self, ac: str) -> Optional[str]:
