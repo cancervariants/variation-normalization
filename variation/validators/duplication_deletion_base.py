@@ -43,8 +43,9 @@ class DuplicationDeletionBase(Validator):
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
-    def get_reference_sequence(self, ac, start, end, errors, cds_start=None)\
-            -> Optional[str]:
+    def get_reference_sequence(
+            self, ac: str, start: int, end: int, errors: List,
+            cds_start: int = None) -> Optional[str]:
         """Get deleted reference sequence.
 
         :param str ac: Accession
@@ -88,12 +89,17 @@ class DuplicationDeletionBase(Validator):
             t, s.start_pos_del, s.end_pos_del, errors, cds_start=cds_start
         )
 
-        if not errors and ref_sequence and s.deleted_sequence:
-            if ref_sequence != s.deleted_sequence:
-                errors.append(f"Expected deleted sequence {ref_sequence} "
-                              f"but got {s.deleted_sequence}")
+        if errors:
+            return False
+        else:
+            if ref_sequence and s.deleted_sequence:
+                if ref_sequence != s.deleted_sequence:
+                    errors.append(f"Expected deleted sequence {ref_sequence} "
+                                  f"but got {s.deleted_sequence}")
+                    return False
+        return True
 
-    def concise_description(self, transcript, token) -> str:
+    def concise_description(self, transcript: str, token: Token) -> str:
         """Return a HGVS description of the identified variation.
 
         :param str transcript: Transcript accession
