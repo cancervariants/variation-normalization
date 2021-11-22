@@ -321,7 +321,9 @@ def braf_v600e(braf_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
         "variation": {
+            "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
             "location": {
+                "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
                 "interval": {
                     "end": {"value": 640, "type": "Number"},
                     "start": {"value": 639, "type": "Number"},
@@ -352,7 +354,9 @@ def dis3_p63a():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.ueB4LJE1wba68a1w1w6Mrb-MOquy8n3C",
         "variation": {
+            "_id": "ga4gh:VA.ueB4LJE1wba68a1w1w6Mrb-MOquy8n3C",
             "location": {
+                "_id": "ga4gh:VSL.JcyesAEvndeQYxn4Gzi68hqC1ANZnrGN",
                 "interval": {
                     "end": {"value": 63, "type": "Number"},
                     "start": {"value": 62, "type": "Number"},
@@ -451,7 +455,9 @@ def vhl(vhl_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
         "variation": {
+            "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
             "location": {
+                "_id": "ga4gh:VSL._P3rBWI3f7OBs3a4gvZ18QJ6f6dSfqEQ",
                 "interval": {
                     "end": {"value": 185, "type": "Number"},
                     "start": {"value": 184, "type": "Number"},
@@ -482,7 +488,9 @@ def vhl_silent(vhl_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
         "variation": {
+            "_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
             "location": {
+                "_id": "ga4gh:VSL.zuNGmA02Uq49faqvCIPtwVrF_IJuP4dM",
                 "interval": {
                     "end": {"value": 61, "type": "Number"},
                     "start": {"value": 60, "type": "Number"},
@@ -508,11 +516,13 @@ def vhl_silent(vhl_gene_context):
 @pytest.fixture(scope='module')
 def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
+    variation = copy.deepcopy(braf_nuc_value)
+    variation["_id"] = "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B"
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
-        "variation": braf_nuc_value,
+        "variation_id": variation["_id"],
+        "variation": variation,
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "T",
@@ -529,7 +539,9 @@ def nm_004448_coding_dna_delins(erbb2_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.eMxxAEjNduAvg5U3eBZxf0nLtfcMNxqy",
         "variation": {
+            "_id": "ga4gh:VA.eMxxAEjNduAvg5U3eBZxf0nLtfcMNxqy",
             "location": {
+                "_id": "ga4gh:VSL.bBzTvpLChbWE2SZ7X0drm8NQj5rzNqTK",
                 "interval": {
                     "end": {"value": 2502, "type": "Number"},
                     "start": {"value": 2500, "type": "Number"},
@@ -560,7 +572,9 @@ def nc_000007_genomic_delins(braf_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
         "variation": {
+            "_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
             "location": {
+                "_id": "ga4gh:VSL.6PeoFwkO4ISmUjDWoYLkVsATVx8JRApd",
                 "interval": {
                     "end": {"value": 2146, "type": "Number"},
                     "start": {"value": 2144, "type": "Number"},
@@ -591,7 +605,9 @@ def nm_000551(vhl_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA._JN_AF5PO9kWKgKxB5T48cypZl7ccEsQ",
         "variation": {
+            "_id": "ga4gh:VA._JN_AF5PO9kWKgKxB5T48cypZl7ccEsQ",
             "location": {
+                "_id": "ga4gh:VSL.tQRFfWMPPHErWSbKvoEIh2gI2ehHIYAs",
                 "interval": {
                     "end": {"value": 685, "type": "Number"},
                     "start": {"value": 684, "type": "Number"},
@@ -619,6 +635,7 @@ def braf_nuc_value():
     """Create test fixture for BRAF V600E value on c. coordinate."""
     return {
         "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
                 "end": {"value": 2145, "type": "Number"},
                 "start": {"value": 2144, "type": "Number"},
@@ -640,10 +657,11 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     """Create test fixture for NM_004333.4:c.1799=."""
     value = copy.deepcopy(braf_nuc_value)
     value['state']['sequence'] = 'T'
+    value['_id'] = "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR"
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
+        "variation_id": value['_id'],
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -658,10 +676,11 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     """Create test fixture for NC_000007.13:g.140453136=."""
     value = copy.deepcopy(braf_nuc_value)
     value['state']['sequence'] = 'T'
+    value['_id'] = "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR"
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
+        "variation_id": value['_id'],
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -679,7 +698,9 @@ def amino_acid_delins(egfr_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.eDMXxJw9shlSKF3znIg5abniGoyJ3GQ4",
         "variation": {
+            "_id": "ga4gh:VA.eDMXxJw9shlSKF3znIg5abniGoyJ3GQ4",
             "location": {
+                "_id": "ga4gh:VSL.Mm8duqYDJyel5ZnwScnxLyGH1i9lcl3T",
                 "interval": {
                     "end": {"value": 751, "type": "Number"},
                     "start": {"value": 746, "type": "Number"},
@@ -712,7 +733,9 @@ def amino_acid_deletion_np_range(erbb2_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
         "variation": {
+            "_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
             "location": {
+                "_id": "ga4gh:VSL.vhpNJ0vsJx3WbnCfwJzxFU-wWyZwvPdL",
                 "interval": {
                     "end": {"value": 759, "type": "Number"},
                     "start": {"value": 754, "type": "Number"},
@@ -745,7 +768,9 @@ def coding_dna_deletion(erbb2_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
         "variation": {
+            "_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
             "location": {
+                "_id": "ga4gh:VSL.3uPWAjsdzd8MbAqw8DV46eBLK8tQRyEs",
                 "interval": {
                     "end": {"value": 2453, "type": "Number"},
                     "start": {"value": 2437, "type": "Number"},
@@ -776,7 +801,9 @@ def amino_acid_insertion(egfr_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
         "variation": {
+            "_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
             "location": {
+                "_id": "ga4gh:VSL.DJIP1jlxQIro1oC5re8txtH7N8vAvM7A",
                 "interval": {
                     "end": {"value": 770, "type": "Number"},
                     "start": {"value": 770, "type": "Number"},
@@ -806,7 +833,9 @@ def coding_dna_insertion(limk2_gene_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.RAcEF24tRNB_J5Hz9E6GY-qQSi4ZG932",
         "variation": {
+            "_id": "ga4gh:VA.RAcEF24tRNB_J5Hz9E6GY-qQSi4ZG932",
             "location": {
+                "_id": "ga4gh:VSL.WKymELRFwu4LDDmH5ci5Ip0M3XA2RObr",
                 "interval": {
                     "end": {"value": 2160, "type": "Number"},
                     "start": {"value": 2160, "type": "Number"},
@@ -836,7 +865,9 @@ def genomic_insertion(erbb2_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.nHB0_mpsq2t90S-znr81oCi2cY5CMdUe",
         "variation": {
+            "_id": "ga4gh:VA.nHB0_mpsq2t90S-znr81oCi2cY5CMdUe",
             "location": {
+                "_id": "ga4gh:VSL.E0o4HCXjy1EUthF1m32oj_Bc45g5YmEm",
                 "interval": {
                     "end": {"value": 2500, "type": "Number"},
                     "start": {"value": 2488, "type": "Number"},
@@ -867,7 +898,9 @@ def genomic_substitution(egfr_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.VkcuqgqMuSQeq8Hy0VPOGRIeyr8uSBV2",
         "variation": {
+            "_id": "ga4gh:VA.VkcuqgqMuSQeq8Hy0VPOGRIeyr8uSBV2",
             "location": {
+                "_id": "ga4gh:VSL.G1gIZ-om-8Exl3F0ZLxXYY8CjliwCaO1",
                 "interval": {
                     "end": {"value": 2630, "type": "Number"},
                     "start": {"value": 2629, "type": "Number"},
@@ -898,7 +931,9 @@ def genomic_sub_grch38():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
         "variation": {
+            "_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
             "location": {
+                "_id": "ga4gh:VSL.0p1nWj9-sryfUD5jvPTZZdnZeiHVHXls",
                 "interval": {
                     "end": {"value": 55181378, "type": "Number"},
                     "start": {"value": 55181377, "type": "Number"},
@@ -928,7 +963,9 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
         "variation": {
+            "_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
             "location": {
+                "_id": "ga4gh:VSL.0p1nWj9-sryfUD5jvPTZZdnZeiHVHXls",
                 "interval": {
                     "end": {"value": 55181378, "type": "Number"},
                     "start": {"value": 55181377, "type": "Number"},
@@ -959,8 +996,10 @@ def genomic_uncertain_del_x():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
         "variation": {
+            "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
             "subject": {
                 "location": {
+                    "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
                     "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
                     "interval": {
                         "start": {
@@ -1001,7 +1040,9 @@ def grch38_braf_genom_sub():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
         "variation": {
+            "_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
             "location": {
+                "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
                 "interval": {
                     "end": {"value": 140753336, "type": "Number"},
                     "start": {"value": 140753335, "type": "Number"},
@@ -1031,7 +1072,9 @@ def grch38_braf_genom_silent_mutation():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.aMwnr5rEbtPQe5gXDDO2gZO_zSqN2RmH",
         "variation": {
+            "_id": "ga4gh:VA.aMwnr5rEbtPQe5gXDDO2gZO_zSqN2RmH",
             "location": {
+                "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
                 "interval": {
                     "end": {"value": 140753336, "type": "Number"},
                     "start": {"value": 140753335, "type": "Number"},
@@ -1058,11 +1101,13 @@ def grch38_genomic_delins1():
     """Create a test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
     params = {
         "id":
-            'normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT',
+            "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.mlJVnI7js6Tsb2GSLFlNRbCKE9zFRX5p",
         "variation": {
+            "_id": "ga4gh:VA.mlJVnI7js6Tsb2GSLFlNRbCKE9zFRX5p",
             "location": {
+                "_id": "ga4gh:VSL.b0Ldj2KcT2k0n0PZfqHCBH1YzQZYceYX",
                 "interval": {
                     "end": {"value": 140753336, "type": "Number"},
                     "start": {"value": 140753334, "type": "Number"},
@@ -1092,7 +1137,9 @@ def grch38_genomic_delins2():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.ndCPwzek-KU626kK28bQd1gWAAk2ELze",
         "variation": {
+            "_id": "ga4gh:VA.ndCPwzek-KU626kK28bQd1gWAAk2ELze",
             "location": {
+                "_id": "ga4gh:VSL.mVulVOKoX2frLH1XTIJfpvJa6RGdOVu_",
                 "interval": {
                     "start": {"value": 10149937, "type": "Number"},
                     "end": {"value": 10149938, "type": "Number"},
@@ -1122,7 +1169,9 @@ def grch38_genomic_deletion():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
         "variation": {
+            "_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
             "location": {
+                "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
                 "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                 "interval": {
                     "type": "SequenceInterval",
@@ -1154,7 +1203,9 @@ def grch38_genomic_insertion():
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
         "variation": {
+            "_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
             "location": {
+                "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
                 "interval": {
                     "end": {"value": 39724743, "type": "Number"},
                     "start": {"value": 39724731, "type": "Number"},
@@ -1466,7 +1517,9 @@ def test_no_matches(test_normalize):
 
     resp = test_normalize.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'
+    assert resp.variation.type == 'Text'
     assert resp.variation.definition == 'clinvar:10'
+    assert resp.variation.id == 'ga4gh:VT.xw9m9LZAyn6Z2-GPGwcpDT0ixqCm5g36'
 
     resp = test_normalize.normalize('   ')
     assert resp is None
