@@ -669,16 +669,6 @@ class Validator(ABC):
         sstate = models.SequenceState(sequence=state)
         return self._vrs_allele(ac, interval, sstate, alt_type, errors)
 
-    def _get_chr(self, ac: str) -> Optional[str]:
-        """Get chromosome for accession.
-
-        :param str ac: Accession
-        :return: Chromosome
-        """
-        aliases = self.seqrepo_access.aliases(ac)
-        return ([a.split(':')[-1] for a in aliases
-                 if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
-
     def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
                            errors: List, pos3: int = None, pos4: int = None,
                            residue_mode: str = "residue") -> None:
