@@ -75,12 +75,13 @@ class DuplicationDeletionBase(Validator):
             errors.append("Unable to get reference sequence.")
         return ref_sequence
 
-    def check_reference_sequence(self, t, s, errors, cds_start=None) -> bool:
+    def check_reference_sequence(self, t: str, s: Token, errors: List,
+                                 cds_start: int = None) -> bool:
         """Check that reference sequence matches deleted sequence.
 
         :param str t: Accession
         :param Token s: Classification token
-        :param list errors: List of errors
+        :param List errors: List of errors
         :param int cds_start: Coding start site
         :return: `True` if ref_sequences matches deleted_sequence.
             `False` otherwise.

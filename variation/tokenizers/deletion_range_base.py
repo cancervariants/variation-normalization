@@ -1,7 +1,8 @@
 """A module for tokenizing genomic deletion ranges."""
-from typing import Dict
+from typing import Dict, Optional, List
 from .tokenizer import Tokenizer
-from variation.schemas.token_response_schema import TokenMatchType
+from variation.schemas.token_response_schema import TokenMatchType, \
+    DeletionRange
 from abc import abstractmethod
 
 
@@ -12,8 +13,12 @@ class DeletionRangeBase(Tokenizer):
         """Initialize the Genomic Deletion Range Class."""
         self.parts = None
 
-    def match(self, input_string: str):
-        """Return tokens that match the input string."""
+    def match(self, input_string: str) -> Optional[DeletionRange]:
+        """Return tokens that match the input string.
+
+        :param str input_string: Input string
+        :return: DeletionRange token if a match is found
+        """
         if input_string is None:
             return None
 
@@ -46,14 +51,18 @@ class DeletionRangeBase(Tokenizer):
         return self.return_token(self.parts)
 
     @abstractmethod
-    def _get_parts(self, parts):
-        """Set parts for genomic deletion range
+    def _get_parts(self, parts: List) -> None:
+        """Set `self.parts` for genomic deletion range
 
-        :param list parts: Parts of input string
+        :param List parts: Parts of input string
         """
         raise NotImplementedError
 
     @abstractmethod
-    def return_token(self, params: Dict[str, str]):
-        """Return token instance."""
+    def return_token(self, params: Dict[str, str]) -> Optional[DeletionRange]:
+        """Return token instance.
+
+        :param Dict params: Params for DeletionRange token
+        :return: DeletionRange token
+        """
         raise NotImplementedError
