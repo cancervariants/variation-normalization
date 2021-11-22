@@ -5,6 +5,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
           "location": {
+            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",
             "interval": {
               "end": { "value": 600, "type": "Number"},
               "start": { "value": 599, "type": "Number" },
@@ -22,6 +23,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
           "location": {
+            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -39,6 +41,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
           "location": {
+            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
             "interval": {
               "start": { "value": 639, "type": "Number" },
               "end": { "value": 640, "type": "Number" },
@@ -56,6 +59,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
           "location": {
+            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",
             "interval": {
               "start": { "value": 599, "type": "Number" },
               "end": { "value": 600, "type": "Number" },
@@ -73,6 +77,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
           "location": {
+            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",
             "interval": {
               "start": { "value": 599, "type": "Number" },
               "end": { "value": 600, "type": "Number" },
@@ -93,6 +98,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
           "location": {
+            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -110,6 +116,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
           "location": {
+            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -127,6 +134,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
           "location": {
+            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
             "interval": {
               "start": { "value": 639, "type": "Number" },
               "end": { "value": 640, "type": "Number" },
@@ -144,6 +152,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
           "location": {
+            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",
             "interval": {
               "start": { "value": 599, "type": "Number" },
               "end": { "value": 600, "type": "Number" },
@@ -161,6 +170,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
           "location": {
+            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",
             "interval": {
               "start": { "value": 599, "type": "Number" },
               "end": { "value": 600, "type": "Number" },
@@ -181,6 +191,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
           "location": {
+            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -198,6 +209,7 @@ amino_acid_substitution:
         {
           "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
           "location": {
+            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
             "interval": {
               "start": { "value": 639, "type": "Number" },
               "end": { "value": 640, "type": "Number" },
@@ -222,6 +234,7 @@ polypeptide_truncation:
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
           "location": {
+            "_id": "ga4gh:VSL._P3rBWI3f7OBs3a4gvZ18QJ6f6dSfqEQ",
             "interval": {
               "start": { "value": 184, "type": "Number" },
               "end": { "value": 185, "type": "Number" },
@@ -242,6 +255,7 @@ polypeptide_truncation:
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
           "location": {
+            "_id": "ga4gh:VSL._P3rBWI3f7OBs3a4gvZ18QJ6f6dSfqEQ",
             "interval": {
               "start": { "value": 184, "type": "Number" },
               "end": { "value": 185, "type": "Number" },
@@ -262,6 +276,7 @@ polypeptide_truncation:
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
           "location": {
+            "_id": "ga4gh:VSL._P3rBWI3f7OBs3a4gvZ18QJ6f6dSfqEQ",
             "interval": {
               "start": { "value": 184, "type": "Number" },
               "end": { "value": 185, "type": "Number" },
@@ -282,6 +297,7 @@ polypeptide_truncation:
         {
           "_id": "ga4gh:VA.RZQfQfXPXMjLW1V2GU2r7UIqkoaYSLPw",
           "location": {
+            "_id": "ga4gh:VSL.0_xIolylyTbss2s-6KnK14dXW_xKzjG1",
             "interval": {
               "start": { "value": 1177, "type": "Number" },
               "end": { "value": 1178, "type": "Number" },
@@ -306,6 +322,7 @@ silent_mutation:
         {
           "_id": "ga4gh:VA.wQlQ-gnmRFPk4mNEHARBiFDNEbwS-ndE",
           "location": {
+            "_id": "ga4gh:VSL.0ShyMtnd7c00rtL9ugYd_NRYORNnSSZ_",
             "interval": {
               "start": { "value": 153, "type": "Number" },
               "end": { "value": 154, "type": "Number" },
@@ -326,6 +343,7 @@ silent_mutation:
         {
           "_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
           "location": {
+            "_id": "ga4gh:VSL.zuNGmA02Uq49faqvCIPtwVrF_IJuP4dM",
             "interval": {
               "start": { "value": 60, "type": "Number" },
               "end": { "value": 61, "type": "Number" },
@@ -346,6 +364,7 @@ silent_mutation:
         {
           "_id": "ga4gh:VA.F0W_HqW1omXVMhVHFxh9PyeawcUrV74T",
           "location": {
+            "_id": "ga4gh:VSL.HXUFIsiGWasR2zYnKfRcOsQ7lcHtrVHN",
             "interval": {
               "start": { "value": 54, "type": "Number" },
               "end": { "value": 55, "type": "Number" },
@@ -369,6 +388,7 @@ coding_dna_substitution:
         {
           "_id": "ga4gh:VA.1WMCRA6pQbY6k2plXyZmadcmgTW3kkwv",
           "location": {
+            "_id": "ga4gh:VSL.o8cm5c0c_hfTyT-4h0Z8UdEi9vUzIa3o",
             "interval": {
               "start": { "value": 1859, "type": "Number" },
               "end": { "value": 1860, "type": "Number" },
@@ -386,6 +406,7 @@ coding_dna_substitution:
         {
           "_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -406,6 +427,7 @@ coding_dna_substitution:
         {
           "_id": "ga4gh:VA.mOTittwHJ9l78td6rbWLZ4QzGvN71bHj",
           "location": {
+            "_id": "ga4gh:VSL.Di2zK_IxmrGYgC15qZ8cMtghT0aeV0uR",
             "interval": {
               "start": { "value": 1859, "type": "Number" },
               "end": { "value": 1860, "type": "Number" },
@@ -423,6 +445,7 @@ coding_dna_substitution:
         {
           "_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -448,6 +471,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
           "location": {
+            "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -465,6 +489,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
           "location": {
+            "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
             "interval": {
               "start": { "value": 140753335, "type": "Number" },
               "end": { "value": 140753336, "type": "Number" },
@@ -485,6 +510,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
           "location": {
+            "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -502,6 +528,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -522,6 +549,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
           "location": {
+            "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -539,6 +567,7 @@ genomic_substitution:
         {
           "_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -562,6 +591,7 @@ coding_dna_silent_mutation:
         {
           "_id": "ga4gh:VA.95ovl8XYrKnRYadIt3dzJPrlrbDLDcmY",
           "location": {
+            "_id": "ga4gh:VSL.o8cm5c0c_hfTyT-4h0Z8UdEi9vUzIa3o",
             "interval": {
               "start": { "value": 1859, "type": "Number" },
               "end": { "value": 1860, "type": "Number" },
@@ -579,6 +609,7 @@ coding_dna_silent_mutation:
         {
           "_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -602,6 +633,7 @@ genomic_silent_mutation:
         {
           "_id": "ga4gh:VA.xFpHP8_VHxMxnVe6IcRl7vNqcttDbGC9",
           "location": {
+            "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -619,6 +651,7 @@ genomic_silent_mutation:
         {
           "_id": "ga4gh:VA.aMwnr5rEbtPQe5gXDDO2gZO_zSqN2RmH",
           "location": {
+            "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
             "interval": {
               "start": { "value": 140753335, "type": "Number" },
               "end": { "value": 140753336, "type": "Number" },
@@ -639,6 +672,7 @@ genomic_silent_mutation:
         {
           "_id": "ga4gh:VA.V_nRtVHF8B3fRjjzrLHQqNj25kbHKOXk",
           "location": {
+            "_id": "ga4gh:VSL.u7Zmqs2E7g3P-DjFZwCGc_jAXVtgrXKC",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -656,6 +690,7 @@ genomic_silent_mutation:
         {
           "_id": "ga4gh:VA.xFpHP8_VHxMxnVe6IcRl7vNqcttDbGC9",
           "location": {
+            "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
             "interval": {
               "start": { "value": 140453135, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -673,6 +708,7 @@ genomic_silent_mutation:
         {
           "_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
           "location": {
+            "_id": "ga4gh:VSL.qF6Dh-Rk6DY75gAmJrIdNYDN8xhaf_Nr",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2145, "type": "Number" },
@@ -696,6 +732,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.9uOHyaYzdfy0X5eauJulmEkGLR_ZOLhq",
           "location": {
+            "_id": "ga4gh:VSL.pZJXY_-oyY0tNuQzXl9n-eZxGSZnulKJ",
             "interval": {
               "end": { "value": 751, "type": "Number" },
               "start": { "value": 746, "type": "Number" },
@@ -713,13 +750,14 @@ amino_acid_delins:
         {
             "_id": "ga4gh:VA.eDMXxJw9shlSKF3znIg5abniGoyJ3GQ4",
             "location": {
-                "interval": {
-                    "end": { "value": 751, "type": "Number" },
-                    "start": { "value": 746, "type": "Number" },
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
-                "type": "SequenceLocation"
+              "_id": "ga4gh:VSL.Mm8duqYDJyel5ZnwScnxLyGH1i9lcl3T",
+              "interval": {
+                "end": { "value": 751, "type": "Number" },
+                "start": { "value": 746, "type": "Number" },
+                "type": "SequenceInterval"
+              },
+              "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+              "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "P",
@@ -733,6 +771,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.Ewl4g4FUaCiuGcgX7-PbnS-lMGJdxJz-",
           "location": {
+            "_id": "ga4gh:VSL._gHhj5CL2_O6rwya-XkoAaGVU8vGYNkR",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -750,6 +789,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.NCimxZ1kNB-cBQguf3wuEjuxxviBZVPC",
           "location": {
+            "_id": "ga4gh:VSL.LomAULC8vNGNySvNtA4wMgBTuRLZRaB9",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -767,6 +807,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.wNZgzeyipGMGzs9z5lLps1bg4ZlpOZJ1",
           "location": {
+            "_id": "ga4gh:VSL.u2UXOjYF9xrSFmHIKf5DP7N9wieIBTva",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -784,6 +825,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.ehlZxghDc8OGl0-BMMcn0LcdLxVaEzzI",
           "location": {
+            "_id": "ga4gh:VSL.wICyoUlA7PIL5hPAU84qg8krqCFR6mlo",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -801,6 +843,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.5j4lZT0FFV7AZfB74eVDjQJMX2T3sL9g",
           "location": {
+            "_id": "ga4gh:VSL.maXN0JgJxK39ndNim6VKLcYGofVG3JGm",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -818,6 +861,7 @@ amino_acid_delins:
         {
           "_id": "ga4gh:VA.z586Oz2qJ8F53EdsQL9O7r1Vj_1svHnS",
           "location": {
+            "_id": "ga4gh:VSL.vDHLwg6T-aZqvpA3MOqnOxeTfxT4h8ZM",
             "interval": {
               "end": { "value": 776, "type": "Number" },
               "start": { "value": 775, "type": "Number" },
@@ -841,6 +885,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.-7PBIn7cC4E0BqNFyG9pwNQRAAhQy622",
           "location": {
+            "_id": "ga4gh:VSL.J-2QepZ_NHb8qVUJAwSD6nY-KAxtntv8",
             "interval": {
               "start": { "value": 2586, "type": "Number" },
               "end": { "value": 2588, "type": "Number" },
@@ -858,6 +903,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.eMxxAEjNduAvg5U3eBZxf0nLtfcMNxqy",
           "location": {
+            "_id": "ga4gh:VSL.bBzTvpLChbWE2SZ7X0drm8NQj5rzNqTK",
             "interval": {
               "start": { "value": 2500, "type": "Number" },
               "end": { "value": 2502, "type": "Number" },
@@ -878,6 +924,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.ngE81Y7VVehqTBVxlav-xG36NoqGGJ5T",
           "location": {
+            "_id": "ga4gh:VSL.-_kxnVYdh48LHnlFGOaPFss0OgO4aSjB",
             "interval": {
               "start": { "value": 1203, "type": "Number" },
               "end": { "value": 1205, "type": "Number" },
@@ -895,6 +942,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.TYDT7elgjDiI1dQjstKncQHhLmdueeEw",
           "location": {
+            "_id": "ga4gh:VSL.gp5fjzoxf2Ctl7mQcYGfLj-9hmrhjJet",
             "interval": {
               "start": { "value": 433, "type": "Number" },
               "end": { "value": 435, "type": "Number" },
@@ -915,6 +963,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.Y-iW9HzF98syXebXqVAnIKhtpwCWBswe",
           "location": {
+            "_id": "ga4gh:VSL.-vLzLKeWNVum4KmUWNFjQ0PLT7Cv0Xdj",
             "interval": {
               "start": { "value": 827, "type": "Number" },
               "end": { "value": 828, "type": "Number" },
@@ -932,6 +981,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA._JN_AF5PO9kWKgKxB5T48cypZl7ccEsQ",
           "location": {
+            "_id": "ga4gh:VSL.tQRFfWMPPHErWSbKvoEIh2gI2ehHIYAs",
             "interval": {
               "start": { "value": 684, "type": "Number" },
               "end": { "value": 685, "type": "Number" },
@@ -952,6 +1002,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.SWkjzPhH7x8ZjjQerjtvBYUoWVnit3hR",
           "location": {
+            "_id": "ga4gh:VSL.b6Kqyg7cbZeffAIlEeODzin4bhD9Wu-3",
             "interval": {
               "start": { "value": 1212, "type": "Number" },
               "end": { "value": 1214, "type": "Number" },
@@ -969,6 +1020,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.MMNikmGyviXQcSxByO0_gBkWP47MoE5m",
           "location": {
+            "_id": "ga4gh:VSL.rM8zd6ur3O_L-4QQbab64Of4k8aY2oNl",
             "interval": {
               "start": { "value": 1218, "type": "Number" },
               "end": { "value": 1220, "type": "Number" },
@@ -986,6 +1038,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.G7R1jWMgPBDjGNKpjv7bLdaz-yGMMqdr",
           "location": {
+            "_id": "ga4gh:VSL.-UM7jf9tD6UAZmNUadMN3dZznWVb_U0C",
             "interval": {
               "start": { "value": 1196, "type": "Number" },
               "end": { "value": 1198, "type": "Number" },
@@ -1003,6 +1056,7 @@ coding_dna_delins:
         {
           "_id": "ga4gh:VA.wCwdKEmS_dZ4JwBcKdrFend2VAKlZ3so",
           "location": {
+            "_id": "ga4gh:VSL.wzF5mgN7l4RkfKCax0K2LZyU5_JiKzGb",
             "interval": {
               "start": { "value": 1295, "type": "Number" },
               "end": { "value": 1296, "type": "Number" },
@@ -1026,6 +1080,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.6qFzaiSaR9Oa4h0fIXo2ZJBtmkghsIQh",
           "location": {
+            "_id": "ga4gh:VSL.EMgfC1GciHKDq6cifF0GEm7zyPF6tbQt",
             "interval": {
               "start": { "value": 140453134, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -1043,6 +1098,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.mlJVnI7js6Tsb2GSLFlNRbCKE9zFRX5p",
           "location": {
+            "_id": "ga4gh:VSL.b0Ldj2KcT2k0n0PZfqHCBH1YzQZYceYX",
             "interval": {
               "start": { "value": 140753334, "type": "Number" },
               "end": { "value": 140753336, "type": "Number" },
@@ -1063,6 +1119,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.6qFzaiSaR9Oa4h0fIXo2ZJBtmkghsIQh",
           "location": {
+            "_id": "ga4gh:VSL.EMgfC1GciHKDq6cifF0GEm7zyPF6tbQt",
             "interval": {
               "start": { "value": 140453134, "type": "Number" },
               "end": { "value": 140453136, "type": "Number" },
@@ -1080,6 +1137,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
           "location": {
+            "_id": "ga4gh:VSL.6PeoFwkO4ISmUjDWoYLkVsATVx8JRApd",
             "interval": {
               "start": { "value": 2144, "type": "Number" },
               "end": { "value": 2146, "type": "Number" },
@@ -1097,6 +1155,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.NKePityTpOgvs0Nig8TVjtMsvPrzWbfk",
           "location": {
+            "_id": "ga4gh:VSL.krAK_8hf67OTr6PM6fr9pcp2V8FC9Qim",
             "interval": {
               "start": { "value": 140453134, "type": "Number" },
               "end": { "value": 140453135, "type": "Number" },
@@ -1117,6 +1176,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.ndCPwzek-KU626kK28bQd1gWAAk2ELze",
           "location": {
+            "_id": "ga4gh:VSL.mVulVOKoX2frLH1XTIJfpvJa6RGdOVu_",
             "interval": {
               "start": { "value": 10149937, "type": "Number" },
               "end": { "value": 10149938, "type": "Number" },
@@ -1137,6 +1197,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.ndCPwzek-KU626kK28bQd1gWAAk2ELze",
           "location": {
+            "_id": "ga4gh:VSL.mVulVOKoX2frLH1XTIJfpvJa6RGdOVu_",
             "interval": {
               "start": { "value": 10149937, "type": "Number" },
               "end": { "value": 10149938, "type": "Number" },
@@ -1154,6 +1215,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA._JN_AF5PO9kWKgKxB5T48cypZl7ccEsQ",
           "location": {
+            "_id": "ga4gh:VSL.tQRFfWMPPHErWSbKvoEIh2gI2ehHIYAs",
             "interval": {
               "start": { "value": 684, "type": "Number" },
               "end": { "value": 685, "type": "Number" },
@@ -1171,6 +1233,7 @@ genomic_delins:
         {
           "_id": "ga4gh:VA.KVKcV8JADfndsT23v8btal9kIEEeq7YG",
           "location": {
+            "_id": "ga4gh:VSL.t_BjgkkJm-CxdHkW0HUWLUBuQMutb1VZ",
             "interval": {
               "start": { "value": 10149937, "type": "Number" },
               "end": { "value": 10149938, "type": "Number" },
@@ -1194,6 +1257,7 @@ amino_acid_deletion:
         {
           "_id": "ga4gh:VA.92AfH5KBJzL4d38wPE9lfhwRwxD67uZq",
           "location": {
+            "_id": "ga4gh:VSL.-URUTHHESJWil6xz0wlU5-4HJsVV3Xs2",
             "interval": {
               "end": { "value": 76, "type": "Number" },
               "start": { "value": 75, "type": "Number" },
@@ -1214,6 +1278,7 @@ amino_acid_deletion:
         {
           "_id": "ga4gh:VA.Qx37r00Ro1VIZxrrhs548BVwGnDQ0xXf",
           "location": {
+            "_id": "ga4gh:VSL.lVF6GOyLpyG_VpwFCQjp9pWtRsNZsKtJ",
             "interval": {
               "end": { "value": 84, "type": "Number" },
               "start": { "value": 81, "type": "Number" },
@@ -1237,6 +1302,7 @@ coding_dna_deletion:
         {
           "_id": "ga4gh:VA.flgLAEHLaG_O9m5D1FKsQ1P3dRN8NLce",
           "location": {
+            "_id": "ga4gh:VSL.eTNgV11ScIpSynz5cOU9Yd6RIiLiOWLw",
             "interval": {
               "end": { "value": 2539, "type": "Number" },
               "start": { "value": 2523, "type": "Number" },
@@ -1254,6 +1320,7 @@ coding_dna_deletion:
         {
           "_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
           "location": {
+            "_id": "ga4gh:VSL.3uPWAjsdzd8MbAqw8DV46eBLK8tQRyEs",
             "interval": {
               "end": { "value": 2453, "type": "Number" },
               "start": { "value": 2437, "type": "Number" },
@@ -1277,6 +1344,7 @@ genomic_deletion:
         {
           "_id": "ga4gh:VA.2jURgc5DDHYWaUP1eea-sHucy1tza6Pv",
           "location": {
+            "_id": "ga4gh:VSL.WMs6q4Q2XWOPMa6ZMgof7xuhKN5nLsGn",
             "interval": {
               "end": { "value": 10149803, "type": "Number" },
               "start": { "value": 10149799, "type": "Number" },
@@ -1294,6 +1362,7 @@ genomic_deletion:
         {
           "_id": "ga4gh:VA.VOHJmr3khwFkEKYOHugSr22OpF9KWWDH",
           "location": {
+            "_id": "ga4gh:VSL.eY-L18CsfltCfdtTwTPJA5Yd4yE3KNbA",
             "interval": {
               "end": { "value": 10191487, "type": "Number" },
               "start": { "value": 10191483, "type": "Number" },
@@ -1314,6 +1383,7 @@ genomic_deletion:
         {
           "_id": "ga4gh:VA.otmQbPfr2ogACdEmHPRsA4EksX6fKg_k",
           "location": {
+            "_id": "ga4gh:VSL.80ORox81ZbFEpgMvBZuaAkIpE5soWy0P",
             "interval": {
               "end": { "value": 550, "type": "Number" },
               "start": { "value": 546, "type": "Number" },
@@ -1331,6 +1401,7 @@ genomic_deletion:
         {
           "_id": "ga4gh:VA.VOHJmr3khwFkEKYOHugSr22OpF9KWWDH",
           "location": {
+            "_id": "ga4gh:VSL.eY-L18CsfltCfdtTwTPJA5Yd4yE3KNbA",
             "interval": {
               "end": { "value": 10191487, "type": "Number" },
               "start": { "value": 10191483, "type": "Number" },
@@ -1356,6 +1427,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
           "location": {
+            "_id": "ga4gh:VSL.DJIP1jlxQIro1oC5re8txtH7N8vAvM7A",
             "interval": {
               "end": { "value": 770, "type": "Number" },
               "start": { "value": 770, "type": "Number" },
@@ -1376,6 +1448,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.pD5cMR_LZRvCVwQvHcmNQx06vhfLPd2Z",
           "location": {
+            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -1393,6 +1466,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.MtpVh_21Qq_y5ezNG-f7oMpWIG28q5lg",
           "location": {
+            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -1410,6 +1484,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.4MnOqA77if6-fXQt8xYJwEBC0Vhd1Was",
           "location": {
+            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -1427,6 +1502,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.nD-TPvy9klcXMMMsAPlFCkZv3MxpYAFN",
           "location": {
+            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
             "interval": {
               "end": { "value": 600, "type": "Number" },
               "start": { "value": 599, "type": "Number" },
@@ -1444,6 +1520,7 @@ amino_acid_insertion:
         {
           "_id": "ga4gh:VA.zaMDM5o3bzpsZw_ZohhXI691Ud92TmHW",
           "location": {
+            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
             "interval": {
               "end": { "value": 640, "type": "Number" },
               "start": { "value": 639, "type": "Number" },
@@ -1467,6 +1544,7 @@ coding_dna_insertion:
         {
           "_id": "ga4gh:VA.jT_wa3AdO58vqwoGCMDCOgdo6xxIfFT0",
           "location": {
+            "_id": "ga4gh:VSL.r2xHtlVFCntMsE1cGPzvB1DsgWTY2OIA",
             "interval": {
               "end": { "value": 3134, "type": "Number" },
               "start": { "value": 3131, "type": "Number" },
@@ -1482,21 +1560,22 @@ coding_dna_insertion:
           "type": "Allele"
         },
         {
-            "_id": "ga4gh:VA.zMjbr4BnvjGp_ZfPktxTQlbcLJY16Lv8",
-            "type": "Allele",
-            "location": {
-                "type": "SequenceLocation",
-                "sequence_id": "ga4gh:SQ.oR9jzdHf6J23TozeyuvTXtwlm6PpUHHl",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": { "value": 3012, "type": "Number" },
-                    "end": { "value": 3015, "type": "Number" }
-                }
-            },
-            "state": {
-                "type": "LiteralSequenceExpression",
-                "sequence": "CTCTC"
+          "_id": "ga4gh:VA.zMjbr4BnvjGp_ZfPktxTQlbcLJY16Lv8",
+          "type": "Allele",
+          "location": {
+            "_id": "ga4gh:VSL.ByWi966-x5k6kyDi8JxFyjP3PnTOE92D",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.oR9jzdHf6J23TozeyuvTXtwlm6PpUHHl",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": { "value": 3012, "type": "Number" },
+              "end": { "value": 3015, "type": "Number" }
             }
+          },
+          "state": {
+              "type": "LiteralSequenceExpression",
+              "sequence": "CTCTC"
+          }
         }
       ]
 
@@ -1508,6 +1587,7 @@ genomic_insertion:
           "_id": "ga4gh:VA.YvY2mjFjnKULH4RCWFf7S9Ce_BRG3Jqn",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.qFuEOSyo-arCRC1yjVcUZMXybmaUq9P0",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.XOgHwwR3Upfp5sZYk6ZKzvV25a4RBVu8",
             "interval": {
@@ -1525,6 +1605,7 @@ genomic_insertion:
           "_id": "ga4gh:VA.6vU7_6BeiwUjY6kHVAoZkrlMsQ0Jjm3g",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.7qYBQbFB-QTWCElP1BMX7McXOYYW91go",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
             "interval": {
@@ -1545,6 +1626,7 @@ genomic_insertion:
           "_id": "ga4gh:VA.YvY2mjFjnKULH4RCWFf7S9Ce_BRG3Jqn",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.qFuEOSyo-arCRC1yjVcUZMXybmaUq9P0",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.XOgHwwR3Upfp5sZYk6ZKzvV25a4RBVu8",
             "interval": {
@@ -1562,6 +1644,7 @@ genomic_insertion:
           "_id": "ga4gh:VA.LGH3wmHR1lgAYQWE5_cyIAHsLPUyBZD0",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.NlAimLSD0gSyQ3HQ6TwykbSUy7h5mLsa",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.pz00wSmvjP2gQjqFlCrADh_E3R0HIUia",
             "interval": {
@@ -1579,6 +1662,7 @@ genomic_insertion:
           "_id": "ga4gh:VA.FuzkymtMbsFqrmu9dwOSJskLB1LN7lfT",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.eDzicXnixZP_AIeHdOlwNHwPf8_86liM",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
             "interval": {
@@ -1602,6 +1686,7 @@ genomic_uncertain_deletion:
           "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
               "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
               "interval": {
                 "start": {
@@ -1635,6 +1720,7 @@ genomic_uncertain_deletion:
           "_id": "ga4gh:VCN.gRshXhruFQw-QdKwU4xc2iKBNLIbFNzt",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.7Chaj1X9NH2G9sSK1diUKgBEZO4pHqr8",
               "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
               "interval": {
                 "start": {
@@ -1665,6 +1751,7 @@ genomic_uncertain_deletion:
           "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
               "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
               "interval": {
                 "start": {
@@ -1698,6 +1785,7 @@ genomic_uncertain_deletion:
           "_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
               "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
               "interval": {
                 "start": {
@@ -1730,6 +1818,7 @@ genomic_uncertain_deletion:
           "_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
               "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
               "interval": {
                 "start": {
@@ -1765,6 +1854,7 @@ genomic_duplication:
           "_id": "ga4gh:VA.aeNse-a8IJzqHiG-P5zTRYA_eVFhrJXw",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
             "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
             "interval": {
               "type": "SequenceInterval",
@@ -1785,6 +1875,7 @@ genomic_duplication:
           "_id": "ga4gh:VA.wqqxfUCrFSndedI2-4oiIuHLHHGjBFof",
           "type": "Allele",
           "location": {
+            "_id": "ga4gh:VSL.4mH68huylkPmu6zyUwH4wiazIYr9cQUX",
             "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
             "interval": {
               "type": "SequenceInterval",
@@ -1806,6 +1897,7 @@ genomic_duplication:
           "type": "CopyNumber",
           "subject": {
               "location": {
+                  "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
                   "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
                   "interval": {
                       "type": "SequenceInterval",
@@ -1839,6 +1931,7 @@ genomic_duplication:
           "type": "CopyNumber",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
               "type": "SequenceLocation",
               "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
               "interval": {
@@ -1871,6 +1964,7 @@ genomic_duplication:
           "type": "CopyNumber",
           "subject": {
             "location": {
+              "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
               "type": "SequenceLocation",
               "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
               "interval": {

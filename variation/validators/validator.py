@@ -609,6 +609,7 @@ class Validator(ABC):
         seq_id = self.dp.translate_sequence_identifier(
             allele.location.sequence_id._value, "ga4gh")[0]
         allele.location.sequence_id = seq_id
+        allele.location._id = ga4gh_identify(allele.location)
         allele._id = ga4gh_identify(allele)
         return allele.as_dict()
 
@@ -648,6 +649,10 @@ class Validator(ABC):
                 state = self.seqrepo_access.get_sequence(
                     ac, ival_start
                 )
+                if state is None:
+                    errors.append(f"Unable to get sequence on {ac} from "
+                                  f"{ival_start}")
+                    return None
             else:
                 state = alt or ''
             ival_start -= 1

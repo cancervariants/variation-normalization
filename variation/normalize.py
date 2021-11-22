@@ -1,8 +1,10 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple, Dict
+from ga4gh.vrsatile.pydantic.vrs_models import Text
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     GeneDescriptor
-from ga4gh.vrsatile.pydantic.vrs_models import Text
+from ga4gh.vrs import models
+from ga4gh.core import ga4gh_identify
 from variation.data_sources import SeqRepoAccess, UTA
 from urllib.parse import quote
 from variation import logger
@@ -57,7 +59,7 @@ class Normalize:
 
                 variation = valid_result.variation
 
-                variation_id = variation.pop('_id')
+                variation_id = variation['_id']
                 identifier = valid_result.identifier
                 token_type = \
                     valid_result.classification_token.token_type.lower()
@@ -95,9 +97,11 @@ class Normalize:
                     resp, warnings = self._no_variation_entered()
                 else:
                     warning = f"Unable to normalize {q}"
+                    text = models.Text(definition=q)
+                    text._id = ga4gh_identify(text)
                     resp = VariationDescriptor(
                         id=_id,
-                        variation=Text(definition=q)
+                        variation=Text(**text.as_dict())
                     )
                     if not warnings:
                         warnings.append(warning)

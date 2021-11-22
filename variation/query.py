@@ -3,6 +3,8 @@ from typing import Tuple, Optional, List, Union
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.to_vrs import ToVRS
@@ -114,7 +116,9 @@ class QueryHandler:
 
         if not translations:
             if q and q.strip():
-                translations = [Text(definition=q)]
+                text = models.Text(definition=q)
+                text._id = ga4gh_identify(text)
+                translations = [Text(**text.as_dict())]
             else:
                 translations = None
         return translations, warnings
