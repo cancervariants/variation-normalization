@@ -151,13 +151,7 @@ class HGVSDupDelMode:
         if 'range' in alt_type or 'uncertain' in alt_type:
             return None
 
-        if allele:
-            # TODO: I don't believe we'll have to do this once
-            #  We are able to normalize LSE in vrs-python
-            allele['state']['type'] = 'LiteralSequenceExpression'
-            variation = models.Allele(**allele)
-        else:
-            variation = None
+        variation = models.Allele(**allele) if allele else None
         return self._ga4gh_identify_variation(variation)
 
     def _ga4gh_identify_variation(self,

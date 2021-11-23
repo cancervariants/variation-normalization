@@ -17,9 +17,9 @@ from variation.mane_transcript import MANETranscript
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from ga4gh.vrsatile.pydantic.vrs_model import Text, Allele, CopyNumber, \
+from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
     Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 

@@ -1,6 +1,6 @@
 """Module for to VRS translation."""
 from typing import Tuple, Optional, List, Union
-from ga4gh.vrsatile.pydantic.vrs_model import Allele, Haplotype, CopyNumber,\
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
     VariationSet, Text
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify

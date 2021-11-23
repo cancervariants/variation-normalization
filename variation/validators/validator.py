@@ -648,6 +648,10 @@ class Validator(ABC):
                 state = self.seqrepo_access.get_sequence(
                     ac, ival_start
                 )
+                if state is None:
+                    errors.append(f"Unable to get sequence on {ac} from "
+                                  f"{ival_start}")
+                    return None
             else:
                 state = alt or ''
             ival_start -= 1
@@ -665,8 +669,10 @@ class Validator(ABC):
             errors.append(f"alt_type not supported: {alt_type}")
             return None
 
-        interval = models.SimpleInterval(start=ival_start, end=ival_end)
-        sstate = models.SequenceState(sequence=state)
+        interval = models.SequenceInterval(
+            start=models.Number(value=ival_start),
+            end=models.Number(value=ival_end))
+        sstate = models.LiteralSequenceExpression(sequence=state)
         return self._vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
