@@ -1,35 +1,47 @@
 """Module for normalize endpoint response schema."""
+from enum import Enum
 from pydantic import BaseModel
 from pydantic.types import StrictStr
-from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
+
+
+class HGVSDupDelMode(str, Enum):
+    """Define options for HGVSDupDelMode.
+    This mode determines how to interpret HGVS dup/del.
+    """
+
+    DEFAULT = "default"
+    CNV = "cnv"
+    REPEATED_SEQ_EXPR = "repeated_seq_expr"
+    LITERAL_SEQ_EXPR = "literal_seq_expr"
 
 
 class ServiceMeta(BaseModel):
     """Metadata regarding the variation-normalization service."""
 
-    name = 'variation-normalizer'
+    name = "variation-normalizer"
     version: StrictStr
     response_datetime: datetime
-    url = 'https://github.com/cancervariants/variation-normalization'
+    url = "https://github.com/cancervariants/variation-normalization"
 
     class Config:
         """Configure schema example."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['ServiceMeta']) -> None:
+                         model: Type["ServiceMeta"]) -> None:
             """Configure OpenAPI schema"""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
-                'name': 'variation-normalizer',
-                'version': '0.1.0',
-                'response_datetime': '2021-04-05T16:44:15.367831',
-                'url': 'https://github.com/cancervariants/variation-normalization'  # noqa: E501
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "name": "variation-normalizer",
+                "version": "0.1.0",
+                "response_datetime": "2021-04-05T16:44:15.367831",
+                "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
             }
 
 
@@ -46,32 +58,32 @@ class NormalizeService(BaseModel):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['NormalizeService']) -> None:
+                         model: Type["NormalizeService"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "variation_query": "BRAF V600E",
                 "variation_descriptor": {
                     "id": "normalize.variation:BRAF%20V600E",
                     "type": "VariationDescriptor",
                     "label": "NP_001361187.1:p.Val640Glu",
-                    "variation_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",  # noqa: E501
+                    "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
                     "variation": {
                         "location": {
                             "interval": {
-                                "end": 640,
-                                "start": 639,
-                                "type": "SimpleInterval"
+                                "end": {"value": 640, "type": "Number"},
+                                "start": {"value": 639, "type": "Number"},
+                                "type": "SequenceInterval"
                             },
                             "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
                             "type": "SequenceLocation"
                         },
                         "state": {
                             "sequence": "E",
-                            "type": "SequenceState"
+                            "type": "LiteralSequenceExpression"
                         },
                         "type": "Allele"
                     },
@@ -82,10 +94,7 @@ class NormalizeService(BaseModel):
                         "id": "normalize.gene:BRAF",
                         "type": "GeneDescriptor",
                         "label": "BRAF",
-                        "value": {
-                            "id": "hgnc:1097",
-                            "type": "Gene"
-                        },
+                        "gene_id": "hgnc:1097",
                         "xrefs": [
                             "ncbigene:673",
                             "ensembl:ENSG00000157764"
@@ -138,9 +147,9 @@ class NormalizeService(BaseModel):
                     }
                 },
                 "service_meta_": {
-                    'name': 'variation-normalizer',
-                    'version': '0.1.0',
-                    'response_datetime': '2021-04-05T16:44:15.367831',
-                    'url': 'https://github.com/cancervariants/variation-normalization'  # noqa: E501
+                    "name": "variation-normalizer",
+                    "version": "0.2.13",
+                    "response_datetime": "2021-11-18T14:10:53.909158",
+                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
                 }
             }

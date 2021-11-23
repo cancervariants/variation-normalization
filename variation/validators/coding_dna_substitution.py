@@ -1,11 +1,13 @@
 """The module for Coding DNA Substitution Validation."""
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
-    ClassificationType
+    ClassificationType, Classification
 from variation.schemas.token_response_schema import CodingDNASubstitutionToken
-from typing import List, Optional
+from typing import List, Optional, Dict
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 # TODO:
 #  LRG_ (LRG_199t1:c)
@@ -30,23 +32,29 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens,
-                                  normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+    def get_valid_invalid_results(
+            self, classification_tokens: List, transcripts: List,
+            classification: Classification, results: List, gene_tokens: List,
+            normalize_endpoint: bool, mane_data_found: Dict,
+            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum
+    ) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of classification Tokens
-        :param list transcripts: A list of transcript accessions
+        :param List classification_tokens: A list of classification Tokens
+        :param List transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: Stores validation result objects
-        :param list gene_tokens: List of GeneMatchTokens for a classification
+        :param List results: Stores validation result objects
+        :param List gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
-        :param dict mane_data_found: MANE Transcript information found
+        :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -84,8 +92,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
 
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens,
-                        alt=s.new_nucleotide
+                        s.alt_type, s, alt=s.new_nucleotide
                     )
 
                 self.add_validation_result(
