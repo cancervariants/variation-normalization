@@ -52,13 +52,15 @@ class TranslatorBase:
             found = list()
             for vr in validation_results:
                 if vr.is_valid:
-                    variation = (self.translator.translate(vr)).__dict__
+                    variation = self.translator.translate(vr)
                     if variation['type'] == 'Allele':
-                        variation['location'] = variation['location'].dict()
-                        del variation['location']['id']
+                        variation['location'] = variation['location']
+                        if 'id' in variation['location'].keys():
+                            del variation['location']['id']
                     elif variation['type'] == 'CopyNumber':
-                        variation['subject'] = variation['subject'].dict()
-                        del variation['subject']['location']['id']
+                        variation['subject'] = variation['subject']
+                        if 'id' in variation['subject']['location'].keys():
+                            del variation['subject']['location']['id']
 
                     if variation not in found:
                         found.append(variation)

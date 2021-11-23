@@ -1,6 +1,8 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
+from typing import Dict, Optional
 from ga4gh.vrsatile.pydantic.vrs_model import Allele, CopyNumber  # noqa: F401
+from pydantic.error_wrappers import ValidationError
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
 
@@ -18,8 +20,8 @@ class Translator(ABC):
         """Check that the token is the correct instance for a translator."""
         raise NotImplementedError
 
-    def translate(self, res: ValidationResult) -> Allele:
-        """Translate to VRS representation for an Allele."""
+    def translate(self, res: ValidationResult) -> Optional[Dict]:
+        """Translate to VRS Variation representation."""
         instance_tokens = [t for t in res.classification.all_tokens if
                            self.is_token_instance(t)]
         len_instance_tokens = len(instance_tokens)
@@ -35,7 +37,12 @@ class Translator(ABC):
                         t = f"{tokens[0]} ({tokens[0].replace('ter', '*')})"
                         if t.lower() == tokens[1].lower():
                             if variation_type == 'Allele':
-                                return Allele(**res.variation)
+                                try:
+                                    Allele(**res.variation)
+                                except ValidationError:
+                                    return None
+                                else:
+                                    return res.variation
 
             raise Exception(f'Should not have more than one '
                             f'{self.__class__.__name__} '
@@ -44,14 +51,23 @@ class Translator(ABC):
         if variation_type == 'Allele':
             if not res.variation['location']:
                 raise Exception("Cannot translate an allele with no location")
-            variation = Allele(**res.variation)
+            try:
+                Allele(**res.variation)
+            except ValidationError:
+                variation = None
+            else:
+                variation = res.variation
         elif variation_type == 'CopyNumber':
             if res.variation['subject']['type'] == "Allele":
                 if not res.variation['subject']['location']:
                     raise Exception("Cannot translate a CNV with no location")
-            variation = CopyNumber(**res.variation)
+            try:
+                CopyNumber(**res.variation)
+            except ValidationError:
+                variation = None
+            else:
+                variation = res.variation
         else:
             raise Exception(f"{variation_type} not supported in "
                             f"Variation Normalization")
-
         return variation

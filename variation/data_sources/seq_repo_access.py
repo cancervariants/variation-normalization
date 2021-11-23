@@ -74,3 +74,13 @@ class SeqRepoAccess:
         except KeyError:
             logger.warning(f"SeqRepo could not translate alias: {input_str}")
             return []
+
+    def ac_to_chromosome(self, ac: str) -> Optional[str]:
+        """Get chromosome for accession.
+
+        :param str ac: Accession
+        :return: Chromosome
+        """
+        aliases = self.aliases(ac)
+        return ([a.split(':')[-1] for a in aliases
+                 if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501

@@ -22,12 +22,13 @@ class TestCodingDNADeletionValidator(ValidatorBase, unittest.TestCase):
         uta = UTA()
         dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
         tlr = Translator(data_proxy=dp)
+        gene_normalizer = GeneQueryHandler()
         return CodingDNADeletion(
             seqrepo_access, transcript_mappings,
-            GeneSymbol(GeneQueryHandler()),
+            GeneSymbol(gene_normalizer),
             MANETranscript(seqrepo_access, transcript_mappings,
                            MANETranscriptMappings(), uta),
-            uta, dp, tlr
+            uta, dp, tlr, gene_normalizer
         )
 
     def classifier_instance(self):

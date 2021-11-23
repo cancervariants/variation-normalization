@@ -6,6 +6,9 @@ from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
 query_handler = QueryHandler()
@@ -71,6 +74,10 @@ normalize_response_description = 'A response to a validly-formed query.'
 normalize_description = \
     'Return VRSATILE compatible object for variation provided.'
 q_description = 'Variation to normalize.'
+hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
+                           '`repeated_seq_expr`, `literal_seq_expr`. This'
+                           ' parameter determines how to interpret HGVS '
+                           'dup/del expressions in VRS.')
 
 
 @app.get('/variation/normalize',
@@ -80,14 +87,22 @@ q_description = 'Variation to normalize.'
          description=normalize_description,
          response_model_exclude_none=True
          )
-def normalize(q: str = Query(..., description=q_description)):
+def normalize(q: str = Query(..., description=q_description),
+              hgvs_dup_del_mode: HGVSDupDelModeEnum = Query(
+                  HGVSDupDelModeEnum.DEFAULT,
+                  description=hgvs_dup_del_mode_decsr)):
     """Return Value Object Descriptor for variation.
 
-    :param q: Variation to normalize
+    :param str q: Variation to normalize
+    :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+        `repeated_seq_expr`, `literal_seq_expr`.
+        This parameter determines how to interpret HGVS dup/del expressions
+        in VRS.
     :return: NormalizeService for variation
     """
     normalize_resp = \
-        query_handler.normalize(html.unescape(q))
+        query_handler.normalize(html.unescape(q),
+                                hgvs_dup_del_mode=hgvs_dup_del_mode)
     warnings = query_handler.normalize_handler.warnings if \
         query_handler.normalize_handler.warnings else None
 

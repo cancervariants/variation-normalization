@@ -6,6 +6,7 @@ from datetime import datetime
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
 import copy
+from tests.conftest import assertion_checks
 
 
 @pytest.fixture(scope="module")
@@ -88,79 +89,6 @@ def braf_gene_context():
                         "type": "CytobandInterval"
                     }
                 }
-            }
-        ]
-    }
-
-
-@pytest.fixture(scope='module')
-def vhl_gene_context():
-    """Create a VHL gene context."""
-    return {
-        "id": "normalize.gene:VHL",
-        "type": "GeneDescriptor",
-        "label": "VHL",
-        "gene_id": "hgnc:12687",
-        "xrefs": [
-            "ncbigene:7428",
-            "ensembl:ENSG00000134086"
-        ],
-        "alternate_labels": [
-            "HRCA1",
-            "VHL1",
-            "RCA1",
-            "pVHL"
-        ],
-        "extensions": [
-            {
-                "type": "Extension",
-                "name": "symbol_status",
-                "value": "approved"
-            },
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "von Hippel-Lindau tumor suppressor"
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "ucsc:uc003bvc.4",
-                    "pubmed:9671762",
-                    "refseq:NM_000551",
-                    "cosmic:VHL",
-                    "omim:608537",
-                    "vega:OTTHUMG00000128668",
-                    "ccds:CCDS2598",
-                    "ena.embl:L15409",
-                    "orphanet:120467",
-                    "ccds:CCDS2597",
-                    "uniprot:P40337"
-                ]
-            },
-            {
-                "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id":
-                        "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "3",
-                    "interval": {
-                        "end": "p25.3",
-                        "start": "p25.3",
-                        "type": "CytobandInterval"
-                    }
-                }
-            },
-            {
-                "name": "previous_symbols",
-                "value": [
-                    "RCA1"
-                ],
-                "type": "Extension"
             }
         ]
     }
@@ -841,37 +769,6 @@ def coding_dna_deletion(erbb2_context):
 
 
 @pytest.fixture(scope='module')
-def genomic_deletion(vhl_gene_context):
-    """Create test fixture for genomic deletion range."""
-    params = {
-        "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.uagNswLQY5rgN2c30_J3-45UMpIySM4C",
-        "variation": {
-            "location": {
-                "interval": {
-                    "end": 510,
-                    "start": 491,
-                    "type": "SimpleInterval"
-                },
-                "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "",
-                "type": "SequenceState"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "transcript",
-        "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
-        "gene_context": vhl_gene_context
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
 def amino_acid_insertion(egfr_context):
     """Create test fixture for NP amino acid insertion."""
     params = {
@@ -1097,88 +994,6 @@ def genomic_uncertain_del_x():
 
 
 @pytest.fixture(scope='module')
-def genomic_uncertain_del_2():
-    """Create a genomic uncertain deletion on chr 2 test fixture."""
-    params = {
-        "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
-        "variation": {
-            "subject": {
-                "location": {
-                    "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
-                    "interval": {
-                        "start": {
-                            "value": 110104899,
-                            "comparator": "<=",
-                            "type": "IndefiniteRange"
-                        },
-                        "end": {
-                            "value": 110207160,
-                            "comparator": ">=",
-                            "type": "IndefiniteRange"
-                        },
-                        "type": "SequenceInterval"
-                    },
-                    "type": "SequenceLocation"
-                },
-                "reverse_complement": False,
-                "type": "DerivedSequenceExpression"
-            },
-            "copies": {
-                "value": 1,
-                "type": "Number"
-            },
-            "type": "CopyNumber"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0001743"
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
-def genomic_uncertain_del_y():
-    """Create a genomic uncertain deletion on chr Y test fixture."""
-    params = {
-        "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
-        "variation": {
-            "subject": {
-                "location": {
-                    "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-                    "interval": {
-                        "start": {
-                            "value": 14076801,
-                            "comparator": "<=",
-                            "type": "IndefiniteRange"
-                        },
-                        "end": {
-                            "value": 57165209,
-                            "comparator": ">=",
-                            "type": "IndefiniteRange"
-                        },
-                        "type": "SequenceInterval"
-                    },
-                    "type": "SequenceLocation"
-                },
-                "reverse_complement": False,
-                "type": "DerivedSequenceExpression"
-            },
-            "copies": {
-                "value": 0,
-                "type": "Number"
-            },
-            "type": "CopyNumber"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0001743"
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
 def grch38_braf_genom_sub():
     """Create a genomic substitution GRCh38 test fixture for BRAF."""
     params = {
@@ -1305,20 +1120,20 @@ def grch38_genomic_deletion():
     params = {
         "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Id8H1AfB1DsgBPZnWJD3X4AyrpelKegQ",
+        "variation_id": "ga4gh:VA.VGGqV6SjfLH3AfPMA8322Chq_Y4QNp5_",
         "variation": {
             "location": {
-                "interval": {
-                    "end": 10146613,
-                    "start": 10146594,
-                    "type": "SimpleInterval"
-                },
                 "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                "type": "SequenceLocation"
+                "interval": {
+                    "type": "SimpleInterval",
+                    "start": 10146594,
+                    "end": 10146613,
+                },
+                "type": "SequenceLocation",
             },
             "state": {
-                "sequence": "",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression",
+                "sequence": ""
             },
             "type": "Allele"
         },
@@ -1359,44 +1174,6 @@ def grch38_genomic_insertion():
         "vrs_ref_allele_seq": "TACGTGATGGCT"
     }
     return VariationDescriptor(**params)
-
-
-def assertion_checks(normalize_response, test_variation):
-    """Check that normalize_response and test_variation are equal."""
-    assert normalize_response.id == test_variation.id
-    assert normalize_response.type == test_variation.type
-    assert normalize_response.variation_id == test_variation.variation_id
-    assert normalize_response.variation == test_variation.variation
-    assert normalize_response.molecule_context == \
-           test_variation.molecule_context
-    assert normalize_response.structural_type == test_variation.structural_type
-    assert normalize_response.vrs_ref_allele_seq == \
-           test_variation.vrs_ref_allele_seq
-
-    resp_gene_context = normalize_response.gene_context
-    test_variation_context = test_variation.gene_context
-    if resp_gene_context:
-        assert resp_gene_context.id == test_variation_context.id
-        assert resp_gene_context.label == test_variation_context.label
-        assert resp_gene_context.gene_id == test_variation_context.gene_id
-        assert set(resp_gene_context.xrefs) ==\
-               set(test_variation_context.xrefs)
-        if test_variation_context.alternate_labels:
-            assert set(resp_gene_context.alternate_labels) == \
-                   set(test_variation_context.alternate_labels)
-        assert len(resp_gene_context.extensions) == \
-               len(test_variation_context.extensions)
-        for resp_ext in resp_gene_context.extensions:
-            for test_var in test_variation_context.extensions:
-                if resp_ext.name == test_var.name:
-                    if resp_ext.name == 'chromosome_location':
-                        assert resp_ext.value == test_var.value
-                    elif resp_ext.name == 'associated_with':
-                        assert set(resp_ext.value) == set(test_var.value)
-                    else:
-                        assert resp_ext.value == test_var.value
-    else:
-        assert not test_variation_context
 
 
 def test_amino_acid_substitution(test_normalize, braf_v600e, dis3_p63a):
@@ -1611,18 +1388,6 @@ def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
     assertion_checks(resp, coding_dna_deletion)
 
 
-def test_genomic_deletion(test_normalize, genomic_deletion,
-                          grch38_genomic_deletion):
-    """Test that genomic deletion normalizes correctly."""
-    resp = test_normalize.normalize('NC_000003.11:g.10188279_10188297del')
-    assertion_checks(resp, grch38_genomic_deletion)
-
-    resp = test_normalize.normalize('VHL g.10188279_10188297del')
-    assert resp.id == 'normalize.variation:VHL%20g.10188279_10188297del'
-    resp.id = 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del'
-    assertion_checks(resp, genomic_deletion)
-
-
 def test_amino_acid_insertion(test_normalize, amino_acid_insertion):
     """Test that amino acid insertion normalizes correctly."""
     resp = test_normalize.normalize('NP_005219.2:p.Asp770_Asn771insGlyLeu')
@@ -1679,31 +1444,6 @@ def test_genomic_insertion(test_normalize, genomic_insertion,
     assertion_checks(resp, genomic_insertion)
 
 
-def test_genomic_uncertain_deletion(test_normalize, genomic_uncertain_del_x,
-                                    genomic_uncertain_del_2,
-                                    genomic_uncertain_del_y):
-    """Test that genomic uncertain deletion normalizes correctly."""
-    # 38 Assembly
-    resp = test_normalize.normalize(
-        'NC_000023.11:g.(?_31120496)_(33339477_?)del')
-    assertion_checks(resp, genomic_uncertain_del_x)
-
-    # 37 Assembly
-    resp = test_normalize.normalize(
-        'NC_000023.10:g.(?_31138613)_(33357594_?)del')
-    assert resp.id == 'normalize.variation:NC_000023.10%3Ag.%28%3F_31138613%29_%2833357594_%3F%29del'  # noqa: E501
-    resp.id = 'normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del'  # noqa: E501
-    assertion_checks(resp, genomic_uncertain_del_x)
-
-    resp = test_normalize.normalize(
-        'NC_000002.12:g.(?_110104900)_(110207160_?)del')
-    assertion_checks(resp, genomic_uncertain_del_2)
-
-    resp = test_normalize.normalize(
-        'NC_000024.10:g.(?_14076802)_(57165209_?)del')
-    assertion_checks(resp, genomic_uncertain_del_y)
-
-
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
@@ -1739,14 +1479,14 @@ def test_no_matches(test_normalize):
 
 def test_service_meta():
     """Test that service meta info populates correctly."""
-    response = normalize_get_response('BRAF v600e')
+    response = normalize_get_response('BRAF v600e', 'default')
     service_meta = response.service_meta_
     assert service_meta.name == "variation-normalizer"
     assert service_meta.version
     assert isinstance(service_meta.response_datetime, datetime)
     assert service_meta.url == 'https://github.com/cancervariants/variation-normalization'  # noqa: E501
 
-    response = normalize_get_response('this-wont-normalize')
+    response = normalize_get_response('this-wont-normalize', 'default')
     service_meta = response.service_meta_
     assert service_meta.name == "variation-normalizer"
     assert service_meta.version
