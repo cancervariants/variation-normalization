@@ -81,7 +81,7 @@ class AminoAcidDeletion(Validator):
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param str hgvs_dup_del_mode: Must be: `default`, `cnv`,
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
