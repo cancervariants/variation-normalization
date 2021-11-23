@@ -59,17 +59,6 @@ pipenv lock
 pipenv sync
 ```
 
-### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
-
-You must run the following when loading the database:
-
-```commandline
-python3 -m gene.cli --update_all --update_merged
-```
-
-For more information, visit see the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
-
 
 ### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
@@ -130,13 +119,11 @@ This data helps with free text variations in order to get all Ensembl accessions
 ![image](biomart.png)
 
 ### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must load all sources _and_ merged concepts by running:
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
 
-```commandline
-python3 -m gene.cli --update_all --update_merged
-```
+You must also have Gene Normalization's DynamoDB running for the application to work. 
 
-You must have Gene Normalization's DynamoDB running for the application to work. For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
+For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### MANE Data
 
