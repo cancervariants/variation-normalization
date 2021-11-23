@@ -1,6 +1,6 @@
 """A module for Deletion Tokenization Base Class."""
 from abc import abstractmethod
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from .tokenizer import Tokenizer
 from .caches import AminoAcidCache, NucleotideCache
 from .tokenize_base import TokenizeBase
@@ -21,7 +21,11 @@ class DeletionBase(Tokenizer):
         self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[Deletion]:
-        """Return tokens that match the input string."""
+        """Return tokens that match the input string.
+
+        :param str input_string: Input string
+        :return: Deletion token if a match is found
+        """
         if input_string is None:
             return None
 
@@ -48,13 +52,13 @@ class DeletionBase(Tokenizer):
         self._get_parts(parts)
         return self.return_token(self.parts)
 
-    def _get_parts(self, parts):
-        """Get parts for DelIns.
+    def _get_parts(self, parts: List) -> None:
+        """Get parts for DelIns by updating `self.parts`
 
-        :param list parts: Parts of input string
+        :param List parts: Parts of input string
         """
         if len(parts) != 2:
-            return
+            return None
 
         # Get reference sequence
         reference_sequence = parts[0][:1]
@@ -62,7 +66,7 @@ class DeletionBase(Tokenizer):
 
         positions_deleted = self.tokenize_base.get_positions_deleted(parts)
         if not positions_deleted:
-            return
+            return None
 
         if parts[1]:
             self.parts['deleted_sequence'] = \
@@ -77,11 +81,19 @@ class DeletionBase(Tokenizer):
         else:
             end_pos_del = None
 
+        if start_pos_del and end_pos_del:
+            if start_pos_del > end_pos_del:
+                return None
+
         self.parts['start_pos_del'] = start_pos_del
         self.parts['end_pos_del'] = end_pos_del
         self.parts['reference_sequence'] = reference_sequence
 
     @abstractmethod
-    def return_token(self, params: Dict[str, str]):
-        """Return token instance."""
+    def return_token(self, params: Dict[str, str]) -> Optional[Deletion]:
+        """Return token instance.
+
+        :param Dict params: Params for Deletion token
+        :return: Deletion token
+        """
         raise NotImplementedError

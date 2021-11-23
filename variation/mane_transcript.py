@@ -325,10 +325,13 @@ class MANETranscript:
         """
         start_pos = pos[0] + coding_start_site
         end_pos = pos[1] + coding_start_site
-        if self.seqrepo_access.get_sequence(ac, start_pos, end_pos):
-            return True
+        if start_pos > end_pos:
+            if self.seqrepo_access.get_sequence(ac, end_pos, start_pos):
+                return True
         else:
-            return None
+            if self.seqrepo_access.get_sequence(ac, start_pos, end_pos):
+                return True
+        return False
 
     def get_longest_compatible_transcript(self, gene, start_pos, end_pos,
                                           start_annotation_layer,
@@ -654,7 +657,7 @@ class MANETranscript:
             if not self._validate_index(mane_c_ac, mane_c_pos_change,
                                         coding_start_site):
                 logger.warning(f"{mane_c_pos_change} are not valid positions"
-                               f" on {mane_c_ac}with coding start site "
+                               f" on {mane_c_ac} with coding start site "
                                f"{coding_start_site}")
                 return None
 

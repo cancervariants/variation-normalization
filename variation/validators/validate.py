@@ -22,9 +22,14 @@ from .amino_acid_insertion import AminoAcidInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
+from .genomic_duplication import GenomicDuplication
+from .genomic_deletion_range import GenomicDeletionRange
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from typing import List
+from gene.query import QueryHandler as GeneQueryHandler
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 class Validate:
@@ -35,7 +40,8 @@ class Validate:
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 amino_acid_cache: AminoAcidCache) -> None:
+                 amino_acid_cache: AminoAcidCache,
+                 gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the validate class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -45,11 +51,13 @@ class Validate:
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param Translator tlr: Translator class
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr
+            mane_transcript, uta, dp, tlr, gene_normalizer
         ]
         amino_acid_params = params[:]
         amino_acid_params.append(amino_acid_cache)
@@ -70,13 +78,28 @@ class Validate:
             AminoAcidInsertion(*amino_acid_params),
             CodingDNAInsertion(*params),
             GenomicInsertion(*params),
-            GenomicUncertainDeletion(*params)
+            GenomicDeletionRange(*params),
+            GenomicUncertainDeletion(*params),
+            GenomicDuplication(*params)
         ]
 
-    def perform(self, classifications: List[Classification],
-                normalize_endpoint, warnings=None) \
-            -> ValidationSummary:
-        """Validate a list of classifications."""
+    def perform(
+            self, classifications: List[Classification],
+            normalize_endpoint: bool, warnings: List = None,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+    ) -> ValidationSummary:
+        """Validate a list of classifications.
+
+        :param List classifications: List of classifications
+        :param bool normalize_endpoint: `True` if normalize endpoint is being
+            used. `False` otherwise.
+        :param List warnings: List of warnings
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
+        :return: ValidationSummary containing valid and invalid results
+        """
         valid_possibilities = list()
         invalid_possibilities = list()
         if not warnings:
@@ -87,8 +110,8 @@ class Validate:
             for validator in self.validators:
                 if validator.validates_classification_type(
                         classification.classification_type):
-                    results = validator.validate(classification,
-                                                 normalize_endpoint)
+                    results = validator.validate(
+                        classification, normalize_endpoint, hgvs_dup_del_mode)
                     for res in results:
                         if res.is_valid:
                             found_classification = True
