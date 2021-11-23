@@ -13,6 +13,7 @@ from .amino_acid_base import AminoAcidBase
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import logging
+from gene.query import QueryHandler as GeneQueryHandler
 
 
 logger = logging.getLogger('variation')
@@ -27,6 +28,7 @@ class AminoAcidDeletion(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -38,11 +40,12 @@ class AminoAcidDeletion(Validator):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr
+            uta, dp, tlr, gene_normalizer
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
@@ -63,7 +66,8 @@ class AminoAcidDeletion(Validator):
     def get_valid_invalid_results(self, classification_tokens, transcripts,
                                   classification, results, gene_tokens,
                                   normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+                                  is_identifier, hgvs_dup_del_mode)\
+            -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -77,6 +81,10 @@ class AminoAcidDeletion(Validator):
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -106,7 +114,7 @@ class AminoAcidDeletion(Validator):
                     )
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, gene_tokens
+                        s.alt_type, s,
                     )
 
                 self.add_validation_result(allele, valid_alleles, results,

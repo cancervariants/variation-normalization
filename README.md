@@ -1,6 +1,6 @@
 # Variation Normalization
 
-Services and guidelines for normalizing variation terms into [VRS (v1.1.1)](https://vrs.ga4gh.org/en/1.1.1) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms into [VRS (v1.2.0)](https://vrs.ga4gh.org/en/1.2.0) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
@@ -13,12 +13,19 @@ pip install variation-normalizer
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
 
+Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
+
+* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
+* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
+* **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
+
+We are working towards adding more types of variations, coordinates, and representations.
+
 ### Endpoints
 #### /toVRS
-The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/1.1.1/terms_and_model.html#allele).
+The `/toVRS` endpoint returns a list of valid VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
-#### /normalize
-The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. 
+The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 
 The steps for retrieving MANE Transcript data is as follows:
 1. Map starting annotation layer to genomic
@@ -29,17 +36,6 @@ The steps for retrieving MANE Transcript data is as follows:
     2. MANE Plus Clinical
     3. Longest Compatible Remaining Transcript
 4. Map back to starting annotation layer
-
-#### Limitations
-Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
-
-* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
-* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion\
-    *Note: c. coordinates will be returned as r. coordinates in the VRS and VRSATILE objects*
-* **genomic (g.)**: substitution, deletion, insertion, deletion-insertion\
-    *Note: If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.*
-
-We are working towards adding more types of variants, coordinates, and representations.
 
 ## Backend Services
 
@@ -52,17 +48,13 @@ pipenv lock
 pipenv sync
 ```
 
-### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization. You must have Gene Normalization's DynamoDB running for the application to work.
+### Gene Normalizer
 
-You must run the following when loading the database:
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
 
-```commandline
-python3 -m gene.cli --update_all --update_merged
-```
+You must also have Gene Normalization's DynamoDB running for the application to work. 
 
-For more information, visit see the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
-
+For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.

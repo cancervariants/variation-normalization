@@ -1,8 +1,8 @@
 """The module for Amino Acid Insertion Validation."""
 from variation.schemas.classification_response_schema import \
-    ClassificationType
+    ClassificationType, Classification
 from variation.schemas.token_response_schema import AminoAcidInsertionToken
-from typing import List, Optional
+from typing import List, Optional, Dict
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
@@ -13,6 +13,9 @@ from .amino_acid_base import AminoAcidBase
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 import logging
+from gene.query import QueryHandler as GeneQueryHandler
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
 logger = logging.getLogger('variation')
@@ -27,6 +30,7 @@ class AminoAcidInsertion(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -38,11 +42,12 @@ class AminoAcidInsertion(Validator):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTA uta: Access to UTA queries
+        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr
+            uta, dp, tlr, gene_normalizer
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
@@ -60,23 +65,29 @@ class AminoAcidInsertion(Validator):
         """
         return self.get_protein_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens,
-                                  normalize_endpoint, mane_data_found,
-                                  is_identifier) -> None:
+    def get_valid_invalid_results(
+            self, classification_tokens: List, transcripts: List,
+            classification: Classification, results: List, gene_tokens: List,
+            normalize_endpoint: bool, mane_data_found: Dict,
+            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum
+    ) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of classification Tokens
-        :param list transcripts: A list of transcript accessions
+        :param List classification_tokens: A list of classification Tokens
+        :param List transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: Stores validation result objects
-        :param list gene_tokens: List of GeneMatchTokens for a classification
+        :param List results: Stores validation result objects
+        :param List gene_tokens: List of GeneMatchTokens for a classification
         :param bool normalize_endpoint: `True` if normalize endpoint is being
             used. `False` otherwise.
-        :param dict mane_data_found: MANE Transcript information found
+        :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
+            `repeated_seq_expr`, `literal_seq_expr`.
+            This parameter determines how to represent HGVS dup/del expressions
+            as VRS objects.
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -108,7 +119,7 @@ class AminoAcidInsertion(Validator):
                     )
                     self.add_mane_data(mane, mane_data_found,
                                        s.reference_sequence, s.alt_type, s,
-                                       gene_tokens, alt=s.inserted_sequence)
+                                       alt=s.inserted_sequence)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,

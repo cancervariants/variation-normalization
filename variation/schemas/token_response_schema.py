@@ -1,6 +1,6 @@
 """Module for Token Schema."""
 from pydantic import BaseModel
-from typing import List, Union, Dict, Any, Type, Optional
+from typing import List, Union, Dict, Any, Type, Optional, Literal
 from enum import IntEnum, Enum
 
 
@@ -12,6 +12,14 @@ class TokenMatchType(IntEnum):
     PREVIOUS = 3
     ALIAS = 4
     UNSPECIFIED = 5
+
+
+class TokenType(str, Enum):
+    """Define token types."""
+
+    # TODO: Add other token types (issue 162)
+    GENOMIC_DUPLICATION = "GenomicDuplication"
+    GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
 
 
 class Token(BaseModel):
@@ -389,58 +397,6 @@ class LocusReferenceGenomicToken(Token):
     token_type = 'LocusReferenceGenomic'
 
 
-class Deletion(Token):
-    """The point at which one or more contiguous nucleotides were excised.
-    - Sequence Ontology
-    """
-
-    start_pos_del: int
-    end_pos_del: Optional[int]
-    reference_sequence: ReferenceSequence
-    token_type: str
-    so_id: str
-    molecule_context: str
-    alt_type = 'deletion'
-
-
-class AminoAcidDeletionToken(Deletion):
-    """A sequence change between the translation initiation (start) and
-    termination (stop) codon where, compared to a reference sequence, one or
-    more amino acids are not present (deleted) - varnomen.hgvs.org
-    """
-
-    start_aa_del: str
-    end_aa_del: Optional[str]
-    reference_sequence = ReferenceSequence.PROTEIN
-    token_type = 'AminoAcidDeletion'
-    so_id = 'SO:0001604'
-    molecule_context = 'protein'
-
-
-class CodingDNADeletionToken(Deletion):
-    """A sequence change where, compared to a reference sequence, one or
-    more nucleotides are not present (deleted). - varnomen.hgvs.org
-    """
-
-    reference_sequence = ReferenceSequence.CODING_DNA
-    deleted_sequence: Optional[str]
-    token_type = 'CodingDNADeletion'
-    so_id = 'SO:0000159'
-    molecule_context = 'transcript'
-
-
-class GenomicDeletionToken(Deletion):
-    """A sequence change where, compared to a reference sequence, one or
-    more nucleotides are not present (deleted). - varnomen.hgvs.org
-    """
-
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    deleted_sequence: Optional[str]
-    token_type = 'GenomicDeletion'
-    so_id = 'SO:0000159'
-    molecule_context = 'genomic'
-
-
 class Insertion(Token):
     """a sequence change between the translation initiation (start) and
     termination (stop) codon where, compared to the reference sequence,
@@ -490,22 +446,146 @@ class GenomicInsertionToken(Insertion):
     molecule_context = 'genomic'
 
 
-class UncertainDeletion(Token):
-    """Uncertain Deletion."""
+class DeletionAltType(str, Enum):
+    """Define alt types for deletions."""
 
-    start_pos1_del = "?"
+    DELETION = "deletion"
+    DELETION_RANGE = "deletion_range"
+    UNCERTAIN_DELETION = "uncertain_deletion"
+
+
+class Deletion(Token):
+    """The point at which one or more contiguous nucleotides were excised.
+    - Sequence Ontology
+    """
+
+    start_pos_del: int
+    end_pos_del: Optional[int]
+    reference_sequence: ReferenceSequence
+    token_type: str
+    so_id: str
+    molecule_context: str
+    alt_type: DeletionAltType.DELETION = DeletionAltType.DELETION
+
+
+class AminoAcidDeletionToken(Deletion):
+    """A sequence change between the translation initiation (start) and
+    termination (stop) codon where, compared to a reference sequence, one or
+    more amino acids are not present (deleted) - varnomen.hgvs.org
+    """
+
+    start_aa_del: str
+    end_aa_del: Optional[str]
+    reference_sequence = ReferenceSequence.PROTEIN
+    token_type = 'AminoAcidDeletion'
+    so_id = 'SO:0001604'
+    molecule_context = 'protein'
+
+
+class CodingDNADeletionToken(Deletion):
+    """A sequence change where, compared to a reference sequence, one or
+    more nucleotides are not present (deleted). - varnomen.hgvs.org
+    """
+
+    reference_sequence = ReferenceSequence.CODING_DNA
+    deleted_sequence: Optional[str]
+    token_type = 'CodingDNADeletion'
+    so_id = 'SO:0000159'
+    molecule_context = 'transcript'
+
+
+class GenomicDeletionToken(Deletion):
+    """A sequence change where, compared to a reference sequence, one or
+    more nucleotides are not present (deleted). - varnomen.hgvs.org
+    """
+
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    deleted_sequence: Optional[str]
+    token_type = 'GenomicDeletion'
+    so_id = 'SO:0000159'
+    molecule_context = 'genomic'
+
+
+class DeletionRange(Token):
+    """Deletions of the form (pos_pos)_(pos_pos)."""
+
+    start_pos1_del: Union[int, str]
     start_pos2_del: int
     end_pos1_del: int
-    end_pos2_del = "?"
+    end_pos2_del: Union[int, str]
     token_type: str
     so_id = "SO:0001743"
     molecule_context: str
-    alt_type = 'uncertain_deletion'
+    alt_type: Union[Literal[DeletionAltType.DELETION_RANGE], Literal[DeletionAltType.UNCERTAIN_DELETION]] = DeletionAltType.DELETION_RANGE  # noqa: E501
+
+
+class GenomicDeletionRangeToken(DeletionRange):
+    """Genomic deletion range token."""
+
+    token_type = "GenomicDeletionRange"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class UncertainDeletion(DeletionRange):
+    """Uncertain Deletion."""
+
+    start_pos1_del: Optional[Union[Literal['?'], int]]
+    start_pos2_del: Optional[int]
+    end_pos1_del: int
+    end_pos2_del: Optional[Union[Literal['?'], int]]
+    token_type: str
+    molecule_context: str
+    alt_type: Literal[DeletionAltType.UNCERTAIN_DELETION] = DeletionAltType.UNCERTAIN_DELETION  # noqa: E501
 
 
 class GenomicUncertainDeletionToken(UncertainDeletion):
     """Genomic uncertain deletion."""
 
     token_type = "GenomicUncertainDeletion"
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class DuplicationAltType(str, Enum):
+    """Define alt types for duplications."""
+
+    DUPLICATION = "duplication"
+    DUPLICATION_RANGE = "duplication_range"
+    UNCERTAIN_DUPLICATION = "uncertain_duplication"
+
+
+class Duplication(Token):
+    """Duplications."""
+
+    start_pos1_dup: Union[Literal['?'], int]
+    start_pos2_dup: Optional[int]
+    token_type: TokenType
+    so_id = "SO:1000035"
+    molecule_context: str
+    alt_type: DuplicationAltType
+
+
+class GenomicDuplicationToken(Duplication):
+    """Genomic duplication token schema."""
+
+    token_type = TokenType.GENOMIC_DUPLICATION
+    molecule_context = "genomic"
+    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    alt_type: Literal[DuplicationAltType.DUPLICATION] = DuplicationAltType.DUPLICATION  # noqa: E501
+
+
+class DuplicationRange(Duplication):
+    """Duplications of the form (#_#)_(#_#)dup"""
+
+    end_pos1_dup: int
+    end_pos2_dup: Optional[Union[Literal['?'], int]]
+    so_id = "SO:0001742"  # check: Copy Number gain?
+
+
+class GenomicDuplicationRangeToken(DuplicationRange):
+    """Genomic Duplication Range token schema"""
+
+    token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
