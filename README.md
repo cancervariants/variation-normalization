@@ -1,6 +1,6 @@
 # Variation Normalization
 
-Services and guidelines for normalizing variation terms into [VRS (v1.1.1)](https://vrs.ga4gh.org/en/1.1.1) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms into [VRS (v1.2.0)](https://vrs.ga4gh.org/en/1.2.0) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
@@ -17,13 +17,13 @@ Variation Normalization is limited to the following types of variants represente
 
 * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
 * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
-* **genomic (g.)**: substitution, deletion, insertion, deletion-insertion, ambiguous deletions (only HGVS)
+* **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
 
-We are working towards adding more types of variants, coordinates, and representations.
+We are working towards adding more types of variations, coordinates, and representations.
 
 ### Endpoints
 #### /toVRS
-The `/toVRS` endpoint returns a list of valid [Alleles](https://vrs.ga4gh.org/en/1.1.1/terms_and_model.html#allele).
+The `/toVRS` endpoint returns a list of valid VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
 The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 
@@ -37,17 +37,6 @@ The steps for retrieving MANE Transcript data is as follows:
     3. Longest Compatible Remaining Transcript
 4. Map back to starting annotation layer
 
-#### Limitations
-Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
-
-* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
-* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion\
-    *Note: c. coordinates will be returned as r. coordinates in the VRS and VRSATILE objects*
-* **genomic (g.)**: substitution, deletion, insertion, deletion-insertion\
-    *Note: If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.*
-
-We are working towards adding more types of variants, coordinates, and representations.
-
 ## Backend Services
 
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
@@ -59,6 +48,13 @@ pipenv lock
 pipenv sync
 ```
 
+### Gene Normalizer
+
+Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
+
+You must also have Gene Normalization's DynamoDB running for the application to work. 
+
+For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
@@ -117,13 +113,6 @@ Variation Normalizer uses [Ensembl BioMart](http://www.ensembl.org/biomart/martv
 This data helps with free text variations in order to get all Ensembl accessions that correspond to a given gene.
 
 ![image](biomart.png)
-
-### Setting up Gene Normalizer
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
-
-You must also have Gene Normalization's DynamoDB running for the application to work. 
-
-For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### MANE Data
 
