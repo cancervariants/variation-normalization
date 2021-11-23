@@ -151,10 +151,7 @@ class HGVSDupDelMode:
         if 'range' in alt_type or 'uncertain' in alt_type:
             return None
 
-        if allele:
-            variation = models.Allele(**allele)
-        else:
-            variation = None
+        variation = models.Allele(**allele) if allele else None
         return self._ga4gh_identify_variation(variation)
 
     def _ga4gh_identify_variation(self,
