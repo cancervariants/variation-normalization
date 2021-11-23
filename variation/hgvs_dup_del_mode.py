@@ -32,16 +32,6 @@ class HGVSDupDelMode:
         hgvs_dup_del_mode = mode.strip().lower()
         return hgvs_dup_del_mode in self.valid_modes
 
-    def _get_chr(self, ac: str) -> Optional[str]:
-        """Get chromosome for accession.
-
-        :param str ac: Accession
-        :return: Chromosome
-        """
-        aliases = self.seqrepo_access.aliases(ac)
-        return ([a.split(':')[-1] for a in aliases
-                 if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
-
     def default_mode(self, ac: str, alt_type: str, pos: Tuple[int, int],
                      del_or_dup: str, location: Dict,
                      chromosome: str = None,
@@ -85,7 +75,7 @@ class HGVSDupDelMode:
         :return: VRS Copy Number object represented as a dict
         """
         if chromosome is None:
-            chromosome = self._get_chr(ac)
+            chromosome = self.seqrepo_access.ac_to_chromosome(ac)
 
         if chromosome is None:
             logger.warning(f"Unable to find chromosome on {ac}")
