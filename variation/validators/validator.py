@@ -648,6 +648,10 @@ class Validator(ABC):
                 state = self.seqrepo_access.get_sequence(
                     ac, ival_start
                 )
+                if state is None:
+                    errors.append(f"Unable to get sequence on {ac} from "
+                                  f"{ival_start}")
+                    return None
             else:
                 state = alt or ''
             ival_start -= 1
