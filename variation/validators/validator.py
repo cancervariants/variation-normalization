@@ -609,6 +609,7 @@ class Validator(ABC):
         seq_id = self.dp.translate_sequence_identifier(
             allele.location.sequence_id._value, "ga4gh")[0]
         allele.location.sequence_id = seq_id
+        allele.location._id = ga4gh_identify(allele.location)
         allele._id = ga4gh_identify(allele)
         return allele.as_dict()
 
