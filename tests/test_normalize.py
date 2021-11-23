@@ -1,7 +1,7 @@
 """Module for testing the normalize endpoint."""
 import pytest
 from variation.query import QueryHandler
-from ga4gh.vrsatile.pydantic.vrsatile_model import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from datetime import datetime
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
@@ -319,20 +319,20 @@ def braf_v600e(braf_gene_context):
     params = {
         "id": "normalize.variation:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.9dA0egRAIfVFDL1sdU1VP7HsBcG0-DtE",
+        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 640,
-                    "start": 639,
-                    "type": "SimpleInterval"
+                    "end": {"value": 640, "type": "Number"},
+                    "start": {"value": 639, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "E",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -350,20 +350,20 @@ def dis3_p63a():
     params = {
         "id": "normalize.variation:DIS3%20P63A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.JGmgA6fdzSfmnqrHFgjkpqCY28vdcg9_",
+        "variation_id": "ga4gh:VA.ueB4LJE1wba68a1w1w6Mrb-MOquy8n3C",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 63,
-                    "start": 62,
-                    "type": "SimpleInterval"
+                    "end": {"value": 63, "type": "Number"},
+                    "start": {"value": 62, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.mlWsxfPKINN3o300stAI8oqN5U7P6kEu",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "A",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -449,20 +449,20 @@ def vhl(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Tyr185Ter",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.5Zx8fM1_wE3T_DFPbJgEe5CD-youM0op",
+        "variation_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 185,
-                    "start": 184,
-                    "type": "SimpleInterval"
+                    "end": {"value": 185, "type": "Number"},
+                    "start": {"value": 184, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "*",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -480,20 +480,20 @@ def vhl_silent(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.LBNTm7QqFZp1alJHaFKlKuRY9cOfdHeI",
+        "variation_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 61,
-                    "start": 60,
-                    "type": "SimpleInterval"
+                    "end": {"value": 61, "type": "Number"},
+                    "start": {"value": 60, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "P",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -511,7 +511,7 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.19rEOp0IBkrDkUA4gwwM-4Gde08-kBb1",
+        "variation_id": "ga4gh:VA.AfzMBlMIDLDZNjEYEhVTH-KWxq7lAN-B",
         "variation": braf_nuc_value,
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
@@ -527,20 +527,20 @@ def nm_004448_coding_dna_delins(erbb2_context):
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.sSFX2CO2DPTvE4MqnJ5VifnaQOGS0CVb",
+        "variation_id": "ga4gh:VA.eMxxAEjNduAvg5U3eBZxf0nLtfcMNxqy",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2502,
-                    "start": 2500,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2502, "type": "Number"},
+                    "start": {"value": 2500, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "CT",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -558,20 +558,20 @@ def nc_000007_genomic_delins(braf_gene_context):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA._GzAG8_K8YwcYQk6bEvINNGM_hEViytU",
+        "variation_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2146,
-                    "start": 2144,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2146, "type": "Number"},
+                    "start": {"value": 2144, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "AT",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -589,20 +589,20 @@ def nm_000551(vhl_gene_context):
     params = {
         "id": 'normalize.variation:temp',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.SjJnUcJL1EyRFUb6f8PSJA4u3fyin2Wj",
+        "variation_id": "ga4gh:VA._JN_AF5PO9kWKgKxB5T48cypZl7ccEsQ",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 685,
-                    "start": 684,
-                    "type": "SimpleInterval"
+                    "end": {"value": 685, "type": "Number"},
+                    "start": {"value": 684, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "AA",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -620,16 +620,16 @@ def braf_nuc_value():
     return {
         "location": {
             "interval": {
-                "end": 2145,
-                "start": 2144,
-                "type": "SimpleInterval"
+                "end": {"value": 2145, "type": "Number"},
+                "start": {"value": 2144, "type": "Number"},
+                "type": "SequenceInterval"
             },
             "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
             "type": "SequenceLocation"
         },
         "state": {
             "sequence": "A",
-            "type": "SequenceState"
+            "type": "LiteralSequenceExpression"
         },
         "type": "Allele"
     }
@@ -643,7 +643,7 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NM_004333.4%3Ac.1799%3D',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
+        "variation_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -661,7 +661,7 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.bVNMOANetNE2z4PZ1j0DmwUL1rULmqkN",
+        "variation_id": "ga4gh:VA.9wvlCJDeaw5HxwmUJg8qkcoUoT4A3azR",
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -677,20 +677,20 @@ def amino_acid_delins(egfr_context):
     params = {
         "id": 'normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.drLuUW5T542RCeDlVo4zbQ-_tcAiEnb6",
+        "variation_id": "ga4gh:VA.eDMXxJw9shlSKF3znIg5abniGoyJ3GQ4",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 751,
-                    "start": 746,
-                    "type": "SimpleInterval"
+                    "end": {"value": 751, "type": "Number"},
+                    "start": {"value": 746, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "P",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -710,20 +710,20 @@ def amino_acid_deletion_np_range(erbb2_context):
     params = {
         "id": 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Kzk2XquE5w5Ujd_tPBLVOZcylXMP8xbW",
+        "variation_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 759,
-                    "start": 754,
-                    "type": "SimpleInterval"
+                    "end": {"value": 759, "type": "Number"},
+                    "start": {"value": 754, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -743,20 +743,20 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.pMmAfNtE5g3O3gZ6E9e-uyXJtwbN9whN",
+        "variation_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2453,
-                    "start": 2437,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2453, "type": "Number"},
+                    "start": {"value": 2437, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -774,20 +774,20 @@ def amino_acid_insertion(egfr_context):
     params = {
         "id": 'normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.d3dLtsYaLYE2Yh_GENvPUtTVZWlwLnJw",
+        "variation_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 770,
-                    "start": 770,
-                    "type": "SimpleInterval"
+                    "end": {"value": 770, "type": "Number"},
+                    "start": {"value": 770, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "GL",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -804,20 +804,20 @@ def coding_dna_insertion(limk2_gene_context):
     params = {
         "id": 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.195Sg1AkyM4uQOhxLhBhANe2BUbnbEcR",
+        "variation_id": "ga4gh:VA.RAcEF24tRNB_J5Hz9E6GY-qQSi4ZG932",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2160,
-                    "start": 2160,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2160, "type": "Number"},
+                    "start": {"value": 2160, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.7_mlQyDN-uWH0RlxTQFvFEv6ykd2D-xF",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "A",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -834,20 +834,20 @@ def genomic_insertion(erbb2_context):
     params = {
         "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.qk5UNMFwxqQQWjO6CGMk3tryHBN3Sm_P",
+        "variation_id": "ga4gh:VA.nHB0_mpsq2t90S-znr81oCi2cY5CMdUe",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2500,
-                    "start": 2488,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2500, "type": "Number"},
+                    "start": {"value": 2488, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "TACGTGATGGCTTACGTGATGGCT",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -865,20 +865,20 @@ def genomic_substitution(egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.s_9_u_eDwRQMTK8eeWKGEQmfNjdKVuRk",
+        "variation_id": "ga4gh:VA.VkcuqgqMuSQeq8Hy0VPOGRIeyr8uSBV2",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 2630,
-                    "start": 2629,
-                    "type": "SimpleInterval"
+                    "end": {"value": 2630, "type": "Number"},
+                    "start": {"value": 2629, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.d_QsP29RWJi6bac7GOC9cJ9AO7s_HUMN",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "T",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -896,20 +896,20 @@ def genomic_sub_grch38():
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
+        "variation_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 55181378,
-                    "start": 55181377,
-                    "type": "SimpleInterval"
+                    "end": {"value": 55181378, "type": "Number"},
+                    "start": {"value": 55181377, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "T",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -926,20 +926,20 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.vWT6m5QcrdIJ37MfeQRsEO0avQiufIEx",
+        "variation_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 55181378,
-                    "start": 55181377,
-                    "type": "SimpleInterval"
+                    "end": {"value": 55181378, "type": "Number"},
+                    "start": {"value": 55181377, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "T",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -999,20 +999,20 @@ def grch38_braf_genom_sub():
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136A%3ET',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.HaPTmn-rrjRoZnIVw1I4AZPa6YHa2ojh",
+        "variation_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 140753336,
-                    "start": 140753335,
-                    "type": "SimpleInterval"
+                    "end": {"value": 140753336, "type": "Number"},
+                    "start": {"value": 140753335, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "T",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -1029,20 +1029,20 @@ def grch38_braf_genom_silent_mutation():
     params = {
         "id": 'normalize.variation:NC_000007.13%3Ag.140453136%3D',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.VkKteRkWR9MncFR3j4EICtAfdD4ZwR-1",
+        "variation_id": "ga4gh:VA.aMwnr5rEbtPQe5gXDDO2gZO_zSqN2RmH",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 140753336,
-                    "start": 140753335,
-                    "type": "SimpleInterval"
+                    "end": {"value": 140753336, "type": "Number"},
+                    "start": {"value": 140753335, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "A",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -1060,20 +1060,20 @@ def grch38_genomic_delins1():
         "id":
             'normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.5cmrRcsVIUBiFii-tOHhxNPNA3OB69fe",
+        "variation_id": "ga4gh:VA.mlJVnI7js6Tsb2GSLFlNRbCKE9zFRX5p",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 140753336,
-                    "start": 140753334,
-                    "type": "SimpleInterval"
+                    "end": {"value": 140753336, "type": "Number"},
+                    "start": {"value": 140753334, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "AT",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -1090,20 +1090,20 @@ def grch38_genomic_delins2():
     params = {
         "id": 'normalize.variation:NC_000003.12%3Ag.10149938delinsAA',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.-f07PmCJYlYbzBHVUQzDYWguUU4usche",
+        "variation_id": "ga4gh:VA.ndCPwzek-KU626kK28bQd1gWAAk2ELze",
         "variation": {
             "location": {
                 "interval": {
-                    "start": 10149937,
-                    "end": 10149938,
-                    "type": "SimpleInterval"
+                    "start": {"value": 10149937, "type": "Number"},
+                    "end": {"value": 10149938, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "AA",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -1120,14 +1120,14 @@ def grch38_genomic_deletion():
     params = {
         "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.VGGqV6SjfLH3AfPMA8322Chq_Y4QNp5_",
+        "variation_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
         "variation": {
             "location": {
                 "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                 "interval": {
-                    "type": "SimpleInterval",
-                    "start": 10146594,
-                    "end": 10146613,
+                    "type": "SequenceInterval",
+                    "start": {"value": 10146594, "type": "Number"},
+                    "end": {"value": 10146613, "type": "Number"},
                 },
                 "type": "SequenceLocation",
             },
@@ -1152,20 +1152,20 @@ def grch38_genomic_insertion():
     params = {
         "id": 'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.HxgI7LQ80HI0Q3t1letlRiWSNz8C8ea-",
+        "variation_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
         "variation": {
             "location": {
                 "interval": {
-                    "end": 39724743,
-                    "start": 39724731,
-                    "type": "SimpleInterval"
+                    "end": {"value": 39724743, "type": "Number"},
+                    "start": {"value": 39724731, "type": "Number"},
+                    "type": "SequenceInterval"
                 },
                 "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
                 "type": "SequenceLocation"
             },
             "state": {
                 "sequence": "TACGTGATGGCTTACGTGATGGCT",
-                "type": "SequenceState"
+                "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
         },
@@ -1424,10 +1424,11 @@ def test_coding_dna_insertion(test_normalize, coding_dna_insertion):
     resp = test_normalize.normalize('ENST00000331728.9:c.2049_2050insA')
     assertion_checks(resp, coding_dna_insertion)
 
-    resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
-    assert resp.id == 'normalize.variation:LIMK2%20c.2049_2050insA'
-    resp.id = 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA'
-    assertion_checks(resp, coding_dna_insertion)
+    # TODO: issue-136
+    # resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
+    # assert resp.id == 'normalize.variation:LIMK2%20c.2049_2050insA'
+    # resp.id = 'normalize.variation:ENST00000331728.9%3Ac.2049_2050insA'
+    # assertion_checks(resp, coding_dna_insertion)
 
 
 def test_genomic_insertion(test_normalize, genomic_insertion,
