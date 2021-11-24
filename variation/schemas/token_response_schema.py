@@ -589,3 +589,10 @@ class GenomicDuplicationRangeToken(DuplicationRange):
     token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class ChromosomeToken(Token):
+    """Chromosome token"""
+
+    chromosome: str
+    token_type = "Chromosome"
