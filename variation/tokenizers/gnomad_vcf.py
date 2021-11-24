@@ -1,5 +1,5 @@
 """A module for gnomad VCF tokenization"""
-from typing import Optional, List
+from typing import Optional, List, Dict
 import re
 from .tokenizer import Tokenizer
 from variation.schemas.token_response_schema import TokenMatchType,\
@@ -16,32 +16,28 @@ class GnomadVCF(Tokenizer):
             r"^(?P<chromosome>(chr)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
             r"(?P<pos>[1-9]\d*)-(?P<ref>(?i)[actg]+)-(?P<alt>(?i)[actg]+)$")
 
-    def match(self, input_string) -> Optional[List[Token]]:
+    def match(self, input_string: str) -> Optional[List[Token]]:
         """Return a GnomadVCFToken if a match exists.
 
         :param str input_string: The input string to match
         :return: List of tokens
         """
-        if input_string is None:
-            return None
-
-        match = self.splitter.match(input_string)
-        if not match:
+        params = self._get_params(input_string)
+        if not params:
             return None
 
         tokens = list()
-        params = match.groupdict()
-
-        if "chr" not in params["chromosome"]:
-            params["chromosome"] = f"chr{params['chromosome']}"
+        chromosome = params["chromosome"]
+        if "chr" not in chromosome:
+            params["chromosome"] = f"chr{chromosome.upper()}"
         else:
-            params["chromosome"] = params["chromosome"].lower()
+            params["chromosome"] = f"chr{chromosome[3:].upper()}"
         for field in ["ref", "alt"]:
             params[field] = params[field].upper()
         params["pos"] = int(params["pos"])
 
         tokens.append(ChromosomeToken(
-            token=params["chromosome"],
+            token=chromosome,
             input_string=input_string,
             match_type=TokenMatchType.UNSPECIFIED.value,
             chromosome=params["chromosome"])
@@ -92,6 +88,22 @@ class GnomadVCF(Tokenizer):
                         match_type=TokenMatchType.UNSPECIFIED.value,
                         start_pos_del=params["pos"] + 1,
                         end_pos_del=params["pos"] + len(del_seq),
-                        deleted_seqeunce=del_seq
+                        deleted_sequence=del_seq
                     ))
-        return tokens
+        return tokens if tokens else None
+
+    def _get_params(self, input_string: str) -> Optional[Dict]:
+        """Get chromosome, pos, ref, alt params from input string.
+
+        :param str input_string: Input string
+        :return: chromosome, pos, ref, alt data
+        """
+        if not input_string:
+            return None
+        input_string = input_string.strip()
+
+        match = self.splitter.match(input_string)
+        if not match:
+            return None
+        else:
+            return match.groupdict()
