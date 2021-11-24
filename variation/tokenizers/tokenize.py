@@ -37,6 +37,7 @@ from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
+from .gnomad_vcf import GnomadVCF
 from variation.schemas.token_response_schema import Token, TokenMatchType
 from .caches import NucleotideCache
 
@@ -51,6 +52,7 @@ class Tokenize:
             HGVS(),
             ReferenceSequence(),
             LocusReferenceGenomic(),
+            GnomadVCF(),
             # Amplification(),
             # Deletion(),
             # Exon(),
@@ -117,17 +119,22 @@ class Tokenize:
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
                 if res:
-                    tokens.append(res)
-                    token = list(map(lambda t: t.token_type, tokens))[0]
-                    if token == 'HGVS' or token == 'LocusReferenceGenomic' \
-                            or token == 'ReferenceSequence':
-                        # Give specific type of HGVS (i.e. protein sub)
-                        if len(tokens) == 1:
-                            self._add_tokens(tokens,
-                                             [search_string.split(':')[1]],
-                                             search_string, warnings)
                     matched = True
-                    break
+                    if isinstance(res, List):
+                        for r in res:
+                            tokens.append(r)
+                    else:
+                        tokens.append(res)
+                        token = list(map(lambda t: t.token_type, tokens))[0]
+                        if token == 'HGVS' or \
+                                token == 'LocusReferenceGenomic' \
+                                or token == 'ReferenceSequence':
+                            # Give specific type of HGVS (i.e. protein sub)
+                            if len(tokens) == 1:
+                                self._add_tokens(tokens,
+                                                 [search_string.split(':')[1]],
+                                                 search_string, warnings)
+                        break
                 else:
                     continue
             if not matched:
