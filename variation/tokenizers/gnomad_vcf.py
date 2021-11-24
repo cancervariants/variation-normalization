@@ -3,7 +3,8 @@ from typing import Optional, List
 import re
 from .tokenizer import Tokenizer
 from variation.schemas.token_response_schema import TokenMatchType,\
-    Token, ChromosomeToken, GenomicSubstitutionToken
+    Token, ChromosomeToken, GenomicSubstitutionToken,\
+    GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken
 
 
 class GnomadVCF(Tokenizer):
@@ -37,6 +38,7 @@ class GnomadVCF(Tokenizer):
             params["chromosome"] = params["chromosome"].lower()
         for field in ["ref", "alt"]:
             params[field] = params[field].upper()
+        params["pos"] = int(params["pos"])
 
         tokens.append(ChromosomeToken(
             token=params["chromosome"],
@@ -45,14 +47,51 @@ class GnomadVCF(Tokenizer):
             chromosome=params["chromosome"])
         )
 
-        if len(params['ref']) == 1 and len(params['alt']) == 1:
-            tokens.append(GenomicSubstitutionToken(
-                token=input_string,
-                input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED.value,
-                position=params['pos'],
-                ref_nucleotide=params['ref'],
-                new_nucleotide=params['alt']
-            ))
+        ref_len = len(params["ref"])
+        alt_len = len(params["alt"])
 
+        if ref_len == alt_len:
+            if ref_len == 1:
+                if params["ref"] == params["alt"]:
+                    tokens.append(GenomicSilentMutationToken(
+                        token=input_string,
+                        input_string=input_string,
+                        match_type=TokenMatchType.UNSPECIFIED.value,
+                        position=params["pos"],
+                        ref_nucleotide=params["ref"],
+                    ))
+                else:
+                    tokens.append(GenomicSubstitutionToken(
+                        token=input_string,
+                        input_string=input_string,
+                        match_type=TokenMatchType.UNSPECIFIED.value,
+                        position=params["pos"],
+                        ref_nucleotide=params["ref"],
+                        new_nucleotide=params["alt"]
+                    ))
+        elif ref_len < alt_len:
+            # insertion
+            if ref_len == 1:
+                if params["ref"][0] == params["alt"][0]:
+                    tokens.append(GenomicInsertionToken(
+                        token=input_string,
+                        input_string=input_string,
+                        match_type=TokenMatchType.UNSPECIFIED.value,
+                        start_pos_flank=params["pos"],
+                        end_pos_flank=params["pos"] + 1,
+                        inserted_sequence=params["alt"][1:]
+                    ))
+        else:
+            # deletion
+            if alt_len == 1:
+                if params["ref"][0] == params["alt"][0]:
+                    del_seq = params["ref"][1:]
+                    tokens.append(GenomicDeletionToken(
+                        token=input_string,
+                        input_string=input_string,
+                        match_type=TokenMatchType.UNSPECIFIED.value,
+                        start_pos_del=params["pos"] + 1,
+                        end_pos_del=params["pos"] + len(del_seq),
+                        deleted_seqeunce=del_seq
+                    ))
         return tokens

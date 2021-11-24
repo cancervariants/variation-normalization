@@ -119,10 +119,11 @@ class Tokenize:
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
                 if res:
-                    matched = True
                     if isinstance(res, List):
                         for r in res:
                             tokens.append(r)
+                            if not matched:
+                                matched = True
                     else:
                         tokens.append(res)
                         token = list(map(lambda t: t.token_type, tokens))[0]
@@ -134,6 +135,7 @@ class Tokenize:
                                 self._add_tokens(tokens,
                                                  [search_string.split(':')[1]],
                                                  search_string, warnings)
+                        matched = True
                         break
                 else:
                     continue
