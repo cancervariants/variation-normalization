@@ -41,11 +41,11 @@ def test_matches(tokenizer):
     assert token.molecule_context == "genomic"
 
     # Genomic Insertion
-    input_str = "22-6548-G-GCTAG"
+    input_str = "chromosome22-6548-G-GCTAG"
     tokens = tokenizer.match(input_str)
     assert tokens
     assert len(tokens) == 2
-    chr_assertion_checks(tokens[0], input_str, "22", "chr22")
+    chr_assertion_checks(tokens[0], input_str, "chromosome22", "chr22")
     token = tokens[1]
     assert isinstance(token, GenomicInsertionToken)
     assert token.start_pos_flank == 6548
@@ -96,7 +96,6 @@ def test_matches(tokenizer):
 def test_no_matches(tokenizer):
     """Test that invalid input returns no tokens"""
     assert tokenizer.match("") is None
-    assert tokenizer.match("chromosome7-1341-A-C") is None
     assert tokenizer.match("7-A-C-T") is None
     assert tokenizer.match("7-131-G-B") is None
     assert tokenizer.match("7-131-S-A") is None

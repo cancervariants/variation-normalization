@@ -13,7 +13,7 @@ class GnomadVCF(Tokenizer):
     def __init__(self) -> None:
         """Initialize the gnomad VCF tokenizer class"""
         self.splitter = re.compile(
-            r"^(?P<chromosome>(chr)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
+            r"^(?P<chromosome>(chr|chromosome)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
             r"(?P<pos>[1-9]\d*)-(?P<ref>(?i)[actg]+)-(?P<alt>(?i)[actg]+)$")
 
     def match(self, input_string: str) -> Optional[List[Token]]:
@@ -28,10 +28,14 @@ class GnomadVCF(Tokenizer):
 
         tokens = list()
         chromosome = params["chromosome"]
-        if "chr" not in chromosome:
-            params["chromosome"] = f"chr{chromosome.upper()}"
+        if "chr" in chromosome:
+            if "chromosome" in chromosome:
+                chromosome_val = chromosome[10:]
+            else:
+                chromosome_val = chromosome[3:]
         else:
-            params["chromosome"] = f"chr{chromosome[3:].upper()}"
+            chromosome_val = chromosome
+        params["chromosome"] = f"chr{chromosome_val.upper()}"
         for field in ["ref", "alt"]:
             params[field] = params[field].upper()
         params["pos"] = int(params["pos"])
