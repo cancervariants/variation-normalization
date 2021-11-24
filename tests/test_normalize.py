@@ -1162,38 +1162,6 @@ def grch38_genomic_delins2():
 
 
 @pytest.fixture(scope='module')
-def grch38_genomic_deletion():
-    """Create a test fixture for NC_000003.11:g.10188279_10188297del."""
-    params = {
-        "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
-        "variation": {
-            "_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
-            "location": {
-                "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
-                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {"value": 10146594, "type": "Number"},
-                    "end": {"value": 10146613, "type": "Number"},
-                },
-                "type": "SequenceLocation",
-            },
-            "state": {
-                "type": "LiteralSequenceExpression",
-                "sequence": ""
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT"
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
 def grch38_genomic_insertion():
     """Create a test fixture for
     NC_000017.10:g.37880993_37880994insGCTTACGTGATG.
