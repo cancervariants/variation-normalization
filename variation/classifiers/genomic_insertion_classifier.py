@@ -14,7 +14,7 @@ class GenomicInsertionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['GenomicInsertion'],
+            ['Chromosome', 'GenomicInsertion'],
             ['GeneSymbol', 'AminoAcidSubstitution', 'GenomicInsertion'],
             ['GenomicInsertion', 'GeneSymbol'],
             ['GeneSymbol', 'GenomicInsertion'],

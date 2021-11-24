@@ -14,6 +14,7 @@ class GenomicDuplicationClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
+            ['Chromosome', 'GenomicDuplication'],
             ['GenomicDuplication', 'GeneSymbol'],
             ['GeneSymbol', 'GenomicDuplication'],
             ['HGVS', 'GenomicDuplication'],
