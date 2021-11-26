@@ -153,3 +153,48 @@ class NormalizeService(BaseModel):
                     "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
                 }
             }
+
+
+class TranslateIdentifierService(BaseModel):
+    """A response to translating identifiers."""
+
+    identifier_query: StrictStr
+    warnings: Optional[List[StrictStr]]
+    aliases: List[StrictStr]
+    service_meta_: ServiceMeta
+
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["TranslateIdentifierService"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "identifier_query": "NP_004324.2",
+                "warnings": None,
+                "aliases": [
+                    "Ensembl:ENSP00000288602.6",
+                    "ensembl:ENSP00000288602.6",
+                    "Ensembl:ENSP00000493543.1",
+                    "ensembl:ENSP00000493543.1",
+                    "MD5:74c9b69323bd112084c1b5b385e7e6c5",
+                    "NCBI:NP_004324.2",
+                    "refseq:NP_004324.2",
+                    "SEGUID:sfzILpNpX8UFB/vgH9LOKLpl/+g",
+                    "SHA1:b1fcc82e93695fc50507fbe01fd2ce28ba65ffe8",
+                    "VMC:GS_cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                    "sha512t24u:cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                    "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y"
+                ],
+                "service_meta_": {
+                    "name": "variation-normalizer",
+                    "version": "0.2.14",
+                    "response_datetime": "2021-11-18T14:10:53.909158",
+                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
+                }
+            }
