@@ -1,4 +1,6 @@
 """Main application for FastAPI."""
+from typing import List, Optional
+
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
@@ -115,3 +117,27 @@ def normalize(q: str = Query(..., description=q_description),
             response_datetime=datetime.now()
         )
     )
+
+
+@app.get('/variation/translate_identifier',
+         summary='Given an identifier, use SeqRepo to return a list of aliases.',  # noqa: E501
+         response_description='A response to a validly-formed query.',
+         response_model=List[str],
+         description='Return list of aliases for an identifier'
+         )
+def translate_identifier(
+        identifier: str = Query(..., description='The identifier to find aliases for'),  # noqa: E501
+        target_namespaces: Optional[str] = Query(None, description='The namespaces of the aliases, separated by commas')  # noqa: E501
+) -> List[Optional[str]]:
+    """Return Value Object Descriptor for variation.
+
+    :param str identifier: The identifier to find aliases for
+    :param Optional[str] target_namespaces: The namespaces of the aliases,
+        separated by commas
+    :return: List of aliases for an identifier
+    """
+    try:
+        return query_handler.seqrepo_access.seq_repo_client.translate_identifier(  # noqa: E501
+            identifier, target_namespaces=target_namespaces)
+    except:  # noqa
+        return []
