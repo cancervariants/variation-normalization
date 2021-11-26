@@ -128,12 +128,12 @@ def translate_identifier(
         identifier: str = Query(..., description='The identifier to find aliases for'),  # noqa: E501
         target_namespaces: Optional[str] = Query(None, description='The namespaces of the aliases, separated by commas')  # noqa: E501
 ) -> TranslateIdentifierService:
-    """Return Value Object Descriptor for variation.
+    """Return data containing identifier aliases.
 
     :param str identifier: The identifier to find aliases for
     :param Optional[str] target_namespaces: The namespaces of the aliases,
         separated by commas
-    :return: List of aliases for an identifier
+    :return: TranslateIdentifierService data
     """
     aliases = []
     warnings = None
