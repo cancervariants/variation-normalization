@@ -13,17 +13,19 @@ pip install variation-normalizer
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
 
-Variation Normalization is limited to the following types of variants represented as HGVS expressions and text representations (ex: `BRAF V600E`):
-
-* **protein (p.)**: substitution, deletion, insertion, deletion-insertion
-* **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
-* **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
+Variation Normalization is limited to the following types of variants:
+* HGVS expressions and text representations (ex: `BRAF V600E`):
+  * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
+  * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
+  * **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
+* gnomad VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
+  * **genomic (g.)**: substitution, deletion, insertion
 
 We are working towards adding more types of variations, coordinates, and representations.
 
 ### Endpoints
 #### /toVRS
-The `/toVRS` endpoint returns a list of valid VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
+The `/toVRS` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
 The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 
