@@ -2,9 +2,10 @@
 from typing import Optional, List, Dict
 import re
 from .tokenizer import Tokenizer
-from variation.schemas.token_response_schema import TokenMatchType,\
-    Token, ChromosomeToken, GenomicSubstitutionToken,\
-    GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken
+from variation.schemas.token_response_schema import TokenMatchType, \
+    Token, ChromosomeToken, GenomicSubstitutionToken, \
+    GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken, \
+    Nomenclature
 
 
 class GnomadVCF(Tokenizer):
@@ -44,7 +45,8 @@ class GnomadVCF(Tokenizer):
             token=chromosome,
             input_string=input_string,
             match_type=TokenMatchType.UNSPECIFIED.value,
-            chromosome=params["chromosome"])
+            chromosome=params["chromosome"],
+            nomenclature=Nomenclature.GNOMAD_VCF)
         )
 
         ref_len = len(params["ref"])
@@ -59,6 +61,7 @@ class GnomadVCF(Tokenizer):
                         match_type=TokenMatchType.UNSPECIFIED.value,
                         position=params["pos"],
                         ref_nucleotide=params["ref"],
+                        nomenclature=Nomenclature.GNOMAD_VCF
                     ))
                 else:
                     tokens.append(GenomicSubstitutionToken(
@@ -67,7 +70,8 @@ class GnomadVCF(Tokenizer):
                         match_type=TokenMatchType.UNSPECIFIED.value,
                         position=params["pos"],
                         ref_nucleotide=params["ref"],
-                        new_nucleotide=params["alt"]
+                        new_nucleotide=params["alt"],
+                        nomenclature=Nomenclature.GNOMAD_VCF
                     ))
         elif ref_len < alt_len:
             # insertion
@@ -79,7 +83,8 @@ class GnomadVCF(Tokenizer):
                         match_type=TokenMatchType.UNSPECIFIED.value,
                         start_pos_flank=params["pos"],
                         end_pos_flank=params["pos"] + 1,
-                        inserted_sequence=params["alt"][1:]
+                        inserted_sequence=params["alt"][1:],
+                        nomenclature=Nomenclature.GNOMAD_VCF
                     ))
         else:
             # deletion
@@ -92,7 +97,8 @@ class GnomadVCF(Tokenizer):
                         match_type=TokenMatchType.UNSPECIFIED.value,
                         start_pos_del=params["pos"] + 1,
                         end_pos_del=params["pos"] + len(del_seq),
-                        deleted_sequence=del_seq
+                        deleted_sequence=del_seq,
+                        nomenclature=Nomenclature.GNOMAD_VCF
                     ))
         return tokens if tokens else None
 
