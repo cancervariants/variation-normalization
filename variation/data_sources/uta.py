@@ -564,12 +564,13 @@ class UTA:
             SELECT alt_ac
             FROM {self.schema}.genomic
             WHERE alt_ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
-            ORDER BY alt_ac;
+            ORDER BY (CAST(SUBSTR(alt_ac, position('.' in alt_ac) + 1,
+            LENGTH(alt_ac)) AS INT)) DESC
             """
         )
         self.cursor.execute(query)
         nc_acs = self.cursor.fetchall()
-        genomic_tx_data['alt_ac'] = nc_acs[-1][0]
+        genomic_tx_data['alt_ac'] = nc_acs[0][0]
 
     def get_liftover(self, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
