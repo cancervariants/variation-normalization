@@ -7,9 +7,8 @@ from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-
+from variation.schemas.normalize_response_schema \
+    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
 query_handler = QueryHandler()
@@ -110,6 +109,45 @@ def normalize(q: str = Query(..., description=q_description),
         variation_query=q,
         variation_descriptor=normalize_resp,
         warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
+    )
+
+
+@app.get('/variation/translate_identifier',
+         summary='Given an identifier, use SeqRepo to return a list of aliases.',  # noqa: E501
+         response_description='A response to a validly-formed query.',
+         response_model=TranslateIdentifierService,
+         description='Return list of aliases for an identifier'
+         )
+def translate_identifier(
+        identifier: str = Query(..., description='The identifier to find aliases for'),  # noqa: E501
+        target_namespaces: Optional[str] = Query(None, description='The namespaces of the aliases, separated by commas')  # noqa: E501
+) -> TranslateIdentifierService:
+    """Return data containing identifier aliases.
+
+    :param str identifier: The identifier to find aliases for
+    :param Optional[str] target_namespaces: The namespaces of the aliases,
+        separated by commas
+    :return: TranslateIdentifierService data
+    """
+    aliases = []
+    warnings = None
+    try:
+        aliases = query_handler.seqrepo_access.seq_repo_client.translate_identifier(  # noqa: E501
+            identifier, target_namespaces=target_namespaces)
+    except KeyError:
+        warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
+    except Exception as e:
+        warnings = [f"SeqRepo could not translate identifier, {identifier}:"
+                    f" {e}"]
+
+    return TranslateIdentifierService(
+        identifier_query=identifier,
+        warnings=warnings,
+        aliases=aliases,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
