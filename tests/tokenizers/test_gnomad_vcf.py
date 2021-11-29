@@ -19,6 +19,7 @@ def chr_assertion_checks(token, input_str, token_val, chromosome_val):
     assert token.token == token_val
     assert token.input_string == input_str
     assert token.chromosome == chromosome_val
+    assert token.nomenclature == "gnomad_vcf"
 
 
 def test_matches(tokenizer):
@@ -39,6 +40,7 @@ def test_matches(tokenizer):
     assert token.alt_type == "substitution"
     assert token.so_id == "SO:0001483"
     assert token.molecule_context == "genomic"
+    assert token.nomenclature == "gnomad_vcf"
 
     # Genomic Insertion
     input_str = "chromosome22-6548-G-GCTAG"
@@ -57,6 +59,7 @@ def test_matches(tokenizer):
     assert token.alt_type == "insertion"
     assert token.so_id == "SO:0000667"
     assert token.molecule_context == "genomic"
+    assert token.nomenclature == "gnomad_vcf"
 
     # Genomic Deletion
     input_str = "x-1234-ac-a"
@@ -74,6 +77,7 @@ def test_matches(tokenizer):
     assert token.alt_type == "deletion"
     assert token.so_id == "SO:0000159"
     assert token.molecule_context == "genomic"
+    assert token.nomenclature == "gnomad_vcf"
 
     # Genomic Silent Mutation
     input_str = "chrY-451-C-C"
@@ -91,6 +95,7 @@ def test_matches(tokenizer):
     assert token.alt_type == "silent_mutation"
     assert token.so_id == "SO:0002073"
     assert token.molecule_context == "genomic"
+    assert token.nomenclature == "gnomad_vcf"
 
 
 def test_no_matches(tokenizer):
