@@ -55,8 +55,7 @@ def to_vrs(q: str = Query(..., description=q_description)):
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
-    translations, warnings = \
-        query_handler.to_vrs(html.unescape(q))
+    translations, warnings = query_handler.to_vrs(html.unescape(q))
 
     return ToVRSService(
         search_term=q,
@@ -99,9 +98,8 @@ def normalize(q: str = Query(..., description=q_description),
         in VRS.
     :return: NormalizeService for variation
     """
-    normalize_resp = \
-        query_handler.normalize(html.unescape(q),
-                                hgvs_dup_del_mode=hgvs_dup_del_mode)
+    normalize_resp = query_handler.normalize(
+        html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode)
     warnings = query_handler.normalize_handler.warnings if \
         query_handler.normalize_handler.warnings else None
 
@@ -151,5 +149,30 @@ def translate_identifier(
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
-        )
-    )
+        ))
+
+
+g_to_p_summary = 'Given gnomad VCF, return VRSATILE compatible object on ' \
+                 'protein coordinate.'
+g_to_p_response_description = 'A response to a validly-formed query.'
+g_to_p_description = \
+    'Return VRSATILE compatible object on protein coordinate for ' \
+    'variation provided.'
+q_description = 'gnomad VCF to normalize to protein variation.'
+
+
+@app.get('/variation/gnomad_vcf_to_protein',
+         summary=g_to_p_summary,
+         response_description=g_to_p_response_description,
+         description=g_to_p_description,
+         response_model_exclude_none=True
+         )
+def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
+    """Return Value Object Descriptor for variation on protein coordinate.
+
+    :param str q: gnomad VCF to normalize to protein variation.
+    :return: NormalizeService for variation
+    """
+    q = html.unescape(q.strip())
+    # TODO
+    return query_handler.gnomad_vcf_to_protein(q)
