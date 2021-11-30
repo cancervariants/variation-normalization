@@ -14,6 +14,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs import VRS
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -27,7 +28,7 @@ class DuplicationDeletionBase(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler):
+                 gene_normalizer: GeneQueryHandler, vrs: VRS):
         """Initialize the Deletion Base validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -38,10 +39,11 @@ class DuplicationDeletionBase(Validator):
             information
         :param UTA uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
+        :param VRS vrs: Class for creating VRS objects
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
+            uta, dp, tlr, gene_normalizer, vrs
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
@@ -230,7 +232,7 @@ class DuplicationDeletionBase(Validator):
             s.molecule_context = 'transcript'
             s.so_id = so_id
 
-            allele = self.to_vrs_allele(
+            allele = self.vrs.to_vrs_allele(
                 mane['refseq'], mane['pos'][0], mane['pos'][1],
                 s.reference_sequence, s.alt_type, errors,
                 cds_start=mane['coding_start_site']
@@ -325,10 +327,10 @@ class DuplicationDeletionBase(Validator):
             t = grch38['ac']
 
         if use_vrs_allele_range:
-            allele = self.to_vrs_allele_ranges(
+            allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
         else:
-            allele = self.to_vrs_allele(
+            allele = self.vrs.to_vrs_allele(
                 t, grch38['pos'][0], grch38['pos'][1], s.reference_sequence,
                 s.alt_type, errors)
 

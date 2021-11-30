@@ -74,7 +74,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                     self.check_reference_sequence(t, s, errors)
 
                 if not errors:
-                    allele = self.to_vrs_allele(
+                    allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_del, s.end_pos_del,
                         s.reference_sequence, s.alt_type, errors)
 
