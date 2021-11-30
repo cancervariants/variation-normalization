@@ -56,9 +56,9 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
             for t in transcripts:
                 errors = list()
                 t = self.get_accession(t, classification)
-                allele = self.to_vrs_allele(t, s.position, s.position,
-                                            s.reference_sequence, s.alt_type,
-                                            errors, alt=s.new_nucleotide)
+                allele = self.vrs.to_vrs_allele(
+                    t, s.position, s.position, s.reference_sequence,
+                    s.alt_type, errors, alt=s.new_nucleotide)
 
                 if not errors:
                     ref_nuc = \

@@ -104,7 +104,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
             if grch38:
                 t = grch38['ac']
 
-            allele = self.to_vrs_allele_ranges(
+            allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
             if start is not None and end is not None:
                 pos = (start, end)
@@ -172,8 +172,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
             if not errors and start and end:
                 ival = models.SequenceInterval(
-                    start=self._get_start_indef_range(start),
-                    end=self._get_end_indef_range(end)
+                    start=self.vrs.get_start_indef_range(start),
+                    end=self.vrs.get_end_indef_range(end)
                 )
         elif s.start_pos1_del == '?' and \
                 s.start_pos2_del != '?' and \
@@ -194,7 +194,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
             if not errors and start and end:
                 ival = models.SequenceInterval(
-                    start=self._get_start_indef_range(start),  # noqa: E501
+                    start=self.vrs.get_start_indef_range(start),  # noqa: E501
                     end=models.Number(value=end)
                 )
         elif s.start_pos1_del != '?' and \
@@ -218,7 +218,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
             if not errors and start and end:
                 ival = models.SequenceInterval(
                     start=models.Number(value=start),
-                    end=self._get_end_indef_range(end)
+                    end=self.vrs.get_end_indef_range(end)
                 )
         else:
             errors.append("Not yet supported")

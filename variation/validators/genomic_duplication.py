@@ -115,7 +115,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 t, [start, end], errors, gene=gene)
 
             if not errors:
-                allele = self.to_vrs_allele(
+                allele = self.vrs.to_vrs_allele(
                     t, start, end, s.reference_sequence,
                     s.alt_type, errors)
                 variation = self.hgvs_dup_del_mode.interpret_variation(
@@ -128,7 +128,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if grch38:
                     t = grch38['ac']
 
-                allele = self.to_vrs_allele_ranges(
+                allele = self.vrs.to_vrs_allele_ranges(
                     t, s.reference_sequence, s.alt_type, errors, ival)
                 if start is not None and end is not None:
                     pos = (start, end)
@@ -238,7 +238,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, [start1, start2, end1, end2], errors, gene=gene)
 
                 if not errors:
-                    ival = self._get_ival_certain_range(
+                    ival = self.vrs.get_ival_certain_range(
                         start1, start2, end1, end2)
         else:
             if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
@@ -257,8 +257,8 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
-                        start=self._get_start_indef_range(start),
-                        end=self._get_end_indef_range(end)
+                        start=self.vrs.get_start_indef_range(start),
+                        end=self.vrs.get_end_indef_range(end)
                     )
             elif s.start_pos1_dup == '?' and \
                     s.start_pos2_dup != '?' and \
@@ -278,7 +278,7 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
-                        start=self._get_start_indef_range(start),
+                        start=self.vrs.get_start_indef_range(start),
                         end=models.Number(value=end)
                     )
             elif s.start_pos1_dup != '?' and \
@@ -301,7 +301,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors and start and end:
                     ival = models.SequenceInterval(
                         start=models.Number(value=start),
-                        end=self._get_end_indef_range(end)
+                        end=self.vrs.get_end_indef_range(end)
                     )
             else:
                 errors.append("Not yet supported")
