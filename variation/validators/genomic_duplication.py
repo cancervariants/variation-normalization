@@ -5,7 +5,8 @@ from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
     TokenType, DuplicationAltType, \
-    GenomicDuplicationToken, GenomicDuplicationRangeToken, Token  # noqa: F401
+    GenomicDuplicationToken, GenomicDuplicationRangeToken, Token, \
+    SequenceOntology  # noqa: F401
 from typing import List, Optional, Dict, Tuple
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
@@ -188,8 +189,9 @@ class GenomicDuplication(DuplicationDeletionBase):
                     return
 
                 self.add_normalized_genomic_dup_del(
-                    s, t, start, end, gene_tokens[0].token, 'SO:1000035',
-                    errors, hgvs_dup_del_mode, mane_data_found)
+                    s, t, start, end, gene_tokens[0].token,
+                    SequenceOntology.DUPLICATION, errors, hgvs_dup_del_mode,
+                    mane_data_found)
             else:
                 grch38 = self.mane_transcript.g_to_grch38(
                     t, start, end)
