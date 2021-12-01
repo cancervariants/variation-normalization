@@ -32,4 +32,4 @@ def test_invalid(test_query_handler):
 
     resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation.type == "Text"
-    assert w == ["7-140753336-T-G is not a valid gnomad vcf query"]
+    assert w == ["Unable to get protein variation for 7-140753336-T-G"]

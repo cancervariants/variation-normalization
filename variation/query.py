@@ -355,5 +355,5 @@ class QueryHandler:
                             gene=current_mane_data["HGNC_ID"]
                         )
 
-        warnings.append(f"{q} is not a valid gnomad vcf query")
+        warnings.append(f"Unable to get protein variation for {q}")
         return self.normalize_handler.text_variation_resp(q, _id, warnings)
