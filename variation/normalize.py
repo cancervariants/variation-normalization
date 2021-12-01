@@ -10,7 +10,8 @@ from urllib.parse import quote
 from variation import logger
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.token_response_schema import GeneMatchToken, Token
-from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.validation_response_schema import ValidationSummary, \
+    ValidationResult
 
 
 class Normalize:
@@ -30,6 +31,29 @@ class Normalize:
         self._gene_norm_cache = dict()
         self.gene_normalizer = gene_normalizer
 
+    @staticmethod
+    def get_valid_result(q: str, validations: ValidationSummary,
+                         warnings: List) -> ValidationResult:
+        """Get valid result from ValidationSummary
+
+        :param str q: Query string
+        :param ValidationSummary validations: Validation summary for query
+        :param List warnings: List of warnings
+        :return: Valid Validation Result
+        """
+        # For now, only use first valid result
+        valid_result = None
+        for r in validations.valid_results:
+            if r.is_mane_transcript and r.variation:
+                valid_result = r
+                break
+        if not valid_result:
+            warning = f"Unable to find MANE Transcript for {q}."
+            logger.warning(warning)
+            warnings.append(warning)
+            valid_result = validations.valid_results[0]
+        return valid_result
+
     def normalize(self, q: str, validations: ValidationSummary,
                   warnings: List) -> Optional[VariationDescriptor]:
         """Normalize a given variation.
@@ -45,20 +69,8 @@ class Normalize:
         else:
             _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"
             if len(validations.valid_results) > 0:
-                # For now, only use first valid result
-                valid_result = None
-                for r in validations.valid_results:
-                    if r.is_mane_transcript and r.variation:
-                        valid_result = r
-                        break
-                if not valid_result:
-                    warning = f"Unable to find MANE Select Transcript for {q}."
-                    logger.warning(warning)
-                    warnings.append(warning)
-                    valid_result = validations.valid_results[0]
-
+                valid_result = self.get_valid_result(q, validations, warnings)
                 variation = valid_result.variation
-
                 variation_id = variation['_id']
                 identifier = valid_result.identifier
                 token_type = \
