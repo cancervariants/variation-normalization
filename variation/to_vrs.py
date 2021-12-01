@@ -1,4 +1,4 @@
-"""Module for to VRS translation."""
+"""Module for toVRS endpoint."""
 from typing import Tuple, Optional, List, Union
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
     VariationSet, Text
