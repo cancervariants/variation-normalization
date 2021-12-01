@@ -39,7 +39,8 @@ class MANETranscript:
         self.mane_transcript_mappings = mane_transcript_mappings
         self.uta = uta
 
-    def _get_reading_frame(self, pos) -> int:
+    @staticmethod
+    def get_reading_frame(pos) -> int:
         """Return reading frame number.
         Only used on c. coordinate
 
@@ -249,8 +250,8 @@ class MANETranscript:
         """
         for pos, mane_pos_index in [(start_pos, 0), (end_pos, 1)]:
             if pos is not None:
-                og_rf = self._get_reading_frame(pos)
-                mane_rf = self._get_reading_frame(
+                og_rf = self.get_reading_frame(pos)
+                mane_rf = self.get_reading_frame(
                     mane_transcript['pos'][mane_pos_index]
                 )
 

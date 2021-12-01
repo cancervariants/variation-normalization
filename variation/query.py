@@ -220,7 +220,7 @@ class QueryHandler:
                     mane_c_pos_change = (mane_c_pos_change[1],
                                          mane_c_pos_change[0])
 
-                reading_frame = self.to_vrs_handler.mane_transcript._get_reading_frame(mane_c_pos_change[0])  # noqa: E501
+                reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(mane_c_pos_change[0])  # noqa: E501
                 if reading_frame == 1:
                     # first pos
                     mane_c_pos_change = \
