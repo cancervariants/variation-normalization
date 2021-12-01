@@ -19,8 +19,8 @@ def test_mane_transcript():
             )
             self.test_hgvs_parser = hgvs.parser.Parser()
 
-        def _get_reading_frame(self, pos):
-            return self.test_mane_transcript._get_reading_frame(pos)
+        def get_reading_frame(self, pos):
+            return self.test_mane_transcript.get_reading_frame(pos)
 
         def _p_to_c_pos(self, start, end):
             return self.test_mane_transcript._p_to_c_pos(start, end)
@@ -166,20 +166,20 @@ def grch38():
 
 
 def test_get_reading_frame(test_mane_transcript):
-    """Test that _get_reading_frame works correctly."""
-    rf = test_mane_transcript._get_reading_frame(1797)
+    """Test that get_reading_frame works correctly."""
+    rf = test_mane_transcript.get_reading_frame(1797)
     assert rf == 3
 
-    rf = test_mane_transcript._get_reading_frame(1798)
+    rf = test_mane_transcript.get_reading_frame(1798)
     assert rf == 1
 
-    rf = test_mane_transcript._get_reading_frame(1799)
+    rf = test_mane_transcript.get_reading_frame(1799)
     assert rf == 2
 
-    rf = test_mane_transcript._get_reading_frame(1800)
+    rf = test_mane_transcript.get_reading_frame(1800)
     assert rf == 3
 
-    rf = test_mane_transcript._get_reading_frame(2573)
+    rf = test_mane_transcript.get_reading_frame(2573)
     assert rf == 2
 
 
