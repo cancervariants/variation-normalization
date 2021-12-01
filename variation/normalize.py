@@ -70,40 +70,8 @@ class Normalize:
             _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"
             if len(validations.valid_results) > 0:
                 valid_result = self.get_valid_result(q, validations, warnings)
-                variation = valid_result.variation
-                variation_id = variation['_id']
-                identifier = valid_result.identifier
-                token_type = \
-                    valid_result.classification_token.token_type.lower()
-
-                vrs_ref_allele_seq = None
-                if 'uncertain' in token_type:
-                    warnings = ['Ambiguous regions cannot be normalized']
-                elif 'range' not in token_type:
-                    if variation['type'] == 'Allele':
-                        vrs_ref_allele_seq = self.get_ref_allele_seq(
-                            variation, identifier
-                        )
-                    elif variation['type'] == 'CopyNumber':
-                        vrs_ref_allele_seq = self.get_ref_allele_seq(
-                            variation['subject'], identifier
-                        )
-
-                if valid_result.gene_tokens:
-                    gene_token = valid_result.gene_tokens[0]
-                    gene_context = self.get_gene_descriptor(gene_token)
-                else:
-                    gene_context = None
-
-                resp = VariationDescriptor(
-                    id=_id,
-                    variation_id=variation_id,
-                    variation=variation,
-                    molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
-                    structural_type=valid_result.classification_token.so_id,
-                    vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,  # noqa: E501
-                    gene_context=gene_context
-                )
+                resp, warnings = self.get_variation_descriptor(
+                    valid_result.variation, valid_result, _id, warnings)
             else:
                 if not q.strip():
                     resp, warnings = self._no_variation_entered()
@@ -121,6 +89,56 @@ class Normalize:
         self.warnings = warnings
         return resp
 
+    def get_variation_descriptor(
+            self, variation: Dict, valid_result: ValidationResult,
+            _id: str, warnings: List, gene: Optional[str] = None
+    ) -> Tuple[VariationDescriptor, List]:
+        """Return variation descriptor and warnings
+
+        :param Dict variation: VRS variation object
+        :param ValidationResult valid_result: Valid result for query
+        :param str _id: _id field for variation descriptor
+        :param List warnings: List of warnings
+        :param Optional[str] gene: Gene symbol
+        :return: Variation descriptor, warnings
+        """
+        variation_id = variation['_id']
+        identifier = valid_result.identifier
+        token_type = \
+            valid_result.classification_token.token_type.lower()
+
+        vrs_ref_allele_seq = None
+        if 'uncertain' in token_type:
+            warnings = ['Ambiguous regions cannot be normalized']
+        elif 'range' not in token_type:
+            if variation['type'] == 'Allele':
+                vrs_ref_allele_seq = self.get_ref_allele_seq(
+                    variation, identifier
+                )
+            elif variation['type'] == 'CopyNumber':
+                vrs_ref_allele_seq = self.get_ref_allele_seq(
+                    variation['subject'], identifier
+                )
+
+        if valid_result.gene_tokens:
+            gene_token = valid_result.gene_tokens[0]
+            gene_context = self.get_gene_descriptor(gene_token=gene_token)
+        else:
+            if gene:
+                gene_context = self.get_gene_descriptor(gene=gene)
+            else:
+                gene_context = None
+
+        return VariationDescriptor(
+            id=_id,
+            variation_id=variation_id,
+            variation=variation,
+            molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
+            structural_type=valid_result.classification_token.so_id,
+            vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,  # noqa: E501
+            gene_context=gene_context
+        ), warnings
+
     def _no_variation_entered(self) -> Tuple[None, List[str]]:
         """Return response when no variation queried.
 
@@ -131,21 +149,29 @@ class Normalize:
         return None, warnings
 
     def get_gene_descriptor(
-            self, gene_token: GeneMatchToken) -> Optional[GeneDescriptor]:
+            self, gene_token: Optional[GeneMatchToken] = None,
+            gene: Optional[str] = None) -> Optional[GeneDescriptor]:
         """Return a GA4GH Gene Descriptor using Gene Normalization.
 
-        :param GeneMatchToken gene_token: A gene token
+        :param Optional[GeneMatchToken] gene_token: A gene token
+        :param Optional[str] gene: Gene query
         :return: A gene descriptor for a given gene if a record exists in
             gene-normalizer.
         """
-        gene_symbol = gene_token.matched_value
-        if gene_symbol in self._gene_norm_cache:
-            return self._gene_norm_cache[gene_symbol]
+        if gene_token:
+            gene_query = gene_token.matched_value
+        elif gene:
+            gene_query = gene
         else:
-            response = self.gene_normalizer.normalize(gene_symbol)
+            return None
+
+        if gene_query in self._gene_norm_cache:
+            return self._gene_norm_cache[gene_query]
+        else:
+            response = self.gene_normalizer.normalize(gene_query)
             if response.gene_descriptor:
                 gene_descriptor = response.gene_descriptor
-                self._gene_norm_cache[gene_symbol] = gene_descriptor
+                self._gene_norm_cache[gene_query] = gene_descriptor
                 return gene_descriptor
             return None
 
