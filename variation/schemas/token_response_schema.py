@@ -22,6 +22,14 @@ class TokenType(str, Enum):
     GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
 
 
+class Nomenclature(str, Enum):
+    """Define nomenclatures that are supported"""
+
+    FREE_TEXT = "free_text"
+    HGVS = "hgvs"
+    GNOMAD_VCF = "gnomad_vcf"
+
+
 class Token(BaseModel):
     """A string from a given query."""
 
@@ -30,6 +38,7 @@ class Token(BaseModel):
     match_type: TokenMatchType
     input_string: str
     object_type = 'Token'
+    nomenclature: Optional[Nomenclature]
 
     class Config:
         """Configure model."""
@@ -47,7 +56,8 @@ class Token(BaseModel):
                 "token_type": "Unknown",
                 "match_type": 5,
                 "input_string": "foo",
-                "object_type": "Token"
+                "object_type": "Token",
+                "nomenclature": None
             }
 
 
@@ -589,3 +599,10 @@ class GenomicDuplicationRangeToken(DuplicationRange):
     token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class ChromosomeToken(Token):
+    """Chromosome token"""
+
+    chromosome: str
+    token_type = "Chromosome"

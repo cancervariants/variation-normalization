@@ -47,9 +47,12 @@ genomic_substitution:
   should_match:
     - query: NC_000007.13:g.140453136A>T
     - query: NC_000007.13:g.55259515T>G
+    - query: 7-140453136-A-T
+    - query: 7-55259515-T-G
   should_not_match:
     - query: NC_000007.13:g.1436A>T
     - query: NC_000007.13:g.4T>A
+    - query: 7-140453136-G-T
 
 coding_dna_silent_mutation:
   should_match:
@@ -66,9 +69,12 @@ genomic_silent_mutation:
   should_match:
     - query: NC_000007.13:g.140453136=
     - query: NC_000007.13:g.55259515=
+    - query: 7-140453136-A-A
+    - query: 7-55259515-T-T
   should_not_match:
     - query: NC_000007.13:g.159138664=
     - query: NP_005219.2:p.Glu746_Thr751delinsValAla
+    - query: 7-140453136-C-C
 
 amino_acid_delins:
   should_match:
@@ -151,6 +157,7 @@ genomic_deletion:
     - query: NC_000003.12:g.10146527_10146528del
     - query: NC_000003.11:g.10191495delT
     - query: VHL g.10188279_10188297del
+    - query: 16-2138199-GTGAG-G
   should_not_match:
     - query: NC_000003.11:g.10191454654654654495delT
 
@@ -180,6 +187,7 @@ genomic_insertion:
     - query: NC_000022.10:g.30051593_30051594insT
     - query: NC_000017.10:g.37880993_37880994insGCTTACGTGATG
     - query: ERBB2 g.37880993_37880994insGCTTACGTGATG
+    - query: chr6-31239170-C-CA
   should_not_match:
     - query: NC_000022.10:g.51304566_51304567insT
     - query: NC_000022.10:g.51304567_51304568insT

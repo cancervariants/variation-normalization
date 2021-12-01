@@ -1,6 +1,5 @@
 """Main application for FastAPI."""
 from typing import Optional
-
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
@@ -89,14 +88,13 @@ hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
          response_model_exclude_none=True
          )
 def normalize(q: str = Query(..., description=q_description),
-              hgvs_dup_del_mode: HGVSDupDelModeEnum = Query(
-                  HGVSDupDelModeEnum.DEFAULT,
-                  description=hgvs_dup_del_mode_decsr)):
+              hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
+                  None, description=hgvs_dup_del_mode_decsr)):
     """Return Value Object Descriptor for variation.
 
     :param str q: Variation to normalize
-    :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-        `repeated_seq_expr`, `literal_seq_expr`.
+    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
+        Must be: `default`, `cnv`, `repeated_seq_expr`, `literal_seq_expr`.
         This parameter determines how to interpret HGVS dup/del expressions
         in VRS.
     :return: NormalizeService for variation
