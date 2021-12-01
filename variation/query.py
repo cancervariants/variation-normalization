@@ -226,28 +226,27 @@ class QueryHandler:
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
-        if classification_token.alt_type == "substitution":
+        if classification_token.alt_type in ["substitution",
+                                             "silent_mutation"]:
+            if classification_token.alt_type == "substitution":
+                alt_nuc = classification_token.new_nucleotide
+            else:
+                alt_nuc = classification_token.ref_nucleotide
             if reading_frame == 1:
                 # first pos
                 ref = self.seqrepo_access.get_sequence(
                     alt_ac, g_start_pos, g_end_pos + 2)
-                alt = classification_token.new_nucleotide + ref[1] + ref[
-                    2]  # noqa: E501
+                alt = alt_nuc + ref[1] + ref[2]
             elif reading_frame == 2:
                 # middle pos
                 ref = self.seqrepo_access.get_sequence(
                     alt_ac, g_start_pos - 1, g_end_pos + 1)
-                alt = ref[0] + classification_token.new_nucleotide + ref[
-                    2]  # noqa: E501
+                alt = ref[0] + alt_nuc + ref[2]
             elif reading_frame == 3:
                 # last pos
                 ref = self.seqrepo_access.get_sequence(
                     alt_ac, g_start_pos - 2, g_end_pos)
-                alt = ref[0] + ref[
-                    1] + classification_token.new_nucleotide  # noqa: E501
-        elif classification_token.alt_type == "silent_mutation":
-            # TODO
-            pass
+                alt = ref[0] + ref[1] + alt_nuc
         elif classification_token.alt_type == "deletion":
             # TODO
             pass
