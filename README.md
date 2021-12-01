@@ -18,7 +18,7 @@ Variation Normalization is limited to the following types of variants:
   * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
   * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
   * **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
-* gnomad VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
+* gnomAD-style VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
   * **genomic (g.)**: substitution, deletion, insertion
 
 We are working towards adding more types of variations, coordinates, and representations.
