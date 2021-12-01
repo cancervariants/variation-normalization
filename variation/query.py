@@ -167,13 +167,18 @@ class QueryHandler:
         tokens = self.to_vrs_handler.tokenizer.perform(q.strip(), warnings)
         for t in tokens:
             if t.nomenclature != Nomenclature.GNOMAD_VCF:
-                warnings.append(f"{q} is not supported for gnomad VCF")
+                warnings.append(f"{q} is not a supported gnomad vcf query")
                 return None
         classifications = self.to_vrs_handler.classifier.perform(tokens)
-        return self.to_vrs_handler.validator.perform(
+        validation_summary = self.to_vrs_handler.validator.perform(
             classifications, True, warnings,
             hgvs_dup_del_mode=HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         )
+        if not validation_summary:
+            warnings.append(f"{q} is not a valid gnomad vcf query")
+            return None
+        else:
+            return validation_summary
 
     def _get_refseq_alt_ac_from_variation(self, variation: Dict) -> str:
         """Get genomic ac from variation sequence_id
@@ -271,16 +276,18 @@ class QueryHandler:
             return self.codon_table.table[alt]
 
     def gnomad_vcf_to_protein(
-            self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
+            self, q: str) -> Tuple[VariationDescriptor, List]:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
-        :return: Variation Descriptor for protein variation, list of warnings
+        :return: Variation Descriptor, list of warnings
         """
+        q = q.strip()
+        _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         validations = self._get_gnomad_vcf_validations(q, warnings)
         if not validations:
-            return None, warnings
+            return self.normalize_handler.text_variation_resp(q, _id, warnings)
         if len(validations.valid_results) > 0:
             valid_result = self.normalize_handler.get_valid_result(
                 q, validations, warnings)
@@ -308,7 +315,8 @@ class QueryHandler:
                 if not mane_tx_genomic_data:
                     warnings.append("Unable to get mane transcript and "
                                     "genomic data")
-                    return None, warnings
+                    return self.normalize_handler.text_variation_resp(
+                        q, _id, warnings)
 
                 coding_start_site = mane_tx_genomic_data['coding_start_site']
                 mane_c_pos_change = \
@@ -324,7 +332,8 @@ class QueryHandler:
                     reading_frame, mane_c_ac, mane_c_pos_change,
                     coding_start_site, warnings)
                 if mane_c_pos_change is None:
-                    return None, warnings
+                    return self.normalize_handler.text_variation_resp(
+                        q, _id, warnings)
 
                 mane_p = self.to_vrs_handler.mane_transcript._get_mane_p(
                     current_mane_data, mane_c_pos_change)
@@ -341,9 +350,10 @@ class QueryHandler:
                         classification_token.alt_type, [], alt=aa_alt
                     )
                     if variation:
-                        _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"  # noqa: E501
                         return self.normalize_handler.get_variation_descriptor(
                             variation, valid_result, _id, warnings,
                             gene=current_mane_data["HGNC_ID"]
                         )
-        return None, warnings
+
+        warnings.append(f"{q} is not a valid gnomad vcf query")
+        return self.normalize_handler.text_variation_resp(q, _id, warnings)
