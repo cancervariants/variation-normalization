@@ -10,7 +10,7 @@ from ga4gh.vrs import models
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.token_response_schema import Nomenclature, Token, \
-    ReferenceSequence
+    ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.to_vrs import ToVRS
 from variation.vrs import VRS
@@ -36,8 +36,8 @@ class QueryHandler:
     """Class for handling queries."""
 
     def __init__(self,
-                 dynamodb_url: str = '',
-                 dynamodb_region: str = 'us-east-2',
+                 dynamodb_url: str = "",
+                 dynamodb_region: str = "us-east-2",
                  seqrepo_data_path: str = SEQREPO_DATA_PATH,
                  amino_acids_file_path: str = AMINO_ACID_PATH,
                  uta_db_url: str = UTA_DB_URL,
@@ -240,10 +240,11 @@ class QueryHandler:
                                              "silent_mutation"]:
             if classification_token.alt_type == "substitution":
                 alt_nuc = classification_token.new_nucleotide
-                classification_token.so_id = 'SO:0001606'
+                classification_token.so_id = \
+                    SequenceOntology.AMINO_ACID_SUBSTITUTION
             else:
                 alt_nuc = classification_token.ref_nucleotide
-                classification_token.so_id = 'SO:0001017'
+                classification_token.so_id = SequenceOntology.SILENT_MUTATION
             if reading_frame == 1:
                 # first pos
                 ref = self.seqrepo_access.get_sequence(
@@ -260,11 +261,13 @@ class QueryHandler:
                     alt_ac, g_start_pos - 2, g_end_pos)
                 alt = ref[0] + ref[1] + alt_nuc
         elif classification_token.alt_type == "deletion":
-            classification_token.so_id = 'SO:0001604'
-            pass
+            classification_token.so_id = SequenceOntology.AMINO_ACID_DELETION
+            # TODO
+            return None
         elif classification_token.alt_type == "insertion":
-            classification_token.so_id = 'SO:0001605'
-            pass
+            classification_token.so_id = SequenceOntology.AMINO_ACID_INSERTION
+            # TODO
+            return None
 
         if alt is None:
             return None
@@ -318,7 +321,7 @@ class QueryHandler:
                     return self.normalize_handler.text_variation_resp(
                         q, _id, warnings)
 
-                coding_start_site = mane_tx_genomic_data['coding_start_site']
+                coding_start_site = mane_tx_genomic_data["coding_start_site"]
                 mane_c_pos_change = \
                     self.to_vrs_handler.mane_transcript.get_mane_c_pos_change(
                         mane_tx_genomic_data, (g_start_pos, g_end_pos),
@@ -346,7 +349,7 @@ class QueryHandler:
                     g_start_pos, g_end_pos)
                 if aa_alt:
                     variation = self.vrs.to_vrs_allele(
-                        p_ac, mane_p["pos"][0], mane_p["pos"][1], 'p',
+                        p_ac, mane_p["pos"][0], mane_p["pos"][1], "p",
                         classification_token.alt_type, [], alt=aa_alt
                     )
                     if variation:

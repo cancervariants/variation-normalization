@@ -3,7 +3,8 @@ from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import GenomicDeletionToken, Token
+from variation.schemas.token_response_schema import GenomicDeletionToken, \
+    Token, SequenceOntology
 from typing import List, Optional, Dict
 from variation.schemas.token_response_schema import GeneMatchToken
 import logging
@@ -121,7 +122,8 @@ class GenomicDeletion(DuplicationDeletionBase):
         if gene_tokens:
             self.add_normalized_genomic_dup_del(
                 s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,
-                'SO:0000159', errors, hgvs_dup_del_mode, mane_data_found)
+                SequenceOntology.DELETION, errors, hgvs_dup_del_mode,
+                mane_data_found)
         else:
             # No gene provided, then use GRCh38 assesmbly
             if not self._is_grch38_assembly(t):
