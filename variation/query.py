@@ -96,7 +96,8 @@ class QueryHandler:
         return ToVRS(
             tokenizer, classifier, self.seqrepo_access, transcript_mappings,
             gene_symbol, amino_acid_cache, self.uta, mane_transcript_mappings,
-            mane_transcript, validator, translator, self.gene_normalizer
+            mane_transcript, validator, translator, self.gene_normalizer,
+            self.hgvs_dup_del_mode
         )
 
     def to_vrs(self, q: str)\
@@ -125,33 +126,25 @@ class QueryHandler:
 
     def normalize(
             self, q: str,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT  # noqa: E501
     ) -> Optional[VariationDescriptor]:
         """Return normalized Variation Descriptor for variation.
 
         :param q: Variation to normalize
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
+        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
+            Must be set when querying HGVS dup/del expressions.
+            Must be: `default`, `cnv`, `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to interpret HGVS dup/del expressions
             in VRS.
         :return: Variation Descriptor for variation
         """
-        if hgvs_dup_del_mode:
-            hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
-            if not self.hgvs_dup_del_mode.is_valid_mode(hgvs_dup_del_mode):
-                self.normalize_handler.warnings = \
-                    [f"hgvs_dup_del_mode must be one of: "
-                     f"{self.hgvs_dup_del_mode.valid_modes}"]
-                return None
-            else:
-                validations, warnings = \
-                    self.to_vrs_handler.get_validations(
-                        q, normalize_endpoint=True,
-                        hgvs_dup_del_mode=hgvs_dup_del_mode
-                    )
-                return self.normalize_handler.normalize(q, validations,
-                                                        warnings)
-        else:
-            self.normalize_handler.warnings = \
-                ["hgvs_dup_del_mode cannot be None"]
+        validations, warnings = \
+            self.to_vrs_handler.get_validations(
+                q, normalize_endpoint=True,
+                hgvs_dup_del_mode=hgvs_dup_del_mode
+            )
+        if not validations:
+            self.normalize_handler.warnings = warnings
             return None
+        return self.normalize_handler.normalize(q, validations,
+                                                warnings)

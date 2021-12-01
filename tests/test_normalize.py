@@ -1162,38 +1162,6 @@ def grch38_genomic_delins2():
 
 
 @pytest.fixture(scope='module')
-def grch38_genomic_deletion():
-    """Create a test fixture for NC_000003.11:g.10188279_10188297del."""
-    params = {
-        "id": 'normalize.variation:NC_000003.11%3Ag.10188279_10188297del',
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
-        "variation": {
-            "_id": "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx",
-            "location": {
-                "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
-                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {"value": 10146594, "type": "Number"},
-                    "end": {"value": 10146613, "type": "Number"},
-                },
-                "type": "SequenceLocation",
-            },
-            "state": {
-                "type": "LiteralSequenceExpression",
-                "sequence": ""
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT"
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
 def grch38_genomic_insertion():
     """Create a test fixture for
     NC_000017.10:g.37880993_37880994insGCTTACGTGATG.
@@ -1299,6 +1267,17 @@ def test_coding_dna_and_genomic_substitution(
     resp = test_normalize.normalize('NC_000007.13:g.140453136A>T')
     assertion_checks(resp, grch38_braf_genom_sub)
 
+    fixture_id = 'normalize.variation:NC_000007.13%3Ag.140453136A%3ET'
+    resp = test_normalize.normalize('7-140453136-A-T')  # 37
+    assert resp.id == 'normalize.variation:7-140453136-A-T'
+    resp.id = fixture_id
+    assertion_checks(resp, grch38_braf_genom_sub)
+
+    resp = test_normalize.normalize('7-140753336-A-T')  # 38
+    assert resp.id == 'normalize.variation:7-140753336-A-T'
+    resp.id = fixture_id
+    assertion_checks(resp, grch38_braf_genom_sub)
+
     # TODO: Issue 99
     resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
     assert resp.id == 'normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29'  # noqa: E501
@@ -1361,9 +1340,20 @@ def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
     resp = test_normalize.normalize('NC_000007.13:g.140453136=')
     assertion_checks(resp, grch38_braf_genom_silent_mutation)
 
+    fixture_id = 'normalize.variation:NC_000007.13%3Ag.140453136%3D'
+    resp = test_normalize.normalize("7-140453136-A-A")
+    assert resp.id == 'normalize.variation:7-140453136-A-A'
+    resp.id = fixture_id
+    assertion_checks(resp, grch38_braf_genom_silent_mutation)
+
+    resp = test_normalize.normalize('7-140753336-A-A')
+    assert resp.id == 'normalize.variation:7-140753336-A-A'
+    resp.id = fixture_id
+    assertion_checks(resp, grch38_braf_genom_silent_mutation)
+
     resp = test_normalize.normalize('BRAF g.140453136=')
     assert resp.id == 'normalize.variation:BRAF%20g.140453136%3D'
-    resp.id = 'normalize.variation:NC_000007.13%3Ag.140453136%3D'
+    resp.id = fixture_id
     assertion_checks(resp, nc_000007_silent_mutation)
 
 
@@ -1488,11 +1478,17 @@ def test_genomic_insertion(test_normalize, genomic_insertion,
     resp = test_normalize.normalize('NC_000017.10:g.37880993_37880994insGCTTACGTGATG')  # noqa: E501
     assertion_checks(resp, grch38_genomic_insertion)
 
+    fixture_id = \
+        'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG'
+    resp = test_normalize.normalize("17-37880993-G-GGCTTACGTGATG")
+    assert resp.id == 'normalize.variation:17-37880993-G-GGCTTACGTGATG'
+    resp.id = fixture_id
+    assertion_checks(resp, grch38_genomic_insertion)
+
     resp = test_normalize.normalize('ERBB2 g.37880993_37880994insGCTTACGTGATG')
     assert resp.id ==\
            'normalize.variation:ERBB2%20g.37880993_37880994insGCTTACGTGATG'
-    resp.id = \
-        'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG'
+    resp.id = fixture_id
     assertion_checks(resp, genomic_insertion)
 
 
