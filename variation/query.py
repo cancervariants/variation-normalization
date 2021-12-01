@@ -211,25 +211,11 @@ class QueryHandler:
                                     "genomic data")
                     return None
 
-                tx_pos_range = mane_tx_genomic_data['tx_pos_range']
-                mane_g_pos = mane_tx_genomic_data['alt_pos_range']
-                g_pos_change = (
-                    g_start_pos - mane_g_pos[0],
-                    mane_g_pos[1] - g_end_pos
-                )
                 coding_start_site = mane_tx_genomic_data['coding_start_site']
-
-                if mane_tx_genomic_data['strand'] == '-':
-                    g_pos_change = (
-                        mane_g_pos[1] - g_start_pos + 1,
-                        g_end_pos - mane_g_pos[0] - 1
-                    )
-
-                # 1-based coords
-                mane_c_pos_change = (
-                    tx_pos_range[0] + g_pos_change[0] - coding_start_site,
-                    tx_pos_range[1] - g_pos_change[1] - coding_start_site
-                )
+                mane_c_pos_change = \
+                    self.to_vrs_handler.mane_transcript.get_mane_c_pos_change(
+                        mane_tx_genomic_data, (g_start_pos, g_end_pos),
+                        coding_start_site)
                 if mane_c_pos_change[0] > mane_c_pos_change[1]:
                     mane_c_pos_change = (mane_c_pos_change[1],
                                          mane_c_pos_change[0])
