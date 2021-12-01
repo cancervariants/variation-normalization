@@ -27,74 +27,6 @@ def test_normalize():
 
 
 @pytest.fixture(scope='module')
-def braf_gene_context():
-    """Create BRAF gene context test fixture."""
-    return {
-        "id": "normalize.gene:BRAF",
-        "type": "GeneDescriptor",
-        "label": "BRAF",
-        "gene_id": "hgnc:1097",
-        "xrefs": [
-            "ncbigene:673",
-            "ensembl:ENSG00000157764"
-        ],
-        "alternate_labels": [
-            "BRAF1",
-            "RAFB1",
-            "B-raf",
-            "B-RAF1",
-            "NS7"
-        ],
-        "extensions": [
-            {
-                "type": "Extension",
-                "name": "symbol_status",
-                "value": "approved"
-            },
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "B-Raf proto-oncogene, serine/threonine kinase"
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "ucsc:uc003vwc.5",
-                    "pubmed:1565476",
-                    "omim:164757",
-                    "vega:OTTHUMG00000157457",
-                    "ccds:CCDS5863",
-                    "iuphar:1943",
-                    "ccds:CCDS87555",
-                    "orphanet:119066",
-                    "refseq:NM_004333",
-                    "ena.embl:M95712",
-                    "pubmed:2284096",
-                    "uniprot:P15056",
-                    "cosmic:BRAF"
-                ]
-            },
-            {
-                "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "7",
-                    "interval": {
-                        "end": "q34",
-                        "start": "q34",
-                        "type": "CytobandInterval"
-                    }
-                }
-            }
-        ]
-    }
-
-
-@pytest.fixture(scope='module')
 def erbb2_context():
     """Create test fixture for ERBB2 Gene Context."""
     return {
@@ -314,39 +246,6 @@ def limk2_gene_context():
 
 
 @pytest.fixture(scope="module")
-def braf_v600e(braf_gene_context):
-    """Create BRAF V600E protein test fixture."""
-    params = {
-        "id": "normalize.variation:BRAF%20V600E",
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
-        "variation": {
-            "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
-            "location": {
-                "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
-                "interval": {
-                    "end": {"value": 640, "type": "Number"},
-                    "start": {"value": 639, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "E",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "protein",
-        "structural_type": "SO:0001606",
-        "vrs_ref_allele_seq": "V",
-        "gene_context": braf_gene_context
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope="module")
 def dis3_p63a():
     """Create DIS3 P63A test fixture."""
     params = {
@@ -475,39 +374,6 @@ def vhl(vhl_gene_context):
         "molecule_context": "protein",
         "structural_type": "SO:0001617",
         "vrs_ref_allele_seq": "Y",
-        "gene_context": vhl_gene_context
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope="module")
-def vhl_silent(vhl_gene_context):
-    """Create NP_000542.1:p.Pro61 fixture."""
-    params = {
-        "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
-        "variation": {
-            "_id": "ga4gh:VA.S1GX6EwJV3exmJAH8MnxS8-S9J4i2Ip_",
-            "location": {
-                "_id": "ga4gh:VSL.zuNGmA02Uq49faqvCIPtwVrF_IJuP4dM",
-                "interval": {
-                    "end": {"value": 61, "type": "Number"},
-                    "start": {"value": 60, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "P",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "protein",
-        "structural_type": "SO:0001017",
-        "vrs_ref_allele_seq": "P",
         "gene_context": vhl_gene_context
     }
     return VariationDescriptor(**params)

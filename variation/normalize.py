@@ -76,18 +76,32 @@ class Normalize:
                 if not q.strip():
                     resp, warnings = self._no_variation_entered()
                 else:
-                    warning = f"Unable to normalize {q}"
-                    text = models.Text(definition=q)
-                    text._id = ga4gh_identify(text)
-                    resp = VariationDescriptor(
-                        id=_id,
-                        variation=Text(**text.as_dict())
-                    )
-                    if not warnings:
-                        warnings.append(warning)
-                    logger.warning(warning)
+                    resp, warnings = self.text_variation_resp(q, _id, warnings)
         self.warnings = warnings
         return resp
+
+    @staticmethod
+    def text_variation_resp(
+            q: str, _id: str,
+            warnings: List) -> Tuple[VariationDescriptor, List]:
+        """Return text variation for queries that could not be normalized
+
+        :param str q: query
+        :param str _id: _id field for variation descriptor
+        :param List warnings: List of warnings
+        :return: Variation descriptor, warnings
+        """
+        warning = f"Unable to normalize {q}"
+        text = models.Text(definition=q)
+        text._id = ga4gh_identify(text)
+        resp = VariationDescriptor(
+            id=_id,
+            variation=Text(**text.as_dict())
+        )
+        if not warnings:
+            warnings.append(warning)
+            logger.warning(warning)
+        return resp, warnings
 
     def get_variation_descriptor(
             self, variation: Dict, valid_result: ValidationResult,
