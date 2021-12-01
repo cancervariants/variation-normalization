@@ -24,6 +24,18 @@ def test_silent_mutation(test_query_handler, vhl_silent):
     assert w == []
 
 
+def test_insertion(test_query_handler, amino_acid_insertion):
+    """Test that insertion queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    assertion_checks(resp, amino_acid_insertion, ignore_id=True)
+    assert w == []
+
+
+def test_deletion(test_query_handler):
+    """Test that deletion queries return correct response"""
+    pass
+
+
 def test_invalid(test_query_handler):
     """Test that invalid queries return correct response"""
     resp, w = test_query_handler.gnomad_vcf_to_protein("BRAF V600E")

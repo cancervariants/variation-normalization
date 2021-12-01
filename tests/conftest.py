@@ -144,6 +144,85 @@ def braf_gene_context():
     }
 
 
+@pytest.fixture(scope='module')
+def egfr_context():
+    """Create EGFR gene context test fixture"""
+    return {
+        "id": "normalize.gene:EGFR",
+        "type": "GeneDescriptor",
+        "label": "EGFR",
+        "gene_id": "hgnc:3236",
+        "xrefs": [
+            "ncbigene:1956",
+            "ensembl:ENSG00000146648"
+        ],
+        "alternate_labels": [
+            "HER1",
+            "NISBD2",
+            "ERBB",
+            "PIG61",
+            "mENA",
+            "ERBB1",
+            "ERRP"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "name": "approved_name",
+                "value": "epidermal growth factor receptor",
+                "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "ccds:CCDS5516",
+                    "ccds:CCDS5514",
+                    "iuphar:1797",
+                    "uniprot:P00533",
+                    "vega:OTTHUMG00000023661",
+                    "ucsc:uc003tqk.4",
+                    "ccds:CCDS5515",
+                    "refseq:NM_005228",
+                    "ccds:CCDS87506",
+                    "ccds:CCDS47587",
+                    "pubmed:1505215",
+                    "cosmic:EGFR",
+                    "ccds:CCDS87507",
+                    "omim:131550",
+                    "orphanet:121311"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "_id": "ga4gh:VCL.wgFi9e72ZIIJaOfLx5gaOeGrwP_IZoQ2",
+                    "type": "ChromosomeLocation",
+                    "species_id": "taxonomy:9606",
+                    "chr": "7",
+                    "interval": {
+                        "end": "p11.2",
+                        "start": "p11.2",
+                        "type": "CytobandInterval"
+                    }
+                }
+            },
+            {
+                "name": "previous_symbols",
+                "value": [
+                    "ERBB"
+                ],
+                "type": "Extension"
+            }
+        ]
+    }
+
+
 @pytest.fixture(scope="module")
 def braf_v600e(braf_gene_context):
     """Create BRAF V600E protein test fixture."""
@@ -206,6 +285,38 @@ def vhl_silent(vhl_gene_context):
         "structural_type": "SO:0001017",
         "vrs_ref_allele_seq": "P",
         "gene_context": vhl_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope='module')
+def amino_acid_insertion(egfr_context):
+    """Create test fixture for NP amino acid insertion."""
+    params = {
+        "id": 'normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu',
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
+        "variation": {
+            "_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
+            "location": {
+                "_id": "ga4gh:VSL.DJIP1jlxQIro1oC5re8txtH7N8vAvM7A",
+                "interval": {
+                    "end": {"value": 770, "type": "Number"},
+                    "start": {"value": 770, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "GL",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001605",
+        "gene_context": egfr_context
     }
     return VariationDescriptor(**params)
 
