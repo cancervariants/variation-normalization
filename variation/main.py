@@ -165,6 +165,7 @@ q_description = 'gnomad VCF to normalize to protein variation.'
          summary=g_to_p_summary,
          response_description=g_to_p_response_description,
          description=g_to_p_description,
+         response_model=NormalizeService,
          response_model_exclude_none=True
          )
 def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
@@ -174,5 +175,14 @@ def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
     :return: NormalizeService for variation
     """
     q = html.unescape(q.strip())
-    # TODO
-    return query_handler.gnomad_vcf_to_protein(q)
+    resp, warnings = query_handler.gnomad_vcf_to_protein(q)
+
+    return NormalizeService(
+        variation_query=q,
+        variation_descriptor=resp,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
+    )

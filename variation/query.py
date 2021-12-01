@@ -1,5 +1,7 @@
 """This module provides methods for handling queries."""
 from typing import Tuple, Optional, List, Union, Dict
+from urllib.parse import quote
+
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
@@ -7,7 +9,8 @@ from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
-from variation.schemas.token_response_schema import Nomenclature, Token
+from variation.schemas.token_response_schema import Nomenclature, Token, \
+    ReferenceSequence
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.to_vrs import ToVRS
 from variation.vrs import VRS
@@ -226,12 +229,16 @@ class QueryHandler:
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
+        classification_token.reference_sequence = ReferenceSequence.PROTEIN
+        classification_token.molecule_context = "protein"
         if classification_token.alt_type in ["substitution",
                                              "silent_mutation"]:
             if classification_token.alt_type == "substitution":
                 alt_nuc = classification_token.new_nucleotide
+                classification_token.so_id = 'SO:0001606'
             else:
                 alt_nuc = classification_token.ref_nucleotide
+                classification_token.so_id = 'SO:0001017'
             if reading_frame == 1:
                 # first pos
                 ref = self.seqrepo_access.get_sequence(
@@ -248,10 +255,10 @@ class QueryHandler:
                     alt_ac, g_start_pos - 2, g_end_pos)
                 alt = ref[0] + ref[1] + alt_nuc
         elif classification_token.alt_type == "deletion":
-            # TODO
+            classification_token.so_id = 'SO:0001604'
             pass
         elif classification_token.alt_type == "insertion":
-            # TODO
+            classification_token.so_id = 'SO:0001605'
             pass
 
         if alt is None:
@@ -260,18 +267,20 @@ class QueryHandler:
             alt = self.codon_table.dna_to_rna(alt)
             if strand == "-":
                 alt = alt[::-1]
+            # TODO: Add support where multiple alterations
             return self.codon_table.table[alt]
 
-    def gnomad_vcf_to_protein(self, q: str) -> Optional[Dict]:
+    def gnomad_vcf_to_protein(
+            self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
-        :return: protein consequence
+        :return: Variation Descriptor for protein variation, list of warnings
         """
         warnings = list()
         validations = self._get_gnomad_vcf_validations(q, warnings)
         if not validations:
-            return None
+            return None, warnings
         if len(validations.valid_results) > 0:
             valid_result = self.normalize_handler.get_valid_result(
                 q, validations, warnings)
@@ -299,7 +308,7 @@ class QueryHandler:
                 if not mane_tx_genomic_data:
                     warnings.append("Unable to get mane transcript and "
                                     "genomic data")
-                    return None
+                    return None, warnings
 
                 coding_start_site = mane_tx_genomic_data['coding_start_site']
                 mane_c_pos_change = \
@@ -315,19 +324,26 @@ class QueryHandler:
                     reading_frame, mane_c_ac, mane_c_pos_change,
                     coding_start_site, warnings)
                 if mane_c_pos_change is None:
-                    return None
+                    return None, warnings
 
                 mane_p = self.to_vrs_handler.mane_transcript._get_mane_p(
                     current_mane_data, mane_c_pos_change)
                 p_ac = mane_p["refseq"]
+                valid_result.identifier = p_ac
                 classification_token = valid_result.classification_token
                 aa_alt = self._get_gnomad_vcf_protein_alt(
                     classification_token, reading_frame,
                     mane_tx_genomic_data["strand"], alt_ac,
                     g_start_pos, g_end_pos)
                 if aa_alt:
-                    return self.vrs.to_vrs_allele(
+                    variation = self.vrs.to_vrs_allele(
                         p_ac, mane_p["pos"][0], mane_p["pos"][1], 'p',
                         classification_token.alt_type, [], alt=aa_alt
                     )
-        return None
+                    if variation:
+                        _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"  # noqa: E501
+                        return self.normalize_handler.get_variation_descriptor(
+                            variation, valid_result, _id, warnings,
+                            gene=current_mane_data["HGNC_ID"]
+                        )
+        return None, warnings
