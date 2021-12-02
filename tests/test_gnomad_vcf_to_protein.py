@@ -31,9 +31,12 @@ def test_insertion(test_query_handler, amino_acid_insertion):
     assert w == []
 
 
-def test_deletion(test_query_handler):
+def test_deletion(test_query_handler, amino_acid_deletion_np_range):
     """Test that deletion queries return correct response"""
-    pass
+    resp, w = test_query_handler.gnomad_vcf_to_protein(
+        "17-39723966-TTGAGGGAAAACACAT-T")
+    assertion_checks(resp, amino_acid_deletion_np_range, ignore_id=True)
+    assert w == []
 
 
 def test_invalid(test_query_handler):
@@ -44,4 +47,9 @@ def test_invalid(test_query_handler):
 
     resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation.type == "Text"
-    assert w == ["Unable to get protein variation for 7-140753336-T-G"]
+    assert w == ["Unable to get transcripts given NC_000007.13 and "
+                 "140753336, 140753336"]
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
+    assert resp.variation.type == "Text"
+    assert w == ["Unable to get protein variation for 20-2-TC-TG"]
