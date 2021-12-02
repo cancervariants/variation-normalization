@@ -196,7 +196,17 @@ class QueryHandler:
             self, reading_frame: int, mane_c_ac: str,
             mane_c_pos_change: Tuple[int, int], coding_start_site: int,
             warnings: List) -> Optional[Tuple[int, int]]:
-        """Return updated mane c position change for a gnomad vcf variation"""
+        """Return updated mane c position change for a gnomad vcf variation
+        depending on reading frame base
+
+        :param int reading_frame: reading frame base
+        :param str mane_c_ac: Mane transcript accession
+        :param Tuple[int, int] mane_c_pos_change: Mane transcript position
+            change
+        :param int coding_start_site: Coding start site
+        :param List warnings: List of warnings
+        :return: Mane c pos start and end
+        """
         if reading_frame == 1:
             # first pos
             mane_c_pos_change = \
@@ -205,7 +215,6 @@ class QueryHandler:
             # middle pos
             mane_c_pos_change = \
                 mane_c_pos_change[0] - 1, mane_c_pos_change[0] + 1
-            pass
         elif reading_frame == 3:
             # last pos
             mane_c_pos_change = \
