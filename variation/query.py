@@ -247,9 +247,14 @@ class QueryHandler:
                 classification_token.so_id = SequenceOntology.SILENT_MUTATION
             if reading_frame == 1:
                 # first pos
-                ref = self.seqrepo_access.get_sequence(
-                    alt_ac, g_start_pos, g_end_pos + 2)
-                alt = alt_nuc + ref[1] + ref[2]
+                if strand == "-":
+                    ref = self.seqrepo_access.get_sequence(
+                        alt_ac, g_start_pos - 2, g_end_pos)
+                    alt = alt_nuc + ref[1] + ref[0]
+                else:
+                    ref = self.seqrepo_access.get_sequence(
+                        alt_ac, g_start_pos, g_end_pos + 2)
+                    alt = alt_nuc + ref[1] + ref[2]
             elif reading_frame == 2:
                 # middle pos
                 ref = self.seqrepo_access.get_sequence(
@@ -257,26 +262,35 @@ class QueryHandler:
                 alt = ref[0] + alt_nuc + ref[2]
             elif reading_frame == 3:
                 # last pos
-                ref = self.seqrepo_access.get_sequence(
-                    alt_ac, g_start_pos - 2, g_end_pos)
-                alt = ref[0] + ref[1] + alt_nuc
-            if alt:
-                # TODO: Check if we only do this for substitutions
+                if strand == "-":
+                    ref = self.seqrepo_access.get_sequence(
+                        alt_ac, g_start_pos, g_end_pos + 2)
+                    alt = ref[2] + ref[1] + alt_nuc
+                else:
+                    ref = self.seqrepo_access.get_sequence(
+                        alt_ac, g_start_pos - 2, g_end_pos)
+                    alt = ref[0] + ref[1] + alt_nuc
+
+            if alt and strand == "-":
                 alt = self.codon_table.dna_to_rna(alt)
+            else:
+                alt = alt.replace("T", "U")
         elif classification_token.alt_type == "deletion":
+            # There is no alt for a deletion
             classification_token.so_id = SequenceOntology.AMINO_ACID_DELETION
         elif classification_token.alt_type == "insertion":
             classification_token.so_id = SequenceOntology.AMINO_ACID_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
+            if strand == "-":
+                alt = alt[::-1]
+        else:
+            return None
 
         if alt is None:
             return None
         else:
             if len(alt) % 3 != 0:
                 return None
-
-            if strand == "-":
-                alt = alt[::-1]
 
             aa_alt = ""
             for i in range(int(len(alt) / 3)):
@@ -294,11 +308,11 @@ class QueryHandler:
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         valid_list = list()
-        invalid_list = list()
         validations = self._get_gnomad_vcf_validations(q, warnings)
         if not validations:
             return self.normalize_handler.text_variation_resp(q, _id, warnings)
 
+        all_warnings = list()
         for valid_result in validations.valid_results:
             warnings = list()
             # all gnomad vcf will be alleles with a literal seq expression
@@ -312,16 +326,11 @@ class QueryHandler:
             g_end_pos = variation["location"]["interval"]["end"]["value"]
             transcripts = self.uta.get_transcripts_from_genomic_pos(
                 alt_ac, g_start_pos)
-            if not transcripts:
-                warnings.append(f"Unable to get transcripts given {alt_ac} "
-                                f"and {g_start_pos}, {g_end_pos}")
-                invalid_list.append(
-                    self.normalize_handler.text_variation_resp(
-                        q, _id, warnings)
-                )
-                continue
-            mane_data = self.to_vrs_handler.mane_transcript_mappings.get_mane_from_transcripts(transcripts)  # noqa: E501
 
+            if not transcripts:
+                all_warnings.append(f"Unable to get transcripts given {alt_ac}"
+                                    f" and {g_start_pos}")
+            mane_data = self.to_vrs_handler.mane_transcript_mappings.get_mane_from_transcripts(transcripts)  # noqa: E501
             mane_data_len = len(mane_data)
             for i in range(mane_data_len):
                 index = mane_data_len - i - 1
@@ -331,13 +340,8 @@ class QueryHandler:
                     mane_c_ac, alt_ac, g_start_pos, g_end_pos
                 )
                 if not mane_tx_genomic_data:
-                    warnings.append("Unable to get mane transcript and "
-                                    "genomic data")
-                    invalid_list.append(
-                        self.normalize_handler.text_variation_resp(
-                            q, _id, warnings)
-                    )
-                    continue
+                    all_warnings.append("Unable to get mane transcript and "
+                                        "genomic data")
 
                 coding_start_site = mane_tx_genomic_data["coding_start_site"]
                 mane_c_pos_change = \
@@ -347,7 +351,6 @@ class QueryHandler:
                 if mane_c_pos_change[0] > mane_c_pos_change[1]:
                     mane_c_pos_change = (mane_c_pos_change[1],
                                          mane_c_pos_change[0])
-
                 reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(mane_c_pos_change[0])  # noqa: E501
                 if classification_token.alt_type in ["substitution",
                                                      "silent_mutation"]:
@@ -355,14 +358,14 @@ class QueryHandler:
                         reading_frame, mane_c_ac, mane_c_pos_change,
                         coding_start_site, warnings)
                     if mane_c_pos_change is None:
-                        invalid_list.append(
-                            self.normalize_handler.text_variation_resp(
-                                q, _id, warnings)
-                        )
+                        if len(warnings) > 0:
+                            all_warnings.append(warnings[0])
                         continue
 
                 mane_p = self.to_vrs_handler.mane_transcript._get_mane_p(
                     current_mane_data, mane_c_pos_change)
+                if mane_p["pos"][0] > mane_p["pos"][1]:
+                    mane_p["pos"] = (mane_p["pos"][1], mane_p["pos"][0])
                 p_ac = mane_p["refseq"]
                 valid_result.identifier = p_ac
                 aa_alt = self._get_gnomad_vcf_protein_alt(
@@ -383,8 +386,9 @@ class QueryHandler:
         if valid_list:
             return valid_list[0]
         else:
-            if invalid_list:
-                return invalid_list[0]
+            if all_warnings:
+                return self.normalize_handler.text_variation_resp(
+                    q, _id, all_warnings)
             else:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
