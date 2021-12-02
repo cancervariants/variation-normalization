@@ -27,86 +27,6 @@ def test_normalize():
 
 
 @pytest.fixture(scope='module')
-def erbb2_context():
-    """Create test fixture for ERBB2 Gene Context."""
-    return {
-        "id": "normalize.gene:ERBB2",
-        "type": "GeneDescriptor",
-        "label": "ERBB2",
-        "gene_id": "hgnc:3430",
-        "xrefs": [
-            "ncbigene:2064",
-            "ensembl:ENSG00000141736"
-        ],
-        "alternate_labels": [
-            "NGL",
-            "CD340",
-            "HER2",
-            "NEU",
-            "TKR1",
-            "HER-2",
-            "HER-2/neu",
-            "VSCN2",
-            "MLN 19"
-        ],
-        "extensions": [
-            {
-                "type": "Extension",
-                "name": "symbol_status",
-                "value": "approved"
-            },
-            {
-                "name": "approved_name",
-                "value": "erb-b2 receptor tyrosine kinase 2",
-                "type": "Extension"
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "ucsc:uc002hso.4",
-                    "ena.embl:X03363",
-                    "ccds:CCDS77017",
-                    "vega:OTTHUMG00000179300",
-                    "ccds:CCDS77016",
-                    "uniprot:P04626",
-                    "refseq:NM_004448",
-                    "ccds:CCDS74052",
-                    "hcdmdb:CD340",
-                    "omim:164870",
-                    "ccds:CCDS32642",
-                    "ccds:CCDS45667",
-                    "cosmic:ERBB2",
-                    "iuphar:2019"
-                ]
-            },
-            {
-                "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "17",
-                    "interval": {
-                        "end": "q12",
-                        "start": "q12",
-                        "type": "CytobandInterval"
-                    }
-                }
-            },
-            {
-                "name": "previous_symbols",
-                "value": [
-                    "NGL"
-                ],
-                "type": "Extension"
-            }
-        ]
-    }
-
-
-@pytest.fixture(scope='module')
 def limk2_gene_context():
     """Create LIMK2 gene context test fixture."""
     return {
@@ -506,41 +426,6 @@ def amino_acid_delins(egfr_context):
         "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "LREAT",
         "gene_context": egfr_context
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope='module')
-def amino_acid_deletion_np_range(erbb2_context):
-    """Create test fixture for amino acid deletion using NP accession and
-    range for deletion.
-    """
-    params = {
-        "id": 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del',
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
-        "variation": {
-            "_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
-            "location": {
-                "_id": "ga4gh:VSL.vhpNJ0vsJx3WbnCfwJzxFU-wWyZwvPdL",
-                "interval": {
-                    "end": {"value": 759, "type": "Number"},
-                    "start": {"value": 754, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "protein",
-        "structural_type": "SO:0001604",
-        "vrs_ref_allele_seq": "LRENT",
-        "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
 
@@ -1166,9 +1051,13 @@ def test_amino_acid_deletion(test_normalize, amino_acid_deletion_np_range):
 
     resp = test_normalize.normalize('ERBB2 p.Leu755_Thr759del')
     assert resp.id == 'normalize.variation:ERBB2%20p.Leu755_Thr759del'
+    resp.id = 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del'
+    assertion_checks(resp, amino_acid_deletion_np_range)
 
     resp = test_normalize.normalize('ERBB2 Leu755_Thr759del')
     assert resp.id == 'normalize.variation:ERBB2%20Leu755_Thr759del'
+    resp.id = 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del'
+    assertion_checks(resp, amino_acid_deletion_np_range)
 
 
 def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
