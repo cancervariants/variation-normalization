@@ -30,6 +30,7 @@ from typing import List
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs import VRS
 
 
 class Validate:
@@ -41,7 +42,7 @@ class Validate:
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
                  amino_acid_cache: AminoAcidCache,
-                 gene_normalizer: GeneQueryHandler) -> None:
+                 gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the validate class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -53,11 +54,12 @@ class Validate:
         :param UTA uta: Access to UTA queries
         :param Translator tlr: Translator class
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
+        :param VRS vrs: Class for creating VRS objects
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr, gene_normalizer
+            mane_transcript, uta, dp, tlr, gene_normalizer, vrs
         ]
         amino_acid_params = params[:]
         amino_acid_params.append(amino_acid_cache)
