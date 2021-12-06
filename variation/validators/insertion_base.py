@@ -57,7 +57,7 @@ class InsertionBase(Validator):
                     cds_start = None
 
                 if not errors:
-                    allele = self.to_vrs_allele(
+                    allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_flank, s.end_pos_flank,
                         s.reference_sequence, s.alt_type, errors,
                         cds_start=cds_start, alt=s.inserted_sequence

@@ -62,7 +62,7 @@ class CodingDNADelIns(DelInsBase):
                 cds_start_end = self.uta.get_cds_start_end(t)
                 if cds_start_end is not None:
                     cds_start = cds_start_end[0]
-                    allele = self.to_vrs_allele(
+                    allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_del, s.end_pos_del,
                         s.reference_sequence, s.alt_type,
                         errors, cds_start=cds_start, alt=s.inserted_sequence1

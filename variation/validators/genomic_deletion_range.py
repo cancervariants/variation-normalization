@@ -18,6 +18,8 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
+from variation.vrs import VRS
+
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 
@@ -30,7 +32,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler):
+                 gene_normalizer: GeneQueryHandler, vrs: VRS):
         """Initialize the Genomic Deletion Range validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -41,10 +43,11 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             information
         :param UTA uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
+        :param VRS vrs: Class for creating VRS objects
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
+            uta, dp, tlr, gene_normalizer, vrs
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
@@ -132,7 +135,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             if grch38:
                 t = grch38['ac']
 
-            allele = self.to_vrs_allele_ranges(
+            allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
 
             if start is not None and end is not None:
@@ -196,7 +199,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             t, [start1, start2, end1, end2], errors, gene=gene)
 
         if not errors and start1 and start2 and end1 and end2:
-            ival = self._get_ival_certain_range(
+            ival = self.vrs.get_ival_certain_range(
                 start1, start2, end1, end2
             )
 
