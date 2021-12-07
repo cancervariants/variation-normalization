@@ -2851,6 +2851,21 @@ def test_genomic_del1(test_normalize, genomic_del1_default, genomic_del1_cnv,
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del1_free_text_default, ignore_id=True)
 
+    # gnomad vcf
+    q = "3-10149810-CT-C"  # 38
+    resp = test_normalize.normalize(q)
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "cnv")
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
+    q = "3-10191494-CT-C"  # 37
+    resp = test_normalize.normalize(q)
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
+    resp = test_normalize.normalize(q, "repeated_seq_expr")
+    assertion_checks(resp, genomic_del1_default, ignore_id=True)
+
     # Invalid
     invalid_queries = [
         "NC_000003.11:g.198022431del",
@@ -2906,6 +2921,15 @@ def test_genomic_del2(test_normalize, genomic_del2_default, genomic_del2_cnv,
 
         resp = test_normalize.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del2_free_text_default, ignore_id=True)
+
+    # gnomad vcf
+    q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
+    resp = test_normalize.normalize(q, "default")
+    assertion_checks(resp, genomic_del2_default, ignore_id=True)
+
+    q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
+    resp = test_normalize.normalize(q)
+    assertion_checks(resp, genomic_del2_default, ignore_id=True)
 
     # Invalid
     invalid_queries = [
@@ -3168,26 +3192,19 @@ def test_genomic_del6(test_normalize, genomic_del6_default,
 
 def test_parameters(test_normalize):
     """Check that valid and invalid parameters work as intended."""
+    resp = test_normalize.normalize("7-140453136-A-T")
+    assert resp
+    assert test_normalize.warnings == []
+
     q = "NC_000003.12:g.49531262dup"
-    warnings = ["hgvs_dup_del_mode must be one of: ['default', 'cnv', "
-                "'repeated_seq_expr', 'literal_seq_expr']"]
-    resp = test_normalize.normalize(q, "copy_number")
-    assert resp is None
-    assert test_normalize.warnings == warnings
-
-    resp = test_normalize.normalize(q, "repeated_seq_exprs")
-    assert resp is None
-    assert test_normalize.warnings == warnings
-
-    warnings = ["hgvs_dup_del_mode cannot be None"]
     resp = test_normalize.normalize(q, '')
-    assert resp is None
-    assert test_normalize.warnings == warnings
+    assert resp
+    assert test_normalize.warnings == []
 
     resp = test_normalize.normalize(q, None)
-    assert resp is None
-    assert test_normalize.warnings == warnings
+    assert resp
+    assert test_normalize.warnings == []
 
     resp = test_normalize.normalize(q, " CnV ")
-    assert resp is not None
+    assert resp
     assert test_normalize.warnings == []

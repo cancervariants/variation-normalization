@@ -1,0 +1,510 @@
+"""Module for testing gnomad_vcf_to_protein works correctly"""
+import pytest
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
+from variation.query import QueryHandler
+from tests.conftest import assertion_checks
+
+
+@pytest.fixture(scope="module")
+def test_query_handler():
+    """Create test fixture for query handler"""
+    return QueryHandler()
+
+
+@pytest.fixture(scope="module")
+def mmel1_gene_context():
+    """Create MMEL1 gene context test fixture"""
+    return {
+        "id": "normalize.gene:HGNC%3A14668",
+        "type": "GeneDescriptor",
+        "label": "MMEL1",
+        "xrefs": [
+            "ensembl:ENSG00000142606",
+            "ncbigene:79258"
+        ],
+        "alternate_labels": [
+            "SEP",
+            "NL1",
+            "MMEL2",
+            "MMEL1",
+            "MELL1",
+            "NL2",
+            "NEPII",
+            "NEP2"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "membrane metalloendopeptidase like 1"
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "species_id": "taxonomy:9606",
+                    "interval": {
+                        "type": "CytobandInterval",
+                        "start": "p36.32",
+                        "end": "p36.32"
+                    },
+                    "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
+                    "type": "ChromosomeLocation",
+                    "chr": "1"
+                }
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "uniprot:Q495T6",
+                    "ccds:CCDS30569",
+                    "ucsc:uc001ajy.3",
+                    "merops:M13.008",
+                    "pubmed:11560781",
+                    "pubmed:18539150",
+                    "vega:OTTHUMG00000000846",
+                    "orphanet:239881",
+                    "refseq:NM_033467",
+                    "ena.embl:AF336981",
+                    "omim:618104"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "previous_symbols",
+                "value": [
+                    "MMEL2",
+                    "MELL1",
+                    "MMEL1"
+                ]
+            }
+        ],
+        "gene_id": "hgnc:14668"
+    }
+
+
+@pytest.fixture(scope="module")
+def cdk11a_gene_context():
+    """Create test fixture for CDK11A"""
+    return {
+        "id": "normalize.gene:HGNC%3A1730",
+        "type": "GeneDescriptor",
+        "label": "CDK11A",
+        "xrefs": [
+            "ensembl:ENSG00000008128",
+            "ncbigene:728642"
+        ],
+        "alternate_labels": [
+            "LOC100294398",
+            "LOC100134433",
+            "CDC2L3",
+            "CDK11-p46",
+            "CDC2L2",
+            "CDK11-p58",
+            "CDK11-p110",
+            "p58GTA",
+            "PITSLRE"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "cyclin dependent kinase 11A"
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "species_id": "taxonomy:9606",
+                    "interval": {
+                        "type": "CytobandInterval",
+                        "start": "p36.33",
+                        "end": "p36.33"
+                    },
+                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                    "type": "ChromosomeLocation",
+                    "chr": "1"
+                }
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "pubmed:9750192",
+                    "pubmed:19884882",
+                    "vega:OTTHUMG00000000703",
+                    "ccds:CCDS44043",
+                    "ccds:CCDS81254",
+                    "ccds:CCDS44042",
+                    "iuphar:1963",
+                    "refseq:NM_024011",
+                    "ucsc:uc009vks.4",
+                    "ena.embl:AF067522",
+                    "omim:116951",
+                    "pubmed:7920654",
+                    "uniprot:Q9UQ88",
+                    "ccds:CCDS81253"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "previous_symbols",
+                "value": [
+                    "LOC100294398",
+                    "LOC100134433",
+                    "CDC2L2",
+                    "CDC2L3"
+                ]
+            }
+        ],
+        "gene_id": "hgnc:1730"
+    }
+
+
+@pytest.fixture(scope="module")
+def lrp8_gene_context():
+    """Create LRP8 gene context test fixture"""
+    return {
+        "id": "normalize.gene:HGNC%3A6700",
+        "type": "GeneDescriptor",
+        "label": "LRP8",
+        "xrefs": [
+            "ensembl:ENSG00000157193",
+            "ncbigene:7804"
+        ],
+        "alternate_labels": [
+            "APOER2",
+            "LRP-8",
+            "HSZ75190",
+            "LRP8",
+            "MIPS",
+            "MCI1"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "LDL receptor related protein 8"
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "species_id": "taxonomy:9606",
+                    "interval": {
+                        "type": "CytobandInterval",
+                        "start": "p32.3",
+                        "end": "p32.3"
+                    },
+                    "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
+                    "type": "ChromosomeLocation",
+                    "chr": "1"
+                }
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "ucsc:uc001cvi.4",
+                    "ccds:CCDS30720",
+                    "ccds:CCDS579",
+                    "uniprot:Q14114",
+                    "ccds:CCDS580",
+                    "vega:OTTHUMG00000008924",
+                    "pubmed:9079678",
+                    "pubmed:8626535",
+                    "ccds:CCDS578",
+                    "refseq:NM_004631",
+                    "ena.embl:D50678",
+                    "omim:602600"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "previous_symbols",
+                "value": [
+                    "HSZ75190",
+                    "MIPS",
+                    "LRP8"
+                ]
+            }
+        ],
+        "gene_id": "hgnc:6700"
+    }
+
+
+@pytest.fixture(scope="module")
+def atad3a_gene_context():
+    """Create ATAD3A gene context test fixture"""
+    return {
+        "id": "normalize.gene:HGNC%3A25567",
+        "type": "GeneDescriptor",
+        "label": "ATAD3A",
+        "xrefs": [
+            "ensembl:ENSG00000197785",
+            "ncbigene:55210"
+        ],
+        "alternate_labels": [
+            "HAYOS",
+            "FLJ10709",
+            "PHRINL"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "ATPase family AAA domain containing 3A"
+            },
+            {
+                "type": "Extension",
+                "name": "chromosome_location",
+                "value": {
+                    "species_id": "taxonomy:9606",
+                    "interval": {
+                        "type": "CytobandInterval",
+                        "start": "p36.33",
+                        "end": "p36.33"
+                    },
+                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                    "type": "ChromosomeLocation",
+                    "chr": "1"
+                }
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "ccds:CCDS53259",
+                    "ucsc:uc001aga.3",
+                    "ena.embl:AK025865",
+                    "vega:OTTHUMG00000000575",
+                    "ccds:CCDS31",
+                    "refseq:NM_018188",
+                    "omim:612316",
+                    "ccds:CCDS53260",
+                    "orphanet:469968",
+                    "pubmed:28158749",
+                    "uniprot:Q9NVI7"
+                ]
+            }
+        ],
+        "gene_id": "hgnc:25567"
+    }
+
+
+@pytest.fixture(scope="module")
+def mmel1_l30m(mmel1_gene_context):
+    """Create test fixture for MMEL1 L30M"""
+    params = {
+        "id": "normalize.variation:1-2629397-G-T",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.9TFIzZ8M_qfiAfZTO1QvZ6toS4I_j4Z9",
+        "variation": {
+            "_id": "ga4gh:VA.9TFIzZ8M_qfiAfZTO1QvZ6toS4I_j4Z9",
+            "location": {
+                "_id": "ga4gh:VSL.0h5OViQETz4k5QePhKFiQJE038yy4jpS",
+                "interval": {
+                    "end": {"value": 30, "type": "Number"},
+                    "start": {"value": 29, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.iQ8F_pnsiQOLohiV2qh3OWRZiftUt8jZ",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "M",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "L",
+        "gene_context": mmel1_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def cdk11a_e314del(cdk11a_gene_context):
+    """Create test fixture for CDK11A Glu314del"""
+    params = {
+        "id": "normalize.variation:1-1708855-TTCC-T",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.-MLx0vGh3pjXQPjJ3cz-cmxwanJL275q",
+        "variation": {
+            "_id": "ga4gh:VA.-MLx0vGh3pjXQPjJ3cz-cmxwanJL275q",
+            "location": {
+                "_id": "ga4gh:VSL.tnCPFL4wpErBLA6rnIcFrRUGpaO1639_",
+                "interval": {
+                    "end": {"value": 321, "type": "Number"},
+                    "start": {"value": 308, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.N728VSRRMHJ1SrhJgKqJOCaa3l5Z4sqm",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001604",
+        "vrs_ref_allele_seq": "EEEEEEEEEEEEE",
+        "gene_context": cdk11a_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def amino_acid_insertion2(lrp8_gene_context):
+    """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
+    params = {
+        "id": "normalize.variation:1-53327836-A-ACGC",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.O1MlG0mAJcxpAfd-dRZ_ZXhMdbm3OHHx",
+        "variation": {
+            "_id": "ga4gh:VA.O1MlG0mAJcxpAfd-dRZ_ZXhMdbm3OHHx",
+            "location": {
+                "_id": "ga4gh:VSL.5jPV69Go1DH3XWb1bbRpoiz-GeEtIxYv",
+                "interval": {
+                    "end": {"value": 25, "type": "Number"},
+                    "start": {"value": 25, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.qgIh8--4F6IpxRwX_lVtD2BhepH5B5Ef",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "R",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001605",
+        "gene_context": lrp8_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def atad3a_i7v(atad3a_gene_context):
+    """Create test fixture for ATAD3A Ile7Val"""
+    params = {
+        "id": "normalize.variation:1-1512287-A-G",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
+        "variation": {
+            "_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
+            "location": {
+                "_id": "ga4gh:VSL.h7pLvn-VyN4H7GT0vBj6XD5PENOocxOR",
+                "interval": {
+                    "end": {"value": 7, "type": "Number"},
+                    "start": {"value": 6, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.MHPOY_7fv8V9SktyvaTxulVFSK6XCxM8",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "V",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "I",
+        "gene_context": atad3a_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+def test_substitution(test_query_handler, braf_v600e, mmel1_l30m, atad3a_i7v):
+    """Test that substitution queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-A-T")
+    assertion_checks(resp, braf_v600e, ignore_id=True)
+    assert w == []
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("1-2629397-G-T")
+    assertion_checks(resp, mmel1_l30m)
+    assert w == []
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("1-1512287-A-G")
+    assertion_checks(resp, atad3a_i7v)
+    assert w == []
+
+
+def test_silent_mutation(test_query_handler, vhl_silent):
+    """Test that silent queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein("3-10183714-C-C")
+    assertion_checks(resp, vhl_silent, ignore_id=True)
+    assert w == []
+
+
+def test_insertion(test_query_handler, amino_acid_insertion,
+                   amino_acid_insertion2):
+    """Test that insertion queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    assertion_checks(resp, amino_acid_insertion, ignore_id=True)
+    assert w == []
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
+    assertion_checks(resp, amino_acid_insertion2)
+    assert w == []
+
+
+def test_deletion(test_query_handler, amino_acid_deletion_np_range,
+                  cdk11a_e314del):
+    """Test that deletion queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein(
+        "17-39723966-TTGAGGGAAAACACAT-T")
+    assertion_checks(resp, amino_acid_deletion_np_range, ignore_id=True)
+    assert w == []
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
+    assertion_checks(resp, cdk11a_e314del)
+    assert w == []
+
+
+def test_invalid(test_query_handler):
+    """Test that invalid queries return correct response"""
+    resp, w = test_query_handler.gnomad_vcf_to_protein("BRAF V600E")
+    assert resp.variation.type == "Text"
+    assert w == ["BRAF V600E is not a supported gnomad vcf query"]
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
+    assert resp.variation.type == "Text"
+    assert w == [
+        "Unable to get transcripts given NC_000007.13 and 140753336",
+        "Unable to get transcripts given NC_000007.14 and 141053536"
+    ]
+
+    resp, w = test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
+    assert resp.variation.type == "Text"
+    assert w == ["Unable to get protein variation for 20-2-TC-TG"]

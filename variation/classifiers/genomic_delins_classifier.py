@@ -14,7 +14,7 @@ class GenomicDelInsClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['GenomicDelIns'],
+            ['Chromosome', 'GenomicDelIns'],
             ['GeneSymbol', 'AminoAcidSubstitution', 'GenomicDelIns'],
             ['GenomicDelIns', 'GeneSymbol'],
             ['GeneSymbol', 'GenomicDelIns'],

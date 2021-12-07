@@ -564,12 +564,13 @@ class UTA:
             SELECT alt_ac
             FROM {self.schema}.genomic
             WHERE alt_ac LIKE '{genomic_tx_data['alt_ac'].split('.')[0]}%'
-            ORDER BY alt_ac;
+            ORDER BY (CAST(SUBSTR(alt_ac, position('.' in alt_ac) + 1,
+            LENGTH(alt_ac)) AS INT)) DESC
             """
         )
         self.cursor.execute(query)
         nc_acs = self.cursor.fetchall()
-        genomic_tx_data['alt_ac'] = nc_acs[-1][0]
+        genomic_tx_data['alt_ac'] = nc_acs[0][0]
 
     def get_liftover(self, chromosome, pos) -> Optional[Tuple]:
         """Get new genome assembly data for a position on a chromosome.
@@ -628,6 +629,29 @@ class UTA:
         )
         self.cursor.execute(query)
         return self.cursor.fetchall()
+
+    def get_transcripts_from_genomic_pos(self, alt_ac: str,
+                                         g_pos: int) -> List[str]:
+        """Get transcripts associated to a genomic ac and position.
+
+        :param str alt_ac: Genomic accession
+        :param int g_pos: Genomic position
+        :return: RefSeq transcripts on c. coordinate
+        """
+        query = (
+            f"""
+            SELECT distinct tx_ac
+            FROM {self.schema}.tx_exon_aln_v
+            WHERE alt_ac = '{alt_ac}'
+            AND {g_pos} BETWEEN alt_start_i AND alt_end_i
+            AND tx_ac LIKE 'NM_%';
+            """
+        )
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        if not results:
+            return []
+        return [item for sublist in results for item in sublist]
 
 
 class ParseResult(urlparse.ParseResult):

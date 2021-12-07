@@ -16,7 +16,7 @@ import logging
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-
+from variation.vrs import VRS
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -30,7 +30,7 @@ class AminoAcidDelIns(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler,
+                 gene_normalizer: GeneQueryHandler, vrs: VRS,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
         """Initialize the validator.
@@ -43,11 +43,12 @@ class AminoAcidDelIns(Validator):
             information
         :param UTA uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
+        :param VRS vrs: Class for creating VRS objects
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
+            uta, dp, tlr, gene_normalizer, vrs
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
@@ -94,9 +95,9 @@ class AminoAcidDelIns(Validator):
             for t in transcripts:
                 errors = list()
                 t = self.get_accession(t, classification)
-                allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
-                                            s.reference_sequence, s.alt_type,
-                                            errors, alt=s.inserted_sequence)
+                allele = self.vrs.to_vrs_allele(
+                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
+                    s.alt_type, errors, alt=s.inserted_sequence)
 
                 if not errors:
                     # Check ref start/end protein matches expected

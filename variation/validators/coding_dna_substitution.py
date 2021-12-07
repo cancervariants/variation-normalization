@@ -66,11 +66,10 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                 if cds_start_end is not None:
                     cds_start = cds_start_end[0]
 
-                    allele = self.to_vrs_allele(t, s.position, s.position,
-                                                s.reference_sequence,
-                                                s.alt_type, errors,
-                                                cds_start=cds_start,
-                                                alt=s.new_nucleotide)
+                    allele = self.vrs.to_vrs_allele(
+                        t, s.position, s.position, s.reference_sequence,
+                        s.alt_type, errors, cds_start=cds_start,
+                        alt=s.new_nucleotide)
                 else:
                     allele = None
                     cds_start = 0

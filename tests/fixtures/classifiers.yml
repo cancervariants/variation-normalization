@@ -84,14 +84,20 @@ coding_dna_substitution:
 genomic_substitution:
   should_match:
     - query: V170D (g.509T>A)
-      confidence: ConfidenceRating.SUPERSET
+      confidence: ConfidenceRating.INTERSECTION
     - query:  NC_000017.10:g.292T>C
       confidence: ConfidenceRating.EXACT
     - query:  NC_000017.10:g.292TC
       confidence: ConfidenceRating.INTERSECTION
     - query: foo Y98H (g.292T>C)
-      confidence: ConfidenceRating.SUPERSET
+      confidence: ConfidenceRating.INTERSECTION
     - query: BRAF V600E g.23T>A
+      confidence: ConfidenceRating.EXACT
+    - query: 7-292-A-C
+      confidence: ConfidenceRating.EXACT
+    - query: chrX-292-A-T
+      confidence: ConfidenceRating.EXACT
+    - query: chromosome10-292-G-A
       confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: V170 (g.509F>A)
@@ -113,6 +119,8 @@ genomic_silent_mutation:
       confidence: ConfidenceRating.EXACT
     - query: foo VHL g.123=
       confidence: ConfidenceRating.SUPERSET
+    - query: chr11-252-t-t
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: GENOMIC_:g.123=
     - query: c.123=
@@ -161,7 +169,7 @@ genomic_delins:
     - query:  NC_000017.10:g.812_829delins908_925
       confidence: ConfidenceRating.INTERSECTION
     - query: foo g.131_234delinsA
-      confidence: ConfidenceRating.SUPERSET
+      confidence: ConfidenceRating.INTERSECTION
     - query: foo  NC_000017.10:g.1423_1424delinsGT
       confidence: ConfidenceRating.INTERSECTION
     - query: NC_000003.12:g.10149938delinsAA
@@ -228,6 +236,10 @@ genomic_deletion:
       confidence: ConfidenceRating.EXACT
     - query: NC_000006.11:g.152419920_152419921delinsAG
       confidence: ConfidenceRating.INTERSECTION
+    - query: Y-1313-ATTGAC-a
+      confidence: ConfidenceRating.EXACT
+    - query: chr1-2-ca-C
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG
@@ -272,6 +284,10 @@ genomic_insertion:
       confidence: ConfidenceRating.EXACT
     - query: NC_000023.10:g.32867861_32867862insT foo
       confidence: ConfidenceRating.INTERSECTION
+    - query: chr17-131543-G-GA
+      confidence: ConfidenceRating.EXACT
+    - query: 20-14223252-T-TATGCATG
+      confidence: ConfidenceRating.EXACT
   should_not_match:
     - query: GENE 32867861_32867862insT
     - query: accession:g.32867861_32867862insT

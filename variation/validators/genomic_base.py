@@ -29,10 +29,19 @@ class GenomicBase:
         if hgvs:
             nc_accessions = [hgvs[0].split(':')[0]]
         else:
-            gene_tokens = [t for t in classification.all_tokens
-                           if t.token_type == 'GeneSymbol']
-            if gene_tokens and len(gene_tokens) == 1:
-                nc_accessions = self.uta.get_ac_from_gene(gene_tokens[0].token)
+            chromosome = [t.token for t in classification.all_tokens if
+                          t.token_type in ['Chromosome']]
+            if chromosome:
+                chromosome = chromosome[0]
+                for assesmbly in ["GRCh37", "GRCh38"]:
+                    ac = self.get_nc_accession(f"{assesmbly}:{chromosome}")
+                    if ac:
+                        nc_accessions.append(ac)
+            else:
+                gene_tokens = [t.token for t in classification.all_tokens
+                               if t.token_type == 'GeneSymbol']
+                if gene_tokens and len(gene_tokens) == 1:
+                    nc_accessions = self.uta.get_ac_from_gene(gene_tokens[0])
         return nc_accessions
 
     def get_nc_accession(self, identifier):
