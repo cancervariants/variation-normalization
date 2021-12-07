@@ -1,7 +1,10 @@
-"""Module for to VRS translation."""
+"""Module for toVRS endpoint."""
 from typing import Tuple, Optional, List, Union
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
     VariationSet, Text
+
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
@@ -28,7 +31,8 @@ class ToVRS:
                  uta: UTA, mane_transcript_mappings: MANETranscriptMappings,
                  mane_transcript: MANETranscript, validator: Validate,
                  translator: Translate,
-                 gene_normalizer: GeneQueryHandler) -> None:
+                 gene_normalizer: GeneQueryHandler,
+                 hgvs_dup_del_mode: HGVSDupDelMode) -> None:
         """Initialize the ToVRS class.
 
         :param Tokenize tokenizer: Tokenizer class for tokenizing
@@ -45,6 +49,8 @@ class ToVRS:
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
         :param GeneQueryHandler gene_normalizer: Gene normalizer access
+        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
+            HGVS dup/del expressions
         """
         self.tokenizer = tokenizer
         self.classifier = classifier
@@ -58,10 +64,11 @@ class ToVRS:
         self.validator = validator
         self.translator = translator
         self.gene_normalizer = gene_normalizer
+        self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     def get_validations(
             self, q: str, normalize_endpoint: bool = False,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
@@ -78,6 +85,25 @@ class ToVRS:
         if q is None:
             return None, ["No variation entered"]
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
+
+        # gnomad vcf should always be a literal seq expression (allele)
+        nomenclature = {t.nomenclature for t in tokens}
+        if Nomenclature.GNOMAD_VCF in nomenclature:
+            hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
+        else:
+            if normalize_endpoint:
+                if hgvs_dup_del_mode:
+                    hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
+                    if not self.hgvs_dup_del_mode.is_valid_mode(hgvs_dup_del_mode):  # noqa: E501
+                        warnings.append(
+                            f"hgvs_dup_del_mode must be one of: "
+                            f"{self.hgvs_dup_del_mode.valid_modes}")
+                        return None, warnings
+                else:
+                    hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+            else:
+                hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
             classifications, normalize_endpoint, warnings,

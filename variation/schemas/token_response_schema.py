@@ -22,6 +22,32 @@ class TokenType(str, Enum):
     GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
 
 
+class Nomenclature(str, Enum):
+    """Define nomenclatures that are supported"""
+
+    FREE_TEXT = "free_text"
+    HGVS = "hgvs"
+    GNOMAD_VCF = "gnomad_vcf"
+
+
+class SequenceOntology(str, Enum):
+    """Define SequenceOntology codes"""
+
+    POLYPEPTIDE_TRUNCATION = "SO:0001617"
+    AMINO_ACID_SUBSTITUTION = "SO:0001606"
+    SILENT_MUTATION = "SO:0001017"
+    SNV = "SO:0001483"
+    NO_SEQUENCE_ALTERATION = "SO:0002073"
+    DELINS = "SO:1000032"
+    AMINO_ACID_INSERTION = "SO:0001605"
+    INSERTION = "SO:0000667"
+    AMINO_ACID_DELETION = "SO:0001604"
+    DELETION = "SO:0000159"
+    COPY_NUMBER_LOSS = "SO:0001743"
+    DUPLICATION = "SO:1000035"
+    COPY_NUMBER_GAIN = "SO:0001742"
+
+
 class Token(BaseModel):
     """A string from a given query."""
 
@@ -30,6 +56,7 @@ class Token(BaseModel):
     match_type: TokenMatchType
     input_string: str
     object_type = 'Token'
+    nomenclature: Optional[Nomenclature]
 
     class Config:
         """Configure model."""
@@ -47,7 +74,8 @@ class Token(BaseModel):
                 "token_type": "Unknown",
                 "match_type": 5,
                 "input_string": "foo",
-                "object_type": "Token"
+                "object_type": "Token",
+                "nomenclature": None
             }
 
 
@@ -137,7 +165,7 @@ class PolypeptideSequenceVariation(Token):
     position: int
     token_type: str
     reference_sequence = ReferenceSequence.PROTEIN
-    so_id: str
+    so_id: SequenceOntology
     molecule_context = 'protein'
     alt_type: str
 
@@ -149,7 +177,7 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
 
     alt_protein = '*'
     token_type = 'PolypeptideTruncation'
-    so_id = 'SO:0001617'
+    so_id = SequenceOntology.POLYPEPTIDE_TRUNCATION
     alt_type = 'nonsense'
 
     class Config:
@@ -181,7 +209,7 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
     """
 
     token_type = 'AminoAcidSubstitution'
-    so_id = 'SO:0001606'
+    so_id = SequenceOntology.AMINO_ACID_SUBSTITUTION
     alt_type = 'substitution'
 
     class Config:
@@ -212,7 +240,7 @@ class SilentMutationToken(PolypeptideSequenceVariation):
 
     alt_protein = '='
     token_type = 'SilentMutation'
-    so_id = 'SO:0001017'
+    so_id = SequenceOntology.SILENT_MUTATION
     alt_type = 'silent_mutation'
 
     class Config:
@@ -292,7 +320,7 @@ class SingleNucleotideVariation(Token):
     new_nucleotide: str
     token_type: str
     reference_sequence: ReferenceSequence
-    so_id: str
+    so_id: SequenceOntology
     molecule_context: str
     alt_type: str
 
@@ -302,7 +330,7 @@ class CodingDNASubstitutionToken(SingleNucleotideVariation):
 
     reference_sequence = ReferenceSequence.CODING_DNA
     token_type = 'CodingDNASubstitution'
-    so_id = 'SO:0001483'
+    so_id = SequenceOntology.SNV
     molecule_context = 'transcript'
     alt_type = 'substitution'
 
@@ -313,7 +341,7 @@ class CodingDNASilentMutationToken(SingleNucleotideVariation):
     reference_sequence = ReferenceSequence.CODING_DNA
     new_nucleotide = '='
     token_type = 'CodingDNASilentMutation'
-    so_id = 'SO:0002073'
+    so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = 'transcript'
     alt_type = 'silent_mutation'
 
@@ -323,7 +351,7 @@ class GenomicSubstitutionToken(SingleNucleotideVariation):
 
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     token_type = 'GenomicSubstitution'
-    so_id = 'SO:0001483'
+    so_id = SequenceOntology.SNV
     molecule_context = 'genomic'
     alt_type = 'substitution'
 
@@ -334,7 +362,7 @@ class GenomicSilentMutationToken(SingleNucleotideVariation):
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     new_nucleotide = '='
     token_type = 'GenomicSilentMutation'
-    so_id = 'SO:0002073'
+    so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = 'genomic'
     alt_type = 'silent_mutation'
 
@@ -350,7 +378,7 @@ class DelIns(Token):
     inserted_sequence2: Optional[str]
     token_type: str
     reference_sequence: ReferenceSequence
-    so_id = 'SO:1000032'
+    so_id = SequenceOntology.DELINS
     molecule_context: str
     alt_type = 'delins'
 
@@ -364,7 +392,7 @@ class AminoAcidDelInsToken(Token):
     end_pos_del: Optional[int]
     inserted_sequence: str
     reference_sequence = ReferenceSequence.PROTEIN
-    so_id = 'SO:1000032'
+    so_id = SequenceOntology.DELINS
     molecule_context = 'protein'
     token_type = 'AminoAcidDelIns'
     alt_type = 'delins'
@@ -410,7 +438,7 @@ class Insertion(Token):
     inserted_sequence: str
     reference_sequence: ReferenceSequence
     token_type: str
-    so_id: str
+    so_id: SequenceOntology
     molecule_context: str
     alt_type = 'insertion'
 
@@ -422,7 +450,7 @@ class AminoAcidInsertionToken(Insertion):
     end_aa_flank: str
     reference_sequence = ReferenceSequence.PROTEIN
     token_type = 'AminoAcidInsertion'
-    so_id = 'SO:0001605'
+    so_id = SequenceOntology.AMINO_ACID_INSERTION
     molecule_context = 'protein'
 
 
@@ -432,7 +460,7 @@ class CodingDNAInsertionToken(Insertion):
     reference_sequence = ReferenceSequence.CODING_DNA
     inserted_sequence2: Optional[str]
     token_type = 'CodingDNAInsertion'
-    so_id = 'SO:0000667'
+    so_id = SequenceOntology.INSERTION
     molecule_context = 'transcript'
 
 
@@ -442,7 +470,7 @@ class GenomicInsertionToken(Insertion):
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     inserted_sequence2: Optional[str]
     token_type = 'GenomicInsertion'
-    so_id = 'SO:0000667'
+    so_id = SequenceOntology.INSERTION
     molecule_context = 'genomic'
 
 
@@ -463,7 +491,7 @@ class Deletion(Token):
     end_pos_del: Optional[int]
     reference_sequence: ReferenceSequence
     token_type: str
-    so_id: str
+    so_id: SequenceOntology
     molecule_context: str
     alt_type: DeletionAltType.DELETION = DeletionAltType.DELETION
 
@@ -478,7 +506,7 @@ class AminoAcidDeletionToken(Deletion):
     end_aa_del: Optional[str]
     reference_sequence = ReferenceSequence.PROTEIN
     token_type = 'AminoAcidDeletion'
-    so_id = 'SO:0001604'
+    so_id = SequenceOntology.AMINO_ACID_DELETION
     molecule_context = 'protein'
 
 
@@ -490,7 +518,7 @@ class CodingDNADeletionToken(Deletion):
     reference_sequence = ReferenceSequence.CODING_DNA
     deleted_sequence: Optional[str]
     token_type = 'CodingDNADeletion'
-    so_id = 'SO:0000159'
+    so_id = SequenceOntology.DELETION
     molecule_context = 'transcript'
 
 
@@ -502,7 +530,7 @@ class GenomicDeletionToken(Deletion):
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
     deleted_sequence: Optional[str]
     token_type = 'GenomicDeletion'
-    so_id = 'SO:0000159'
+    so_id = SequenceOntology.DELETION
     molecule_context = 'genomic'
 
 
@@ -514,7 +542,7 @@ class DeletionRange(Token):
     end_pos1_del: int
     end_pos2_del: Union[int, str]
     token_type: str
-    so_id = "SO:0001743"
+    so_id = SequenceOntology.COPY_NUMBER_LOSS
     molecule_context: str
     alt_type: Union[Literal[DeletionAltType.DELETION_RANGE], Literal[DeletionAltType.UNCERTAIN_DELETION]] = DeletionAltType.DELETION_RANGE  # noqa: E501
 
@@ -561,7 +589,7 @@ class Duplication(Token):
     start_pos1_dup: Union[Literal['?'], int]
     start_pos2_dup: Optional[int]
     token_type: TokenType
-    so_id = "SO:1000035"
+    so_id = SequenceOntology.DUPLICATION
     molecule_context: str
     alt_type: DuplicationAltType
 
@@ -580,7 +608,7 @@ class DuplicationRange(Duplication):
 
     end_pos1_dup: int
     end_pos2_dup: Optional[Union[Literal['?'], int]]
-    so_id = "SO:0001742"  # check: Copy Number gain?
+    so_id = SequenceOntology.COPY_NUMBER_GAIN
 
 
 class GenomicDuplicationRangeToken(DuplicationRange):
@@ -589,3 +617,10 @@ class GenomicDuplicationRangeToken(DuplicationRange):
     token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
     reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+
+
+class ChromosomeToken(Token):
+    """Chromosome token"""
+
+    chromosome: str
+    token_type = "Chromosome"

@@ -139,7 +139,7 @@ class SingleNucleotideVariationBase(Validator):
                     cds_start = None
 
                 if not errors:
-                    allele = self.to_vrs_allele(
+                    allele = self.vrs.to_vrs_allele(
                         t, s.position, s.position, s.reference_sequence,
                         s.alt_type, errors, cds_start=cds_start,
                         alt=s.new_nucleotide
@@ -150,6 +150,12 @@ class SingleNucleotideVariationBase(Validator):
                         self.seqrepo_access.get_sequence(t, s.position)
                     if sequence is None:
                         errors.append('Sequence index error')
+                    else:
+                        if s.ref_nucleotide:
+                            if sequence != s.ref_nucleotide:
+                                errors.append(
+                                    f'Expected {s.reference_sequence} but '
+                                    f'found {sequence}')
 
                 if not errors:
                     mane = self.mane_transcript.get_mane_transcript(

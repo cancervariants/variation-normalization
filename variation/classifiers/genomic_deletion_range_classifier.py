@@ -14,6 +14,7 @@ class GenomicDeletionRangeClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
+            ['Chromosome', 'GenomicDeletionRange'],
             ['GeneSymbol', 'GenomicDeletionRange'],
             ['GenomicDeletionRange', 'GeneSymbol'],
             ['HGVS', 'GenomicDeletionRange'],

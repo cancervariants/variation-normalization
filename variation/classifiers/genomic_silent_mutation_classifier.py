@@ -14,7 +14,7 @@ class GenomicSilentMutationClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['GenomicSilentMutation'],
+            ['Chromosome', 'GenomicSilentMutation'],
             ['GeneSymbol', 'AminoAcidSubstitution', 'GenomicSilentMutation'],
             ['GenomicSilentMutation', 'GeneSymbol'],
             ['GeneSymbol', 'GenomicSilentMutation'],

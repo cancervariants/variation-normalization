@@ -41,3 +41,4 @@ from .genomic_insertion import GenomicInsertion  # noqa: F401
 from .genomic_uncertain_deletion import GenomicUncertainDeletion  # noqa: F401
 from .genomic_duplication import GenomicDuplication  # noqa: F401
 from .genomic_deletion_range import GenomicDeletionRange  # noqa: F401
+from .gnomad_vcf import GnomadVCF  # noqa: F401

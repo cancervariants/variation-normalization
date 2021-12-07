@@ -58,9 +58,9 @@ class GenomicDelIns(DelInsBase):
             for t in transcripts:
                 errors = list()
                 t = self.get_accession(t, classification)
-                allele = self.to_vrs_allele(t, s.start_pos_del, s.end_pos_del,
-                                            s.reference_sequence, s.alt_type,
-                                            errors, alt=s.inserted_sequence1)
+                allele = self.vrs.to_vrs_allele(
+                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
+                    s.alt_type, errors, alt=s.inserted_sequence1)
 
                 if not errors:
                     self.check_pos_index(t, s, errors)

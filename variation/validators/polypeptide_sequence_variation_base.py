@@ -15,6 +15,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs import VRS
 
 logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
@@ -28,9 +29,8 @@ class PolypeptideSequenceVariationBase(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 amino_acid_cache: AminoAcidCache,
-                 gene_normalizer: GeneQueryHandler) \
-            -> None:
+                 gene_normalizer: GeneQueryHandler, vrs: VRS,
+                 amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -41,11 +41,12 @@ class PolypeptideSequenceVariationBase(Validator):
             information
         :param UTA uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
+        :param VRS vrs: Class for creating VRS objects
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer
+            uta, dp, tlr, gene_normalizer, vrs
         )
         self._amino_acid_cache = amino_acid_cache
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
@@ -93,9 +94,9 @@ class PolypeptideSequenceVariationBase(Validator):
                 errors = list()
 
                 t = self.get_accession(t, classification)
-                allele = self.to_vrs_allele(t, s.position, s.position,
-                                            s.reference_sequence, s.alt_type,
-                                            errors, alt=s.alt_protein)
+                allele = self.vrs.to_vrs_allele(
+                    t, s.position, s.position, s.reference_sequence,
+                    s.alt_type, errors, alt=s.alt_protein)
 
                 if not errors:
                     self.amino_acid_base.check_ref_aa(
