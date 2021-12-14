@@ -15,24 +15,24 @@ asgiref==3.4.1; python_version >= '3.6'
 attrs==21.2.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 backcall==0.2.0
 beautifulsoup4==4.10.0; python_version >= '3.1'
-biocommons.seqrepo==0.6.4
+biocommons.seqrepo==0.6.5
 bioutils==0.5.5; python_version >= '3.6'
-boto3==1.20.11
-botocore==1.23.11; python_version >= '3.6'
+boto3==1.20.23
+botocore==1.23.23; python_version >= '3.6'
 bs4==0.0.1
 canonicaljson==1.5.0; python_version ~= '3.5'
 certifi==2021.10.8
-charset-normalizer==2.0.7; python_version >= '3'
+charset-normalizer==2.0.9; python_version >= '3'
 click==8.0.3; python_version >= '3.6'
 coloredlogs==15.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-configparser==5.1.0; python_version >= '3.6'
+configparser==5.2.0; python_version >= '3.6'
 cssselect==1.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 decorator==5.1.0; python_version >= '3.5'
 fake-useragent==0.1.11
-fastapi==0.70.0
-frozendict==2.1.0; python_version >= '3.6'
+fastapi==0.70.1
+frozendict==2.1.1; python_version >= '3.6'
 ga4gh.vrs[extras]==0.7.2
-ga4gh.vrsatile.pydantic==0.0.5
+ga4gh.vrsatile.pydantic==0.0.6
 gene-normalizer==0.1.23
 gffutils==0.10.1
 h11==0.12.0; python_version >= '3.6'
@@ -42,21 +42,21 @@ humanfriendly==10.0; python_version >= '2.7' and python_version not in '3.0, 3.1
 idna==3.3; python_version >= '3'
 importlib-metadata==4.8.2; python_version < '3.10'
 inflection==0.5.1; python_version >= '3.5'
-ipython==7.29.0; python_version >= '3.7'
+ipython==7.30.1; python_version >= '3.7'
 jedi==0.18.1; python_version >= '3.6'
 jmespath==0.10.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 jsonschema==3.2.0
-lxml==4.6.4
+lxml==4.6.5
 markdown==3.3.6; python_version >= '3.6'
 matplotlib-inline==0.1.3; python_version >= '3.5'
 numpy==1.21.4; python_version < '3.10' and platform_machine != 'aarch64' and platform_machine != 'arm64'
-pandas==1.3.4
+pandas==1.3.5
 parse==1.19.0
 parsley==1.3
-parso==0.8.2; python_version >= '3.6'
+parso==0.8.3; python_version >= '3.6'
 pexpect==4.8.0; sys_platform != 'win32'
 pickleshare==0.7.5
-prompt-toolkit==3.0.22; python_full_version >= '3.6.2'
+prompt-toolkit==3.0.24; python_full_version >= '3.6.2'
 psycopg2-binary==2.9.2; python_version >= '3.6'
 ptyprocess==0.7.0
 pydantic==1.8.2
@@ -84,9 +84,9 @@ starlette==0.16.0; python_version >= '3.6'
 tabulate==0.8.9
 tqdm==4.62.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 traitlets==5.1.1; python_version >= '3.7'
-typing-extensions==4.0.0
+typing-extensions==4.0.1
 urllib3==1.26.7; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
-uvicorn==0.15.0
+uvicorn==0.16.0
 uvloop==0.16.0
 w3lib==1.22.0
 wcwidth==0.2.5
