@@ -89,6 +89,7 @@ class PolypeptideSequenceVariationBase(Validator):
             as VRS objects.
         """
         valid_alleles = list()
+        c_ac = list()
         for s in classification_tokens:
             for t in transcripts:
                 errors = list()
@@ -104,7 +105,7 @@ class PolypeptideSequenceVariationBase(Validator):
                     )
 
                 if not errors:
-                    mane = self.mane_transcript.get_mane_transcript(
+                    mane, c_ac = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position,
                         s.reference_sequence, ref=s.ref_protein,
                         normalize_endpoint=normalize_endpoint
@@ -112,11 +113,11 @@ class PolypeptideSequenceVariationBase(Validator):
 
                     self.add_mane_data(mane, mane_data_found,
                                        s.reference_sequence, s.alt_type,
-                                       s, alt=s.alt_protein)
+                                       s, alt=s.alt_protein, c_ac)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens,
-                                           errors)
+                                           errors, c_ac)
                 if is_identifier:
                     break
 

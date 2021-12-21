@@ -51,10 +51,12 @@ class ToVRSService(BaseModel):
                         "state": {
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
-                        }
+                        },
+                        "possible_c_accessions": ["NM_004333.6"]
                     },
                     {
                         "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
+                        "type": "Allele",
                         "location": {
                             "type": "SequenceLocation",
                             "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",  # noqa: E501
@@ -73,7 +75,8 @@ class ToVRSService(BaseModel):
                         "state": {
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
-                        }
+                        },
+                        "possible_c_accessions": ["NM_001378474.1"]
                     },
                     {
                         "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
@@ -90,7 +93,8 @@ class ToVRSService(BaseModel):
                         "state": {
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
-                        }
+                        },
+                        "possible_c_accessions": ["NM_001354609.2"]
                     },
                     {
                         "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
@@ -107,7 +111,8 @@ class ToVRSService(BaseModel):
                         "state": {
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
-                        }
+                        },
+                        "possible_c_accessions": ["NM_001378468.1"]
                     },
                     {
                         "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
@@ -124,7 +129,8 @@ class ToVRSService(BaseModel):
                         "state": {
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
-                        }
+                        },
+                        "possible_c_accessions": ["NM_001354609.2", "NM_001378474.1", "NM_004333.6", "NM_001378468.1"]
                     }
                 ],
                 "service_meta_": {

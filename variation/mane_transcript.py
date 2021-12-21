@@ -447,14 +447,14 @@ class MANETranscript:
             except ValueError:
                 logger.warning(f"{start_pos} and {end_pos} "
                                f"must be valid integers")
-                return None
+                return None, []
 
         if anno in ['p', 'c']:
             # Get accession and position on c. coordinate
             if anno == 'p':
                 c = self._p_to_c(ac, start_pos, end_pos)
                 if not c:
-                    return None
+                    return None, []
                 c_ac, c_pos = c
             else:
                 c_ac = ac
@@ -462,12 +462,12 @@ class MANETranscript:
             # Go from c -> g annotation (liftover as well)
             g = self._c_to_g(c_ac, c_pos)
             if g is None:
-                return None
+                return None, [c_ac]
             # Get mane data for gene
             mane_data = \
                 self.mane_transcript_mappings.get_gene_mane_data(g['gene'])
             if not mane_data:
-                return None
+                return None, [c_ac]
             mane_data_len = len(mane_data)
 
             # Transcript Priority (Must pass validation checks):
@@ -499,20 +499,20 @@ class MANETranscript:
                     if not valid_references:
                         continue
 
-                return mane
+                return mane, [c_ac]
             if normalize_endpoint:
                 if anno == 'p':
                     return self.get_longest_compatible_transcript(
                         g['gene'], start_pos, end_pos, 'p', ref
-                    )
+                    ), [c_ac]
                 else:
                     return self.get_longest_compatible_transcript(
                         g['gene'], c_pos[0], c_pos[1], 'c', ref
-                    )
+                    ), [c_ac]
             else:
-                return None
+                return None, [c_ac]
         elif anno == 'g':
-            return self.g_to_mane_c(ac, start_pos, end_pos, gene=gene)
+            return self.g_to_mane_c(ac, start_pos, end_pos, gene=gene), [ac]
         else:
             logger.warning(f"Annotation layer not supported: {anno}")
 

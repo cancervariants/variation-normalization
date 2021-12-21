@@ -231,7 +231,7 @@ class Validator(ABC):
             classification: Classification, classification_token: Token,
             is_valid: bool, confidence_score: int, variation: Dict,
             human_description: str, concise_description: str, errors: List,
-            gene_tokens: List, identifier: str = None,
+            gene_tokens: List, possible_ac: List = list(), identifier: str = None,
             is_mane_transcript: bool = False) -> ValidationResult:
         """Return a validation result object.
 
@@ -260,6 +260,7 @@ class Validator(ABC):
             concise_description=concise_description,
             errors=errors,
             gene_tokens=gene_tokens,
+            possible_ac=possible_ac,
             is_mane_transcript=is_mane_transcript,
             identifier=identifier
         )
@@ -432,7 +433,7 @@ class Validator(ABC):
     def add_validation_result(
             self, variation: Dict, valid_variations: List, results: List,
             classification: Classification, s: Token, t: str,
-            gene_tokens: List, errors: List, identifier: str = None,
+            gene_tokens: List, errors: List, possible_ac: List = list(), identifier: str = None,
             is_mane_transcript: bool = False) -> bool:
         """Add validation result to list of results.
 
@@ -458,6 +459,7 @@ class Validator(ABC):
                         self.human_description(t, s),
                         self.concise_description(t, s), [],
                         gene_tokens,
+                        possible_ac=possible_ac,
                         identifier=identifier if identifier else t,
                         is_mane_transcript=is_mane_transcript
                     )
@@ -471,6 +473,7 @@ class Validator(ABC):
                     self.human_description(t, s),
                     self.concise_description(t, s), errors,
                     gene_tokens,
+                    possible_ac=possible_ac if possible_ac else [t],
                     identifier=identifier if identifier else t,
                     is_mane_transcript=is_mane_transcript
                 )
@@ -574,7 +577,7 @@ class Validator(ABC):
 
     def add_mane_data(
             self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: str,
-            s: Token, alt: str = None, mane_variation: Dict = None) -> None:
+            s: Token, alt: str = None, mane_variation: Dict = None, enst_nm_id: List) -> None:
         """Add mane transcript information to mane_data.
 
         :param Dict mane: MANE data
@@ -608,11 +611,11 @@ class Validator(ABC):
             return None
 
         self._add_dict_to_mane_data(mane['refseq'], s_copy, variation,
-                                    mane_data, mane['status'])
+                                    mane_data, mane['status'], enst_nm_id)
 
     @staticmethod
     def _add_dict_to_mane_data(ac: str, s: Token, variation: Dict,
-                               mane_data: Dict, status: str) -> None:
+                               mane_data: Dict, status: str, enst_nm_id: List) -> None:
         """Add variation data to mane data for normalize endpoint.
 
         :param str ac: Accession
@@ -627,13 +630,15 @@ class Validator(ABC):
 
         if _id in mane_data[key].keys():
             mane_data[key][_id]['count'] += 1
+            mane_data[key][_id]['_enst_nm_id'] += enst_nm_id
         else:
             mane_data[key][_id] = {
                 'classification_token': s,
                 'accession': ac,
                 'count': 1,
                 'variation': variation,
-                'label': ac  # TODO: Use VRS to translate
+                'label': ac,  # TODO: Use VRS to translate
+                '_enst_nm_id': enst_nm_id,
             }
 
     def add_mane_to_validation_results(
@@ -665,12 +670,13 @@ class Validator(ABC):
                     mane_result = data
                     mane_allele = data['variation']
                     identifier = data['accession']
+                    tx_ac = data['_enst_nm_id']
 
             if mane_allele:
                 self.add_validation_result(
                     mane_allele, valid_alleles, results, classification,
                     mane_result['classification_token'],
-                    mane_result['accession'], gene_tokens, [],
+                    mane_result['accession'], gene_tokens, [], possible_ac=tx_ac,
                     identifier=identifier, is_mane_transcript=True
                 )
                 return
