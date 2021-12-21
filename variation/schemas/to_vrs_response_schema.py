@@ -12,6 +12,7 @@ class ToVRSService(BaseModel):
 
     search_term: StrictStr
     warnings: Optional[List[StrictStr]]
+    # TODO: add possible_c_accessions filed to schema
     variations: Optional[Union[List[Allele], List[Text], List[Haplotype],
                                List[CopyNumber], List[VariationSet]]] = None
     service_meta_: ServiceMeta
