@@ -113,7 +113,11 @@ class VRS:
         :param List errors: List of errors
         :return: VRS Allele object represented as a Dict
         """
-        location = self.get_sequence_loc(ac, interval)
+        try:
+            location = self.get_sequence_loc(ac, interval)
+        except ValueError as e:
+            errors.append(f"Unable to get sequence location: {e}")
+            return None
         allele = models.Allele(location=location, state=sstate)
 
         # Ambiguous regions do not get normalized
