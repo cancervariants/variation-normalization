@@ -1136,6 +1136,13 @@ def test_genomic_insertion(test_normalize, genomic_insertion,
     assertion_checks(resp, genomic_insertion)
 
 
+def test_valid_queries(test_normalize):
+    """Test that valid queries don't throw exceptions. Used for queries that
+    revealed bugs in service.
+    """
+    assert test_normalize.normalize("CCND1 Y44D")
+
+
 def test_no_matches(test_normalize):
     """Test no matches work correctly."""
     queries = [
