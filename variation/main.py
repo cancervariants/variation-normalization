@@ -27,7 +27,8 @@ def custom_openapi():
 
     openapi_schema['info']['contact'] = {
         "name": "Alex H. Wagner",
-        "email": "Alex.Wagner@nationwidechildrens.org"
+        "email": "Alex.Wagner@nationwidechildrens.org",
+        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab"  # noqa: E501
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema
