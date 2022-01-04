@@ -2,13 +2,14 @@
 from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
+from variation.schemas import ToVRSService, NormalizeService, ServiceMeta, ToVRSATILEService
 from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
+    import HGVSDupDelMode as HGVSDupDelModeEnum,\
+    TranslateIdentifierService, ReferenceGenomeBuild
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
 query_handler = QueryHandler()
@@ -60,6 +61,53 @@ def to_vrs(q: str = Query(..., description=q_description)):
     return ToVRSService(
         search_term=q,
         variations=translations,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        warnings=warnings
+    )
+
+
+toVRSATILE_summary = 'Translate a variation to a VRSATILE compatible object.'
+toVRSATILE_description = ('Translate a variation into VRS Added Tools for '
+                          'Interoperable Loquacious Exchange (VRSATILE) '
+                          'compatible representations.')
+toVRSATILE_response_description = "A  response to a validly-formed query."
+q_description = "Variation to translate."
+hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
+                           '`repeated_seq_expr`, `literal_seq_expr`. This'
+                           ' parameter determines how to interpret HGVS '
+                           'dup/del expressions in VRS.')
+ref_genome_desc = ('Must be one of: `grch38`, `grch37`. This parameter'
+                   'refers to the reference genome build version.')
+
+@app.get('/variation/toVRSATILE',
+         summary=toVRSATILE_summary,
+         response_description=toVRSATILE_response_description,
+         response_model=ToVRSATILEService,
+         description=toVRSATILE_description,
+         response_model_exclude_none=True
+         )
+def to_vrsatile(q: str = Query(..., description=q_description),
+                 hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
+                  None, description=hgvs_dup_del_mode_decsr),
+                 ref_genome: Optional[ReferenceGenomeBuild] = Query(
+                  None, description=ref_genome_desc)):
+    """Return a VRS-like representation of all validated variations for the search term.  # noqa: E501, D400
+
+    :param str q: The variation to translate
+    :return: ToVRSService model for variation
+    """
+    query_handler = QueryHandler(ref_genome=ref_genome)
+    resps, warnings = query_handler.to_vrsatile(
+        html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
+        toVRSATILE_endpoint=True)
+
+    # TODO: use toVRSATILEService
+    return ToVRSATILEService(
+        search_term=q,
+        variations=resps,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
