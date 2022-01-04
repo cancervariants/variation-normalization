@@ -32,7 +32,8 @@ class Normalize:
         self.gene_normalizer = gene_normalizer
 
     @staticmethod
-    def get_valid_result(q: str, validations: ValidationSummary,
+    def get_valid_result(q: str, toVRSATILE_endpoint: bool,
+                         validations: ValidationSummary,
                          warnings: List) -> ValidationResult:
         """Get valid result from ValidationSummary
 
@@ -43,18 +44,26 @@ class Normalize:
         """
         # For now, only use first valid result
         valid_result = None
+        listOf_valid_res = list()
+        listOf_possible_ac = list()
         for r in validations.valid_results:
-            if r.is_mane_transcript and r.variation:
-                valid_result = r
-                break
-        if not valid_result:
+            if not toVRSATILE_endpoint:
+                if r.is_mane_transcript and r.variation:
+                    valid_result = r
+                    break
+            else:
+                if r.is_valid and r.variation:
+                    listOf_valid_res.append(r)
+                    listOf_possible_ac.append(r.possible_ac[:])
+        if not valid_result: # TODO: if not listOf_valid_res?
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
             valid_result = validations.valid_results[0]
-        return valid_result
+        return valid_result, listOf_valid_res, listOf_possible_ac
 
-    def normalize(self, q: str, validations: ValidationSummary,
+    def normalize(self, q: str, toVRSATILE_endpoint: bool,
+                  validations: ValidationSummary,
                   warnings: List) -> Optional[VariationDescriptor]:
         """Normalize a given variation.
 
@@ -69,15 +78,31 @@ class Normalize:
         else:
             _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"
             if len(validations.valid_results) > 0:
-                valid_result = self.get_valid_result(q, validations, warnings)
+                valid_result, listOf_valid_res, listOf_possible_ac = \
+                    self.get_valid_result(
+                        q, toVRSATILE_endpoint, validations, warnings)
                 resp, warnings = self.get_variation_descriptor(
                     valid_result.variation, valid_result, _id, warnings)
+
+                # get list of toVRSATILE objects
+                if toVRSATILE_endpoint:
+                    listOf_resp, listOf_warnings = list(), list()
+                    for val_res in listOf_valid_res:
+                        toVRSATILE_resp, toVRSATILE_warnings = \
+                            self.get_variation_descriptor(
+                                val_res.variation, val_res,\
+                                _id, toVRSATILE_warnings)
+                        listOf_resp.append(toVRSATILE_resp)
+                        listOf_warnings.append(toVRSATILE_warnings)
             else:
                 if not q.strip():
                     resp, warnings = self._no_variation_entered()
                 else:
                     resp, warnings = self.text_variation_resp(q, _id, warnings)
+
         self.warnings = warnings
+        if toVRSATILE_endpoint:
+            return listOf_resp, listOf_possible_ac, listOf_warnings
         return resp
 
     @staticmethod
