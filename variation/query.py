@@ -451,3 +451,9 @@ class QueryHandler:
             else:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
+
+a = QueryHandler(ref_genome="grch37")
+
+q = "BRAF V600E"
+resps, w = a.to_vrsatile(q, toVRSATILE_endpoint=True)
+print("resps = ", resps)

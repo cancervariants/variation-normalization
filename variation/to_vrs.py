@@ -18,7 +18,7 @@ from variation.tokenizers.caches import AminoAcidCache
 from urllib.parse import unquote
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ReferenceGenomeBuild
 
 
 class ToVRS:
@@ -32,7 +32,8 @@ class ToVRS:
                  mane_transcript: MANETranscript, validator: Validate,
                  translator: Translate,
                  gene_normalizer: GeneQueryHandler,
-                 hgvs_dup_del_mode: HGVSDupDelMode) -> None:
+                 hgvs_dup_del_mode: HGVSDupDelMode,
+                 ref_genome: ReferenceGenomeBuild) -> None:
         """Initialize the ToVRS class.
 
         :param Tokenize tokenizer: Tokenizer class for tokenizing
@@ -65,6 +66,7 @@ class ToVRS:
         self.translator = translator
         self.gene_normalizer = gene_normalizer
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
+        self.ref_genome = ref_genome
 
     def get_validations(
             self, q: str, normalize_endpoint: bool = False,
