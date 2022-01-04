@@ -2,13 +2,14 @@
 import csv
 from typing import Dict, List, Optional
 from variation.schemas.validation_response_schema import LookupType
-from variation import TRANSCRIPT_MAPPINGS_PATH, REFSEQ_GENE_SYMBOL_PATH
+from variation import TRANSCRIPT_MAPPINGS_GRCh38_PATH, \
+    TRANSCRIPT_MAPPINGS_GRCh37_PATH, REFSEQ_GENE_SYMBOL_PATH
 
 
 class TranscriptMappings:
     """The transcript mappings class."""
 
-    def __init__(self, transcript_file_path=TRANSCRIPT_MAPPINGS_PATH,
+    def __init__(self, transcript_file_path,
                  refseq_file_path=REFSEQ_GENE_SYMBOL_PATH) -> None:
         """Initialize the transcript mappings class."""
         # ENSP <-> Gene Symbol
