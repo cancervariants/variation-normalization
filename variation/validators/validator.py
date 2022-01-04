@@ -577,7 +577,8 @@ class Validator(ABC):
 
     def add_mane_data(
             self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: str,
-            s: Token, alt: str = None, mane_variation: Dict = None, enst_nm_id: List) -> None:
+            s: Token, alt: str = None, mane_variation: Dict = None, 
+            enst_nm_id: List = list()) -> None:
         """Add mane transcript information to mane_data.
 
         :param Dict mane: MANE data
