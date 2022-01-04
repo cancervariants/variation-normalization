@@ -7,6 +7,13 @@ from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
 
+class ReferenceGenomeBuild(str, Enum):
+    """Define options for genome build version."""
+
+    GRCH38 = "GRCh38"
+    GRCH37 = "GRCh37"
+
+
 class HGVSDupDelMode(str, Enum):
     """Define options for HGVSDupDelMode.
     This mode determines how to interpret HGVS dup/del.
