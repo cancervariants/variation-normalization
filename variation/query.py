@@ -7,8 +7,9 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
-    REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
+from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_GRCh38_PATH, \
+    TRANSCRIPT_MAPPINGS_GRCh37_PATH, REFSEQ_GENE_SYMBOL_PATH, \
+    AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -27,9 +28,13 @@ from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
     Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models \
+    import VariationDescriptor, Extension
 from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ReferenceGenomeBuild
+from variation.schemas import ToVRSService, ServiceMeta
+from version import __version__
+from datetime import datetime
 
 
 class QueryHandler:
@@ -41,7 +46,8 @@ class QueryHandler:
                  seqrepo_data_path: str = SEQREPO_DATA_PATH,
                  amino_acids_file_path: str = AMINO_ACID_PATH,
                  uta_db_url: str = UTA_DB_URL,
-                 uta_db_pwd: Optional[str] = None) -> None:
+                 uta_db_pwd: Optional[str] = None,
+                 ref_genome: str = ReferenceGenomeBuild) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene-normalizer database source.
         :param str dynamodb_region: AWS default region for gene-normalizer.
@@ -63,15 +69,16 @@ class QueryHandler:
         self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
         self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         self.vrs = VRS(self.dp, self.seqrepo_access)
-        self.to_vrs_handler = self._init_to_vrs()
+        self.to_vrs_handler = self._init_to_vrs(ref_genome=ref_genome)
         self.normalize_handler = Normalize(
             self.seqrepo_access, self.uta, self.gene_normalizer
         )
 
     def _init_to_vrs(self,
-                     transcript_file_path: str = TRANSCRIPT_MAPPINGS_PATH,
+                     transcript_file_path: str = TRANSCRIPT_MAPPINGS_GRCh38_PATH,
                      refseq_file_path: str = REFSEQ_GENE_SYMBOL_PATH,
-                     mane_data_path: str = REFSEQ_MANE_PATH) -> ToVRS:
+                     mane_data_path: str = REFSEQ_MANE_PATH,
+                     ref_genome: str = ReferenceGenomeBuild) -> ToVRS:
         """Return toVRS instance
 
         :param str transcript_file_path: Path to transcript mappings file
@@ -82,6 +89,10 @@ class QueryHandler:
         gene_symbol = GeneSymbol(self.gene_normalizer)
         tokenizer = Tokenize(self.amino_acid_cache, gene_symbol)
         classifier = Classify()
+
+        if ref_genome == "grch37":
+            transcript_file_path = TRANSCRIPT_MAPPINGS_GRCh37_PATH
+
         transcript_mappings = TranscriptMappings(
             transcript_file_path=transcript_file_path,
             refseq_file_path=refseq_file_path
@@ -104,7 +115,7 @@ class QueryHandler:
             tokenizer, classifier, self.seqrepo_access, transcript_mappings,
             gene_symbol, self.amino_acid_cache, self.uta,
             mane_transcript_mappings, mane_transcript, validator, translator,
-            self.gene_normalizer, self.hgvs_dup_del_mode
+            self.gene_normalizer, self.hgvs_dup_del_mode, ref_genome
         )
 
     def to_vrs(self, q: str)\
@@ -131,6 +142,45 @@ class QueryHandler:
                 translations = None
         return translations, warnings
 
+    def to_vrsatile(
+            self, q:str,
+            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,  # noqa: E501
+            toVRSATILE_endpoint: bool = False
+    ): # TODO: return type spec
+        """Return a VRSATILE-like representation of all valided variation for a query.  # noqa: E501
+        
+        :param str q: The variation to translate
+        :param bool toVRSATILE_endpoint: `True` if used by toVRSATILE endpoint
+                                         `False` otherwise
+        :return: List of validated VRSATILE Variations and list of warnings
+        """
+        validations, warnings = \
+            self.to_vrs_handler.get_validations(
+                q, normalize_endpoint=True,
+                hgvs_dup_del_mode=hgvs_dup_del_mode
+            )
+        if not validations:
+            self.normalize_handler.warnings = warnings
+            return None
+        resps, accessions, warnings = \
+            self.normalize_handler.normalize(q, toVRSATILE_endpoint,
+                                             validations, warnings)
+
+        for r in range(len(resps)):
+            ext = [
+                Extension(
+                    name='possible accessions',
+                    value=accessions[r]
+                ).dict(exclude_none=True),
+                Extension(
+                    name='human reference genome assembly',
+                    value=self.to_vrs_handler.ref_genome
+                ).dict(exclude_none=True)
+            ]
+            resps[r].extensions = ext
+
+        return resps, warnings
+
     def normalize(
             self, q: str,
             hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT  # noqa: E501
@@ -153,8 +203,8 @@ class QueryHandler:
         if not validations:
             self.normalize_handler.warnings = warnings
             return None
-        return self.normalize_handler.normalize(q, validations,
-                                                warnings)
+        return self.normalize_handler.normalize(q, False,
+                                                validations, warnings)
 
     def _get_gnomad_vcf_validations(
             self, q: str, warnings: List) -> Optional[ValidationSummary]:
