@@ -57,7 +57,6 @@ class Translator(ABC):
                 variation = None
             else:
                 variation = res.variation
-                variation["possible_c_accessions"] = res.possible_ac
         elif variation_type == 'CopyNumber':
             if res.variation['subject']['type'] == "Allele":
                 if not res.variation['subject']['location']:
