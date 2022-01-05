@@ -43,6 +43,13 @@ class ToVRSATILEService(BaseModel):
                                 "value": [
                                     "GRCh37"
                                 ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "mane status",
+                                "value": [
+                                    "N/A"
+                                ]
                             }
                         ],
                         "variation_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
@@ -153,6 +160,13 @@ class ToVRSATILEService(BaseModel):
                                 "name": "human reference genome assembly",
                                 "value": [
                                     "GRCh37"
+                                ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "mane status",
+                                "value": [
+                                    "N/A"
                                 ]
                             }
                         ],
@@ -265,6 +279,13 @@ class ToVRSATILEService(BaseModel):
                                 "value": [
                                     "GRCh37"
                                 ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "mane status",
+                                "value": [
+                                    "N/A"
+                                ]
                             }
                         ],
                         "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
@@ -375,6 +396,13 @@ class ToVRSATILEService(BaseModel):
                                 "name": "human reference genome assembly",
                                 "value": [
                                     "GRCh37"
+                                ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "mane status",
+                                "value": [
+                                    "N/A"
                                 ]
                             }
                         ],
@@ -490,6 +518,13 @@ class ToVRSATILEService(BaseModel):
                                 "name": "human reference genome assembly",
                                 "value": [
                                     "GRCh38"
+                                ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "mane status",
+                                "value": [
+                                    "mane transcript"
                                 ]
                             }
                         ],
