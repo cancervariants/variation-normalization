@@ -99,12 +99,13 @@ def to_vrsatile(q: str = Query(..., description=q_description),
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
+    # TODO: better way to handel taking ref_genome when initiation
     query_handler = QueryHandler(ref_genome=ref_genome)
     resps, warnings = query_handler.to_vrsatile(
         html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
         toVRSATILE_endpoint=True)
 
-    # TODO: use toVRSATILEService
+    # TODO: check toVRSATILEService
     return ToVRSATILEService(
         search_term=q,
         variations=resps,
