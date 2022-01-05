@@ -45,7 +45,7 @@ class Normalize:
         # For now, only use first valid result
         valid_result = None
         listOf_valid_res = list()
-        listOf_possible_ac = list()
+        possible_ac_mane_status = list()
         for r in validations.valid_results:
             if not toVRSATILE_endpoint:
                 if r.is_mane_transcript and r.variation:
@@ -54,13 +54,16 @@ class Normalize:
             else:
                 if r.is_valid and r.variation:
                     listOf_valid_res.append(r)
-                    listOf_possible_ac.append(r.possible_ac[:])
+                    if r.is_mane_transcript:
+                        possible_ac_mane_status.append((r.possible_ac[:], True))
+                    else:
+                        possible_ac_mane_status.append((r.possible_ac[:], False))
         if not valid_result: # TODO: if not listOf_valid_res?
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
             valid_result = validations.valid_results[0]
-        return valid_result, listOf_valid_res, listOf_possible_ac
+        return valid_result, listOf_valid_res, possible_ac_mane_status
 
     def normalize(self, q: str, toVRSATILE_endpoint: bool,
                   validations: ValidationSummary,
@@ -87,6 +90,7 @@ class Normalize:
                 # get list of toVRSATILE objects
                 if toVRSATILE_endpoint:
                     listOf_resp, listOf_warnings = list(), list()
+                    toVRSATILE_warnings = list()
                     for val_res in listOf_valid_res:
                         toVRSATILE_resp, toVRSATILE_warnings = \
                             self.get_variation_descriptor(
