@@ -185,7 +185,7 @@ class QueryHandler:
                 Extension(
                     name='mane status',
                     value=mane_status
-                )
+                ).dict(exclude_none=True)
             ]
             resps[r].extensions = ext
 
