@@ -90,7 +90,7 @@ class QueryHandler:
         tokenizer = Tokenize(self.amino_acid_cache, gene_symbol)
         classifier = Classify()
 
-        if ref_genome == "grch37":
+        if ref_genome == ReferenceGenomeBuild.GRCH37:
             transcript_file_path = TRANSCRIPT_MAPPINGS_GRCh37_PATH
 
         transcript_mappings = TranscriptMappings(
@@ -167,15 +167,25 @@ class QueryHandler:
                                              validations, warnings)
 
         for r in range(len(resps)):
+            if accessions[r][1]:
+                ref_genome = ReferenceGenomeBuild.GRCH38
+                mane_status = "mane transcript"
+            else:
+                ref_genome = self.to_vrs_handler.ref_genome
+                mane_status = "N/A"
             ext = [
                 Extension(
                     name='possible accessions',
-                    value=accessions[r]
+                    value=accessions[r][0]
                 ).dict(exclude_none=True),
                 Extension(
                     name='human reference genome assembly',
-                    value=self.to_vrs_handler.ref_genome
-                ).dict(exclude_none=True)
+                    value=ref_genome
+                ).dict(exclude_none=True),
+                Extension(
+                    name='mane status',
+                    value=mane_status
+                )
             ]
             resps[r].extensions = ext
 
@@ -451,9 +461,3 @@ class QueryHandler:
             else:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
-
-a = QueryHandler(ref_genome="grch37")
-
-q = "BRAF V600E"
-resps, w = a.to_vrsatile(q, toVRSATILE_endpoint=True)
-print("resps = ", resps)
