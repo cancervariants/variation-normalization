@@ -89,9 +89,9 @@ class PolypeptideSequenceVariationBase(Validator):
             as VRS objects.
         """
         valid_alleles = list()
-        c_ac = list()
         for s in classification_tokens:
             for t in transcripts:
+                c_ac = list()
                 errors = list()
 
                 t = self.get_accession(t, classification)
