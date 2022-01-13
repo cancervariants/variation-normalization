@@ -4,3 +4,4 @@ from .classification_response_schema import ClassificationResponseSchema  # noqa
 from .validation_response_schema import ValidationResponseSchema  # noqa: F401
 from .to_vrs_response_schema import ToVRSService  # noqa: F401, E501
 from .normalize_response_schema import NormalizeService, ServiceMeta  # noqa: F401, E501
+from .to_vrsatile_response_schema import ToVRSATILEService  # noqa: F401, E501

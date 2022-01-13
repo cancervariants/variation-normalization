@@ -2,14 +2,14 @@
 from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from variation.schemas import ToVRSService, NormalizeService, ServiceMeta, ToVRSATILEService
+from variation.schemas import ToVRSService, NormalizeService, ServiceMeta,\
+    ToVRSATILEService
 from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum,\
-    TranslateIdentifierService, ReferenceGenomeBuild
+    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
 
 app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
 query_handler = QueryHandler()
@@ -82,6 +82,7 @@ hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
 ref_genome_desc = ('Must be one of: `grch38`, `grch37`. This parameter'
                    'refers to the reference genome build version.')
 
+
 @app.get('/variation/toVRSATILE',
          summary=toVRSATILE_summary,
          response_description=toVRSATILE_response_description,
@@ -90,30 +91,25 @@ ref_genome_desc = ('Must be one of: `grch38`, `grch37`. This parameter'
          response_model_exclude_none=True
          )
 def to_vrsatile(q: str = Query(..., description=q_description),
-                 hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-                  None, description=hgvs_dup_del_mode_decsr),
-                 ref_genome: Optional[ReferenceGenomeBuild] = Query(
-                  None, description=ref_genome_desc)):
+                hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
+                None, description=hgvs_dup_del_mode_decsr)):
     """Return a VRS-like representation of all validated variations for the search term.  # noqa: E501, D400
 
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
-    # TODO: better way to handel taking ref_genome when initiation
-    query_handler = QueryHandler(ref_genome=ref_genome)
-    resps, warnings = query_handler.to_vrsatile(
-        html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
-        toVRSATILE_endpoint=True)
+    resp, warnings = query_handler.to_vrsatile(
+        html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode)
 
     # TODO: check toVRSATILEService
     return ToVRSATILEService(
         search_term=q,
-        variations=resps,
+        variations=resp,
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
         ),
-        warnings=warnings
+        warnings=warnings if warnings else []
     )
 
 

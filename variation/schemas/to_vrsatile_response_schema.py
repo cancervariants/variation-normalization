@@ -1,6 +1,6 @@
 """Module for toVRSATILE endpoint response schema."""
 from pydantic import BaseModel
-from typing import List, Dict, Type, Any, Optional, Union
+from typing import List, Dict, Type, Any, Optional
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from variation.schemas.normalize_response_schema import ServiceMeta
@@ -11,7 +11,7 @@ class ToVRSATILEService(BaseModel):
 
     search_term: StrictStr
     warnings: Optional[List[StrictStr]]
-    VariationDescriptors: Optional[List[VariationDescriptor]]
+    variations: Optional[List[VariationDescriptor]]
     service_meta_: ServiceMeta
 
     class Config:
@@ -28,7 +28,7 @@ class ToVRSATILEService(BaseModel):
             schema["example"] = {
                 "search_term": "BRAF V600E",
                 "variationdescriptors": [
-                    {   
+                    {
                         "id": "normalize.variation:BRAF%20V600E",
                         "type": "VariationDescriptor",
                         "extensions": [
@@ -52,14 +52,14 @@ class ToVRSATILEService(BaseModel):
                                 ]
                             }
                         ],
-                        "variation_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
+                        "variation_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",  # noqa: E501
                         "variation": {
                             "id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
                             "type": "Allele",
                             "location": {
-                                "id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",
+                                "id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",  # noqa: E501
                                 "type": "SequenceLocation",
-                                "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                                "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",  # noqa: E501
                                 "interval": {
                                     "type": "SequenceInterval",
                                     "start": {
@@ -93,7 +93,7 @@ class ToVRSATILEService(BaseModel):
                                 "BRAF1",
                                 "B-raf",
                                 "NS7"
-                            ], 
+                            ],
                             "extensions": [
                                 {
                                     "type": "Extension",
@@ -103,7 +103,7 @@ class ToVRSATILEService(BaseModel):
                                 {
                                     "type": "Extension",
                                     "name": "approved_name",
-                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"  # noqa: E501
                                 },
                                 {
                                     "type": "Extension",
@@ -115,11 +115,11 @@ class ToVRSATILEService(BaseModel):
                                             "start": "q34",
                                             "end": "q34"
                                         },
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
                                         "type": "ChromosomeLocation",
                                         "chr": "7"
                                     }
-                                }, 
+                                },
                                 {
                                     "type": "Extension",
                                     "name": "associated_with",
@@ -141,7 +141,7 @@ class ToVRSATILEService(BaseModel):
                                 }
                             ],
                             "gene_id": "hgnc:1097"
-                        }, 
+                        },
                         "vrs_ref_allele_seq": "V"
                     },
                     {
@@ -170,14 +170,14 @@ class ToVRSATILEService(BaseModel):
                                 ]
                             }
                         ],
-                        "variation_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
+                        "variation_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",  # noqa: E501
                         "variation": {
                             "id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
                             "type": "Allele",
                             "location": {
-                                "id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",
+                                "id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",  # noqa: E501
                                 "type": "SequenceLocation",
-                                "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+                                "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",  # noqa: E501
                                 "interval": {
                                     "type": "SequenceInterval",
                                     "start": {
@@ -221,7 +221,7 @@ class ToVRSATILEService(BaseModel):
                                 {
                                     "type": "Extension",
                                     "name": "approved_name",
-                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"  # noqa: E501
                                 },
                                 {
                                     "type": "Extension",
@@ -233,7 +233,7 @@ class ToVRSATILEService(BaseModel):
                                             "start": "q34",
                                             "end": "q34"
                                         },
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
                                         "type": "ChromosomeLocation",
                                         "chr": "7"
                                     }
@@ -288,14 +288,14 @@ class ToVRSATILEService(BaseModel):
                                 ]
                             }
                         ],
-                        "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
+                        "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",  # noqa: E501
                         "variation": {
-                            "id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
+                            "id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",  # noqa: E501
                             "type": "Allele",
                             "location": {
-                                "id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
+                                "id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",  # noqa: E501
                                 "type": "SequenceLocation",
-                                "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                                "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",  # noqa: E501
                                 "interval": {
                                     "type": "SequenceInterval",
                                     "start": {
@@ -339,7 +339,7 @@ class ToVRSATILEService(BaseModel):
                                 {
                                     "type": "Extension",
                                     "name": "approved_name",
-                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"  # noqa: E501
                                 },
                                 {
                                     "type": "Extension",
@@ -351,7 +351,7 @@ class ToVRSATILEService(BaseModel):
                                             "start": "q34",
                                             "end": "q34"
                                         },
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
                                         "type": "ChromosomeLocation",
                                         "chr": "7"
                                     }
@@ -406,14 +406,14 @@ class ToVRSATILEService(BaseModel):
                                 ]
                             }
                         ],
-                        "variation_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
+                        "variation_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",  # noqa: E501
                         "variation": {
                             "id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
                             "type": "Allele",
                             "location": {
-                                "id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",
+                                "id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",  # noqa: E501
                                 "type": "SequenceLocation",
-                                "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+                                "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",  # noqa: E501
                                 "interval": {
                                     "type": "SequenceInterval",
                                     "start": {
@@ -457,7 +457,7 @@ class ToVRSATILEService(BaseModel):
                                 {
                                     "type": "Extension",
                                     "name": "approved_name",
-                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"  # noqa: E501
                                 },
                                 {
                                     "type": "Extension",
@@ -469,7 +469,7 @@ class ToVRSATILEService(BaseModel):
                                             "start": "q34",
                                             "end": "q34"
                                         },
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
                                         "type": "ChromosomeLocation",
                                         "chr": "7"
                                     }
@@ -528,14 +528,14 @@ class ToVRSATILEService(BaseModel):
                                 ]
                             }
                         ],
-                        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
+                        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
                         "variation": {
                             "id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
                             "type": "Allele",
                             "location": {
-                                "id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
+                                "id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
                                 "type": "SequenceLocation",
-                                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
+                                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
                                 "interval": {
                                     "type": "SequenceInterval",
                                     "start": {
@@ -579,7 +579,7 @@ class ToVRSATILEService(BaseModel):
                                 {
                                     "type": "Extension",
                                     "name": "approved_name",
-                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                    "value": "B-Raf proto-oncogene, serine/threonine kinase"  # noqa: E501
                                 },
                                 {
                                     "type": "Extension",
@@ -591,7 +591,7 @@ class ToVRSATILEService(BaseModel):
                                             "start": "q34",
                                             "end": "q34"
                                         },
-                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
                                         "type": "ChromosomeLocation",
                                         "chr": "7"
                                     }
