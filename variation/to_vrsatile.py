@@ -17,30 +17,23 @@ class ToVRSATILE(ToVRS):
             q: str, validations: ValidationSummary,
             warnings: List) -> Tuple[ValidationResult, List, List]:
         """Get valid results
-
         :param str q: Query string
         :param ValidationSummary validations: Validation Summary for query
         :param List warnings: List of warnings
         :return: Valid result, list of valid results, list of accession status
         """
-        # For now, only use first valid result
-        valid_result = None
         list_of_valid_res = list()
-        possible_ac_mane_status = list()
+
         for r in validations.valid_results:
             if r.is_valid and r.variation:
                 list_of_valid_res.append(r)
-                if r.is_mane_transcript:
-                    possible_ac_mane_status.append((r.possible_ac[:], True))
-                else:
-                    possible_ac_mane_status.append((r.possible_ac[:], False))
 
-        if not valid_result:  # TODO: if not listOf_valid_res?
-            warning = f"Unable to find MANE Transcript for {q}."
+        if not list_of_valid_res:
+            warning = f"Unable to normalize variants for {q}."
             logger.warning(warning)
             warnings.append(warning)
-            valid_result = validations.valid_results[0]
-        return valid_result, list_of_valid_res, possible_ac_mane_status
+            list_of_valid_res = [validations.valid_results[0]]
+        return list_of_valid_res
 
     def to_vrsatile(self, q: str, validations: ValidationSummary,
                     warnings: List) -> Tuple[List, List]:
@@ -58,7 +51,7 @@ class ToVRSATILE(ToVRS):
         else:
             _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"
             if len(validations.valid_results) > 0:
-                valid_result, list_of_valid_res, possible_ac = \
+                list_of_valid_res = \
                     self.get_valid_result(q, validations, warnings)
 
                 for val_res in list_of_valid_res:
@@ -67,7 +60,13 @@ class ToVRSATILE(ToVRS):
                             val_res.variation, val_res, _id,
                             warnings)
 
-                    if possible_ac[1]:
+                    # we need a better answer for reference genome build
+                    # because all the possible accessions are from transcript mapping file  # noqa: E501
+                    # if users chose to use GRCh37, all the possible accessions will be in GRCh37  # noqa: E501
+                    # but the accession_id for mane transcript is a GRCh38
+                    # it would be confusing
+                    # also need to consider adding mane_transcript ENST_ id to variation descriptor  # noqa: E501
+                    if val_res.is_mane_transcript:
                         ref_genome = ReferenceGenomeBuild.GRCH38
                         mane_status = "mane transcript"
                     else:
@@ -76,7 +75,7 @@ class ToVRSATILE(ToVRS):
                     tovrsatile_resp.extensions = [
                         Extension(
                             name='possible accessions',
-                            value=possible_ac[0]
+                            value=val_res.possible_ac
                         ).dict(exclude_none=True),
                         Extension(
                             name='human reference genome assembly',
