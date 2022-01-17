@@ -10,7 +10,11 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
 
-app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
+app = FastAPI(
+    docs_url="/variation",
+    openapi_url="/variation/openapi.json",
+    swagger_ui_parameters={"tryItOutEnabled": True}
+)
 query_handler = QueryHandler()
 
 
