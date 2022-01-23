@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Kuzma"
+  given-names: "Kori"
+- family-names: "Stevenson"
+  given-names: "James"
+- family-names: "Liu"
+  given-names: "Jiachen"
+- family-names: "Coffman"
+  given-names: "Adam"
+- family-names: "Henkenjohann"
+  given-names: "Richard"
+- family-names: "Babb"
+  given-names: "Lawrence"
+- family-names: "Liu"
+  given-names: "Xuelu"
+- family-names: "Wagner"
+  given-names: "Alex H."
+  orcid: "https://orcid.org/0000-0002-2502-8961"
+title: "variation-normalization"
+version: 0.2.16dev
+date-released: 2022-01-23
+url: "https://github.com/cancervariants/variation-normalization"
