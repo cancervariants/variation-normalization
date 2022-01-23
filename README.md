@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5894937.svg)](https://doi.org/10.5281/zenodo.5894937)
+
 # Variation Normalization
 
 Services and guidelines for normalizing variation terms into [VRS (v1.2.0)](https://vrs.ga4gh.org/en/1.2.0) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
