@@ -10,7 +10,11 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
 
-app = FastAPI(docs_url='/variation', openapi_url='/variation/openapi.json')
+app = FastAPI(
+    docs_url="/variation",
+    openapi_url="/variation/openapi.json",
+    swagger_ui_parameters={"tryItOutEnabled": True}
+)
 query_handler = QueryHandler()
 
 
@@ -27,7 +31,8 @@ def custom_openapi():
 
     openapi_schema['info']['contact'] = {
         "name": "Alex H. Wagner",
-        "email": "Alex.Wagner@nationwidechildrens.org"
+        "email": "Alex.Wagner@nationwidechildrens.org",
+        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab"  # noqa: E501
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema

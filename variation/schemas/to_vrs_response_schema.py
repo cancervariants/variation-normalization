@@ -31,11 +31,12 @@ class ToVRSService(BaseModel):
                 "search_term": "BRAF V600E",
                 "variations": [
                     {
-                        "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
+                        "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
                         "type": "Allele",
                         "location": {
+                            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",  # noqa: E501
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",  # noqa: E501
+                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",  # noqa: E501
                             "interval": {
                                 "type": "SequenceInterval",
                                 "start": {
@@ -55,7 +56,9 @@ class ToVRSService(BaseModel):
                     },
                     {
                         "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
+                        "type": "Allele",
                         "location": {
+                            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",  # noqa: E501
                             "type": "SequenceLocation",
                             "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",  # noqa: E501
                             "interval": {
@@ -76,15 +79,22 @@ class ToVRSService(BaseModel):
                         }
                     },
                     {
-                        "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
+                        "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
                         "type": "Allele",
                         "location": {
+                            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",  # noqa: E501
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",  # noqa: E501
+                            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",  # noqa: E501
                             "interval": {
                                 "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 599},
-                                "end": {"type": "Number", "value": 600}
+                                "start": {
+                                    "type": "Number",
+                                    "value": 599
+                                },
+                                "end": {
+                                    "type": "Number",
+                                    "value": 600
+                                }
                             }
                         },
                         "state": {
@@ -93,15 +103,22 @@ class ToVRSService(BaseModel):
                         }
                     },
                     {
-                        "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
+                        "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
                         "type": "Allele",
                         "location": {
+                            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",  # noqa: E501
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",  # noqa: E501
+                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",  # noqa: E501
                             "interval": {
                                 "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 599},
-                                "end": {"type": "Number", "value": 600}
+                                "start": {
+                                    "type": "Number",
+                                    "value": 599
+                                },
+                                "end": {
+                                    "type": "Number",
+                                    "value": 600
+                                }
                             }
                         },
                         "state": {
@@ -113,12 +130,19 @@ class ToVRSService(BaseModel):
                         "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
                         "type": "Allele",
                         "location": {
+                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
                             "type": "SequenceLocation",
                             "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
                             "interval": {
                                 "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 639},
-                                "end": {"type": "Number", "value": 640}
+                                "start": {
+                                    "type": "Number",
+                                    "value": 639
+                                },
+                                "end": {
+                                    "type": "Number",
+                                    "value": 640
+                                }
                             }
                         },
                         "state": {
@@ -129,8 +153,8 @@ class ToVRSService(BaseModel):
                 ],
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.13",
-                    "response_datetime": "2021-11-18T14:10:53.909158",
+                    "version": "0.2.17",
+                    "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
                 }
 
