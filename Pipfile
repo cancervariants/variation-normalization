@@ -18,6 +18,7 @@ jupyter = "*"
 ipykernel = "*"
 twine = "*"
 matplotlib = "*"
+psycopg2-binary = "*"
 
 [packages]
 hgvs = "*"
