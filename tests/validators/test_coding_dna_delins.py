@@ -3,13 +3,6 @@ import unittest
 from variation.validators import CodingDNADelIns
 from variation.classifiers import CodingDNADelInsClassifier
 from .validator_base import ValidatorBase
-from variation.tokenizers import GeneSymbol
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestCodingDNADelInsValidator(ValidatorBase, unittest.TestCase):
@@ -17,19 +10,7 @@ class TestCodingDNADelInsValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA delins instance."""
-        seqrepo_access = SeqRepoAccess()
-        transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
-        gene_normalizer = GeneQueryHandler()
-        return CodingDNADelIns(
-            seqrepo_access, transcript_mappings,
-            GeneSymbol(gene_normalizer),
-            MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), uta),
-            uta, dp, tlr, gene_normalizer
-        )
+        return CodingDNADelIns(*self.params)
 
     def classifier_instance(self):
         """Return the coding DNA delins classifier instance."""

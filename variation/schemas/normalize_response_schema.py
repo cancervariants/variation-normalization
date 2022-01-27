@@ -69,10 +69,11 @@ class NormalizeService(BaseModel):
                 "variation_descriptor": {
                     "id": "normalize.variation:BRAF%20V600E",
                     "type": "VariationDescriptor",
-                    "label": "NP_001361187.1:p.Val640Glu",
                     "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
                     "variation": {
+                        "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
                         "location": {
+                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
                             "interval": {
                                 "end": {"value": 640, "type": "Number"},
                                 "start": {"value": 639, "type": "Number"},
@@ -148,8 +149,8 @@ class NormalizeService(BaseModel):
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.13",
-                    "response_datetime": "2021-11-18T14:10:53.909158",
+                    "version": "0.2.17",
+                    "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
                 }
             }

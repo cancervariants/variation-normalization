@@ -4,13 +4,6 @@ from variation.classifiers import CodingDNASilentMutationClassifier
 from variation.translators import CodingDNASilentMutation
 from variation.validators import CodingDNASilentMutation as CDNASM_V
 from .translator_base import TranslatorBase
-from variation.tokenizers import GeneSymbol
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
@@ -22,19 +15,7 @@ class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA silent mutation instance."""
-        seqrepo_access = SeqRepoAccess()
-        transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
-        gene_normalizer = GeneQueryHandler()
-        return CDNASM_V(
-            seqrepo_access, transcript_mappings,
-            GeneSymbol(gene_normalizer),
-            MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), uta),
-            uta, dp, tlr, gene_normalizer
-        )
+        return CDNASM_V(*self.params)
 
     def translator_instance(self):
         """Return coding DNA silent mutation instance."""
