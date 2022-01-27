@@ -3,14 +3,6 @@ import unittest
 from variation.validators import AminoAcidInsertion
 from variation.classifiers import AminoAcidInsertionClassifier
 from .validator_base import ValidatorBase
-from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestAminoAcidInsertionValidator(ValidatorBase, unittest.TestCase):
@@ -18,18 +10,7 @@ class TestAminoAcidInsertionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return amino acid insertion instance."""
-        seqrepo_access = SeqRepoAccess()
-        transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
-        gene_normalizer = GeneQueryHandler()
-        return AminoAcidInsertion(
-            seqrepo_access, transcript_mappings,
-            GeneSymbol(gene_normalizer),
-            MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), uta),
-            uta, dp, tlr, gene_normalizer, AminoAcidCache())
+        return AminoAcidInsertion(*self.aa_params)
 
     def classifier_instance(self):
         """Return the amino acid insertion classifier instance."""

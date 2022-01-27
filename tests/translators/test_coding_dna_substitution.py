@@ -4,13 +4,6 @@ from variation.classifiers import CodingDNASubstitutionClassifier
 from variation.translators import CodingDNASubstitution
 from variation.validators import CodingDNASubstitution as CDNASUB_V
 from .translator_base import TranslatorBase
-from variation.tokenizers import GeneSymbol
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestCodingDNASubstitutionTranslator(TranslatorBase, unittest.TestCase):
@@ -22,19 +15,7 @@ class TestCodingDNASubstitutionTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA substitution instance."""
-        seqrepo_access = SeqRepoAccess()
-        transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
-        gene_normalizer = GeneQueryHandler()
-        return CDNASUB_V(
-            seqrepo_access, transcript_mappings,
-            GeneSymbol(gene_normalizer),
-            MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), uta),
-            uta, dp, tlr, gene_normalizer
-        )
+        return CDNASUB_V(*self.params)
 
     def translator_instance(self):
         """Return coding DNA substitution instance."""

@@ -4,14 +4,6 @@ from variation.classifiers import AminoAcidDelInsClassifier
 from variation.translators import AminoAcidDelIns
 from variation.validators import AminoAcidDelIns as AAD_V
 from .translator_base import TranslatorBase
-from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestAminoAcidDelInsTranslator(TranslatorBase, unittest.TestCase):
@@ -23,18 +15,7 @@ class TestAminoAcidDelInsTranslator(TranslatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return amino acid delins instance."""
-        seqrepo_access = SeqRepoAccess()
-        transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
-        tlr = Translator(data_proxy=dp)
-        gene_normalizer = GeneQueryHandler()
-        return AAD_V(
-            seqrepo_access, transcript_mappings,
-            GeneSymbol(gene_normalizer),
-            MANETranscript(seqrepo_access, transcript_mappings,
-                           MANETranscriptMappings(), uta),
-            uta, dp, tlr, gene_normalizer, AminoAcidCache())
+        return AAD_V(*self.aa_params)
 
     def translator_instance(self):
         """Return amino acid delins instance."""
