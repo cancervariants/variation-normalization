@@ -29,6 +29,8 @@ logger.setLevel(logging.DEBUG)
 class Validator(ABC):
     """The validator class."""
 
+    hgvs_parser = hgvs.parser.Parser()
+
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
@@ -54,7 +56,6 @@ class Validator(ABC):
         self._gene_matcher = gene_symbol
         self.dp = dp
         self.tlr = tlr
-        self.hgvs_parser = hgvs.parser.Parser()
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
