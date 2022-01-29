@@ -13,7 +13,6 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings
 from variation.mane_transcript import MANETranscript
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-import hgvs.parser
 import logging
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
@@ -54,7 +53,6 @@ class Validator(ABC):
         self._gene_matcher = gene_symbol
         self.dp = dp
         self.tlr = tlr
-        self.hgvs_parser = hgvs.parser.Parser()
         self.uta = uta
         self.genomic_base = GenomicBase(self.dp, self.uta)
         self.mane_transcript = mane_transcript
