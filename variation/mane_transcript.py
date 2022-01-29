@@ -9,7 +9,6 @@ Steps:
 4. Map back to correct annotation layer
 """
 from typing import Optional, Tuple, Dict
-import hgvs.parser
 import logging
 import math
 from pydantic.types import StrictBool
@@ -34,7 +33,6 @@ class MANETranscript:
             transcript alignments
         """
         self.seqrepo_access = seqrepo_access
-        self.hgvs_parser = hgvs.parser.Parser()
         self.transcript_mappings = transcript_mappings
         self.mane_transcript_mappings = mane_transcript_mappings
         self.uta = uta
