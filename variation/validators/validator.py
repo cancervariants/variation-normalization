@@ -13,7 +13,6 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings
 from variation.mane_transcript import MANETranscript
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-import hgvs.parser
 import logging
 from variation.validators.genomic_base import GenomicBase
 from variation.data_sources import UTA
@@ -28,8 +27,6 @@ logger.setLevel(logging.DEBUG)
 
 class Validator(ABC):
     """The validator class."""
-
-    hgvs_parser = hgvs.parser.Parser()
 
     def __init__(self, seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
