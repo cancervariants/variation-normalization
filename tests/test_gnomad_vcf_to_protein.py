@@ -353,9 +353,9 @@ def cdk11a_e314del(cdk11a_gene_context):
     params = {
         "id": "normalize.variation:1-1708855-TTCC-T",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.-MLx0vGh3pjXQPjJ3cz-cmxwanJL275q",
+        "variation_id": "ga4gh:VA.6GUBUCcortzNbx7Q5DMPzxiFTnvPowhi",
         "variation": {
-            "_id": "ga4gh:VA.-MLx0vGh3pjXQPjJ3cz-cmxwanJL275q",
+            "_id": "ga4gh:VA.6GUBUCcortzNbx7Q5DMPzxiFTnvPowhi",
             "location": {
                 "_id": "ga4gh:VSL.tnCPFL4wpErBLA6rnIcFrRUGpaO1639_",
                 "interval": {
@@ -367,7 +367,7 @@ def cdk11a_e314del(cdk11a_gene_context):
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "",
+                "sequence": "EEEEEEEEEEEE",
                 "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
@@ -500,10 +500,10 @@ def test_invalid(test_query_handler):
 
     resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation.type == "Text"
-    assert w == [
+    assert set(w) == {
         "Unable to get transcripts given NC_000007.13 and 140753336",
-        "Unable to get transcripts given NC_000007.14 and 141053536"
-    ]
+        "Expected T but found A on NC_000007.14 at position 140753336",
+    }
 
     resp, w = test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation.type == "Text"
