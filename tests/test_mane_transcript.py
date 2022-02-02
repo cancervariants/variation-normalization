@@ -3,7 +3,6 @@ import pytest
 from variation.mane_transcript import MANETranscript
 from variation.data_sources import TranscriptMappings, \
     MANETranscriptMappings, UTA, SeqRepoAccess
-import hgvs.parser
 import copy
 
 
@@ -17,7 +16,6 @@ def test_mane_transcript():
                 SeqRepoAccess(), TranscriptMappings(),
                 MANETranscriptMappings(), UTA()
             )
-            self.test_hgvs_parser = hgvs.parser.Parser()
 
         def get_reading_frame(self, pos):
             return self.test_mane_transcript.get_reading_frame(pos)

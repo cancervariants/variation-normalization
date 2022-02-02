@@ -330,15 +330,37 @@ class QueryHandler:
             alt_ac = self._get_refseq_alt_ac_from_variation(variation)
 
             # 1-based
-            g_start_pos =\
-                variation["location"]["interval"]["start"]["value"] + 1
-            g_end_pos = variation["location"]["interval"]["end"]["value"]
+            if classification_token.alt_type == "deletion":
+                g_start_pos = classification_token.start_pos_del
+                g_end_pos = classification_token.end_pos_del
+            elif classification_token.alt_type == "insertion":
+                g_start_pos = classification_token.start_pos_flank
+                g_end_pos = classification_token.end_pos_flank
+            elif classification_token.alt_type in ["silent_mutation",
+                                                   "substitution"]:
+                g_start_pos = classification_token.position
+                g_end_pos = classification_token.position
+                ref_seq = self.seqrepo_access.get_sequence(alt_ac, g_start_pos)
+                if ref_seq != classification_token.ref_nucleotide:
+                    all_warnings.append(
+                        f"Expected {classification_token.ref_nucleotide}"
+                        f" but found {ref_seq} on {alt_ac} at position"
+                        f" {g_start_pos}"
+                    )
+                    continue
+            else:
+                all_warnings.append(
+                    f"{classification_token.alt_type} alt_type not supported"
+                )
+                continue
+
             transcripts = self.uta.get_transcripts_from_genomic_pos(
                 alt_ac, g_start_pos)
 
             if not transcripts:
                 all_warnings.append(f"Unable to get transcripts given {alt_ac}"
                                     f" and {g_start_pos}")
+                continue
             mane_data = self.to_vrs_handler.mane_transcript_mappings.get_mane_from_transcripts(transcripts)  # noqa: E501
             mane_data_len = len(mane_data)
             for i in range(mane_data_len):
