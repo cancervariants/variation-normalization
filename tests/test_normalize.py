@@ -438,9 +438,9 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
+        "variation_id": "ga4gh:VA.NUCURWYivhjC4oyBtzgJZ27SaaMY08Q7",
         "variation": {
-            "_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
+            "_id": "ga4gh:VA.NUCURWYivhjC4oyBtzgJZ27SaaMY08Q7",
             "location": {
                 "_id": "ga4gh:VSL.3uPWAjsdzd8MbAqw8DV46eBLK8tQRyEs",
                 "interval": {
@@ -452,7 +452,7 @@ def coding_dna_deletion(erbb2_context):
                 "type": "SequenceLocation"
             },
             "state": {
-                "sequence": "",
+                "sequence": "T",
                 "type": "LiteralSequenceExpression"
             },
             "type": "Allele"
@@ -1141,6 +1141,11 @@ def test_valid_queries(test_normalize):
     revealed bugs in service.
     """
     assert test_normalize.normalize("CCND1 Y44D")
+
+    resp = test_normalize.normalize("NC_000002.12:g.73448098_73448100delCTC")
+    assert resp
+    assert resp.variation.state.sequence == "CTC"
+    assert resp.variation.id == "ga4gh:VA.7qNgfRjiDwephtGOuwtXm04YcXDSY47x"
 
 
 def test_no_matches(test_normalize):

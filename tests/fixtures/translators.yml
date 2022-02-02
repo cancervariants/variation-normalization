@@ -1300,7 +1300,7 @@ coding_dna_deletion:
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
       variations: [
         {
-          "_id": "ga4gh:VA.flgLAEHLaG_O9m5D1FKsQ1P3dRN8NLce",
+          "_id": "ga4gh:VA.X2v43-hE1pYcA7jrwKKgahE0PkjGhPK_",
           "location": {
             "_id": "ga4gh:VSL.eTNgV11ScIpSynz5cOU9Yd6RIiLiOWLw",
             "interval": {
@@ -1312,13 +1312,13 @@ coding_dna_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "T",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         },
         {
-          "_id": "ga4gh:VA.tMjlwNf2mYOKPbXXwGo4IKd_OtHuVfMT",
+          "_id": "ga4gh:VA.NUCURWYivhjC4oyBtzgJZ27SaaMY08Q7",
           "location": {
             "_id": "ga4gh:VSL.3uPWAjsdzd8MbAqw8DV46eBLK8tQRyEs",
             "interval": {
@@ -1330,7 +1330,7 @@ coding_dna_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "T",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
@@ -1342,7 +1342,7 @@ genomic_deletion:
     - query: NC_000003.11:g.10191486_10191487delAG
       variations: [
         {
-          "_id": "ga4gh:VA.2jURgc5DDHYWaUP1eea-sHucy1tza6Pv",
+          "_id": "ga4gh:VA.i7BdznfMMl0ufjbqo4u6opewUchRR1Gx",
           "location": {
             "_id": "ga4gh:VSL.WMs6q4Q2XWOPMa6ZMgof7xuhKN5nLsGn",
             "interval": {
@@ -1354,13 +1354,13 @@ genomic_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "AG",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         },
         {
-          "_id": "ga4gh:VA.VOHJmr3khwFkEKYOHugSr22OpF9KWWDH",
+          "_id": "ga4gh:VA.T8Bq8WAJI7QIbZWQYORGTM-TUs8qSA-A",
           "location": {
             "_id": "ga4gh:VSL.eY-L18CsfltCfdtTwTPJA5Yd4yE3KNbA",
             "interval": {
@@ -1372,7 +1372,7 @@ genomic_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "AG",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
@@ -1381,7 +1381,7 @@ genomic_deletion:
     - query: VHL g.10191486_10191487delAG
       variations: [
         {
-          "_id": "ga4gh:VA.otmQbPfr2ogACdEmHPRsA4EksX6fKg_k",
+          "_id": "ga4gh:VA.rlgIKa5woUQfnRDZGaSu73H-aQ0gogF5",
           "location": {
             "_id": "ga4gh:VSL.80ORox81ZbFEpgMvBZuaAkIpE5soWy0P",
             "interval": {
@@ -1393,13 +1393,13 @@ genomic_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "AG",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
         },
         {
-          "_id": "ga4gh:VA.VOHJmr3khwFkEKYOHugSr22OpF9KWWDH",
+          "_id": "ga4gh:VA.T8Bq8WAJI7QIbZWQYORGTM-TUs8qSA-A",
           "location": {
             "_id": "ga4gh:VSL.eY-L18CsfltCfdtTwTPJA5Yd4yE3KNbA",
             "interval": {
@@ -1411,7 +1411,7 @@ genomic_deletion:
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "",
+            "sequence": "AG",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
