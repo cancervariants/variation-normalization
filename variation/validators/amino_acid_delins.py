@@ -110,7 +110,7 @@ class AminoAcidDelIns(Validator):
                             t, s.end_aa_del, s.end_pos_del, errors
                         )
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.end_pos_del,
                         s.reference_sequence,
@@ -128,10 +128,11 @@ class AminoAcidDelIns(Validator):
                 if is_identifier:
                     break
 
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
