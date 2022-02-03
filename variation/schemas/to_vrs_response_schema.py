@@ -125,30 +125,6 @@ class ToVRSService(BaseModel):
                             "type": "LiteralSequenceExpression",
                             "sequence": "E"
                         }
-                    },
-                    {
-                        "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
-                        "type": "Allele",
-                        "location": {
-                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 639
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 640
-                                }
-                            }
-                        },
-                        "state": {
-                            "type": "LiteralSequenceExpression",
-                            "sequence": "E"
-                        }
                     }
                 ],
                 "service_meta_": {
