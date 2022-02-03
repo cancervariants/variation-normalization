@@ -157,7 +157,7 @@ class SingleNucleotideVariationBase(Validator):
                                     f'Expected {s.reference_sequence} but '
                                     f'found {sequence}')
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position, s.reference_sequence,
                         gene=gene_tokens[0].token if gene_tokens else None,
@@ -174,10 +174,12 @@ class SingleNucleotideVariationBase(Validator):
 
                 if is_identifier:
                     break
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def check_ref_nucleotide(self, actual_ref_nuc, expected_ref_nuc,
                              position, t, errors):

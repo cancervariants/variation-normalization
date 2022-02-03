@@ -66,7 +66,7 @@ class InsertionBase(Validator):
                 if not errors:
                     self.check_pos_index(t, s, errors)
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_flank, s.end_pos_flank,
                         s.reference_sequence,
@@ -85,10 +85,11 @@ class InsertionBase(Validator):
                 if is_identifier:
                     break
 
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def get_hgvs_expr(self, classification, t, s, is_hgvs):
         """Return a HGVS expression.
