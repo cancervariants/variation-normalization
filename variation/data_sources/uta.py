@@ -2,17 +2,21 @@
 Variation Normalization only supports liftover from GRCh37 assembly.
 """
 from typing import Dict, Optional, List, Tuple
+import logging
+from os import environ
+from urllib.parse import quote, unquote
+
 import psycopg2
 import psycopg2.extras
 from pydantic.types import StrictBool
 from six.moves.urllib import parse as urlparse
-import logging
-from variation import UTA_DB_URL
 from pyliftover import LiftOver
-from os import environ
 import pandas as pd
-from urllib.parse import quote, unquote
 import boto3
+import sqlalchemy
+from sqlalchemy.sql import text
+
+from variation import UTA_DB_URL
 
 
 logger = logging.getLogger('variation')
@@ -34,9 +38,17 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        self._create_sqlalchemy_engine()
         self._create_genomic_table()
         self.liftover = LiftOver('hg19', 'hg38')
         self.liftover_to_37 = LiftOver('hg38', 'hg19')
+
+    def _create_sqlalchemy_engine(self) -> None:
+        """Initialize SQLAlchemy engine instance."""
+        conn_uri = f"postgresql+psycopg2://{self.args['user']}:" \
+                   f"{self.args['password']}@{self.args['host']}:" \
+                   f"{self.args['port']}/{self.args['database']}"
+        self.engine = sqlalchemy.create_engine(conn_uri)
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
@@ -483,7 +495,7 @@ class UTA:
             Transcripts are ordered by most recent NC accession, then by
             descending transcript length.
         """
-        query = (
+        query = text(
             f"""
             SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac, T.cds_start_i
             FROM {self.schema}.associated_accessions as AA
@@ -499,7 +511,7 @@ class UTA:
             ORDER BY ALIGN.alt_ac, ALIGN.tx_end_i - ALIGN.tx_start_i DESC;
             """
         )
-        return pd.read_sql(query, self.conn)
+        return pd.read_sql(query, self.engine)
 
     def get_chr_assembly(self, ac) -> Optional[Tuple[str, str]]:
         """Get chromosome and assembly for NC accession.
