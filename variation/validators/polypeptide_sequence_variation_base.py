@@ -103,7 +103,7 @@ class PolypeptideSequenceVariationBase(Validator):
                         t, s.ref_protein, s.position, errors
                     )
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position,
                         s.reference_sequence, ref=s.ref_protein,
@@ -120,10 +120,11 @@ class PolypeptideSequenceVariationBase(Validator):
                 if is_identifier:
                     break
 
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
