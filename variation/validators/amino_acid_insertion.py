@@ -112,7 +112,7 @@ class AminoAcidInsertion(Validator):
                             t, s.end_aa_flank, s.end_pos_flank, errors
                         )
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_flank, s.end_pos_flank,
                         s.reference_sequence,
@@ -129,10 +129,11 @@ class AminoAcidInsertion(Validator):
                 if is_identifier:
                     break
 
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
