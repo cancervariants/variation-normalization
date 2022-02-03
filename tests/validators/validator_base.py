@@ -69,7 +69,7 @@ class ValidatorBase:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
-                classification, normalize_endpoint=True,
+                classification, normalize_endpoint=False,
                 hgvs_dup_del_mode="default"
             )
             is_valid = False

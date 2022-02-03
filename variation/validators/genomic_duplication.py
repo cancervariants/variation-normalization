@@ -71,7 +71,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 start = result['start']
                 end = result['end']
 
-                if not errors:
+                if not errors and normalize_endpoint:
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end)
@@ -84,10 +84,11 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if is_identifier:
                     break
 
-        self.add_mane_to_validation_results(
-            mane_data_found, valid_alleles, results,
-            classification, gene_tokens
-        )
+        if normalize_endpoint:
+            self.add_mane_to_validation_results(
+                mane_data_found, valid_alleles, results,
+                classification, gene_tokens
+            )
 
     def _get_variation(self, s: Token, t: str, errors: List, gene_tokens: List,
                        hgvs_dup_del_mode: HGVSDupDelModeEnum,
