@@ -2,11 +2,14 @@
 from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
 
+import pydantic
+import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
+
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.token_response_schema import Nomenclature, Token, \
@@ -26,8 +29,8 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
-    Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+    Haplotype, VariationSet, CURIE
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, Expression
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -61,6 +64,7 @@ class QueryHandler:
         self.codon_table = CodonTable(self.amino_acid_cache)
         self.uta = UTA(db_url=uta_db_url, db_pwd=uta_db_pwd)
         self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
+        self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         self.vrs = VRS(self.dp, self.seqrepo_access)
         self.to_vrs_handler = self._init_to_vrs()
@@ -89,14 +93,13 @@ class QueryHandler:
         mane_transcript_mappings = MANETranscriptMappings(
             mane_data_path=mane_data_path
         )
-        tlr = Translator(data_proxy=self.dp)
         mane_transcript = MANETranscript(
             self.seqrepo_access, transcript_mappings,
             mane_transcript_mappings, self.uta
         )
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, self.uta, self.dp, tlr,
+            mane_transcript, self.uta, self.dp, self.tlr,
             self.amino_acid_cache, self.gene_normalizer, self.vrs
         )
         translator = Translate()
@@ -423,3 +426,81 @@ class QueryHandler:
             else:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
+
+    def canonical_spdi_to_vrsatile(
+            self, q: str, version: Optional[str] = None,
+            complement: Optional[bool] = False,
+            members: Optional[List[str]] = None,
+            members_syntax: Optional[CURIE] = None
+    ) -> Tuple[Optional[Dict], List]:
+        """Return categorical variation descriptor for canonical SPDI
+
+        :param str q: Canonical SPDI
+        :param Optional[str] version: Canonical SPDI version
+        :param Optional[bool] complement: This field indicates that a categorical
+            variation is defined to include (false) or exclude (true) variation
+             concepts matching the categorical variation. This is equivalent to a
+             logical NOT operation on the categorical variation properties.
+        :param Optional[List[str]] members: List of variations that fall within
+            the functional domain of the Categorical Variation.
+        :param Optional[CURIE] members_syntax: CURIE representing the `members` syntax
+        :return: Tuple containing categorical variation descriptor
+            and list of warnings
+        """
+        q = q.strip()
+        if not q:
+            return self.normalize_handler._no_variation_entered()
+        warnings = list()
+        if members:
+            if not members_syntax:
+                warnings.append("`members_syntax` must be provided"
+                                " when `members` is provided")
+            else:
+                try:
+                    CURIE(__root__=members_syntax)
+                except pydantic.error_wrappers.ValidationError:
+                    warnings.append(
+                        f"members_syntax is not a valid CURIE: {members_syntax}")
+                else:
+                    members_syntax = members_syntax.strip()
+            if warnings:
+                return None, warnings
+        _id = f"normalize.variation:{quote(' '.join(q.split()))}"
+        variation = None
+        try:
+            variation = self.tlr.translate_from(q, fmt="spdi")
+        except (ValueError, python_jsonschema_objects.validators.ValidationError) as e:
+            warnings.append(f"vrs-python translator raised error: {e}")
+        except KeyError as e:
+            warnings.append(f"vrs-python translator raised error: "
+                            f"seqrepo could not translate identifier {e}")
+        if warnings or not variation:
+            return None, warnings
+
+        categorical_vd = {
+            "id": _id,
+            "type": "CategoricalVariationDescriptor",
+            "version": version,
+            "categorical_variation": dict()
+        }
+        variation.location._id = ga4gh_identify(variation.location)
+        canonical_variation = {
+            "_id": None,  # TODO
+            "type": "CanonicalVariation",
+            "complement": complement,
+            "variation": variation.as_dict()
+        }
+        categorical_vd["categorical_variation"] = canonical_variation
+
+        if members:
+            variation_members = list()
+            for m in members:
+                m = m.strip()
+                variation_member = {
+                    "expression": Expression(syntax=members_syntax, value=m),
+                    "variation_id": None  # TODO
+                }
+                variation_members.append(variation_member)
+            categorical_vd["members"] = variation_members
+
+        return categorical_vd, warnings
