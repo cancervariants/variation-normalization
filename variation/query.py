@@ -411,7 +411,7 @@ class QueryHandler:
                     if variation:
                         valid_list.append(
                             self.normalize_handler.get_variation_descriptor(
-                                variation, valid_result, _id, warnings,
+                                q, variation, valid_result, _id, warnings,
                                 gene=current_mane_data["HGNC_ID"]))
 
         if valid_list:

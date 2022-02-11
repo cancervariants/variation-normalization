@@ -67,35 +67,37 @@ class Normalize:
         if not q:
             resp, warnings = self._no_variation_entered()
         else:
-            _id = f"normalize.variation:{quote(' '.join(q.strip().split()))}"
+            label = q.strip()
+            _id = f"normalize.variation:{quote(' '.join(label.split()))}"
             if len(validations.valid_results) > 0:
                 valid_result = self.get_valid_result(q, validations, warnings)
                 resp, warnings = self.get_variation_descriptor(
-                    valid_result.variation, valid_result, _id, warnings)
+                    label, valid_result.variation, valid_result, _id, warnings)
             else:
-                if not q.strip():
+                if not label:
                     resp, warnings = self._no_variation_entered()
                 else:
-                    resp, warnings = self.text_variation_resp(q, _id, warnings)
+                    resp, warnings = self.text_variation_resp(label, _id, warnings)
         self.warnings = warnings
         return resp
 
     @staticmethod
     def text_variation_resp(
-            q: str, _id: str,
+            label: str, _id: str,
             warnings: List) -> Tuple[VariationDescriptor, List]:
         """Return text variation for queries that could not be normalized
 
-        :param str q: query
+        :param str label: Initial input query
         :param str _id: _id field for variation descriptor
         :param List warnings: List of warnings
         :return: Variation descriptor, warnings
         """
-        warning = f"Unable to normalize {q}"
-        text = models.Text(definition=q)
+        warning = f"Unable to normalize {label}"
+        text = models.Text(definition=label)
         text._id = ga4gh_identify(text)
         resp = VariationDescriptor(
             id=_id,
+            label=label,
             variation=Text(**text.as_dict())
         )
         if not warnings:
@@ -104,11 +106,12 @@ class Normalize:
         return resp, warnings
 
     def get_variation_descriptor(
-            self, variation: Dict, valid_result: ValidationResult,
+            self, label: str, variation: Dict, valid_result: ValidationResult,
             _id: str, warnings: List, gene: Optional[str] = None
     ) -> Tuple[VariationDescriptor, List]:
         """Return variation descriptor and warnings
 
+        :param str label: Initial input query
         :param Dict variation: VRS variation object
         :param ValidationResult valid_result: Valid result for query
         :param str _id: _id field for variation descriptor
@@ -145,6 +148,7 @@ class Normalize:
 
         return VariationDescriptor(
             id=_id,
+            label=label,
             variation_id=variation_id,
             variation=variation,
             molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
