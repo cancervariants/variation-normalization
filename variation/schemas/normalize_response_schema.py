@@ -68,6 +68,7 @@ class NormalizeService(BaseModel):
                 "variation_query": "BRAF V600E",
                 "variation_descriptor": {
                     "id": "normalize.variation:BRAF%20V600E",
+                    "label": "BRAF V600E",
                     "type": "VariationDescriptor",
                     "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
                     "variation": {

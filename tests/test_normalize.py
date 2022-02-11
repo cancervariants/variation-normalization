@@ -12,18 +12,7 @@ from tests.conftest import assertion_checks
 @pytest.fixture(scope="module")
 def test_normalize():
     """Build normalize test fixture."""
-    class TestNormalize:
-
-        def __init__(self):
-            self.query_handler = QueryHandler()
-
-        def to_vrs(self, q):
-            return self.query_handler.to_vrs(q)
-
-        def normalize(self, q):
-            return self.query_handler.normalize(q)
-
-    return TestNormalize()
+    return QueryHandler()
 
 
 @pytest.fixture(scope='module')
@@ -838,39 +827,39 @@ def grch38_genomic_insertion():
 def test_amino_acid_substitution(test_normalize, braf_v600e, dis3_p63a):
     """Test that amino acid substitutions normalize correctly."""
     resp = test_normalize.normalize('     BRAF      V600E    ')
-    assertion_checks(resp, braf_v600e)
+    assertion_checks(resp, braf_v600e, 'BRAF      V600E')
 
     braf_id = "normalize.variation:BRAF%20V600E"
 
     resp = test_normalize.normalize('NP_004324.2:p.Val600Glu')
     assert resp.id == "normalize.variation:NP_004324.2%3Ap.Val600Glu"
     resp.id = braf_id
-    assertion_checks(resp, braf_v600e)
+    assertion_checks(resp, braf_v600e, 'NP_004324.2:p.Val600Glu')
 
     resp = test_normalize.normalize('braf v512e')
     assert resp.id == 'normalize.variation:braf%20v512e'
     resp.id = braf_id
-    assertion_checks(resp, braf_v600e)
+    assertion_checks(resp, braf_v600e, 'braf v512e')
 
     resp = test_normalize.normalize(' NP_001365404.1:p.Val512Glu  ')
     assert resp.id == 'normalize.variation:NP_001365404.1%3Ap.Val512Glu'
     resp.id = braf_id
-    assertion_checks(resp, braf_v600e)
+    assertion_checks(resp, braf_v600e, 'NP_001365404.1:p.Val512Glu')
 
     resp = test_normalize.normalize('DIS3 P63A')
-    assertion_checks(resp, dis3_p63a)
+    assertion_checks(resp, dis3_p63a, 'DIS3 P63A')
 
 
 def test_polypeptide_truncation(test_normalize, vhl):
     """Test that polypeptide truncations normalize correctly."""
     resp = test_normalize.normalize('NP_000542.1:p.Tyr185Ter')
-    assertion_checks(resp, vhl)
+    assertion_checks(resp, vhl, 'NP_000542.1:p.Tyr185Ter')
 
 
 def test_silent_mutation(test_normalize, vhl_silent):
     """Test that silent mutations normalize correctly."""
     resp = test_normalize.normalize('NP_000542.1:p.Pro61=')
-    assertion_checks(resp, vhl_silent)
+    assertion_checks(resp, vhl_silent, 'NP_000542.1:p.Pro61=')
 
 
 def test_coding_dna_and_genomic_substitution(
@@ -878,7 +867,7 @@ def test_coding_dna_and_genomic_substitution(
         genomic_sub_grch38, egfr_grch38_sub, grch38_braf_genom_sub):
     """Test that coding dna and genomic substitutions normalize correctly."""
     resp = test_normalize.normalize('NM_004333.4:c.1799T>A')
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'NM_004333.4:c.1799T>A')
 
     # MANE transcript
     refseq_id = 'normalize.variation:NM_004333.4%3Ac.1799T%3EA'
@@ -887,56 +876,56 @@ def test_coding_dna_and_genomic_substitution(
     resp = test_normalize.normalize('ENST00000288602.10:c.1799T>A')
     assert resp.id == 'normalize.variation:ENST00000288602.10%3Ac.1799T%3EA'
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'ENST00000288602.10:c.1799T>A')
 
     resp = test_normalize.normalize('BRAF V600E c.1799T>A')
     assert resp.id == 'normalize.variation:BRAF%20V600E%20c.1799T%3EA'
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'BRAF V600E c.1799T>A')
 
     resp = test_normalize.normalize('BRAF V600E (c.1799T>A)')
     assert resp.id == 'normalize.variation:BRAF%20V600E%20%28c.1799T%3EA%29'
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'BRAF V600E (c.1799T>A)')
 
     resp = test_normalize.normalize('BRAF c.1799T>A')
     assert resp.id == 'normalize.variation:BRAF%20c.1799T%3EA'
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'BRAF c.1799T>A')
 
     resp = test_normalize.normalize('NC_000007.13:g.140453136A>T')
-    assertion_checks(resp, grch38_braf_genom_sub)
+    assertion_checks(resp, grch38_braf_genom_sub, 'NC_000007.13:g.140453136A>T')
 
     fixture_id = 'normalize.variation:NC_000007.13%3Ag.140453136A%3ET'
     resp = test_normalize.normalize('7-140453136-A-T')  # 37
     assert resp.id == 'normalize.variation:7-140453136-A-T'
     resp.id = fixture_id
-    assertion_checks(resp, grch38_braf_genom_sub)
+    assertion_checks(resp, grch38_braf_genom_sub, '7-140453136-A-T')
 
     resp = test_normalize.normalize('7-140753336-A-T')  # 38
     assert resp.id == 'normalize.variation:7-140753336-A-T'
     resp.id = fixture_id
-    assertion_checks(resp, grch38_braf_genom_sub)
+    assertion_checks(resp, grch38_braf_genom_sub, '7-140753336-A-T')
 
     # TODO: Issue 99
     resp = test_normalize.normalize('BRAF V600E (g.140453136A>T)')
     assert resp.id == 'normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29'  # noqa: E501
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'BRAF V600E (g.140453136A>T)')
 
     resp = test_normalize.normalize('BRAF g.140453136A>T')
     assert resp.id == 'normalize.variation:BRAF%20g.140453136A%3ET'
     resp.id = refseq_id
-    assertion_checks(resp, braf_v600e_nucleotide)
+    assertion_checks(resp, braf_v600e_nucleotide, 'BRAF g.140453136A>T')
 
     # More than 1 gene (EGFR and EGFR-AS1)
     resp = test_normalize.normalize('NC_000007.13:g.55249071C>T')
-    assertion_checks(resp, genomic_sub_grch38)
+    assertion_checks(resp, genomic_sub_grch38, 'NC_000007.13:g.55249071C>T')
 
     resp = test_normalize.normalize('EGFR g.55249071C>T')
     assert resp.id == 'normalize.variation:EGFR%20g.55249071C%3ET'
     resp.id = 'normalize.variation:NC_000007.13%3Ag.55249071C%3ET'
-    assertion_checks(resp, genomic_substitution)
+    assertion_checks(resp, genomic_substitution, 'EGFR g.55249071C>T')
 
 
 def test_coding_dna_silent_mutation(test_normalize,
@@ -944,14 +933,14 @@ def test_coding_dna_silent_mutation(test_normalize,
                                     braf_gene_context):
     """Test that Coding DNA Silent Mutation normalizes correctly."""
     resp = test_normalize.normalize('NM_004333.4:c.1799= ')
-    assertion_checks(resp, coding_dna_silent_mutation)
+    assertion_checks(resp, coding_dna_silent_mutation, 'NM_004333.4:c.1799=')
 
     fixture_id = 'normalize.variation:NM_004333.4%3Ac.1799%3D'
 
     resp = test_normalize.normalize('ENST00000288602.11:c.1799=')
     assert resp.id == 'normalize.variation:ENST00000288602.11%3Ac.1799%3D'
     resp.id = fixture_id
-    assertion_checks(resp, coding_dna_silent_mutation)
+    assertion_checks(resp, coding_dna_silent_mutation, 'ENST00000288602.11:c.1799=')
 
     # TODO: What to do for older Ensembl transcripts that aren't found
     #  in seqrepo or UTA
@@ -965,12 +954,12 @@ def test_coding_dna_silent_mutation(test_normalize,
     resp = test_normalize.normalize('BRAF    c.1799=')
     assert resp.id == 'normalize.variation:BRAF%20c.1799%3D'
     resp.id = fixture_id
-    assertion_checks(resp, coding_dna_silent_mutation)
+    assertion_checks(resp, coding_dna_silent_mutation, 'BRAF    c.1799=')
 
     resp = test_normalize.normalize('  BRAF  V600E  c.1799=  ')
     assert resp.id == 'normalize.variation:BRAF%20V600E%20c.1799%3D'
     resp.id = fixture_id
-    assertion_checks(resp, coding_dna_silent_mutation)
+    assertion_checks(resp, coding_dna_silent_mutation, 'BRAF  V600E  c.1799=')
 
 
 def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
@@ -978,36 +967,38 @@ def test_genomic_silent_mutation(test_normalize, nc_000007_silent_mutation,
                                  grch38_braf_genom_silent_mutation):
     """Test that genomic silent mutation normalizes correctly."""
     resp = test_normalize.normalize('NC_000007.13:g.140453136=')
-    assertion_checks(resp, grch38_braf_genom_silent_mutation)
+    assertion_checks(resp, grch38_braf_genom_silent_mutation,
+                     'NC_000007.13:g.140453136=')
 
     fixture_id = 'normalize.variation:NC_000007.13%3Ag.140453136%3D'
     resp = test_normalize.normalize("7-140453136-A-A")
     assert resp.id == 'normalize.variation:7-140453136-A-A'
     resp.id = fixture_id
-    assertion_checks(resp, grch38_braf_genom_silent_mutation)
+    assertion_checks(resp, grch38_braf_genom_silent_mutation, "7-140453136-A-A")
 
     resp = test_normalize.normalize('7-140753336-A-A')
     assert resp.id == 'normalize.variation:7-140753336-A-A'
     resp.id = fixture_id
-    assertion_checks(resp, grch38_braf_genom_silent_mutation)
+    assertion_checks(resp, grch38_braf_genom_silent_mutation, '7-140753336-A-A')
 
     resp = test_normalize.normalize('BRAF g.140453136=')
     assert resp.id == 'normalize.variation:BRAF%20g.140453136%3D'
     resp.id = fixture_id
-    assertion_checks(resp, nc_000007_silent_mutation)
+    assertion_checks(resp, nc_000007_silent_mutation, 'BRAF g.140453136=')
 
 
 def test_coding_dna_delins(test_normalize, nm_004448_coding_dna_delins,
                            nm_000551):
     """Test that Coding DNA DelIns normalizes correctly."""
     resp = test_normalize.normalize('    NM_004448.4:c.2326_2327delinsCT    ')
-    assertion_checks(resp, nm_004448_coding_dna_delins)
+    assertion_checks(resp, nm_004448_coding_dna_delins,
+                     'NM_004448.4:c.2326_2327delinsCT')
 
     # TODO: Test ENST###.c
 
     resp = test_normalize.normalize('NM_000551.3:c.615delinsAA')
     nm_000551.id = 'normalize.variation:NM_000551.3%3Ac.615delinsAA'
-    assertion_checks(resp, nm_000551)
+    assertion_checks(resp, nm_000551, 'NM_000551.3:c.615delinsAA')
 
 
 def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
@@ -1017,66 +1008,69 @@ def test_genomic_delins(test_normalize, nc_000007_genomic_delins,
     resp = test_normalize.normalize(
         'NC_000007.13:g.140453135_140453136delinsAT'
     )
-    assertion_checks(resp, grch38_genomic_delins1)
+    assertion_checks(resp, grch38_genomic_delins1,
+                     'NC_000007.13:g.140453135_140453136delinsAT')
 
     resp = test_normalize.normalize('NC_000003.12:g.10149938delinsAA')
-    assertion_checks(resp, grch38_genomic_delins2)
+    assertion_checks(resp, grch38_genomic_delins2, 'NC_000003.12:g.10149938delinsAA')
 
 
 def test_amino_acid_delins(test_normalize, amino_acid_delins):
     """Test that Amnio Acid DelIns normalizes correctly."""
     resp = test_normalize.normalize('NP_001333827.1:p.Leu747_Thr751delinsPro')
-    assertion_checks(resp, amino_acid_delins)
+    assertion_checks(resp, amino_acid_delins, 'NP_001333827.1:p.Leu747_Thr751delinsPro')
 
     resp = test_normalize.normalize('EGFR p.Leu747_Thr751delinsPro')
     assert resp.id == 'normalize.variation:EGFR%20p.Leu747_Thr751delinsPro'
     resp.id = 'normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
-    assertion_checks(resp, amino_acid_delins)
+    assertion_checks(resp, amino_acid_delins, 'EGFR p.Leu747_Thr751delinsPro')
 
     resp = test_normalize.normalize('EGFR Leu747_Thr751delinsPro')
     assert resp.id == 'normalize.variation:EGFR%20Leu747_Thr751delinsPro'
     resp.id = 'normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
-    assertion_checks(resp, amino_acid_delins)
+    assertion_checks(resp, amino_acid_delins, 'EGFR Leu747_Thr751delinsPro')
 
     resp = test_normalize.normalize('EGFR L747_T751delinsP')
     assert resp.id == 'normalize.variation:EGFR%20L747_T751delinsP'
     resp.id = 'normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro'
-    assertion_checks(resp, amino_acid_delins)
+    assertion_checks(resp, amino_acid_delins, 'EGFR L747_T751delinsP')
 
 
 def test_amino_acid_deletion(test_normalize, amino_acid_deletion_np_range):
     """Test that Amino Acid Deletion normalizes correctly."""
     resp = test_normalize.normalize('NP_004439.2:p.Leu755_Thr759del')
-    assertion_checks(resp, amino_acid_deletion_np_range)
+    assertion_checks(resp, amino_acid_deletion_np_range,
+                     'NP_004439.2:p.Leu755_Thr759del')
 
     resp = test_normalize.normalize('ERBB2 p.Leu755_Thr759del')
     assert resp.id == 'normalize.variation:ERBB2%20p.Leu755_Thr759del'
     resp.id = 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del'
-    assertion_checks(resp, amino_acid_deletion_np_range)
+    assertion_checks(resp, amino_acid_deletion_np_range, 'ERBB2 p.Leu755_Thr759del')
 
     resp = test_normalize.normalize('ERBB2 Leu755_Thr759del')
     assert resp.id == 'normalize.variation:ERBB2%20Leu755_Thr759del'
     resp.id = 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del'
-    assertion_checks(resp, amino_acid_deletion_np_range)
+    assertion_checks(resp, amino_acid_deletion_np_range, 'ERBB2 Leu755_Thr759del')
 
 
 def test_coding_dna_deletion(test_normalize, coding_dna_deletion):
     """Test that coding dna deletion normalizes correctly."""
     resp = \
         test_normalize.normalize('NM_004448.3:c.2263_2277delTTGAGGGAAAACACA')
-    assertion_checks(resp, coding_dna_deletion)
+    assertion_checks(resp, coding_dna_deletion,
+                     'NM_004448.3:c.2263_2277delTTGAGGGAAAACACA')
 
     resp = test_normalize.normalize('ERBB2 c.2263_2277delTTGAGGGAAAACACA')
     assert resp.id == \
            'normalize.variation:ERBB2%20c.2263_2277delTTGAGGGAAAACACA'
     resp.id = 'normalize.variation:NM_004448.3%3Ac.2263_2277delTTGAGGGAAAACACA'
-    assertion_checks(resp, coding_dna_deletion)
+    assertion_checks(resp, coding_dna_deletion, 'ERBB2 c.2263_2277delTTGAGGGAAAACACA')
 
 
 def test_amino_acid_insertion(test_normalize, amino_acid_insertion):
     """Test that amino acid insertion normalizes correctly."""
     resp = test_normalize.normalize('NP_005219.2:p.Asp770_Asn771insGlyLeu')
-    assertion_checks(resp, amino_acid_insertion)
+    assertion_checks(resp, amino_acid_insertion, 'NP_005219.2:p.Asp770_Asn771insGlyLeu')
 
     def change_resp(response):
         fixture_id = \
@@ -1086,28 +1080,28 @@ def test_amino_acid_insertion(test_normalize, amino_acid_insertion):
     resp = test_normalize.normalize('EGFR D770_N771insGL')
     assert resp.id == 'normalize.variation:EGFR%20D770_N771insGL'
     change_resp(resp)
-    assertion_checks(resp, amino_acid_insertion)
+    assertion_checks(resp, amino_acid_insertion, 'EGFR D770_N771insGL')
 
     resp = test_normalize.normalize('EGFR p.D770_N771insGL')
     assert resp.id == 'normalize.variation:EGFR%20p.D770_N771insGL'
     change_resp(resp)
-    assertion_checks(resp, amino_acid_insertion)
+    assertion_checks(resp, amino_acid_insertion, 'EGFR p.D770_N771insGL')
 
     resp = test_normalize.normalize('EGFR Asp770_Asn771insGlyLeu')
     assert resp.id == 'normalize.variation:EGFR%20Asp770_Asn771insGlyLeu'
     change_resp(resp)
-    assertion_checks(resp, amino_acid_insertion)
+    assertion_checks(resp, amino_acid_insertion, 'EGFR Asp770_Asn771insGlyLeu')
 
     resp = test_normalize.normalize('EGFR p.Asp770_Asn771insGlyLeu')
     assert resp.id == 'normalize.variation:EGFR%20p.Asp770_Asn771insGlyLeu'
     change_resp(resp)
-    assertion_checks(resp, amino_acid_insertion)
+    assertion_checks(resp, amino_acid_insertion, 'EGFR p.Asp770_Asn771insGlyLeu')
 
 
 def test_coding_dna_insertion(test_normalize, coding_dna_insertion):
     """Test that coding dna insertion normalizes correctly."""
     resp = test_normalize.normalize('ENST00000331728.9:c.2049_2050insA')
-    assertion_checks(resp, coding_dna_insertion)
+    assertion_checks(resp, coding_dna_insertion, 'ENST00000331728.9:c.2049_2050insA')
 
     # TODO: issue-136
     # resp = test_normalize.normalize('LIMK2 c.2049_2050insA')
@@ -1120,20 +1114,22 @@ def test_genomic_insertion(test_normalize, genomic_insertion,
                            grch38_genomic_insertion):
     """Test that genomic insertion normalizes correctly."""
     resp = test_normalize.normalize('NC_000017.10:g.37880993_37880994insGCTTACGTGATG')  # noqa: E501
-    assertion_checks(resp, grch38_genomic_insertion)
+    assertion_checks(resp, grch38_genomic_insertion,
+                     'NC_000017.10:g.37880993_37880994insGCTTACGTGATG')
 
     fixture_id = \
         'normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG'
     resp = test_normalize.normalize("17-37880993-G-GGCTTACGTGATG")
     assert resp.id == 'normalize.variation:17-37880993-G-GGCTTACGTGATG'
     resp.id = fixture_id
-    assertion_checks(resp, grch38_genomic_insertion)
+    assertion_checks(resp, grch38_genomic_insertion, "17-37880993-G-GGCTTACGTGATG")
 
     resp = test_normalize.normalize('ERBB2 g.37880993_37880994insGCTTACGTGATG')
     assert resp.id ==\
            'normalize.variation:ERBB2%20g.37880993_37880994insGCTTACGTGATG'
     resp.id = fixture_id
-    assertion_checks(resp, genomic_insertion)
+    assertion_checks(resp, genomic_insertion,
+                     'ERBB2 g.37880993_37880994insGCTTACGTGATG')
 
 
 def test_valid_queries(test_normalize):
@@ -1166,9 +1162,11 @@ def test_no_matches(test_normalize):
         resp = test_normalize.normalize(q)
         assert resp.type == 'VariationDescriptor'
         assert resp.variation.type == 'Text'
+        assert resp.label == q.strip()
 
     resp = test_normalize.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'
+    assert resp.label == 'clinvar:10'
     assert resp.variation.type == 'Text'
     assert resp.variation.definition == 'clinvar:10'
     assert resp.variation.id == 'ga4gh:VT.xw9m9LZAyn6Z2-GPGwcpDT0ixqCm5g36'
