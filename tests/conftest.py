@@ -436,10 +436,11 @@ def amino_acid_deletion_np_range(erbb2_context):
     return VariationDescriptor(**params)
 
 
-def assertion_checks(normalize_response, test_variation, ignore_id=False):
+def assertion_checks(normalize_response, test_variation, label, ignore_id=False):
     """Check that normalize_response and test_variation are equal."""
     if not ignore_id:
         assert normalize_response.id == test_variation.id, "id"
+    assert normalize_response.label == label
     assert normalize_response.type == test_variation.type, "type"
     assert normalize_response.variation_id == \
            test_variation.variation_id, "variation_id"
