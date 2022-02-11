@@ -307,13 +307,15 @@ class QueryHandler:
             return aa_alt
 
     def gnomad_vcf_to_protein(
-            self, q: str) -> Tuple[VariationDescriptor, List]:
+            self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
         :return: Variation Descriptor, list of warnings
         """
         q = q.strip()
+        if not q:
+            return self.normalize_handler.no_variation_entered()
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         valid_list = list()
