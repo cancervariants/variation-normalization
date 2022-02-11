@@ -1,7 +1,8 @@
 """Main application for FastAPI."""
-from typing import Optional
+from typing import Optional, Dict, List
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
+
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from .version import __version__
 from datetime import datetime
@@ -191,3 +192,59 @@ def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
             response_datetime=datetime.now()
         )
     )
+
+
+complement_descr = "This field indicates that a categorical variation is defined to " \
+                   "include (false) or exclude (true) variation concepts matching " \
+                   "the categorical variation."
+members_descr = "VariationMember instances that fall within the functional domain " \
+                "of the Categorical Variation."
+
+
+@app.get("/variation/canonical_spdi_to_vrsatile",
+         summary="Given canonical SPDI, return categorical variation descriptor",
+         response_description="A response to a validly-formed query.",
+         description="Return categorical variation descriptor",
+         # response_model=NormalizeService,
+         response_model_exclude_none=True)
+def canonical_spdi_to_vrsatile(
+        q: str = Query(..., description="Canonical SPDI"),
+        version: Optional[str] = Query(None, description="Canonical SPDI version"),
+        complement: Optional[bool] = Query(False, description=complement_descr),
+        members: Optional[List[str]] = Query(None, description=members_descr),
+        members_syntax: Optional[str] = Query(None, description="CURIE representing"
+                                                                " the `members` syntax")
+) -> Dict:  # TODO: Change to NormalizeService
+    """Return categorical variation descriptor for canonical SPDI
+
+    :param str q: Canonical SPDI
+    :param Optional[str] version: Canonical SPDI version
+    :param Optional[bool] complement: This field indicates that a categorical variation
+        is defined to include (false) or exclude (true) variation concepts matching the
+        categorical variation. This is equivalent to a logical NOT operation on the
+        categorical variation properties.
+    :param Optional[List[str]] members: List of variations that fall within
+        the functional domain of the Categorical Variation.
+    :param Optional[str] members_syntax: CURIE representing the `members` syntax
+    :return: Normalize Service for variation
+    """
+    q = html.unescape(q.strip())
+    resp, warnings = query_handler.canonical_spdi_to_vrsatile(
+        q, version=version, complement=complement, members=members,
+        members_syntax=members_syntax)
+    return {
+        "variation_query": q,
+        "variation_descriptor": resp,
+        "warnings": warnings,
+        "service_meta": ServiceMeta(
+            version=__version__, response_datetime=datetime.now())
+    }
+    # return NormalizeService(
+    #     variation_query=q,
+    #     variation_descriptor=resp,
+    #     warnings=warnings,
+    #     service_meta_=ServiceMeta(
+    #         version=__version__,
+    #         response_datetime=datetime.now()
+    #     )
+    # )
