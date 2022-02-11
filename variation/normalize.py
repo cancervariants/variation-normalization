@@ -65,7 +65,7 @@ class Normalize:
             Else, None.
         """
         if not q:
-            resp, warnings = self._no_variation_entered()
+            resp, warnings = self.no_variation_entered()
         else:
             label = q.strip()
             _id = f"normalize.variation:{quote(' '.join(label.split()))}"
@@ -75,7 +75,7 @@ class Normalize:
                     label, valid_result.variation, valid_result, _id, warnings)
             else:
                 if not label:
-                    resp, warnings = self._no_variation_entered()
+                    resp, warnings = self.no_variation_entered()
                 else:
                     resp, warnings = self.text_variation_resp(label, _id, warnings)
         self.warnings = warnings
@@ -157,7 +157,8 @@ class Normalize:
             gene_context=gene_context
         ), warnings
 
-    def _no_variation_entered(self) -> Tuple[None, List[str]]:
+    @staticmethod
+    def no_variation_entered() -> Tuple[None, List[str]]:
         """Return response when no variation queried.
 
         :return: None, list of warnings
