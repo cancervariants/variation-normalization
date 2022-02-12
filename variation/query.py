@@ -479,9 +479,12 @@ class QueryHandler:
         if warnings or not variation:
             return None, warnings
 
+        # TODO: Validate variation since vrs-python does not do this
+
         categorical_vd = {
             "id": _id,
             "type": "CategoricalVariationDescriptor",
+            "label": q,
             "version": version,
             "categorical_variation": dict()
         }
@@ -504,5 +507,6 @@ class QueryHandler:
                 }
                 variation_members.append(variation_member)
             categorical_vd["members"] = variation_members
+        # TODO: Check if we want to normalize members and throw this into extensions
 
         return categorical_vd, warnings
