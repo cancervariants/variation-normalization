@@ -2,7 +2,6 @@
 from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
 
-import pydantic
 import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
@@ -29,8 +28,8 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
-    Haplotype, VariationSet, CURIE
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, Expression
+    Haplotype, VariationSet
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -429,45 +428,23 @@ class QueryHandler:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
 
-    def canonical_spdi_to_vrsatile(
-            self, q: str, version: Optional[str] = None,
-            complement: Optional[bool] = False,
-            members: Optional[List[str]] = None,
-            members_syntax: Optional[CURIE] = None
+    def canonical_spdi_to_categorical_variation(
+            self, q: str, complement: Optional[bool] = False
     ) -> Tuple[Optional[Dict], List]:
-        """Return categorical variation descriptor for canonical SPDI
+        """Return categorical variation for canonical SPDI
 
         :param str q: Canonical SPDI
-        :param Optional[str] version: Canonical SPDI version
         :param Optional[bool] complement: This field indicates that a categorical
             variation is defined to include (false) or exclude (true) variation
              concepts matching the categorical variation. This is equivalent to a
              logical NOT operation on the categorical variation properties.
-        :param Optional[List[str]] members: List of variations that fall within
-            the functional domain of the Categorical Variation.
-        :param Optional[CURIE] members_syntax: CURIE representing the `members` syntax
-        :return: Tuple containing categorical variation descriptor
-            and list of warnings
+        :return: Tuple containing categorical variation and list of warnings
         """
         q = q.strip()
         if not q:
             return self.normalize_handler.no_variation_entered()
         warnings = list()
-        if members:
-            if not members_syntax:
-                warnings.append("`members_syntax` must be provided"
-                                " when `members` is provided")
-            else:
-                try:
-                    CURIE(__root__=members_syntax)
-                except pydantic.error_wrappers.ValidationError:
-                    warnings.append(
-                        f"members_syntax is not a valid CURIE: {members_syntax}")
-                else:
-                    members_syntax = members_syntax.strip()
-            if warnings:
-                return None, warnings
-        _id = f"normalize.variation:{quote(' '.join(q.split()))}"
+
         variation = None
         try:
             variation = self.tlr.translate_from(q, fmt="spdi")
@@ -492,13 +469,6 @@ class QueryHandler:
         if warnings:
             return None, warnings
 
-        categorical_vd = {
-            "id": _id,
-            "type": "CategoricalVariationDescriptor",
-            "label": q,
-            "version": version,
-            "categorical_variation": dict()
-        }
         variation.location._id = ga4gh_identify(variation.location)
         canonical_variation = {
             "_id": None,  # TODO
@@ -506,18 +476,5 @@ class QueryHandler:
             "complement": complement,
             "variation": variation.as_dict()
         }
-        categorical_vd["categorical_variation"] = canonical_variation
 
-        if members:
-            variation_members = list()
-            for m in members:
-                m = m.strip()
-                variation_member = {
-                    "expression": Expression(syntax=members_syntax, value=m),
-                    "variation_id": None  # TODO
-                }
-                variation_members.append(variation_member)
-            categorical_vd["members"] = variation_members
-        # TODO: Check if we want to normalize members and throw this into extensions
-
-        return categorical_vd, warnings
+        return canonical_variation, warnings
