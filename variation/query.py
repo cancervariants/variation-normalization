@@ -451,7 +451,7 @@ class QueryHandler:
         """
         q = q.strip()
         if not q:
-            return self.normalize_handler._no_variation_entered()
+            return self.normalize_handler.no_variation_entered()
         warnings = list()
         if members:
             if not members_syntax:
@@ -479,7 +479,18 @@ class QueryHandler:
         if warnings or not variation:
             return None, warnings
 
-        # TODO: Validate variation since vrs-python does not do this
+        spdi_parts = q.split(":")
+        ac = spdi_parts[0]
+        pos = int(spdi_parts[1])  # inter-residue, 0 based
+        try:
+            sequence = self.seqrepo_access.seq_repo_client.fetch(ac, pos, end=pos + 1)
+        except ValueError as e:
+            warnings.append(str(e))
+        else:
+            if not sequence:
+                warnings.append(f"Position, {pos}, does not exist on {ac}")
+        if warnings:
+            return None, warnings
 
         categorical_vd = {
             "id": _id,
