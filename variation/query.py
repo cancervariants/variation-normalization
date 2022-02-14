@@ -307,13 +307,15 @@ class QueryHandler:
             return aa_alt
 
     def gnomad_vcf_to_protein(
-            self, q: str) -> Tuple[VariationDescriptor, List]:
+            self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
         :return: Variation Descriptor, list of warnings
         """
         q = q.strip()
+        if not q:
+            return self.normalize_handler.no_variation_entered()
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         valid_list = list()
@@ -411,7 +413,7 @@ class QueryHandler:
                     if variation:
                         valid_list.append(
                             self.normalize_handler.get_variation_descriptor(
-                                variation, valid_result, _id, warnings,
+                                q, variation, valid_result, _id, warnings,
                                 gene=current_mane_data["HGNC_ID"]))
 
         if valid_list:
