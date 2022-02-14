@@ -13,8 +13,6 @@ from six.moves.urllib import parse as urlparse
 from pyliftover import LiftOver
 import pandas as pd
 import boto3
-import sqlalchemy
-from sqlalchemy.sql import text
 
 from variation import UTA_DB_URL
 
@@ -38,17 +36,9 @@ class UTA:
         self.conn.autocommit = True
         self.cursor = \
             self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        self._create_sqlalchemy_engine()
         self._create_genomic_table()
         self.liftover = LiftOver('hg19', 'hg38')
         self.liftover_to_37 = LiftOver('hg38', 'hg19')
-
-    def _create_sqlalchemy_engine(self) -> None:
-        """Initialize SQLAlchemy engine instance."""
-        conn_uri = f"postgresql+psycopg2://{self.args['user']}:" \
-                   f"{self.args['password']}@{self.args['host']}:" \
-                   f"{self.args['port']}/{self.args['database']}"
-        self.engine = sqlalchemy.create_engine(conn_uri)
 
     def _update_db_url(self, db_pwd, db_url) -> Optional[str]:
         """Return new db_url containing password.
@@ -86,7 +76,7 @@ class UTA:
             db_url = self._url_encode_password(db_url)
             url = ParseResult(urlparse.urlparse(db_url))
             self.schema = url.schema
-            return self._get_args(url.hostname, url.port, url.database,
+            return self._get_args(url.hostname, int(url.port), url.database,
                                   url.username, unquote(url.password))
         else:
             self.schema = environ['UTA_SCHEMA']
@@ -495,7 +485,7 @@ class UTA:
             Transcripts are ordered by most recent NC accession, then by
             descending transcript length.
         """
-        query = text(
+        query = (
             f"""
             SELECT AA.pro_ac, AA.tx_ac, ALIGN.alt_ac, T.cds_start_i
             FROM {self.schema}.associated_accessions as AA
@@ -511,7 +501,10 @@ class UTA:
             ORDER BY ALIGN.alt_ac, ALIGN.tx_end_i - ALIGN.tx_start_i DESC;
             """
         )
-        return pd.read_sql(query, self.engine)
+        self.cursor.execute(query)
+        data = self.cursor.fetchall()
+        return pd.DataFrame(data=data,
+                            columns=["pro_ac", "tx_ac", "alt_ac", "cds_start_i"])
 
     def get_chr_assembly(self, ac) -> Optional[Tuple[str, str]]:
         """Get chromosome and assembly for NC accession.
