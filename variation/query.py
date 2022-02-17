@@ -1,12 +1,14 @@
 """This module provides methods for handling queries."""
 from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
+import copy
+import json
 
 import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from ga4gh.core import ga4gh_identify
+from ga4gh.core import sha512t24u, ga4gh_identify
 from ga4gh.vrs import models
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
@@ -459,6 +461,7 @@ class QueryHandler:
         spdi_parts = q.split(":")
         ac = spdi_parts[0]
         pos = int(spdi_parts[1])  # inter-residue, 0 based
+        # TODO: Validate third part for reference
         try:
             sequence = self.seqrepo_access.seq_repo_client.fetch(ac, pos, end=pos + 1)
         except ValueError as e:
@@ -477,4 +480,12 @@ class QueryHandler:
             "variation": variation.as_dict()
         }
 
+        cpy_canonical_variation = copy.deepcopy(canonical_variation)
+        del cpy_canonical_variation["_id"]
+        cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"]
+        serialized = json.dumps(
+            cpy_canonical_variation, sort_keys=True, separators=(',', ':'), indent=None
+        ).encode("utf-8")
+        digest = sha512t24u(serialized)
+        canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
         return canonical_variation, warnings
