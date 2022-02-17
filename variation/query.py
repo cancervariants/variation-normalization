@@ -460,21 +460,27 @@ class QueryHandler:
 
         spdi_parts = q.split(":")
         ac = spdi_parts[0]
-        pos = int(spdi_parts[1])  # inter-residue, 0 based
-        # TODO: Validate third part for reference
+        start_pos = int(spdi_parts[1])  # inter-residue, 0 based
+        deleted_seq = spdi_parts[2]
+        end_pos = start_pos + len(deleted_seq)
         try:
-            sequence = self.seqrepo_access.seq_repo_client.fetch(ac, pos, end=pos + 1)
+            sequence = self.seqrepo_access.seq_repo_client.fetch(
+                ac, start_pos, end=end_pos)
         except ValueError as e:
             warnings.append(str(e))
         else:
             if not sequence:
-                warnings.append(f"Position, {pos}, does not exist on {ac}")
+                warnings.append(f"Position, {start_pos}, does not exist on {ac}")
+            else:
+                if deleted_seq != sequence:
+                    warnings.append(f"Expected to find reference sequence"
+                                    f" {deleted_seq} but found {sequence} on {ac}")
         if warnings:
             return None, warnings
 
         variation.location._id = ga4gh_identify(variation.location)
         canonical_variation = {
-            "_id": None,  # TODO
+            "_id": None,
             "type": "CanonicalVariation",
             "complement": complement,
             "variation": variation.as_dict()
