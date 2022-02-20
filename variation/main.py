@@ -1,5 +1,5 @@
 """Main application for FastAPI."""
-from typing import Optional, Dict
+from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 
@@ -198,28 +198,26 @@ def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
 complement_descr = "This field indicates that a categorical variation is defined to " \
                    "include (false) or exclude (true) variation concepts matching " \
                    "the categorical variation."
-members_descr = "VariationMember instances that fall within the functional domain " \
-                "of the Categorical Variation."
 
 
 @app.get("/variation/canonical_spdi_to_categorical_variation",
-         summary="Given canonical SPDI, return categorical variation object",
+         summary="Given canonical SPDI, return VRSATILE categorical variation object",
          response_description="A response to a validly-formed query.",
-         description="Return categorical variation descriptor",
+         description="Return VRSATILE categorical variation object",
          response_model=CanonicalSPDIToCategoricalVariationService,
          response_model_exclude_none=True)
 def canonical_spdi_to_categorical_variation(
         q: str = Query(..., description="Canonical SPDI"),
         complement: Optional[bool] = Query(False, description=complement_descr)
-) -> Dict:  # TODO: Change to NormalizeService
-    """Return categorical variation descriptor for canonical SPDI
+) -> CanonicalSPDIToCategoricalVariationService:
+    """Return categorical variation for canonical SPDI
 
     :param str q: Canonical SPDI
     :param Optional[bool] complement: This field indicates that a categorical variation
         is defined to include (false) or exclude (true) variation concepts matching the
         categorical variation. This is equivalent to a logical NOT operation on the
         categorical variation properties.
-    :return: Normalize Service for variation
+    :return: CanonicalSPDIToCategoricalVariationService for variation query
     """
     q = html.unescape(q.strip())
     resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
