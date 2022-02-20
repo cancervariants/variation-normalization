@@ -9,7 +9,8 @@ from datetime import datetime
 import html
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
+    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
+    CanonicalSPDIToCategoricalVariationService
 
 app = FastAPI(
     docs_url="/variation",
@@ -205,7 +206,7 @@ members_descr = "VariationMember instances that fall within the functional domai
          summary="Given canonical SPDI, return categorical variation object",
          response_description="A response to a validly-formed query.",
          description="Return categorical variation descriptor",
-         # response_model=NormalizeService,
+         response_model=CanonicalSPDIToCategoricalVariationService,
          response_model_exclude_none=True)
 def canonical_spdi_to_categorical_variation(
         q: str = Query(..., description="Canonical SPDI"),
@@ -223,19 +224,12 @@ def canonical_spdi_to_categorical_variation(
     q = html.unescape(q.strip())
     resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
         q, complement=complement)
-    return {
-        "variation_query": q,
-        "categorical_variation": resp,
-        "warnings": warnings,
-        "service_meta": ServiceMeta(
-            version=__version__, response_datetime=datetime.now())
-    }
-    # return NormalizeService(
-    #     variation_query=q,
-    #     variation_descriptor=resp,
-    #     warnings=warnings,
-    #     service_meta_=ServiceMeta(
-    #         version=__version__,
-    #         response_datetime=datetime.now()
-    #     )
-    # )
+    return CanonicalSPDIToCategoricalVariationService(
+        canonical_spdi_query=q,
+        categorical_variation=resp,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
+    )
