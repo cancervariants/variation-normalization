@@ -31,7 +31,8 @@ from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
     Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
+    CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -432,7 +433,7 @@ class QueryHandler:
 
     def canonical_spdi_to_categorical_variation(
             self, q: str, complement: Optional[bool] = False
-    ) -> Tuple[Optional[Dict], List]:
+    ) -> Tuple[Optional[Union[CanonicalVariation, ComplexVariation]], List]:
         """Return categorical variation for canonical SPDI
 
         :param str q: Canonical SPDI
@@ -440,7 +441,7 @@ class QueryHandler:
             variation is defined to include (false) or exclude (true) variation
              concepts matching the categorical variation. This is equivalent to a
              logical NOT operation on the categorical variation properties.
-        :return: Tuple containing categorical variation and list of warnings
+        :return: Tuple containing CanonicalVariation and list of warnings
         """
         q = q.strip()
         if not q:
@@ -480,18 +481,18 @@ class QueryHandler:
 
         variation.location._id = ga4gh_identify(variation.location)
         canonical_variation = {
-            "_id": None,
             "type": "CanonicalVariation",
             "complement": complement,
             "variation": variation.as_dict()
         }
 
         cpy_canonical_variation = copy.deepcopy(canonical_variation)
-        del cpy_canonical_variation["_id"]
-        cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"]
+        cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
         serialized = json.dumps(
             cpy_canonical_variation, sort_keys=True, separators=(',', ':'), indent=None
         ).encode("utf-8")
         digest = sha512t24u(serialized)
+        # VCC = variation categorical canonical
         canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
+        canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
