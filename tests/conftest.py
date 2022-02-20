@@ -1,9 +1,16 @@
 """Create methods used throughout tests."""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from variation.query import QueryHandler
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
+def test_query_handler():
+    """Build normalize test fixture."""
+    return QueryHandler()
+
+
+@pytest.fixture(scope="session")
 def vhl_gene_context():
     """Create a VHL gene context."""
     return {
@@ -76,7 +83,7 @@ def vhl_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="session")
 def braf_gene_context():
     """Create BRAF gene context test fixture."""
     return {
@@ -144,7 +151,7 @@ def braf_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="session")
 def egfr_context():
     """Create EGFR gene context test fixture"""
     return {
@@ -223,7 +230,7 @@ def egfr_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="session")
 def erbb2_context():
     """Create test fixture for ERBB2 Gene Context."""
     return {
@@ -303,7 +310,7 @@ def erbb2_context():
     }
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def braf_v600e(braf_gene_context):
     """Create BRAF V600E protein test fixture."""
     params = {
@@ -336,7 +343,7 @@ def braf_v600e(braf_gene_context):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def vhl_silent(vhl_gene_context):
     """Create NP_000542.1:p.Pro61 fixture."""
     params = {
@@ -369,7 +376,7 @@ def vhl_silent(vhl_gene_context):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="session")
 def amino_acid_insertion(egfr_context):
     """Create test fixture for NP amino acid insertion."""
     params = {
@@ -401,7 +408,7 @@ def amino_acid_insertion(egfr_context):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="session")
 def amino_acid_deletion_np_range(erbb2_context):
     """Create test fixture for amino acid deletion using NP accession and
     range for deletion.
@@ -434,6 +441,29 @@ def amino_acid_deletion_np_range(erbb2_context):
         "gene_context": erbb2_context
     }
     return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="session")
+def braf_v600e_genomic_sub():
+    """Create test fixture for NC_000007.14:g.140753336A>T"""
+    return {
+        "_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
+        "location": {
+            "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
+            "interval": {
+                "end": {"value": 140753336, "type": "Number"},
+                "start": {"value": 140753335, "type": "Number"},
+                "type": "SequenceInterval"
+            },
+            "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "type": "SequenceLocation"
+        },
+        "state": {
+            "sequence": "T",
+            "type": "LiteralSequenceExpression"
+        },
+        "type": "Allele"
+    }
 
 
 def assertion_checks(normalize_response, test_variation, label, ignore_id=False):
