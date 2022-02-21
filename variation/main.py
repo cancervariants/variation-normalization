@@ -208,12 +208,12 @@ complement_descr = "This field indicates that a categorical variation is defined
          response_model_exclude_none=True)
 def canonical_spdi_to_categorical_variation(
         q: str = Query(..., description="Canonical SPDI"),
-        complement: Optional[bool] = Query(False, description=complement_descr)
+        complement: bool = Query(False, description=complement_descr)
 ) -> CanonicalSPDIToCategoricalVariationService:
     """Return categorical variation for canonical SPDI
 
     :param str q: Canonical SPDI
-    :param Optional[bool] complement: This field indicates that a categorical variation
+    :param bool complement: This field indicates that a categorical variation
         is defined to include (false) or exclude (true) variation concepts matching the
         categorical variation. This is equivalent to a logical NOT operation on the
         categorical variation properties.
