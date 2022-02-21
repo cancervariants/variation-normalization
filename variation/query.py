@@ -1,12 +1,18 @@
 """This module provides methods for handling queries."""
 from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
+import copy
+import json
+import re
 
+import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from ga4gh.core import ga4gh_identify
+from ga4gh.core import sha512t24u, ga4gh_identify
 from ga4gh.vrs import models
+from bioutils.accessions import coerce_namespace
+
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.token_response_schema import Nomenclature, Token, \
@@ -27,7 +33,8 @@ from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
     Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
+    CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -61,6 +68,7 @@ class QueryHandler:
         self.codon_table = CodonTable(self.amino_acid_cache)
         self.uta = UTA(db_url=uta_db_url, db_pwd=uta_db_pwd)
         self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
+        self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         self.vrs = VRS(self.dp, self.seqrepo_access)
         self.to_vrs_handler = self._init_to_vrs()
@@ -89,14 +97,13 @@ class QueryHandler:
         mane_transcript_mappings = MANETranscriptMappings(
             mane_data_path=mane_data_path
         )
-        tlr = Translator(data_proxy=self.dp)
         mane_transcript = MANETranscript(
             self.seqrepo_access, transcript_mappings,
             mane_transcript_mappings, self.uta
         )
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, self.uta, self.dp, tlr,
+            mane_transcript, self.uta, self.dp, self.tlr,
             self.amino_acid_cache, self.gene_normalizer, self.vrs
         )
         translator = Translate()
@@ -307,13 +314,15 @@ class QueryHandler:
             return aa_alt
 
     def gnomad_vcf_to_protein(
-            self, q: str) -> Tuple[VariationDescriptor, List]:
+            self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
         :return: Variation Descriptor, list of warnings
         """
         q = q.strip()
+        if not q:
+            return self.normalize_handler.no_variation_entered()
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         valid_list = list()
@@ -411,7 +420,7 @@ class QueryHandler:
                     if variation:
                         valid_list.append(
                             self.normalize_handler.get_variation_descriptor(
-                                variation, valid_result, _id, warnings,
+                                q, variation, valid_result, _id, warnings,
                                 gene=current_mane_data["HGNC_ID"]))
 
         if valid_list:
@@ -423,3 +432,100 @@ class QueryHandler:
             else:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
+
+    def canonical_spdi_to_categorical_variation(
+            self, q: str, complement: bool = False
+    ) -> Tuple[Optional[Union[CanonicalVariation, ComplexVariation]], List]:
+        """Return categorical variation for canonical SPDI
+
+        :param str q: Canonical SPDI
+        :param bool complement: This field indicates that a categorical
+            variation is defined to include (false) or exclude (true) variation
+             concepts matching the categorical variation. This is equivalent to a
+             logical NOT operation on the categorical variation properties.
+        :return: Tuple containing CanonicalVariation and list of warnings
+        """
+        q = q.strip()
+        if not q:
+            return self.normalize_handler.no_variation_entered()
+        warnings = list()
+
+        variation = None
+        try:
+            # TODO: Replace with below once vrs-python releases new version
+            # variation = self.tlr.translate_from(q, fmt="spdi")
+            def translate_from_spdi(tlr, spdi_expr):
+                # Code is from https://github.com/ga4gh/vrs-python/blob/main/src/ga4gh/vrs/extras/translator.py#L243  # noqa: E501
+                if not isinstance(spdi_expr, str):
+                    return None
+                spdi_re = re.compile(
+                    r"(?P<ac>[^:]+):(?P<pos>\d+):(?P<del_len_or_seq>\w+):(?P<ins_seq>\w+)")  # noqa: E501
+                m = spdi_re.match(spdi_expr)
+                if not m:
+                    return None
+
+                g = m.groupdict()
+                sequence_id = coerce_namespace(g["ac"])
+                start = int(g["pos"])
+                try:
+                    del_len = int(g["del_len_or_seq"])
+                except ValueError:
+                    del_len = len(g["del_len_or_seq"])
+                end = start + del_len
+                ins_seq = g["ins_seq"]
+
+                interval = models.SequenceInterval(start=models.Number(value=start),
+                                                   end=models.Number(value=end))
+                location = models.Location(sequence_id=sequence_id, interval=interval)
+                sstate = models.LiteralSequenceExpression(sequence=ins_seq)
+                allele = models.Allele(location=location, state=sstate)
+                return tlr._post_process_imported_allele(allele)
+            variation = translate_from_spdi(self.tlr, q)
+            if variation is None:
+                warnings.append("vrs-python translator raised error: "
+                                "Unable to parse data as spdi variation")
+        except (ValueError, python_jsonschema_objects.validators.ValidationError) as e:
+            warnings.append(f"vrs-python translator raised error: {e}")
+        except KeyError as e:
+            warnings.append(f"vrs-python translator raised error: "
+                            f"seqrepo could not translate identifier {e}")
+        if warnings or not variation:
+            return None, warnings
+
+        spdi_parts = q.split(":")
+        ac = spdi_parts[0]
+        start_pos = int(spdi_parts[1])  # inter-residue, 0 based
+        deleted_seq = spdi_parts[2]
+        end_pos = start_pos + len(deleted_seq)
+        try:
+            sequence = self.seqrepo_access.seq_repo_client.fetch(
+                ac, start_pos, end=end_pos)
+        except ValueError as e:
+            warnings.append(str(e))
+        else:
+            if not sequence:
+                warnings.append(f"Position, {start_pos}, does not exist on {ac}")
+            else:
+                if deleted_seq != sequence:
+                    warnings.append(f"Expected to find reference sequence"
+                                    f" {deleted_seq} but found {sequence} on {ac}")
+        if warnings:
+            return None, warnings
+
+        variation.location._id = ga4gh_identify(variation.location)
+        canonical_variation = {
+            "type": "CanonicalVariation",
+            "complement": complement,
+            "variation": variation.as_dict()
+        }
+
+        cpy_canonical_variation = copy.deepcopy(canonical_variation)
+        cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
+        serialized = json.dumps(
+            cpy_canonical_variation, sort_keys=True, separators=(',', ':'), indent=None
+        ).encode("utf-8")
+        digest = sha512t24u(serialized)
+        # VCC = variation categorical canonical
+        canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
+        canonical_variation = CanonicalVariation(**canonical_variation)
+        return canonical_variation, warnings

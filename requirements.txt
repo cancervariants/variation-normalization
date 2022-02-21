@@ -19,51 +19,50 @@ beautifulsoup4==4.10.0; python_version >= '3.1'
 biocommons.seqrepo==0.6.5
 bioutils==0.5.5; python_version >= '3.6'
 black==22.1.0; python_full_version >= '3.6.2'
-boto3==1.20.46
-botocore==1.23.46; python_version >= '3.6'
+boto3==1.21.3
+botocore==1.24.3; python_version >= '3.6'
 bs4==0.0.1
 canonicaljson==1.5.0; python_version ~= '3.5'
 certifi==2021.10.8
-charset-normalizer==2.0.11; python_version >= '3'
-click==8.0.3; python_version >= '3.6'
+charset-normalizer==2.0.12; python_version >= '3'
+click==8.0.4; python_version >= '3.6'
 coloredlogs==15.0.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 configparser==5.2.0; python_version >= '3.6'
 cssselect==1.1.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 decorator==5.1.1; python_version >= '3.5'
 executing==0.8.2
 fake-useragent==0.1.11
-fastapi==0.73.0
-frozendict==2.2.1; python_version >= '3.6'
+fastapi==0.74.0
+frozendict==2.3.0; python_version >= '3.6'
 ga4gh.vrs[extras]==0.7.2
-ga4gh.vrsatile.pydantic==0.0.8
+ga4gh.vrsatile.pydantic==0.0.9
 gene-normalizer==0.1.24
 gffutils==0.10.1
-greenlet==1.1.2; python_version >= '3' and platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))
 h11==0.13.0; python_version >= '3.6'
 hgvs==1.5.2
 httptools==0.3.0
 humanfriendly==10.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 idna==3.3; python_version >= '3'
-importlib-metadata==4.10.1; python_version < '3.10'
+importlib-metadata==4.11.1; python_version < '3.10'
 inflection==0.5.1; python_version >= '3.5'
 ipython==8.0.1; python_version >= '3.8'
 jedi==0.18.1; python_version >= '3.6'
 jmespath==0.10.0; python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'
 jsonschema==3.2.0
-lxml==4.7.1
+lxml==4.8.0
 markdown==3.3.6; python_version >= '3.6'
 matplotlib-inline==0.1.3; python_version >= '3.5'
 mypy-extensions==0.4.3
-numpy==1.22.1; python_version >= '3.8'
-pandas==1.4.0
+numpy==1.22.2; python_version < '3.10' and platform_machine != 'aarch64' and platform_machine != 'arm64'
+pandas==1.4.1
 parse==1.19.0
 parsley==1.3
 parso==0.8.3; python_version >= '3.6'
 pathspec==0.9.0
 pexpect==4.8.0; sys_platform != 'win32'
 pickleshare==0.7.5
-platformdirs==2.4.1; python_version >= '3.7'
-prompt-toolkit==3.0.26; python_full_version >= '3.6.2'
+platformdirs==2.5.1; python_version >= '3.7'
+prompt-toolkit==3.0.28; python_full_version >= '3.6.2'
 psycopg2==2.9.3; python_version >= '3.6'
 ptyprocess==0.7.0
 pure-eval==0.2.2
@@ -72,7 +71,7 @@ pyee==8.2.2
 pyfaidx==0.6.4
 pygments==2.11.2; python_version >= '3.5'
 pyliftover==0.4
-pyppeteer==1.0.2; python_version >= '3.7' and python_version < '4'
+pyppeteer==1.0.2; python_version >= '3.7' and python_version < '4.0'
 pyquery==1.4.3
 pyrsistent==0.18.1; python_version >= '3.7'
 pysam==0.18.0
@@ -82,23 +81,22 @@ pytz==2021.3
 pyyaml==6.0; python_version >= '3.6'
 requests-html==0.10.0; python_version >= '3.6'
 requests==2.27.1
-s3transfer==0.5.0; python_version >= '3.6'
-setuptools==60.6.0; python_version >= '3.7'
+s3transfer==0.5.1; python_version >= '3.6'
+setuptools==60.9.3; python_version >= '3.7'
 simplejson==3.17.6; python_version >= '2.5' and python_version not in '3.0, 3.1, 3.2, 3.3'
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sniffio==1.2.0; python_version >= '3.5'
 soupsieve==2.3.1; python_version >= '3.6'
-sqlalchemy==1.4.31
 sqlparse==0.4.2; python_version >= '3.5'
-stack-data==0.1.4
+stack-data==0.2.0
 starlette==0.17.1; python_version >= '3.6'
 tabulate==0.8.9
-tomli==2.0.0; python_version >= '3.7'
+tomli==2.0.1; python_version >= '3.7'
 tqdm==4.62.3; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 traitlets==5.1.1; python_version >= '3.7'
-typing-extensions==4.0.1
-urllib3==1.26.8; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'
-uvicorn==0.17.1
+typing-extensions==4.1.1
+urllib3==1.26.8; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'
+uvicorn==0.17.5
 uvloop==0.16.0
 w3lib==1.22.0
 wcwidth==0.2.5
