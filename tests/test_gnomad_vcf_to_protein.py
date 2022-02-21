@@ -1,15 +1,7 @@
 """Module for testing gnomad_vcf_to_protein works correctly"""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
-
-from variation.query import QueryHandler
 from tests.conftest import assertion_checks
-
-
-@pytest.fixture(scope="module")
-def test_query_handler():
-    """Create test fixture for query handler"""
-    return QueryHandler()
 
 
 @pytest.fixture(scope="module")
