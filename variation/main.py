@@ -2,13 +2,15 @@
 from typing import Optional
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
+
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from .version import __version__
 from datetime import datetime
 import html
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
+    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
+    CanonicalSPDIToCategoricalVariationService
 
 app = FastAPI(
     docs_url="/variation",
@@ -185,6 +187,44 @@ def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
     return NormalizeService(
         variation_query=q,
         variation_descriptor=resp,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
+    )
+
+
+complement_descr = "This field indicates that a categorical variation is defined to " \
+                   "include (false) or exclude (true) variation concepts matching " \
+                   "the categorical variation."
+
+
+@app.get("/variation/canonical_spdi_to_categorical_variation",
+         summary="Given canonical SPDI, return VRSATILE categorical variation object",
+         response_description="A response to a validly-formed query.",
+         description="Return VRSATILE categorical variation object",
+         response_model=CanonicalSPDIToCategoricalVariationService,
+         response_model_exclude_none=True)
+def canonical_spdi_to_categorical_variation(
+        q: str = Query(..., description="Canonical SPDI"),
+        complement: bool = Query(False, description=complement_descr)
+) -> CanonicalSPDIToCategoricalVariationService:
+    """Return categorical variation for canonical SPDI
+
+    :param str q: Canonical SPDI
+    :param bool complement: This field indicates that a categorical variation
+        is defined to include (false) or exclude (true) variation concepts matching the
+        categorical variation. This is equivalent to a logical NOT operation on the
+        categorical variation properties.
+    :return: CanonicalSPDIToCategoricalVariationService for variation query
+    """
+    q = html.unescape(q.strip())
+    resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
+        q, complement=complement)
+    return CanonicalSPDIToCategoricalVariationService(
+        canonical_spdi_query=q,
+        categorical_variation=resp,
         warnings=warnings,
         service_meta_=ServiceMeta(
             version=__version__,

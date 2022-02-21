@@ -2,17 +2,19 @@
 Variation Normalization only supports liftover from GRCh37 assembly.
 """
 from typing import Dict, Optional, List, Tuple
+import logging
+from os import environ
+from urllib.parse import quote, unquote
+
 import psycopg2
 import psycopg2.extras
 from pydantic.types import StrictBool
 from six.moves.urllib import parse as urlparse
-import logging
-from variation import UTA_DB_URL
 from pyliftover import LiftOver
-from os import environ
 import pandas as pd
-from urllib.parse import quote, unquote
 import boto3
+
+from variation import UTA_DB_URL
 
 
 logger = logging.getLogger('variation')
@@ -74,7 +76,7 @@ class UTA:
             db_url = self._url_encode_password(db_url)
             url = ParseResult(urlparse.urlparse(db_url))
             self.schema = url.schema
-            return self._get_args(url.hostname, url.port, url.database,
+            return self._get_args(url.hostname, int(url.port), url.database,
                                   url.username, unquote(url.password))
         else:
             self.schema = environ['UTA_SCHEMA']
@@ -499,7 +501,10 @@ class UTA:
             ORDER BY ALIGN.alt_ac, ALIGN.tx_end_i - ALIGN.tx_start_i DESC;
             """
         )
-        return pd.read_sql(query, self.conn)
+        self.cursor.execute(query)
+        data = self.cursor.fetchall()
+        return pd.DataFrame(data=data,
+                            columns=["pro_ac", "tx_ac", "alt_ac", "cds_start_i"])
 
     def get_chr_assembly(self, ac) -> Optional[Tuple[str, str]]:
         """Get chromosome and assembly for NC accession.
