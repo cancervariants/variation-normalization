@@ -434,12 +434,12 @@ class QueryHandler:
                     q, _id, [f"Unable to get protein variation for {q}"])
 
     def canonical_spdi_to_categorical_variation(
-            self, q: str, complement: Optional[bool] = False
+            self, q: str, complement: bool = False
     ) -> Tuple[Optional[Union[CanonicalVariation, ComplexVariation]], List]:
         """Return categorical variation for canonical SPDI
 
         :param str q: Canonical SPDI
-        :param Optional[bool] complement: This field indicates that a categorical
+        :param bool complement: This field indicates that a categorical
             variation is defined to include (false) or exclude (true) variation
              concepts matching the categorical variation. This is equivalent to a
              logical NOT operation on the categorical variation properties.
