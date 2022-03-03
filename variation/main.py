@@ -244,20 +244,23 @@ from_fmt_descr = "Format of input variation to translate. Must be one of `beacon
 
 
 @app.get("/variation/translate_from",
-         summary="Given variation, return VRS Allele object using vrs-python's "
-                 "translator class",
+         summary="Given variation as beacon, gnomad, hgvs or spdi representation, "
+                 "return VRS Allele object using vrs-python's translator class",
          response_description="A response to a validly-formed query.",
          description="Return VRS Allele object",
          response_model=TranslateFromService,
          response_model_exclude_none=True)
 def vrs_python_translate_from(
-    variation: str = Query(..., description="Variation to translate to VRS object"),
+    variation: str = Query(..., description="Variation to translate to VRS object."
+                                            " Must be represented as either beacon, "
+                                            "gnomad, hgvs, or spdi."),
     fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr)
 ) -> TranslateFromService:
     """Given variation query, return VRS Allele object using vrs-python's translator
         class
 
-    :param str variation: Variation to translate to VRS object
+    :param str variation: Variation to translate to VRS object. Must be represented
+        as either beacon, gnomad, hgvs, or spdi
     :param Optional[TranslateFromFormat] fmt: Format of variation. If not supplied,
         vrs-python will infer its format.
     :return: TranslateFromService containing VRS Allele object
