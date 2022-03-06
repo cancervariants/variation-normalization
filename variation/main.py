@@ -272,8 +272,6 @@ def vrs_python_translate_from(
         resp = query_handler.tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
-    except Exception as e:
-        warnings.append(f"{type(e).__name__}: {e}")
     else:
         vrs_variation = resp.as_dict()
 
@@ -346,8 +344,6 @@ async def vrs_python_translate_to(
         allele = models.Allele(**r["allele"])
     except ValidationError as e:
         warnings.append(f"`allele` is not a valid VRS Allele: {e}")
-    except Exception as e:
-        warnings.append(f"{type(e).__name__}: {e}")
 
     variation = []
     if allele:
@@ -355,8 +351,6 @@ async def vrs_python_translate_to(
             variation = query_handler.tlr.translate_to(allele, r["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
-        except Exception as e:
-            warnings.append(f"{type(e).__name__}: {e}")
 
     return TranslateToService(
         query=TranslateToQuery(variation=allele_query, fmt=fmt_query),
