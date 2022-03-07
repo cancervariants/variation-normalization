@@ -91,8 +91,9 @@ class UTA:
             token = client.generate_db_auth_token(
                 DBHostname=host, Port=port, DBUsername=user, Region=region
             )
-            environ['UTA_DB_URL'] = \
-                f"postgresql://{user}:{token}@{host}/{db}/{self.schema}"
+            # TODO: Resolve in issue-252
+            # environ['UTA_DB_URL'] = \
+            #     f"postgresql://{user}:{token}@{host}/{db}/{self.schema}"
             return self._get_args(host, int(port), db, user, token)
 
     def _url_encode_password(self, db_url) -> str:
