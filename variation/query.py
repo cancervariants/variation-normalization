@@ -3,7 +3,6 @@ from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
 import copy
 import json
-import re
 
 import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
@@ -11,7 +10,6 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.core import sha512t24u, ga4gh_identify
 from ga4gh.vrs import models
-from bioutils.accessions import coerce_namespace
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
@@ -452,38 +450,7 @@ class QueryHandler:
 
         variation = None
         try:
-            # TODO: Replace with below once vrs-python releases new version
-            # variation = self.tlr.translate_from(q, fmt="spdi")
-            def translate_from_spdi(tlr, spdi_expr):
-                # Code is from https://github.com/ga4gh/vrs-python/blob/main/src/ga4gh/vrs/extras/translator.py#L243  # noqa: E501
-                if not isinstance(spdi_expr, str):
-                    return None
-                spdi_re = re.compile(
-                    r"(?P<ac>[^:]+):(?P<pos>\d+):(?P<del_len_or_seq>\w+):(?P<ins_seq>\w+)")  # noqa: E501
-                m = spdi_re.match(spdi_expr)
-                if not m:
-                    return None
-
-                g = m.groupdict()
-                sequence_id = coerce_namespace(g["ac"])
-                start = int(g["pos"])
-                try:
-                    del_len = int(g["del_len_or_seq"])
-                except ValueError:
-                    del_len = len(g["del_len_or_seq"])
-                end = start + del_len
-                ins_seq = g["ins_seq"]
-
-                interval = models.SequenceInterval(start=models.Number(value=start),
-                                                   end=models.Number(value=end))
-                location = models.Location(sequence_id=sequence_id, interval=interval)
-                sstate = models.LiteralSequenceExpression(sequence=ins_seq)
-                allele = models.Allele(location=location, state=sstate)
-                return tlr._post_process_imported_allele(allele)
-            variation = translate_from_spdi(self.tlr, q)
-            if variation is None:
-                warnings.append("vrs-python translator raised error: "
-                                "Unable to parse data as spdi variation")
+            variation = self.tlr.translate_from(q, fmt="spdi")
         except (ValueError, python_jsonschema_objects.validators.ValidationError) as e:
             warnings.append(f"vrs-python translator raised error: {e}")
         except KeyError as e:

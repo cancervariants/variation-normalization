@@ -64,7 +64,9 @@ class UTA:
             else:
                 if uta_password_in_environ and not db_pwd:
                     db_pwd = environ['UTA_PASSWORD']
-            return f"{db_url[0]}:{db_pwd}@{db_url[1]}"
+            uta_db_url = f"{db_url[0]}:{db_pwd}@{db_url[1]}"
+            environ["UTA_DB_URL"] = uta_db_url
+            return uta_db_url
 
     def _get_conn_args(self, is_prod, db_pwd, db_url) -> Dict:
         """Return connection arguments.
@@ -82,14 +84,17 @@ class UTA:
             self.schema = environ['UTA_SCHEMA']
             region = 'us-east-2'
             client = boto3.client('rds', region_name=region)
+            host = environ['UTA_HOST']
+            port = environ['UTA_PORT']
+            user = environ['UTA_USER']
+            db = environ['UTA_DATABASE']
             token = client.generate_db_auth_token(
-                DBHostname=environ['UTA_HOST'], Port=environ['UTA_PORT'],
-                DBUsername=environ['UTA_USER'], Region=region
+                DBHostname=host, Port=port, DBUsername=user, Region=region
             )
-            return self._get_args(environ['UTA_HOST'],
-                                  int(environ['UTA_PORT']),
-                                  environ['UTA_DATABASE'], environ['UTA_USER'],
-                                  token)
+            # TODO: Resolve in issue-252
+            # environ['UTA_DB_URL'] = \
+            #     f"postgresql://{user}:{token}@{host}/{db}/{self.schema}"
+            return self._get_args(host, int(port), db, user, token)
 
     def _url_encode_password(self, db_url) -> str:
         """Update DB URL to url encode password.
