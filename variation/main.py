@@ -14,6 +14,8 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
     CanonicalSPDIToCategoricalVariationService
+from hgvs.exceptions import HGVSError
+from bioutils.exceptions import BioutilsError
 
 app = FastAPI(
     docs_url="/variation",
@@ -269,6 +271,10 @@ def vrs_python_translate_from(
         resp = query_handler.tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+    except HGVSError as e:
+        warnings.append(f"hgvs raised {type(e).__name__}: {e}")
+    except BioutilsError as e:
+        warnings.append(f"bioutils raised {type(e).__name__}: {e}")
     else:
         vrs_variation = resp.as_dict()
 
