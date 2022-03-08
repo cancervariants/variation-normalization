@@ -145,6 +145,7 @@ def translate_identifier(
     """
     aliases = []
     warnings = None
+    identifier = identifier.strip()
     try:
         aliases = query_handler.seqrepo_access.seq_repo_client.translate_identifier(  # noqa: E501
             identifier, target_namespaces=target_namespaces)
@@ -264,7 +265,7 @@ def vrs_python_translate_from(
         vrs-python will infer its format.
     :return: TranslateFromService containing VRS Allele object
     """
-    variation_query = html.unescape(variation)
+    variation_query = html.unescape(variation.strip())
     warnings = list()
     vrs_variation = None
     try:
