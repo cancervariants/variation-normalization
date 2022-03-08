@@ -145,6 +145,7 @@ def translate_identifier(
     """
     aliases = []
     warnings = None
+    identifier = identifier.strip()
     try:
         aliases = query_handler.seqrepo_access.seq_repo_client.translate_identifier(  # noqa: E501
             identifier, target_namespaces=target_namespaces)
