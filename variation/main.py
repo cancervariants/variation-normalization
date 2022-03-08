@@ -264,7 +264,7 @@ def vrs_python_translate_from(
         vrs-python will infer its format.
     :return: TranslateFromService containing VRS Allele object
     """
-    variation_query = html.unescape(variation)
+    variation_query = html.unescape(variation.strip())
     warnings = list()
     vrs_variation = None
     try:
