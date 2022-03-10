@@ -1,6 +1,7 @@
 """The module for Amino Acid Deletion Validation."""
 from variation.schemas.classification_response_schema import \
     ClassificationType
+from variation.schemas.schemas import Endpoint
 from variation.schemas.token_response_schema import AminoAcidDeletionToken
 from typing import List, Optional
 from variation.validators.validator import Validator
@@ -64,11 +65,10 @@ class AminoAcidDeletion(Validator):
         """
         return self.get_protein_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(self, classification_tokens, transcripts,
-                                  classification, results, gene_tokens,
-                                  normalize_endpoint, mane_data_found,
-                                  is_identifier, hgvs_dup_del_mode)\
-            -> None:
+    def get_valid_invalid_results(
+        self, classification_tokens, transcripts, classification, results, gene_tokens,
+        mane_data_found, is_identifier, hgvs_dup_del_mode, endpoint_name
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param list classification_tokens: A list of classification Tokens
@@ -77,8 +77,6 @@ class AminoAcidDeletion(Validator):
             tokens
         :param list results: Stores validation result objects
         :param list gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -86,6 +84,7 @@ class AminoAcidDeletion(Validator):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -107,11 +106,11 @@ class AminoAcidDeletion(Validator):
                             t, s.end_aa_del, s.end_pos_del, errors
                         )
 
-                if not errors and normalize_endpoint:
+                if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.end_pos_del,
                         s.reference_sequence,
-                        normalize_endpoint=normalize_endpoint
+                        try_longest_compatible=True
                     )
                     self.add_mane_data(
                         mane, mane_data_found, s.reference_sequence,
@@ -125,7 +124,7 @@ class AminoAcidDeletion(Validator):
                 if is_identifier:
                     break
 
-        if normalize_endpoint:
+        if endpoint_name == Endpoint.NORMALIZE:
             self.add_mane_to_validation_results(
                 mane_data_found, valid_alleles, results,
                 classification, gene_tokens

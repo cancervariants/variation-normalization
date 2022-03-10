@@ -4,6 +4,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
     VariationSet, Text
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.schemas.schemas import Endpoint
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -67,16 +68,14 @@ class ToVRS:
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     def get_validations(
-            self, q: str, normalize_endpoint: bool = False,
+            self, q: str, endpoint_name: Optional[Endpoint] = None,
             hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
             This parameter determines how to interpret HGVS dup/del expressions
             in VRS.
         :return: ValidationSummary for the variation and list of warnings
@@ -91,7 +90,7 @@ class ToVRS:
         if Nomenclature.GNOMAD_VCF in nomenclature:
             hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         else:
-            if normalize_endpoint:
+            if endpoint_name == Endpoint.NORMALIZE:
                 if hgvs_dup_del_mode:
                     hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
                     if not self.hgvs_dup_del_mode.is_valid_mode(hgvs_dup_del_mode):  # noqa: E501
@@ -106,7 +105,7 @@ class ToVRS:
 
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
-            classifications, normalize_endpoint, warnings,
+            classifications, endpoint_name, warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode
         )
         if not warnings:

@@ -23,6 +23,17 @@ logger = logging.getLogger('variation')
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
 
+logging.getLogger("boto3").setLevel(logging.INFO)
+logging.getLogger("botocore").setLevel(logging.INFO)
+logging.getLogger("urllib3").setLevel(logging.INFO)
+logging.getLogger("python_jsonschema_objects").setLevel(logging.INFO)
+logging.getLogger("hgvs.parser").setLevel(logging.INFO)
+logging.getLogger("biocommons.seqrepo.seqaliasdb.seqaliasdb").setLevel(logging.INFO)
+logging.getLogger("biocommons.seqrepo.fastadir.fastadir").setLevel(logging.INFO)
+
+# logging.getLogger("bioregistry.resource_manager").setLevel(logging.INFO)
+# logging.getLogger("blib2to3.pgen2.driver").setLevel(logging.INFO)
+
 if 'VARIATION_NORM_EB_PROD' in environ:
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)

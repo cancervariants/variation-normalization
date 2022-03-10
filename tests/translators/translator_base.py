@@ -1,6 +1,7 @@
 """A module for testing translator classes."""
 import yaml
 from tests import PROJECT_ROOT
+from variation.schemas.schemas import Endpoint
 from variation.vrs import VRS
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
@@ -74,7 +75,7 @@ class TranslatorBase:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
-                classification, normalize_endpoint=False
+                classification, endpoint_name=Endpoint.TO_VRS
             )
             num_valid = 0
             found = list()

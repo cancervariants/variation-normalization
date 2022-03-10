@@ -154,8 +154,8 @@ class HGVSDupDelMode:
         variation = models.Allele(**allele) if allele else None
         return self._ga4gh_identify_variation(variation)
 
-    def _ga4gh_identify_variation(self,
-                                  variation: models.Variation) -> Optional[Dict]:  # noqa: E501
+    @staticmethod
+    def _ga4gh_identify_variation(variation: models.Variation) -> Optional[Dict]:
         """Return variation with GA4GH digest-based id.
 
         :param models.Variation variation: VRS variation object

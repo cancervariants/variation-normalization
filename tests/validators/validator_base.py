@@ -1,6 +1,7 @@
 """A module for testing validator classes."""
 import yaml
 from tests import PROJECT_ROOT
+from variation.schemas.schemas import Endpoint
 from variation.vrs import VRS
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
@@ -69,8 +70,8 @@ class ValidatorBase:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
-                classification, normalize_endpoint=False,
-                hgvs_dup_del_mode="default"
+                classification, hgvs_dup_del_mode="default",
+                endpoint_name=Endpoint.TO_VRS
             )
             is_valid = False
             for vr in validation_results:
@@ -87,7 +88,7 @@ class ValidatorBase:
             tokens = self.tokenizer.perform(x['query'], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
-                classification, normalize_endpoint=True
+                classification, endpoint_name=Endpoint.TO_VRS
             )
             is_valid = False
             for vr in validation_results:

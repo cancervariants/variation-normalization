@@ -1,5 +1,7 @@
 """The module for Single Nucleotide Variation Validation."""
 from typing import List, Dict, Optional
+
+from variation.schemas.schemas import Endpoint
 from .validator import Validator
 import logging
 from variation.schemas.classification_response_schema import Classification, \
@@ -73,11 +75,12 @@ class SingleNucleotideVariationBase(Validator):
         raise NotImplementedError
 
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum) \
-            -> None:
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param List classification_tokens: A list of classification Tokens
@@ -86,8 +89,6 @@ class SingleNucleotideVariationBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -95,13 +96,14 @@ class SingleNucleotideVariationBase(Validator):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         """
         raise NotImplementedError
 
     def silent_mutation_valid_invalid_results(
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
+            endpoint_name: Optional[Endpoint], mane_data_found: Dict,
             is_identifier: bool) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
@@ -112,8 +114,7 @@ class SingleNucleotideVariationBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -157,11 +158,11 @@ class SingleNucleotideVariationBase(Validator):
                                     f'Expected {s.reference_sequence} but '
                                     f'found {sequence}')
 
-                if not errors and normalize_endpoint:
+                if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position, s.reference_sequence,
                         gene=gene_tokens[0].token if gene_tokens else None,
-                        normalize_endpoint=normalize_endpoint
+                        try_longest_compatible=True
                     )
 
                     self.add_mane_data(mane, mane_data_found,
@@ -175,7 +176,7 @@ class SingleNucleotideVariationBase(Validator):
                 if is_identifier:
                     break
 
-        if normalize_endpoint:
+        if endpoint_name == Endpoint.NORMALIZE:
             self.add_mane_to_validation_results(
                 mane_data_found, valid_alleles, results,
                 classification, gene_tokens
