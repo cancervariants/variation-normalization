@@ -1,5 +1,5 @@
 """The module for Genomic DelIns Validation."""
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification

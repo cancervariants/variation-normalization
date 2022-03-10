@@ -4,7 +4,7 @@ from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
 from variation.schemas.validation_response_schema import ValidationResult, \

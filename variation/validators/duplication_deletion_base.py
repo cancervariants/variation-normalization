@@ -2,7 +2,7 @@
 from typing import Optional, List, Dict, Tuple
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode

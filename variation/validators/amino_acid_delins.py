@@ -1,7 +1,7 @@
 """The module for Amino Acid DelIns Validation."""
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import AminoAcidDelInsToken
 from typing import List, Optional, Dict
 from variation.validators.validator import Validator

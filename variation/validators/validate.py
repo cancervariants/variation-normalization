@@ -1,5 +1,5 @@
 """Module for Validation."""
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
