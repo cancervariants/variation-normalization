@@ -1,5 +1,5 @@
 """The module for Coding DNA Deletion Validation."""
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \

@@ -1,7 +1,7 @@
 """The module for Genomic Deletion Range Validation."""
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import \
     GenomicDeletionRangeToken, Token
 from typing import List, Optional, Dict, Tuple

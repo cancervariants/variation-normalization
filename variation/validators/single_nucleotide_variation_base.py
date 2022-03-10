@@ -1,7 +1,7 @@
 """The module for Single Nucleotide Variation Validation."""
 from typing import List, Dict, Optional
 
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from .validator import Validator
 import logging
 from variation.schemas.classification_response_schema import Classification, \

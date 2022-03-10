@@ -4,7 +4,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
     VariationSet, Text
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify

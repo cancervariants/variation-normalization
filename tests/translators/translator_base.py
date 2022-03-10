@@ -1,7 +1,7 @@
 """A module for testing translator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.vrs import VRS
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache

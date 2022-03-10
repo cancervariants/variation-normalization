@@ -1,7 +1,7 @@
 """The module for Genomic Silent Mutation Validation."""
 from typing import Optional, List, Dict
 
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
