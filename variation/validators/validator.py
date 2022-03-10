@@ -4,6 +4,7 @@ from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
+from variation.schemas.schemas import Endpoint
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
 from variation.schemas.validation_response_schema import ValidationResult, \
@@ -134,11 +135,12 @@ class Validator(ABC):
 
     @abstractmethod
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum)\
-            -> None:
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param List classification_tokens: A list of classification Tokens
@@ -147,8 +149,6 @@ class Validator(ABC):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -156,23 +156,24 @@ class Validator(ABC):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         """
         raise NotImplementedError
 
     def validate(
-            self, classification: Classification, normalize_endpoint: bool,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+            self, classification: Classification,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+            endpoint_name: Optional[Endpoint] = None
     ) -> List[ValidationResult]:
         """Return validation result for a given classification.
 
         :param Classification classification: A classification for a list of
             tokens
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :return: List of ValidationResult's containing valid and invalid
             results
         """
@@ -219,8 +220,8 @@ class Validator(ABC):
 
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
-            results, gene_tokens, normalize_endpoint, mane_data_found,
-            is_identifier, hgvs_dup_del_mode
+            results, gene_tokens, mane_data_found,
+            is_identifier, hgvs_dup_del_mode, endpoint_name
         )
         return results
 
