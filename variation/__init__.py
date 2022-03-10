@@ -31,9 +31,6 @@ logging.getLogger("hgvs.parser").setLevel(logging.INFO)
 logging.getLogger("biocommons.seqrepo.seqaliasdb.seqaliasdb").setLevel(logging.INFO)
 logging.getLogger("biocommons.seqrepo.fastadir.fastadir").setLevel(logging.INFO)
 
-# logging.getLogger("bioregistry.resource_manager").setLevel(logging.INFO)
-# logging.getLogger("blib2to3.pgen2.driver").setLevel(logging.INFO)
-
 if 'VARIATION_NORM_EB_PROD' in environ:
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
