@@ -1,4 +1,5 @@
 """The module for Coding DNA Substitution Validation."""
+from variation.schemas.schemas import Endpoint
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
@@ -33,8 +34,9 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
     def get_valid_invalid_results(
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum
+            mane_data_found: Dict, is_identifier: bool,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum,
+            endpoint_name: Optional[Endpoint] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -44,8 +46,6 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -53,10 +53,11 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens, normalize_endpoint, mane_data_found, is_identifier
+            gene_tokens, endpoint_name, mane_data_found, is_identifier
         )
 
     def get_gene_tokens(self, classification) -> List[GeneMatchToken]:

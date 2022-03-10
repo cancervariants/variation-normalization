@@ -2,6 +2,7 @@
 from typing import List, Dict, Optional
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
+from variation.schemas.schemas import Endpoint
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 import logging
@@ -73,11 +74,12 @@ class DelInsBase(Validator):
         raise NotImplementedError
 
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum) \
-            -> None:
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param List classification_tokens: A list of classification Tokens
@@ -86,8 +88,7 @@ class DelInsBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.

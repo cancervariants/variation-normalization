@@ -13,6 +13,7 @@ from ga4gh.vrs import models
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
+from variation.schemas.schemas import Endpoint
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -152,7 +153,7 @@ class QueryHandler:
         """
         validations, warnings = \
             self.to_vrs_handler.get_validations(
-                q, normalize_endpoint=True,
+                q, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode
             )
         if not validations:
@@ -176,7 +177,7 @@ class QueryHandler:
                 return None
         classifications = self.to_vrs_handler.classifier.perform(tokens)
         validation_summary = self.to_vrs_handler.validator.perform(
-            classifications, True, warnings,
+            classifications, Endpoint.NORMALIZE, warnings,
             hgvs_dup_del_mode=HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         )
         if not validation_summary:
