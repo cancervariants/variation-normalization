@@ -1,4 +1,5 @@
 """Module for Validation."""
+from variation.schemas.schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
@@ -26,7 +27,7 @@ from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from typing import List
+from typing import List, Optional
 from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -87,14 +88,13 @@ class Validate:
 
     def perform(
             self, classifications: List[Classification],
-            normalize_endpoint: bool, warnings: List = None,
+            endpoint_name: Optional[Endpoint] = None, warnings: List = None,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
     ) -> ValidationSummary:
         """Validate a list of classifications.
 
         :param List classifications: List of classifications
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param List warnings: List of warnings
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
@@ -113,7 +113,8 @@ class Validate:
                 if validator.validates_classification_type(
                         classification.classification_type):
                     results = validator.validate(
-                        classification, normalize_endpoint, hgvs_dup_del_mode)
+                        classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
+                        endpoint_name=endpoint_name)
                     for res in results:
                         if res.is_valid:
                             found_classification = True
