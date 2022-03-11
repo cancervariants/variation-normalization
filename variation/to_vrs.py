@@ -5,6 +5,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -69,15 +70,17 @@ class ToVRS:
 
     def get_validations(
             self, q: str, endpoint_name: Optional[Endpoint] = None,
-            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None
+            hgvs_dup_del_mode: Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] = None,  # noqa: E501
+            baseline_copies: Optional[int] = None
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
         :param str q: variation to get validation results for
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
+        :param Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] hgvs_dup_del_mode:
             This parameter determines how to interpret HGVS dup/del expressions
             in VRS.
+        :param Optional[int] baseline_copies: Baseline copies number
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
@@ -93,20 +96,30 @@ class ToVRS:
             if endpoint_name == Endpoint.NORMALIZE:
                 if hgvs_dup_del_mode:
                     hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
-                    if not self.hgvs_dup_del_mode.is_valid_mode(hgvs_dup_del_mode):  # noqa: E501
+                    if not self.hgvs_dup_del_mode.is_valid_dup_del_mode(hgvs_dup_del_mode):  # noqa: E501
                         warnings.append(
                             f"hgvs_dup_del_mode must be one of: "
-                            f"{self.hgvs_dup_del_mode.valid_modes}")
+                            f"{self.hgvs_dup_del_mode.valid_dup_del_modes}")
                         return None, warnings
                 else:
                     hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+            elif endpoint_name in [Endpoint.HGVS_TO_ABSOLUTE_CN,
+                                   Endpoint.HGVS_TO_RELATIVE_CN]:
+                if not hgvs_dup_del_mode:
+                    warnings.append(f"hgvs_dup_del_mode must be either "
+                                    f"{CopyNumberType.ABSOLUTE.value} or "
+                                    f"{CopyNumberType.RELATIVE.value}")
+                    return None, warnings
+                if not self.hgvs_dup_del_mode.is_valid_copy_number_mode(hgvs_dup_del_mode):  # noqa: E501
+                    warnings.append(f"hgvs_dup_del_mode must be one of "
+                                    f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")
             else:
                 hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
 
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
-            classifications, endpoint_name, warnings,
-            hgvs_dup_del_mode=hgvs_dup_del_mode
+            classifications, endpoint_name=endpoint_name, warnings=warnings,
+            hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies
         )
         if not warnings:
             warnings = validations.warnings

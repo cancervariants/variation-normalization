@@ -368,3 +368,43 @@ def vrs_python_translate_from(
 #             version=pkg_resources.get_distribution("ga4gh.vrs").version
 #         )
 #     )
+
+@app.get("/variation/hgvs_to_absolute_copy_number",
+         summary="Given HGVS expression, return absolute copy number variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS object",
+         response_model_exclude_none=True)
+def hgvs_to_absolute_copy_number(
+    hgvs_expr: str = Query(..., description="Variation query"),
+    baseline_copies: Optional[int] = Query(
+        None, description="Baseline copies for duplication")
+):
+    """Given hgvs expression, return absolute copy number variation
+
+    :param str hgvs_expr: HGVS expression
+    :param Optional[int] baseline_copies: Baseline copies number
+    :return: Abolute copy number variation
+    """
+    translations, warnings = query_handler.hgvs_to_absolute_copy_number(
+        hgvs_expr, baseline_copies)
+
+    return {
+        "translations": translations,
+        "warnings": warnings
+    }
+
+
+@app.get("/variation/hgvs_to_relative_copy_number",
+         summary="Given HGVS expression, return relative copy number variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS object",
+         response_model_exclude_none=True)
+def hgvs_to_relative_copy_number(
+    hgvs_expr: str = Query(..., description="Variation query")
+):
+    """Given hgvs expression, return relative copy number variation
+
+    :param str hgvs_expr: HGVS expression
+    :return: Relative Copy Number Variation
+    """
+    pass

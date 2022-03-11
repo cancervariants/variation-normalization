@@ -110,7 +110,8 @@ class DuplicationDeletionBase(Validator):
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -128,6 +129,7 @@ class DuplicationDeletionBase(Validator):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         raise NotImplementedError
 
@@ -207,7 +209,7 @@ class DuplicationDeletionBase(Validator):
     def add_normalized_genomic_dup_del(
             self, s: Token, t: str, start: int, end: int, gene: str,
             so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            mane_data_found: Dict) -> None:
+            mane_data_found: Dict, baseline_copies: Optional[int] = None) -> None:
         """Add normalized genomic dup or del to mane data
 
         :param Token s: Classification token
@@ -240,7 +242,8 @@ class DuplicationDeletionBase(Validator):
             )
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
-                t, s.alt_type, allele, errors, hgvs_dup_del_mode)
+                t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                baseline_copies=baseline_copies)
 
             if mane_variation:
                 self._add_dict_to_mane_data(
@@ -304,7 +307,8 @@ class DuplicationDeletionBase(Validator):
             grch38: Dict, mane_data_found: Dict,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             ival: Optional[Tuple] = None,
-            use_vrs_allele_range: bool = True) -> None:
+            use_vrs_allele_range: bool = True,
+            baseline_copies: Optional[int] = None) -> None:
         """Add grch38 variation to mane data
 
         :param str t: Accession
@@ -336,7 +340,8 @@ class DuplicationDeletionBase(Validator):
                 s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors, hgvs_dup_del_mode)
+            t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+            baseline_copies=baseline_copies)
 
         if grch38_variation:
             self._add_dict_to_mane_data(
