@@ -13,7 +13,8 @@ from ga4gh.vrs import models
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -497,3 +498,29 @@ class QueryHandler:
         canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
+
+    def hgvs_to_absolute_copy_number(
+        self, hgvs_expr: str, baseline_copies: Optional[int] = None
+    ):
+        """Given hgvs, return abolute copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param Optional[int] baseline_copies: Baseline copies number
+        :return: Absolute Copy Number Variation
+        """
+        validations, warnings = self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
+            hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
+            baseline_copies=baseline_copies
+        )
+        translations, warnings = \
+            self.to_vrs_handler.get_translations(validations, warnings)
+
+        if not translations:
+            if hgvs_expr and hgvs_expr.strip():
+                text = models.Text(definition=hgvs_expr)
+                text._id = ga4gh_identify(text)
+                translations = [Text(**text.as_dict())]
+            else:
+                translations = None
+        return translations, warnings

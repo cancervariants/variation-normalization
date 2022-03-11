@@ -139,7 +139,8 @@ class Validator(ABC):
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -157,13 +158,15 @@ class Validator(ABC):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         raise NotImplementedError
 
     def validate(
             self, classification: Classification,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
-            endpoint_name: Optional[Endpoint] = None
+            endpoint_name: Optional[Endpoint] = None,
+            baseline_copies: Optional[int] = None
     ) -> List[ValidationResult]:
         """Return validation result for a given classification.
 
@@ -174,6 +177,7 @@ class Validator(ABC):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
         :return: List of ValidationResult's containing valid and invalid
             results
         """
@@ -221,7 +225,7 @@ class Validator(ABC):
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, mane_data_found,
-            is_identifier, hgvs_dup_del_mode, endpoint_name
+            is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies
         )
         return results
 

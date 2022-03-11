@@ -4,6 +4,7 @@ from typing import Optional, Dict, Tuple, List
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -20,17 +21,28 @@ class HGVSDupDelMode:
         :param SeqRepoAccess seqrepo_access: Access to seqrepo
         """
         self.seqrepo_access = seqrepo_access
-        self.valid_modes = [mode.value for mode in
-                            HGVSDupDelModeEnum.__members__.values()]
+        self.valid_dup_del_modes = [mode.value for mode in
+                                    HGVSDupDelModeEnum.__members__.values()]
+        self.valid_copy_number_modes = [cn_type.value for cn_type in
+                                        CopyNumberType.__members__.values()]
 
-    def is_valid_mode(self, mode: str) -> bool:
-        """Determine if mode is a valid input.
+    def is_valid_dup_del_mode(self, mode: str) -> bool:
+        """Determine if mode is a valid input for HGVS Dup Del Mode.
 
         :param str mode: Entered mode
         :return: `True` if valid mode. `False` otherwise.
         """
         hgvs_dup_del_mode = mode.strip().lower()
-        return hgvs_dup_del_mode in self.valid_modes
+        return hgvs_dup_del_mode in self.valid_dup_del_modes
+
+    def is_valid_copy_number_mode(self, mode: str) -> bool:
+        """Determine if mode is a valid input for copy number mode
+
+        :param str mode: Entered mode
+        :return: `True` if valid mode. `False` otherwise.
+        """
+        copy_number_type_mode = mode.strip().lower()
+        return copy_number_type_mode in self.valid_copy_number_modes
 
     def default_mode(self, ac: str, alt_type: str, pos: Tuple[int, int],
                      del_or_dup: str, location: Dict,
@@ -170,7 +182,8 @@ class HGVSDupDelMode:
     def interpret_variation(self, ac: str, alt_type: str, allele: Dict,
                             errors: List,
                             hgvs_dup_del_mode: HGVSDupDelModeEnum,
-                            pos: Optional[Tuple[int, int]] = None) -> Dict:
+                            pos: Optional[Tuple[int, int]] = None,
+                            baseline_copies: Optional[int] = None) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
         :param str ac: Accession
@@ -203,6 +216,55 @@ class HGVSDupDelMode:
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                 variation = self.literal_seq_expr_mode(allele, alt_type)
+            elif hgvs_dup_del_mode == CopyNumberType.ABSOLUTE:
+                variation = self.absolute_copy_number_mode(
+                    ac, del_or_dup, allele['location'], baseline_copies=baseline_copies)
+            elif hgvs_dup_del_mode == CopyNumberType.RELATIVE:
+                # TODO
+                pass
             if not variation:
                 errors.append("Unable to get VRS Variation")
         return variation
+
+    def absolute_copy_number_mode(
+        self, ac: str, del_or_dup: str, location: Dict,
+        chromosome: Optional[str] = None, baseline_copies: Optional[int] = None
+    ) -> Optional[Dict]:
+        """Return absolute copy number variation
+
+        :param str ac: Accession
+        :param str del_or_dup: Must be either `del` or `dup`
+        :param dict location: VRS SequenceLocation
+        :param str chromosome: Chromosome
+        :param dict allele: VRS absolute copy number object represented as a dict
+        """
+        if chromosome is None:
+            chromosome = self.seqrepo_access.ac_to_chromosome(ac)
+
+        if chromosome is None:
+            logger.warning(f"Unable to find chromosome on {ac}")
+            return None
+
+        provided_dup_baseline_copies = baseline_copies and del_or_dup == "dup"
+        if chromosome == "X":
+            base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
+            copies = models.DefiniteRange(min=base_value, max=base_value + 1)
+        else:
+            if chromosome == "Y":
+                base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
+            else:
+                # Chr 1-22
+                base_value = baseline_copies if provided_dup_baseline_copies else 1 if del_or_dup == "del" else 3  # noqa: E501
+            copies = models.Number(value=base_value)
+
+        variation = models.CopyNumber(
+            subject=models.DerivedSequenceExpression(
+                location=location, reverse_complement=False),
+            copies=copies
+        )
+        return self._ga4gh_identify_variation(variation)
+
+    def relative_copy_number_mode(self):
+        """Return relative copy number variation"""
+        # TODO
+        pass

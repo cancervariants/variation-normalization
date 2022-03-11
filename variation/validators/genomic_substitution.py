@@ -30,11 +30,12 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
         return self.get_genomic_transcripts(classification, errors)
 
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            mane_data_found: Dict, is_identifier: bool,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            endpoint_name: Optional[Endpoint] = None
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -52,6 +53,7 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         valid_alleles = list()
         for s in classification_tokens:
