@@ -516,16 +516,23 @@ class QueryHandler:
             hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
             baseline_copies=baseline_copies, do_liftover=do_liftover
         )
-        translations, warnings = \
-            self.to_vrs_handler.get_translations(validations, warnings)
+        translations = None
+        if do_liftover:
+            valid_result = self.normalize_handler.get_valid_result(
+                hgvs_expr, validations, warnings)
+            if valid_result:
+                translations = [valid_result.variation]
+        else:
+            translations, warnings = \
+                self.to_vrs_handler.get_translations(validations, warnings)
 
         if not translations:
             if hgvs_expr and hgvs_expr.strip():
                 text = models.Text(definition=hgvs_expr)
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
-            else:
-                translations = None
+        else:
+            translations = translations[0]
         return translations, warnings
 
     def hgvs_to_relative_copy_number(
@@ -544,12 +551,12 @@ class QueryHandler:
             hgvs_dup_del_mode=CopyNumberType.RELATIVE,
             relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
-        translations = dict()
+        translations = None
         if do_liftover:
             valid_result = self.normalize_handler.get_valid_result(
                 hgvs_expr, validations, warnings)
             if valid_result:
-                translations = valid_result.variation
+                translations = [valid_result.variation]
         else:
             translations, warnings = \
                 self.to_vrs_handler.get_translations(validations, warnings)
@@ -559,6 +566,6 @@ class QueryHandler:
                 text = models.Text(definition=hgvs_expr)
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
-            else:
-                translations = None
+        else:
+            translations = translations[0]
         return translations, warnings
