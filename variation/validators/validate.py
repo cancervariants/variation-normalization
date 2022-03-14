@@ -1,5 +1,6 @@
 """Module for Validation."""
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
@@ -90,7 +91,8 @@ class Validate:
             self, classifications: List[Classification],
             endpoint_name: Optional[Endpoint] = None, warnings: List = None,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
-            baseline_copies: Optional[int] = None
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> ValidationSummary:
         """Validate a list of classifications.
 
@@ -102,6 +104,7 @@ class Validate:
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: ValidationSummary containing valid and invalid results
         """
         valid_possibilities = list()
@@ -116,7 +119,8 @@ class Validate:
                         classification.classification_type):
                     results = validator.validate(
                         classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
-                        endpoint_name=endpoint_name, baseline_copies=baseline_copies)
+                        endpoint_name=endpoint_name, baseline_copies=baseline_copies,
+                        relative_copy_class=relative_copy_class)
                     for res in results:
                         if res.is_valid:
                             found_classification = True

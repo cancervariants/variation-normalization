@@ -1,5 +1,6 @@
 """The module for Genomic Uncertain Deletion Validation."""
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
@@ -40,7 +41,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -59,6 +61,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -66,14 +69,15 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(s, t, errors, gene_tokens,
-                                             hgvs_dup_del_mode)
+                result = self._get_variation(
+                    s, t, errors, gene_tokens, hgvs_dup_del_mode,
+                    relative_copy_class=relative_copy_class)
                 variation = result['variation']
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found)
+                        mane_data_found, relative_copy_class=relative_copy_class)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -91,7 +95,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
     def _get_variation(
             self, s: Token, t: str, errors: List, gene_tokens: List,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum) -> Optional[Dict]:
+            hgvs_dup_del_mode: HGVSDupDelModeEnum,
+            relative_copy_class: Optional[RelativeCopyClass] = None) -> Optional[Dict]:
         """Get variation data.
 
         :param Token s: Classification token
@@ -99,6 +104,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param List errors: List of errors
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
@@ -116,7 +122,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 pos = None
             variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors,
-                hgvs_dup_del_mode, pos=pos)
+                hgvs_dup_del_mode, pos=pos, relative_copy_class=relative_copy_class)
 
         return {
             'start': start,
@@ -127,7 +133,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
     def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            mane_data_found: Dict) -> None:
+            mane_data_found: Dict,
+            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
         """Get variation that will be returned in normalize endpoint.
 
         :param List gene_tokens: List of gene tokens
@@ -136,13 +143,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
         :param dict mane_data_found: MANE Transcript data found for given query
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         if not gene_tokens:
             ival, grch38 = self._get_ival(
                 t, s, errors, gene_tokens, is_norm=True)
             self.add_grch38_to_mane_data(
                 t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-                ival=ival)
+                ival=ival, relative_copy_class=relative_copy_class)
 
     def _get_ival(
             self, t: str, s: Token, errors: List, gene_tokens: List,

@@ -5,6 +5,7 @@ from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 import python_jsonschema_objects
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
 from .version import __version__
@@ -400,11 +401,19 @@ def hgvs_to_absolute_copy_number(
          description="Return VRS object",
          response_model_exclude_none=True)
 def hgvs_to_relative_copy_number(
-    hgvs_expr: str = Query(..., description="Variation query")
+    hgvs_expr: str = Query(..., description="Variation query"),
+    relative_copy_class: RelativeCopyClass = Query(
+        ..., description="The relative copy class")
 ):
     """Given hgvs expression, return relative copy number variation
 
     :param str hgvs_expr: HGVS expression
     :return: Relative Copy Number Variation
     """
-    pass
+    translations, warnings = query_handler.hgvs_to_relative_copy_number(
+        hgvs_expr, relative_copy_class)
+
+    return {
+        "translations": translations,
+        "warnings": warnings
+    }

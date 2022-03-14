@@ -1,5 +1,6 @@
 """The module for Coding DNA DelIns Validation."""
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
@@ -36,7 +37,8 @@ class CodingDNADelIns(DelInsBase):
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -55,6 +57,7 @@ class CodingDNADelIns(DelInsBase):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         valid_alleles = list()
         for s in classification_tokens:
