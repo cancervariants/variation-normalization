@@ -5,8 +5,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
-    RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES, \
+    CopyNumberType, RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -126,6 +126,19 @@ class ToVRS:
                 hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
 
         classifications = self.classifier.perform(tokens)
+
+        if endpoint_name in [Endpoint.HGVS_TO_ABSOLUTE_CN,
+                             Endpoint.HGVS_TO_RELATIVE_CN]:
+            tmp_classifications = []
+            for c in classifications:
+                if c.classification_type in VALID_CLASSIFICATION_TYPES:
+                    tmp_classifications.append(c)
+            classifications = tmp_classifications
+            if not classifications:
+                warnings = [f"{q} is not a supported HGVS genomic "
+                            f"duplication or deletion"]
+                return None, warnings
+
         validations = self.validator.perform(
             classifications, endpoint_name=endpoint_name, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,

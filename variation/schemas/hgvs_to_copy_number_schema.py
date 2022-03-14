@@ -1,6 +1,16 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
 from enum import Enum
 
+from variation.schemas.classification_response_schema import ClassificationType
+
+
+VALID_CLASSIFICATION_TYPES = [
+    ClassificationType.GENOMIC_DUPLICATION,
+    ClassificationType.GENOMIC_DELETION,
+    ClassificationType.GENOMIC_DELETION_RANGE,
+    ClassificationType.GENOMIC_UNCERTAIN_DELETION
+]
+
 
 class CopyNumberType(str, Enum):
     """Define copy number types"""
