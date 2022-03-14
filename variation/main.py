@@ -378,16 +378,19 @@ def vrs_python_translate_from(
 def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
-        None, description="Baseline copies for duplication")
+        None, description="Baseline copies for duplication"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly.")
 ):
     """Given hgvs expression, return absolute copy number variation
 
     :param str hgvs_expr: HGVS expression
     :param Optional[int] baseline_copies: Baseline copies number
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: Abolute copy number variation
     """
     translations, warnings = query_handler.hgvs_to_absolute_copy_number(
-        hgvs_expr, baseline_copies)
+        hgvs_expr, baseline_copies, do_liftover)
 
     return {
         "translations": translations,
@@ -403,15 +406,19 @@ def hgvs_to_absolute_copy_number(
 def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(
-        ..., description="The relative copy class")
+        ..., description="The relative copy class"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly.")
 ):
     """Given hgvs expression, return relative copy number variation
 
     :param str hgvs_expr: HGVS expression
+    :param RelativeCopyClass relative_copy_class: Relative copy class
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: Relative Copy Number Variation
     """
     translations, warnings = query_handler.hgvs_to_relative_copy_number(
-        hgvs_expr, relative_copy_class)
+        hgvs_expr, relative_copy_class, do_liftover)
 
     return {
         "translations": translations,

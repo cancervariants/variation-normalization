@@ -501,18 +501,20 @@ class QueryHandler:
         return canonical_variation, warnings
 
     def hgvs_to_absolute_copy_number(
-        self, hgvs_expr: str, baseline_copies: Optional[int] = None
+        self, hgvs_expr: str, baseline_copies: Optional[int] = None,
+        do_liftover: bool = False
     ):
         """Given hgvs, return abolute copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param Optional[int] baseline_copies: Baseline copies number
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Absolute Copy Number Variation
         """
         validations, warnings = self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
             hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
-            baseline_copies=baseline_copies
+            baseline_copies=baseline_copies, do_liftover=do_liftover
         )
         translations, warnings = \
             self.to_vrs_handler.get_translations(validations, warnings)
@@ -527,21 +529,30 @@ class QueryHandler:
         return translations, warnings
 
     def hgvs_to_relative_copy_number(
-        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass
+        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
+        do_liftover: bool = False
     ):
         """Given hgvs, return relative copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Relative Copy Number Variation
         """
         validations, warnings = self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
             hgvs_dup_del_mode=CopyNumberType.RELATIVE,
-            relative_copy_class=relative_copy_class
+            relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
-        translations, warnings = \
-            self.to_vrs_handler.get_translations(validations, warnings)
+        translations = dict()
+        if do_liftover:
+            valid_result = self.normalize_handler.get_valid_result(
+                hgvs_expr, validations, warnings)
+            if valid_result:
+                translations = valid_result.variation
+        else:
+            translations, warnings = \
+                self.to_vrs_handler.get_translations(validations, warnings)
 
         if not translations:
             if hgvs_expr and hgvs_expr.strip():
