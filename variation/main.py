@@ -393,7 +393,7 @@ def hgvs_to_absolute_copy_number(
         hgvs_expr, baseline_copies, do_liftover)
 
     return {
-        "translations": translations,
+        "absolute_copy_number": translations,
         "warnings": warnings
     }
 
@@ -421,6 +421,6 @@ def hgvs_to_relative_copy_number(
         hgvs_expr, relative_copy_class, do_liftover)
 
     return {
-        "translations": translations,
+        "relative_copy_number": translations,
         "warnings": warnings
     }
