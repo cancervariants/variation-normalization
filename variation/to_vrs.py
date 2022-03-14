@@ -73,7 +73,8 @@ class ToVRS:
             self, q: str, endpoint_name: Optional[Endpoint] = None,
             hgvs_dup_del_mode: Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] = None,  # noqa: E501
             baseline_copies: Optional[int] = None,
-            relative_copy_class: Optional[RelativeCopyClass] = None
+            relative_copy_class: Optional[RelativeCopyClass] = None,
+            do_liftover: bool = False
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
@@ -84,6 +85,7 @@ class ToVRS:
             in VRS.
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
@@ -142,7 +144,7 @@ class ToVRS:
         validations = self.validator.perform(
             classifications, endpoint_name=endpoint_name, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-            relative_copy_class=relative_copy_class
+            relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
         if not warnings:
             warnings = validations.warnings

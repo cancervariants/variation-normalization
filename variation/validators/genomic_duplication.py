@@ -43,7 +43,8 @@ class GenomicDuplication(DuplicationDeletionBase):
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -63,6 +64,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -79,7 +81,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 start = result['start']
                 end = result['end']
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
+                if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end,
@@ -93,7 +95,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if is_identifier:
                     break
 
-        if endpoint_name == Endpoint.NORMALIZE:
+        if endpoint_name == Endpoint.NORMALIZE or do_liftover:
             self.add_mane_to_validation_results(
                 mane_data_found, valid_alleles, results,
                 classification, gene_tokens
