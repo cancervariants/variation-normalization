@@ -1,10 +1,12 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
+import json
 import logging
 from typing import Optional, Dict, Tuple, List
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
+from ga4gh.core import ga4gh_identify, sha512t24u
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
+    RelativeCopyClass
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -179,11 +181,12 @@ class HGVSDupDelMode:
             variation._id = ga4gh_identify(variation)
             return variation.as_dict()
 
-    def interpret_variation(self, ac: str, alt_type: str, allele: Dict,
-                            errors: List,
-                            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-                            pos: Optional[Tuple[int, int]] = None,
-                            baseline_copies: Optional[int] = None) -> Dict:
+    def interpret_variation(
+        self, ac: str, alt_type: str, allele: Dict, errors: List,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum, pos: Optional[Tuple[int, int]] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
         :param str ac: Accession
@@ -193,6 +196,8 @@ class HGVSDupDelMode:
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
         :param Optional[Tuple[int, int]] pos: Position changes
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: VRS Variation object
         """
         if 'deletion' in alt_type:
@@ -220,8 +225,8 @@ class HGVSDupDelMode:
                 variation = self.absolute_copy_number_mode(
                     ac, del_or_dup, allele['location'], baseline_copies=baseline_copies)
             elif hgvs_dup_del_mode == CopyNumberType.RELATIVE:
-                # TODO
-                pass
+                variation = self.relative_copy_number_mode(
+                    allele['location'], relative_copy_class)
             if not variation:
                 errors.append("Unable to get VRS Variation")
         return variation
@@ -264,7 +269,21 @@ class HGVSDupDelMode:
         )
         return self._ga4gh_identify_variation(variation)
 
-    def relative_copy_number_mode(self):
+    def relative_copy_number_mode(
+        self, location: Dict, relative_copy_class: RelativeCopyClass
+    ):
         """Return relative copy number variation"""
-        # TODO
-        pass
+        # TODO: Use vrs-python
+        variation = {
+            "type": "RelativeCopyNumber",
+            "subject": models.DerivedSequenceExpression(
+                location=location, reverse_complement=False
+            ).as_dict(),
+            "relative_copy_class": relative_copy_class
+        }
+        serialized = json.dumps(
+            variation, sort_keys=True, separators=(',', ':'), indent=None
+        ).encode("utf-8")
+        digest = sha512t24u(serialized)
+        variation["_id"] = f"ga4gh:VRC.{digest}"
+        return variation

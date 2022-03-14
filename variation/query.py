@@ -14,7 +14,8 @@ from ga4gh.vrs import models
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
+    RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -512,6 +513,32 @@ class QueryHandler:
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
             hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
             baseline_copies=baseline_copies
+        )
+        translations, warnings = \
+            self.to_vrs_handler.get_translations(validations, warnings)
+
+        if not translations:
+            if hgvs_expr and hgvs_expr.strip():
+                text = models.Text(definition=hgvs_expr)
+                text._id = ga4gh_identify(text)
+                translations = [Text(**text.as_dict())]
+            else:
+                translations = None
+        return translations, warnings
+
+    def hgvs_to_relative_copy_number(
+        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass
+    ):
+        """Given hgvs, return relative copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :return: Relative Copy Number Variation
+        """
+        validations, warnings = self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
+            hgvs_dup_del_mode=CopyNumberType.RELATIVE,
+            relative_copy_class=relative_copy_class
         )
         translations, warnings = \
             self.to_vrs_handler.get_translations(validations, warnings)

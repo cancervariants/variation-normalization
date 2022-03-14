@@ -5,7 +5,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType
+from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
+    RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -71,7 +72,8 @@ class ToVRS:
     def get_validations(
             self, q: str, endpoint_name: Optional[Endpoint] = None,
             hgvs_dup_del_mode: Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] = None,  # noqa: E501
-            baseline_copies: Optional[int] = None
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
 
@@ -81,6 +83,7 @@ class ToVRS:
             This parameter determines how to interpret HGVS dup/del expressions
             in VRS.
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: ValidationSummary for the variation and list of warnings
         """
         warnings = list()
@@ -113,13 +116,20 @@ class ToVRS:
                 if not self.hgvs_dup_del_mode.is_valid_copy_number_mode(hgvs_dup_del_mode):  # noqa: E501
                     warnings.append(f"hgvs_dup_del_mode must be one of "
                                     f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")
+                    return None, warnings
+                if endpoint_name == Endpoint.HGVS_TO_RELATIVE_CN:
+                    if not relative_copy_class:
+                        warnings.append(f"{Endpoint.HGVS_TO_RELATIVE_CN} endpoint "
+                                        f"requires `relative_copy_class`")
+                        return None, warnings
             else:
                 hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
 
         classifications = self.classifier.perform(tokens)
         validations = self.validator.perform(
             classifications, endpoint_name=endpoint_name, warnings=warnings,
-            hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies
+            hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
+            relative_copy_class=relative_copy_class
         )
         if not warnings:
             warnings = validations.warnings

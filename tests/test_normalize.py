@@ -1136,9 +1136,9 @@ def test_no_matches(test_query_handler):
     ]
     for q in queries:
         resp = test_query_handler.normalize(q)
-        assert resp.type == 'VariationDescriptor'
-        assert resp.variation.type == 'Text'
-        assert resp.label == q.strip()
+        assert resp.type == 'VariationDescriptor', q
+        assert resp.variation.type == 'Text', q
+        assert resp.label == q.strip(), q
 
     resp = test_query_handler.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'

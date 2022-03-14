@@ -1,5 +1,6 @@
 """The module for Genomic Deletion Validation."""
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
@@ -39,7 +40,8 @@ class GenomicDeletion(DuplicationDeletionBase):
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -58,6 +60,7 @@ class GenomicDeletion(DuplicationDeletionBase):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -84,7 +87,7 @@ class GenomicDeletion(DuplicationDeletionBase):
 
                     variation = self.hgvs_dup_del_mode.interpret_variation(
                         t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                        pos=(start, end)
+                        pos=(start, end), relative_copy_class=relative_copy_class
                     )
                 else:
                     variation = None
@@ -92,7 +95,8 @@ class GenomicDeletion(DuplicationDeletionBase):
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, start, end)
+                        mane_data_found, start, end,
+                        relative_copy_class=relative_copy_class)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -111,7 +115,8 @@ class GenomicDeletion(DuplicationDeletionBase):
     def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict,
-            start: int, end: int) -> None:
+            start: int, end: int,
+            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
         """Get variation that will be returned in normalize endpoint.
 
         :param List gene_tokens: List of gene tokens
@@ -122,12 +127,13 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript data found for given query
         :param int start: Start pos change
         :param int end: End pos change
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         if gene_tokens:
             self.add_normalized_genomic_dup_del(
                 s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,
                 SequenceOntology.DELETION, errors, hgvs_dup_del_mode,
-                mane_data_found)
+                mane_data_found, relative_copy_class=relative_copy_class)
         else:
             # No gene provided, then use GRCh38 assesmbly
             if not self._is_grch38_assembly(t):
@@ -140,7 +146,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                     grch38['ac'], [grch38['pos'][0], grch38['pos'][1]], errors)
                 self.add_grch38_to_mane_data(
                     t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-                    use_vrs_allele_range=False)
+                    use_vrs_allele_range=False, relative_copy_class=relative_copy_class)
 
     def get_gene_tokens(
             self, classification: Classification) -> List[GeneMatchToken]:

@@ -67,6 +67,9 @@ class Translator(ABC):
                 variation = None
             else:
                 variation = res.variation
+        elif variation_type == "RelativeCopyNumber":
+            # TODO
+            variation = res.variation
         else:
             raise Exception(f"{variation_type} not supported in "
                             f"Variation Normalization")

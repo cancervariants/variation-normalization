@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
 from variation.schemas.validation_response_schema import ValidationResult, \
@@ -140,7 +141,8 @@ class Validator(ABC):
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -159,6 +161,7 @@ class Validator(ABC):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         raise NotImplementedError
 
@@ -166,7 +169,8 @@ class Validator(ABC):
             self, classification: Classification,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
             endpoint_name: Optional[Endpoint] = None,
-            baseline_copies: Optional[int] = None
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> List[ValidationResult]:
         """Return validation result for a given classification.
 
@@ -178,6 +182,7 @@ class Validator(ABC):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: List of ValidationResult's containing valid and invalid
             results
         """
@@ -225,7 +230,8 @@ class Validator(ABC):
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, mane_data_found,
-            is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies
+            is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies,
+            relative_copy_class
         )
         return results
 

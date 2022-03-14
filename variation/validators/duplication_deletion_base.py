@@ -3,6 +3,7 @@ from typing import Optional, List, Dict, Tuple
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -111,7 +112,8 @@ class DuplicationDeletionBase(Validator):
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -130,6 +132,7 @@ class DuplicationDeletionBase(Validator):
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         raise NotImplementedError
 
@@ -209,7 +212,8 @@ class DuplicationDeletionBase(Validator):
     def add_normalized_genomic_dup_del(
             self, s: Token, t: str, start: int, end: int, gene: str,
             so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            mane_data_found: Dict, baseline_copies: Optional[int] = None) -> None:
+            mane_data_found: Dict, baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
         """Add normalized genomic dup or del to mane data
 
         :param Token s: Classification token
@@ -224,6 +228,8 @@ class DuplicationDeletionBase(Validator):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Dict mane_data_found: MANE Transcript information found
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         mane = self.mane_transcript.get_mane_transcript(
             t, start, end, s.reference_sequence, gene=gene,
@@ -243,7 +249,8 @@ class DuplicationDeletionBase(Validator):
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                baseline_copies=baseline_copies)
+                baseline_copies=baseline_copies,
+                relative_copy_class=relative_copy_class)
 
             if mane_variation:
                 self._add_dict_to_mane_data(
@@ -308,7 +315,8 @@ class DuplicationDeletionBase(Validator):
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             ival: Optional[Tuple] = None,
             use_vrs_allele_range: bool = True,
-            baseline_copies: Optional[int] = None) -> None:
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
         """Add grch38 variation to mane data
 
         :param str t: Accession
@@ -324,6 +332,8 @@ class DuplicationDeletionBase(Validator):
         :param bool use_vrs_allele_range: `True` if allele should be computed
             using `to_vrs_allele_ranges` method. `False` if allele should be
             computed using `to_vrs_allele` method.
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         if errors:
             return
@@ -341,7 +351,7 @@ class DuplicationDeletionBase(Validator):
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
             t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-            baseline_copies=baseline_copies)
+            baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
 
         if grch38_variation:
             self._add_dict_to_mane_data(
