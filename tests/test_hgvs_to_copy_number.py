@@ -1621,14 +1621,21 @@ def test_genomic_del6_relative_cnv(test_query_handler, genomic_del6_rel_38,
         q, relative_copy_class="low-level gain", do_liftover=True)
     assert resp == genomic_del6_rel_38
 
-# def test_absolute_cnv_parameters():
-#     """Check that invalid parameters return warnings"""
-#     pass
 
-# def test_relative_cnv_parameters():
-#     """Check that invalid parameters return warnings"""
-#     pass
+def test_invalid_cnv_parameters(test_query_handler):
+    """Check that invalid parameters return warnings"""
+    q = "NC_000006.11:g.133783902_(133785996_?)del"
+    resp, w = test_query_handler.hgvs_to_relative_copy_number(
+        q, relative_copy_class="low-level gains", do_liftover=True)
+    assert resp is None
+    assert w == ["low-level gains is not a valid relative copy class: ['complete loss', "  # noqa: E501
+                 "'partial loss', 'copy neutral', 'low-level gain', 'high-level gain']"]
 
-# def test_invalid_cnv(test_query_handler):
-#     """Check that invalid input return warnings"""
-#     pass
+
+def test_invalid_cnv(test_query_handler):
+    """Check that invalid input return warnings"""
+    q = "braf v600e"
+    resp, w = test_query_handler.hgvs_to_relative_copy_number(
+        q, relative_copy_class="low-level gain", do_liftover=True)
+    assert w == ["braf v600e is not a supported HGVS genomic duplication or deletion"]
+    assert resp is None
