@@ -2681,7 +2681,7 @@ def test_genomic_dup5(test_query_handler, genomic_dup5_default,
     resp = test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q)
 
-    q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 38
+    q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup5_default, q, ignore_id=True)
 

@@ -519,9 +519,11 @@ class QueryHandler:
         translations = None
         if do_liftover:
             valid_result = self.normalize_handler.get_valid_result(
-                hgvs_expr, validations, warnings)
+                hgvs_expr, validations, [])
             if valid_result:
                 translations = [valid_result.variation]
+            else:
+                warnings.append("Unable to find a valid result")
         else:
             translations, warnings = \
                 self.to_vrs_handler.get_translations(validations, warnings)
@@ -554,9 +556,11 @@ class QueryHandler:
         translations = None
         if do_liftover:
             valid_result = self.normalize_handler.get_valid_result(
-                hgvs_expr, validations, warnings)
+                hgvs_expr, validations, [])
             if valid_result:
                 translations = [valid_result.variation]
+            else:
+                warnings.append("Unable to find a valid result")
         else:
             translations, warnings = \
                 self.to_vrs_handler.get_translations(validations, warnings)
