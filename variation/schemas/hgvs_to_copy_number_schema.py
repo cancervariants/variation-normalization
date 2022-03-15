@@ -27,3 +27,7 @@ class RelativeCopyClass(str, Enum):
     COPY_NEUTRAL = "copy neutral"
     LOW_LEVEL_GAIN = "low-level gain"
     HIGH_LEVEL_GAIN = "high-level gain"
+
+
+VALID_RELATIVE_COPY_CLASS = [rcc.value for
+                             rcc in RelativeCopyClass.__members__.values()]

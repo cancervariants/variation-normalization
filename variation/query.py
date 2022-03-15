@@ -14,8 +14,8 @@ from ga4gh.vrs import models
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
-    RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS, \
+    CopyNumberType, RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -548,28 +548,34 @@ class QueryHandler:
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Relative Copy Number Variation
         """
+        if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
+            return None, [f"{relative_copy_class} is not a valid relative copy class: "
+                          f"{VALID_RELATIVE_COPY_CLASS}"]
+
         validations, warnings = self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
             hgvs_dup_del_mode=CopyNumberType.RELATIVE,
             relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
-        translations = None
-        if do_liftover:
-            valid_result = self.normalize_handler.get_valid_result(
-                hgvs_expr, validations, [])
-            if valid_result:
-                translations = [valid_result.variation]
-            else:
-                warnings.append("Unable to find a valid result")
-        else:
-            translations, warnings = \
-                self.to_vrs_handler.get_translations(validations, warnings)
 
-        if not translations:
-            if hgvs_expr and hgvs_expr.strip():
-                text = models.Text(definition=hgvs_expr)
-                text._id = ga4gh_identify(text)
-                translations = [Text(**text.as_dict())]
-        else:
-            translations = translations[0]
+        translations = None
+        if validations:
+            if do_liftover:
+                valid_result = self.normalize_handler.get_valid_result(
+                    hgvs_expr, validations, [])
+                if valid_result:
+                    translations = [valid_result.variation]
+                else:
+                    warnings.append("Unable to find a valid result")
+            else:
+                translations, warnings = \
+                    self.to_vrs_handler.get_translations(validations, warnings)
+
+            if not translations:
+                if hgvs_expr and hgvs_expr.strip():
+                    text = models.Text(definition=hgvs_expr)
+                    text._id = ga4gh_identify(text)
+                    translations = [Text(**text.as_dict())]
+            else:
+                translations = translations[0]
         return translations, warnings
