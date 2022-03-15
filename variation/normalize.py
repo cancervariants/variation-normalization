@@ -51,7 +51,8 @@ class Normalize:
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
-            valid_result = validations.valid_results[0]
+            if validations.valid_results:
+                valid_result = validations.valid_results[0]
         return valid_result
 
     def normalize(self, q: str, validations: ValidationSummary,

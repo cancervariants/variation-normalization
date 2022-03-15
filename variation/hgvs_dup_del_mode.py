@@ -1,4 +1,5 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
+import copy
 import json
 import logging
 from typing import Optional, Dict, Tuple, List
@@ -281,8 +282,12 @@ class HGVSDupDelMode:
             ).as_dict(),
             "relative_copy_class": relative_copy_class
         }
+
+        copy_variation = copy.deepcopy(variation)
+        location_id = location["_id"].split(".")[-1]
+        copy_variation["subject"]["location"] = location_id
         serialized = json.dumps(
-            variation, sort_keys=True, separators=(',', ':'), indent=None
+            copy_variation, sort_keys=True, separators=(',', ':'), indent=None
         ).encode("utf-8")
         digest = sha512t24u(serialized)
         variation["_id"] = f"ga4gh:VRC.{digest}"
