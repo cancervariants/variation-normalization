@@ -25,8 +25,8 @@ def genomic_dup1_38_subject():
 def genomic_dup1_abs_38(genomic_dup1_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.KdBguJLeiXM2yr3JaRQ2kxLxaAd4pPlq",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
         "subject": genomic_dup1_38_subject,
         "copies": {
             "type": "Number",
@@ -69,8 +69,8 @@ def genomic_dup1_37_subject():
 def genomic_dup1_abs_37(genomic_dup1_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.XIojCJVUI8SQFlV8jk7V-CewsQy8PQa1",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.ReDrt_J0qRXOokz_32CWYdaWy7aATEHT",
         "subject": genomic_dup1_37_subject,
         "copies": {
             "type": "Number",
@@ -113,8 +113,8 @@ def genomic_dup2_38_subject():
 def genomic_dup2_abs_38(genomic_dup2_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.rd1wobb8NXRxk6O__njJUQg_ekZUALGx",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y",
         "subject": genomic_dup2_38_subject,
         "copies": {
             "type": "Number",
@@ -157,8 +157,8 @@ def genomic_dup2_37_subject():
 def genomic_dup2_abs_37(genomic_dup2_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.Q4-OUpSNO6SXY4EyWEKehneRpHgjmpZo",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.8N1BeYiz3saze_AC26Gg4ocKF8IO7GqF",
         "subject": genomic_dup2_37_subject,
         "copies": {
             "type": "Number",
@@ -209,8 +209,8 @@ def genomic_dup3_38_subject():
 def genomic_dup3_abs_38(genomic_dup3_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.IgQATuKrM_J5MDHm2VemKThFOkzz-7AZ",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh",
         "subject": genomic_dup3_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -262,8 +262,8 @@ def genomic_dup3_37_subject():
 def genomic_dup3_abs_37(genomic_dup3_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.tGhEnpnYFCtcwq8oZRzbmp2ekCypl_PW",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.LAY9brjDTRS9v6EHIqorBJSWdPCdGehM",
         "subject": genomic_dup3_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -315,8 +315,8 @@ def genomic_dup4_38_subject():
 def genomic_dup4_abs_38(genomic_dup4_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.3rvfUmiIb4hSxVQhXKOonuOY6Q3xTkKx",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML",
         "subject": genomic_dup4_38_subject,
         "copies": {
             "type": "Number",
@@ -367,8 +367,8 @@ def genomic_dup4_37_subject():
 def genomic_dup4_abs_37(genomic_dup4_37_subject):
     """Create test fixture relative copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.bGinS0pRwqxl1OKRDdJ8itpGRMAL9O6O",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.2NR9ZYtmbFy31pIic_1cBZ9SEev0q-Sx",
         "subject": genomic_dup4_37_subject,
         "copies": {
             "type": "Number",
@@ -418,8 +418,8 @@ def genomic_dup5_38_subject():
 def genomic_dup5_abs_38(genomic_dup5_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1",
         "subject": genomic_dup5_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -470,8 +470,8 @@ def genomic_dup5_37_subject():
 def genomic_dup5_abs_37(genomic_dup5_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.AVN4KtF50NqzkOEX9On7z5TDEBo6t_CN",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.99BliOHLTPSR7gqbPNKTCfRMXHFrwqgd",
         "subject": genomic_dup5_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -522,8 +522,8 @@ def genomic_dup6_38_subject():
 def genomic_dup6_abs_38(genomic_dup6_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.Rekk_MmUQ777V76S51x7nZGjh4U3LkLy",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.v-dhCkHL7W67y3SHp-qfMg7F5DOaAbQn",
         "subject": genomic_dup6_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -574,8 +574,8 @@ def genomic_dup6_37_subject():
 def genomic_dup6_abs_37(genomic_dup6_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.j1rT3jTVfMzblHZqGkQjMl3BhGzMa2ub",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.aIHl5yt6YJPqrbh4FL6Fmlg7DTEqCh8y",
         "subject": genomic_dup6_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -619,8 +619,8 @@ def genomic_del1_38_subject():
 def genomic_del1_abs_38(genomic_del1_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN._Iv1RBu8ctlHOaobb4emjxwbxPdkBIVF",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW",
         "subject": genomic_del1_38_subject,
         "copies": {
             "type": "Number",
@@ -663,8 +663,8 @@ def genomic_del1_37_subject():
 def genomic_del1_abs_37(genomic_del1_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.ptB4eMIbnOpFqXRDbT5jQzcZVdyulFyi",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.BJcNDL3rGhci1ftMCL0_exxDb45SWgxn",
         "subject": genomic_del1_37_subject,
         "copies": {
             "type": "Number",
@@ -707,8 +707,8 @@ def genomic_del2_38_subject():
 def genomic_del2_abs_38(genomic_del2_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.gBHXvaw64pQg04DAhp_Gtzh8ADUf7HuI",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt",
         "subject": genomic_del2_38_subject,
         "copies": {
             "type": "Number",
@@ -751,8 +751,8 @@ def genomic_del2_37_subject():
 def genomic_del2_abs_37(genomic_del2_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.XUiX4XhQy_VkW_7ShRbCDfdRRb685Ofm",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.PgSgggCYoZfyVIDT5LIYemgu6UQHAFOh",
         "subject": genomic_del2_37_subject,
         "copies": {
             "type": "Number",
@@ -803,8 +803,8 @@ def genomic_del3_38_subject():
 def genomic_del3_abs_38(genomic_del3_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.9h2LkajTwHBdXYMRyrD9HkYwU9d7fIBr",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.o39DwfEb2I-LR9NFKR5cznWrRhI9Vx8b",
         "subject": genomic_del3_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -856,8 +856,8 @@ def genomic_del3_37_subject():
 def genomic_del3_abs_37(genomic_del3_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.BIRFSIemPTP_HfRQl5o7DnRbuSGfivnz",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.0EC3Bi-mP2GtfIOhPMvYjhXVHIUhxYQP",
         "subject": genomic_del3_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -909,8 +909,8 @@ def genomic_del4_38_subject():
 def genomic_del4_abs_38(genomic_del4_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
         "subject": genomic_del4_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -962,8 +962,8 @@ def genomic_del4_37_subject():
 def genomic_del4_abs_37(genomic_del4_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.gRshXhruFQw-QdKwU4xc2iKBNLIbFNzt",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.sBsyUfIqJcBr2Sl7rsscPcjlId-wX9_V",
         "subject": genomic_del4_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -1014,8 +1014,8 @@ def genomic_del5_38_subject():
 def genomic_del5_abs_38(genomic_del5_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN._RIw5UC5bZeLeHnBLYAow7Ml-lv2nKJW",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.WQkCH9rBzLPtB4f6LRb8Y-rhob68h-7M",
         "subject": genomic_del5_38_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -1066,8 +1066,8 @@ def genomic_del5_37_subject():
 def genomic_del5_abs_37(genomic_del5_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.SwAiS0A3UJ6Up-ghFm1hKIeka2LOeQH3",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.sA4s5CrkkknwUt64RUVNcy0AqY3uD3W4",
         "subject": genomic_del5_37_subject,
         "copies": {
             "type": "DefiniteRange",
@@ -1118,8 +1118,8 @@ def genomic_del6_38_subject():
 def genomic_del6_abs_38(genomic_del6_38_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.F3U6Rmov1WO2mhmRHWumJb-YALOMkeeI",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.YAyl7c-YMRkbqZymPFI2GKkYSQ9v7EeD",
         "subject": genomic_del6_38_subject,
         "copies": {
             "type": "Number",
@@ -1169,8 +1169,8 @@ def genomic_del6_37_subject():
 def genomic_del6_abs_37(genomic_del6_37_subject):
     """Create test fixture absolute copy number variation"""
     return {
-        "type": "CopyNumber",
-        "_id": "ga4gh:VCN.tb5MqxC7Ljh7T1ZTg81ClfMyUnZuxKZl",
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.V9-mDixtWzx19X7dAdzTvXq4hXqQ9udx",
         "subject": genomic_del6_37_subject,
         "copies": {
             "type": "Number",

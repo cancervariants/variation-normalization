@@ -1,6 +1,6 @@
 """The module for Genomic Deletion Validation."""
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \

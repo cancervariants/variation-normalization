@@ -57,7 +57,8 @@ class VRS:
         :param int start: Start position (assumes 1-based)
         :return: Indefinite range model
         """
-        return models.IndefiniteRange(value=start - 1, comparator="<=")
+        return models.IndefiniteRange(value=start - 1, comparator="<=",
+                                      type="IndefiniteRange")
 
     @staticmethod
     def get_end_indef_range(end: int) -> models.IndefiniteRange:
@@ -66,7 +67,8 @@ class VRS:
         :param int end: End position (assumes 1-based)
         :return: Indefinite range model
         """
-        return models.IndefiniteRange(value=end, comparator=">=")
+        return models.IndefiniteRange(value=end, comparator=">=",
+                                      type="IndefiniteRange")
 
     @staticmethod
     def get_ival_certain_range(start1: int, start2: int, end1: int,
@@ -80,8 +82,11 @@ class VRS:
         :return: Sequence Interval model
         """
         return models.SequenceInterval(
-            start=models.DefiniteRange(min=start1 - 1, max=start2 - 1),
-            end=models.DefiniteRange(min=end1 + 1, max=end2 + 1)
+            start=models.DefiniteRange(min=start1 - 1, max=start2 - 1,
+                                       type="DefiniteRange"),
+            end=models.DefiniteRange(min=end1 + 1, max=end2 + 1,
+                                     type="DefiniteRange"),
+            type="SequenceInterval"
         )
 
     @staticmethod
@@ -93,8 +98,9 @@ class VRS:
         :param models.SequenceInterval interval: VRS sequence interval
         :return: VRS Location model
         """
-        return models.Location(sequence_id=coerce_namespace(ac),
-                               interval=interval)
+        return models.SequenceLocation(
+            sequence_id=coerce_namespace(ac),
+            interval=interval, type="SequenceLocation")
 
     def vrs_allele(self, ac: str, interval: models.SequenceInterval,
                    sstate: Union[models.LiteralSequenceExpression,
@@ -118,7 +124,7 @@ class VRS:
         except ValueError as e:
             errors.append(f"Unable to get sequence location: {e}")
             return None
-        allele = models.Allele(location=location, state=sstate)
+        allele = models.Allele(location=location, state=sstate, type="Allele")
 
         # Ambiguous regions do not get normalized
         if alt_type not in ["uncertain_deletion", "uncertain_duplication",
@@ -197,9 +203,11 @@ class VRS:
             return None
 
         interval = models.SequenceInterval(
-            start=models.Number(value=ival_start),
-            end=models.Number(value=ival_end))
-        sstate = models.LiteralSequenceExpression(sequence=state)
+            start=models.Number(value=ival_start, type="Number"),
+            end=models.Number(value=ival_end, type="Number"),
+            type="SequenceInterval")
+        sstate = models.LiteralSequenceExpression(sequence=state,
+                                                  type="LiteralSequenceExpression")
         return self.vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def to_vrs_allele_ranges(
@@ -220,7 +228,7 @@ class VRS:
         if alt_type in ['uncertain_deletion', 'uncertain_duplication',
                         'duplication_range', 'deletion_range']:
             sstate = models.LiteralSequenceExpression(
-                sequence=""
+                sequence="", type="LiteralSequenceExpression"
             )
         else:
             errors.append("No state")
