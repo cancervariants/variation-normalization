@@ -1,7 +1,7 @@
 """The module for Amino Acid Deletion Validation."""
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.app_schemas import Endpoint

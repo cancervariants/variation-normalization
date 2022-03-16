@@ -32,7 +32,7 @@ from variation.mane_transcript import MANETranscript
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
+from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
     Haplotype, VariationSet
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     CanonicalVariation, ComplexVariation
@@ -116,7 +116,7 @@ class QueryHandler:
         )
 
     def to_vrs(self, q: str)\
-            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+            -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
                      Optional[List[str]]]:
@@ -132,7 +132,7 @@ class QueryHandler:
 
         if not translations:
             if q and q.strip():
-                text = models.Text(definition=q)
+                text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
             else:

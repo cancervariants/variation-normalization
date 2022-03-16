@@ -1,6 +1,6 @@
 """The module for Genomic Duplication Validation."""
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
@@ -274,7 +274,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors and start and end:
                     ival = models.SequenceInterval(
                         start=self.vrs.get_start_indef_range(start),
-                        end=self.vrs.get_end_indef_range(end)
+                        end=self.vrs.get_end_indef_range(end),
+                        type="SequenceInterval"
                     )
             elif s.start_pos1_dup == '?' and \
                     s.start_pos2_dup != '?' and \
@@ -295,7 +296,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors and start and end:
                     ival = models.SequenceInterval(
                         start=self.vrs.get_start_indef_range(start),
-                        end=models.Number(value=end)
+                        end=models.Number(value=end, type="Number"),
+                        type="SequenceInterval"
                     )
             elif s.start_pos1_dup != '?' and \
                     s.start_pos2_dup is None and \
@@ -316,8 +318,9 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
-                        start=models.Number(value=start),
-                        end=self.vrs.get_end_indef_range(end)
+                        start=models.Number(value=start, type="Number"),
+                        end=self.vrs.get_end_indef_range(end),
+                        type="SequenceInterval"
                     )
             else:
                 errors.append("Not yet supported")

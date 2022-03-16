@@ -5,7 +5,7 @@ from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 import python_jsonschema_objects
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
 from .version import __version__

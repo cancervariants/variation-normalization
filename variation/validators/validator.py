@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
 from variation.schemas.validation_response_schema import ValidationResult, \

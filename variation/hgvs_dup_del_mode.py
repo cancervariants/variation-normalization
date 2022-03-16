@@ -1,11 +1,9 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-import copy
-import json
 import logging
 from typing import Optional, Dict, Tuple, List
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
     RelativeCopyClass
 from variation.schemas.normalize_response_schema\
@@ -99,24 +97,27 @@ class HGVSDupDelMode:
         if chromosome == 'X':
             copies = models.DefiniteRange(
                 min=0 if del_or_dup == 'del' else 2,
-                max=1 if del_or_dup == 'del' else 3
+                max=1 if del_or_dup == 'del' else 3,
+                type="DefiniteRange"
             )
         elif chromosome == 'Y':
             copies = models.Number(
-                value=0 if del_or_dup == 'del' else 2
+                value=0 if del_or_dup == 'del' else 2, type="Number"
             )
         else:
             # Chr 1-22
             copies = models.Number(
-                value=1 if del_or_dup == 'del' else 3
+                value=1 if del_or_dup == 'del' else 3, type="Number"
             )
 
-        variation = models.CopyNumber(
+        variation = models.AbsoluteCopyNumber(
             subject=models.DerivedSequenceExpression(
                 location=location,
-                reverse_complement=False
+                reverse_complement=False,
+                type="DerivedSequenceExpression"
             ),
-            copies=copies
+            copies=copies,
+            type="AbsoluteCopyNumber"
         )
         return self._ga4gh_identify_variation(variation)
 
@@ -135,23 +136,26 @@ class HGVSDupDelMode:
             return None
 
         if alt_type == 'duplication':
-            count = models.Number(value=2)
+            count = models.Number(value=2, type="Number")
         elif alt_type == 'deletion':
-            count = models.Number(value=0)
+            count = models.Number(value=0, type="Number")
         else:
             return None
 
         seq_expr = models.RepeatedSequenceExpression(
             seq_expr=models.DerivedSequenceExpression(
                 location=location,
-                reverse_complement=False
+                reverse_complement=False,
+                type="DerivedSequenceExpression"
             ),
-            count=count
+            count=count,
+            type="RepeatedSequenceExpression"
         )
 
         variation = models.Allele(
             location=location,
-            state=seq_expr
+            state=seq_expr,
+            type="Allele"
         )
         return self._ga4gh_identify_variation(variation)
 
@@ -254,19 +258,22 @@ class HGVSDupDelMode:
         provided_dup_baseline_copies = baseline_copies and del_or_dup == "dup"
         if chromosome == "X":
             base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
-            copies = models.DefiniteRange(min=base_value, max=base_value + 1)
+            copies = models.DefiniteRange(min=base_value, max=base_value + 1,
+                                          type="DefiniteRange")
         else:
             if chromosome == "Y":
                 base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
             else:
                 # Chr 1-22
                 base_value = baseline_copies if provided_dup_baseline_copies else 1 if del_or_dup == "del" else 3  # noqa: E501
-            copies = models.Number(value=base_value)
+            copies = models.Number(value=base_value, type="Number")
 
-        variation = models.CopyNumber(
+        variation = models.AbsoluteCopyNumber(
             subject=models.DerivedSequenceExpression(
-                location=location, reverse_complement=False),
-            copies=copies
+                location=location, reverse_complement=False,
+                type="DerivedSequenceExpression"),
+            copies=copies,
+            type="AbsoluteCopyNumber"
         )
         return self._ga4gh_identify_variation(variation)
 
@@ -274,21 +281,12 @@ class HGVSDupDelMode:
         self, location: Dict, relative_copy_class: RelativeCopyClass
     ):
         """Return relative copy number variation"""
-        # TODO: Use vrs-python
-        variation = {
-            "type": "RelativeCopyNumber",
-            "subject": models.DerivedSequenceExpression(
-                location=location, reverse_complement=False
-            ).as_dict(),
-            "relative_copy_class": relative_copy_class
-        }
-
-        copy_variation = copy.deepcopy(variation)
-        location_id = location["_id"].split(".")[-1]
-        copy_variation["subject"]["location"] = location_id
-        serialized = json.dumps(
-            copy_variation, sort_keys=True, separators=(',', ':'), indent=None
-        ).encode("utf-8")
-        digest = sha512t24u(serialized)
-        variation["_id"] = f"ga4gh:VRC.{digest}"
-        return variation
+        variation = models.RelativeCopyNumber(
+            type="RelativeCopyNumber",
+            subject=models.DerivedSequenceExpression(
+                location=location, reverse_complement=False,
+                type="DerivedSequenceExpression"
+            ),
+            relative_copy_class=relative_copy_class
+        )
+        return self._ga4gh_identify_variation(variation)

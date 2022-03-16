@@ -94,7 +94,7 @@ class Normalize:
         :return: Variation descriptor, warnings
         """
         warning = f"Unable to normalize {label}"
-        text = models.Text(definition=label)
+        text = models.Text(definition=label, type="Text")
         text._id = ga4gh_identify(text)
         resp = VariationDescriptor(
             id=_id,
@@ -133,7 +133,7 @@ class Normalize:
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation['type'] == 'CopyNumber':
+            elif variation['type'] == 'AbsoluteCopyNumber':
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation['subject'], identifier
                 )

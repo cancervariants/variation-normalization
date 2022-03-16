@@ -1,6 +1,6 @@
 """The module for Coding DNA Substitution Validation."""
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification

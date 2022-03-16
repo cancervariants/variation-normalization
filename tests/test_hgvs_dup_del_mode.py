@@ -223,9 +223,9 @@ def genomic_dup1_default(genomic_dup1, genomic_dup1_seq_loc):
 @pytest.fixture(scope='module')
 def genomic_dup1_cnv(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.KdBguJLeiXM2yr3JaRQ2kxLxaAd4pPlq"
+    _id = "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe"
     genomic_dup1["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup1_seq_loc,
@@ -390,9 +390,9 @@ def genomic_dup1_free_text_default(genomic_dup1_free_text):
 def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.QaiY27vxjYq1pNlI7xWSxom2S-JHkW-r"
+    _id = "ga4gh:VAC.Y5AgRjKvgUV29m_Me23v-S67clQuA4Fv"
     genomic_dup1_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup1_free_text_seq_loc,
@@ -484,9 +484,9 @@ def genomic_dup2_default(genomic_dup2, genomic_dup2_seq_loc):
 @pytest.fixture(scope='module')
 def genomic_dup2_cnv(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.rd1wobb8NXRxk6O__njJUQg_ekZUALGx"
+    _id = "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y"
     genomic_dup2["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup2_seq_loc,
@@ -580,9 +580,9 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
 def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.KfNh7wnKkw5pfvauEK2lu5TOdgDZfnJP"
+    _id = "ga4gh:VAC.JJ0mFb-kh7iAFFq90hOmbIIHuq2LgH4i"
     genomic_dup2_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup2_free_text_seq_loc,
@@ -643,9 +643,9 @@ def genomic_dup3():
 @pytest.fixture(scope='module')
 def genomic_dup3_default(genomic_dup3):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.IgQATuKrM_J5MDHm2VemKThFOkzz-7AZ"
+    _id = "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh"
     genomic_dup3["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -713,9 +713,9 @@ def genomic_dup3_free_text(dmd_gene_context):
 @pytest.fixture(scope='module')
 def genomic_dup3_free_text_default(genomic_dup3_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.mMt9eqOhTHjRLR_gAJ7zgbDMVOblxSLo"
+    _id = "ga4gh:VAC.sx53Q7MiG1dc4sQ2RPkk0-K9vgku_jjj"
     genomic_dup3_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -782,9 +782,9 @@ def genomic_dup4():
 @pytest.fixture(scope='module')
 def genomic_dup4_default(genomic_dup4):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.3rvfUmiIb4hSxVQhXKOonuOY6Q3xTkKx"
+    _id = "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML"
     genomic_dup4["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -919,9 +919,9 @@ def genomic_dup4_free_text():
 @pytest.fixture(scope='module')
 def genomic_dup4_free_text_default(genomic_dup4_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.Yq_C5caHcDU8tLVHWFLoBFF4Xvv2g5Qp"
+    _id = "ga4gh:VAC.kqDlxaoHDXGgIURb72e5Wv0HNSxkoxwq"
     genomic_dup4_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -986,9 +986,9 @@ def genomic_dup5():
 
 def genomic_dup5_copy_number(params):
     """Create genomic dup5 copy number object"""
-    _id = "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-"
+    _id = "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1097,9 +1097,9 @@ def genomic_dup6():
 
 def genomic_dup6_copy_number(params):
     """Create genomic dup6 copy number object"""
-    _id = "ga4gh:VCN.Rekk_MmUQ777V76S51x7nZGjh4U3LkLy"
+    _id = "ga4gh:VAC.v-dhCkHL7W67y3SHp-qfMg7F5DOaAbQn"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1241,9 +1241,9 @@ def genomic_del1_default(genomic_del1, genomic_del1_seq_loc):
 @pytest.fixture(scope='module')
 def genomic_del1_cnv(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN._Iv1RBu8ctlHOaobb4emjxwbxPdkBIVF"
+    _id = "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW"
     genomic_del1["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del1_seq_loc,
@@ -1337,9 +1337,9 @@ def genomic_del1_free_text_default(genomic_del1_free_text,
 def genomic_del1_free_text_cnv(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.HBeZfrNQLpVppisn_FHfWbpa8ehL-49P"
+    _id = "ga4gh:VAC.x8JFweASgnLK1pQy-yErcGZxuniFQhip"
     genomic_del1_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del1_free_text_seq_loc,
@@ -1431,9 +1431,9 @@ def genomic_del2_default(genomic_del2, genomic_del2_seq_loc):
 @pytest.fixture(scope='module')
 def genomic_del2_cnv(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.gBHXvaw64pQg04DAhp_Gtzh8ADUf7HuI"
+    _id = "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt"
     genomic_del2["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del2_seq_loc,
@@ -1527,9 +1527,9 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
 def genomic_del2_free_text_cnv(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.aTh-gPjB3WdB27ihgFWJFJs52rGVm35z"
+    _id = "ga4gh:VAC.1Gbot3wdFzNWbyWUiKaV0gY3Dvm1Nef7"
     genomic_del2_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del2_free_text_seq_loc,
@@ -1589,9 +1589,9 @@ def genomic_del3():
 @pytest.fixture(scope='module')
 def genomic_del3_default(genomic_del3):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.9h2LkajTwHBdXYMRyrD9HkYwU9d7fIBr"
+    _id = "ga4gh:VAC.o39DwfEb2I-LR9NFKR5cznWrRhI9Vx8b"
     genomic_del3["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1729,9 +1729,9 @@ def genomic_del3_free_text():
 @pytest.fixture(scope='module')
 def genomic_del3_free_text_default(genomic_del3_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.-sOh0hKxd_KA2v6mRDsCliowXNAl-4lV"
+    _id = "ga4gh:VAC.C8fUDphkEtMHUgh-8fHY0KLf86FekCRM"
     genomic_del3_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1798,9 +1798,9 @@ def genomic_del4():
 @pytest.fixture(scope='module')
 def genomic_del4_default(genomic_del4):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk"
+    _id = "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L"
     genomic_del4["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1923,9 +1923,9 @@ def genomic_del4_free_text():
 @pytest.fixture(scope='module')
 def genomic_del4_free_text_default(genomic_del4_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.SvFPk7UrVFhzI3ANMJidDk5GItHgw0j_"
+    _id = "ga4gh:VAC.I3P7IMe7ozWSB2zAxEhm1bk1u9eRQ6E0"
     genomic_del4_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1979,9 +1979,9 @@ def genomic_uncertain_del_2():
     params = {
         "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+        "variation_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
         "variation": {
-            "_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+            "_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
             "subject": {
                 "location": {
                     "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
@@ -2008,7 +2008,7 @@ def genomic_uncertain_del_2():
                 "value": 1,
                 "type": "Number"
             },
-            "type": "CopyNumber"
+            "type": "AbsoluteCopyNumber"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2022,9 +2022,9 @@ def genomic_uncertain_del_y():
     params = {
         "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+        "variation_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
         "variation": {
-            "_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+            "_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
             "subject": {
                 "location": {
                     "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
@@ -2051,7 +2051,7 @@ def genomic_uncertain_del_y():
                 "value": 0,
                 "type": "Number"
             },
-            "type": "CopyNumber"
+            "type": "AbsoluteCopyNumber"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2076,9 +2076,9 @@ def genomic_del5():
 
 def genomic_del5_copy_number(params):
     """Create genomic del5 copy number"""
-    _id = "ga4gh:VCN._RIw5UC5bZeLeHnBLYAow7Ml-lv2nKJW"
+    _id = "ga4gh:VAC.WQkCH9rBzLPtB4f6LRb8Y-rhob68h-7M"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -2255,9 +2255,9 @@ def genomic_del6():
 
 def genomic_del6_copy_number(params):
     """Create genomic del6 copy number"""
-    _id = "ga4gh:VCN.F3U6Rmov1WO2mhmRHWumJb-YALOMkeeI"
+    _id = "ga4gh:VAC.YAyl7c-YMRkbqZymPFI2GKkYSQ9v7EeD"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {

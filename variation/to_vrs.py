@@ -1,6 +1,6 @@
 """Module for toVRS endpoint."""
 from typing import Tuple, Optional, List, Union
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumber,\
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
     VariationSet, Text
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -152,7 +152,7 @@ class ToVRS:
 
     def get_translations(self, validations: ValidationSummary,
                          warnings: List)\
-            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+            -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
                      Optional[List[str]]]:

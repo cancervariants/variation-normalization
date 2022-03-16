@@ -3,7 +3,7 @@ from typing import List, Optional, Dict
 from abc import abstractmethod
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from .validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
