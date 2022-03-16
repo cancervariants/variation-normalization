@@ -3,35 +3,12 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_38_subject():
+def genomic_dup1_38_subject(genomic_dup1_seq_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {"value": 49531260, "type": "Number"},
-                "end": {"value": 49531262, "type": "Number"},
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_dup1_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
-    }
-
-
-@pytest.fixture(scope="module")
-def genomic_dup1_abs_38(genomic_dup1_38_subject):
-    """Create test fixture absolute copy number variation"""
-    return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
-        "subject": genomic_dup1_38_subject,
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
     }
 
 
@@ -91,35 +68,12 @@ def genomic_dup1_rel_37(genomic_dup1_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_38_subject():
+def genomic_dup2_38_subject(genomic_dup2_seq_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.4mH68huylkPmu6zyUwH4wiazIYr9cQUX",
-            "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {"value": 2087937, "type": "Number"},
-                "end": {"value": 2087948, "type": "Number"},
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_dup2_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
-    }
-
-
-@pytest.fixture(scope="module")
-def genomic_dup2_abs_38(genomic_dup2_38_subject):
-    """Create test fixture absolute copy number variation"""
-    return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y",
-        "subject": genomic_dup2_38_subject,
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
     }
 
 
@@ -179,27 +133,10 @@ def genomic_dup2_rel_37(genomic_dup2_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_38_subject():
+def genomic_dup3_38_subject(genomic_del3_dup3_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "min": 31060226,
-                    "max": 31100350,
-                    "type": "DefiniteRange"
-                },
-                "end": {
-                    "min": 33274279,
-                    "max": 33417152,
-                    "type": "DefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del3_dup3_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -285,27 +222,10 @@ def genomic_dup3_rel_37(genomic_dup3_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_38_subject():
+def genomic_dup4_38_subject(genoimc_dup4_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
-            "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 30417575,
-                    "comparator": "<=",
-                    "type": "IndefiniteRange"
-                },
-                "end": {
-                    "value": 31394018,
-                    "comparator": ">=",
-                    "type": "IndefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genoimc_dup4_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -389,26 +309,10 @@ def genomic_dup4_rel_37(genomic_dup4_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_38_subject():
+def genomic_dup5_38_subject(genoimc_dup5_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 154021811,
-                    "comparator": "<=",
-                    "type": "IndefiniteRange"
-                },
-                "end": {
-                    "value": 154092209,
-                    "type": "Number"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genoimc_dup5_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -493,26 +397,10 @@ def genomic_dup5_rel_37(genomic_dup5_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_38_subject():
+def genomic_dup6_38_subject(genoimc_dup6_loc):
     """Create test fixture GRCh38 duplication subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.h0_xXu36uSnPEuLoxvVmTAFQCS1ZFuLN",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 154021811,
-                    "type": "Number"
-                },
-                "end": {
-                    "value": 154092209,
-                    "comparator": ">=",
-                    "type": "IndefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genoimc_dup6_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -597,35 +485,12 @@ def genomic_dup6_rel_37(genomic_dup6_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_38_subject():
+def genomic_del1_38_subject(genomic_del1_seq_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.Yg5B66zErDjK9Lqeaw-kuzAB9w5-uUaS",
-            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {"value": 10149810, "type": "Number"},
-                "end": {"value": 10149811, "type": "Number"},
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del1_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
-    }
-
-
-@pytest.fixture(scope="module")
-def genomic_del1_abs_38(genomic_del1_38_subject):
-    """Create test fixture absolute copy number variation"""
-    return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW",
-        "subject": genomic_del1_38_subject,
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
     }
 
 
@@ -685,35 +550,12 @@ def genomic_del1_rel_37(genomic_del1_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_38_subject():
+def genomic_del2_38_subject(genomic_del2_seq_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
-            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {"value": 10146594, "type": "Number"},
-                "end": {"value": 10146613, "type": "Number"},
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del2_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
-    }
-
-
-@pytest.fixture(scope="module")
-def genomic_del2_abs_38(genomic_del2_38_subject):
-    """Create test fixture absolute copy number variation"""
-    return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt",
-        "subject": genomic_del2_38_subject,
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
     }
 
 
@@ -773,27 +615,10 @@ def genomic_del2_rel_37(genomic_del2_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_38_subject():
+def genomic_del3_38_subject(genomic_del3_dup3_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "min": 31060226,
-                    "max": 31100350,
-                    "type": "DefiniteRange"
-                },
-                "end": {
-                    "min": 33274279,
-                    "max": 33417152,
-                    "type": "DefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del3_dup3_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -879,27 +704,10 @@ def genomic_del3_rel_37(genomic_del3_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_38_subject():
+def genomic_del4_38_subject(genomic_del4_seq_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 31120495,
-                    "comparator": "<=",
-                    "type": "IndefiniteRange"
-                },
-                "end": {
-                    "value": 33339477,
-                    "comparator": ">=",
-                    "type": "IndefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del4_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -985,26 +793,10 @@ def genomic_del4_rel_37(genomic_del4_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_38_subject():
+def genomic_del5_38_subject(genomic_del5_seq_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.jURzcCBf3kJVx19uuJJtwt78LuBbtfwD",
-            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 18575353,
-                    "comparator": "<=",
-                    "type": "IndefiniteRange"
-                },
-                "end": {
-                    "value": 18653629,
-                    "type": "Number"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del5_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -1089,26 +881,10 @@ def genomic_del5_rel_37(genomic_del5_37_subject):
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_38_subject():
+def genomic_del6_38_subject(genomic_del6_seq_loc):
     """Create test fixture GRCh38 deletion subject"""
     return {
-        "location": {
-            "_id": "ga4gh:VSL.TPwsB5ymsNI7TynTlI8_8CI_NmNrBHUQ",
-            "sequence_id": "ga4gh:SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "value": 133462763,
-                    "type": "Number"
-                },
-                "end": {
-                    "value": 133464858,
-                    "comparator": ">=",
-                    "type": "IndefiniteRange"
-                }
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_del6_seq_loc,
         "reverse_complement": False,
         "type": "DerivedSequenceExpression"
     }
@@ -1190,13 +966,13 @@ def genomic_del6_rel_37(genomic_del6_37_subject):
     }
 
 
-def test_genomic_dup1_absolute_cnv(test_query_handler, genomic_dup1_abs_38,
+def test_genomic_dup1_absolute_cnv(test_query_handler, genomic_dup1_38_vac,
                                    genomic_dup1_abs_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=False)
-    assert resp == genomic_dup1_abs_38
+    assert resp == genomic_dup1_38_vac
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
@@ -1205,7 +981,7 @@ def test_genomic_dup1_absolute_cnv(test_query_handler, genomic_dup1_abs_38,
 
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=True)
-    assert resp == genomic_dup1_abs_38
+    assert resp == genomic_dup1_38_vac
 
 
 def test_genomic_dup1_relative_cnv(test_query_handler, genomic_dup1_rel_38,
@@ -1226,13 +1002,13 @@ def test_genomic_dup1_relative_cnv(test_query_handler, genomic_dup1_rel_38,
     assert resp == genomic_dup1_rel_38
 
 
-def test_genomic_dup2_absolute_cnv(test_query_handler, genomic_dup2_abs_38,
+def test_genomic_dup2_absolute_cnv(test_query_handler, genomic_dup2_38_vac,
                                    genomic_dup2_abs_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=False)
-    assert resp == genomic_dup2_abs_38
+    assert resp == genomic_dup2_38_vac
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
@@ -1241,7 +1017,7 @@ def test_genomic_dup2_absolute_cnv(test_query_handler, genomic_dup2_abs_38,
 
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=True)
-    assert resp == genomic_dup2_abs_38
+    assert resp == genomic_dup2_38_vac
 
 
 def test_genomic_dup2_relative_cnv(test_query_handler, genomic_dup2_rel_38,
@@ -1406,13 +1182,13 @@ def test_genomic_dup6_relative_cnv(test_query_handler, genomic_dup6_rel_38,
     assert resp == genomic_dup6_rel_38
 
 
-def test_genomic_del1_absolute_cnv(test_query_handler, genomic_del1_abs_38,
+def test_genomic_del1_absolute_cnv(test_query_handler, genomic_del1_38_vac,
                                    genomic_del1_abs_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=False)
-    assert resp == genomic_del1_abs_38
+    assert resp == genomic_del1_38_vac
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
@@ -1421,7 +1197,7 @@ def test_genomic_del1_absolute_cnv(test_query_handler, genomic_del1_abs_38,
 
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=True)
-    assert resp == genomic_del1_abs_38
+    assert resp == genomic_del1_38_vac
 
 
 def test_genomic_del1_relative_cnv(test_query_handler, genomic_del1_rel_38,
@@ -1442,13 +1218,13 @@ def test_genomic_del1_relative_cnv(test_query_handler, genomic_del1_rel_38,
     assert resp == genomic_del1_rel_38
 
 
-def test_genomic_del2_absolute_cnv(test_query_handler, genomic_del2_abs_38,
+def test_genomic_del2_absolute_cnv(test_query_handler, genomic_del2_38_vac,
                                    genomic_del2_abs_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=False)
-    assert resp == genomic_del2_abs_38
+    assert resp == genomic_del2_38_vac
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
@@ -1457,7 +1233,7 @@ def test_genomic_del2_absolute_cnv(test_query_handler, genomic_del2_abs_38,
 
     resp, w = test_query_handler.hgvs_to_absolute_copy_number(
         q, baseline_copies=None, do_liftover=True)
-    assert resp == genomic_del2_abs_38
+    assert resp == genomic_del2_38_vac
 
 
 def test_genomic_del2_relative_cnv(test_query_handler, genomic_del2_rel_38,
