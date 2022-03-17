@@ -1,15 +1,17 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
 from typing import Optional, Dict, Tuple, List, Union
-from variation.data_sources.seq_repo_access import SeqRepoAccess
+
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+
+from variation.data_sources.seq_repo_access import SeqRepoAccess
 from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
     RelativeCopyClass
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -68,7 +70,7 @@ class HGVSDupDelMode:
         :param Dict allele: VRS Allele object represented as a dict
         :return: VRS Variation object represented as a dict
         """
-        if 'uncertain' in alt_type or 'range' in alt_type:
+        if "uncertain" in alt_type or "range" in alt_type:
             variation = self.cnv_mode(ac, del_or_dup,
                                       location, chromosome=chromosome)
         elif pos and (pos[1] - pos[0] > 100):
@@ -94,20 +96,20 @@ class HGVSDupDelMode:
             logger.warning(f"Unable to find chromosome on {ac}")
             return None
 
-        if chromosome == 'X':
+        if chromosome == "X":
             copies = models.DefiniteRange(
-                min=0 if del_or_dup == 'del' else 2,
-                max=1 if del_or_dup == 'del' else 3,
+                min=0 if del_or_dup == "del" else 2,
+                max=1 if del_or_dup == "del" else 3,
                 type="DefiniteRange"
             )
-        elif chromosome == 'Y':
+        elif chromosome == "Y":
             copies = models.Number(
-                value=0 if del_or_dup == 'del' else 2, type="Number"
+                value=0 if del_or_dup == "del" else 2, type="Number"
             )
         else:
             # Chr 1-22
             copies = models.Number(
-                value=1 if del_or_dup == 'del' else 3, type="Number"
+                value=1 if del_or_dup == "del" else 3, type="Number"
             )
         self._abs_cnv(location, copies)
 
@@ -132,13 +134,13 @@ class HGVSDupDelMode:
         :param Dict location: VRS SequenceLocation
         :return: VRS Allele object represented as a dict
         """
-        if 'range' in alt_type:
+        if "range" in alt_type:
             # Ranges should return an error
             return None
 
-        if alt_type == 'duplication':
+        if alt_type == "duplication":
             count = models.Number(value=2, type="Number")
-        elif alt_type == 'deletion':
+        elif alt_type == "deletion":
             count = models.Number(value=0, type="Number")
         else:
             return None
@@ -168,7 +170,7 @@ class HGVSDupDelMode:
         :param str alt_type: Alteration type
         :return: VRS Allele object represented as a dict
         """
-        if 'range' in alt_type or 'uncertain' in alt_type:
+        if "range" in alt_type or "uncertain" in alt_type:
             return None
 
         variation = models.Allele(**allele) if allele else None
@@ -206,10 +208,10 @@ class HGVSDupDelMode:
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :return: VRS Variation object
         """
-        if 'deletion' in alt_type:
-            del_or_dup = 'del'
+        if "deletion" in alt_type:
+            del_or_dup = "del"
         else:
-            del_or_dup = 'dup'
+            del_or_dup = "dup"
         variation = None
         if allele is None:
             errors.append("Unable to get Allele")
@@ -217,22 +219,22 @@ class HGVSDupDelMode:
             if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
                 variation = self.default_mode(
                     ac, alt_type, pos, del_or_dup,
-                    allele['location'], allele=allele
+                    allele["location"], allele=allele
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
-                variation = self.cnv_mode(ac, del_or_dup, allele['location'])
+                variation = self.cnv_mode(ac, del_or_dup, allele["location"])
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
                 variation = self.repeated_seq_expr_mode(
-                    alt_type, allele['location']
+                    alt_type, allele["location"]
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                 variation = self.literal_seq_expr_mode(allele, alt_type)
             elif hgvs_dup_del_mode == CopyNumberType.ABSOLUTE:
                 variation = self.absolute_copy_number_mode(
-                    ac, del_or_dup, allele['location'], baseline_copies=baseline_copies)
+                    ac, del_or_dup, allele["location"], baseline_copies=baseline_copies)
             elif hgvs_dup_del_mode == CopyNumberType.RELATIVE:
                 variation = self.relative_copy_number_mode(
-                    allele['location'], relative_copy_class)
+                    allele["location"], relative_copy_class)
             if not variation:
                 errors.append("Unable to get VRS Variation")
         return variation

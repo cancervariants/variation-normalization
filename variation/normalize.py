@@ -1,14 +1,16 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple, Dict
+from urllib.parse import quote
+
 from ga4gh.vrsatile.pydantic.vrs_models import Text
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     GeneDescriptor
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from variation.data_sources import SeqRepoAccess, UTA
-from urllib.parse import quote
-from variation import logger
 from gene.query import QueryHandler as GeneQueryHandler
+
+from variation.data_sources import SeqRepoAccess, UTA
+from variation import logger
 from variation.schemas.token_response_schema import GeneMatchToken, Token
 from variation.schemas.validation_response_schema import ValidationSummary, \
     ValidationResult
@@ -121,22 +123,22 @@ class Normalize:
         :param Optional[str] gene: Gene symbol
         :return: Variation descriptor, warnings
         """
-        variation_id = variation['_id']
+        variation_id = variation["_id"]
         identifier = valid_result.identifier
         token_type = \
             valid_result.classification_token.token_type.lower()
 
         vrs_ref_allele_seq = None
-        if 'uncertain' in token_type:
-            warnings = ['Ambiguous regions cannot be normalized']
-        elif 'range' not in token_type:
-            if variation['type'] == 'Allele':
+        if "uncertain" in token_type:
+            warnings = ["Ambiguous regions cannot be normalized"]
+        elif "range" not in token_type:
+            if variation["type"] == "Allele":
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation['type'] == 'AbsoluteCopyNumber':
+            elif variation["type"] == "AbsoluteCopyNumber":
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    variation['subject'], identifier
+                    variation["subject"], identifier
                 )
 
         if valid_result.gene_tokens:
@@ -206,12 +208,12 @@ class Normalize:
         """
         start = None
         end = None
-        interval = allele['location']['interval']
-        ival_type = interval['type']
-        if ival_type == 'SequenceInterval':
-            if interval['start']['type'] == 'Number':
-                start = interval['start']['value'] + 1
-                end = interval['end']['value']
+        interval = allele["location"]["interval"]
+        ival_type = interval["type"]
+        if ival_type == "SequenceInterval":
+            if interval["start"]["type"] == "Number":
+                start = interval["start"]["value"] + 1
+                end = interval["end"]["value"]
 
         if start is None and end is None:
             return None

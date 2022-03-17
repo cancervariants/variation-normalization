@@ -1,5 +1,8 @@
 """Module for toVRS endpoint."""
 from typing import Tuple, Optional, List, Union
+from urllib.parse import unquote
+
+from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
     VariationSet, Text
 
@@ -18,8 +21,6 @@ from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from urllib.parse import unquote
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 

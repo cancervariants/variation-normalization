@@ -1,4 +1,6 @@
 """Module for translation."""
+from typing import List, Optional, Dict
+
 from variation.schemas.validation_response_schema import ValidationResult
 from .translator import Translator
 from .amino_acid_substitution import AminoAcidSubstitution
@@ -20,7 +22,6 @@ from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
-from typing import List, Optional, Dict
 
 
 class Translate:
@@ -50,8 +51,7 @@ class Translate:
             GenomicDuplication()
         ]
 
-    def perform(self, res: ValidationResult) \
-            -> Optional[Dict]:
+    def perform(self, res: ValidationResult) -> Optional[Dict]:
         """Translate a valid variation query."""
         for translator in self.all_translators:
             if translator.can_translate(

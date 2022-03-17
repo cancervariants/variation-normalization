@@ -1,26 +1,26 @@
 """The module for Polypeptide Sequence Variation Validation."""
+import logging
 from typing import List, Optional, Dict
-from abc import abstractmethod
+
+from gene.query import QueryHandler as GeneQueryHandler
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from .validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
-from .amino_acid_base import AminoAcidBase
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-import logging
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
+from .validator import Validator
+from .amino_acid_base import AminoAcidBase
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -55,14 +55,14 @@ class PolypeptideSequenceVariationBase(Validator):
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_protein_transcripts(gene_tokens, errors)
@@ -135,25 +135,10 @@ class PolypeptideSequenceVariationBase(Validator):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
         return self.get_protein_gene_symbol_tokens(classification)
-
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        return f'{transcript} {token.ref_protein}' \
-               f'{token.position}{token.alt_protein}'
-
-    @abstractmethod
-    def human_description(self, transcript, token) -> str:
-        """Return a human description of the identified variation."""
-        raise NotImplementedError

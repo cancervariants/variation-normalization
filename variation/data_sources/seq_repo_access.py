@@ -1,32 +1,35 @@
 """A module for accessing SeqRepo."""
 from typing import Optional, List
-from biocommons.seqrepo import SeqRepo
-from variation import SEQREPO_DATA_PATH
 from os import environ
 import logging
 
+from biocommons.seqrepo import SeqRepo
 
-logger = logging.getLogger('variation')
+from variation import SEQREPO_DATA_PATH
+
+
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class SeqRepoAccess:
     """The SeqRepoAccess class."""
 
-    def __init__(self, seqrepo_data_path=SEQREPO_DATA_PATH):
+    def __init__(self, seqrepo_data_path: str = SEQREPO_DATA_PATH) -> None:
         """Initialize the SeqRepoAccess class.
 
         :param str seqrepo_data_path: The path to the seqrepo directory.
         """
-        environ['SEQREPO_LRU_CACHE_MAXSIZE'] = "none"
+        environ["SEQREPO_LRU_CACHE_MAXSIZE"] = "none"
         self.seq_repo_client = SeqRepo(seqrepo_data_path)
 
-    def get_sequence(self, transcript, start, end=None) -> Optional[str]:
+    def get_sequence(self, transcript: str, start: int,
+                     end: Optional[int] = None) -> Optional[str]:
         """Return sequence for transcript at given positions.
 
         :param str transcript: Accession
         :param int start: Start pos change
-        :param int end: End pos change
+        :param Optional[int] end: End pos change
         :return: Sequence
         """
         if end is None:
@@ -53,7 +56,7 @@ class SeqRepoAccess:
             logger.warning(f"{transcript}: {e}")
             return None
 
-    def is_valid_index(self, ac, pos, sequence) -> Optional[str]:
+    def is_valid_index(self, ac: str, pos: int, sequence: str) -> Optional[str]:
         """Check that index actually exists and return sequence if it does.
 
         :param str ac: Accession
@@ -67,7 +70,7 @@ class SeqRepoAccess:
             logger.warning(f"Index Error: pos {pos} out of range on {ac}")
             return None
 
-    def aliases(self, input_str) -> List[str]:
+    def aliases(self, input_str: str) -> List[str]:
         """Get aliases for a given input."""
         try:
             return self.seq_repo_client.translate_alias(input_str.strip())
@@ -82,5 +85,5 @@ class SeqRepoAccess:
         :return: Chromosome
         """
         aliases = self.aliases(ac)
-        return ([a.split(':')[-1] for a in aliases
-                 if a.startswith('GRCh') and '.' not in a and 'chr' not in a] or [None])[0]  # noqa: E501
+        return ([a.split(":")[-1] for a in aliases
+                 if a.startswith("GRCh") and "." not in a and "chr" not in a] or [None])[0]  # noqa: E501

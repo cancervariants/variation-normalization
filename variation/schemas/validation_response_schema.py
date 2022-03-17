@@ -1,8 +1,10 @@
 """Module for Validation Response Schema."""
-from pydantic import BaseModel
-from pydantic.types import StrictBool
 from typing import List, Optional
 from enum import IntEnum
+
+from pydantic import BaseModel
+from pydantic.types import StrictBool
+
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import GeneMatchToken, Token
 
@@ -21,8 +23,6 @@ class ValidationResult(BaseModel):
     is_valid: StrictBool
     confidence_score: float
     variation: Optional[dict] = None
-    human_description: Optional[str]
-    concise_description: str
     errors: List[str]
     gene_tokens: Optional[List[GeneMatchToken]]
     is_mane_transcript: Optional[StrictBool]

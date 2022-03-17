@@ -1,24 +1,26 @@
 """The base class for Duplication and Deletion Validation."""
+import logging
 from typing import Optional, List, Dict, Tuple
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.tokenizers import GeneSymbol
 from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
-import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -30,7 +32,7 @@ class DuplicationDeletionBase(Validator):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS):
+                 gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the Deletion Base validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -64,17 +66,7 @@ class DuplicationDeletionBase(Validator):
         """
         raise NotImplementedError
 
-    def human_description(self, transcript: str, token: Token) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: Human description of the variation change
-        """
-        raise NotImplementedError
-
-    def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return a list of gene tokens for a classification.
 
         :param Classification classification: Classification for a list of
@@ -146,7 +138,7 @@ class DuplicationDeletionBase(Validator):
         :param str ac: Accession
         :param int start: Start position
         :param int end: End position
-        :param list errors: List of errors
+        :param List errors: List of errors
         :param int cds_start: Coding start site
         :return: Reference sequence of nucleotides
         """
@@ -195,22 +187,6 @@ class DuplicationDeletionBase(Validator):
                     return False
         return True
 
-    def concise_description(self, transcript: str, token: Token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        position = f"{token.start_pos_del}"
-        if token.end_pos_del is not None:
-            position += f"_{token.end_pos_del}"
-
-        descr = f"{transcript}:{token.reference_sequence}.{position}del"
-        if token.deleted_sequence:
-            descr += f"{token.deleted_sequence}"
-        return descr
-
     def add_normalized_genomic_dup_del(
             self, s: Token, t: str, start: int, end: int, gene: str,
             so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
@@ -239,14 +215,14 @@ class DuplicationDeletionBase(Validator):
         )
 
         if mane:
-            s.reference_sequence = 'c'
-            s.molecule_context = 'transcript'
+            s.reference_sequence = "c"
+            s.molecule_context = "transcript"
             s.so_id = so_id
 
             allele = self.vrs.to_vrs_allele(
-                mane['refseq'], mane['pos'][0], mane['pos'][1],
+                mane["refseq"], mane["pos"][0], mane["pos"][1],
                 s.reference_sequence, s.alt_type, errors,
-                cds_start=mane['coding_start_site']
+                cds_start=mane["coding_start_site"]
             )
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
@@ -256,8 +232,8 @@ class DuplicationDeletionBase(Validator):
 
             if mane_variation:
                 self._add_dict_to_mane_data(
-                    mane['refseq'], s, mane_variation,
-                    mane_data_found, mane['status']
+                    mane["refseq"], s, mane_variation,
+                    mane_data_found, mane["status"]
                 )
 
     def validate_gene_or_accession_pos(self, t: str, pos_list: List,
@@ -303,12 +279,12 @@ class DuplicationDeletionBase(Validator):
         """
         grch38_start = self.mane_transcript.g_to_grch38(t, pos1, pos2)
         if grch38_start:
-            pos1, pos2 = grch38_start['pos']
+            pos1, pos2 = grch38_start["pos"]
             if pos3 is not None and pos4 is not None:
                 grch38_end = self.mane_transcript.g_to_grch38(t, pos3, pos4)
                 if grch38_end:
-                    pos3, pos4 = grch38_end['pos']
-            t = grch38_start['ac']
+                    pos3, pos4 = grch38_end["pos"]
+            t = grch38_start["ac"]
         return t, pos1, pos2, pos3, pos4, grch38_start
 
     def add_grch38_to_mane_data(
@@ -341,14 +317,14 @@ class DuplicationDeletionBase(Validator):
             return
 
         if grch38:
-            t = grch38['ac']
+            t = grch38["ac"]
 
         if use_vrs_allele_range:
             allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
         else:
             allele = self.vrs.to_vrs_allele(
-                t, grch38['pos'][0], grch38['pos'][1], s.reference_sequence,
+                t, grch38["pos"][0], grch38["pos"][1], s.reference_sequence,
                 s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
@@ -357,4 +333,4 @@ class DuplicationDeletionBase(Validator):
 
         if grch38_variation:
             self._add_dict_to_mane_data(
-                grch38['ac'], s, grch38_variation, mane_data_found, 'GRCh38')
+                grch38["ac"], s, grch38_variation, mane_data_found, "GRCh38")

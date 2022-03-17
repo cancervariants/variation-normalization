@@ -1,22 +1,3 @@
-fusion:
-  should_match:
-    - query: braf-flt3 fusion
-      confidence: ConfidenceRating.EXACT
-    - query: braf-flt3
-      confidence: ConfidenceRating.EXACT
-    - query: braf fusion
-      confidence: ConfidenceRating.EXACT
-    - query: fusion braf
-      confidence: ConfidenceRating.UNORDERED
-    - query: flt3-braf fusion foo
-      confidence: ConfidenceRating.SUPERSET
-    - query: flt3 foo
-      confidence: ConfidenceRating.INTERSECTION
-  should_not_match:
-    - query: afusion
-    - query: fused
-    - query: fusio
-
 amino_acid_substitution:
   should_match:
     - query: BRAF V600E

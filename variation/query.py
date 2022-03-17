@@ -10,6 +10,10 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.core import sha512t24u, ga4gh_identify
 from ga4gh.vrs import models
+from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
+    Haplotype, VariationSet, RelativeCopyNumber
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
+    CanonicalVariation, ComplexVariation
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
@@ -32,10 +36,6 @@ from variation.mane_transcript import MANETranscript
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
-    Haplotype, VariationSet, RelativeCopyNumber
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -492,7 +492,7 @@ class QueryHandler:
         cpy_canonical_variation = copy.deepcopy(canonical_variation)
         cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
         serialized = json.dumps(
-            cpy_canonical_variation, sort_keys=True, separators=(',', ':'), indent=None
+            cpy_canonical_variation, sort_keys=True, separators=(",", ":"), indent=None
         ).encode("utf-8")
         digest = sha512t24u(serialized)
         # VCC = variation categorical canonical

@@ -1,6 +1,7 @@
 """Module for Classification methods."""
 from abc import ABC, abstractmethod
 from typing import List, Optional
+
 from variation.schemas.classification_response_schema import Classification,\
     ClassificationType
 from variation.schemas.token_response_schema import Token

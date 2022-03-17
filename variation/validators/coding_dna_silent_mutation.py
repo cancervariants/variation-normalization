@@ -1,33 +1,34 @@
 """The module for Coding DNA Substitution Validation."""
-from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from .single_nucleotide_variation_base import SingleNucleotideVariationBase
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variation.schemas.token_response_schema import\
-    CodingDNASilentMutationToken
-from typing import List, Optional, Dict
-from variation.schemas.token_response_schema import GeneMatchToken
 import logging
+from typing import List, Optional, Dict
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.classification_response_schema import ClassificationType, \
+    Classification
+from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class CodingDNASilentMutation(SingleNucleotideVariationBase):
     """The Coding DNA Silent Mutation Validator class."""
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
@@ -67,7 +68,7 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             gene_tokens, endpoint_name, mane_data_found, is_identifier
         )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -75,24 +76,17 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
         """
         return self.get_coding_dna_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'coding dna silent mutation'
+        return "coding dna silent mutation"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA Silent Mutation."""
-        return t.token_type == 'CodingDNASilentMutation'
+        return t.token_type == "CodingDNASilentMutation"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is coding dna silent
         mutation.
         """
-        return classification_type == ClassificationType.CODING_DNA_SILENT_MUTATION  # noqa: E501
-
-    def human_description(self, transcript,
-                          token: CodingDNASilentMutationToken) -> str:
-        """Return a human description of the identified variation."""
-        return f'A coding DNA silent mutation from {token.position} ' \
-               f'was a {token.ref_nucleotide} (the nucleotide was not changed)'
+        return classification_type == ClassificationType.CODING_DNA_SILENT_MUTATION
