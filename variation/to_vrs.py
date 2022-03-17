@@ -133,7 +133,11 @@ class ToVRS:
                              Endpoint.HGVS_TO_RELATIVE_CN]:
             tmp_classifications = []
             for c in classifications:
-                if c.classification_type in VALID_CLASSIFICATION_TYPES:
+                conditions = (
+                    c.classification_type in VALID_CLASSIFICATION_TYPES,
+                    ("HGVS" in c.matching_tokens or "ReferenceSequence" in c.matching_tokens)  # noqa: E501
+                )
+                if all(conditions):
                     tmp_classifications.append(c)
             classifications = tmp_classifications
             if not classifications:
