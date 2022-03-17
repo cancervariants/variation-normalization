@@ -1,11 +1,10 @@
 """Module for classification."""
 from typing import List, Callable
+
 from variation.schemas.classification_response_schema import Classification, \
     ConfidenceRating
 from variation.schemas.token_response_schema import Token
-from variation.classifiers import ComplexClassifier, ExpressionClassifier, \
-    FusionClassifier, OncogenicClassifier, ProteinAlternateClassifier, \
-    ProteinDelinsClassifier, ProteinFrameshiftClassifier, \
+from variation.classifiers import ProteinDelinsClassifier, \
     ProteinTerminationClassifier, \
     AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
     SilentMutationClassifier, CodingDNASubstitutionClassifier,\
@@ -25,13 +24,7 @@ class Classify:
     def __init__(self) -> None:
         """Initialize the Classify class."""
         self.classifiers: List[Classifier] = [
-            ComplexClassifier(),
-            ExpressionClassifier(),
-            FusionClassifier(),
-            OncogenicClassifier(),
-            ProteinAlternateClassifier(),
             ProteinDelinsClassifier(),
-            ProteinFrameshiftClassifier(),
             AminoAcidSubstitutionClassifier(),
             PolypeptideTruncationClassifier(),
             SilentMutationClassifier(),

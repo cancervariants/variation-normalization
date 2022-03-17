@@ -1,22 +1,22 @@
 """The module for Genomic Duplication Validation."""
-from variation.schemas.app_schemas import Endpoint
+import logging
+from typing import List, Optional, Dict, Tuple
+
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
-    TokenType, DuplicationAltType, \
-    GenomicDuplicationToken, GenomicDuplicationRangeToken, Token, \
-    SequenceOntology  # noqa: F401
-from typing import List, Optional, Dict, Tuple
+    TokenType, DuplicationAltType, Token, SequenceOntology
 from variation.schemas.token_response_schema import GeneMatchToken
-import logging
-from ga4gh.vrs import models
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -77,9 +77,9 @@ class GenomicDuplication(DuplicationDeletionBase):
                     gene=gene_tokens[0].token if gene_tokens else None,
                     baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
-                variation = result['variation']
-                start = result['start']
-                end = result['end']
+                variation = result["variation"]
+                start = result["start"]
+                end = result["end"]
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
                     self._get_normalize_variation(
@@ -144,7 +144,7 @@ class GenomicDuplication(DuplicationDeletionBase):
 
             if not errors:
                 if grch38:
-                    t = grch38['ac']
+                    t = grch38["ac"]
 
                 allele = self.vrs.to_vrs_allele_ranges(
                     t, s.reference_sequence, s.alt_type, errors, ival)
@@ -160,9 +160,9 @@ class GenomicDuplication(DuplicationDeletionBase):
             errors.append(f"Token type not supported: {s.token_type}")
 
         return {
-            'start': start,
-            'end': end,
-            'variation': variation
+            "start": start,
+            "end": end,
+            "variation": variation
         }
 
     def _get_normalize_variation(
@@ -212,7 +212,7 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 if grch38:
                     self.validate_gene_or_accession_pos(
-                        grch38['ac'], [grch38['pos'][0], grch38['pos'][1]],
+                        grch38["ac"], [grch38["pos"][0], grch38["pos"][1]],
                         errors)
                     self.add_grch38_to_mane_data(
                         t, s, errors, grch38, mane_data_found,
@@ -259,7 +259,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     ival = self.vrs.get_ival_certain_range(
                         start1, start2, end1, end2)
         else:
-            if s.start_pos1_dup == '?' and s.end_pos2_dup == '?':
+            if s.start_pos1_dup == "?" and s.end_pos2_dup == "?":
                 # format: (?_#)_(#_?)
                 if is_norm:
                     t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
@@ -279,9 +279,9 @@ class GenomicDuplication(DuplicationDeletionBase):
                         end=self.vrs.get_end_indef_range(end),
                         type="SequenceInterval"
                     )
-            elif s.start_pos1_dup == '?' and \
-                    s.start_pos2_dup != '?' and \
-                    s.end_pos1_dup != '?' and \
+            elif s.start_pos1_dup == "?" and \
+                    s.start_pos2_dup != "?" and \
+                    s.end_pos1_dup != "?" and \
                     s.end_pos2_dup is None:
                 # format: (?_#)_#
                 if is_norm:
@@ -301,10 +301,10 @@ class GenomicDuplication(DuplicationDeletionBase):
                         end=models.Number(value=end, type="Number"),
                         type="SequenceInterval"
                     )
-            elif s.start_pos1_dup != '?' and \
+            elif s.start_pos1_dup != "?" and \
                     s.start_pos2_dup is None and \
-                    s.end_pos1_dup != '?' and \
-                    s.end_pos2_dup == '?':
+                    s.end_pos1_dup != "?" and \
+                    s.end_pos2_dup == "?":
                 # format: #_(#_?)
                 if is_norm:
                     t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
@@ -339,16 +339,16 @@ class GenomicDuplication(DuplicationDeletionBase):
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic duplication'
+        return "genomic duplication"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is an instance of Genomic Duplication."""
-        return t.token_type in ['GenomicDuplication',
-                                'GenomicDuplicationRange']
+        return t.token_type in ["GenomicDuplication",
+                                "GenomicDuplicationRange"]
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+        self, classification_type: ClassificationType
+    ) -> bool:
         """Return whether or not the classification type is
         Genomic Duplication.
 
@@ -357,25 +357,3 @@ class GenomicDuplication(DuplicationDeletionBase):
         """
         return classification_type == \
             ClassificationType.GENOMIC_DUPLICATION
-
-    def human_description(
-            self, transcript: str, token: Token) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Accession
-        :param Token token: Classification token
-        :return: Human description of variant
-        """
-        if token.token_type == 'GenomicDuplication':
-            descr = "A Genomic Deletion "
-        else:
-            descr = "A Genomic Deletion Range "
-        return descr
-
-    def concise_description(self, transcript: str, token: Token) -> str:
-        """Return a concise description of the identified variation.
-
-        :param str transcript: Accession
-        :param Token token: Classification token
-        """
-        return ""

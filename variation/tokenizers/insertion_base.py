@@ -1,8 +1,9 @@
 """A module for Insertion Tokenization Base Class."""
 from abc import abstractmethod
-from typing import Optional, Dict
+from typing import Optional, Dict, List
+
+from variation.schemas.token_response_schema import Insertion, TokenMatchType, Token
 from .tokenizer import Tokenizer
-from variation.schemas.token_response_schema import Insertion, TokenMatchType
 from .caches import AminoAcidCache, NucleotideCache
 from .tokenize_base import TokenizeBase
 
@@ -26,42 +27,42 @@ class InsertionBase(Tokenizer):
             return None
 
         self.parts = {
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value,
-            'start_pos_flank': None,
-            'end_pos_flank': None,
-            'inserted_sequence': None,
-            'inserted_sequence2': None,
-            'reference_sequence': None
+            "token": input_string,
+            "input_string": input_string,
+            "match_type": TokenMatchType.UNSPECIFIED.value,
+            "start_pos_flank": None,
+            "end_pos_flank": None,
+            "inserted_sequence": None,
+            "inserted_sequence2": None,
+            "reference_sequence": None
         }
 
         input_string = str(input_string).lower()
 
-        if input_string.startswith('(') and input_string.endswith(')'):
+        if input_string.startswith("(") and input_string.endswith(")"):
             input_string = input_string[1:-1]
 
         conditions = (
-            'ins' in input_string,
-            'del' not in input_string and 'delins' not in input_string,
-            input_string.startswith('c.') or input_string.startswith('g.')
+            "ins" in input_string,
+            "del" not in input_string and "delins" not in input_string,
+            input_string.startswith("c.") or input_string.startswith("g.")
         )
         if not all(conditions):
             return None
 
-        parts = input_string.split('ins')
+        parts = input_string.split("ins")
         self._get_parts(parts)
         return self.return_token(self.parts)
 
-    def _get_parts(self, parts):
+    def _get_parts(self, parts: List) -> None:
         """Get parts for Insertion.
 
-        :param list parts: Parts of input string
+        :param List parts: Parts of input string
         """
         if len(parts) != 2:
             return None
 
-        if not parts[0].startswith('c.') and not parts[0].startswith('g.'):
+        if not parts[0].startswith("c.") and not parts[0].startswith("g."):
             return None
 
         # Get reference sequence
@@ -79,17 +80,17 @@ class InsertionBase(Tokenizer):
         if not inserted_sequences or not inserted_sequences[0]:
             return None
 
-        if '_' in parts[0] and parts[0].count('_') ==\
+        if "_" in parts[0] and parts[0].count("_") ==\
                 2 and not inserted_sequences[1]:
             return None
 
-        self.parts['start_pos_flank'] = start_pos
-        self.parts['end_pos_flank'] = end_pos
-        self.parts['inserted_sequence'] = inserted_sequences[0]
-        self.parts['inserted_sequence2'] = inserted_sequences[1]
-        self.parts['reference_sequence'] = reference_sequence
+        self.parts["start_pos_flank"] = start_pos
+        self.parts["end_pos_flank"] = end_pos
+        self.parts["inserted_sequence"] = inserted_sequences[0]
+        self.parts["inserted_sequence2"] = inserted_sequences[1]
+        self.parts["reference_sequence"] = reference_sequence
 
     @abstractmethod
-    def return_token(self, params: Dict[str, str]):
+    def return_token(self, params: Dict[str, str]) -> Optional[Token]:
         """Return token instance."""
         raise NotImplementedError

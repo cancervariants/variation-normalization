@@ -1,7 +1,8 @@
 """A module for the Amino Acid Substitution Classifier."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class AminoAcidSubstitutionClassifier(SetBasedClassifier):
@@ -14,8 +15,8 @@ class AminoAcidSubstitutionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['AminoAcidSubstitution'],
-            ['GeneSymbol', 'AminoAcidSubstitution'],
-            ['HGVS', 'AminoAcidSubstitution'],
-            ['ReferenceSequence', 'AminoAcidSubstitution']
+            ["AminoAcidSubstitution"],
+            ["GeneSymbol", "AminoAcidSubstitution"],
+            ["HGVS", "AminoAcidSubstitution"],
+            ["ReferenceSequence", "AminoAcidSubstitution"]
         ]

@@ -1,15 +1,17 @@
 """The module for Insertion Validation."""
 from typing import List, Dict, Optional
+import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.token_response_schema import Token
 from variation.validators.validator import Validator
-import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -53,7 +55,7 @@ class InsertionBase(Validator):
                 t = self.get_accession(t, classification)
                 allele = None
 
-                if s.reference_sequence == 'c':
+                if s.reference_sequence == "c":
                     cds_start_end = self.uta.get_cds_start_end(t)
                     if cds_start_end is not None:
                         cds_start = cds_start_end[0]
@@ -99,7 +101,8 @@ class InsertionBase(Validator):
                 classification, gene_tokens
             )
 
-    def get_hgvs_expr(self, classification, t, s, is_hgvs):
+    def get_hgvs_expr(self, classification: Classification, t: str, s: Token,
+                      is_hgvs: bool) -> str:
         """Return a HGVS expression.
 
         :param Classification classification: A classification for a list of
@@ -122,37 +125,20 @@ class InsertionBase(Validator):
         else:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type
-                          in ['HGVS', 'ReferenceSequence']][0]
+                          in ["HGVS", "ReferenceSequence"]][0]
             hgvs_expr = hgvs_token.input_string
         return hgvs_expr
 
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        position = f"{token.start_pos_flank}_{token.end_pos_flank}"
-        if token.inserted_sequence2 is not None:
-            inserted_sequence = \
-                f"{token.inserted_sequence}_{token.inserted_sequence2}"
-        else:
-            inserted_sequence = f"{token.inserted_sequence}"
-
-        return f'{transcript}:{token.reference_sequence}.' \
-               f'{position}ins{inserted_sequence}'
-
-    def check_pos_index(self, t, s, errors):
+    def check_pos_index(self, t: str, s: Token, errors: List) -> None:
         """Check that position exists on transcript.
 
         :param str t: Transcript accession
         :param Token s: Classification token
-        :param list errors: List of errors
+        :param List errors: List of errors
         """
         sequence = \
             self.seqrepo_access.get_sequence(t, s.start_pos_flank,
                                              s.end_pos_flank)
 
         if sequence is None:
-            errors.append('Sequence index error')
+            errors.append("Sequence index error")

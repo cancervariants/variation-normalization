@@ -1,9 +1,10 @@
 """Module for Locus Reference Genomic tokenization."""
 import re
-from .tokenizer import Tokenizer
 from typing import Optional
+
 from variation.schemas.token_response_schema import TokenMatchType, \
     LocusReferenceGenomicToken
+from .tokenizer import Tokenizer
 
 
 class LocusReferenceGenomic(Tokenizer):
@@ -11,7 +12,7 @@ class LocusReferenceGenomic(Tokenizer):
 
     def __init__(self) -> None:
         """Initialize the LRG class."""
-        self.splitter = re.compile(r'(\d+)')
+        self.splitter = re.compile(r"(\d+)")
         self.regex = r"lrg_\d+((t|p)\d+)?"
         self.parts = None
 
@@ -26,10 +27,10 @@ class LocusReferenceGenomic(Tokenizer):
         if not match:
             return None
 
-        if ':' in input_string:
-            input_str = input_string.lower().split(':')[0].split('lrg_')[-1]
+        if ":" in input_string:
+            input_str = input_string.lower().split(":")[0].split("lrg_")[-1]
         else:
-            input_str = input_string.lower().split('lrg_')[-1]
+            input_str = input_string.lower().split("lrg_")[-1]
 
         if input_str.isdigit():
             return LocusReferenceGenomicToken(
@@ -40,26 +41,26 @@ class LocusReferenceGenomic(Tokenizer):
             )
 
         self.parts = {
-            'id': None,
-            't': None,
-            'p': None,
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value
+            "id": None,
+            "t": None,
+            "p": None,
+            "token": input_string,
+            "input_string": input_string,
+            "match_type": TokenMatchType.UNSPECIFIED.value
         }
 
         valid = False
-        if 't' in input_str and 'p' in input_str:
+        if "t" in input_str and "p" in input_str:
             return None
-        elif 't' in input_str:
-            valid = self.split_t_or_p(input_str, 't')
-        elif 'p' in input_str:
-            valid = self.split_t_or_p(input_str, 'p')
+        elif "t" in input_str:
+            valid = self.split_t_or_p(input_str, "t")
+        elif "p" in input_str:
+            valid = self.split_t_or_p(input_str, "p")
 
         if valid:
             return LocusReferenceGenomicToken(**self.parts)
 
-    def split_t_or_p(self, input_str, p_or_t):
+    def split_t_or_p(self, input_str: str, p_or_t: str) -> bool:
         """Split input string on `t` or `p`.
 
         :param str input_str: Lowered input string
@@ -70,8 +71,8 @@ class LocusReferenceGenomic(Tokenizer):
         if len(split) != 2:
             return False
 
-        self.parts['id'] = split[0]
-        if not self.parts['id'].isdigit():
+        self.parts["id"] = split[0]
+        if not self.parts["id"].isdigit():
             return False
 
         self.parts[p_or_t] = split[-1]

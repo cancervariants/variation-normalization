@@ -1,28 +1,29 @@
 """The module for Genomic Deletion Range Validation."""
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from variation.schemas.token_response_schema import \
-    GenomicDeletionRangeToken, Token
-from typing import List, Optional, Dict, Tuple
-from variation.schemas.token_response_schema import GeneMatchToken
 import logging
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
-from variation.tokenizers import GeneSymbol
-from variation.mane_transcript import MANETranscript
+from typing import List, Optional, Dict, Tuple
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
+
+from variation.schemas.classification_response_schema import \
+    ClassificationType, Classification
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import GeneMatchToken
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
+from variation.tokenizers import GeneSymbol
+from variation.mane_transcript import MANETranscript
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.vrs import VRS
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -34,7 +35,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS):
+                 gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the Genomic Deletion Range validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -149,7 +150,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
 
         if not errors:
             if grch38:
-                t = grch38['ac']
+                t = grch38["ac"]
 
             allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
@@ -238,14 +239,14 @@ class GenomicDeletionRange(DuplicationDeletionBase):
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic deletion range'
+        return "genomic deletion range"
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic Deletion Range.
 
         :param Token t: Classification token
         """
-        return t.token_type == 'GenomicDeletionRange'
+        return t.token_type == "GenomicDeletionRange"
 
     def validates_classification_type(
             self,
@@ -258,17 +259,3 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         """
         return classification_type == \
             ClassificationType.GENOMIC_DELETION_RANGE
-
-    def human_description(self, transcript,
-                          token: GenomicDeletionRangeToken) -> str:
-        """Return a human description of the identified variation."""
-        descr = f"A Genomic Deletion from" \
-                f" ({token.start_pos1_del}_{token.start_pos2_del}) to " \
-                f"({token.end_pos1_del}_{token.end_pos2_del}) on {transcript}"
-        return descr
-
-    def concise_description(self, transcript, token):
-        """Return a concise description of the identified variation."""
-        return f"{transcript}:g.({token.start_pos1_del}_" \
-               f"{token.start_pos2_del})_({token.end_pos1_del}_" \
-               f"{token.end_pos2_del})"

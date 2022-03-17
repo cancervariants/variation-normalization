@@ -44,7 +44,7 @@ class VRS:
             errors.append("Start/End must be valid ints")
             return None
 
-        if coordinate == 'c':
+        if coordinate == "c":
             if cds_start:
                 start += cds_start
                 end += cds_start
@@ -173,12 +173,12 @@ class VRS:
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
-        if alt_type == 'insertion':
+        if alt_type == "insertion":
             state = alt
             ival_end = ival_start
-        elif alt_type in ['substitution', 'deletion', 'delins',
-                          'silent_mutation', 'nonsense']:
-            if alt_type == 'silent_mutation':
+        elif alt_type in ["substitution", "deletion", "delins",
+                          "silent_mutation", "nonsense"]:
+            if alt_type == "silent_mutation":
                 state = self.seqrepo_access.get_sequence(
                     ac, ival_start
                 )
@@ -187,9 +187,9 @@ class VRS:
                                   f"{ival_start}")
                     return None
             else:
-                state = alt or ''
+                state = alt or ""
             ival_start -= 1
-        elif alt_type == 'duplication':
+        elif alt_type == "duplication":
             ref = self.seqrepo_access.get_sequence(ac, ival_start, ival_end)
             if ref is not None:
                 state = ref + ref
@@ -218,15 +218,15 @@ class VRS:
         :param str ac: Accession
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
         :param str alt_type: Type of alteration
-        :param list errors: List of errors
+        :param List errors: List of errors
         :param models.SequenceInterval ival: Sequence Interval
         :return: VRS Allele object
         """
-        if coordinate == 'c':
+        if coordinate == "c":
             # TODO: Once we add support for ranges on c. coord
             return None
-        if alt_type in ['uncertain_deletion', 'uncertain_duplication',
-                        'duplication_range', 'deletion_range']:
+        if alt_type in ["uncertain_deletion", "uncertain_duplication",
+                        "duplication_range", "deletion_range"]:
             sstate = models.LiteralSequenceExpression(
                 sequence="", type="LiteralSequenceExpression"
             )
