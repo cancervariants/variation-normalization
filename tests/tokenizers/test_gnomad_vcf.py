@@ -2,7 +2,7 @@
 import pytest
 
 from variation.schemas.token_response_schema import ChromosomeToken, \
-    GenomicDeletionToken, ReferenceSequence, GenomicSubstitutionToken, \
+    GenomicDeletionToken, CoordinateType, GenomicSubstitutionToken, \
     GenomicInsertionToken, GenomicSilentMutationToken
 from variation.tokenizers import GnomadVCF
 
@@ -35,7 +35,7 @@ def test_matches(tokenizer):
     assert token.position == 140453136
     assert token.ref_nucleotide == "A"
     assert token.new_nucleotide == "T"
-    assert token.reference_sequence == ReferenceSequence.LINEAR_GENOMIC
+    assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.token_type == "GenomicSubstitution"
     assert token.alt_type == "substitution"
     assert token.so_id == "SO:0001483"
@@ -54,7 +54,7 @@ def test_matches(tokenizer):
     assert token.end_pos_flank == 6549
     assert token.inserted_sequence == "CTAG"
     assert token.inserted_sequence2 is None
-    assert token.reference_sequence == ReferenceSequence.LINEAR_GENOMIC
+    assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.token_type == "GenomicInsertion"
     assert token.alt_type == "insertion"
     assert token.so_id == "SO:0000667"
@@ -71,7 +71,7 @@ def test_matches(tokenizer):
     assert isinstance(token, GenomicDeletionToken)
     assert token.start_pos_del == 1235
     assert token.end_pos_del == 1235
-    assert token.reference_sequence == ReferenceSequence.LINEAR_GENOMIC
+    assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.deleted_sequence == "C"
     assert token.token_type == "GenomicDeletion"
     assert token.alt_type == "deletion"
@@ -90,7 +90,7 @@ def test_matches(tokenizer):
     assert token.position == 451
     assert token.ref_nucleotide == "C"
     assert token.new_nucleotide == "="
-    assert token.reference_sequence == ReferenceSequence.LINEAR_GENOMIC
+    assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.token_type == "GenomicSilentMutation"
     assert token.alt_type == "silent_mutation"
     assert token.so_id == "SO:0002073"

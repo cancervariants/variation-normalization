@@ -12,7 +12,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
 
     def return_token(self, params: Dict) -> Optional[CodingDNASubstitutionToken]:
         """Return coding DNA substitution token."""
-        if self.sub["reference_sequence"] == "c" and \
+        if self.sub["coordinate_type"] == "c" and \
                 self.sub["ref_nucleotide"] is not None and \
                 self.sub["new_nucleotide"] != "=":
             return CodingDNASubstitutionToken(**params)

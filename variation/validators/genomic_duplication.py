@@ -133,7 +133,7 @@ class GenomicDuplication(DuplicationDeletionBase):
 
             if not errors:
                 allele = self.vrs.to_vrs_allele(
-                    t, start, end, s.reference_sequence,
+                    t, start, end, s.coordinate_type,
                     s.alt_type, errors)
                 variation = self.hgvs_dup_del_mode.interpret_variation(
                     t, s.alt_type, allele, errors, hgvs_dup_del_mode,
@@ -147,7 +147,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t = grch38["ac"]
 
                 allele = self.vrs.to_vrs_allele_ranges(
-                    t, s.reference_sequence, s.alt_type, errors, ival)
+                    t, s.coordinate_type, s.alt_type, errors, ival)
                 if start is not None and end is not None:
                     pos = (start, end)
                 else:

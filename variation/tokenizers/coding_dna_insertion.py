@@ -10,5 +10,5 @@ class CodingDNAInsertion(InsertionBase):
 
     def return_token(self, params: Dict) -> Optional[CodingDNAInsertionToken]:
         """Return coding DNA Insertion token."""
-        if self.parts["reference_sequence"] == "c":
+        if self.parts["coordinate_type"] == "c":
             return CodingDNAInsertionToken(**params)

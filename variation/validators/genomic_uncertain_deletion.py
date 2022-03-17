@@ -122,7 +122,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 t = grch38["ac"]
 
             allele = self.vrs.to_vrs_allele_ranges(
-                t, s.reference_sequence, s.alt_type, errors, ival)
+                t, s.coordinate_type, s.alt_type, errors, ival)
             if start is not None and end is not None:
                 pos = (start, end)
             else:

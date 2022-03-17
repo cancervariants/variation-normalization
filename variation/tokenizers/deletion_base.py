@@ -37,7 +37,7 @@ class DeletionBase(Tokenizer):
             "start_pos_del": None,
             "end_pos_del": None,
             "deleted_sequence": None,
-            "reference_sequence": None
+            "coordinate_type": None
         }
 
         input_string = str(input_string).lower()
@@ -62,7 +62,7 @@ class DeletionBase(Tokenizer):
             return None
 
         # Get reference sequence
-        reference_sequence = parts[0][:1]
+        coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
         positions_deleted = self.tokenize_base.get_positions_deleted(parts)
@@ -88,7 +88,7 @@ class DeletionBase(Tokenizer):
 
         self.parts["start_pos_del"] = start_pos_del
         self.parts["end_pos_del"] = end_pos_del
-        self.parts["reference_sequence"] = reference_sequence
+        self.parts["coordinate_type"] = coordinate_type
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]) -> Optional[Deletion]:

@@ -125,7 +125,7 @@ class SingleNucleotideVariationBase(Validator):
 
                 t = self.get_accession(t, classification)
                 allele = None
-                if s.reference_sequence == "c":
+                if s.coordinate_type == "c":
                     cds_start_end = self.uta.get_cds_start_end(t)
 
                     if not cds_start_end:
@@ -140,7 +140,7 @@ class SingleNucleotideVariationBase(Validator):
 
                 if not errors:
                     allele = self.vrs.to_vrs_allele(
-                        t, s.position, s.position, s.reference_sequence,
+                        t, s.position, s.position, s.coordinate_type,
                         s.alt_type, errors, cds_start=cds_start,
                         alt=s.new_nucleotide
                     )
@@ -154,18 +154,18 @@ class SingleNucleotideVariationBase(Validator):
                         if s.ref_nucleotide:
                             if sequence != s.ref_nucleotide:
                                 errors.append(
-                                    f"Expected {s.reference_sequence} but "
+                                    f"Expected {s.coordinate_type} but "
                                     f"found {sequence}")
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.reference_sequence,
+                        t, s.position, s.position, s.coordinate_type,
                         gene=gene_tokens[0].token if gene_tokens else None,
                         try_longest_compatible=True
                     )
 
                     self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type, s)
+                                       s.coordinate_type, s.alt_type, s)
 
                 self.add_validation_result(
                     allele, valid_alleles, results,

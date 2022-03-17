@@ -10,5 +10,5 @@ class CodingDNADelIns(DelInsBase):
 
     def return_token(self, params: Dict) -> Optional[CodingDNADelInsToken]:
         """Return coding DNA DelIns token."""
-        if self.parts["reference_sequence"] == "c":
+        if self.parts["coordinate_type"] == "c":
             return CodingDNADelInsToken(**params)

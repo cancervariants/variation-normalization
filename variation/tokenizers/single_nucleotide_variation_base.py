@@ -32,7 +32,7 @@ class SingleNucleotideVariationBase(Tokenizer):
             "ref_nucleotide": None,
             "position": None,
             "new_nucleotide": None,
-            "reference_sequence": None
+            "coordinate_type": None
         }
 
         # TODO: Need to add m., and n.
@@ -54,7 +54,7 @@ class SingleNucleotideVariationBase(Tokenizer):
         else:
             if self.sub["position"] is not None and \
                     self.sub["new_nucleotide"] == "=" and \
-                    self.sub["reference_sequence"] is not None:
+                    self.sub["coordinate_type"] is not None:
                 params = {
                     "token": input_string,
                     "input_string": input_string,
@@ -91,20 +91,20 @@ class SingleNucleotideVariationBase(Tokenizer):
                                   sub_parts[0].split(".")[0])
 
     def _set_sub(self, ref_nucleotide: str, position: int, new_nucleotide: str,
-                 reference_sequence: str) -> None:
+                 coordinate_type: str) -> None:
         """Initialize substitution.
 
         :param str ref_nucleotide: Nucleotide at reference position
         :param str position: The position nucleotide substituted
         :param str new_nucleotide: The substituted nucleotide
-        :param str reference_sequence: The reference sequence used
+        :param str coordinate_type: The coordinate type for the variation
         """
         if ref_nucleotide:
             self.sub["ref_nucleotide"] = ref_nucleotide.upper()
         self.sub["position"] = int(position)
         self.sub["new_nucleotide"] = new_nucleotide.upper()
-        if reference_sequence in ["c", "g"]:
-            self.sub["reference_sequence"] = reference_sequence
+        if coordinate_type in ["c", "g"]:
+            self.sub["coordinate_type"] = coordinate_type
 
     @abstractmethod
     def return_token(self,

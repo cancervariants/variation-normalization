@@ -69,7 +69,7 @@ class GenomicDelIns(DelInsBase):
                 errors = list()
                 t = self.get_accession(t, classification)
                 allele = self.vrs.to_vrs_allele(
-                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
+                    t, s.start_pos_del, s.end_pos_del, s.coordinate_type,
                     s.alt_type, errors, alt=s.inserted_sequence1)
 
                 if not errors:
@@ -78,13 +78,13 @@ class GenomicDelIns(DelInsBase):
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence,
+                        s.coordinate_type,
                         gene=gene_tokens[0].token if gene_tokens else None,
                         try_longest_compatible=True
                     )
 
                     self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
+                        mane, mane_data_found, s.coordinate_type,
                         s.alt_type, s, alt=s.inserted_sequence1
                     )
 
