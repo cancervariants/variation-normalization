@@ -1,6 +1,6 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
-from typing import Optional, Dict, Tuple, List
+from typing import Optional, Dict, Tuple, List, Union
 from variation.data_sources.seq_repo_access import SeqRepoAccess
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
@@ -63,9 +63,9 @@ class HGVSDupDelMode:
         :param str alt_type: Alteration type
         :param tuple pos: start_pos, end_pos
         :param str del_or_dup: Must be either `del` or `dup`
-        :param dict location: Sequence Location object
+        :param Dict location: Sequence Location object
         :param str chromosome: Chromosome
-        :param dict allele: VRS Allele object represented as a dict
+        :param Dict allele: VRS Allele object represented as a dict
         :return: VRS Variation object represented as a dict
         """
         if 'uncertain' in alt_type or 'range' in alt_type:
@@ -83,7 +83,7 @@ class HGVSDupDelMode:
 
         :param str ac: Accession
         :param str del_or_dup: Must be either `del` or `dup`
-        :param dict location: VRS SequenceLocation
+        :param Dict location: VRS SequenceLocation
         :param str chromosome: Chromosome
         :return: VRS Copy Number object represented as a dict
         """
@@ -109,6 +109,7 @@ class HGVSDupDelMode:
             copies = models.Number(
                 value=1 if del_or_dup == 'del' else 3, type="Number"
             )
+        self._abs_cnv(location, copies)
 
         variation = models.AbsoluteCopyNumber(
             subject=models.DerivedSequenceExpression(
@@ -128,7 +129,7 @@ class HGVSDupDelMode:
             DerivedSequenceExpression.
 
         :param str alt_type: Alteration type
-        :param dict location: VRS SequenceLocation
+        :param Dict location: VRS SequenceLocation
         :return: VRS Allele object represented as a dict
         """
         if 'range' in alt_type:
@@ -163,7 +164,7 @@ class HGVSDupDelMode:
                               alt_type: str) -> Optional[Dict]:
         """Return a VRS Allele with a normalized LiteralSequenceExpression.
 
-        :param dict allele: normalized VRS Allele object represented as a dict
+        :param Dict allele: normalized VRS Allele object represented as a dict
         :param str alt_type: Alteration type
         :return: VRS Allele object represented as a dict
         """
@@ -196,7 +197,7 @@ class HGVSDupDelMode:
 
         :param str ac: Accession
         :param str alt_type: Alteration type
-        :param dict allele: VRS Allele object
+        :param Dict allele: VRS Allele object
         :param List errors: List of errors
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
@@ -236,6 +237,29 @@ class HGVSDupDelMode:
                 errors.append("Unable to get VRS Variation")
         return variation
 
+    def _abs_cnv(
+        self, location: Dict,
+        copies: Union[models.DefiniteRange, models.Number, models.IndefiniteRange]
+    ) -> Dict:
+        """
+        Return absolute copy number variation with ga4gh digest as optional id
+
+        :param Union[models.DefiniteRange, models.Number, models.IndefiniteRange] copies:  # noqa E501
+            Copies for absolute copy number variation
+        :param Dict location: VRS SequenceLocation
+        :return: VRS Absolute Copy Number object represented as a dict
+        """
+        variation = models.AbsoluteCopyNumber(
+            subject=models.DerivedSequenceExpression(
+                location=location,
+                reverse_complement=False,
+                type="DerivedSequenceExpression"
+            ),
+            copies=copies,
+            type="AbsoluteCopyNumber"
+        )
+        return self._ga4gh_identify_variation(variation)
+
     def absolute_copy_number_mode(
         self, ac: str, del_or_dup: str, location: Dict,
         chromosome: Optional[str] = None, baseline_copies: Optional[int] = None
@@ -244,43 +268,29 @@ class HGVSDupDelMode:
 
         :param str ac: Accession
         :param str del_or_dup: Must be either `del` or `dup`
-        :param dict location: VRS SequenceLocation
+        :param Dict location: VRS SequenceLocation
         :param str chromosome: Chromosome
-        :param dict allele: VRS absolute copy number object represented as a dict
+        :param Optional[int] baseline_copies: Baseline copies number
+        :return: Absolute copy number variation as a dict
         """
-        if chromosome is None:
-            chromosome = self.seqrepo_access.ac_to_chromosome(ac)
-
-        if chromosome is None:
-            logger.warning(f"Unable to find chromosome on {ac}")
-            return None
-
-        provided_dup_baseline_copies = baseline_copies and del_or_dup == "dup"
-        if chromosome == "X":
-            base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
-            copies = models.DefiniteRange(min=base_value, max=base_value + 1,
-                                          type="DefiniteRange")
+        if baseline_copies:
+            copies = models.Number(
+                value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,  # noqa: E501
+                type="Number"
+            )
+            return self._abs_cnv(location, copies)
         else:
-            if chromosome == "Y":
-                base_value = baseline_copies if provided_dup_baseline_copies else 0 if del_or_dup == "del" else 2  # noqa: E501
-            else:
-                # Chr 1-22
-                base_value = baseline_copies if provided_dup_baseline_copies else 1 if del_or_dup == "del" else 3  # noqa: E501
-            copies = models.Number(value=base_value, type="Number")
-
-        variation = models.AbsoluteCopyNumber(
-            subject=models.DerivedSequenceExpression(
-                location=location, reverse_complement=False,
-                type="DerivedSequenceExpression"),
-            copies=copies,
-            type="AbsoluteCopyNumber"
-        )
-        return self._ga4gh_identify_variation(variation)
+            return self.cnv_mode(ac, del_or_dup, location, chromosome)
 
     def relative_copy_number_mode(
         self, location: Dict, relative_copy_class: RelativeCopyClass
-    ):
-        """Return relative copy number variation"""
+    ) -> Optional[Dict]:
+        """Return relative copy number variation
+
+        :param Dict location: VRS SequenceLocation
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :return: Relative copy number variation as a dict
+        """
         variation = models.RelativeCopyNumber(
             type="RelativeCopyNumber",
             subject=models.DerivedSequenceExpression(

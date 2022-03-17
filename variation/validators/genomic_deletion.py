@@ -89,7 +89,8 @@ class GenomicDeletion(DuplicationDeletionBase):
 
                     variation = self.hgvs_dup_del_mode.interpret_variation(
                         t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                        pos=(start, end), relative_copy_class=relative_copy_class
+                        pos=(start, end), relative_copy_class=relative_copy_class,
+                        baseline_copies=baseline_copies
                     )
                 else:
                     variation = None
@@ -98,7 +99,8 @@ class GenomicDeletion(DuplicationDeletionBase):
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end,
-                        relative_copy_class=relative_copy_class)
+                        relative_copy_class=relative_copy_class,
+                        baseline_copies=baseline_copies)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -118,7 +120,8 @@ class GenomicDeletion(DuplicationDeletionBase):
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict,
             start: int, end: int,
-            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
+            relative_copy_class: Optional[RelativeCopyClass] = None,
+            baseline_copies: Optional[int] = None) -> None:
         """Get variation that will be returned in normalize endpoint.
 
         :param List gene_tokens: List of gene tokens
@@ -130,12 +133,14 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param int start: Start pos change
         :param int end: End pos change
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         if gene_tokens:
             self.add_normalized_genomic_dup_del(
                 s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,
                 SequenceOntology.DELETION, errors, hgvs_dup_del_mode,
-                mane_data_found, relative_copy_class=relative_copy_class)
+                mane_data_found, relative_copy_class=relative_copy_class,
+                baseline_copies=baseline_copies)
         else:
             # No gene provided, then use GRCh38 assesmbly
             if not self._is_grch38_assembly(t):
@@ -148,7 +153,8 @@ class GenomicDeletion(DuplicationDeletionBase):
                     grch38['ac'], [grch38['pos'][0], grch38['pos'][1]], errors)
                 self.add_grch38_to_mane_data(
                     t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-                    use_vrs_allele_range=False, relative_copy_class=relative_copy_class)
+                    use_vrs_allele_range=False, relative_copy_class=relative_copy_class,
+                    baseline_copies=baseline_copies)
 
     def get_gene_tokens(
             self, classification: Classification) -> List[GeneMatchToken]:

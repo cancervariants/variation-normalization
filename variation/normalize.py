@@ -43,15 +43,16 @@ class Normalize:
         """
         # For now, only use first valid result
         valid_result = None
-        for r in validations.valid_results:
-            if r.is_mane_transcript and r.variation:
-                valid_result = r
-                break
+        if validations and validations.valid_results:
+            for r in validations.valid_results:
+                if r.is_mane_transcript and r.variation:
+                    valid_result = r
+                    break
         if not valid_result:
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
-            if validations.valid_results:
+            if validations and validations.valid_results:
                 valid_result = validations.valid_results[0]
         return valid_result
 

@@ -33,7 +33,7 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
-    Haplotype, VariationSet
+    Haplotype, VariationSet, RelativeCopyNumber
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
@@ -500,53 +500,77 @@ class QueryHandler:
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
 
+    def _hgvs_to_cnv_resp(
+        self, copy_number_type: CopyNumberType, hgvs_expr: str, do_liftover: bool,
+        validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
+        warnings: List[str]
+    ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
+        """Return copy number variation and warnings response
+
+        :param CopyNumberType copy_number_type: The type of copy number variation
+        :param str hgvs_expr: HGVS expression
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
+            summary and warnings for hgvs_expr
+        :param List[str] warnings: List of warnings
+        :return: CopyNumberVariation and warnings
+        """
+        variation = None
+        if do_liftover:
+            valid_result = self.normalize_handler.get_valid_result(
+                hgvs_expr, validations, [])
+            if valid_result:
+                variation = valid_result.variation
+            else:
+                warnings.append(f"Unable to translate {hgvs_expr} to "
+                                f"copy number variation")
+        else:
+            translations, warnings = \
+                self.to_vrs_handler.get_translations(validations, warnings)
+            if translations:
+                variation = translations[0]
+
+        if not variation:
+            if hgvs_expr and hgvs_expr.strip():
+                text = models.Text(definition=hgvs_expr, type="Text")
+                text._id = ga4gh_identify(text)
+                variation = Text(**text.as_dict())
+        else:
+            if copy_number_type == CopyNumberType.ABSOLUTE:
+                variation = AbsoluteCopyNumber(**variation)
+            else:
+                variation = RelativeCopyNumber(**variation)
+        return variation, warnings
+
     def hgvs_to_absolute_copy_number(
         self, hgvs_expr: str, baseline_copies: Optional[int] = None,
         do_liftover: bool = False
-    ):
+    ) -> Tuple[Optional[AbsoluteCopyNumber], List[str]]:
         """Given hgvs, return abolute copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param Optional[int] baseline_copies: Baseline copies number
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        :return: Absolute Copy Number Variation
+        :return: Absolute Copy Number Variation and warnings
         """
         validations, warnings = self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
             hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
             baseline_copies=baseline_copies, do_liftover=do_liftover
         )
-        translations = None
-        if do_liftover:
-            valid_result = self.normalize_handler.get_valid_result(
-                hgvs_expr, validations, [])
-            if valid_result:
-                translations = [valid_result.variation]
-            else:
-                warnings.append("Unable to find a valid result")
-        else:
-            translations, warnings = \
-                self.to_vrs_handler.get_translations(validations, warnings)
-
-        if not translations:
-            if hgvs_expr and hgvs_expr.strip():
-                text = models.Text(definition=hgvs_expr)
-                text._id = ga4gh_identify(text)
-                translations = [Text(**text.as_dict())]
-        else:
-            translations = translations[0]
-        return translations, warnings
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.ABSOLUTE, hgvs_expr, do_liftover, validations, warnings)
 
     def hgvs_to_relative_copy_number(
         self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
         do_liftover: bool = False
-    ):
+    ) -> Tuple[Optional[RelativeCopyNumber], List[str]]:
         """Given hgvs, return relative copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param RelativeCopyClass relative_copy_class: The relative copy class
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        :return: Relative Copy Number Variation
+        :return: Relative Copy Number Variation and warnings
         """
         if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
             return None, [f"{relative_copy_class} is not a valid relative copy class: "
@@ -558,24 +582,5 @@ class QueryHandler:
             relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
 
-        translations = None
-        if validations:
-            if do_liftover:
-                valid_result = self.normalize_handler.get_valid_result(
-                    hgvs_expr, validations, [])
-                if valid_result:
-                    translations = [valid_result.variation]
-                else:
-                    warnings.append("Unable to find a valid result")
-            else:
-                translations, warnings = \
-                    self.to_vrs_handler.get_translations(validations, warnings)
-
-            if not translations:
-                if hgvs_expr and hgvs_expr.strip():
-                    text = models.Text(definition=hgvs_expr)
-                    text._id = ga4gh_identify(text)
-                    translations = [Text(**text.as_dict())]
-            else:
-                translations = translations[0]
-        return translations, warnings
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.RELATIVE, hgvs_expr, do_liftover, validations, warnings)
