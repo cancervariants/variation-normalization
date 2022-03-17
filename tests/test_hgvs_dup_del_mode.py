@@ -1,10 +1,11 @@
 """Module for testing HGVS Dup Del mode."""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
 from tests.conftest import assertion_checks
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def dmd_gene_context():
     """Create test fixture for DMD gene context"""
     return {
@@ -91,7 +92,7 @@ def dmd_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def mecp2_gene_context():
     """Create test fixture for MECP2 gene context"""
     return {
@@ -173,7 +174,7 @@ def mecp2_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -188,7 +189,7 @@ def genomic_dup1():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_default(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.aeNse-a8IJzqHiG-P5zTRYA_eVFhrJXw"
@@ -205,7 +206,7 @@ def genomic_dup1_default(genomic_dup1, genomic_dup1_seq_loc):
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_cnv(genomic_dup1, genomic_dup1_38_vac):
     """Create a test fixture for genomic dup CNV."""
     genomic_dup1["variation"] = genomic_dup1_38_vac
@@ -213,7 +214,7 @@ def genomic_dup1_cnv(genomic_dup1, genomic_dup1_38_vac):
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.lAyulP9JxvQReKWjpq0LbO50r2UTeMkl"
@@ -238,7 +239,7 @@ def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -317,7 +318,7 @@ def genomic_dup1_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_seq_loc():
     """Create genomic dup1 free text sequence location"""
     return {
@@ -332,7 +333,7 @@ def genomic_dup1_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_default(genomic_dup1_free_text,
                                    genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
@@ -350,7 +351,7 @@ def genomic_dup1_free_text_default(genomic_dup1_free_text,
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
@@ -372,7 +373,7 @@ def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_rse(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup RSE."""
@@ -398,7 +399,7 @@ def genomic_dup1_free_text_rse(genomic_dup1_free_text,
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -413,7 +414,7 @@ def genomic_dup2():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_default(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.wqqxfUCrFSndedI2-4oiIuHLHHGjBFof"
@@ -430,7 +431,7 @@ def genomic_dup2_default(genomic_dup2, genomic_dup2_seq_loc):
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_cnv(genomic_dup2, genomic_dup2_38_vac):
     """Create a test fixture for genomic dup CNV."""
     genomic_dup2["variation"] = genomic_dup2_38_vac
@@ -438,7 +439,7 @@ def genomic_dup2_cnv(genomic_dup2, genomic_dup2_38_vac):
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_rse(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.fXANtjCcUPJ1A4bCSgcAxSSrxoqXuL3A"
@@ -463,7 +464,7 @@ def genomic_dup2_rse(genomic_dup2, genomic_dup2_seq_loc):
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text(dmd_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -479,7 +480,7 @@ def genomic_dup2_free_text(dmd_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_seq_loc():
     """Create genomic dup2 free text sequence location"""
     return {
@@ -494,7 +495,7 @@ def genomic_dup2_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_default(genomic_dup2_free_text,
                                    genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
@@ -512,7 +513,7 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
@@ -535,7 +536,7 @@ def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_rse(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup RSE."""
@@ -561,7 +562,7 @@ def genomic_dup2_free_text_rse(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -576,7 +577,7 @@ def genomic_dup3():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_default(genomic_dup3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic dup default and cnv."""
     _id = "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh"
@@ -598,7 +599,7 @@ def genomic_dup3_default(genomic_dup3, genomic_del3_dup3_loc):
     return VariationDescriptor(**genomic_dup3)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_rse_lse(genomic_dup3):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -613,7 +614,7 @@ def genomic_dup3_rse_lse(genomic_dup3):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text(dmd_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -629,7 +630,7 @@ def genomic_dup3_free_text(dmd_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text_default(genomic_dup3_free_text):
     """Create a test fixture for genomic dup default and cnv."""
     _id = "ga4gh:VAC.sx53Q7MiG1dc4sQ2RPkk0-K9vgku_jjj"
@@ -668,7 +669,7 @@ def genomic_dup3_free_text_default(genomic_dup3_free_text):
     return VariationDescriptor(**genomic_dup3_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text_rse_lse(genomic_dup3_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -683,7 +684,7 @@ def genomic_dup3_free_text_rse_lse(genomic_dup3_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -698,7 +699,7 @@ def genomic_dup4():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_default(genomic_dup4, genoimc_dup4_loc):
     """Create a test fixture for genomic dup default and cnv."""
     _id = "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML"
@@ -719,7 +720,7 @@ def genomic_dup4_default(genomic_dup4, genoimc_dup4_loc):
     return VariationDescriptor(**genomic_dup4)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_rse_lse(genomic_dup4):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -734,7 +735,7 @@ def genomic_dup4_rse_lse(genomic_dup4):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -818,7 +819,7 @@ def genomic_dup4_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text_default(genomic_dup4_free_text):
     """Create a test fixture for genomic dup default and cnv."""
     _id = "ga4gh:VAC.kqDlxaoHDXGgIURb72e5Wv0HNSxkoxwq"
@@ -856,7 +857,7 @@ def genomic_dup4_free_text_default(genomic_dup4_free_text):
     return VariationDescriptor(**genomic_dup4_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -871,7 +872,7 @@ def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -906,14 +907,14 @@ def genomic_dup5_copy_number(params, genoimc_dup5_loc):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_default(genomic_dup5, genoimc_dup5_loc):
     """Create a test fixture for genomic dup default and cnv."""
     genomic_dup5_copy_number(genomic_dup5, genoimc_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_rse_lse(genomic_dup5):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -928,7 +929,7 @@ def genomic_dup5_rse_lse(genomic_dup5):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_free_text(mecp2_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -944,14 +945,14 @@ def genomic_dup5_free_text(mecp2_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_free_text_default(genomic_dup5_free_text, genoimc_dup5_loc):
     """Create a test fixture for genomic dup default and cnv."""
     genomic_dup5_copy_number(genomic_dup5_free_text, genoimc_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -966,7 +967,7 @@ def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1001,14 +1002,14 @@ def genomic_dup6_copy_number(params, genoimc_dup6_loc):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_default(genomic_dup6, genoimc_dup6_loc):
     """Create a test fixture for genomic dup default and cnv."""
     genomic_dup6_copy_number(genomic_dup6, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_rse_lse(genomic_dup6):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1023,7 +1024,7 @@ def genomic_dup6_rse_lse(genomic_dup6):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_free_text(mecp2_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1039,14 +1040,14 @@ def genomic_dup6_free_text(mecp2_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_free_text_default(genomic_dup6_free_text, genoimc_dup6_loc):
     """Create a test fixture for genomic dup default and cnv."""
     genomic_dup6_copy_number(genomic_dup6_free_text, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1061,7 +1062,7 @@ def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1076,7 +1077,7 @@ def genomic_del1():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_default(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.jUeT1n4AuBzwtt5TT-Iaac1KasATWjKE"
@@ -1093,7 +1094,7 @@ def genomic_del1_default(genomic_del1, genomic_del1_seq_loc):
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_cnv(genomic_del1, genomic_del1_38_vac):
     """Create a test fixture for genomic del CNV."""
     genomic_del1["variation"] = genomic_del1_38_vac
@@ -1101,7 +1102,7 @@ def genomic_del1_cnv(genomic_del1, genomic_del1_38_vac):
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.6fIEZ3R2W4wIaltUX1jyw9ap5YN6oGDT"
@@ -1126,7 +1127,7 @@ def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text(vhl_gene_context):
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1142,7 +1143,7 @@ def genomic_del1_free_text(vhl_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_seq_loc():
     """Create genomic del1 free text sequence location"""
     return {
@@ -1157,7 +1158,7 @@ def genomic_del1_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_default(genomic_del1_free_text,
                                    genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
@@ -1175,7 +1176,7 @@ def genomic_del1_free_text_default(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_cnv(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
@@ -1197,7 +1198,7 @@ def genomic_del1_free_text_cnv(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_rse(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
@@ -1223,7 +1224,7 @@ def genomic_del1_free_text_rse(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1238,7 +1239,7 @@ def genomic_del2():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_default(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx"
@@ -1255,7 +1256,7 @@ def genomic_del2_default(genomic_del2, genomic_del2_seq_loc):
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_cnv(genomic_del2, genomic_del2_38_vac):
     """Create a test fixture for genomic del CNV."""
     genomic_del2["variation"] = genomic_del2_38_vac
@@ -1263,7 +1264,7 @@ def genomic_del2_cnv(genomic_del2, genomic_del2_38_vac):
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.aQeEhbisBWYrzVbf3-VPOZtGJu1vKmfx"
@@ -1288,7 +1289,7 @@ def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text(vhl_gene_context):
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1304,7 +1305,7 @@ def genomic_del2_free_text(vhl_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_seq_loc():
     """Create genomic del2 free text sequence location"""
     return {
@@ -1319,7 +1320,7 @@ def genomic_del2_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_default(genomic_del2_free_text,
                                    genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
@@ -1337,7 +1338,7 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_cnv(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
@@ -1359,7 +1360,7 @@ def genomic_del2_free_text_cnv(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_rse(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
@@ -1385,7 +1386,7 @@ def genomic_del2_free_text_rse(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1400,7 +1401,7 @@ def genomic_del3():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_default(genomic_del3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic del default and cnv."""
     _id = "ga4gh:VAC.o39DwfEb2I-LR9NFKR5cznWrRhI9Vx8b"
@@ -1422,7 +1423,7 @@ def genomic_del3_default(genomic_del3, genomic_del3_dup3_loc):
     return VariationDescriptor(**genomic_del3)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_rse_lse(genomic_del3):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -1437,7 +1438,7 @@ def genomic_del3_rse_lse(genomic_del3):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1523,7 +1524,7 @@ def genomic_del3_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text_default(genomic_del3_free_text):
     """Create a test fixture for genomic del default and cnv."""
     _id = "ga4gh:VAC.C8fUDphkEtMHUgh-8fHY0KLf86FekCRM"
@@ -1562,7 +1563,7 @@ def genomic_del3_free_text_default(genomic_del3_free_text):
     return VariationDescriptor(**genomic_del3_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text_rse_lse(genomic_del3_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -1577,7 +1578,7 @@ def genomic_del3_free_text_rse_lse(genomic_del3_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1592,7 +1593,7 @@ def genomic_del4():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_default(genomic_del4, genomic_del4_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
     _id = "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L"
@@ -1614,7 +1615,7 @@ def genomic_del4_default(genomic_del4, genomic_del4_seq_loc):
     return VariationDescriptor(**genomic_del4)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_rse_lse(genomic_del4):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1629,7 +1630,7 @@ def genomic_del4_rse_lse(genomic_del4):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1700,7 +1701,7 @@ def genomic_del4_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text_default(genomic_del4_free_text):
     """Create a test fixture for genomic del default and cnv."""
     _id = "ga4gh:VAC.I3P7IMe7ozWSB2zAxEhm1bk1u9eRQ6E0"
@@ -1738,7 +1739,7 @@ def genomic_del4_free_text_default(genomic_del4_free_text):
     return VariationDescriptor(**genomic_del4_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text_rse_lse(genomic_del4_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1753,11 +1754,11 @@ def genomic_del4_free_text_rse_lse(genomic_del4_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_uncertain_del_2():
     """Create a genomic uncertain deletion on chr 2 test fixture."""
     params = {
-        "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
+        "id": "normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
         "variation": {
@@ -1796,11 +1797,11 @@ def genomic_uncertain_del_2():
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_uncertain_del_y():
     """Create a genomic uncertain deletion on chr Y test fixture."""
     params = {
-        "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
+        "id": "normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
         "variation": {
@@ -1839,7 +1840,7 @@ def genomic_uncertain_del_y():
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1874,14 +1875,14 @@ def genomic_del5_copy_number(params, genomic_del5_seq_loc):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_default(genomic_del5, genomic_del5_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
     genomic_del5_copy_number(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_rse_lse(genomic_del5):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -1896,7 +1897,7 @@ def genomic_del5_rse_lse(genomic_del5):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1980,14 +1981,14 @@ def genomic_del5_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_free_text_default(genomic_del5_free_text, genomic_del5_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
     genomic_del5_copy_number(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2002,7 +2003,7 @@ def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2036,14 +2037,14 @@ def genomic_del6_copy_number(params, genomic_del6_seq_loc):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_default(genomic_del6, genomic_del6_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
     genomic_del6_copy_number(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_rse_lse(genomic_del6):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2058,7 +2059,7 @@ def genomic_del6_rse_lse(genomic_del6):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2142,14 +2143,14 @@ def genomic_del6_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_free_text_default(genomic_del6_free_text, genomic_del6_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
     genomic_del6_copy_number(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2925,7 +2926,7 @@ def test_parameters(test_query_handler):
     assert test_query_handler.normalize_handler.warnings == []
 
     q = "NC_000003.12:g.49531262dup"
-    resp = test_query_handler.normalize(q, '')
+    resp = test_query_handler.normalize(q, "")
     assert resp
     assert test_query_handler.normalize_handler.warnings == []
 
