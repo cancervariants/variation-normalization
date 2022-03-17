@@ -1495,6 +1495,13 @@ def test_invalid_cnv_parameters(test_query_handler):
 
 def test_invalid_cnv(test_query_handler):
     """Check that invalid input return warnings"""
+    q = "DAG1 g.49568695dup"
+    resp, w = test_query_handler.hgvs_to_relative_copy_number(
+        q, relative_copy_class="low-level gain", do_liftover=True)
+    assert set(w) == {"Unable to translate DAG1 g.49568695dup to copy number variation",
+                      "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
+    assert resp.type == "Text"
+
     q = "braf v600e"
     resp, w = test_query_handler.hgvs_to_relative_copy_number(
         q, relative_copy_class="low-level gain", do_liftover=True)

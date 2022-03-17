@@ -241,8 +241,7 @@ class HGVSDupDelMode:
         self, location: Dict,
         copies: Union[models.DefiniteRange, models.Number, models.IndefiniteRange]
     ) -> Dict:
-        """
-        Return absolute copy number variation with ga4gh digest as optional id
+        """Return absolute copy number variation with ga4gh digest as optional id
 
         :param Union[models.DefiniteRange, models.Number, models.IndefiniteRange] copies:  # noqa E501
             Copies for absolute copy number variation
