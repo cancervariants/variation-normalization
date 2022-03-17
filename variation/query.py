@@ -21,7 +21,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS, \
     CopyNumberType, RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
-    ReferenceSequence, SequenceOntology
+    CoordinateType, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.to_vrs import ToVRS
 from variation.vrs import VRS
@@ -251,7 +251,7 @@ class QueryHandler:
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
-        classification_token.reference_sequence = ReferenceSequence.PROTEIN
+        classification_token.coordinate_type = CoordinateType.PROTEIN
         classification_token.molecule_context = "protein"
         if classification_token.alt_type in ["substitution",
                                              "silent_mutation"]:

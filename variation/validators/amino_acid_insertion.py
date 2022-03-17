@@ -106,7 +106,7 @@ class AminoAcidInsertion(Validator):
                 t = self.get_accession(t, classification)
                 allele = self.vrs.to_vrs_allele(
                     t, s.start_pos_flank, s.end_pos_flank,
-                    s.reference_sequence, s.alt_type, errors,
+                    s.coordinate_type, s.alt_type, errors,
                     alt=s.inserted_sequence
                 )
 
@@ -124,11 +124,11 @@ class AminoAcidInsertion(Validator):
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_flank, s.end_pos_flank,
-                        s.reference_sequence,
+                        s.coordinate_type,
                         try_longest_compatible=True
                     )
                     self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type, s,
+                                       s.coordinate_type, s.alt_type, s,
                                        alt=s.inserted_sequence)
 
                 self.add_validation_result(allele, valid_alleles, results,

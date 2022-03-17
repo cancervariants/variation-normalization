@@ -27,7 +27,7 @@ class DuplicationBase(Tokenizer):
             "start_pos2_dup": None,
             "end_pos1_dup": None,
             "end_pos2_dup": None,
-            "reference_sequence": None,
+            "coordinate_type": None,
             "alt_type": DuplicationAltType.DUPLICATION
         }
 

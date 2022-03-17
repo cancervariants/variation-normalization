@@ -12,5 +12,5 @@ class GenomicDelIns(DelInsBase):
 
     def return_token(self, params: Dict) -> Optional[GenomicDelInsToken]:
         """Return genomic delins token."""
-        if self.parts["reference_sequence"] == "g":
+        if self.parts["coordinate_type"] == "g":
             return GenomicDelInsToken(**params)

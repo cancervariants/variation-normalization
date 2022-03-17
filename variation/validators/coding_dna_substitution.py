@@ -77,7 +77,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                     cds_start = cds_start_end[0]
 
                     allele = self.vrs.to_vrs_allele(
-                        t, s.position, s.position, s.reference_sequence,
+                        t, s.position, s.position, s.coordinate_type,
                         s.alt_type, errors, cds_start=cds_start,
                         alt=s.new_nucleotide)
                 else:
@@ -94,13 +94,13 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.reference_sequence,
+                        t, s.position, s.position, s.coordinate_type,
                         ref=s.ref_nucleotide,
                         try_longest_compatible=True
                     )
 
                     self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
+                        mane, mane_data_found, s.coordinate_type,
                         s.alt_type, s, alt=s.new_nucleotide
                     )
 
