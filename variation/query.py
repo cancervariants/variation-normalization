@@ -258,7 +258,7 @@ class QueryHandler:
             if classification_token.alt_type == "substitution":
                 alt_nuc = classification_token.new_nucleotide
                 classification_token.so_id = \
-                    SequenceOntology.AMINO_ACID_SUBSTITUTION
+                    SequenceOntology.PROTEIN_SUBSTITUTION
             else:
                 alt_nuc = classification_token.ref_nucleotide
                 classification_token.so_id = SequenceOntology.SILENT_MUTATION
@@ -294,9 +294,9 @@ class QueryHandler:
                 alt = alt.replace("T", "U")
         elif classification_token.alt_type == "deletion":
             # There is no alt for a deletion
-            classification_token.so_id = SequenceOntology.AMINO_ACID_DELETION
+            classification_token.so_id = SequenceOntology.PROTEIN_DELETION
         elif classification_token.alt_type == "insertion":
-            classification_token.so_id = SequenceOntology.AMINO_ACID_INSERTION
+            classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
                 alt = alt[::-1]

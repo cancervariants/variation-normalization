@@ -1,8 +1,9 @@
 """A module for testing Polypeptide Truncation tokenization."""
 import unittest
+
+from variation.tokenizers.caches import AminoAcidCache
 from variation.tokenizers import PolypeptideTruncation
 from .tokenizer_base import TokenizerBase
-from variation.tokenizers.caches import AminoAcidCache
 
 
 class TestPolypeptideTruncationTokenizer(TokenizerBase, unittest.TestCase):
@@ -14,8 +15,8 @@ class TestPolypeptideTruncationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Polypeptide Truncation token type."""
-        return 'PolypeptideTruncation'
+        return "PolypeptideTruncation"
 
     def fixture_name(self):
         """Return the fixture name for Polypeptide Truncation."""
-        return 'polypeptide_truncation'
+        return "polypeptide_truncation"

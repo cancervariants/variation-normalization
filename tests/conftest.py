@@ -1,6 +1,7 @@
 """Create methods used throughout tests."""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
 from variation.query import QueryHandler
 
 
@@ -377,10 +378,10 @@ def vhl_silent(vhl_gene_context):
 
 
 @pytest.fixture(scope="session")
-def amino_acid_insertion(egfr_context):
-    """Create test fixture for NP amino acid insertion."""
+def protein_insertion(egfr_context):
+    """Create test fixture for NP protein insertion."""
     params = {
-        "id": 'normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu',
+        "id": "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
         "variation": {
@@ -409,12 +410,12 @@ def amino_acid_insertion(egfr_context):
 
 
 @pytest.fixture(scope="session")
-def amino_acid_deletion_np_range(erbb2_context):
-    """Create test fixture for amino acid deletion using NP accession and
+def protein_deletion_np_range(erbb2_context):
+    """Create test fixture for protein deletion using NP accession and
     range for deletion.
     """
     params = {
-        "id": 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del',
+        "id": "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
         "variation": {
@@ -807,10 +808,10 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
         for resp_ext in resp_gene_context.extensions:
             for test_var in test_variation_context.extensions:
                 if resp_ext.name == test_var.name:
-                    if resp_ext.name == 'chromosome_location':
+                    if resp_ext.name == "chromosome_location":
                         assert resp_ext.value == test_var.value, \
                             "gene_context.chromosome_location"
-                    elif resp_ext.name == 'associated_with':
+                    elif resp_ext.name == "associated_with":
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:

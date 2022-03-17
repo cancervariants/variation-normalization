@@ -16,7 +16,7 @@ class GenomicDelInsClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["Chromosome", "GenomicDelIns"],
-            ["GeneSymbol", "AminoAcidSubstitution", "GenomicDelIns"],
+            ["GeneSymbol", "ProteinSubstitution", "GenomicDelIns"],
             ["GenomicDelIns", "GeneSymbol"],
             ["GeneSymbol", "GenomicDelIns"],
             ["HGVS", "GenomicDelIns"],

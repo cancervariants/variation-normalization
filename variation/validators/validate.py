@@ -16,20 +16,20 @@ from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
 from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from .amino_acid_substitution import AminoAcidSubstitution
+from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
 from .genomic_substitution import GenomicSubstitution
-from .amino_acid_delins import AminoAcidDelIns
+from .protein_delins import ProteinDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
-from .amino_acid_deletion import AminoAcidDeletion
+from .protein_deletion import ProteinDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
-from .amino_acid_insertion import AminoAcidInsertion
+from .protein_insertion import ProteinInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
@@ -65,23 +65,23 @@ class Validate:
             seqrepo_access, transcript_mappings, gene_symbol,
             mane_transcript, uta, dp, tlr, gene_normalizer, vrs
         ]
-        amino_acid_params = params[:]
-        amino_acid_params.append(amino_acid_cache)
+        protein_params = params[:]
+        protein_params.append(amino_acid_cache)
         self.validators = [
-            AminoAcidSubstitution(*amino_acid_params),
-            PolypeptideTruncation(*amino_acid_params),
-            SilentMutation(*amino_acid_params),
+            ProteinSubstitution(*protein_params),
+            PolypeptideTruncation(*protein_params),
+            SilentMutation(*protein_params),
             CodingDNASubstitution(*params),
             GenomicSubstitution(*params),
             CodingDNASilentMutation(*params),
             GenomicSilentMutation(*params),
-            AminoAcidDelIns(*amino_acid_params),
+            ProteinDelIns(*protein_params),
             CodingDNADelIns(*params),
             GenomicDelIns(*params),
-            AminoAcidDeletion(*amino_acid_params),
+            ProteinDeletion(*protein_params),
             CodingDNADeletion(*params),
             GenomicDeletion(*params),
-            AminoAcidInsertion(*amino_acid_params),
+            ProteinInsertion(*protein_params),
             CodingDNAInsertion(*params),
             GenomicInsertion(*params),
             GenomicDeletionRange(*params),

@@ -1,8 +1,10 @@
 """A module for testing the Gene Pair Tokenizer."""
 import unittest
+
+from gene.query import QueryHandler as GeneQueryHandler
+
 from variation.tokenizers import GeneSymbol
 from .tokenizer_base import TokenizerBase
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
@@ -14,8 +16,8 @@ class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return the Gene Pair token type."""
-        return 'GeneSymbol'
+        return "GeneSymbol"
 
     def fixture_name(self):
         """Return the fixture name for Gene Pair."""
-        return 'gene'
+        return "gene"

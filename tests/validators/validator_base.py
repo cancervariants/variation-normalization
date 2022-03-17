@@ -1,5 +1,9 @@
 """A module for testing validator classes."""
 import yaml
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
 from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
 from variation.vrs import VRS
@@ -8,9 +12,6 @@ from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class ValidatorBase:
@@ -19,7 +20,7 @@ class ValidatorBase:
     @classmethod
     def setUpClass(cls):
         """Set up the test cases."""
-        with open(f'{PROJECT_ROOT}/tests/fixtures/validators.yml') as stream:
+        with open(f"{PROJECT_ROOT}/tests/fixtures/validators.yml") as stream:
             cls.all_fixtures = yaml.safe_load(stream)
         amino_acid_cache = AminoAcidCache()
         gene_normalizer = GeneQueryHandler()
@@ -58,7 +59,7 @@ class ValidatorBase:
         """Initialize fixtures, classifier + validator"""
         self.fixtures = self.all_fixtures.get(
             self.fixture_name(),
-            {'should_match': [], 'should_not_match': []}
+            {"should_match": [], "should_not_match": []}
         )
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
@@ -66,8 +67,8 @@ class ValidatorBase:
     def test_matches(self):
         """Test that validator matches correctly."""
         self.set_up()
-        for x in self.fixtures['should_match']:
-            tokens = self.tokenizer.perform(x['query'], [])
+        for x in self.fixtures["should_match"]:
+            tokens = self.tokenizer.perform(x["query"], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
                 classification, hgvs_dup_del_mode="default",
@@ -84,8 +85,8 @@ class ValidatorBase:
     def test_not_matches(self):
         """Test that validator matches correctly."""
         self.set_up()
-        for x in self.fixtures['should_not_match']:
-            tokens = self.tokenizer.perform(x['query'], [])
+        for x in self.fixtures["should_not_match"]:
+            tokens = self.tokenizer.perform(x["query"], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
                 classification, endpoint_name=Endpoint.TO_VRS

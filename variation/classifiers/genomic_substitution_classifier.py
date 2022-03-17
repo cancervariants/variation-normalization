@@ -16,7 +16,7 @@ class GenomicSubstitutionClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["Chromosome", "GenomicSubstitution"],
-            ["GeneSymbol", "AminoAcidSubstitution", "GenomicSubstitution"],
+            ["GeneSymbol", "ProteinSubstitution", "GenomicSubstitution"],
             ["GenomicSubstitution", "GeneSymbol"],
             ["GeneSymbol", "GenomicSubstitution"],
             ["HGVS", "GenomicSubstitution"],

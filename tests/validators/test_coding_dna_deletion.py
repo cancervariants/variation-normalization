@@ -1,5 +1,6 @@
 """Module for testing Coding DNA Deletion Validator."""
 import unittest
+
 from variation.validators import CodingDNADeletion
 from variation.classifiers import CodingDNADeletionClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestCodingDNADeletionValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for coding dna deletion."""
-        return 'coding_dna_deletion'
+        return "coding_dna_deletion"

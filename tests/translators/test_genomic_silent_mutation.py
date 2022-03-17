@@ -1,5 +1,6 @@
 """Module for testing Genomic Silent Mutation Translator."""
 import unittest
+
 from variation.classifiers import GenomicSilentMutationClassifier
 from variation.translators import GenomicSilentMutation
 from variation.validators import GenomicSilentMutation as GENOMICSM_V
@@ -23,4 +24,4 @@ class TestGenomicSilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic silent mutation."""
-        return 'genomic_silent_mutation'
+        return "genomic_silent_mutation"

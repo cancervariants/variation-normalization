@@ -35,14 +35,14 @@ class SequenceOntology(str, Enum):
     """Define SequenceOntology codes"""
 
     POLYPEPTIDE_TRUNCATION = "SO:0001617"
-    AMINO_ACID_SUBSTITUTION = "SO:0001606"
+    PROTEIN_SUBSTITUTION = "SO:0001606"
     SILENT_MUTATION = "SO:0001017"
     SNV = "SO:0001483"
     NO_SEQUENCE_ALTERATION = "SO:0002073"
     DELINS = "SO:1000032"
-    AMINO_ACID_INSERTION = "SO:0001605"
+    PROTEIN_INSERTION = "SO:0001605"
     INSERTION = "SO:0000667"
-    AMINO_ACID_DELETION = "SO:0001604"
+    PROTEIN_DELETION = "SO:0001604"
     DELETION = "SO:0000159"
     COPY_NUMBER_LOSS = "SO:0001743"
     DUPLICATION = "SO:1000035"
@@ -204,13 +204,13 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
             }
 
 
-class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
+class ProteinSubstitutionToken(PolypeptideSequenceVariation):
     """A sequence variation of a codon resulting in the substitution of one
     amino acid for another in the resulting polypeptide. (missense)
     """
 
-    token_type = "AminoAcidSubstitution"
-    so_id = SequenceOntology.AMINO_ACID_SUBSTITUTION
+    token_type = "ProteinSubstitution"
+    so_id = SequenceOntology.PROTEIN_SUBSTITUTION
     alt_type = "substitution"
 
     class Config:
@@ -218,7 +218,7 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["AminoAcidSubstitutionToken"]) -> None:
+                         model: Type["ProteinSubstitutionToken"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -226,7 +226,7 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
                 prop.pop("title", None)
             schema["example"] = {
                 "token": "V600E",
-                "token_type": "AminoAcidSubstitution",
+                "token_type": "ProteinSubstitution",
                 "match_type": 5,
                 "input_string": "V600E",
                 "object_type": "Token",
@@ -272,7 +272,7 @@ class TokenResponseSchema(BaseModel):
 
     search_term: str
     tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                       AminoAcidSubstitutionToken, PolypeptideTruncationToken,
+                       ProteinSubstitutionToken, PolypeptideTruncationToken,
                        SilentMutationToken, Token]]
 
     class Config:
@@ -299,7 +299,7 @@ class TokenResponseSchema(BaseModel):
                     },
                     {
                         "token": "V600E",
-                        "token_type": "AminoAcidSubstitution",
+                        "token_type": "ProteinSubstitution",
                         "match_type": 5,
                         "input_string": "V600E",
                         "object_type": "Token",
@@ -384,7 +384,7 @@ class DelIns(Token):
     alt_type = "delins"
 
 
-class AminoAcidDelInsToken(Token):
+class ProteinDelInsToken(Token):
     """DelIns at the protein reference sequence."""
 
     start_aa_del: str
@@ -395,7 +395,7 @@ class AminoAcidDelInsToken(Token):
     coordinate_type = CoordinateType.PROTEIN
     so_id = SequenceOntology.DELINS
     molecule_context = "protein"
-    token_type = "AminoAcidDelIns"
+    token_type = "ProteinDelIns"
     alt_type = "delins"
 
 
@@ -444,14 +444,14 @@ class Insertion(Token):
     alt_type = "insertion"
 
 
-class AminoAcidInsertionToken(Insertion):
-    """Amino Acid Insertion."""
+class ProteinInsertionToken(Insertion):
+    """Protein Insertion."""
 
     start_aa_flank: str
     end_aa_flank: str
     coordinate_type = CoordinateType.PROTEIN
-    token_type = "AminoAcidInsertion"
-    so_id = SequenceOntology.AMINO_ACID_INSERTION
+    token_type = "ProteinInsertion"
+    so_id = SequenceOntology.PROTEIN_INSERTION
     molecule_context = "protein"
 
 
@@ -497,7 +497,7 @@ class Deletion(Token):
     alt_type: DeletionAltType.DELETION = DeletionAltType.DELETION
 
 
-class AminoAcidDeletionToken(Deletion):
+class ProteinDeletionToken(Deletion):
     """A sequence change between the translation initiation (start) and
     termination (stop) codon where, compared to a reference sequence, one or
     more amino acids are not present (deleted) - varnomen.hgvs.org
@@ -506,8 +506,8 @@ class AminoAcidDeletionToken(Deletion):
     start_aa_del: str
     end_aa_del: Optional[str]
     coordinate_type = CoordinateType.PROTEIN
-    token_type = "AminoAcidDeletion"
-    so_id = SequenceOntology.AMINO_ACID_DELETION
+    token_type = "ProteinDeletion"
+    so_id = SequenceOntology.PROTEIN_DELETION
     molecule_context = "protein"
 
 

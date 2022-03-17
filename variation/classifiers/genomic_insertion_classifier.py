@@ -16,7 +16,7 @@ class GenomicInsertionClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["Chromosome", "GenomicInsertion"],
-            ["GeneSymbol", "AminoAcidSubstitution", "GenomicInsertion"],
+            ["GeneSymbol", "ProteinSubstitution", "GenomicInsertion"],
             ["GenomicInsertion", "GeneSymbol"],
             ["GeneSymbol", "GenomicInsertion"],
             ["HGVS", "GenomicInsertion"],

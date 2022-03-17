@@ -1,5 +1,6 @@
 """Module for testing Coding DNA Silent Mutation Translator."""
 import unittest
+
 from variation.classifiers import CodingDNASilentMutationClassifier
 from variation.translators import CodingDNASilentMutation
 from variation.validators import CodingDNASilentMutation as CDNASM_V
@@ -23,4 +24,4 @@ class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for coding DNA silent mutation."""
-        return 'coding_dna_silent_mutation'
+        return "coding_dna_silent_mutation"

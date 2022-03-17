@@ -4,23 +4,23 @@ from typing import Iterable, List
 from variation.schemas.token_response_schema import Token, TokenMatchType
 from variation.tokenizers.caches.amino_acid_cache import AminoAcidCache
 from .gene_symbol import GeneSymbol
-from .amino_acid_substitution import AminoAcidSubstitution
+from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
-from .amino_acid_delins import AminoAcidDelIns
+from .protein_delins import ProteinDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
 from .locus_reference_genomic import LocusReferenceGenomic
-from .amino_acid_deletion import AminoAcidDeletion
+from .protein_deletion import ProteinDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
-from .amino_acid_insertion import AminoAcidInsertion
+from .protein_insertion import ProteinInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
@@ -43,20 +43,20 @@ class Tokenize:
             LocusReferenceGenomic(),
             GnomadVCF(),
             gene_symbol,
-            AminoAcidSubstitution(amino_acid_cache),
+            ProteinSubstitution(amino_acid_cache),
             PolypeptideTruncation(amino_acid_cache),
             SilentMutation(amino_acid_cache),
             CodingDNASubstitution(),
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
-            AminoAcidDelIns(amino_acid_cache, nucleotide_cache),
+            ProteinDelIns(amino_acid_cache, nucleotide_cache),
             CodingDNADelIns(amino_acid_cache, nucleotide_cache),
             GenomicDelIns(amino_acid_cache, nucleotide_cache),
-            AminoAcidDeletion(amino_acid_cache, nucleotide_cache),
+            ProteinDeletion(amino_acid_cache, nucleotide_cache),
             CodingDNADeletion(amino_acid_cache, nucleotide_cache),
             GenomicDeletion(amino_acid_cache, nucleotide_cache),
-            AminoAcidInsertion(amino_acid_cache, nucleotide_cache),
+            ProteinInsertion(amino_acid_cache, nucleotide_cache),
             CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
             GenomicInsertion(amino_acid_cache, nucleotide_cache),
             GenomicUncertainDeletion(),

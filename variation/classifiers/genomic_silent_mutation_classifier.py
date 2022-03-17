@@ -16,7 +16,7 @@ class GenomicSilentMutationClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["Chromosome", "GenomicSilentMutation"],
-            ["GeneSymbol", "AminoAcidSubstitution", "GenomicSilentMutation"],
+            ["GeneSymbol", "ProteinSubstitution", "GenomicSilentMutation"],
             ["GenomicSilentMutation", "GeneSymbol"],
             ["GeneSymbol", "GenomicSilentMutation"],
             ["HGVS", "GenomicSilentMutation"],
