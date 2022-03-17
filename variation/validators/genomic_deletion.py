@@ -1,20 +1,21 @@
 """The module for Genomic Deletion Validation."""
-from variation.schemas.app_schemas import Endpoint
+import logging
+from typing import List, Optional, Dict
+
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import GenomicDeletionToken, \
-    Token, SequenceOntology
-from typing import List, Optional, Dict
+from variation.schemas.token_response_schema import Token, SequenceOntology
 from variation.schemas.token_response_schema import GeneMatchToken
-import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -26,10 +27,10 @@ class GenomicDeletion(DuplicationDeletionBase):
                         errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_genomic_transcripts(classification, errors)
@@ -150,7 +151,7 @@ class GenomicDeletion(DuplicationDeletionBase):
 
             if grch38:
                 self.validate_gene_or_accession_pos(
-                    grch38['ac'], [grch38['pos'][0], grch38['pos'][1]], errors)
+                    grch38["ac"], [grch38["pos"][0], grch38["pos"][1]], errors)
                 self.add_grch38_to_mane_data(
                     t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
                     use_vrs_allele_range=False, relative_copy_class=relative_copy_class,
@@ -167,18 +168,17 @@ class GenomicDeletion(DuplicationDeletionBase):
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic deletion'
+        return "genomic deletion"
 
-    def is_token_instance(self, t: Token):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic Deletion.
 
         :param Token t: Classification token
         """
-        return t.token_type == 'GenomicDeletion'
+        return t.token_type == "GenomicDeletion"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is
         Genomic DelIns.
 
@@ -186,17 +186,3 @@ class GenomicDeletion(DuplicationDeletionBase):
         :return: `True` if classification type matches, `False` otherwise
         """
         return classification_type == ClassificationType.GENOMIC_DELETION
-
-    def human_description(self, transcript,
-                          token: GenomicDeletionToken) -> str:
-        """Return a human description of the identified variation."""
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            position = f"{token.start_pos_del} to {token.end_pos_del}"
-        else:
-            position = token.start_pos_del
-
-        descr = "A Genomic "
-        if token.deleted_sequence:
-            descr += f"{token.deleted_sequence} "
-        descr += f"Deletion from {position} on transcript {transcript}"
-        return descr

@@ -1,24 +1,27 @@
 """Main application for FastAPI."""
-from typing import Optional
+from typing import Dict, Optional
+from datetime import datetime
+from urllib.parse import unquote
+
 import pkg_resources
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 import python_jsonschema_objects
-from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from hgvs.exceptions import HGVSError
+from bioutils.exceptions import BioutilsError
+
+from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService
-from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
-    TranslateFromService, TranslateFromQuery, VrsPythonMeta
-from .version import __version__
-from datetime import datetime
-from urllib.parse import unquote
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
     CanonicalSPDIToCategoricalVariationService
-from hgvs.exceptions import HGVSError
-from bioutils.exceptions import BioutilsError
+from .version import __version__
+from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
+    TranslateFromService, TranslateFromQuery, VrsPythonMeta
+
 
 app = FastAPI(
     docs_url="/variation",
@@ -28,7 +31,7 @@ app = FastAPI(
 query_handler = QueryHandler()
 
 
-def custom_openapi():
+def custom_openapi() -> Dict:
     """Generate custom fields for OpenAPI response."""
     if app.openapi_schema:
         return app.openapi_schema
@@ -39,7 +42,7 @@ def custom_openapi():
         routes=app.routes
     )
 
-    openapi_schema['info']['contact'] = {
+    openapi_schema["info"]["contact"] = {
         "name": "Alex H. Wagner",
         "email": "Alex.Wagner@nationwidechildrens.org",
         "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab"  # noqa: E501
@@ -57,14 +60,14 @@ translate_response_description = "A  response to a validly-formed query."
 q_description = "Variation to translate."
 
 
-@app.get('/variation/toVRS',
+@app.get("/variation/toVRS",
          summary=translate_summary,
          response_description=translate_response_description,
          response_model=ToVRSService,
          description=translate_description,
          response_model_exclude_none=True
          )
-def to_vrs(q: str = Query(..., description=q_description)):
+def to_vrs(q: str = Query(..., description=q_description)) -> ToVRSService:
     """Return a VRS-like representation of all validated variations for the search term.  # noqa: E501, D400
 
     :param str q: The variation to translate
@@ -83,18 +86,18 @@ def to_vrs(q: str = Query(..., description=q_description)):
     )
 
 
-normalize_summary = 'Given variation, return VRSATILE compatible object.'
-normalize_response_description = 'A response to a validly-formed query.'
+normalize_summary = "Given variation, return VRSATILE compatible object."
+normalize_response_description = "A response to a validly-formed query."
 normalize_description = \
-    'Return VRSATILE compatible object for variation provided.'
-q_description = 'Variation to normalize.'
-hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
-                           '`repeated_seq_expr`, `literal_seq_expr`. This'
-                           ' parameter determines how to interpret HGVS '
-                           'dup/del expressions in VRS.')
+    "Return VRSATILE compatible object for variation provided."
+q_description = "Variation to normalize."
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `cnv`, "
+                           "`repeated_seq_expr`, `literal_seq_expr`. This"
+                           " parameter determines how to interpret HGVS "
+                           "dup/del expressions in VRS.")
 
 
-@app.get('/variation/normalize',
+@app.get("/variation/normalize",
          summary=normalize_summary,
          response_description=normalize_response_description,
          response_model=NormalizeService,
@@ -103,7 +106,7 @@ hgvs_dup_del_mode_decsr = ('Must be one of: `default`, `cnv`, '
          )
 def normalize(q: str = Query(..., description=q_description),
               hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-                  None, description=hgvs_dup_del_mode_decsr)):
+                  None, description=hgvs_dup_del_mode_decsr)) -> NormalizeService:
     """Return Value Object Descriptor for variation.
 
     :param str q: Variation to normalize
@@ -129,15 +132,15 @@ def normalize(q: str = Query(..., description=q_description),
     )
 
 
-@app.get('/variation/translate_identifier',
-         summary='Given an identifier, use SeqRepo to return a list of aliases.',  # noqa: E501
-         response_description='A response to a validly-formed query.',
+@app.get("/variation/translate_identifier",
+         summary="Given an identifier, use SeqRepo to return a list of aliases.",  # noqa: E501
+         response_description="A response to a validly-formed query.",
          response_model=TranslateIdentifierService,
-         description='Return list of aliases for an identifier'
+         description="Return list of aliases for an identifier"
          )
 def translate_identifier(
-        identifier: str = Query(..., description='The identifier to find aliases for'),  # noqa: E501
-        target_namespaces: Optional[str] = Query(None, description='The namespaces of the aliases, separated by commas')  # noqa: E501
+        identifier: str = Query(..., description="The identifier to find aliases for"),  # noqa: E501
+        target_namespaces: Optional[str] = Query(None, description="The namespaces of the aliases, separated by commas")  # noqa: E501
 ) -> TranslateIdentifierService:
     """Return data containing identifier aliases.
 
@@ -168,23 +171,25 @@ def translate_identifier(
         ))
 
 
-g_to_p_summary = 'Given gnomad VCF, return VRSATILE compatible object on ' \
-                 'protein coordinate.'
-g_to_p_response_description = 'A response to a validly-formed query.'
+g_to_p_summary = "Given gnomad VCF, return VRSATILE compatible object on " \
+                 "protein coordinate."
+g_to_p_response_description = "A response to a validly-formed query."
 g_to_p_description = \
-    'Return VRSATILE compatible object on protein coordinate for ' \
-    'variation provided.'
-q_description = 'gnomad VCF to normalize to protein variation.'
+    "Return VRSATILE compatible object on protein coordinate for " \
+    "variation provided."
+q_description = "gnomad VCF to normalize to protein variation."
 
 
-@app.get('/variation/gnomad_vcf_to_protein',
+@app.get("/variation/gnomad_vcf_to_protein",
          summary=g_to_p_summary,
          response_description=g_to_p_response_description,
          description=g_to_p_description,
          response_model=NormalizeService,
          response_model_exclude_none=True
          )
-def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
+def gnomad_vcf_to_protein(
+    q: str = Query(..., description=q_description)
+) -> NormalizeService:
     """Return Value Object Descriptor for variation on protein coordinate.
 
     :param str q: gnomad VCF to normalize to protein variation.
@@ -259,7 +264,7 @@ def vrs_python_translate_from(
                                             "gnomad, hgvs, or spdi."),
     fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr)
 ) -> TranslateFromService:
-    """Given variation query, return VRS Allele object using vrs-python's translator
+    """Given variation query, return VRS Allele object using vrs-python"s translator
         class
 
     :param str variation: Variation to translate to VRS object. Must be represented
@@ -298,7 +303,7 @@ def vrs_python_translate_from(
 
 # @app.post("/variation/translate_to",
 #           summary="Given VRS Allele object as a dict, return variation expressed as "
-#                   "queried format using vrs-python's translator class",
+#                   "queried format using vrs-python"s translator class",
 #           response_description="A response to a validly-formed query.",
 #           description="Return variation in queried format representation. "
 #                       "Request body must contain `allele` and `fmt`. `allele` is a "

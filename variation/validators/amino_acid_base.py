@@ -1,4 +1,6 @@
 """Module for commonly used validator methods for protein references."""
+from typing import List
+
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess
 
@@ -7,7 +9,7 @@ class AminoAcidBase:
     """Amino Acid Base class."""
 
     def __init__(self, seq_repo_access: SeqRepoAccess,
-                 amino_acid_cache: AminoAcidCache):
+                 amino_acid_cache: AminoAcidCache) -> None:
         """Initialize Amino Acid Base class.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -16,13 +18,13 @@ class AminoAcidBase:
         self.seqrepo_access = seq_repo_access
         self.amino_acid_cache = amino_acid_cache
 
-    def check_ref_aa(self, t, aa, pos, errors):
+    def check_ref_aa(self, t: str, aa: str, pos: int, errors: List) -> None:
         """Check that reference amino acid matches actual amino acid.
 
-        :param string t: Transcript
+        :param str t: Transcript
         :param str aa: Expected Amino Acid
-        :param str pos: Expected position
-        :param list errors: List of errors
+        :param int pos: Expected position
+        :param List errors: List of errors
         """
         ref_aa = self.seqrepo_access.get_sequence(t, pos)
         if ref_aa and len(ref_aa) == 1 \

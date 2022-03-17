@@ -1,7 +1,9 @@
 """Module for Classification schema."""
-from pydantic import BaseModel
 from typing import List
 from enum import IntEnum
+
+from pydantic import BaseModel
+
 from variation.schemas.token_response_schema import Token
 
 

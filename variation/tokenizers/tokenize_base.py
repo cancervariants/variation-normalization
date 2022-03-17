@@ -1,7 +1,8 @@
 """Module for commonly used tokenization methods."""
-from typing import Tuple, Optional, Union
-from variation.tokenizers.caches import NucleotideCache, AminoAcidCache
+from typing import Tuple, Optional, Union, List
 import re
+
+from variation.tokenizers.caches import NucleotideCache, AminoAcidCache
 
 
 class TokenizeBase:
@@ -18,11 +19,12 @@ class TokenizeBase:
         self.amino_acid_cache = amino_acid_cache
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
 
-    def get_amino_acid_and_pos(self, part, used_one_letter)\
-            -> Optional[Tuple[str, int, bool]]:
+    def get_amino_acid_and_pos(
+        self, part: List, used_one_letter: bool
+    ) -> Optional[Tuple[str, int, bool]]:
         """Return amino acid and position.
 
-        :param list part: Tokenized input string
+        :param List part: Tokenized input string
         :param bool used_one_letter: `True` if used 1 letter AA code.
             `False` if used 3 letter AA code.
         :return: Three letter AA code, position, and whether or not
@@ -52,11 +54,11 @@ class TokenizeBase:
             return None
         return aa.upper(), pos, used_one_letter
 
-    def get_protein_inserted_sequence(self, parts, used_one_letter)\
-            -> Optional[str]:
+    def get_protein_inserted_sequence(self, parts: List,
+                                      used_one_letter: bool) -> Optional[str]:
         """Return inserted sequence for protein reference sequence.
 
-        :param list parts: Tokenized input string
+        :param List parts: Tokenized input string
         :param bool used_one_letter: `True` if used 1 letter AA code.
             `False` if used 3 letter AA code.
         :return: Inserted sequence
@@ -78,20 +80,20 @@ class TokenizeBase:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
                 if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
-                    if aa != 'ter':
+                    if aa != "ter":
                         return None
                 inserted_sequence += \
                     self.amino_acid_cache.convert_three_to_one(aa)
 
-        if inserted_sequence == '':
+        if inserted_sequence == "":
             return None
         return inserted_sequence
 
-    def get_aa_pos_range(self, parts)\
-            -> Optional[Tuple[str, str, str, int, bool]]:
+    def get_aa_pos_range(self,
+                         parts: List) -> Optional[Tuple[str, str, str, int, bool]]:
         """Get amino acid(s) and positions(s) for protein reference sequence.
 
-        :param list parts: Tokenized input string
+        :param List parts: Tokenized input string
         :return: Beginning AA, End AA,  Beginning position, End position,
             Whether or not one letter code was used
         """
@@ -101,8 +103,8 @@ class TokenizeBase:
         pos_end = None
         used_one_letter = False
 
-        if '_' in parts[0] and parts[0].count('_') == 1:
-            aa_pos_range = parts[0].split('_')
+        if "_" in parts[0] and parts[0].count("_") == 1:
+            aa_pos_range = parts[0].split("_")
             if len(aa_pos_range) != 2 or \
                     not aa_pos_range[0] or not aa_pos_range[1]:
                 return None
@@ -139,13 +141,13 @@ class TokenizeBase:
 
         return aa_start, aa_end, pos_start, pos_end, used_one_letter
 
-    def get_positions_deleted(self, parts) -> Optional[Tuple[str, str]]:
+    def get_positions_deleted(self, parts: List) -> Optional[Tuple[str, str]]:
         """Return position(s) deleted for transcript and genomic references.
 
-        :param list parts: Tokenized input string
+        :param List parts: Tokenized input string
         :return: Start position deleted and end position deleted
         """
-        if '_' in parts[0] and parts[0].count('_') == 1:
+        if "_" in parts[0] and parts[0].count("_") == 1:
             positions = self.get_valid_digits(parts[0])
             if not positions:
                 return None
@@ -159,15 +161,16 @@ class TokenizeBase:
                 return None
         return start_pos_del, end_pos_del
 
-    def get_transcript_genomic_inserted_sequence(self, parts) -> \
-            Optional[Tuple[Union[str, int], Union[str, int]]]:
+    def get_transcript_genomic_inserted_sequence(
+        self, parts: List
+    ) -> Optional[Tuple[Union[str, int], Union[str, int]]]:
         """Return inserted sequence for transcript and genomic references.
 
-        :param list parts: Tokenized input string
+        :param List parts: Tokenized input string
         :return: Start inserted sequence and end inserted sequence
         """
         # Check inserted sequences
-        if '_' in parts[1] and parts[1].count('_') == 1:
+        if "_" in parts[1] and parts[1].count("_") == 1:
             # Replaced by sequence positions
             inserted_sequences = self.get_valid_digits(parts[1])
             if not inserted_sequences:
@@ -181,7 +184,7 @@ class TokenizeBase:
             inserted_sequence2 = None
         return inserted_sequence1, inserted_sequence2
 
-    def get_sequence(self, part) -> Optional[str]:
+    def get_sequence(self, part: str) -> Optional[str]:
         """Return validated sequence for transcript and genomic references.
 
         :param str part: Sequence to validate
@@ -192,13 +195,13 @@ class TokenizeBase:
                 return None
         return part.upper()
 
-    def get_valid_digits(self, part) -> Optional[Tuple[str, str]]:
+    def get_valid_digits(self, part: str) -> Optional[Tuple[str, str]]:
         """Return valid digits after splitting on `_`.
 
         :param str part: Range of digits
         :return: Digits represented as strings
         """
-        digits = part.split('_')
+        digits = part.split("_")
         digit1 = digits[0]
         digit2 = digits[1]
         if not digit1.isdigit() or not digit2.isdigit():

@@ -1,7 +1,8 @@
 """A module for the Coding DNA Substitution Classifier."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class CodingDNASubstitutionClassifier(SetBasedClassifier):
@@ -14,11 +15,11 @@ class CodingDNASubstitutionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['CodingDNASubstitution'],
-            ['GeneSymbol', 'AminoAcidSubstitution', 'CodingDNASubstitution'],
-            ['CodingDNASubstitution', 'GeneSymbol'],
-            ['GeneSymbol', 'CodingDNASubstitution'],
-            ['HGVS', 'CodingDNASubstitution'],
-            ['ReferenceSequence', 'CodingDNASubstitution'],
-            ['LocusReferenceGenomic', 'CodingDNASubstitution']
+            ["CodingDNASubstitution"],
+            ["GeneSymbol", "AminoAcidSubstitution", "CodingDNASubstitution"],
+            ["CodingDNASubstitution", "GeneSymbol"],
+            ["GeneSymbol", "CodingDNASubstitution"],
+            ["HGVS", "CodingDNASubstitution"],
+            ["ReferenceSequence", "CodingDNASubstitution"],
+            ["LocusReferenceGenomic", "CodingDNASubstitution"]
         ]

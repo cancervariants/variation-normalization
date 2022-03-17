@@ -1,7 +1,8 @@
 """Module for Protein Termination classification."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class ProteinTerminationClassifier(SetBasedClassifier):
@@ -14,6 +15,6 @@ class ProteinTerminationClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return list of tokens for protein termination classification."""
         return [
-          ['GeneSymbol', 'ProteinTermination'],
-          ['ProteinTermination']
+            ["GeneSymbol", "ProteinTermination"],
+            ["ProteinTermination"]
         ]

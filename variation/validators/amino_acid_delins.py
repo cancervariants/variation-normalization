@@ -1,26 +1,28 @@
 """The module for Amino Acid DelIns Validation."""
+from typing import List, Optional, Dict
+import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from variation.schemas.token_response_schema import AminoAcidDelInsToken
-from typing import List, Optional, Dict
+from variation.schemas.token_response_schema import Token
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
-from .amino_acid_base import AminoAcidBase
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-import logging
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
+from .amino_acid_base import AminoAcidBase
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -56,14 +58,14 @@ class AminoAcidDelIns(Validator):
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_protein_transcripts(gene_tokens, errors)
@@ -142,7 +144,7 @@ class AminoAcidDelIns(Validator):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -150,41 +152,17 @@ class AminoAcidDelIns(Validator):
         """
         return self.get_protein_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'amino acid delins'
+        return "amino acid delins"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Amino Acid DelIns."""
-        return t.token_type == 'AminoAcidDelIns'
+        return t.token_type == "AminoAcidDelIns"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is
         Amino Acid DelIns.
         """
         return classification_type == ClassificationType.AMINO_ACID_DELINS
-
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        dels = f"{token.start_aa_del}{token.start_pos_del}"
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            dels += f"_{token.end_aa_del}{token.end_pos_del}"
-
-        return f'{transcript}:p.{dels}delins{token.inserted_sequence}'
-
-    def human_description(self, transcript,
-                          token: AminoAcidDelInsToken) -> str:
-        """Return a human description of the identified variation."""
-        position = f"{token.start_aa_del}{token.start_pos_del}"
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            position += f"to {token.end_aa_del}{token.end_pos_del}"
-
-        return f"An Amino Acid DelIns deletion of {position} replaced by " \
-               f"{token.input_string} on transcript {transcript}"

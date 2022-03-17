@@ -1,9 +1,11 @@
 """Module for toVRS endpoint response schema."""
-from pydantic import BaseModel
 from typing import List, Dict, Type, Any, Optional, Union
+
+from pydantic import BaseModel
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Text, Haplotype, \
     AbsoluteCopyNumber, VariationSet
+
 from variation.schemas.normalize_response_schema import ServiceMeta
 
 

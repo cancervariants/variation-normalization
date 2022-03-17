@@ -1,31 +1,32 @@
 """The module for Genomic Substitution Validation."""
 from typing import Optional, List, Dict
+import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import GenomicSubstitutionToken
-import logging
+from variation.schemas.token_response_schema import Token
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class GenomicSubstitution(SingleNucleotideVariationBase):
     """The Genomic Substitution Validator class."""
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_genomic_transcripts(classification, errors)
@@ -100,7 +101,7 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification):
+    def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -108,25 +109,17 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
         """
         return self.get_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic substitution'
+        return "genomic substitution"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is genomic substitution."""
-        return t.token_type == 'GenomicSubstitution'
+        return t.token_type == "GenomicSubstitution"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is genomic
         substitution.
         """
         return classification_type == ClassificationType.GENOMIC_SUBSTITUTION
-
-    def human_description(self, transcript,
-                          token: GenomicSubstitutionToken) -> str:
-        """Return a human description of the identified variation."""
-        return f'A genomic substitution from {token.ref_nucleotide}' \
-               f' to {token.new_nucleotide} at position ' \
-               f'{token.position} on transcript {transcript}'

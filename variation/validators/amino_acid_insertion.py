@@ -1,40 +1,41 @@
 """The module for Amino Acid Insertion Validation."""
+import logging
+from typing import List, Optional, Dict
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
+from variation.schemas.token_response_schema import Token
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from variation.schemas.token_response_schema import AminoAcidInsertionToken
-from typing import List, Optional, Dict
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
-from .amino_acid_base import AminoAcidBase
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-import logging
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
+from .amino_acid_base import AminoAcidBase
 
-logger = logging.getLogger('variation')
+
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class AminoAcidInsertion(Validator):
     """The Amino Acid Insertion Validator class."""
 
-    def __init__(self, seq_repo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS,
-                 amino_acid_cache: AminoAcidCache) \
-            -> None:
+    def __init__(
+        self, seq_repo_access: SeqRepoAccess, transcript_mappings: TranscriptMappings,
+        gene_symbol: GeneSymbol, mane_transcript: MANETranscript, uta: UTA,
+        dp: SeqRepoDataProxy, tlr: Translator, gene_normalizer: GeneQueryHandler,
+        vrs: VRS, amino_acid_cache: AminoAcidCache
+    ) -> None:
         """Initialize the validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -56,14 +57,14 @@ class AminoAcidInsertion(Validator):
         self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_protein_transcripts(gene_tokens, errors)
@@ -143,7 +144,7 @@ class AminoAcidInsertion(Validator):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -151,38 +152,18 @@ class AminoAcidInsertion(Validator):
         """
         return self.get_protein_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'amino acid insertion'
+        return "amino acid insertion"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Amino Acid Insertion."""
-        return t.token_type == 'AminoAcidInsertion'
+        return t.token_type == "AminoAcidInsertion"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+        self, classification_type: ClassificationType
+    ) -> bool:
         """Return whether or not the classification type is
         Amino Acid Insertion.
         """
         return classification_type == ClassificationType.AMINO_ACID_INSERTION
-
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        return f'{transcript}:p.' \
-               f'{token.start_aa_flank}{token.start_pos_flank}_' \
-               f'{token.end_aa_flank}{token.end_pos_flank}' \
-               f'ins{token.inserted_sequence}'
-
-    def human_description(self, transcript,
-                          token: AminoAcidInsertionToken) -> str:
-        """Return a human description of the identified variation."""
-        return f"The insertion of amino acid(s) {token.inserted_sequence} " \
-               f"between amino acids " \
-               f"{token.start_aa_flank}{token.start_pos_flank} and " \
-               f"{token.end_aa_flank}{token.end_pos_flank}"

@@ -1,9 +1,10 @@
 """A module for tokenizing genomic deletion ranges."""
 from typing import Dict, Optional, List
-from .tokenizer import Tokenizer
+from abc import abstractmethod
+
 from variation.schemas.token_response_schema import TokenMatchType, \
     DeletionRange
-from abc import abstractmethod
+from .tokenizer import Tokenizer
 
 
 class DeletionRangeBase(Tokenizer):
@@ -23,30 +24,30 @@ class DeletionRangeBase(Tokenizer):
             return None
 
         self.parts = {
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value,
-            'start_pos1_del': None,
-            'start_pos2_del': None,
-            'end_pos1_del': None,
-            'end_pos2_del': None,
-            'reference_sequence': None
+            "token": input_string,
+            "input_string": input_string,
+            "match_type": TokenMatchType.UNSPECIFIED.value,
+            "start_pos1_del": None,
+            "start_pos2_del": None,
+            "end_pos1_del": None,
+            "end_pos2_del": None,
+            "reference_sequence": None
         }
 
         input_string = str(input_string).lower()
-        if not input_string.endswith('del'):
+        if not input_string.endswith("del"):
             return None
 
-        if input_string.startswith('g.'):
-            self.parts['reference_sequence'] = 'g'
-        elif input_string.startswith('c.'):
-            self.parts['reference_sequence'] = 'c'
-        elif input_string.startswith('p.'):
-            self.parts['reference_sequence'] = 'p'
+        if input_string.startswith("g."):
+            self.parts["reference_sequence"] = "g"
+        elif input_string.startswith("c."):
+            self.parts["reference_sequence"] = "c"
+        elif input_string.startswith("p."):
+            self.parts["reference_sequence"] = "p"
         else:
             return None
 
-        parts = input_string.split('_')
+        parts = input_string.split("_")
         self._get_parts(parts)
         return self.return_token(self.parts)
 

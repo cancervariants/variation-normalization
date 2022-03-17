@@ -1,6 +1,4 @@
 """Module for schemas used throughout the app"""
-
-
 from enum import Enum
 
 

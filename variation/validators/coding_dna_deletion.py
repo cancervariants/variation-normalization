@@ -1,33 +1,34 @@
 """The module for Coding DNA Deletion Validation."""
-from variation.schemas.app_schemas import Endpoint
+import logging
+from typing import List, Optional, Dict
+
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import CodingDNADeletionToken
-from typing import List, Optional, Dict
-from variation.schemas.token_response_schema import GeneMatchToken
-import logging
+from variation.schemas.token_response_schema import GeneMatchToken, Token
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class CodingDNADeletion(DuplicationDeletionBase):
     """The Coding DNA Deletion Validator class."""
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
@@ -114,7 +115,7 @@ class CodingDNADeletion(DuplicationDeletionBase):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -122,32 +123,17 @@ class CodingDNADeletion(DuplicationDeletionBase):
         """
         return self.get_coding_dna_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'coding dna deletion'
+        return "coding dna deletion"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA Deletion."""
-        return t.token_type == 'CodingDNADeletion'
+        return t.token_type == "CodingDNADeletion"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is
         Coding DNA Deletion.
         """
         return classification_type == ClassificationType.CODING_DNA_DELETION
-
-    def human_description(self, transcript,
-                          token: CodingDNADeletionToken) -> str:
-        """Return a human description of the identified variation."""
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            position = f"{token.start_pos_del} to {token.end_pos_del}"
-        else:
-            position = token.start_pos_del
-
-        descr = "A Coding DNA "
-        if token.deleted_sequence:
-            descr += f"{token.deleted_sequence} "
-        descr += f"Deletion from {position} on transcript {transcript}"
-        return descr
