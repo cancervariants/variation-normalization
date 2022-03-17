@@ -12,7 +12,7 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
 
     def return_token(self, params: Dict) -> Optional[CodingDNASilentMutationToken]:
         """Return coding DNA silent mutation token."""
-        if self.sub["reference_sequence"] == "c" and \
+        if self.sub["coordinate_type"] == "c" and \
                 self.sub["ref_nucleotide"] is None and \
                 self.sub["new_nucleotide"] == "=":
             return CodingDNASilentMutationToken(**params)

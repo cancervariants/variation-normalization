@@ -1,8 +1,9 @@
 """A module for testing Silent Mutation tokenization."""
 import unittest
+
+from variation.tokenizers.caches import AminoAcidCache
 from variation.tokenizers import SilentMutation
 from .tokenizer_base import TokenizerBase
-from variation.tokenizers.caches import AminoAcidCache
 
 
 class TestSilentMutationTokenizer(TokenizerBase, unittest.TestCase):
@@ -14,8 +15,8 @@ class TestSilentMutationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Silent Mutation token type."""
-        return 'SilentMutation'
+        return "SilentMutation"
 
     def fixture_name(self):
         """Return the fixture name for Silent Mutation."""
-        return 'silent_mutation'
+        return "silent_mutation"

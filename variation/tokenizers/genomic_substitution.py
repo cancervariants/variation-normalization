@@ -12,7 +12,7 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
 
     def return_token(self, params: Dict) -> Optional[GenomicSubstitutionToken]:
         """Return Genomic Substitution token."""
-        if self.sub["reference_sequence"] == "g" and \
+        if self.sub["coordinate_type"] == "g" and \
                 self.sub["ref_nucleotide"] is not None and \
                 self.sub["new_nucleotide"] != "=":
             return GenomicSubstitutionToken(**params)

@@ -1,5 +1,6 @@
 """Module for testing Coding DNA Silent Mutation Validator."""
 import unittest
+
 from variation.validators import CodingDNASilentMutation
 from variation.classifiers import CodingDNASilentMutationClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestCodingDNASilentMutationValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for coding DNA silent mutation."""
-        return 'coding_dna_silent_mutation'
+        return "coding_dna_silent_mutation"

@@ -76,7 +76,7 @@ class CodingDNADeletion(DuplicationDeletionBase):
 
                     allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence, s.alt_type,
+                        s.coordinate_type, s.alt_type,
                         errors, cds_start=cds_start
                     )
                 else:
@@ -91,13 +91,13 @@ class CodingDNADeletion(DuplicationDeletionBase):
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence,
+                        s.coordinate_type,
                         ref=s.deleted_sequence,
                         try_longest_compatible=True
                     )
 
                     self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
+                        mane, mane_data_found, s.coordinate_type,
                         s.alt_type, s,
                     )
 

@@ -63,5 +63,5 @@ class GenomicDeletionRange(DeletionRangeBase):
             params["end_pos2_del"] is not None
         )
         if all(conditions):
-            if params["reference_sequence"] == "g":
+            if params["coordinate_type"] == "g":
                 return GenomicDeletionRangeToken(**params)

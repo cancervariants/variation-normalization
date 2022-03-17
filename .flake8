@@ -9,12 +9,14 @@ exclude =
   outputs
   docs/*
   variation/version.py
+  build/*
+  codebuild/*
 inline-quotes = "
 import-order-style = pep8
 application-import-names =
   variation
   tests
 per-file-ignores =
-  tests/*:ANN001, ANN2
+  tests/*:ANN001, ANN2, ANN102
   setup.py:F821
   *__init__.py:F401

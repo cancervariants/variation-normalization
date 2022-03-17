@@ -18,7 +18,7 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
 from .validator import Validator
-from .amino_acid_base import AminoAcidBase
+from .protein_base import ProteinBase
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -52,7 +52,7 @@ class PolypeptideSequenceVariationBase(Validator):
             uta, dp, tlr, gene_normalizer, vrs
         )
         self._amino_acid_cache = amino_acid_cache
-        self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
+        self.protein_base = ProteinBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
     def get_transcripts(self, gene_tokens: List, classification: Classification,
@@ -104,23 +104,23 @@ class PolypeptideSequenceVariationBase(Validator):
 
                 t = self.get_accession(t, classification)
                 allele = self.vrs.to_vrs_allele(
-                    t, s.position, s.position, s.reference_sequence,
+                    t, s.position, s.position, s.coordinate_type,
                     s.alt_type, errors, alt=s.alt_protein)
 
                 if not errors:
-                    self.amino_acid_base.check_ref_aa(
+                    self.protein_base.check_ref_aa(
                         t, s.ref_protein, s.position, errors
                     )
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.position, s.position,
-                        s.reference_sequence, ref=s.ref_protein,
+                        s.coordinate_type, ref=s.ref_protein,
                         try_longest_compatible=True
                     )
 
                     self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type,
+                                       s.coordinate_type, s.alt_type,
                                        s, alt=s.alt_protein)
 
                 self.add_validation_result(allele, valid_alleles, results,

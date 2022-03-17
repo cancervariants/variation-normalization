@@ -1,5 +1,6 @@
 """Module for testing Genomic Uncertain Deletion Translator."""
 import unittest
+
 from variation.classifiers import GenomicUncertainDeletionClassifier
 from variation.translators import GenomicUncertainDeletion
 from variation.validators import GenomicUncertainDeletion as GUD_V
@@ -24,4 +25,4 @@ class TestGenomicUncertainDeletionTranslator(TranslatorBase,
 
     def fixture_name(self):
         """Return the fixture name for genomic uncertain deletion."""
-        return 'genomic_uncertain_deletion'
+        return "genomic_uncertain_deletion"

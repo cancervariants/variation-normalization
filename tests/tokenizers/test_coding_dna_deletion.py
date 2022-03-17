@@ -1,8 +1,9 @@
 """A module for testing Coding DNA Deletion Tokenization."""
 import unittest
+
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 from variation.tokenizers import CodingDNADeletion
 from .tokenizer_base import TokenizerBase
-from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestCodingDNADeletionTokenizer(TokenizerBase, unittest.TestCase):
@@ -14,8 +15,8 @@ class TestCodingDNADeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Coding DNA deletion token type."""
-        return 'CodingDNADeletion'
+        return "CodingDNADeletion"
 
     def fixture_name(self):
         """Return the fixture name for Coding DNA Deletion."""
-        return 'coding_dna_deletion'
+        return "coding_dna_deletion"

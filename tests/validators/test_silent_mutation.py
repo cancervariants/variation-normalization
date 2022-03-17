@@ -1,5 +1,6 @@
 """Module for testing Silent Mutation Validator."""
 import unittest
+
 from variation.validators import SilentMutation
 from variation.classifiers import SilentMutationClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestSilentMutationValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for Silent Mutation."""
-        return 'silent_mutation'
+        return "silent_mutation"

@@ -1,6 +1,7 @@
 """Module for testing gnomad_vcf_to_protein works correctly"""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
 from tests.conftest import assertion_checks
 
 
@@ -373,7 +374,7 @@ def cdk11a_e314del(cdk11a_gene_context):
 
 
 @pytest.fixture(scope="module")
-def amino_acid_insertion2(lrp8_gene_context):
+def protein_insertion2(lrp8_gene_context):
     """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
     params = {
         "id": "normalize.variation:1-53327836-A-ACGC",
@@ -459,24 +460,24 @@ def test_silent_mutation(test_query_handler, vhl_silent):
     assert w == []
 
 
-def test_insertion(test_query_handler, amino_acid_insertion,
-                   amino_acid_insertion2):
+def test_insertion(test_query_handler, protein_insertion,
+                   protein_insertion2):
     """Test that insertion queries return correct response"""
     resp, w = test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
-    assertion_checks(resp, amino_acid_insertion, "7-55181319-C-CGGGTTG", ignore_id=True)
+    assertion_checks(resp, protein_insertion, "7-55181319-C-CGGGTTG", ignore_id=True)
     assert w == []
 
     resp, w = test_query_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
-    assertion_checks(resp, amino_acid_insertion2, "1-53327836-A-ACGC")
+    assertion_checks(resp, protein_insertion2, "1-53327836-A-ACGC")
     assert w == []
 
 
-def test_deletion(test_query_handler, amino_acid_deletion_np_range,
+def test_deletion(test_query_handler, protein_deletion_np_range,
                   cdk11a_e314del):
     """Test that deletion queries return correct response"""
     resp, w = test_query_handler.gnomad_vcf_to_protein(
         "17-39723966-TTGAGGGAAAACACAT-T")
-    assertion_checks(resp, amino_acid_deletion_np_range,
+    assertion_checks(resp, protein_deletion_np_range,
                      "17-39723966-TTGAGGGAAAACACAT-T", ignore_id=True)
     assert w == []
 

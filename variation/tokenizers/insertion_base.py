@@ -34,7 +34,7 @@ class InsertionBase(Tokenizer):
             "end_pos_flank": None,
             "inserted_sequence": None,
             "inserted_sequence2": None,
-            "reference_sequence": None
+            "coordinate_type": None
         }
 
         input_string = str(input_string).lower()
@@ -66,7 +66,7 @@ class InsertionBase(Tokenizer):
             return None
 
         # Get reference sequence
-        reference_sequence = parts[0][:1]
+        coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
         positions = self.tokenize_base.get_positions_deleted(parts)
@@ -88,7 +88,7 @@ class InsertionBase(Tokenizer):
         self.parts["end_pos_flank"] = end_pos
         self.parts["inserted_sequence"] = inserted_sequences[0]
         self.parts["inserted_sequence2"] = inserted_sequences[1]
-        self.parts["reference_sequence"] = reference_sequence
+        self.parts["coordinate_type"] = coordinate_type
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]) -> Optional[Token]:

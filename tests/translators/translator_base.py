@@ -1,5 +1,9 @@
 """A module for testing translator classes."""
 import yaml
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
 from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
 from variation.vrs import VRS
@@ -8,9 +12,6 @@ from variation.tokenizers.caches import AminoAcidCache
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTA
 from variation.mane_transcript import MANETranscript
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
 
 
 class TranslatorBase:
@@ -19,7 +20,7 @@ class TranslatorBase:
     @classmethod
     def setUpClass(cls):
         """Set up the test cases."""
-        with open(f'{PROJECT_ROOT}/tests/fixtures/translators.yml') as stream:
+        with open(f"{PROJECT_ROOT}/tests/fixtures/translators.yml") as stream:
             cls.all_fixtures = yaml.safe_load(stream)
         amino_acid_cache = AminoAcidCache()
         gene_normalizer = GeneQueryHandler()
@@ -62,7 +63,7 @@ class TranslatorBase:
         """Initialize fixtures, classifier, validator + translator"""
         self.fixtures = self.all_fixtures.get(
             self.fixture_name(),
-            {'tests': []}
+            {"tests": []}
         )
         self.classifier = self.classifier_instance()
         self.validator = self.validator_instance()
@@ -71,8 +72,8 @@ class TranslatorBase:
     def test_translator(self):
         """Test that translator matches correctly."""
         self.set_up()
-        for x in self.fixtures['tests']:
-            tokens = self.tokenizer.perform(x['query'], [])
+        for x in self.fixtures["tests"]:
+            tokens = self.tokenizer.perform(x["query"], [])
             classification = self.classifier.match(tokens)
             validation_results = self.validator.validate(
                 classification, endpoint_name=Endpoint.TO_VRS
@@ -82,18 +83,18 @@ class TranslatorBase:
             for vr in validation_results:
                 if vr.is_valid:
                     variation = self.translator.translate(vr)
-                    if variation['type'] == 'Allele':
-                        variation['location'] = variation['location']
-                        if 'id' in variation['location'].keys():
-                            del variation['location']['id']
-                    elif variation['type'] == 'AbsoluteCopyNumber':
-                        variation['subject'] = variation['subject']
-                        if 'id' in variation['subject']['location'].keys():
-                            del variation['subject']['location']['id']
+                    if variation["type"] == "Allele":
+                        variation["location"] = variation["location"]
+                        if "id" in variation["location"].keys():
+                            del variation["location"]["id"]
+                    elif variation["type"] == "AbsoluteCopyNumber":
+                        variation["subject"] = variation["subject"]
+                        if "id" in variation["subject"]["location"].keys():
+                            del variation["subject"]["location"]["id"]
 
                     if variation not in found:
                         found.append(variation)
                         num_valid += 1
-                        self.assertIn(variation, x['variations'],
-                                      msg=x['query'])
-            self.assertEqual(len(x['variations']), num_valid, msg=x['query'])
+                        self.assertIn(variation, x["variations"],
+                                      msg=x["query"])
+            self.assertEqual(len(x["variations"]), num_valid, msg=x["query"])

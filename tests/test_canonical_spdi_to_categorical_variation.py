@@ -1,7 +1,7 @@
 """Module for testing canonical_spdi_to_categorical_variation"""
-import pytest
 import copy
 
+import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import CanonicalVariation
 
 

@@ -1,5 +1,6 @@
 """Module for testing Genomic Deletion Classifier."""
 import unittest
+
 from variation.classifiers import GenomicDeletionClassifier
 from .classifier_base import ClassifierBase
 
@@ -13,4 +14,4 @@ class TestGenomicDeletionClassifier(ClassifierBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return GenomicDeletionClassifier fixture name."""
-        return 'genomic_deletion'
+        return "genomic_deletion"

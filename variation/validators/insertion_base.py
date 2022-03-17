@@ -55,7 +55,7 @@ class InsertionBase(Validator):
                 t = self.get_accession(t, classification)
                 allele = None
 
-                if s.reference_sequence == "c":
+                if s.coordinate_type == "c":
                     cds_start_end = self.uta.get_cds_start_end(t)
                     if cds_start_end is not None:
                         cds_start = cds_start_end[0]
@@ -69,7 +69,7 @@ class InsertionBase(Validator):
                 if not errors:
                     allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_flank, s.end_pos_flank,
-                        s.reference_sequence, s.alt_type, errors,
+                        s.coordinate_type, s.alt_type, errors,
                         cds_start=cds_start, alt=s.inserted_sequence
                     )
 
@@ -79,12 +79,12 @@ class InsertionBase(Validator):
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_flank, s.end_pos_flank,
-                        s.reference_sequence,
+                        s.coordinate_type,
                         gene=gene_tokens[0].token if gene_tokens else None,
                         try_longest_compatible=True
                     )
                     self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type, s,
+                                       s.coordinate_type, s.alt_type, s,
                                        alt=s.inserted_sequence)
 
                 self.add_validation_result(
@@ -113,7 +113,7 @@ class InsertionBase(Validator):
         :return: hgvs expression
         """
         if not is_hgvs:
-            prefix = f"{t}:{s.reference_sequence.lower()}."
+            prefix = f"{t}:{s.coordinate_type.lower()}."
             position = f"{s.start_pos_flank}_{s.end_pos_flank}"
             if s.inserted_sequence2 is not None:
                 inserted_sequence = \

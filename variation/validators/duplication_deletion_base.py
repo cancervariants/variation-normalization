@@ -210,18 +210,18 @@ class DuplicationDeletionBase(Validator):
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
         mane = self.mane_transcript.get_mane_transcript(
-            t, start, end, s.reference_sequence, gene=gene,
+            t, start, end, s.coordinate_type, gene=gene,
             try_longest_compatible=True
         )
 
         if mane:
-            s.reference_sequence = "c"
+            s.coordinate_type = "c"
             s.molecule_context = "transcript"
             s.so_id = so_id
 
             allele = self.vrs.to_vrs_allele(
                 mane["refseq"], mane["pos"][0], mane["pos"][1],
-                s.reference_sequence, s.alt_type, errors,
+                s.coordinate_type, s.alt_type, errors,
                 cds_start=mane["coding_start_site"]
             )
 
@@ -321,10 +321,10 @@ class DuplicationDeletionBase(Validator):
 
         if use_vrs_allele_range:
             allele = self.vrs.to_vrs_allele_ranges(
-                t, s.reference_sequence, s.alt_type, errors, ival)
+                t, s.coordinate_type, s.alt_type, errors, ival)
         else:
             allele = self.vrs.to_vrs_allele(
-                t, grch38["pos"][0], grch38["pos"][1], s.reference_sequence,
+                t, grch38["pos"][0], grch38["pos"][1], s.coordinate_type,
                 s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
