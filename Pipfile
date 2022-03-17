@@ -35,7 +35,7 @@ uvicorn = "*"
 pydantic = "*"
 uvloop = "*"
 httptools = "*"
-"ga4gh.vrs" = {version = "==0.7.5.dev1", extras = ["extras"]}
+"ga4gh.vrs" = {version = ">=0.7.5.dev1", extras = ["extras"]}
 gene-normalizer = ">=0.1.23"
 pyliftover = "*"
 boto3 = "*"
