@@ -5,11 +5,14 @@ from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 import python_jsonschema_objects
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import \
+    HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
 from .version import __version__
 from datetime import datetime
-import html
+from urllib.parse import unquote
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
@@ -67,7 +70,7 @@ def to_vrs(q: str = Query(..., description=q_description)):
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
-    translations, warnings = query_handler.to_vrs(html.unescape(q))
+    translations, warnings = query_handler.to_vrs(unquote(q))
 
     return ToVRSService(
         search_term=q,
@@ -111,7 +114,7 @@ def normalize(q: str = Query(..., description=q_description),
     :return: NormalizeService for variation
     """
     normalize_resp = query_handler.normalize(
-        html.unescape(q), hgvs_dup_del_mode=hgvs_dup_del_mode)
+        unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode)
     warnings = query_handler.normalize_handler.warnings if \
         query_handler.normalize_handler.warnings else None
 
@@ -187,7 +190,7 @@ def gnomad_vcf_to_protein(q: str = Query(..., description=q_description)):
     :param str q: gnomad VCF to normalize to protein variation.
     :return: NormalizeService for variation
     """
-    q = html.unescape(q.strip())
+    q = unquote(q.strip())
     resp, warnings = query_handler.gnomad_vcf_to_protein(q)
 
     return NormalizeService(
@@ -225,7 +228,7 @@ def canonical_spdi_to_categorical_variation(
         categorical variation properties.
     :return: CanonicalSPDIToCategoricalVariationService for variation query
     """
-    q = html.unescape(q.strip())
+    q = unquote(q.strip())
     resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
         q, complement=complement)
     return CanonicalSPDIToCategoricalVariationService(
@@ -265,7 +268,7 @@ def vrs_python_translate_from(
         vrs-python will infer its format.
     :return: TranslateFromService containing VRS Allele object
     """
-    variation_query = html.unescape(variation.strip())
+    variation_query = unquote(variation.strip())
     warnings = list()
     vrs_variation = None
     try:
@@ -368,3 +371,70 @@ def vrs_python_translate_from(
 #             version=pkg_resources.get_distribution("ga4gh.vrs").version
 #         )
 #     )
+
+@app.get("/variation/hgvs_to_absolute_copy_number",
+         summary="Given HGVS expression, return absolute copy number variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS object",
+         response_model=HgvsToAbsoluteCopyNumberService,
+         response_model_exclude_none=True)
+def hgvs_to_absolute_copy_number(
+    hgvs_expr: str = Query(..., description="Variation query"),
+    baseline_copies: Optional[int] = Query(
+        None, description="Baseline copies for duplication"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly.")
+) -> HgvsToAbsoluteCopyNumberService:
+    """Given hgvs expression, return absolute copy number variation
+
+    :param str hgvs_expr: HGVS expression
+    :param Optional[int] baseline_copies: Baseline copies number
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :return: HgvsToAbsoluteCopyNumberService
+    """
+    variation, warnings = query_handler.hgvs_to_absolute_copy_number(
+        unquote(hgvs_expr.strip()), baseline_copies, do_liftover)
+
+    return HgvsToAbsoluteCopyNumberService(
+        hgvs_expr=hgvs_expr,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        absolute_copy_number=variation
+    )
+
+
+@app.get("/variation/hgvs_to_relative_copy_number",
+         summary="Given HGVS expression, return relative copy number variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS object",
+         response_model=HgvsToRelativeCopyNumberService,
+         response_model_exclude_none=True)
+def hgvs_to_relative_copy_number(
+    hgvs_expr: str = Query(..., description="Variation query"),
+    relative_copy_class: RelativeCopyClass = Query(
+        ..., description="The relative copy class"),
+    do_liftover: bool = Query(False, description="Whether or not to liftover "
+                              "to GRCh38 assembly.")
+) -> HgvsToRelativeCopyNumberService:
+    """Given hgvs expression, return relative copy number variation
+
+    :param str hgvs_expr: HGVS expression
+    :param RelativeCopyClass relative_copy_class: Relative copy class
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :return: HgvsToRelativeCopyNumberService
+    """
+    variation, warnings = query_handler.hgvs_to_relative_copy_number(
+        unquote(hgvs_expr.strip()), relative_copy_class, do_liftover)
+
+    return HgvsToRelativeCopyNumberService(
+        hgvs_expr=hgvs_expr,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        relative_copy_number=variation
+    )

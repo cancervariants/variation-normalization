@@ -1,7 +1,8 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, CopyNumber
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, AbsoluteCopyNumber, \
+    RelativeCopyNumber
 from pydantic.error_wrappers import ValidationError
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
@@ -57,12 +58,19 @@ class Translator(ABC):
                 variation = None
             else:
                 variation = res.variation
-        elif variation_type == 'CopyNumber':
+        elif variation_type == 'AbsoluteCopyNumber':
             if res.variation['subject']['type'] == "Allele":
                 if not res.variation['subject']['location']:
                     raise Exception("Cannot translate a CNV with no location")
             try:
-                CopyNumber(**res.variation)
+                AbsoluteCopyNumber(**res.variation)
+            except ValidationError:
+                variation = None
+            else:
+                variation = res.variation
+        elif variation_type == "RelativeCopyNumber":
+            try:
+                RelativeCopyNumber(**res.variation)
             except ValidationError:
                 variation = None
             else:

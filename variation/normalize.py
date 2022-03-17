@@ -43,15 +43,17 @@ class Normalize:
         """
         # For now, only use first valid result
         valid_result = None
-        for r in validations.valid_results:
-            if r.is_mane_transcript and r.variation:
-                valid_result = r
-                break
+        if validations and validations.valid_results:
+            for r in validations.valid_results:
+                if r.is_mane_transcript and r.variation:
+                    valid_result = r
+                    break
         if not valid_result:
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
-            valid_result = validations.valid_results[0]
+            if validations and validations.valid_results:
+                valid_result = validations.valid_results[0]
         return valid_result
 
     def normalize(self, q: str, validations: ValidationSummary,
@@ -93,7 +95,7 @@ class Normalize:
         :return: Variation descriptor, warnings
         """
         warning = f"Unable to normalize {label}"
-        text = models.Text(definition=label)
+        text = models.Text(definition=label, type="Text")
         text._id = ga4gh_identify(text)
         resp = VariationDescriptor(
             id=_id,
@@ -132,7 +134,7 @@ class Normalize:
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation['type'] == 'CopyNumber':
+            elif variation['type'] == 'AbsoluteCopyNumber':
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation['subject'], identifier
                 )

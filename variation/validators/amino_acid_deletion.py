@@ -1,9 +1,12 @@
 """The module for Amino Acid Deletion Validation."""
 from variation.schemas.classification_response_schema import \
-    ClassificationType
-from variation.schemas.schemas import Endpoint
+    Classification, ClassificationType
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import AminoAcidDeletionToken
-from typing import List, Optional
+from typing import Dict, List, Optional
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
@@ -66,18 +69,24 @@ class AminoAcidDeletion(Validator):
         return self.get_protein_transcripts(gene_tokens, errors)
 
     def get_valid_invalid_results(
-        self, classification_tokens, transcripts, classification, results, gene_tokens,
-        mane_data_found, is_identifier, hgvs_dup_del_mode, endpoint_name
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
-        :param list classification_tokens: A list of classification Tokens
-        :param list transcripts: A list of transcript accessions
+        :param List classification_tokens: A list of classification Tokens
+        :param List transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param list results: Stores validation result objects
-        :param list gene_tokens: List of GeneMatchTokens for a classification
-        :param dict mane_data_found: MANE Transcript information found
+        :param List results: Stores validation result objects
+        :param List gene_tokens: List of GeneMatchTokens for a classification
+        :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
@@ -85,6 +94,9 @@ class AminoAcidDeletion(Validator):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
         for s in classification_tokens:

@@ -1,7 +1,7 @@
 """A module for testing translator classes."""
 import yaml
 from tests import PROJECT_ROOT
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
 from variation.vrs import VRS
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
@@ -86,7 +86,7 @@ class TranslatorBase:
                         variation['location'] = variation['location']
                         if 'id' in variation['location'].keys():
                             del variation['location']['id']
-                    elif variation['type'] == 'CopyNumber':
+                    elif variation['type'] == 'AbsoluteCopyNumber':
                         variation['subject'] = variation['subject']
                         if 'id' in variation['subject']['location'].keys():
                             del variation['subject']['location']['id']

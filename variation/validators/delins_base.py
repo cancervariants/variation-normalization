@@ -2,7 +2,8 @@
 from typing import List, Dict, Optional
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 import logging
@@ -78,7 +79,10 @@ class DelInsBase(Validator):
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -88,7 +92,6 @@ class DelInsBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -96,6 +99,10 @@ class DelInsBase(Validator):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         raise NotImplementedError
 

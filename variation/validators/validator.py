@@ -4,7 +4,8 @@ from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
 from variation.schemas.validation_response_schema import ValidationResult, \
@@ -139,7 +140,10 @@ class Validator(ABC):
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -157,13 +161,19 @@ class Validator(ABC):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         raise NotImplementedError
 
     def validate(
             self, classification: Classification,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
-            endpoint_name: Optional[Endpoint] = None
+            endpoint_name: Optional[Endpoint] = None,
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None,
+            do_liftover: bool = False
     ) -> List[ValidationResult]:
         """Return validation result for a given classification.
 
@@ -174,6 +184,9 @@ class Validator(ABC):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: List of ValidationResult's containing valid and invalid
             results
         """
@@ -221,7 +234,8 @@ class Validator(ABC):
         self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, mane_data_found,
-            is_identifier, hgvs_dup_del_mode, endpoint_name
+            is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies,
+            relative_copy_class, do_liftover
         )
         return results
 

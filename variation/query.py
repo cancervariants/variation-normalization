@@ -13,7 +13,9 @@ from ga4gh.vrs import models
 
 from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS, \
+    CopyNumberType, RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     ReferenceSequence, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -30,8 +32,8 @@ from variation.mane_transcript import MANETranscript
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
-    Haplotype, VariationSet
+from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
+    Haplotype, VariationSet, RelativeCopyNumber
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
@@ -114,7 +116,7 @@ class QueryHandler:
         )
 
     def to_vrs(self, q: str)\
-            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+            -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
                      Optional[List[str]]]:
@@ -130,7 +132,7 @@ class QueryHandler:
 
         if not translations:
             if q and q.strip():
-                text = models.Text(definition=q)
+                text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
             else:
@@ -497,3 +499,88 @@ class QueryHandler:
         canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
+
+    def _hgvs_to_cnv_resp(
+        self, copy_number_type: CopyNumberType, hgvs_expr: str, do_liftover: bool,
+        validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
+        warnings: List[str]
+    ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
+        """Return copy number variation and warnings response
+
+        :param CopyNumberType copy_number_type: The type of copy number variation
+        :param str hgvs_expr: HGVS expression
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
+            summary and warnings for hgvs_expr
+        :param List[str] warnings: List of warnings
+        :return: CopyNumberVariation and warnings
+        """
+        variation = None
+        if do_liftover:
+            valid_result = self.normalize_handler.get_valid_result(
+                hgvs_expr, validations, [])
+            if valid_result:
+                variation = valid_result.variation
+            else:
+                warnings.append(f"Unable to translate {hgvs_expr} to "
+                                f"copy number variation")
+        else:
+            translations, warnings = \
+                self.to_vrs_handler.get_translations(validations, warnings)
+            if translations:
+                variation = translations[0]
+
+        if not variation:
+            if hgvs_expr and hgvs_expr.strip():
+                text = models.Text(definition=hgvs_expr, type="Text")
+                text._id = ga4gh_identify(text)
+                variation = Text(**text.as_dict())
+        else:
+            if copy_number_type == CopyNumberType.ABSOLUTE:
+                variation = AbsoluteCopyNumber(**variation)
+            else:
+                variation = RelativeCopyNumber(**variation)
+        return variation, warnings
+
+    def hgvs_to_absolute_copy_number(
+        self, hgvs_expr: str, baseline_copies: Optional[int] = None,
+        do_liftover: bool = False
+    ) -> Tuple[Optional[AbsoluteCopyNumber], List[str]]:
+        """Given hgvs, return abolute copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Absolute Copy Number Variation and warnings
+        """
+        validations, warnings = self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
+            hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
+            baseline_copies=baseline_copies, do_liftover=do_liftover
+        )
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.ABSOLUTE, hgvs_expr, do_liftover, validations, warnings)
+
+    def hgvs_to_relative_copy_number(
+        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
+        do_liftover: bool = False
+    ) -> Tuple[Optional[RelativeCopyNumber], List[str]]:
+        """Given hgvs, return relative copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Relative Copy Number Variation and warnings
+        """
+        if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
+            return None, [f"{relative_copy_class} is not a valid relative copy class: "
+                          f"{VALID_RELATIVE_COPY_CLASS}"]
+
+        validations, warnings = self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
+            hgvs_dup_del_mode=CopyNumberType.RELATIVE,
+            relative_copy_class=relative_copy_class, do_liftover=do_liftover
+        )
+
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.RELATIVE, hgvs_expr, do_liftover, validations, warnings)
