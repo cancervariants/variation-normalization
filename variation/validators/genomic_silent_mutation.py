@@ -1,7 +1,8 @@
 """The module for Genomic Silent Mutation Validation."""
 from typing import Optional, List, Dict
 
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
@@ -29,11 +30,14 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         return self.get_genomic_transcripts(classification, errors)
 
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            mane_data_found: Dict, is_identifier: bool,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            endpoint_name: Optional[Endpoint] = None
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -51,6 +55,9 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,

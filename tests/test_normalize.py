@@ -616,9 +616,9 @@ def genomic_uncertain_del_x():
     params = {
         "id": 'normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del',  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+        "variation_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
         "variation": {
-            "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+            "_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
             "subject": {
                 "location": {
                     "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
@@ -646,7 +646,7 @@ def genomic_uncertain_del_x():
                 "max": 1,
                 "type": "DefiniteRange"
             },
-            "type": "CopyNumber"
+            "type": "AbsoluteCopyNumber"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -1136,9 +1136,9 @@ def test_no_matches(test_query_handler):
     ]
     for q in queries:
         resp = test_query_handler.normalize(q)
-        assert resp.type == 'VariationDescriptor'
-        assert resp.variation.type == 'Text'
-        assert resp.label == q.strip()
+        assert resp.type == 'VariationDescriptor', q
+        assert resp.variation.type == 'Text', q
+        assert resp.label == q.strip(), q
 
     resp = test_query_handler.normalize('clinvar:10')
     assert resp.type == 'VariationDescriptor'

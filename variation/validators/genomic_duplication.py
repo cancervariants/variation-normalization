@@ -1,5 +1,6 @@
 """The module for Genomic Duplication Validation."""
-from variation.schemas.schemas import Endpoint
+from variation.schemas.app_schemas import Endpoint
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
@@ -36,11 +37,14 @@ class GenomicDuplication(DuplicationDeletionBase):
         return self.get_genomic_transcripts(classification, errors)
 
     def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            mane_data_found: Dict, is_identifier: bool,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            endpoint_name: Optional[Endpoint] = None
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -58,6 +62,9 @@ class GenomicDuplication(DuplicationDeletionBase):
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -67,15 +74,19 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 result = self._get_variation(
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
-                    gene=gene_tokens[0].token if gene_tokens else None)
+                    gene=gene_tokens[0].token if gene_tokens else None,
+                    baseline_copies=baseline_copies,
+                    relative_copy_class=relative_copy_class)
                 variation = result['variation']
                 start = result['start']
                 end = result['end']
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
+                if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, start, end)
+                        mane_data_found, start, end,
+                        relative_copy_class=relative_copy_class,
+                        baseline_copies=baseline_copies)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,
@@ -85,15 +96,18 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if is_identifier:
                     break
 
-        if endpoint_name == Endpoint.NORMALIZE:
+        if endpoint_name == Endpoint.NORMALIZE or do_liftover:
             self.add_mane_to_validation_results(
                 mane_data_found, valid_alleles, results,
                 classification, gene_tokens
             )
 
-    def _get_variation(self, s: Token, t: str, errors: List, gene_tokens: List,
-                       hgvs_dup_del_mode: HGVSDupDelModeEnum,
-                       gene: str = None) -> Optional[Dict]:
+    def _get_variation(
+        self, s: Token, t: str, errors: List, gene_tokens: List,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum, gene: str = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> Optional[Dict]:
         """Get variation data.
 
         :param Token s: Classification token
@@ -123,7 +137,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     s.alt_type, errors)
                 variation = self.hgvs_dup_del_mode.interpret_variation(
                     t, s.alt_type, allele, errors, hgvs_dup_del_mode,
-                    pos=(start, end))
+                    pos=(start, end), baseline_copies=baseline_copies,
+                    relative_copy_class=relative_copy_class)
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             ival, grch38 = self._get_ival(t, s, gene_tokens, errors)
 
@@ -139,7 +154,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     pos = None
                 variation = self.hgvs_dup_del_mode.interpret_variation(
                     t, s.alt_type, allele, errors,
-                    hgvs_dup_del_mode, pos=pos)
+                    hgvs_dup_del_mode, pos=pos, baseline_copies=baseline_copies,
+                    relative_copy_class=relative_copy_class)
         else:
             errors.append(f"Token type not supported: {s.token_type}")
 
@@ -149,11 +165,12 @@ class GenomicDuplication(DuplicationDeletionBase):
             'variation': variation
         }
 
-    def _get_normalize_variation(self, gene_tokens: List, s: Token, t: str,
-                                 errors: List,
-                                 hgvs_dup_del_mode: HGVSDupDelModeEnum,
-                                 mane_data_found: Dict, start: int,
-                                 end: int) -> None:
+    def _get_normalize_variation(
+        self, gene_tokens: List, s: Token, t: str, errors: List,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict, start: int,
+        end: int, baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> None:
         """Get variation that will be returned in normalize endpoint.
 
         :param List gene_tokens: List of gene tokens
@@ -164,12 +181,16 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript data found for given query
         :param int start: Start pos change
         :param int end: End pos change
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # (#_#)_(#_#)
             ival, grch38 = self._get_ival(t, s, gene_tokens, errors, is_norm=True)
-            self.add_grch38_to_mane_data(t, s, errors, grch38, mane_data_found,
-                                         hgvs_dup_del_mode, ival=ival)
+            self.add_grch38_to_mane_data(
+                t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode, ival=ival,
+                baseline_copies=baseline_copies,
+                relative_copy_class=relative_copy_class)
         else:
             # #dup or #_#dup
             if gene_tokens:
@@ -183,7 +204,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 self.add_normalized_genomic_dup_del(
                     s, t, start, end, gene_tokens[0].token,
                     SequenceOntology.DUPLICATION, errors, hgvs_dup_del_mode,
-                    mane_data_found)
+                    mane_data_found, baseline_copies=baseline_copies,
+                    relative_copy_class=relative_copy_class)
             else:
                 grch38 = self.mane_transcript.g_to_grch38(
                     t, start, end)
@@ -194,7 +216,9 @@ class GenomicDuplication(DuplicationDeletionBase):
                         errors)
                     self.add_grch38_to_mane_data(
                         t, s, errors, grch38, mane_data_found,
-                        hgvs_dup_del_mode, use_vrs_allele_range=False
+                        hgvs_dup_del_mode, use_vrs_allele_range=False,
+                        baseline_copies=baseline_copies,
+                        relative_copy_class=relative_copy_class
                     )
 
     def _get_ival(
@@ -252,7 +276,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors and start and end:
                     ival = models.SequenceInterval(
                         start=self.vrs.get_start_indef_range(start),
-                        end=self.vrs.get_end_indef_range(end)
+                        end=self.vrs.get_end_indef_range(end),
+                        type="SequenceInterval"
                     )
             elif s.start_pos1_dup == '?' and \
                     s.start_pos2_dup != '?' and \
@@ -273,7 +298,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors and start and end:
                     ival = models.SequenceInterval(
                         start=self.vrs.get_start_indef_range(start),
-                        end=models.Number(value=end)
+                        end=models.Number(value=end, type="Number"),
+                        type="SequenceInterval"
                     )
             elif s.start_pos1_dup != '?' and \
                     s.start_pos2_dup is None and \
@@ -294,8 +320,9 @@ class GenomicDuplication(DuplicationDeletionBase):
 
                 if not errors and start and end:
                     ival = models.SequenceInterval(
-                        start=models.Number(value=start),
-                        end=self.vrs.get_end_indef_range(end)
+                        start=models.Number(value=start, type="Number"),
+                        end=self.vrs.get_end_indef_range(end),
+                        type="SequenceInterval"
                     )
             else:
                 errors.append("Not yet supported")
