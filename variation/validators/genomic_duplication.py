@@ -85,7 +85,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end,
-                        relative_copy_class=relative_copy_class)
+                        relative_copy_class=relative_copy_class,
+                        baseline_copies=baseline_copies)
 
                 self.add_validation_result(
                     variation, valid_alleles, results,

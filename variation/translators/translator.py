@@ -1,7 +1,8 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, AbsoluteCopyNumber
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, AbsoluteCopyNumber, \
+    RelativeCopyNumber
 from pydantic.error_wrappers import ValidationError
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
@@ -68,8 +69,12 @@ class Translator(ABC):
             else:
                 variation = res.variation
         elif variation_type == "RelativeCopyNumber":
-            # TODO
-            variation = res.variation
+            try:
+                RelativeCopyNumber(**res.variation)
+            except ValidationError:
+                variation = None
+            else:
+                variation = res.variation
         else:
             raise Exception(f"{variation_type} not supported in "
                             f"Variation Normalization")
