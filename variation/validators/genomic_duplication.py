@@ -182,6 +182,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param int start: Start pos change
         :param int end: End pos change
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[int] baseline_copies: Baseline copies number
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # (#_#)_(#_#)
