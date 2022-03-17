@@ -1,19 +1,9 @@
 """A module for tokenizing."""
 from typing import Iterable, List
-# from .amplification import Amplification
-# from .deletion import Deletion
-# from .exon import Exon
-# from .expression import Expression
-# from .fusion import Fusion
-# from .gain_of_function import GainOfFunction
-# from .gene_pair import GenePair
+
+from variation.schemas.token_response_schema import Token, TokenMatchType
+from variation.tokenizers.caches.amino_acid_cache import AminoAcidCache
 from .gene_symbol import GeneSymbol
-# from .loss_of_function import LossOfFunction
-# from .overexpression import OverExpression
-# from .protein_alternate import ProteinAlternate
-# from .protein_frameshift import ProteinFrameshift
-# from .protein_termination import ProteinTermination
-# from .underexpression import UnderExpression
 from .amino_acid_substitution import AminoAcidSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
@@ -24,7 +14,6 @@ from .genomic_silent_mutation import GenomicSilentMutation
 from .amino_acid_delins import AminoAcidDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
-# from .wild_type import WildType
 from .hgvs import HGVS
 from .reference_sequence import ReferenceSequence
 from .locus_reference_genomic import LocusReferenceGenomic
@@ -38,14 +27,14 @@ from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
 from .gnomad_vcf import GnomadVCF
-from variation.schemas.token_response_schema import Token, TokenMatchType
 from .caches import NucleotideCache
 
 
 class Tokenize:
     """The tokenize class."""
 
-    def __init__(self, amino_acid_cache, gene_symbol: GeneSymbol) -> None:
+    def __init__(self, amino_acid_cache: AminoAcidCache,
+                 gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
         nucleotide_cache = NucleotideCache()
         self.tokenizers = (
@@ -53,18 +42,7 @@ class Tokenize:
             ReferenceSequence(),
             LocusReferenceGenomic(),
             GnomadVCF(),
-            # Amplification(),
-            # Deletion(),
-            # Exon(),
-            # Expression(),
-            # Fusion(),
-            # GainOfFunction(),
-            # GenePair(),
             gene_symbol,
-            # LossOfFunction(),
-            # OverExpression(),
-            # ProteinAlternate(amino_acid_cache),
-            # ProteinFrameshift(amino_acid_cache),
             AminoAcidSubstitution(amino_acid_cache),
             PolypeptideTruncation(amino_acid_cache),
             SilentMutation(amino_acid_cache),
@@ -84,17 +62,13 @@ class Tokenize:
             GenomicUncertainDeletion(),
             GenomicDuplication(),
             GenomicDeletionRange()
-            # ProteinTermination(amino_acid_cache),
-            # UnderExpression(),
-            # WildType(),
         )
 
-    def perform(self, search_string: str, warnings: List[str])\
-            -> Iterable[Token]:
+    def perform(self, search_string: str, warnings: List[str]) -> Iterable[Token]:
         """Return an iterable of tokens for a given search string.
 
         :param str search_string: The input string to search on
-        :param list warnings: List of warnings
+        :param List warnings: List of warnings
         :return: An Iterable of Tokens
         """
         tokens: List[Token] = list()
@@ -105,12 +79,14 @@ class Tokenize:
         self._add_tokens(tokens, terms, search_string, warnings)
         return tokens
 
-    def _add_tokens(self, tokens, terms, search_string, warnings):
+    def _add_tokens(self, tokens: List, terms: List, search_string: str,
+                    warnings: List) -> None:
         """Add tokens to a list for a given search string.
 
-        :param list tokens: A list of tokens
+        :param List tokens: A list of tokens
+        :param List terms: List of terms from query
         :param str search_string: The input string to search on
-        :param list warnings: List of warnings
+        :param List warnings: List of warnings
         """
         for term in terms:
             if not term:
@@ -127,13 +103,13 @@ class Tokenize:
                     else:
                         tokens.append(res)
                         token = list(map(lambda t: t.token_type, tokens))[0]
-                        if token == 'HGVS' or \
-                                token == 'LocusReferenceGenomic' \
-                                or token == 'ReferenceSequence':
+                        if token == "HGVS" or \
+                                token == "LocusReferenceGenomic" \
+                                or token == "ReferenceSequence":
                             # Give specific type of HGVS (i.e. protein sub)
                             if len(tokens) == 1:
                                 self._add_tokens(tokens,
-                                                 [search_string.split(':')[1]],
+                                                 [search_string.split(":")[1]],
                                                  search_string, warnings)
                         matched = True
                         break
@@ -142,8 +118,8 @@ class Tokenize:
             if not matched:
                 warnings.append(f"Unable to tokenize {term}")
                 tokens.append(Token(
-                    token='',
-                    token_type='Unknown',
+                    token="",
+                    token_type="Unknown",
                     input_string=term,
                     match_type=TokenMatchType.UNSPECIFIED
                 ))

@@ -1,7 +1,8 @@
 """A module for the Genomic Substitution Classifier."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class GenomicSubstitutionClassifier(SetBasedClassifier):
@@ -14,10 +15,10 @@ class GenomicSubstitutionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['Chromosome', 'GenomicSubstitution'],
-            ['GeneSymbol', 'AminoAcidSubstitution', 'GenomicSubstitution'],
-            ['GenomicSubstitution', 'GeneSymbol'],
-            ['GeneSymbol', 'GenomicSubstitution'],
-            ['HGVS', 'GenomicSubstitution'],
-            ['ReferenceSequence', 'GenomicSubstitution']
+            ["Chromosome", "GenomicSubstitution"],
+            ["GeneSymbol", "AminoAcidSubstitution", "GenomicSubstitution"],
+            ["GenomicSubstitution", "GeneSymbol"],
+            ["GeneSymbol", "GenomicSubstitution"],
+            ["HGVS", "GenomicSubstitution"],
+            ["ReferenceSequence", "GenomicSubstitution"]
         ]

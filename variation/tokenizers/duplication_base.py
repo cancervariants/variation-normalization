@@ -1,9 +1,10 @@
 """A module for Duplication Tokenization Base Class."""
 from abc import abstractmethod
-from typing import Optional
-from .tokenizer import Tokenizer
+from typing import Optional, List
+
 from variation.schemas.token_response_schema import Duplication, \
-    TokenMatchType, DuplicationAltType
+    TokenMatchType, DuplicationAltType, Token
+from .tokenizer import Tokenizer
 
 
 class DuplicationBase(Tokenizer):
@@ -19,19 +20,19 @@ class DuplicationBase(Tokenizer):
             return None
 
         self.parts = {
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value,
-            'start_pos1_dup': None,
-            'start_pos2_dup': None,
-            'end_pos1_dup': None,
-            'end_pos2_dup': None,
-            'reference_sequence': None,
-            'alt_type': DuplicationAltType.DUPLICATION
+            "token": input_string,
+            "input_string": input_string,
+            "match_type": TokenMatchType.UNSPECIFIED.value,
+            "start_pos1_dup": None,
+            "start_pos2_dup": None,
+            "end_pos1_dup": None,
+            "end_pos2_dup": None,
+            "reference_sequence": None,
+            "alt_type": DuplicationAltType.DUPLICATION
         }
 
         input_string = str(input_string).lower()
-        if not input_string.endswith('dup'):
+        if not input_string.endswith("dup"):
             return None
 
         parts = [input_string[:-3]]
@@ -39,13 +40,14 @@ class DuplicationBase(Tokenizer):
         return self.return_token()
 
     @abstractmethod
-    def _get_parts(self, parts):
-        """Get parts for DelIns.
-        :param list parts: Parts of input string
+    def _get_parts(self, parts: List) -> None:
+        """Get parts for DelIns
+
+        :param List parts: Parts of input string
         """
         raise NotImplementedError
 
     @abstractmethod
-    def return_token(self):
+    def return_token(self) -> Optional[Token]:
         """Return token instance."""
         raise NotImplementedError

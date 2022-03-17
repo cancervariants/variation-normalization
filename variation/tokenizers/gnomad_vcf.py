@@ -1,11 +1,12 @@
 """A module for gnomad VCF tokenization"""
 from typing import Optional, List, Dict
 import re
-from .tokenizer import Tokenizer
+
 from variation.schemas.token_response_schema import TokenMatchType, \
     Token, ChromosomeToken, GenomicSubstitutionToken, \
     GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken, \
     Nomenclature
+from .tokenizer import Tokenizer
 
 
 class GnomadVCF(Tokenizer):

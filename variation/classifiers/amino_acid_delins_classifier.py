@@ -1,7 +1,8 @@
 """A module for the AminoAcid DelIns Classifier."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class AminoAcidDelInsClassifier(SetBasedClassifier):
@@ -14,11 +15,11 @@ class AminoAcidDelInsClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['AminoAcidDelIns'],
-            ['GeneSymbol', 'AminoAcidSubstitution', 'AminoAcidDelIns'],
-            ['AminoAcidDelIns', 'GeneSymbol'],
-            ['GeneSymbol', 'AminoAcidDelIns'],
-            ['HGVS', 'AminoAcidDelIns'],
-            ['ReferenceSequence', 'AminoAcidDelIns'],
-            ['LocusReferenceGenomic', 'AminoAcidDelIns']
+            ["AminoAcidDelIns"],
+            ["GeneSymbol", "AminoAcidSubstitution", "AminoAcidDelIns"],
+            ["AminoAcidDelIns", "GeneSymbol"],
+            ["GeneSymbol", "AminoAcidDelIns"],
+            ["HGVS", "AminoAcidDelIns"],
+            ["ReferenceSequence", "AminoAcidDelIns"],
+            ["LocusReferenceGenomic", "AminoAcidDelIns"]
         ]

@@ -1,6 +1,15 @@
 """Module for Validation."""
-from variation.schemas.app_schemas import Endpoint
+from typing import List, Optional
+
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs import VRS
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
@@ -26,13 +35,6 @@ from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from typing import List, Optional
-from gene.query import QueryHandler as GeneQueryHandler
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs import VRS
 
 
 class Validate:

@@ -1,7 +1,7 @@
 """Module for Amino Acid DelIns Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import AminoAcidDelInsToken
+from variation.schemas.token_response_schema import AminoAcidDelInsToken, Token
 
 
 class AminoAcidDelIns(Translator):
@@ -11,6 +11,6 @@ class AminoAcidDelIns(Translator):
         """Return if classification type is Amino Acid DelIns."""
         return type == ClassificationType.AMINO_ACID_DELINS
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Amino Acid DelIns token instance."""
         return isinstance(token, AminoAcidDelInsToken)

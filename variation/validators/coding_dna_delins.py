@@ -1,32 +1,34 @@
 """The module for Coding DNA DelIns Validation."""
-from variation.schemas.app_schemas import Endpoint
+from typing import List, Optional, Dict
+import logging
+
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import CodingDNADelInsToken
-from typing import List, Optional, Dict
+from variation.schemas.token_response_schema import Token
 from variation.schemas.token_response_schema import GeneMatchToken
-import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class CodingDNADelIns(DelInsBase):
     """The Coding DNA DelIns Validator class."""
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    def get_transcripts(self, gene_tokens: List, classification: Classification,
+                        errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
@@ -108,7 +110,7 @@ class CodingDNADelIns(DelInsBase):
                 classification, gene_tokens
             )
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -116,36 +118,17 @@ class CodingDNADelIns(DelInsBase):
         """
         return self.get_coding_dna_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'coding dna delins'
+        return "coding dna delins"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA DelIns."""
-        return t.token_type == 'CodingDNADelIns'
+        return t.token_type == "CodingDNADelIns"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+            self, classification_type: ClassificationType) -> bool:
         """Return whether or not the classification type is
         Coding DNA DelIns.
         """
         return classification_type == ClassificationType.CODING_DNA_DELINS
-
-    def human_description(self, transcript,
-                          token: CodingDNADelInsToken) -> str:
-        """Return a human description of the identified variation."""
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            position = f"{token.start_pos_del} to {token.end_pos_del}"
-        else:
-            position = token.start_pos_del
-
-        if token.inserted_sequence1 is not None and \
-                token.inserted_sequence2 is not None:
-            sequence = f"{token.inserted_sequence1} to " \
-                       f"{token.inserted_sequence2}"
-        else:
-            sequence = token.inserted_sequence1
-
-        return f"A Coding DNA DelIns deletion of {position} replaced by " \
-               f"{sequence} on transcript {transcript}"

@@ -1,17 +1,18 @@
 """The module for Single Nucleotide Variation Validation."""
 from typing import List, Dict, Optional
+import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 
 from variation.schemas.app_schemas import Endpoint
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from .validator import Validator
-import logging
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from .validator import Validator
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -30,15 +31,6 @@ class SingleNucleotideVariationBase(Validator):
         """Return the variation name.
 
         :return: variation class name
-        """
-        raise NotImplementedError
-
-    def human_description(self, transcript: str, token: Token) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: Human description of the variation change
         """
         raise NotImplementedError
 
@@ -133,7 +125,7 @@ class SingleNucleotideVariationBase(Validator):
 
                 t = self.get_accession(t, classification)
                 allele = None
-                if s.reference_sequence == 'c':
+                if s.reference_sequence == "c":
                     cds_start_end = self.uta.get_cds_start_end(t)
 
                     if not cds_start_end:
@@ -157,13 +149,13 @@ class SingleNucleotideVariationBase(Validator):
                     sequence = \
                         self.seqrepo_access.get_sequence(t, s.position)
                     if sequence is None:
-                        errors.append('Sequence index error')
+                        errors.append("Sequence index error")
                     else:
                         if s.ref_nucleotide:
                             if sequence != s.ref_nucleotide:
                                 errors.append(
-                                    f'Expected {s.reference_sequence} but '
-                                    f'found {sequence}')
+                                    f"Expected {s.reference_sequence} but "
+                                    f"found {sequence}")
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = self.mane_transcript.get_mane_transcript(
@@ -189,24 +181,10 @@ class SingleNucleotideVariationBase(Validator):
                 classification, gene_tokens
             )
 
-    def check_ref_nucleotide(self, actual_ref_nuc, expected_ref_nuc,
-                             position, t, errors):
+    def check_ref_nucleotide(self, actual_ref_nuc: str, expected_ref_nuc: str,
+                             position: int, t: str, errors: List) -> None:
         """Assert that ref_nuc matches s.ref_nucleotide."""
         if actual_ref_nuc != expected_ref_nuc:
-            errors.append(f'Needed to find {expected_ref_nuc} at'
-                          f' position {position} on {t}'
-                          f' but found {actual_ref_nuc}')
-
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        prefix = f'{transcript}:{token.reference_sequence}.{token.position}'
-        if token.new_nucleotide == '=':
-            change = "="
-        else:
-            change = f"{token.ref_nucleotide}>{token.new_nucleotide}"
-        return prefix + change
+            errors.append(f"Needed to find {expected_ref_nuc} at"
+                          f" position {position} on {t}"
+                          f" but found {actual_ref_nuc}")

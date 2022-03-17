@@ -1,21 +1,22 @@
 """The module for Genomic Uncertain Deletion Validation."""
-from variation.schemas.app_schemas import Endpoint
+from typing import List, Optional, Dict, Tuple
+import logging
+
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import \
-    GenomicUncertainDeletionToken, Token
-from typing import List, Optional, Dict, Tuple
+from variation.schemas.token_response_schema import Token
 from variation.schemas.token_response_schema import GeneMatchToken
-import logging
-from ga4gh.vrs import models
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -75,7 +76,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
                     relative_copy_class=relative_copy_class,
                     baseline_copies=baseline_copies)
-                variation = result['variation']
+                variation = result["variation"]
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
                     self._get_normalize_variation(
@@ -118,7 +119,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
         if not errors:
             if grch38:
-                t = grch38['ac']
+                t = grch38["ac"]
 
             allele = self.vrs.to_vrs_allele_ranges(
                 t, s.reference_sequence, s.alt_type, errors, ival)
@@ -132,9 +133,9 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 baseline_copies=baseline_copies)
 
         return {
-            'start': start,
-            'end': end,
-            'variation': variation
+            "start": start,
+            "end": end,
+            "variation": variation
         }
 
     def _get_normalize_variation(
@@ -150,7 +151,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param str t: Accession
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
-        :param dict mane_data_found: MANE Transcript data found for given query
+        :param Dict mane_data_found: MANE Transcript data found for given query
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param Optional[int] baseline_copies: Baseline copies number
         """
@@ -179,7 +180,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         ival = None
         grch38 = None
         gene = gene_tokens[0].token if gene_tokens else None
-        if s.start_pos1_del == '?' and s.end_pos2_del == '?':
+        if s.start_pos1_del == "?" and s.end_pos2_del == "?":
             # format: (?_#)_(#_?)
             if is_norm:
                 t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
@@ -198,9 +199,9 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                     end=self.vrs.get_end_indef_range(end),
                     type="SequenceInterval"
                 )
-        elif s.start_pos1_del == '?' and \
-                s.start_pos2_del != '?' and \
-                s.end_pos1_del != '?' and \
+        elif s.start_pos1_del == "?" and \
+                s.start_pos2_del != "?" and \
+                s.end_pos1_del != "?" and \
                 s.end_pos2_del is None:
             # format: (?_#)_#
             if is_norm:
@@ -221,10 +222,10 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                     end=models.Number(value=end, type="Number"),
                     type="SequenceInterval"
                 )
-        elif s.start_pos1_del != '?' and \
+        elif s.start_pos1_del != "?" and \
                 s.start_pos2_del is None and \
-                s.end_pos1_del != '?' and \
-                s.end_pos2_del == '?':
+                s.end_pos1_del != "?" and \
+                s.end_pos2_del == "?":
             # format: #_(#_?)
             if is_norm:
                 t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
@@ -260,14 +261,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic uncertain deletion'
+        return "genomic uncertain deletion"
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic Uncertain Deletion.
 
         :param Token t: Classification token
         """
-        return t.token_type == 'GenomicUncertainDeletion'
+        return t.token_type == "GenomicUncertainDeletion"
 
     def validates_classification_type(
             self,
@@ -280,25 +281,3 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         """
         return classification_type == \
             ClassificationType.GENOMIC_UNCERTAIN_DELETION
-
-    def human_description(self, transcript: str,
-                          token: GenomicUncertainDeletionToken) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Accession
-        :param GenomicUncertainDeletionToken token: Classification token
-        """
-        descr = f"A Genomic Uncertain Deletion from" \
-                f" (?_{token.start_pos2_del}) to {token.end_pos1_del}_? " \
-                f"on {transcript}"
-        return descr
-
-    def concise_description(self, transcript: str,
-                            token: GenomicUncertainDeletionToken) -> str:
-        """Return a concise description of the identified variation.
-
-        :param str transcript: Accession
-        :param GenomicUncertainDeletionToken token: Classification token
-        """
-        return f"{transcript}:g.(?_{token.start_pos2_del})_" \
-               f"({token.end_pos1_del}_?)"

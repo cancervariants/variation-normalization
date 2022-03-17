@@ -1,9 +1,10 @@
 """Module for the set based classifier."""
 from typing import List, Optional, Set
-from .classifier import Classifier
+
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType, ConfidenceRating
 from variation.schemas.token_response_schema import Token
+from .classifier import Classifier
 
 
 class SetBasedClassifier(Classifier):
@@ -12,7 +13,7 @@ class SetBasedClassifier(Classifier):
     def match(self, tokens: List[Token]) -> Optional[Classification]:
         """Return a classification match for a list of tokens.
 
-        :param list[Token] tokens: List of tokens to determine classification
+        :param List[Token] tokens: List of tokens to determine classification
             match type
         :return: A classification for a list of tokens
         """

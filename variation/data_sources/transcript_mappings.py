@@ -1,6 +1,7 @@
 """The module for Transcript Mappings."""
 import csv
 from typing import Dict, List, Optional
+
 from variation.schemas.validation_response_schema import LookupType
 from variation import TRANSCRIPT_MAPPINGS_PATH, REFSEQ_GENE_SYMBOL_PATH
 
@@ -8,8 +9,8 @@ from variation import TRANSCRIPT_MAPPINGS_PATH, REFSEQ_GENE_SYMBOL_PATH
 class TranscriptMappings:
     """The transcript mappings class."""
 
-    def __init__(self, transcript_file_path=TRANSCRIPT_MAPPINGS_PATH,
-                 refseq_file_path=REFSEQ_GENE_SYMBOL_PATH) -> None:
+    def __init__(self, transcript_file_path: str = TRANSCRIPT_MAPPINGS_PATH,
+                 refseq_file_path: str = REFSEQ_GENE_SYMBOL_PATH) -> None:
         """Initialize the transcript mappings class."""
         # ENSP <-> Gene Symbol
         self.ensembl_protein_version_for_gene_symbol: Dict[str, List[str]] = {}
@@ -47,22 +48,22 @@ class TranscriptMappings:
         self._load_transcript_mappings_data(transcript_file_path)
         self._load_refseq_gene_symbol_data(refseq_file_path)
 
-    def _load_transcript_mappings_data(self, transcript_file_path):
+    def _load_transcript_mappings_data(self, transcript_file_path: str) -> None:
         """Load transcript mappings file to dictionaries."""
         with open(transcript_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
-                gene = row['Gene name']
+                gene = row["Gene name"]
                 if gene:
                     versioned_protein_transcript = \
-                        row['Protein stable ID version']
+                        row["Protein stable ID version"]
                     if versioned_protein_transcript:
                         self.ensembl_protein_version_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(versioned_protein_transcript)
                         self.ensembl_protein_version_to_gene_symbol[
                             versioned_protein_transcript] = gene
-                    protein_transcript = row['Protein stable ID']
+                    protein_transcript = row["Protein stable ID"]
                     if protein_transcript:
                         self.ensembl_protein_for_gene_symbol \
                             .setdefault(gene, []) \
@@ -70,14 +71,14 @@ class TranscriptMappings:
                         self.ensembl_protein_to_gene_symbol[
                             protein_transcript] = gene
                     versioned_transcript = \
-                        row['Transcript stable ID version']
+                        row["Transcript stable ID version"]
                     if versioned_transcript:
                         self.ensembl_transcript_version_for_gene_symbol \
                             .setdefault(gene, []) \
                             .append(versioned_transcript)
                         self.ensembl_transcript_version_to_gene_symbol[
                             versioned_transcript] = gene
-                    transcript = row['Transcript stable ID']
+                    transcript = row["Transcript stable ID"]
                     if transcript:
                         self.ensembl_transcript_for_gene_symbol\
                             .setdefault(gene, []) \
@@ -88,29 +89,29 @@ class TranscriptMappings:
                         self.ensp_to_enst[versioned_protein_transcript] = \
                             versioned_transcript
 
-    def _load_refseq_gene_symbol_data(self, refseq_file_path):
+    def _load_refseq_gene_symbol_data(self, refseq_file_path: str) -> None:
         """Load data from RefSeq Gene Symbol file to dictionaries."""
         with open(refseq_file_path) as file:
             reader = csv.DictReader(file, delimiter="\t")
             for row in reader:
-                gene = row['Symbol']
+                gene = row["Symbol"]
                 if gene:
-                    refseq_transcript = row['Protein']
+                    refseq_transcript = row["Protein"]
                     if refseq_transcript:
                         self.refseq_protein_for_gene_symbol.\
                             setdefault(gene, []).\
                             append(refseq_transcript)
                         self.refseq_protein_to_gene_symbol[
                             refseq_transcript] = gene
-                    rna_transcript = row['RNA']
+                    rna_transcript = row["RNA"]
                     if rna_transcript:
                         self.refseq_rna_version_for_gene_symbol.\
                             setdefault(gene, []).\
                             append(rna_transcript)
                         self.refseq_rna_version_to_gene_symbol[
                             rna_transcript] = gene
-                        if '.' in rna_transcript:
-                            rna_t = rna_transcript.split('.')[0]
+                        if "." in rna_transcript:
+                            rna_t = rna_transcript.split(".")[0]
                             self.refseq_rna_for_gene_symbol.\
                                 setdefault(gene, []).\
                                 append(rna_t)
@@ -118,14 +119,14 @@ class TranscriptMappings:
                                 rna_t] = gene
                     if refseq_transcript and rna_transcript:
                         self.np_to_nm[refseq_transcript] = rna_transcript
-                    lrg = row['LRG']
+                    lrg = row["LRG"]
                     if lrg:
                         self.refseq_lrg_for_gene_symbol.\
                             setdefault(gene, []).\
                             append(lrg)
                         self.refseq_lrg_to_gene_symbol[lrg] = gene
-                        t = row['t']
-                        p = row['p']
+                        t = row["t"]
+                        p = row["p"]
                         if t:
                             t_lrg = lrg + t
                             self.refseq_lrg_for_gene_symbol. \
@@ -146,11 +147,11 @@ class TranscriptMappings:
         if lookup_type == LookupType.GENE_SYMBOL:
             protein_transcripts += \
                 self.ensembl_protein_version_for_gene_symbol.get(
-                    identifier, '')
+                    identifier, "")
             protein_transcripts += \
-                self.ensembl_protein_for_gene_symbol.get(identifier, '')
+                self.ensembl_protein_for_gene_symbol.get(identifier, "")
             protein_transcripts += \
-                self.refseq_protein_for_gene_symbol.get(identifier, '')
+                self.refseq_protein_for_gene_symbol.get(identifier, "")
             return list(set(protein_transcripts))
         else:
             return []
@@ -162,25 +163,25 @@ class TranscriptMappings:
         if lookup_type == LookupType.GENE_SYMBOL:
             genomic_transcripts += \
                 self.ensembl_transcript_version_for_gene_symbol.get(identifier,
-                                                                    '')
+                                                                    "")
             genomic_transcripts += \
-                self.refseq_rna_version_for_gene_symbol.get(identifier, '')
+                self.refseq_rna_version_for_gene_symbol.get(identifier, "")
             genomic_transcripts += \
-                self.refseq_rna_version_for_gene_symbol.get(identifier, '')
+                self.refseq_rna_version_for_gene_symbol.get(identifier, "")
             return list(set(genomic_transcripts))
         else:
             return []
 
-    def get_gene_symbol_from_ensembl_protein(self, q: str):
+    def get_gene_symbol_from_ensembl_protein(self, q: str) -> Optional[str]:
         """Return the gene symbol for a Ensembl Protein."""
         gene_symbol = self.ensembl_protein_version_to_gene_symbol.get(q)
         if not gene_symbol:
-            if '.' in q:
-                q = q.split('.')[0]
+            if "." in q:
+                q = q.split(".")[0]
                 gene_symbol = self.ensembl_protein_to_gene_symbol.get(q)
         return gene_symbol
 
-    def get_gene_symbol_from_refeq_protein(self, q: str):
+    def get_gene_symbol_from_refeq_protein(self, q: str) -> Optional[str]:
         """Return the gene symbol for a Refseq Protein."""
         return self.refseq_protein_to_gene_symbol.get(q)
 
@@ -188,20 +189,20 @@ class TranscriptMappings:
         """Return gene symbol for a Refseq RNA Transcript."""
         gene_symbol = self.refseq_rna_version_to_gene_symbol.get(q)
         if not gene_symbol:
-            if '.' in q:
-                q = q.split('.')[0]
+            if "." in q:
+                q = q.split(".")[0]
                 gene_symbol = self.refseq_rna_to_gene_symbol.get(q)
         return gene_symbol
 
-    def get_gene_symbol_from_ensembl_transcript(self, q: str):
+    def get_gene_symbol_from_ensembl_transcript(self, q: str) -> Optional[str]:
         """Return gene symbol for an Ensembl Transcript."""
         gene_symbol = self.ensembl_transcript_version_to_gene_symbol.get(q)
         if not gene_symbol:
-            if '.' in q:
-                q = q.split('.')[0]
+            if "." in q:
+                q = q.split(".")[0]
                 gene_symbol = self.ensembl_transcript_to_gene_symbol.get(q)
         return gene_symbol
 
-    def get_gene_symbol_from_lrg(self, q: str):
+    def get_gene_symbol_from_lrg(self, q: str) -> Optional[str]:
         """Return gene symbol for LRG."""
         return self.refseq_lrg_to_gene_symbol.get(q)

@@ -1,7 +1,7 @@
 """Module for Amino Acid Insertion Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import AminoAcidInsertionToken
+from variation.schemas.token_response_schema import AminoAcidInsertionToken, Token
 
 
 class AminoAcidInsertion(Translator):
@@ -11,6 +11,6 @@ class AminoAcidInsertion(Translator):
         """Return if classification type is Amino Acid Insertion."""
         return type == ClassificationType.AMINO_ACID_INSERTION
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Amino Acid Insertion token instance."""
         return isinstance(token, AminoAcidInsertionToken)

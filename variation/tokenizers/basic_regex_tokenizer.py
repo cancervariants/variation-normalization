@@ -1,8 +1,9 @@
 """Module for basic regex tokenizer."""
 import re
 from typing import Pattern, Optional
-from .tokenizer import Tokenizer
+
 from variation.schemas.token_response_schema import Token, TokenMatchType
+from .tokenizer import Tokenizer
 
 
 class BasicRegexTokenizer(Tokenizer):

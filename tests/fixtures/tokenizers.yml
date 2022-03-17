@@ -1,14 +1,3 @@
-fusion:
-  should_match:
-    - token: Fusion
-    - token: fusions
-    - token: FUSION
-    - token: fuSions
-  should_not_match:
-    - token: afusion
-    - token: fused
-    - token: fusio
-
 gene_pair:
   should_match:
     - token: flt3-braf

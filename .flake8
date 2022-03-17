@@ -1,5 +1,5 @@
 [flake8]
-ignore = D205, D400
+ignore = D205, D400, I101, ANN101, ANN002, ANN003
 max-line-length = 88
 exclude =
   .git
@@ -9,3 +9,12 @@ exclude =
   outputs
   docs/*
   variation/version.py
+inline-quotes = "
+import-order-style = pep8
+application-import-names =
+  variation
+  tests
+per-file-ignores =
+  tests/*:ANN001, ANN2
+  setup.py:F821
+  *__init__.py:F401
