@@ -41,7 +41,7 @@ class DelInsBase(Tokenizer):
             "end_pos_del": None,
             "inserted_sequence1": None,
             "inserted_sequence2": None,
-            "reference_sequence": None
+            "coordinate_type": None
         }
 
         parts = input_string.split("delins")
@@ -60,7 +60,7 @@ class DelInsBase(Tokenizer):
             "end_pos_del": self.parts["end_pos_del"],
             "inserted_sequence1": self.parts["inserted_sequence1"],
             "inserted_sequence2": self.parts["inserted_sequence2"],
-            "reference_sequence": self.parts["reference_sequence"]
+            "coordinate_type": self.parts["coordinate_type"]
         }
         return self.return_token(params)
 
@@ -76,7 +76,7 @@ class DelInsBase(Tokenizer):
             return
 
         # Get reference sequence
-        reference_sequence = parts[0][:1]
+        coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
         positions_deleted = self.tokenize_base.get_positions_deleted(parts)
@@ -100,7 +100,7 @@ class DelInsBase(Tokenizer):
             "end_pos_del": end_pos_del,
             "inserted_sequence1": inserted_sequence1,
             "inserted_sequence2": inserted_sequence2,
-            "reference_sequence": reference_sequence
+            "coordinate_type": coordinate_type
         }
 
     @abstractmethod

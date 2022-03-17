@@ -26,7 +26,7 @@ class GenomicDuplication(DuplicationBase):
                     if pos[0] < pos[1]:
                         self.parts["start_pos1_dup"] = pos[0]
                         self.parts["start_pos2_dup"] = pos[1]
-                        self.parts["reference_sequence"] = "g"
+                        self.parts["coordinate_type"] = "g"
             else:
                 self.parts["alt_type"] = DuplicationAltType.DUPLICATION_RANGE
                 parts = parts[0].split("_")
@@ -43,7 +43,7 @@ class GenomicDuplication(DuplicationBase):
                             return None
                         else:
                             self.parts[parts_field] = part_val
-                    self.parts["reference_sequence"] = "g"
+                    self.parts["coordinate_type"] = "g"
 
                 elif len_parts == 3:
                     if "(" in parts[0] and ")" in parts[1]:
@@ -72,7 +72,7 @@ class GenomicDuplication(DuplicationBase):
                                 return None
                             else:
                                 self.parts[parts_field] = part_val
-                    self.parts["reference_sequence"] = "g"
+                    self.parts["coordinate_type"] = "g"
         else:
             try:
                 pos = int(parts[0])
@@ -80,7 +80,7 @@ class GenomicDuplication(DuplicationBase):
                 pass
             else:
                 self.parts["start_pos1_dup"] = pos
-                self.parts["reference_sequence"] = "g"
+                self.parts["coordinate_type"] = "g"
         return None
 
     def _check_uncertain_or_int(self, part: str) -> Optional[Union[int, str]]:
@@ -99,7 +99,7 @@ class GenomicDuplication(DuplicationBase):
                                              GenomicDuplicationToken]]:
         """Return token instance if a match is found."""
         # we only set this field if it"s valid
-        if self.parts["reference_sequence"] == "g":
+        if self.parts["coordinate_type"] == "g":
             if self.parts["end_pos1_dup"] is None and \
                     self.parts["end_pos2_dup"] is None:
 

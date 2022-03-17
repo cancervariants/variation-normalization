@@ -1,5 +1,6 @@
 """Module for testing Silent Mutation Translator."""
 import unittest
+
 from variation.classifiers import SilentMutationClassifier
 from variation.translators import SilentMutation
 from variation.validators import SilentMutation as SM_V
@@ -23,4 +24,4 @@ class TestSilentMutationTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for silent mutation."""
-        return 'silent_mutation'
+        return "silent_mutation"

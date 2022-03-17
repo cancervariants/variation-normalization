@@ -10,5 +10,5 @@ class GenomicInsertion(InsertionBase):
 
     def return_token(self, params: Dict) -> Optional[GenomicInsertionToken]:
         """Return Genomic Insertion token."""
-        if self.parts["reference_sequence"] == "g":
+        if self.parts["coordinate_type"] == "g":
             return GenomicInsertionToken(**params)

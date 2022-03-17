@@ -1,6 +1,7 @@
 """Module for testing the hgvs to absolute and relative copy number endpoints"""
-import pytest
 import copy
+
+import pytest
 
 
 @pytest.fixture(scope="module")

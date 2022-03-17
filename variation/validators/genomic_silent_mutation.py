@@ -84,7 +84,5 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is amino acid
-        substitution.
-        """
+        """Return whether or not the classification type is genomic substitution."""
         return classification_type == ClassificationType.GENOMIC_SILENT_MUTATION

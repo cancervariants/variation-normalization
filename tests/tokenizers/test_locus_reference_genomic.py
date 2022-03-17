@@ -1,5 +1,6 @@
 """A module for testing LRG tokenization."""
 import unittest
+
 from variation.tokenizers import LocusReferenceGenomic
 from .tokenizer_base import TokenizerBase
 
@@ -13,8 +14,8 @@ class TestLocusReferenceGenomicTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return LRG token type."""
-        return 'LocusReferenceGenomic'
+        return "LocusReferenceGenomic"
 
     def fixture_name(self):
         """Return fixture name for LRG."""
-        return 'locus_reference_genomic'
+        return "locus_reference_genomic"

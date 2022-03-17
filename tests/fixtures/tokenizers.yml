@@ -19,7 +19,7 @@ gene:
   should_not_match:
     - token: not-a-gene
 
-amino_acid_substitution:
+protein_substitution:
   should_match:
     - token: V600E
     - token: Arg54Ser
@@ -146,7 +146,7 @@ genomic_silent_mutation:
     - token: g.123
     - token: g.123==
 
-amino_acid_delins:
+protein_delins:
   should_match:
     - token: p.Cys28delinsTrpVal
     - token: Cys28delinsTrpVal
@@ -241,7 +241,7 @@ locus_reference_genomic:
     - token: LRGt1
     - token: LRGp1
 
-amino_acid_deletion:
+protein_deletion:
   should_match:
     - token: p.Val7del
     - token: Val7del
@@ -300,7 +300,7 @@ genomic_deletion:
     - token: g.37880219
     - token: g.37880233_37880219del
 
-amino_acid_insertion:
+protein_insertion:
   should_match:
     - token: p.(Lys23_Leu24insArgSerGln)
     - token: p.His4_Gln5insAla

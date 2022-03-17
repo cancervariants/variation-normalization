@@ -10,5 +10,5 @@ class GenomicDeletion(DeletionBase):
 
     def return_token(self, params: Dict) -> Optional[GenomicDeletionToken]:
         """Return Genomic Deletion token."""
-        if self.parts["reference_sequence"] == "g":
+        if self.parts["coordinate_type"] == "g":
             return GenomicDeletionToken(**params)

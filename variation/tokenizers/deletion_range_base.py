@@ -31,7 +31,7 @@ class DeletionRangeBase(Tokenizer):
             "start_pos2_del": None,
             "end_pos1_del": None,
             "end_pos2_del": None,
-            "reference_sequence": None
+            "coordinate_type": None
         }
 
         input_string = str(input_string).lower()
@@ -39,11 +39,11 @@ class DeletionRangeBase(Tokenizer):
             return None
 
         if input_string.startswith("g."):
-            self.parts["reference_sequence"] = "g"
+            self.parts["coordinate_type"] = "g"
         elif input_string.startswith("c."):
-            self.parts["reference_sequence"] = "c"
+            self.parts["coordinate_type"] = "c"
         elif input_string.startswith("p."):
-            self.parts["reference_sequence"] = "p"
+            self.parts["coordinate_type"] = "p"
         else:
             return None
 

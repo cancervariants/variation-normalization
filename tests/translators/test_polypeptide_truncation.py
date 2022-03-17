@@ -1,5 +1,6 @@
 """Module for testing polypeptide truncation Translator."""
 import unittest
+
 from variation.classifiers import PolypeptideTruncationClassifier
 from variation.translators import PolypeptideTruncation
 from variation.validators import PolypeptideTruncation as PT_V
@@ -23,4 +24,4 @@ class TestPolypeptideTruncationTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for polypeptide truncation."""
-        return 'polypeptide_truncation'
+        return "polypeptide_truncation"

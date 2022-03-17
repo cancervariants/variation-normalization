@@ -527,8 +527,8 @@ class Validator(ABC):
         """
         if coordinate == "g" and mane["status"].lower() != "grch38":
             s_copy.molecule_context = "transcript"
-            s_copy.reference_sequence = "c"
-            coordinate = s_copy.reference_sequence
+            s_copy.coordinate_type = "c"
+            coordinate = s_copy.coordinate_type
 
             if isinstance(s_copy, GenomicSubstitutionToken) and \
                     mane["strand"] == "-":

@@ -1,5 +1,6 @@
 """Module for testing Genomic Duplication Validator."""
 import unittest
+
 from variation.validators import GenomicDuplication
 from variation.classifiers import GenomicDuplicationClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestGenomicDuplicationValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic duplication."""
-        return 'genomic_duplication'
+        return "genomic_duplication"

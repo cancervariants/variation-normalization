@@ -86,7 +86,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                 if not errors:
                     allele = self.vrs.to_vrs_allele(
                         t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence, s.alt_type, errors)
+                        s.coordinate_type, s.alt_type, errors)
 
                     variation = self.hgvs_dup_del_mode.interpret_variation(
                         t, s.alt_type, allele, errors, hgvs_dup_del_mode,

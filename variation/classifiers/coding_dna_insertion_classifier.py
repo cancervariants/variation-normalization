@@ -16,7 +16,7 @@ class CodingDNAInsertionClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["CodingDNAInsertion"],
-            ["GeneSymbol", "AminoAcidSubstitution", "CodingDNAInsertion"],
+            ["GeneSymbol", "ProteinSubstitution", "CodingDNAInsertion"],
             ["CodingDNAInsertion", "GeneSymbol"],
             ["GeneSymbol", "CodingDNAInsertion"],
             ["HGVS", "CodingDNAInsertion"],

@@ -53,7 +53,7 @@ class GenomicUncertainDeletion(DeletionRangeBase):
                         return None
                     else:
                         self.parts[parts_field] = part_val
-            self.parts["reference_sequence"] = "g"
+            self.parts["coordinate_type"] = "g"
         elif len_parts == 4:
             for part_ix, parts_field in [
                 (0, "start_pos1_del"),
@@ -66,7 +66,7 @@ class GenomicUncertainDeletion(DeletionRangeBase):
                     return None
                 else:
                     self.parts[parts_field] = part_val
-            self.parts["reference_sequence"] = "g"
+            self.parts["coordinate_type"] = "g"
         return None
 
     def _check_uncertain_or_int(self, part: str) -> Optional[Union[str, int]]:
@@ -81,7 +81,7 @@ class GenomicUncertainDeletion(DeletionRangeBase):
 
     def return_token(self, params: Dict) -> Optional[GenomicUncertainDeletionToken]:
         """Return Genomic Uncertain Deletion token."""
-        if params["reference_sequence"] == "g":
+        if params["coordinate_type"] == "g":
             conditions = (
                 isinstance(params["start_pos1_del"], int),
                 isinstance(params["start_pos2_del"], int),
