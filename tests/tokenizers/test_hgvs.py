@@ -1,5 +1,6 @@
 """A module for testing HGVS tokenization."""
 import unittest
+
 from variation.tokenizers import HGVS
 from .tokenizer_base import TokenizerBase
 
@@ -13,8 +14,8 @@ class TestHGVSTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return HGVS token type."""
-        return 'HGVS'
+        return "HGVS"
 
     def fixture_name(self):
         """Return fixture name for HGVS."""
-        return 'hgvs'
+        return "hgvs"

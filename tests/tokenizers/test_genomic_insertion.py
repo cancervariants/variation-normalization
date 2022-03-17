@@ -1,8 +1,9 @@
 """A module for testing Genomic Insertion Tokenization."""
 import unittest
+
+from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 from variation.tokenizers import GenomicInsertion
 from .tokenizer_base import TokenizerBase
-from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
 
 
 class TestGenomicInsertionTokenizer(TokenizerBase, unittest.TestCase):
@@ -14,8 +15,8 @@ class TestGenomicInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic insertion token type."""
-        return 'GenomicInsertion'
+        return "GenomicInsertion"
 
     def fixture_name(self):
         """Return the fixture name for Genomic Insertion."""
-        return 'genomic_insertion'
+        return "genomic_insertion"

@@ -18,7 +18,7 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
 from .validator import Validator
-from .amino_acid_base import AminoAcidBase
+from .protein_base import ProteinBase
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -52,7 +52,7 @@ class PolypeptideSequenceVariationBase(Validator):
             uta, dp, tlr, gene_normalizer, vrs
         )
         self._amino_acid_cache = amino_acid_cache
-        self.amino_acid_base = AminoAcidBase(seq_repo_access, amino_acid_cache)
+        self.protein_base = ProteinBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
     def get_transcripts(self, gene_tokens: List, classification: Classification,
@@ -108,7 +108,7 @@ class PolypeptideSequenceVariationBase(Validator):
                     s.alt_type, errors, alt=s.alt_protein)
 
                 if not errors:
-                    self.amino_acid_base.check_ref_aa(
+                    self.protein_base.check_ref_aa(
                         t, s.ref_protein, s.position, errors
                     )
 

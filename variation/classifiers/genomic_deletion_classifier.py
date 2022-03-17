@@ -16,7 +16,7 @@ class GenomicDeletionClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["Chromosome", "GenomicDeletion"],
-            ["GeneSymbol", "AminoAcidSubstitution", "GenomicDeletion"],
+            ["GeneSymbol", "ProteinSubstitution", "GenomicDeletion"],
             ["GenomicDeletion", "GeneSymbol"],
             ["GeneSymbol", "GenomicDeletion"],
             ["HGVS", "GenomicDeletion"],

@@ -1,5 +1,6 @@
 """Module for testing Genomic Insertion Validator."""
 import unittest
+
 from variation.validators import GenomicInsertion
 from variation.classifiers import GenomicInsertionClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestGenomicInsertionValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic insertion."""
-        return 'genomic_insertion'
+        return "genomic_insertion"

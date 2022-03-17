@@ -34,7 +34,7 @@ class AminoAcidCache:
         """Convert a 3 letter amino acid code to a 1 letter amino acid code.
 
         :param str three_letter_amino_acid: Amino Acid Code to convert
-        :return: A str of the one letter amino acid code
+        :return: A str of the one letter protein code
         """
         if three_letter_amino_acid.upper() == "TER":
             return "*"

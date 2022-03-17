@@ -16,7 +16,7 @@ class CodingDNADelInsClassifier(SetBasedClassifier):
         """Return the exact match token type candidates."""
         return [
             ["CodingDNADelIns"],
-            ["GeneSymbol", "AminoAcidSubstitution", "CodingDNADelIns"],
+            ["GeneSymbol", "ProteinSubstitution", "CodingDNADelIns"],
             ["CodingDNADelIns", "GeneSymbol"],
             ["GeneSymbol", "CodingDNADelIns"],
             ["HGVS", "CodingDNADelIns"],

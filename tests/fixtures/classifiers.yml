@@ -1,4 +1,4 @@
-amino_acid_substitution:
+protein_substitution:
   should_match:
     - query: BRAF V600E
       confidence: ConfidenceRating.EXACT
@@ -106,7 +106,7 @@ genomic_silent_mutation:
     - query: GENOMIC_:g.123=
     - query: c.123=
 
-amino_acid_delins:
+protein_delins:
   should_match:
     - query: NP_001333827.1:p.Leu747_Thr751delinsPro
       confidence: ConfidenceRating.EXACT
@@ -159,7 +159,7 @@ genomic_delins:
     - query:  N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX
 
-amino_acid_deletion:
+protein_deletion:
   should_match:
     - query: NP_004439.2:p.Leu755_Thr759del
       confidence: ConfidenceRating.EXACT
@@ -225,7 +225,7 @@ genomic_deletion:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG
 
-amino_acid_insertion:
+protein_insertion:
   should_match:
     - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
       confidence: ConfidenceRating.EXACT

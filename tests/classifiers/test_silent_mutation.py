@@ -1,5 +1,6 @@
 """Module for testing Silent Mutation Classifier."""
 import unittest
+
 from variation.classifiers import SilentMutationClassifier
 from .classifier_base import ClassifierBase
 
@@ -13,4 +14,4 @@ class TestSilentMutationClassifier(ClassifierBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return SilentMutationClassifier fixture name."""
-        return 'silent_mutation'
+        return "silent_mutation"
