@@ -9,6 +9,8 @@ exclude =
   outputs
   docs/*
   variation/version.py
+  build/*
+  codebuild/*
 inline-quotes = "
 import-order-style = pep8
 application-import-names =
