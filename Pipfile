@@ -22,6 +22,8 @@ ipykernel = "*"
 twine = "*"
 matplotlib = "*"
 psycopg2-binary = "*"
+pytest-asyncio = "*"
+uta-tools = {editable = true, path = "../uta_tools"}
 
 [packages]
 hgvs = "*"

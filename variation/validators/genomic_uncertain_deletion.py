@@ -23,9 +23,8 @@ logger.setLevel(logging.DEBUG)
 class GenomicUncertainDeletion(DuplicationDeletionBase):
     """The Genomic UncertainDeletion Validator class."""
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -34,9 +33,10 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -72,14 +72,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(
+                result = await self._get_variation(
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
                     relative_copy_class=relative_copy_class,
                     baseline_copies=baseline_copies)
                 variation = result["variation"]
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    self._get_normalize_variation(
+                    await self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, relative_copy_class=relative_copy_class,
                         baseline_copies=baseline_copies)
@@ -98,11 +98,12 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 classification, gene_tokens
             )
 
-    def _get_variation(
-            self, s: Token, t: str, errors: List, gene_tokens: List,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            relative_copy_class: Optional[RelativeCopyClass] = None,
-            baseline_copies: Optional[int] = None) -> Optional[Dict]:
+    async def _get_variation(
+        self, s: Token, t: str, errors: List, gene_tokens: List,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        baseline_copies: Optional[int] = None
+    ) -> Optional[Dict]:
         """Get variation data.
 
         :param Token s: Classification token
@@ -115,7 +116,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
-        ival, grch38 = self._get_ival(t, s, errors, gene_tokens)
+        ival, grch38 = await self._get_ival(t, s, errors, gene_tokens)
 
         if not errors:
             if grch38:
@@ -138,7 +139,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
             "variation": variation
         }
 
-    def _get_normalize_variation(
+    async def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             mane_data_found: Dict,
@@ -156,16 +157,16 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param Optional[int] baseline_copies: Baseline copies number
         """
         if not gene_tokens:
-            ival, grch38 = self._get_ival(
+            ival, grch38 = await self._get_ival(
                 t, s, errors, gene_tokens, is_norm=True)
             self.add_grch38_to_mane_data(
                 t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
                 ival=ival, relative_copy_class=relative_copy_class,
                 baseline_copies=baseline_copies)
 
-    def _get_ival(
-            self, t: str, s: Token, errors: List, gene_tokens: List,
-            is_norm: bool = False
+    async def _get_ival(
+        self, t: str, s: Token, errors: List, gene_tokens: List,
+        is_norm: bool = False
     ) -> Optional[Tuple[models.SequenceInterval, Dict]]:
         """Get ival for variations with ranges.
 
@@ -183,14 +184,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         if s.start_pos1_del == "?" and s.end_pos2_del == "?":
             # format: (?_#)_(#_?)
             if is_norm:
-                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                     t, s.start_pos2_del, s.end_pos1_del
                 )
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            self.validate_gene_or_accession_pos(
+            await self.validate_gene_or_accession_pos(
                 t, [start, end], errors, gene=gene)
 
             if not errors and start and end:
@@ -205,14 +206,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 s.end_pos2_del is None:
             # format: (?_#)_#
             if is_norm:
-                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                     t, s.start_pos2_del, s.end_pos1_del
                 )
             else:
                 start = s.start_pos2_del
                 end = s.end_pos1_del
 
-            self.validate_gene_or_accession_pos(
+            await self.validate_gene_or_accession_pos(
                 t, [start, end], errors, gene=gene
             )
 
@@ -228,7 +229,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 s.end_pos2_del == "?":
             # format: #_(#_?)
             if is_norm:
-                t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                     t, s.start_pos1_del, s.end_pos1_del
                 )
             else:
@@ -237,7 +238,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
 
             start -= 1
 
-            self.validate_gene_or_accession_pos(
+            await self.validate_gene_or_accession_pos(
                 t, [start, end], errors, gene=gene)
 
             if not errors and start and end:

@@ -7,6 +7,8 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
+    MANETranscript
 
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
@@ -14,9 +16,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Token
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.tokenizers import GeneSymbol
-from variation.mane_transcript import MANETranscript
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.validators.duplication_deletion_base import\
@@ -34,7 +34,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the Genomic Deletion Range validator.
 
@@ -44,7 +44,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
         """
@@ -54,9 +54,8 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -65,9 +64,10 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -103,13 +103,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                variation = self._get_variation(
+                variation = await self._get_variation(
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
                     relative_copy_class=relative_copy_class,
                     baseline_copies=baseline_copies)
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    self._get_normalize_variation(
+                    await self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, relative_copy_class=relative_copy_class,
                         baseline_copies=baseline_copies)
@@ -128,7 +128,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                 classification, gene_tokens
             )
 
-    def _get_variation(
+    async def _get_variation(
             self, s: Token, t: str, errors: List, gene_tokens: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             relative_copy_class: Optional[RelativeCopyClass] = None,
@@ -146,7 +146,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :return: Dictionary containing start/end position changes and variation
         """
         variation, start, end = None, None, None
-        ival, grch38 = self._get_ival(t, s, errors, gene_tokens)
+        ival, grch38 = await self._get_ival(t, s, errors, gene_tokens)
 
         if not errors:
             if grch38:
@@ -166,7 +166,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                 baseline_copies=baseline_copies)
         return variation
 
-    def _get_normalize_variation(
+    async def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             mane_data_found: Dict,
@@ -183,13 +183,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param Optional[int] baseline_copies: Baseline copies number
         """
-        ival, grch38 = self._get_ival(t, s, errors, gene_tokens, is_norm=True)
+        ival, grch38 = await self._get_ival(t, s, errors, gene_tokens, is_norm=True)
         self.add_grch38_to_mane_data(
             t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
             ival=ival, relative_copy_class=relative_copy_class,
             baseline_copies=baseline_copies)
 
-    def _get_ival(
+    async def _get_ival(
             self, t: str, s: Token, errors: List, gene_tokens: List,
             is_norm: bool = False
     ) -> Optional[Tuple[Optional[models.SequenceInterval], Optional[Dict]]]:
@@ -207,7 +207,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         ival, grch38, start1, start2, end1, end2 = None, None, None, None, None, None  # noqa: E501
         # (#_#)_(#_#)
         if is_norm:
-            t, start1, start2, end1, end2, grch38 = self.get_grch38_pos_ac(
+            t, start1, start2, end1, end2, grch38 = await self.get_grch38_pos_ac(
                 t, s.start_pos1_del, s.start_pos2_del, pos3=s.end_pos1_del,
                 pos4=s.end_pos2_del
             )
@@ -218,7 +218,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             end2 = s.end_pos2_del
 
         gene = gene_tokens[0].token if gene_tokens else None
-        self.validate_gene_or_accession_pos(
+        await self.validate_gene_or_accession_pos(
             t, [start1, start2, end1, end2], errors, gene=gene)
 
         if not errors and start1 and start2 and end1 and end2:

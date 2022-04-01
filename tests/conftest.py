@@ -1,8 +1,18 @@
 """Create methods used throughout tests."""
+import asyncio
+
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 from variation.query import QueryHandler
+
+
+@pytest.fixture(scope="session")
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope="session")
@@ -317,17 +327,17 @@ def braf_v600e(braf_gene_context):
     params = {
         "id": "normalize.variation:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
+        "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
         "variation": {
-            "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
+            "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
             "location": {
-                "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
+                "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
                 "interval": {
-                    "end": {"value": 640, "type": "Number"},
-                    "start": {"value": 639, "type": "Number"},
+                    "end": {"value": 600, "type": "Number"},
+                    "start": {"value": 599, "type": "Number"},
                     "type": "SequenceInterval"
                 },
-                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
+                "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
                 "type": "SequenceLocation"
             },
             "state": {

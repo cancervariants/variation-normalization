@@ -19,8 +19,8 @@ logger.setLevel(logging.DEBUG)
 class GenomicSubstitution(SingleNucleotideVariationBase):
     """The Genomic Substitution Validator class."""
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -29,9 +29,10 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -71,35 +72,31 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                     s.alt_type, errors, alt=s.new_nucleotide)
 
                 if not errors:
-                    ref_nuc = \
-                        self.seqrepo_access.get_sequence(t, s.position)
+                    ref_nuc, _ = self.seqrepo_access.get_reference_sequence(
+                        t, s.position)
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.coordinate_type,
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.coordinate_type, end_pos=s.position,
                         gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True
+                        try_longest_compatible=True, residue_mode="residue"
                     )
 
                     self.add_mane_data(mane, mane_data_found,
                                        s.coordinate_type, s.alt_type, s,
                                        alt=s.new_nucleotide)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.

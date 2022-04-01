@@ -8,19 +8,17 @@ from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, MANETranscript, \
+    UTADatabase
 
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import GeneMatchToken, Token, \
     GenomicSubstitutionToken
-from variation.schemas.validation_response_schema import ValidationResult, \
-    LookupType
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
-from variation.mane_transcript import MANETranscript
 from variation.validators.genomic_base import GenomicBase
-from variation.data_sources import UTA
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
@@ -36,7 +34,7 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  gene_normalizer: GeneQueryHandler,
                  vrs: VRS) -> None:
         """Initialize the DelIns validator.
@@ -47,7 +45,7 @@ class Validator(ABC):
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param Translator tlr: Translator class
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
@@ -92,9 +90,8 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -117,7 +114,7 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -149,7 +146,7 @@ class Validator(ABC):
         """
         raise NotImplementedError
 
-    def validate(
+    async def validate(
             self, classification: Classification,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
             endpoint_name: Optional[Endpoint] = None,
@@ -187,8 +184,8 @@ class Validator(ABC):
 
         try:
             # NC_ queries do not have gene tokens
-            transcripts = \
-                self.get_transcripts(gene_tokens, classification, errors)
+            transcripts = await self.get_transcripts(
+                gene_tokens, classification, errors)
         except IndexError:
             transcripts = list()
 
@@ -212,7 +209,7 @@ class Validator(ABC):
         else:
             is_identifier = False
 
-        self.get_valid_invalid_results(
+        await self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
             results, gene_tokens, mane_data_found,
             is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies,
@@ -260,8 +257,7 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: List of possible transcript accessions for the variation
         """
-        transcripts = self.transcript_mappings.protein_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
+        transcripts = self.transcript_mappings.protein_transcripts(gene_tokens[0].token)
         if not transcripts:
             errors.append(f"No transcripts found for gene symbol "
                           f"{gene_tokens[0].token}")
@@ -276,14 +272,14 @@ class Validator(ABC):
         :return: List of possible transcript accessions for the variation
         """
         transcripts = self.transcript_mappings.coding_dna_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
+            gene_tokens[0].token)
         if not transcripts:
             errors.append(f"No transcripts found for gene symbol "
                           f"{gene_tokens[0].token}")
         return transcripts
 
-    def get_genomic_transcripts(self, classification: Classification,
-                                errors: List) -> Optional[List[str]]:
+    async def get_genomic_transcripts(self, classification: Classification,
+                                      errors: List) -> Optional[List[str]]:
         """Get NC accessions for variations with genomic reference sequence.
 
         :param Classification classification: Classification for a list of
@@ -291,7 +287,7 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: List of possible NC accessions for the variation
         """
-        nc_accessions = self.genomic_base.get_nc_accessions(classification)
+        nc_accessions = await self.genomic_base.get_nc_accessions(classification)
         if not nc_accessions:
             errors.append("Could not find NC_ accession for "
                           f"{self.variation_name()}")
@@ -459,9 +455,9 @@ class Validator(ABC):
             )
             return False
 
-    def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
-                           errors: List, pos3: int = None, pos4: int = None,
-                           residue_mode: str = "residue") -> None:
+    async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
+                                 errors: List, pos3: int = None, pos4: int = None,
+                                 residue_mode: str = "residue") -> None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
 
@@ -487,17 +483,16 @@ class Validator(ABC):
             errors.append(f"gene-normalizer unable to find Ensembl location"
                           f"for {gene}")
         else:
-            assembly = self.uta.get_chr_assembly(alt_ac)
+            assembly = await self.uta.get_chr_assembly(alt_ac)
             if assembly:
                 # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
                 # need to liftover to GRCh37 coords
                 chromosome, assembly = assembly
                 for key in gene_start_end.keys():
                     gene_pos = gene_start_end[key]
-                    gene_pos_liftover = \
-                        self.uta.liftover_to_37.convert_coordinate(chromosome,
-                                                                   gene_pos)
-                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:  # noqa: E501
+                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(  # noqa: E501
+                        chromosome, gene_pos)
+                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
                         errors.append(f"{gene_pos} does not"
                                       f" exist on {chromosome}")
                         return None
@@ -575,10 +570,9 @@ class Validator(ABC):
         if coord_alt:
             coordinate = coord_alt[0] if coord_alt[0] else coordinate
             alt = coord_alt[1] if coord_alt[1] else alt
-
         if mane_variation is None:
             new_allele = self.vrs.to_vrs_allele(
-                mane["refseq"], mane["pos"][0], mane["pos"][1],
+                mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
                 coordinate, alt_type, [],
                 cds_start=mane.get("coding_start_site", None), alt=alt
             )
@@ -665,10 +659,9 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: Reference sequence
         """
-        seq = self.seqrepo_access.get_sequence(ac, pos)
+        seq, w = self.seqrepo_access.get_reference_sequence(ac, pos)
         if not seq:
-            errors.append(f"Pos {pos} not found on {ac}")
-            return None
+            errors.append(w)
         return seq
 
     @staticmethod

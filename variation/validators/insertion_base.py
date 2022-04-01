@@ -18,7 +18,7 @@ logger.setLevel(logging.DEBUG)
 class InsertionBase(Validator):
     """The Insertion Validator Base class."""
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -56,7 +56,7 @@ class InsertionBase(Validator):
                 allele = None
 
                 if s.coordinate_type == "c":
-                    cds_start_end = self.uta.get_cds_start_end(t)
+                    cds_start_end = await self.uta.get_cds_start_end(t)
                     if cds_start_end is not None:
                         cds_start = cds_start_end[0]
                     else:
@@ -77,29 +77,24 @@ class InsertionBase(Validator):
                     self.check_pos_index(t, s, errors)
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_flank, s.end_pos_flank,
-                        s.coordinate_type,
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_flank, s.coordinate_type,
+                        end_pos=s.end_pos_flank,
                         gene=gene_tokens[0].token if gene_tokens else None,
                         try_longest_compatible=True
                     )
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.coordinate_type, s.alt_type, s,
-                                       alt=s.inserted_sequence)
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s, alt=s.inserted_sequence)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def get_hgvs_expr(self, classification: Classification, t: str, s: Token,
                       is_hgvs: bool) -> str:
@@ -116,8 +111,7 @@ class InsertionBase(Validator):
             prefix = f"{t}:{s.coordinate_type.lower()}."
             position = f"{s.start_pos_flank}_{s.end_pos_flank}"
             if s.inserted_sequence2 is not None:
-                inserted_sequence = \
-                    f"{s.inserted_sequence}_{s.inserted_sequence2}"
+                inserted_sequence = f"{s.inserted_sequence}_{s.inserted_sequence2}"
             else:
                 inserted_sequence = f"{s.inserted_sequence}"
 
@@ -136,9 +130,8 @@ class InsertionBase(Validator):
         :param Token s: Classification token
         :param List errors: List of errors
         """
-        sequence = \
-            self.seqrepo_access.get_sequence(t, s.start_pos_flank,
-                                             s.end_pos_flank)
+        sequence, w = self.seqrepo_access.get_reference_sequence(
+            t, int(s.start_pos_flank), int(s.end_pos_flank))
 
         if sequence is None:
-            errors.append("Sequence index error")
+            errors.append(w)
