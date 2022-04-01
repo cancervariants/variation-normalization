@@ -4,8 +4,8 @@ from typing import Optional, Dict, Tuple, List, Union
 
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+from uta_tools.data_sources import SeqRepoAccess
 
-from variation.data_sources.seq_repo_access import SeqRepoAccess
 from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
     RelativeCopyClass
 from variation.schemas.normalize_response_schema\
@@ -90,12 +90,11 @@ class HGVSDupDelMode:
         :return: VRS Copy Number object represented as a dict
         """
         if chromosome is None:
-            chromosome = self.seqrepo_access.ac_to_chromosome(ac)
+            chromosome, _ = self.seqrepo_access.ac_to_chromosome(ac)
 
         if chromosome is None:
             logger.warning(f"Unable to find chromosome on {ac}")
             return None
-
         if chromosome == "X":
             copies = models.DefiniteRange(
                 min=0 if del_or_dup == "del" else 2,

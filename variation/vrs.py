@@ -5,8 +5,7 @@ from ga4gh.vrs import models, normalize
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.core import ga4gh_identify
 from bioutils.accessions import coerce_namespace
-
-from variation.data_sources import SeqRepoAccess
+from uta_tools.data_sources import SeqRepoAccess
 
 
 class VRS:
@@ -125,7 +124,6 @@ class VRS:
             errors.append(f"Unable to get sequence location: {e}")
             return None
         allele = models.Allele(location=location, state=sstate, type="Allele")
-
         # Ambiguous regions do not get normalized
         if alt_type not in ["uncertain_deletion", "uncertain_duplication",
                             "duplication_range", "deletion_range"]:
@@ -179,9 +177,7 @@ class VRS:
         elif alt_type in ["substitution", "deletion", "delins",
                           "silent_mutation", "nonsense"]:
             if alt_type == "silent_mutation":
-                state = self.seqrepo_access.get_sequence(
-                    ac, ival_start
-                )
+                state, _ = self.seqrepo_access.get_reference_sequence(ac, ival_start)
                 if state is None:
                     errors.append(f"Unable to get sequence on {ac} from "
                                   f"{ival_start}")
@@ -190,12 +186,13 @@ class VRS:
                 state = alt or ""
             ival_start -= 1
         elif alt_type == "duplication":
-            ref = self.seqrepo_access.get_sequence(ac, ival_start, ival_end)
+            ref, _ = self.seqrepo_access.get_reference_sequence(
+                ac, ival_start, ival_end + 1)
             if ref is not None:
                 state = ref + ref
             else:
                 errors.append(f"Unable to get sequence on {ac} from "
-                              f"{ival_start} to {ival_end}")
+                              f"{ival_start} to {ival_end + 1}")
                 return None
             ival_start -= 1
         else:

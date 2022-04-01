@@ -56,14 +56,14 @@ pipenv sync
 
 Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
 
-You must also have Gene Normalization's DynamoDB running for the application to work. 
+You must also have Gene Normalization's DynamoDB running for the application to work.
 
 For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 ### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
 
-Variation Normalizer uses seqrepo to retrieve sequences at given positions on a transcript. 
+Variation Normalizer uses seqrepo to retrieve sequences at given positions on a transcript.
 
 From the _root_ directory:
 ```
@@ -102,25 +102,6 @@ If you do not wish to use the default, you must set the environment variable `UT
 ### PyLiftover
 
 Variation Normalizer uses [PyLiftover](https://github.com/konstantint/pyliftover) to convert GRCh37 coordinates to GRCh38 coordinates.
-
-## Data
-
-### RefSeq
-
-Variation Normalizer uses RefSeq data found at [FTP site](https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/RefSeqGene/LRG_RefSeqGene).
-
-This data helps with free text variations in order to get all RefSeq accessions that correspond to a given gene.
-
-### Ensembl BioMart
-Variation Normalizer uses [Ensembl BioMart](http://www.ensembl.org/biomart/martview) to retrieve `variation/data/transcript_mappings.tsv`. We currently use `Human Genes (GRCh38.p13)` for the dataset and the following attributes we use are: Gene stable ID, Gene stable ID version, Transcript stable ID, Transcript stable ID version, Protein stable ID, Protein stable ID version, RefSeq match transcript (MANE Select), Gene name. 
-
-This data helps with free text variations in order to get all Ensembl accessions that correspond to a given gene.
-
-![image](biomart.png)
-
-### MANE Data
-
-Variation Normalizer uses MANE data from RefSeq's [FTP site](https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/current/). 
 
 ## Starting the Variation Normalization Service Locally
 `gene-normalizer`s dynamodb and the `uta` database must be running.

@@ -6,6 +6,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
+    MANETranscript
 
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
@@ -13,9 +15,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
 from variation.tokenizers import GeneSymbol
-from variation.mane_transcript import MANETranscript
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
@@ -31,7 +31,7 @@ class DuplicationDeletionBase(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the Deletion Base validator.
 
@@ -41,7 +41,7 @@ class DuplicationDeletionBase(Validator):
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
         """
@@ -75,9 +75,8 @@ class DuplicationDeletionBase(Validator):
         """
         raise NotImplementedError
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -98,7 +97,7 @@ class DuplicationDeletionBase(Validator):
         """
         raise NotImplementedError
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -148,13 +147,10 @@ class DuplicationDeletionBase(Validator):
                 end += cds_start
 
         if start and not end:
-            ref_sequence = self.seqrepo_access.get_sequence(
-                ac, start
-            )
+            ref_sequence, _ = self.seqrepo_access.get_reference_sequence(ac, start)
         elif start is not None and end is not None:
-            ref_sequence = self.seqrepo_access.get_sequence(
-                ac, start, end
-            )
+            ref_sequence, _ = self.seqrepo_access.get_reference_sequence(ac, start,
+                                                                         end + 1)
         else:
             ref_sequence = None
 
@@ -174,8 +170,7 @@ class DuplicationDeletionBase(Validator):
             `False` otherwise.
         """
         ref_sequence = self.get_reference_sequence(
-            t, s.start_pos_del, s.end_pos_del, errors, cds_start=cds_start
-        )
+            t, s.start_pos_del, s.end_pos_del, errors, cds_start=cds_start)
 
         if errors:
             return False
@@ -187,7 +182,7 @@ class DuplicationDeletionBase(Validator):
                     return False
         return True
 
-    def add_normalized_genomic_dup_del(
+    async def add_normalized_genomic_dup_del(
             self, s: Token, t: str, start: int, end: int, gene: str,
             so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
             mane_data_found: Dict, baseline_copies: Optional[int] = None,
@@ -209,10 +204,9 @@ class DuplicationDeletionBase(Validator):
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         """
-        mane = self.mane_transcript.get_mane_transcript(
-            t, start, end, s.coordinate_type, gene=gene,
-            try_longest_compatible=True
-        )
+        mane = await self.mane_transcript.get_mane_transcript(
+            t, start, s.coordinate_type, end_pos=end, gene=gene,
+            try_longest_compatible=True)
 
         if mane:
             s.coordinate_type = "c"
@@ -220,10 +214,9 @@ class DuplicationDeletionBase(Validator):
             s.so_id = so_id
 
             allele = self.vrs.to_vrs_allele(
-                mane["refseq"], mane["pos"][0], mane["pos"][1],
+                mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
                 s.coordinate_type, s.alt_type, errors,
-                cds_start=mane["coding_start_site"]
-            )
+                cds_start=mane["coding_start_site"])
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
                 t, s.alt_type, allele, errors, hgvs_dup_del_mode,
@@ -231,14 +224,12 @@ class DuplicationDeletionBase(Validator):
                 relative_copy_class=relative_copy_class)
 
             if mane_variation:
-                self._add_dict_to_mane_data(
-                    mane["refseq"], s, mane_variation,
-                    mane_data_found, mane["status"]
-                )
+                self._add_dict_to_mane_data(mane["refseq"], s, mane_variation,
+                                            mane_data_found, mane["status"])
 
-    def validate_gene_or_accession_pos(self, t: str, pos_list: List,
-                                       errors: List,
-                                       gene: Optional[str] = None) -> None:
+    async def validate_gene_or_accession_pos(
+        self, t: str, pos_list: List, errors: List, gene: Optional[str] = None
+    ) -> None:
         """Validate positions on gene or accession.
         If not valid, add to list of errors
 
@@ -255,16 +246,15 @@ class DuplicationDeletionBase(Validator):
             elif len_pos_list == 4:
                 pos3, pos4 = pos_list[2], pos_list[3]
             else:
-                errors.append(f"Unexpected amount of positions:"
-                              f" {len_pos_list}")
+                errors.append(f"Unexpected amount of positions: {len_pos_list}")
                 return
-            self._validate_gene_pos(
-                gene, t, pos1, pos2, errors, pos3=pos3, pos4=pos4)
+            await self._validate_gene_pos(gene, t, pos1, pos2, errors, pos3=pos3,
+                                          pos4=pos4)
         else:
             for pos in pos_list:
                 self._check_index(t, pos, errors)
 
-    def get_grch38_pos_ac(
+    async def get_grch38_pos_ac(
             self, t: str, pos1: int, pos2: int,
             pos3: Optional[int] = None, pos4: Optional[int] = None
     ) -> Tuple[str, int, int, Optional[int], Optional[int], Optional[Dict]]:
@@ -277,11 +267,11 @@ class DuplicationDeletionBase(Validator):
         :param int pos4: Position 4 (assumes 1-based)
         :return: GRCh38 data (accession and positions)
         """
-        grch38_start = self.mane_transcript.g_to_grch38(t, pos1, pos2)
+        grch38_start = await self.mane_transcript.g_to_grch38(t, pos1, pos2)
         if grch38_start:
             pos1, pos2 = grch38_start["pos"]
             if pos3 is not None and pos4 is not None:
-                grch38_end = self.mane_transcript.g_to_grch38(t, pos3, pos4)
+                grch38_end = await self.mane_transcript.g_to_grch38(t, pos3, pos4)
                 if grch38_end:
                     pos3, pos4 = grch38_end["pos"]
             t = grch38_start["ac"]

@@ -6,6 +6,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
+    MANETranscript
 
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
@@ -17,8 +19,6 @@ from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
 from variation.vrs import VRS
 from .protein_base import ProteinBase
 
@@ -33,7 +33,7 @@ class ProteinDeletion(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  gene_normalizer: GeneQueryHandler, vrs: VRS,
                  amino_acid_cache: AminoAcidCache) \
             -> None:
@@ -45,7 +45,7 @@ class ProteinDeletion(Validator):
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
         :param amino_acid_cache: Amino Acid codes and conversions
@@ -58,8 +58,8 @@ class ProteinDeletion(Validator):
         self.protein_base = ProteinBase(seq_repo_access, amino_acid_cache)
         self.mane_transcript = mane_transcript
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -70,7 +70,7 @@ class ProteinDeletion(Validator):
         """
         return self.get_protein_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -121,28 +121,21 @@ class ProteinDeletion(Validator):
                         )
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_del, s.end_pos_del,
-                        s.coordinate_type,
-                        try_longest_compatible=True
-                    )
-                    self.add_mane_data(
-                        mane, mane_data_found, s.coordinate_type,
-                        s.alt_type, s,
-                    )
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.start_pos_del, s.coordinate_type, end_pos=s.end_pos_del,
+                        try_longest_compatible=True)
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s)
 
                 self.add_validation_result(allele, valid_alleles, results,
-                                           classification, s, t, gene_tokens,
-                                           errors)
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
