@@ -268,7 +268,7 @@ class QueryHandler:
                 # first pos
                 if strand == "-":
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos - 1, g_end_pos + 1)
+                        alt_ac, g_start_pos - 1, g_end_pos + 2)
                     alt = alt_nuc + ref[1] + ref[0]
                 else:
                     ref, _ = self.seqrepo_access.get_reference_sequence(
@@ -283,7 +283,7 @@ class QueryHandler:
                 # last pos
                 if strand == "-":
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos, g_end_pos + 3)
+                        alt_ac, g_start_pos + 1, g_end_pos + 4)
                     alt = ref[2] + ref[1] + alt_nuc
                 else:
                     ref, _ = self.seqrepo_access.get_reference_sequence(
