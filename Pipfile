@@ -23,7 +23,6 @@ twine = "*"
 matplotlib = "*"
 psycopg2-binary = "*"
 pytest-asyncio = "*"
-uta-tools = {editable = true, path = "../uta_tools"}
 
 [packages]
 hgvs = "*"
@@ -43,3 +42,4 @@ pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = ">=0.0.10"
 pandas = "*"
+uta-tools = ">=0.0.15"
