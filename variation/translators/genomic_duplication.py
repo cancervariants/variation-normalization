@@ -2,7 +2,7 @@
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.token_response_schema import \
-    GenomicDuplicationRangeToken, GenomicDuplicationToken
+    GenomicDuplicationRangeToken, GenomicDuplicationToken, Token
 
 
 class GenomicDuplication(Translator):
@@ -12,7 +12,7 @@ class GenomicDuplication(Translator):
         """Return if classification type is Genomic Insertion."""
         return type == ClassificationType.GENOMIC_DUPLICATION
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Genomic Duplication token instance."""
         return isinstance(token, (GenomicDuplicationToken,
                                   GenomicDuplicationRangeToken))

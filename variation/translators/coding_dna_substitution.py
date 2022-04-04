@@ -1,7 +1,7 @@
 """Module for Coding DNA Substitution Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import CodingDNASubstitutionToken
+from variation.schemas.token_response_schema import CodingDNASubstitutionToken, Token
 
 
 class CodingDNASubstitution(Translator):
@@ -11,6 +11,6 @@ class CodingDNASubstitution(Translator):
         """Return if classification type is Coding DNA Substitution."""
         return type == ClassificationType.CODING_DNA_SUBSTITUTION
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Coding DNA Substitution token instance."""
         return isinstance(token, CodingDNASubstitutionToken)

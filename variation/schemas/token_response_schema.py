@@ -1,7 +1,8 @@
 """Module for Token Schema."""
-from pydantic import BaseModel
 from typing import List, Union, Dict, Any, Type, Optional, Literal
 from enum import IntEnum, Enum
+
+from pydantic import BaseModel
 
 
 class TokenMatchType(IntEnum):
@@ -34,14 +35,14 @@ class SequenceOntology(str, Enum):
     """Define SequenceOntology codes"""
 
     POLYPEPTIDE_TRUNCATION = "SO:0001617"
-    AMINO_ACID_SUBSTITUTION = "SO:0001606"
+    PROTEIN_SUBSTITUTION = "SO:0001606"
     SILENT_MUTATION = "SO:0001017"
     SNV = "SO:0001483"
     NO_SEQUENCE_ALTERATION = "SO:0002073"
     DELINS = "SO:1000032"
-    AMINO_ACID_INSERTION = "SO:0001605"
+    PROTEIN_INSERTION = "SO:0001605"
     INSERTION = "SO:0000667"
-    AMINO_ACID_DELETION = "SO:0001604"
+    PROTEIN_DELETION = "SO:0001604"
     DELETION = "SO:0000159"
     COPY_NUMBER_LOSS = "SO:0001743"
     DUPLICATION = "SO:1000035"
@@ -55,7 +56,7 @@ class Token(BaseModel):
     token_type: str
     match_type: TokenMatchType
     input_string: str
-    object_type = 'Token'
+    object_type = "Token"
     nomenclature: Optional[Nomenclature]
 
     class Config:
@@ -63,13 +64,13 @@ class Token(BaseModel):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['Token']) -> None:
+                         model: Type["Token"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "",
                 "token_type": "Unknown",
                 "match_type": 5,
@@ -83,20 +84,20 @@ class GeneMatchToken(Token):
     """Define model for gene symbol token."""
 
     matched_value: str
-    token_type = 'GeneSymbol'
+    token_type = "GeneSymbol"
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['GeneMatchToken']) -> None:
+                         model: Type["GeneMatchToken"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "BRAF",
                 "token_type": "GeneSymbol",
                 "match_type": 2,
@@ -111,20 +112,20 @@ class GenePairMatchToken(Token):
 
     left_gene_token: GeneMatchToken
     right_gene_token: GeneMatchToken
-    token_type = 'GenePair'
+    token_type = "GenePair"
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['GenePairMatchToken']) -> None:
+                         model: Type["GenePairMatchToken"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "BRAF-ABL1",
                 "token_type": "GenePair",
                 "match_type": 5,
@@ -149,12 +150,12 @@ class GenePairMatchToken(Token):
             }
 
 
-class ReferenceSequence(str, Enum):
-    """Define constraints for reference sequence."""
+class CoordinateType(str, Enum):
+    """Define constraints for coordinate types."""
 
-    CODING_DNA = 'c'
-    LINEAR_GENOMIC = 'g'
-    PROTEIN = 'p'
+    CODING_DNA = "c"
+    LINEAR_GENOMIC = "g"
+    PROTEIN = "p"
 
 
 class PolypeptideSequenceVariation(Token):
@@ -164,9 +165,9 @@ class PolypeptideSequenceVariation(Token):
     alt_protein: str
     position: int
     token_type: str
-    reference_sequence = ReferenceSequence.PROTEIN
+    coordinate_type = CoordinateType.PROTEIN
     so_id: SequenceOntology
-    molecule_context = 'protein'
+    molecule_context = "protein"
     alt_type: str
 
 
@@ -175,23 +176,23 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
     resulting polypeptide. (nonsense)
     """
 
-    alt_protein = '*'
-    token_type = 'PolypeptideTruncation'
+    alt_protein = "*"
+    token_type = "PolypeptideTruncation"
     so_id = SequenceOntology.POLYPEPTIDE_TRUNCATION
-    alt_type = 'nonsense'
+    alt_type = "nonsense"
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['PolypeptideTruncationToken']) -> None:
+                         model: Type["PolypeptideTruncationToken"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "Tyr365Ter",
                 "token_type": "PolypeptideTruncation",
                 "match_type": 5,
@@ -203,29 +204,29 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
             }
 
 
-class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
+class ProteinSubstitutionToken(PolypeptideSequenceVariation):
     """A sequence variation of a codon resulting in the substitution of one
     amino acid for another in the resulting polypeptide. (missense)
     """
 
-    token_type = 'AminoAcidSubstitution'
-    so_id = SequenceOntology.AMINO_ACID_SUBSTITUTION
-    alt_type = 'substitution'
+    token_type = "ProteinSubstitution"
+    so_id = SequenceOntology.PROTEIN_SUBSTITUTION
+    alt_type = "substitution"
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['AminoAcidSubstitutionToken']) -> None:
+                         model: Type["ProteinSubstitutionToken"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "V600E",
-                "token_type": "AminoAcidSubstitution",
+                "token_type": "ProteinSubstitution",
                 "match_type": 5,
                 "input_string": "V600E",
                 "object_type": "Token",
@@ -238,23 +239,23 @@ class AminoAcidSubstitutionToken(PolypeptideSequenceVariation):
 class SilentMutationToken(PolypeptideSequenceVariation):
     """A sequence variation that does not affect protein functions."""
 
-    alt_protein = '='
-    token_type = 'SilentMutation'
+    alt_protein = "="
+    token_type = "SilentMutation"
     so_id = SequenceOntology.SILENT_MUTATION
-    alt_type = 'silent_mutation'
+    alt_type = "silent_mutation"
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['SilentMutationToken']) -> None:
+                         model: Type["SilentMutationToken"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "token": "p.Cys188=",
                 "token_type": "SilentMutation",
                 "match_type": 5,
@@ -271,7 +272,7 @@ class TokenResponseSchema(BaseModel):
 
     search_term: str
     tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                       AminoAcidSubstitutionToken, PolypeptideTruncationToken,
+                       ProteinSubstitutionToken, PolypeptideTruncationToken,
                        SilentMutationToken, Token]]
 
     class Config:
@@ -279,13 +280,13 @@ class TokenResponseSchema(BaseModel):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type['TokenResponseSchema']) -> None:
+                         model: Type["TokenResponseSchema"]) -> None:
             """Configure OpenAPI schema."""
-            if 'title' in schema.keys():
-                schema.pop('title', None)
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            schema['example'] = {
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
                 "search_term": "BRAF V600E",
                 "tokens": [
                     {
@@ -298,7 +299,7 @@ class TokenResponseSchema(BaseModel):
                     },
                     {
                         "token": "V600E",
-                        "token_type": "AminoAcidSubstitution",
+                        "token_type": "ProteinSubstitution",
                         "match_type": 5,
                         "input_string": "V600E",
                         "object_type": "Token",
@@ -319,7 +320,7 @@ class SingleNucleotideVariation(Token):
     ref_nucleotide: Optional[str]
     new_nucleotide: str
     token_type: str
-    reference_sequence: ReferenceSequence
+    coordinate_type: CoordinateType
     so_id: SequenceOntology
     molecule_context: str
     alt_type: str
@@ -328,43 +329,43 @@ class SingleNucleotideVariation(Token):
 class CodingDNASubstitutionToken(SingleNucleotideVariation):
     """SNV substitution at the coding DNA reference sequence."""
 
-    reference_sequence = ReferenceSequence.CODING_DNA
-    token_type = 'CodingDNASubstitution'
+    coordinate_type = CoordinateType.CODING_DNA
+    token_type = "CodingDNASubstitution"
     so_id = SequenceOntology.SNV
-    molecule_context = 'transcript'
-    alt_type = 'substitution'
+    molecule_context = "transcript"
+    alt_type = "substitution"
 
 
 class CodingDNASilentMutationToken(SingleNucleotideVariation):
     """SNV no change at the coding DNA reference sequence."""
 
-    reference_sequence = ReferenceSequence.CODING_DNA
-    new_nucleotide = '='
-    token_type = 'CodingDNASilentMutation'
+    coordinate_type = CoordinateType.CODING_DNA
+    new_nucleotide = "="
+    token_type = "CodingDNASilentMutation"
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
-    molecule_context = 'transcript'
-    alt_type = 'silent_mutation'
+    molecule_context = "transcript"
+    alt_type = "silent_mutation"
 
 
 class GenomicSubstitutionToken(SingleNucleotideVariation):
     """SNV substitution at the linear genomic reference sequence."""
 
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    token_type = 'GenomicSubstitution'
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
+    token_type = "GenomicSubstitution"
     so_id = SequenceOntology.SNV
-    molecule_context = 'genomic'
-    alt_type = 'substitution'
+    molecule_context = "genomic"
+    alt_type = "substitution"
 
 
 class GenomicSilentMutationToken(SingleNucleotideVariation):
     """SNV no change at the linear genomic reference sequence."""
 
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    new_nucleotide = '='
-    token_type = 'GenomicSilentMutation'
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
+    new_nucleotide = "="
+    token_type = "GenomicSilentMutation"
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
-    molecule_context = 'genomic'
-    alt_type = 'silent_mutation'
+    molecule_context = "genomic"
+    alt_type = "silent_mutation"
 
 
 class DelIns(Token):
@@ -377,13 +378,13 @@ class DelIns(Token):
     inserted_sequence1: str
     inserted_sequence2: Optional[str]
     token_type: str
-    reference_sequence: ReferenceSequence
+    coordinate_type: CoordinateType
     so_id = SequenceOntology.DELINS
     molecule_context: str
-    alt_type = 'delins'
+    alt_type = "delins"
 
 
-class AminoAcidDelInsToken(Token):
+class ProteinDelInsToken(Token):
     """DelIns at the protein reference sequence."""
 
     start_aa_del: str
@@ -391,27 +392,27 @@ class AminoAcidDelInsToken(Token):
     end_aa_del: Optional[str]
     end_pos_del: Optional[int]
     inserted_sequence: str
-    reference_sequence = ReferenceSequence.PROTEIN
+    coordinate_type = CoordinateType.PROTEIN
     so_id = SequenceOntology.DELINS
-    molecule_context = 'protein'
-    token_type = 'AminoAcidDelIns'
-    alt_type = 'delins'
+    molecule_context = "protein"
+    token_type = "ProteinDelIns"
+    alt_type = "delins"
 
 
 class CodingDNADelInsToken(DelIns):
     """DelIns at the coding DNA reference sequence."""
 
-    reference_sequence = ReferenceSequence.CODING_DNA
-    token_type = 'CodingDNADelIns'
-    molecule_context = 'transcript'
+    coordinate_type = CoordinateType.CODING_DNA
+    token_type = "CodingDNADelIns"
+    molecule_context = "transcript"
 
 
 class GenomicDelInsToken(DelIns):
     """DelIns at the linear genomic reference sequence."""
 
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
-    token_type = 'GenomicDelIns'
-    molecule_context = 'genomic'
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
+    token_type = "GenomicDelIns"
+    molecule_context = "genomic"
 
 
 class LocusReferenceGenomicToken(Token):
@@ -422,7 +423,7 @@ class LocusReferenceGenomicToken(Token):
     id: int
     t: Optional[int]
     p: Optional[int]
-    token_type = 'LocusReferenceGenomic'
+    token_type = "LocusReferenceGenomic"
 
 
 class Insertion(Token):
@@ -436,42 +437,42 @@ class Insertion(Token):
     start_pos_flank: int
     end_pos_flank: int
     inserted_sequence: str
-    reference_sequence: ReferenceSequence
+    coordinate_type: CoordinateType
     token_type: str
     so_id: SequenceOntology
     molecule_context: str
-    alt_type = 'insertion'
+    alt_type = "insertion"
 
 
-class AminoAcidInsertionToken(Insertion):
-    """Amino Acid Insertion."""
+class ProteinInsertionToken(Insertion):
+    """Protein Insertion."""
 
     start_aa_flank: str
     end_aa_flank: str
-    reference_sequence = ReferenceSequence.PROTEIN
-    token_type = 'AminoAcidInsertion'
-    so_id = SequenceOntology.AMINO_ACID_INSERTION
-    molecule_context = 'protein'
+    coordinate_type = CoordinateType.PROTEIN
+    token_type = "ProteinInsertion"
+    so_id = SequenceOntology.PROTEIN_INSERTION
+    molecule_context = "protein"
 
 
 class CodingDNAInsertionToken(Insertion):
     """Coding DNA Insertion."""
 
-    reference_sequence = ReferenceSequence.CODING_DNA
+    coordinate_type = CoordinateType.CODING_DNA
     inserted_sequence2: Optional[str]
-    token_type = 'CodingDNAInsertion'
+    token_type = "CodingDNAInsertion"
     so_id = SequenceOntology.INSERTION
-    molecule_context = 'transcript'
+    molecule_context = "transcript"
 
 
 class GenomicInsertionToken(Insertion):
     """Genomic Insertion."""
 
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
     inserted_sequence2: Optional[str]
-    token_type = 'GenomicInsertion'
+    token_type = "GenomicInsertion"
     so_id = SequenceOntology.INSERTION
-    molecule_context = 'genomic'
+    molecule_context = "genomic"
 
 
 class DeletionAltType(str, Enum):
@@ -489,14 +490,14 @@ class Deletion(Token):
 
     start_pos_del: int
     end_pos_del: Optional[int]
-    reference_sequence: ReferenceSequence
+    coordinate_type: CoordinateType
     token_type: str
     so_id: SequenceOntology
     molecule_context: str
     alt_type: DeletionAltType.DELETION = DeletionAltType.DELETION
 
 
-class AminoAcidDeletionToken(Deletion):
+class ProteinDeletionToken(Deletion):
     """A sequence change between the translation initiation (start) and
     termination (stop) codon where, compared to a reference sequence, one or
     more amino acids are not present (deleted) - varnomen.hgvs.org
@@ -504,10 +505,10 @@ class AminoAcidDeletionToken(Deletion):
 
     start_aa_del: str
     end_aa_del: Optional[str]
-    reference_sequence = ReferenceSequence.PROTEIN
-    token_type = 'AminoAcidDeletion'
-    so_id = SequenceOntology.AMINO_ACID_DELETION
-    molecule_context = 'protein'
+    coordinate_type = CoordinateType.PROTEIN
+    token_type = "ProteinDeletion"
+    so_id = SequenceOntology.PROTEIN_DELETION
+    molecule_context = "protein"
 
 
 class CodingDNADeletionToken(Deletion):
@@ -515,11 +516,11 @@ class CodingDNADeletionToken(Deletion):
     more nucleotides are not present (deleted). - varnomen.hgvs.org
     """
 
-    reference_sequence = ReferenceSequence.CODING_DNA
+    coordinate_type = CoordinateType.CODING_DNA
     deleted_sequence: Optional[str]
-    token_type = 'CodingDNADeletion'
+    token_type = "CodingDNADeletion"
     so_id = SequenceOntology.DELETION
-    molecule_context = 'transcript'
+    molecule_context = "transcript"
 
 
 class GenomicDeletionToken(Deletion):
@@ -527,11 +528,11 @@ class GenomicDeletionToken(Deletion):
     more nucleotides are not present (deleted). - varnomen.hgvs.org
     """
 
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
     deleted_sequence: Optional[str]
-    token_type = 'GenomicDeletion'
+    token_type = "GenomicDeletion"
     so_id = SequenceOntology.DELETION
-    molecule_context = 'genomic'
+    molecule_context = "genomic"
 
 
 class DeletionRange(Token):
@@ -552,16 +553,16 @@ class GenomicDeletionRangeToken(DeletionRange):
 
     token_type = "GenomicDeletionRange"
     molecule_context = "genomic"
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
 class UncertainDeletion(DeletionRange):
     """Uncertain Deletion."""
 
-    start_pos1_del: Optional[Union[Literal['?'], int]]
+    start_pos1_del: Optional[Union[Literal["?"], int]]
     start_pos2_del: Optional[int]
     end_pos1_del: int
-    end_pos2_del: Optional[Union[Literal['?'], int]]
+    end_pos2_del: Optional[Union[Literal["?"], int]]
     token_type: str
     molecule_context: str
     alt_type: Literal[DeletionAltType.UNCERTAIN_DELETION] = DeletionAltType.UNCERTAIN_DELETION  # noqa: E501
@@ -572,7 +573,7 @@ class GenomicUncertainDeletionToken(UncertainDeletion):
 
     token_type = "GenomicUncertainDeletion"
     molecule_context = "genomic"
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
 class DuplicationAltType(str, Enum):
@@ -586,7 +587,7 @@ class DuplicationAltType(str, Enum):
 class Duplication(Token):
     """Duplications."""
 
-    start_pos1_dup: Union[Literal['?'], int]
+    start_pos1_dup: Union[Literal["?"], int]
     start_pos2_dup: Optional[int]
     token_type: TokenType
     so_id = SequenceOntology.DUPLICATION
@@ -599,7 +600,7 @@ class GenomicDuplicationToken(Duplication):
 
     token_type = TokenType.GENOMIC_DUPLICATION
     molecule_context = "genomic"
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
     alt_type: Literal[DuplicationAltType.DUPLICATION] = DuplicationAltType.DUPLICATION  # noqa: E501
 
 
@@ -607,7 +608,7 @@ class DuplicationRange(Duplication):
     """Duplications of the form (#_#)_(#_#)dup"""
 
     end_pos1_dup: int
-    end_pos2_dup: Optional[Union[Literal['?'], int]]
+    end_pos2_dup: Optional[Union[Literal["?"], int]]
     so_id = SequenceOntology.COPY_NUMBER_GAIN
 
 
@@ -616,7 +617,7 @@ class GenomicDuplicationRangeToken(DuplicationRange):
 
     token_type = TokenType.GENOMIC_DUPLICATION_RANGE
     molecule_context = "genomic"
-    reference_sequence = ReferenceSequence.LINEAR_GENOMIC
+    coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
 class ChromosomeToken(Token):

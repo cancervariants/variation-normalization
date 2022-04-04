@@ -1,10 +1,11 @@
 """Module for testing HGVS Dup Del mode."""
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
 from tests.conftest import assertion_checks
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def dmd_gene_context():
     """Create test fixture for DMD gene context"""
     return {
@@ -91,7 +92,7 @@ def dmd_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def mecp2_gene_context():
     """Create test fixture for MECP2 gene context"""
     return {
@@ -173,7 +174,7 @@ def mecp2_gene_context():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -188,22 +189,7 @@ def genomic_dup1():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup1_seq_loc():
-    """Create test fixture containing genomic dup1 sequence location"""
-    return {
-        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 49531260, "type": "Number"},
-            "end": {"value": 49531262, "type": "Number"},
-        },
-        "type": "SequenceLocation",
-    }
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_default(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.aeNse-a8IJzqHiG-P5zTRYA_eVFhrJXw"
@@ -220,28 +206,15 @@ def genomic_dup1_default(genomic_dup1, genomic_dup1_seq_loc):
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
-def genomic_dup1_cnv(genomic_dup1, genomic_dup1_seq_loc):
+@pytest.fixture(scope="module")
+def genomic_dup1_cnv(genomic_dup1, genomic_dup1_38_vac):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.KdBguJLeiXM2yr3JaRQ2kxLxaAd4pPlq"
-    genomic_dup1["variation"] = {
-        "type": "CopyNumber",
-        "_id": _id,
-        "subject": {
-            "location": genomic_dup1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
-    }
-    genomic_dup1["variation_id"] = _id
+    genomic_dup1["variation"] = genomic_dup1_38_vac
+    genomic_dup1["variation_id"] = genomic_dup1["variation"]["_id"]
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.lAyulP9JxvQReKWjpq0LbO50r2UTeMkl"
@@ -266,7 +239,7 @@ def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
     return VariationDescriptor(**genomic_dup1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -345,7 +318,7 @@ def genomic_dup1_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_seq_loc():
     """Create genomic dup1 free text sequence location"""
     return {
@@ -360,24 +333,16 @@ def genomic_dup1_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
-def genomic_dup1_free_text_default(genomic_dup1_free_text):
+@pytest.fixture(scope="module")
+def genomic_dup1_free_text_default(genomic_dup1_free_text,
+                                   genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.eE5Kr1zJrv3PSXeBabbKTFnZxToaYxat"
     genomic_dup1_free_text["variation_id"] = _id
     genomic_dup1_free_text["variation"] = {
         "type": "Allele",
         "_id": _id,
-        "location": {
-            "_id": "ga4gh:VSL.wasOdqigAN-is7O2nEqJeDwkPlwpiOak",
-            "sequence_id": "ga4gh:SQ.tpvbnWsfEGqip8gJQZnWJAF8-bWDUDKd",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {"value": 1032, "type": "Number"},
-                "end": {"value": 1034, "type": "Number"},
-            },
-            "type": "SequenceLocation",
-        },
+        "location": genomic_dup1_free_text_seq_loc,
         "state": {
             "type": "LiteralSequenceExpression",
             "sequence": "GGG"
@@ -386,13 +351,13 @@ def genomic_dup1_free_text_default(genomic_dup1_free_text):
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.QaiY27vxjYq1pNlI7xWSxom2S-JHkW-r"
+    _id = "ga4gh:VAC.Y5AgRjKvgUV29m_Me23v-S67clQuA4Fv"
     genomic_dup1_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup1_free_text_seq_loc,
@@ -408,7 +373,7 @@ def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup1_free_text_rse(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup RSE."""
@@ -434,7 +399,7 @@ def genomic_dup1_free_text_rse(genomic_dup1_free_text,
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -449,22 +414,7 @@ def genomic_dup2():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup2_seq_loc():
-    """Create genomic dup2 sequence location"""
-    return {
-        "_id": "ga4gh:VSL.4mH68huylkPmu6zyUwH4wiazIYr9cQUX",
-        "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 2087937, "type": "Number"},
-            "end": {"value": 2087948, "type": "Number"},
-        },
-        "type": "SequenceLocation",
-    }
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_default(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.wqqxfUCrFSndedI2-4oiIuHLHHGjBFof"
@@ -481,28 +431,15 @@ def genomic_dup2_default(genomic_dup2, genomic_dup2_seq_loc):
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
-def genomic_dup2_cnv(genomic_dup2, genomic_dup2_seq_loc):
+@pytest.fixture(scope="module")
+def genomic_dup2_cnv(genomic_dup2, genomic_dup2_38_vac):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.rd1wobb8NXRxk6O__njJUQg_ekZUALGx"
-    genomic_dup2["variation"] = {
-        "type": "CopyNumber",
-        "_id": _id,
-        "subject": {
-            "location": genomic_dup2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
-    }
-    genomic_dup2["variation_id"] = _id
+    genomic_dup2["variation"] = genomic_dup2_38_vac
+    genomic_dup2["variation_id"] = genomic_dup2["variation"]["_id"]
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_rse(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.fXANtjCcUPJ1A4bCSgcAxSSrxoqXuL3A"
@@ -527,7 +464,7 @@ def genomic_dup2_rse(genomic_dup2, genomic_dup2_seq_loc):
     return VariationDescriptor(**genomic_dup2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text(dmd_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -543,7 +480,7 @@ def genomic_dup2_free_text(dmd_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_seq_loc():
     """Create genomic dup2 free text sequence location"""
     return {
@@ -558,7 +495,7 @@ def genomic_dup2_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_default(genomic_dup2_free_text,
                                    genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
@@ -576,13 +513,13 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VCN.KfNh7wnKkw5pfvauEK2lu5TOdgDZfnJP"
+    _id = "ga4gh:VAC.JJ0mFb-kh7iAFFq90hOmbIIHuq2LgH4i"
     genomic_dup2_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_dup2_free_text_seq_loc,
@@ -599,7 +536,7 @@ def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text_rse(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup RSE."""
@@ -625,7 +562,7 @@ def genomic_dup2_free_text_rse(genomic_dup2_free_text,
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -640,32 +577,15 @@ def genomic_dup3():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup3_default(genomic_dup3):
+@pytest.fixture(scope="module")
+def genomic_dup3_default(genomic_dup3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.IgQATuKrM_J5MDHm2VemKThFOkzz-7AZ"
+    _id = "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh"
     genomic_dup3["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "min": 31060226,
-                        "max": 31100350,
-                        "type": "DefiniteRange"
-                    },
-                    "end": {
-                        "min": 33274279,
-                        "max": 33417152,
-                        "type": "DefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genomic_del3_dup3_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -679,7 +599,7 @@ def genomic_dup3_default(genomic_dup3):
     return VariationDescriptor(**genomic_dup3)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_rse_lse(genomic_dup3):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -694,7 +614,7 @@ def genomic_dup3_rse_lse(genomic_dup3):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text(dmd_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -710,12 +630,12 @@ def genomic_dup3_free_text(dmd_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text_default(genomic_dup3_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.mMt9eqOhTHjRLR_gAJ7zgbDMVOblxSLo"
+    _id = "ga4gh:VAC.sx53Q7MiG1dc4sQ2RPkk0-K9vgku_jjj"
     genomic_dup3_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -749,7 +669,7 @@ def genomic_dup3_free_text_default(genomic_dup3_free_text):
     return VariationDescriptor(**genomic_dup3_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup3_free_text_rse_lse(genomic_dup3_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -764,7 +684,7 @@ def genomic_dup3_free_text_rse_lse(genomic_dup3_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -779,32 +699,15 @@ def genomic_dup4():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup4_default(genomic_dup4):
+@pytest.fixture(scope="module")
+def genomic_dup4_default(genomic_dup4, genoimc_dup4_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.3rvfUmiIb4hSxVQhXKOonuOY6Q3xTkKx"
+    _id = "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML"
     genomic_dup4["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
-                "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 30417575,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 31394018,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genoimc_dup4_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -817,7 +720,7 @@ def genomic_dup4_default(genomic_dup4):
     return VariationDescriptor(**genomic_dup4)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_rse_lse(genomic_dup4):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -832,7 +735,7 @@ def genomic_dup4_rse_lse(genomic_dup4):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -916,12 +819,12 @@ def genomic_dup4_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text_default(genomic_dup4_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VCN.Yq_C5caHcDU8tLVHWFLoBFF4Xvv2g5Qp"
+    _id = "ga4gh:VAC.kqDlxaoHDXGgIURb72e5Wv0HNSxkoxwq"
     genomic_dup4_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -954,7 +857,7 @@ def genomic_dup4_free_text_default(genomic_dup4_free_text):
     return VariationDescriptor(**genomic_dup4_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -969,7 +872,7 @@ def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -984,30 +887,14 @@ def genomic_dup5():
     return params
 
 
-def genomic_dup5_copy_number(params):
+def genomic_dup5_copy_number(params, genoimc_dup5_loc):
     """Create genomic dup5 copy number object"""
-    _id = "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-"
+    _id = "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 154021811,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 154092209,
-                        "type": "Number"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genoimc_dup5_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -1020,14 +907,14 @@ def genomic_dup5_copy_number(params):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
-def genomic_dup5_default(genomic_dup5):
+@pytest.fixture(scope="module")
+def genomic_dup5_default(genomic_dup5, genoimc_dup5_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    genomic_dup5_copy_number(genomic_dup5)
+    genomic_dup5_copy_number(genomic_dup5, genoimc_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_rse_lse(genomic_dup5):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1042,7 +929,7 @@ def genomic_dup5_rse_lse(genomic_dup5):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_free_text(mecp2_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1058,14 +945,14 @@ def genomic_dup5_free_text(mecp2_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup5_free_text_default(genomic_dup5_free_text):
+@pytest.fixture(scope="module")
+def genomic_dup5_free_text_default(genomic_dup5_free_text, genoimc_dup5_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    genomic_dup5_copy_number(genomic_dup5_free_text)
+    genomic_dup5_copy_number(genomic_dup5_free_text, genoimc_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1080,7 +967,7 @@ def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1095,30 +982,14 @@ def genomic_dup6():
     return params
 
 
-def genomic_dup6_copy_number(params):
+def genomic_dup6_copy_number(params, genoimc_dup6_loc):
     """Create genomic dup6 copy number object"""
-    _id = "ga4gh:VCN.Rekk_MmUQ777V76S51x7nZGjh4U3LkLy"
+    _id = "ga4gh:VAC.v-dhCkHL7W67y3SHp-qfMg7F5DOaAbQn"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.h0_xXu36uSnPEuLoxvVmTAFQCS1ZFuLN",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 154021811,
-                        "type": "Number"
-                    },
-                    "end": {
-                        "value": 154092209,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genoimc_dup6_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -1131,14 +1002,14 @@ def genomic_dup6_copy_number(params):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
-def genomic_dup6_default(genomic_dup6):
+@pytest.fixture(scope="module")
+def genomic_dup6_default(genomic_dup6, genoimc_dup6_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    genomic_dup6_copy_number(genomic_dup6)
+    genomic_dup6_copy_number(genomic_dup6, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_rse_lse(genomic_dup6):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1153,7 +1024,7 @@ def genomic_dup6_rse_lse(genomic_dup6):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_free_text(mecp2_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1169,14 +1040,14 @@ def genomic_dup6_free_text(mecp2_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_dup6_free_text_default(genomic_dup6_free_text):
+@pytest.fixture(scope="module")
+def genomic_dup6_free_text_default(genomic_dup6_free_text, genoimc_dup6_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    genomic_dup6_copy_number(genomic_dup6_free_text)
+    genomic_dup6_copy_number(genomic_dup6_free_text, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1191,7 +1062,7 @@ def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1206,22 +1077,7 @@ def genomic_del1():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del1_seq_loc():
-    """Create genomic del1 sequence location"""
-    return {
-        "_id": "ga4gh:VSL.Yg5B66zErDjK9Lqeaw-kuzAB9w5-uUaS",
-        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 10149810, "type": "Number"},
-            "end": {"value": 10149811, "type": "Number"},
-        },
-        "type": "SequenceLocation",
-    }
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_default(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.jUeT1n4AuBzwtt5TT-Iaac1KasATWjKE"
@@ -1238,28 +1094,15 @@ def genomic_del1_default(genomic_del1, genomic_del1_seq_loc):
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
-def genomic_del1_cnv(genomic_del1, genomic_del1_seq_loc):
+@pytest.fixture(scope="module")
+def genomic_del1_cnv(genomic_del1, genomic_del1_38_vac):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN._Iv1RBu8ctlHOaobb4emjxwbxPdkBIVF"
-    genomic_del1["variation"] = {
-        "type": "CopyNumber",
-        "_id": _id,
-        "subject": {
-            "location": genomic_del1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
-    }
-    genomic_del1["variation_id"] = _id
+    genomic_del1["variation"] = genomic_del1_38_vac
+    genomic_del1["variation_id"] = genomic_del1["variation"]["_id"]
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.6fIEZ3R2W4wIaltUX1jyw9ap5YN6oGDT"
@@ -1284,7 +1127,7 @@ def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
     return VariationDescriptor(**genomic_del1)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text(vhl_gene_context):
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1300,7 +1143,7 @@ def genomic_del1_free_text(vhl_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_seq_loc():
     """Create genomic del1 free text sequence location"""
     return {
@@ -1315,7 +1158,7 @@ def genomic_del1_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_default(genomic_del1_free_text,
                                    genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
@@ -1333,13 +1176,13 @@ def genomic_del1_free_text_default(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_cnv(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.HBeZfrNQLpVppisn_FHfWbpa8ehL-49P"
+    _id = "ga4gh:VAC.x8JFweASgnLK1pQy-yErcGZxuniFQhip"
     genomic_del1_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del1_free_text_seq_loc,
@@ -1355,7 +1198,7 @@ def genomic_del1_free_text_cnv(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del1_free_text_rse(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
@@ -1381,7 +1224,7 @@ def genomic_del1_free_text_rse(genomic_del1_free_text,
     return VariationDescriptor(**genomic_del1_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1396,22 +1239,7 @@ def genomic_del2():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del2_seq_loc():
-    """Create genomic del2 sequence location"""
-    return {
-        "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
-        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 10146594, "type": "Number"},
-            "end": {"value": 10146613, "type": "Number"},
-        },
-        "type": "SequenceLocation",
-    }
-
-
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_default(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx"
@@ -1428,28 +1256,15 @@ def genomic_del2_default(genomic_del2, genomic_del2_seq_loc):
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
-def genomic_del2_cnv(genomic_del2, genomic_del2_seq_loc):
+@pytest.fixture(scope="module")
+def genomic_del2_cnv(genomic_del2, genomic_del2_38_vac):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.gBHXvaw64pQg04DAhp_Gtzh8ADUf7HuI"
-    genomic_del2["variation"] = {
-        "type": "CopyNumber",
-        "_id": _id,
-        "subject": {
-            "location": genomic_del2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
-    }
-    genomic_del2["variation_id"] = _id
+    genomic_del2["variation"] = genomic_del2_38_vac
+    genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.aQeEhbisBWYrzVbf3-VPOZtGJu1vKmfx"
@@ -1474,7 +1289,7 @@ def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
     return VariationDescriptor(**genomic_del2)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text(vhl_gene_context):
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1490,7 +1305,7 @@ def genomic_del2_free_text(vhl_gene_context):
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_seq_loc():
     """Create genomic del2 free text sequence location"""
     return {
@@ -1505,7 +1320,7 @@ def genomic_del2_free_text_seq_loc():
     }
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_default(genomic_del2_free_text,
                                    genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
@@ -1523,13 +1338,13 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_cnv(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VCN.aTh-gPjB3WdB27ihgFWJFJs52rGVm35z"
+    _id = "ga4gh:VAC.1Gbot3wdFzNWbyWUiKaV0gY3Dvm1Nef7"
     genomic_del2_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": genomic_del2_free_text_seq_loc,
@@ -1545,7 +1360,7 @@ def genomic_del2_free_text_cnv(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del2_free_text_rse(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
@@ -1571,7 +1386,7 @@ def genomic_del2_free_text_rse(genomic_del2_free_text,
     return VariationDescriptor(**genomic_del2_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1586,32 +1401,15 @@ def genomic_del3():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del3_default(genomic_del3):
+@pytest.fixture(scope="module")
+def genomic_del3_default(genomic_del3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.9h2LkajTwHBdXYMRyrD9HkYwU9d7fIBr"
+    _id = "ga4gh:VAC.o39DwfEb2I-LR9NFKR5cznWrRhI9Vx8b"
     genomic_del3["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "min": 31060226,
-                        "max": 31100350,
-                        "type": "DefiniteRange"
-                    },
-                    "end": {
-                        "min": 33274279,
-                        "max": 33417152,
-                        "type": "DefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genomic_del3_dup3_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -1625,7 +1423,7 @@ def genomic_del3_default(genomic_del3):
     return VariationDescriptor(**genomic_del3)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_rse_lse(genomic_del3):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -1640,7 +1438,7 @@ def genomic_del3_rse_lse(genomic_del3):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1726,12 +1524,12 @@ def genomic_del3_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text_default(genomic_del3_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.-sOh0hKxd_KA2v6mRDsCliowXNAl-4lV"
+    _id = "ga4gh:VAC.C8fUDphkEtMHUgh-8fHY0KLf86FekCRM"
     genomic_del3_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1765,7 +1563,7 @@ def genomic_del3_free_text_default(genomic_del3_free_text):
     return VariationDescriptor(**genomic_del3_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del3_free_text_rse_lse(genomic_del3_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -1780,7 +1578,7 @@ def genomic_del3_free_text_rse_lse(genomic_del3_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1795,32 +1593,15 @@ def genomic_del4():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del4_default(genomic_del4):
+@pytest.fixture(scope="module")
+def genomic_del4_default(genomic_del4, genomic_del4_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk"
+    _id = "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L"
     genomic_del4["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 31120495,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 33339477,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genomic_del4_seq_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -1834,7 +1615,7 @@ def genomic_del4_default(genomic_del4):
     return VariationDescriptor(**genomic_del4)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_rse_lse(genomic_del4):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1849,7 +1630,7 @@ def genomic_del4_rse_lse(genomic_del4):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -1920,12 +1701,12 @@ def genomic_del4_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text_default(genomic_del4_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VCN.SvFPk7UrVFhzI3ANMJidDk5GItHgw0j_"
+    _id = "ga4gh:VAC.I3P7IMe7ozWSB2zAxEhm1bk1u9eRQ6E0"
     genomic_del4_free_text["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
             "location": {
@@ -1958,7 +1739,7 @@ def genomic_del4_free_text_default(genomic_del4_free_text):
     return VariationDescriptor(**genomic_del4_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del4_free_text_rse_lse(genomic_del4_free_text):
     """Create test fixture for genomic dup rse and lse."""
     params = {
@@ -1973,15 +1754,15 @@ def genomic_del4_free_text_rse_lse(genomic_del4_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_uncertain_del_2():
     """Create a genomic uncertain deletion on chr 2 test fixture."""
     params = {
-        "id": 'normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del',  # noqa: E501
+        "id": "normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+        "variation_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
         "variation": {
-            "_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+            "_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
             "subject": {
                 "location": {
                     "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
@@ -2008,7 +1789,7 @@ def genomic_uncertain_del_2():
                 "value": 1,
                 "type": "Number"
             },
-            "type": "CopyNumber"
+            "type": "AbsoluteCopyNumber"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2016,15 +1797,15 @@ def genomic_uncertain_del_2():
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_uncertain_del_y():
     """Create a genomic uncertain deletion on chr Y test fixture."""
     params = {
-        "id": 'normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del',  # noqa: E501
+        "id": "normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+        "variation_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
         "variation": {
-            "_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+            "_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
             "subject": {
                 "location": {
                     "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
@@ -2051,7 +1832,7 @@ def genomic_uncertain_del_y():
                 "value": 0,
                 "type": "Number"
             },
-            "type": "CopyNumber"
+            "type": "AbsoluteCopyNumber"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2059,7 +1840,7 @@ def genomic_uncertain_del_y():
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2074,30 +1855,14 @@ def genomic_del5():
     return params
 
 
-def genomic_del5_copy_number(params):
+def genomic_del5_copy_number(params, genomic_del5_seq_loc):
     """Create genomic del5 copy number"""
-    _id = "ga4gh:VCN._RIw5UC5bZeLeHnBLYAow7Ml-lv2nKJW"
+    _id = "ga4gh:VAC.WQkCH9rBzLPtB4f6LRb8Y-rhob68h-7M"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.jURzcCBf3kJVx19uuJJtwt78LuBbtfwD",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 18575353,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 18653629,
-                        "type": "Number"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genomic_del5_seq_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -2110,14 +1875,14 @@ def genomic_del5_copy_number(params):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
-def genomic_del5_default(genomic_del5):
+@pytest.fixture(scope="module")
+def genomic_del5_default(genomic_del5, genomic_del5_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    genomic_del5_copy_number(genomic_del5)
+    genomic_del5_copy_number(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_rse_lse(genomic_del5):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2132,7 +1897,7 @@ def genomic_del5_rse_lse(genomic_del5):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2216,14 +1981,14 @@ def genomic_del5_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del5_free_text_default(genomic_del5_free_text):
+@pytest.fixture(scope="module")
+def genomic_del5_free_text_default(genomic_del5_free_text, genomic_del5_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    genomic_del5_copy_number(genomic_del5_free_text)
+    genomic_del5_copy_number(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2238,7 +2003,7 @@ def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2253,30 +2018,14 @@ def genomic_del6():
     return params
 
 
-def genomic_del6_copy_number(params):
+def genomic_del6_copy_number(params, genomic_del6_seq_loc):
     """Create genomic del6 copy number"""
-    _id = "ga4gh:VCN.F3U6Rmov1WO2mhmRHWumJb-YALOMkeeI"
+    _id = "ga4gh:VAC.YAyl7c-YMRkbqZymPFI2GKkYSQ9v7EeD"
     params["variation"] = {
-        "type": "CopyNumber",
+        "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.TPwsB5ymsNI7TynTlI8_8CI_NmNrBHUQ",
-                "sequence_id": "ga4gh:SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 133462763,
-                        "type": "Number"
-                    },
-                    "end": {
-                        "value": 133464858,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
-                },
-                "type": "SequenceLocation",
-            },
+            "location": genomic_del6_seq_loc,
             "reverse_complement": False,
             "type": "DerivedSequenceExpression"
         },
@@ -2288,14 +2037,14 @@ def genomic_del6_copy_number(params):
     params["variation_id"] = _id
 
 
-@pytest.fixture(scope='module')
-def genomic_del6_default(genomic_del6):
+@pytest.fixture(scope="module")
+def genomic_del6_default(genomic_del6, genomic_del6_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    genomic_del6_copy_number(genomic_del6)
+    genomic_del6_copy_number(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_rse_lse(genomic_del6):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2310,7 +2059,7 @@ def genomic_del6_rse_lse(genomic_del6):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_free_text():
     """Create test fixture containing params for genomic del VD."""
     params = {
@@ -2394,14 +2143,14 @@ def genomic_del6_free_text():
     return params
 
 
-@pytest.fixture(scope='module')
-def genomic_del6_free_text_default(genomic_del6_free_text):
+@pytest.fixture(scope="module")
+def genomic_del6_free_text_default(genomic_del6_free_text, genomic_del6_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    genomic_del6_copy_number(genomic_del6_free_text)
+    genomic_del6_copy_number(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
     """Create test fixture for genomic del rse and lse."""
     params = {
@@ -2416,49 +2165,51 @@ def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
     return VariationDescriptor(**params)
 
 
-def assert_text_variation(query_list, test_query_handler):
+@pytest.mark.asyncio
+async def assert_text_variation(query_list, test_query_handler):
     """Make assertion checks for invalid queries"""
     for q in query_list:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assert resp.label == q.strip()
         assert (resp.variation.type == "Text"), q
 
 
-def test_genomic_dup1(test_query_handler, genomic_dup1_default,
-                      genomic_dup1_cnv, genomic_dup1_rse,
-                      genomic_dup1_free_text_default,
-                      genomic_dup1_free_text_cnv, genomic_dup1_free_text_rse):
+@pytest.mark.asyncio
+async def test_genomic_dup1(test_query_handler, genomic_dup1_default,
+                            genomic_dup1_cnv, genomic_dup1_rse,
+                            genomic_dup1_free_text_default,
+                            genomic_dup1_free_text_cnv, genomic_dup1_free_text_rse):
     """Test that genomic duplication works correctly."""
     q = "NC_000003.12:g.49531262dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup1_default, q)
 
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup1_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup1_cnv, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup1_rse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup1_default, q)
 
     q = "NC_000003.11:g.49568695dup"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup1_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup1_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup1_cnv, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup1_rse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup1_default, q, ignore_id=True)
 
     # Free Text
@@ -2466,19 +2217,19 @@ def test_genomic_dup1(test_query_handler, genomic_dup1_default,
         "DAG1 g.49568695dup",  # 37
         "DAG1 g.49531262dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup1_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup1_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup1_free_text_cnv, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_dup1_free_text_rse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup1_free_text_default, q, ignore_id=True)
 
     # Invalid
@@ -2487,37 +2238,38 @@ def test_genomic_dup1(test_query_handler, genomic_dup1_default,
         "NC_000007.14:g.159345976dup",
         "BRAF g.140219337dup", "BRAF g.141024929dup"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_dup2(test_query_handler, genomic_dup2_default, genomic_dup2_cnv,
-                      genomic_dup2_rse, genomic_dup2_free_text_default,
-                      genomic_dup2_free_text_cnv, genomic_dup2_free_text_rse):
+@pytest.mark.asyncio
+async def test_genomic_dup2(test_query_handler, genomic_dup2_default, genomic_dup2_cnv,
+                            genomic_dup2_rse, genomic_dup2_free_text_default,
+                            genomic_dup2_free_text_cnv, genomic_dup2_free_text_rse):
     """Test that genomic duplication works correctly."""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup2_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup2_cnv, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup2_rse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup2_default, q)
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup2_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup2_cnv, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup2_rse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup2_default, q, ignore_id=True)
 
     # Free text
@@ -2525,16 +2277,16 @@ def test_genomic_dup2(test_query_handler, genomic_dup2_default, genomic_dup2_cnv
         "DMD g.33229407_33229410dup",  # 37
         "DMD g.33211290_33211293dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup2_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup2_free_text_cnv, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_dup2_free_text_rse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup2_free_text_default, q, ignore_id=True)
 
     # Invalid
@@ -2543,38 +2295,39 @@ def test_genomic_dup2(test_query_handler, genomic_dup2_default, genomic_dup2_cnv
         "NC_000007.14:g.140413127_159345976dup",
         "BRAF g.140219337_140924929dup", "BRAF g.140719326_141024929dup"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_dup3(test_query_handler, genomic_dup3_default,
-                      genomic_dup3_rse_lse, genomic_dup3_free_text_default,
-                      genomic_dup3_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_dup3(test_query_handler, genomic_dup3_default,
+                            genomic_dup3_rse_lse, genomic_dup3_free_text_default,
+                            genomic_dup3_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup3_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup3_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup3_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup3_default, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2583,17 +2336,17 @@ def test_genomic_dup3(test_query_handler, genomic_dup3_default,
         # "DMD g.(31165391_31165395)_(31200854_31200856)dup",
         "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup3_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup3_free_text_default, q, ignore_id=True)
 
         genomic_dup3_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_dup3_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup3_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -2602,38 +2355,39 @@ def test_genomic_dup3(test_query_handler, genomic_dup3_default,
         "NC_000023.11:g.(31119221_31119227)_(31119300_156040899)dup",
         "DMD g.(31060227_31100351)_(33274278_33417151)dup"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_dup4(test_query_handler, genomic_dup4_default,
-                      genomic_dup4_rse_lse, genomic_dup4_free_text_default,
-                      genomic_dup4_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_dup4(test_query_handler, genomic_dup4_default,
+                            genomic_dup4_rse_lse, genomic_dup4_free_text_default,
+                            genomic_dup4_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup4_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup4_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse, q)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup4_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup4_default, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2641,18 +2395,18 @@ def test_genomic_dup4(test_query_handler, genomic_dup4_default,
         "PRPF8 g.(?_1577736)_(1587865_?)dup",  # 37
         "PRPF8 g.(?_1674442)_(1684571_?)dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup4_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup4_free_text_default, q, ignore_id=True)
 
         genomic_dup4_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         genomic_dup4_free_text_rse_lse.variation.definition = q
         assertion_checks(resp, genomic_dup4_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup4_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -2661,38 +2415,39 @@ def test_genomic_dup4(test_query_handler, genomic_dup4_default,
         "NC_000020.11:g.(?_29652252)_(64444169_?)dup",
         "PRPF8 g.(?_1650628)_(1684571_?)dup"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_dup5(test_query_handler, genomic_dup5_default,
-                      genomic_dup5_rse_lse, genomic_dup5_free_text_default,
-                      genomic_dup5_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_dup5(test_query_handler, genomic_dup5_default,
+                            genomic_dup5_rse_lse, genomic_dup5_free_text_default,
+                            genomic_dup5_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup5_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup5_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q)
 
-    q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup5_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup5_default, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2700,17 +2455,17 @@ def test_genomic_dup5(test_query_handler, genomic_dup5_default,
         "MECP2 g.(?_153287263)_153357667dup",  # 37
         "MECP2 g.(?_154021812)_154092209dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup5_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup5_free_text_default, q, ignore_id=True)
 
         genomic_dup5_free_text_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_dup5_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup5_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -2720,39 +2475,40 @@ def test_genomic_dup5(test_query_handler, genomic_dup5_default,
         "MECP2 g.(?_154021812)_154097733dup"  # 37
         "MECP2 g.(?_154021572)_154092209dup",  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assert resp.variation.type == "Text"
 
 
-def test_genomic_dup6(test_query_handler, genomic_dup6_default,
-                      genomic_dup6_rse_lse, genomic_dup6_free_text_default,
-                      genomic_dup6_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_dup6(test_query_handler, genomic_dup6_default,
+                            genomic_dup6_rse_lse, genomic_dup6_free_text_default,
+                            genomic_dup6_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup6_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup6_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse, q)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_dup6_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_dup6_default, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2760,17 +2516,17 @@ def test_genomic_dup6(test_query_handler, genomic_dup6_default,
         "MECP2 g.153287263_(153357667_?)dup",  # 37
         "MECP2 g.154021812_(154092209_?)dup"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_dup6_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_dup6_free_text_default, q, ignore_id=True)
 
         genomic_dup6_free_text_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_dup6_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_dup6_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -2780,38 +2536,39 @@ def test_genomic_dup6(test_query_handler, genomic_dup6_default,
         "MECP2 g.154021812_(154097733_?)dup"  # 37
         "MECP2 g.154021572_(154092209_?)dup",  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assert resp.variation.type == "Text"
 
 
-def test_genomic_del1(test_query_handler, genomic_del1_default, genomic_del1_cnv,
-                      genomic_del1_rse, genomic_del1_free_text_default,
-                      genomic_del1_free_text_cnv, genomic_del1_free_text_rse):
+@pytest.mark.asyncio
+async def test_genomic_del1(test_query_handler, genomic_del1_default, genomic_del1_cnv,
+                            genomic_del1_rse, genomic_del1_free_text_default,
+                            genomic_del1_free_text_cnv, genomic_del1_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10149811del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del1_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del1_cnv, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del1_rse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del1_default, q)
 
     q = "NC_000003.11:g.10191495del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del1_cnv, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del1_rse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
     # Free text
@@ -2819,31 +2576,31 @@ def test_genomic_del1(test_query_handler, genomic_del1_default, genomic_del1_cnv
         "VHL g.10191495del",  # 37
         "VHL g.10149811del"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del1_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del1_free_text_cnv, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del1_free_text_rse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del1_free_text_default, q, ignore_id=True)
 
     # gnomad vcf
     q = "3-10149810-CT-C"  # 38
-    resp = test_query_handler.normalize(q)
+    resp = await test_query_handler.normalize(q)
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
     q = "3-10191494-CT-C"  # 37
-    resp = test_query_handler.normalize(q)
+    resp = await test_query_handler.normalize(q)
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del1_default, q, ignore_id=True)
 
     # Invalid
@@ -2852,37 +2609,38 @@ def test_genomic_del1(test_query_handler, genomic_del1_default, genomic_del1_cnv
         "NC_000003.12:g.198295567del",
         "BRAF g.140413127del", "BRAF g.141024929del"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_del2(test_query_handler, genomic_del2_default, genomic_del2_cnv,
-                      genomic_del2_rse, genomic_del2_free_text_default,
-                      genomic_del2_free_text_cnv, genomic_del2_free_text_rse):
+@pytest.mark.asyncio
+async def test_genomic_del2(test_query_handler, genomic_del2_default, genomic_del2_cnv,
+                            genomic_del2_rse, genomic_del2_free_text_default,
+                            genomic_del2_free_text_cnv, genomic_del2_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del2_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del2_cnv, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del2_rse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del2_default, q)
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del2_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del2_cnv, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del2_rse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del2_default, q, ignore_id=True)
 
     # Free text
@@ -2890,25 +2648,25 @@ def test_genomic_del2(test_query_handler, genomic_del2_default, genomic_del2_cnv
         "VHL g.10188279_10188297del",  # 37
         "VHL g.10146595_10146613del"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del2_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del2_free_text_cnv, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del2_free_text_rse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del2_free_text_default, q, ignore_id=True)
 
     # gnomad vcf
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del2_default, q, ignore_id=True)
 
     q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
-    resp = test_query_handler.normalize(q)
+    resp = await test_query_handler.normalize(q)
     assertion_checks(resp, genomic_del2_default, q, ignore_id=True)
 
     # Invalid
@@ -2917,38 +2675,39 @@ def test_genomic_del2(test_query_handler, genomic_del2_default, genomic_del2_cnv
         "NC_000003.11:g.198022435_198022437del",
         "BRAF g.140413127_140419136del", "BRAF g.140719326_141024929del"
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_del3(test_query_handler, genomic_del3_default,
-                      genomic_del3_rse_lse, genomic_del3_free_text_default,
-                      genomic_del3_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_del3(test_query_handler, genomic_del3_default,
+                            genomic_del3_rse_lse, genomic_del3_free_text_default,
+                            genomic_del3_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del3_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del3_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del3_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del3_default, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2956,17 +2715,17 @@ def test_genomic_del3(test_query_handler, genomic_del3_default,
         "EFNB1 g.(68059108_68059111)_(68060963_68060968)del",  # 37
         "EFNB1 g.(68839265_68839268)_(68841120_68841125)del"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del3_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del3_free_text_default, q, ignore_id=True)
 
         genomic_del3_free_text_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del3_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del3_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -2976,47 +2735,48 @@ def test_genomic_del3(test_query_handler, genomic_del3_default,
         "EFNB1 g.(68048863_68048870)_(68842150_68842152)del",  # 37
         "EFNB1 g.(68829022_68829030)_(68842150_68842161)del"  # 38
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_del4(test_query_handler, genomic_del4_default,
-                      genomic_del4_rse_lse, genomic_uncertain_del_2,
-                      genomic_uncertain_del_y, genomic_del4_free_text_default,
-                      genomic_del4_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_del4(test_query_handler, genomic_del4_default,
+                            genomic_del4_rse_lse, genomic_uncertain_del_2,
+                            genomic_uncertain_del_y, genomic_del4_free_text_default,
+                            genomic_del4_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del4_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del4_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, q)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del4_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del4_default, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, q, ignore_id=True)
 
     q = "NC_000002.12:g.(?_110104900)_(110207160_?)del"
-    resp = test_query_handler.normalize(q)
+    resp = await test_query_handler.normalize(q)
     assertion_checks(resp, genomic_uncertain_del_2, q)
 
     q = "NC_000024.10:g.(?_14076802)_(57165209_?)del"
-    resp = test_query_handler.normalize(q)
+    resp = await test_query_handler.normalize(q)
     assertion_checks(resp, genomic_uncertain_del_y, q)
 
     # Free Text
@@ -3025,16 +2785,16 @@ def test_genomic_del4(test_query_handler, genomic_del4_default,
         # "COL4A4 g.(?_227886744)_(227890546_?)del",  # 37
         "COL4A4 g.(?_227022028)_(227025830_?)del"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del4_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del4_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del4_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del4_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -3044,38 +2804,39 @@ def test_genomic_del4(test_query_handler, genomic_del4_default,
         "COL4A4 g.(?_227002710)_(227003710_?)del",
         "COL4A4 g.(?_227867430)_(228029276_?)del",
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_del5(test_query_handler, genomic_del5_default,
-                      genomic_del5_rse_lse, genomic_del5_free_text_default,
-                      genomic_del5_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_del5(test_query_handler, genomic_del5_default,
+                            genomic_del5_rse_lse, genomic_del5_free_text_default,
+                            genomic_del5_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del5_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del5_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del5_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del5_default, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, q, ignore_id=True)
 
     # Free text
@@ -3084,17 +2845,17 @@ def test_genomic_del5(test_query_handler, genomic_del5_default,
         # "CDKL5 g.(?_18593474)_18671749del",
         "CDKL5 g.(?_18575354)_18653629del"
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del5_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del5_free_text_default, q, ignore_id=True)
 
         genomic_del5_free_text_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del5_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del5_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -3105,38 +2866,39 @@ def test_genomic_del5(test_query_handler, genomic_del5_default,
         "CDKL5  g.(?_18425585)_18653631del",  # 38
         "CDKL5  g.(?_18425582)_18653500del"  # 38
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_genomic_del6(test_query_handler, genomic_del6_default,
-                      genomic_del6_rse_lse, genomic_del6_free_text_default,
-                      genomic_del6_free_text_rse_lse):
+@pytest.mark.asyncio
+async def test_genomic_del6(test_query_handler, genomic_del6_default,
+                            genomic_del6_rse_lse, genomic_del6_free_text_default,
+                            genomic_del6_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del6_default, q)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del6_default, q)
 
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, q)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, q)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
-    resp = test_query_handler.normalize(q, "default")
+    resp = await test_query_handler.normalize(q, "default")
     assertion_checks(resp, genomic_del6_default, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "cnv")
+    resp = await test_query_handler.normalize(q, "cnv")
     assertion_checks(resp, genomic_del6_default, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
-    resp = test_query_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, q, ignore_id=True)
 
-    resp = test_query_handler.normalize(q, "literal_seq_expr")
+    resp = await test_query_handler.normalize(q, "literal_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, q, ignore_id=True)
 
     # Free text
@@ -3145,17 +2907,17 @@ def test_genomic_del6(test_query_handler, genomic_del6_default,
         # "EYA4 g.133783902_(133785996_?)del",  # 37
         "EYA4 g.133462764_(133464858_?)del"  # 38
     ]:
-        resp = test_query_handler.normalize(q, "default")
+        resp = await test_query_handler.normalize(q, "default")
         assertion_checks(resp, genomic_del6_free_text_default, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "cnv")
+        resp = await test_query_handler.normalize(q, "cnv")
         assertion_checks(resp, genomic_del6_free_text_default, q, ignore_id=True)
 
         genomic_del6_rse_lse.variation.definition = q
-        resp = test_query_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_query_handler.normalize(q, "repeated_seq_expr")
         assertion_checks(resp, genomic_del6_free_text_rse_lse, q, ignore_id=True)
 
-        resp = test_query_handler.normalize(q, "literal_seq_expr")
+        resp = await test_query_handler.normalize(q, "literal_seq_expr")
         assertion_checks(resp, genomic_del6_free_text_rse_lse, q, ignore_id=True)
 
     # Invalid
@@ -3167,24 +2929,25 @@ def test_genomic_del6(test_query_handler, genomic_del6_default,
         "EYA4 g.133240513_(133240600_?)del",  # 38
         "EYA4 g.133240515_(133532130_?)del"  # 38
     ]
-    assert_text_variation(invalid_queries, test_query_handler)
+    await assert_text_variation(invalid_queries, test_query_handler)
 
 
-def test_parameters(test_query_handler):
+@pytest.mark.asyncio
+async def test_parameters(test_query_handler):
     """Check that valid and invalid parameters work as intended."""
-    resp = test_query_handler.normalize("7-140453136-A-T")
+    resp = await test_query_handler.normalize("7-140453136-A-T")
     assert resp
     assert test_query_handler.normalize_handler.warnings == []
 
     q = "NC_000003.12:g.49531262dup"
-    resp = test_query_handler.normalize(q, '')
+    resp = await test_query_handler.normalize(q, "")
     assert resp
     assert test_query_handler.normalize_handler.warnings == []
 
-    resp = test_query_handler.normalize(q, None)
+    resp = await test_query_handler.normalize(q, None)
     assert resp
     assert test_query_handler.normalize_handler.warnings == []
 
-    resp = test_query_handler.normalize(q, " CnV ")
+    resp = await test_query_handler.normalize(q, " CnV ")
     assert resp
     assert test_query_handler.normalize_handler.warnings == []

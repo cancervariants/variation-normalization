@@ -1,7 +1,7 @@
 """Module for Coding DNA Insertion Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import CodingDNAInsertionToken
+from variation.schemas.token_response_schema import CodingDNAInsertionToken, Token
 
 
 class CodingDNAInsertion(Translator):
@@ -11,6 +11,6 @@ class CodingDNAInsertion(Translator):
         """Return if classification type is Coding DNA Insertion."""
         return type == ClassificationType.CODING_DNA_INSERTION
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Coding DNA Insertion token instance."""
         return isinstance(token, CodingDNAInsertionToken)

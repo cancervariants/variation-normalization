@@ -1,7 +1,18 @@
 """Create methods used throughout tests."""
+import asyncio
+
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+
 from variation.query import QueryHandler
+
+
+@pytest.fixture(scope="session")
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope="session")
@@ -311,24 +322,30 @@ def erbb2_context():
 
 
 @pytest.fixture(scope="session")
-def braf_v600e(braf_gene_context):
+def braf_600loc():
+    """Create test fixture for BRAF 600 location"""
+    return {
+        "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
+        "interval": {
+            "end": {"value": 600, "type": "Number"},
+            "start": {"value": 599, "type": "Number"},
+            "type": "SequenceInterval"
+        },
+        "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def braf_v600e(braf_gene_context, braf_600loc):
     """Create BRAF V600E protein test fixture."""
     params = {
         "id": "normalize.variation:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
+        "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
         "variation": {
-            "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
-            "location": {
-                "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
-                "interval": {
-                    "end": {"value": 640, "type": "Number"},
-                    "start": {"value": 639, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
-                "type": "SequenceLocation"
-            },
+            "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
+            "location": braf_600loc,
             "state": {
                 "sequence": "E",
                 "type": "LiteralSequenceExpression"
@@ -377,10 +394,10 @@ def vhl_silent(vhl_gene_context):
 
 
 @pytest.fixture(scope="session")
-def amino_acid_insertion(egfr_context):
-    """Create test fixture for NP amino acid insertion."""
+def protein_insertion(egfr_context):
+    """Create test fixture for NP protein insertion."""
     params = {
-        "id": 'normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu',
+        "id": "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.t_WLqe5efVQlBmdbIBgqIeLRu2rSJDJJ",
         "variation": {
@@ -409,12 +426,12 @@ def amino_acid_insertion(egfr_context):
 
 
 @pytest.fixture(scope="session")
-def amino_acid_deletion_np_range(erbb2_context):
-    """Create test fixture for amino acid deletion using NP accession and
+def protein_deletion_np_range(erbb2_context):
+    """Create test fixture for protein deletion using NP accession and
     range for deletion.
     """
     params = {
-        "id": 'normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del',
+        "id": "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.rFwsfnekdWjwKNmsAw9fZOCGgIvcMnCn",
         "variation": {
@@ -463,6 +480,295 @@ def braf_v600e_genomic_sub():
             "type": "LiteralSequenceExpression"
         },
         "type": "Allele"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_dup1_seq_loc():
+    """Create test fixture containing genomic dup1 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 49531260, "type": "Number"},
+            "end": {"value": 49531262, "type": "Number"},
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_dup1_38_vac(genomic_dup1_seq_loc):
+    """Create test fixture for absolute copy number dup1 on GRCh38"""
+    return {
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
+        "subject": {
+            "location": genomic_dup1_seq_loc,
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 3
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_dup2_seq_loc():
+    """Create genomic dup2 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.4mH68huylkPmu6zyUwH4wiazIYr9cQUX",
+        "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 2087937, "type": "Number"},
+            "end": {"value": 2087948, "type": "Number"},
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_dup2_38_vac(genomic_dup2_seq_loc):
+    """Create test fixture for absolute copy number dup2 on GRCh38"""
+    return {
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y",
+        "subject": {
+            "location": genomic_dup2_seq_loc,
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 3
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del3_dup3_loc():
+    """Create genomic del3 dup3 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "min": 31060226,
+                "max": 31100350,
+                "type": "DefiniteRange"
+            },
+            "end": {
+                "min": 33274279,
+                "max": 33417152,
+                "type": "DefiniteRange"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genoimc_dup4_loc():
+    """Create genoimc dup4 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
+        "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 30417575,
+                "comparator": "<=",
+                "type": "IndefiniteRange"
+            },
+            "end": {
+                "value": 31394018,
+                "comparator": ">=",
+                "type": "IndefiniteRange"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genoimc_dup5_loc():
+    """Create genoimc dup5 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 154021811,
+                "comparator": "<=",
+                "type": "IndefiniteRange"
+            },
+            "end": {
+                "value": 154092209,
+                "type": "Number"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genoimc_dup6_loc():
+    """Create genoimc dup6 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.h0_xXu36uSnPEuLoxvVmTAFQCS1ZFuLN",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 154021811,
+                "type": "Number"
+            },
+            "end": {
+                "value": 154092209,
+                "comparator": ">=",
+                "type": "IndefiniteRange"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del1_seq_loc():
+    """Create genomic del1 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.Yg5B66zErDjK9Lqeaw-kuzAB9w5-uUaS",
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 10149810, "type": "Number"},
+            "end": {"value": 10149811, "type": "Number"},
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del1_38_vac(genomic_del1_seq_loc):
+    """Create test fixture for absolute copy number del1 on GRCh38"""
+    return {
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW",
+        "subject": {
+            "location": genomic_del1_seq_loc,
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 1
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del2_seq_loc():
+    """Create genomic del2 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.lksYAhEQvP8biy_nxoOJ_Zwu75a_kYtQ",
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 10146594, "type": "Number"},
+            "end": {"value": 10146613, "type": "Number"},
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del2_38_vac(genomic_del2_seq_loc):
+    """Create test fixture for absolute copy number del1 on GRCh38"""
+    return {
+        "type": "AbsoluteCopyNumber",
+        "_id": "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt",
+        "subject": {
+            "location": genomic_del2_seq_loc,
+            "reverse_complement": False,
+            "type": "DerivedSequenceExpression"
+        },
+        "copies": {
+            "type": "Number",
+            "value": 1
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del4_seq_loc():
+    """Create genomic del4 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 31120495,
+                "comparator": "<=",
+                "type": "IndefiniteRange"
+            },
+            "end": {
+                "value": 33339477,
+                "comparator": ">=",
+                "type": "IndefiniteRange"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del5_seq_loc():
+    """Create genomic del5 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.jURzcCBf3kJVx19uuJJtwt78LuBbtfwD",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 18575353,
+                "comparator": "<=",
+                "type": "IndefiniteRange"
+            },
+            "end": {
+                "value": 18653629,
+                "type": "Number"
+            }
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_del6_seq_loc():
+    """Create genomic del6 sequence location"""
+    return {
+        "_id": "ga4gh:VSL.TPwsB5ymsNI7TynTlI8_8CI_NmNrBHUQ",
+        "sequence_id": "ga4gh:SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {
+                "value": 133462763,
+                "type": "Number"
+            },
+            "end": {
+                "value": 133464858,
+                "comparator": ">=",
+                "type": "IndefiniteRange"
+            }
+        },
+        "type": "SequenceLocation"
     }
 
 
@@ -518,10 +824,10 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
         for resp_ext in resp_gene_context.extensions:
             for test_var in test_variation_context.extensions:
                 if resp_ext.name == test_var.name:
-                    if resp_ext.name == 'chromosome_location':
+                    if resp_ext.name == "chromosome_location":
                         assert resp_ext.value == test_var.value, \
                             "gene_context.chromosome_location"
-                    elif resp_ext.name == 'associated_with':
+                    elif resp_ext.name == "associated_with":
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:

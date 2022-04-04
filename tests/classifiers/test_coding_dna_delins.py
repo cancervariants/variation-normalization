@@ -1,5 +1,6 @@
 """Module for testing Coding DNA DelIns Classifier."""
 import unittest
+
 from variation.classifiers import CodingDNADelInsClassifier
 from .classifier_base import ClassifierBase
 
@@ -13,4 +14,4 @@ class TestCodingDNADelInsClassifier(ClassifierBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return CodingDNADelInsClassifier fixture name."""
-        return 'coding_dna_delins'
+        return "coding_dna_delins"

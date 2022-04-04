@@ -1,5 +1,6 @@
 """Module for testing Genomic Substitution Validator."""
 import unittest
+
 from variation.validators import GenomicSubstitution
 from variation.classifiers import GenomicSubstitutionClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestGenomicSubstitutionValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic substitution."""
-        return 'genomic_substitution'
+        return "genomic_substitution"

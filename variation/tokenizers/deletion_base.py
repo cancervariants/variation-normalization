@@ -1,10 +1,11 @@
 """A module for Deletion Tokenization Base Class."""
 from abc import abstractmethod
 from typing import Optional, Dict, List
+
+from variation.schemas.token_response_schema import Deletion, TokenMatchType
 from .tokenizer import Tokenizer
 from .caches import AminoAcidCache, NucleotideCache
 from .tokenize_base import TokenizeBase
-from variation.schemas.token_response_schema import Deletion, TokenMatchType
 
 
 class DeletionBase(Tokenizer):
@@ -30,25 +31,25 @@ class DeletionBase(Tokenizer):
             return None
 
         self.parts = {
-            'token': input_string,
-            'input_string': input_string,
-            'match_type': TokenMatchType.UNSPECIFIED.value,
-            'start_pos_del': None,
-            'end_pos_del': None,
-            'deleted_sequence': None,
-            'reference_sequence': None
+            "token": input_string,
+            "input_string": input_string,
+            "match_type": TokenMatchType.UNSPECIFIED.value,
+            "start_pos_del": None,
+            "end_pos_del": None,
+            "deleted_sequence": None,
+            "coordinate_type": None
         }
 
         input_string = str(input_string).lower()
         conditions = (
-            'del' in input_string,
-            'ins' not in input_string and 'delins' not in input_string,
-            input_string.startswith('c.') or input_string.startswith('g.')
+            "del" in input_string,
+            "ins" not in input_string and "delins" not in input_string,
+            input_string.startswith("c.") or input_string.startswith("g.")
         )
         if not all(conditions):
             return None
 
-        parts = input_string.split('del')
+        parts = input_string.split("del")
         self._get_parts(parts)
         return self.return_token(self.parts)
 
@@ -61,7 +62,7 @@ class DeletionBase(Tokenizer):
             return None
 
         # Get reference sequence
-        reference_sequence = parts[0][:1]
+        coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
         positions_deleted = self.tokenize_base.get_positions_deleted(parts)
@@ -69,7 +70,7 @@ class DeletionBase(Tokenizer):
             return None
 
         if parts[1]:
-            self.parts['deleted_sequence'] = \
+            self.parts["deleted_sequence"] = \
                 self.tokenize_base.get_sequence(parts[1])
 
         if positions_deleted[0]:
@@ -85,9 +86,9 @@ class DeletionBase(Tokenizer):
             if start_pos_del > end_pos_del:
                 return None
 
-        self.parts['start_pos_del'] = start_pos_del
-        self.parts['end_pos_del'] = end_pos_del
-        self.parts['reference_sequence'] = reference_sequence
+        self.parts["start_pos_del"] = start_pos_del
+        self.parts["end_pos_del"] = end_pos_del
+        self.parts["coordinate_type"] = coordinate_type
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]) -> Optional[Deletion]:

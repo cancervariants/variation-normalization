@@ -1,14 +1,17 @@
 """Module for Variation Normalization."""
 from typing import Optional, List, Tuple, Dict
+from urllib.parse import quote
+
 from ga4gh.vrsatile.pydantic.vrs_models import Text
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     GeneDescriptor
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from variation.data_sources import SeqRepoAccess, UTA
-from urllib.parse import quote
-from variation import logger
 from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import SeqRepoAccess, UTADatabase
+from uta_tools.schemas import ResidueMode
+
+from variation import logger
 from variation.schemas.token_response_schema import GeneMatchToken, Token
 from variation.schemas.validation_response_schema import ValidationSummary, \
     ValidationResult
@@ -17,12 +20,12 @@ from variation.schemas.validation_response_schema import ValidationSummary, \
 class Normalize:
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTA,
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTADatabase,
                  gene_normalizer: GeneQueryHandler) -> None:
         """Initialize Normalize class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data queries
-        :param UTA uta: Access to UTA database and queries
+        :param UTADatabase uta: Access to UTA database and queries
         :parm QueryHandler gene_normalizer: Access to gene-normalizer queries
         """
         self.seqrepo_access = seqrepo_access
@@ -43,15 +46,17 @@ class Normalize:
         """
         # For now, only use first valid result
         valid_result = None
-        for r in validations.valid_results:
-            if r.is_mane_transcript and r.variation:
-                valid_result = r
-                break
+        if validations and validations.valid_results:
+            for r in validations.valid_results:
+                if r.is_mane_transcript and r.variation:
+                    valid_result = r
+                    break
         if not valid_result:
             warning = f"Unable to find MANE Transcript for {q}."
             logger.warning(warning)
             warnings.append(warning)
-            valid_result = validations.valid_results[0]
+            if validations and validations.valid_results:
+                valid_result = validations.valid_results[0]
         return valid_result
 
     def normalize(self, q: str, validations: ValidationSummary,
@@ -93,7 +98,7 @@ class Normalize:
         :return: Variation descriptor, warnings
         """
         warning = f"Unable to normalize {label}"
-        text = models.Text(definition=label)
+        text = models.Text(definition=label, type="Text")
         text._id = ga4gh_identify(text)
         resp = VariationDescriptor(
             id=_id,
@@ -119,22 +124,22 @@ class Normalize:
         :param Optional[str] gene: Gene symbol
         :return: Variation descriptor, warnings
         """
-        variation_id = variation['_id']
+        variation_id = variation["_id"]
         identifier = valid_result.identifier
         token_type = \
             valid_result.classification_token.token_type.lower()
 
         vrs_ref_allele_seq = None
-        if 'uncertain' in token_type:
-            warnings = ['Ambiguous regions cannot be normalized']
-        elif 'range' not in token_type:
-            if variation['type'] == 'Allele':
+        if "uncertain" in token_type:
+            warnings = ["Ambiguous regions cannot be normalized"]
+        elif "range" not in token_type:
+            if variation["type"] == "Allele":
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation['type'] == 'CopyNumber':
+            elif variation["type"] == "AbsoluteCopyNumber":
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    variation['subject'], identifier
+                    variation["subject"], identifier
                 )
 
         if valid_result.gene_tokens:
@@ -151,10 +156,11 @@ class Normalize:
             label=label,
             variation_id=variation_id,
             variation=variation,
-            molecule_context=valid_result.classification_token.molecule_context,  # noqa: E501
+            molecule_context=valid_result.classification_token.molecule_context,
             structural_type=valid_result.classification_token.so_id,
-            vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,  # noqa: E501
-            gene_context=gene_context
+            vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,
+            gene_context=gene_context,
+            type="VariationDescriptor"
         ), warnings
 
     @staticmethod
@@ -204,17 +210,23 @@ class Normalize:
         """
         start = None
         end = None
-        interval = allele['location']['interval']
-        ival_type = interval['type']
-        if ival_type == 'SequenceInterval':
-            if interval['start']['type'] == 'Number':
-                start = interval['start']['value'] + 1
-                end = interval['end']['value']
+        interval = allele["location"]["interval"]
+        ival_type = interval["type"]
+        if ival_type == "SequenceInterval":
+            if interval["start"]["type"] == "Number":
+                start = interval["start"]["value"]
+                end = interval["end"]["value"]
+
+                if start == end:
+                    return None
 
         if start is None and end is None:
             return None
 
-        return self.seqrepo_access.get_sequence(identifier, start, end)
+        ref, _ = self.seqrepo_access.get_reference_sequence(
+            identifier, start, end, residue_mode=ResidueMode.INTER_RESIDUE)
+
+        return ref
 
     def _is_token_type(self, valid_result_tokens: List,
                        token_type: str) -> bool:

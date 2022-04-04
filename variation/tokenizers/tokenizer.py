@@ -1,6 +1,7 @@
 """Module for Tokenization."""
 from abc import ABC, abstractmethod
 from typing import Optional
+
 from variation.schemas.token_response_schema import Token
 
 

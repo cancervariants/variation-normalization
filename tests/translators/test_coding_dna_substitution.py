@@ -1,5 +1,6 @@
 """Module for testing Coding DNA Substitution Translator."""
 import unittest
+
 from variation.classifiers import CodingDNASubstitutionClassifier
 from variation.translators import CodingDNASubstitution
 from variation.validators import CodingDNASubstitution as CDNASUB_V
@@ -23,4 +24,4 @@ class TestCodingDNASubstitutionTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for coding DNA substitution."""
-        return 'coding_dna_substitution'
+        return "coding_dna_substitution"

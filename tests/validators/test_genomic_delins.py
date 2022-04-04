@@ -1,5 +1,6 @@
 """Module for testing Genomic DelIns Validator."""
 import unittest
+
 from variation.validators import GenomicDelIns
 from variation.classifiers import GenomicDelInsClassifier
 from .validator_base import ValidatorBase
@@ -18,4 +19,4 @@ class TestGenomicDelInsValidator(ValidatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic delins."""
-        return 'genomic_delins'
+        return "genomic_delins"

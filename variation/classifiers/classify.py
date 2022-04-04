@@ -1,19 +1,17 @@
 """Module for classification."""
 from typing import List, Callable
+
 from variation.schemas.classification_response_schema import Classification, \
     ConfidenceRating
 from variation.schemas.token_response_schema import Token
-from variation.classifiers import ComplexClassifier, ExpressionClassifier, \
-    FusionClassifier, OncogenicClassifier, ProteinAlternateClassifier, \
-    ProteinDelinsClassifier, ProteinFrameshiftClassifier, \
-    ProteinTerminationClassifier, \
-    AminoAcidSubstitutionClassifier, PolypeptideTruncationClassifier, \
+from variation.classifiers import ProteinTerminationClassifier, \
+    ProteinSubstitutionClassifier, PolypeptideTruncationClassifier, \
     SilentMutationClassifier, CodingDNASubstitutionClassifier,\
     GenomicSubstitutionClassifier, CodingDNASilentMutationClassifier, \
-    GenomicSilentMutationClassifier, AminoAcidDelInsClassifier, \
+    GenomicSilentMutationClassifier, ProteinDelInsClassifier, \
     CodingDNADelInsClassifier, GenomicDelInsClassifier, \
-    AminoAcidDeletionClassifier, CodingDNADeletionClassifier, \
-    GenomicDeletionClassifier, AminoAcidInsertionClassifier, \
+    ProteinDeletionClassifier, CodingDNADeletionClassifier, \
+    GenomicDeletionClassifier, ProteinInsertionClassifier, \
     CodingDNAInsertionClassifier, GenomicInsertionClassifier, \
     GenomicUncertainDeletionClassifier, GenomicDuplicationClassifier, \
     GenomicDeletionRangeClassifier, Classifier
@@ -25,14 +23,8 @@ class Classify:
     def __init__(self) -> None:
         """Initialize the Classify class."""
         self.classifiers: List[Classifier] = [
-            ComplexClassifier(),
-            ExpressionClassifier(),
-            FusionClassifier(),
-            OncogenicClassifier(),
-            ProteinAlternateClassifier(),
-            ProteinDelinsClassifier(),
-            ProteinFrameshiftClassifier(),
-            AminoAcidSubstitutionClassifier(),
+            ProteinDelInsClassifier(),
+            ProteinSubstitutionClassifier(),
             PolypeptideTruncationClassifier(),
             SilentMutationClassifier(),
             ProteinTerminationClassifier(),
@@ -40,13 +32,13 @@ class Classify:
             GenomicSubstitutionClassifier(),
             CodingDNASilentMutationClassifier(),
             GenomicSilentMutationClassifier(),
-            AminoAcidDelInsClassifier(),
+            ProteinDelInsClassifier(),
             CodingDNADelInsClassifier(),
             GenomicDelInsClassifier(),
-            AminoAcidDeletionClassifier(),
+            ProteinDeletionClassifier(),
             CodingDNADeletionClassifier(),
             GenomicDeletionClassifier(),
-            AminoAcidInsertionClassifier(),
+            ProteinInsertionClassifier(),
             CodingDNAInsertionClassifier(),
             GenomicInsertionClassifier(),
             GenomicUncertainDeletionClassifier(),

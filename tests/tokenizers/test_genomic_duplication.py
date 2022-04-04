@@ -1,5 +1,6 @@
 """A module for testing Genomic Duplication Tokenization."""
 import unittest
+
 from variation.tokenizers import GenomicDuplication
 from .tokenizer_base import TokenizerBase
 
@@ -13,8 +14,8 @@ class TestGenomicDuplicationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic duplication token type."""
-        return 'GenomicDuplication'
+        return "GenomicDuplication"
 
     def fixture_name(self):
         """Return the fixture name for Genomic Duplication."""
-        return 'genomic_duplication'
+        return "genomic_duplication"

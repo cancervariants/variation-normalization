@@ -1,5 +1,6 @@
 """Module for testing Genomic Duplication Classifier."""
 import unittest
+
 from variation.classifiers import GenomicDuplicationClassifier
 from .classifier_base import ClassifierBase
 
@@ -13,4 +14,4 @@ class TestGenomicDuplicationClassifier(ClassifierBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return GenomicDuplicationClassifier fixture name."""
-        return 'genomic_duplication'
+        return "genomic_duplication"

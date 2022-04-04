@@ -1,5 +1,6 @@
 """Module for testing Polypeptide Truncation Classifier."""
 import unittest
+
 from variation.classifiers import PolypeptideTruncationClassifier
 from .classifier_base import ClassifierBase
 
@@ -13,4 +14,4 @@ class TestPolypeptideTruncationClassifier(ClassifierBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return PolypeptideTruncationClassifier fixture name."""
-        return 'polypeptide_truncation'
+        return "polypeptide_truncation"

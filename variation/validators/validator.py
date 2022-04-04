@@ -2,26 +2,28 @@
 import copy
 from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
-from variation.schemas.classification_response_schema import Classification, \
-    ClassificationType
-from variation.schemas.token_response_schema import GeneMatchToken, Token, \
-    GenomicSubstitutionToken
-from variation.schemas.validation_response_schema import ValidationResult, \
-    LookupType
-from variation.tokenizers import GeneSymbol
-from variation.data_sources import SeqRepoAccess, TranscriptMappings
-from variation.mane_transcript import MANETranscript
+import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-import logging
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, MANETranscript, \
+    UTADatabase
+
+from variation.schemas.classification_response_schema import Classification, \
+    ClassificationType
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.token_response_schema import GeneMatchToken, Token, \
+    GenomicSubstitutionToken
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
-from variation.data_sources import UTA
-from gene.query import QueryHandler as GeneQueryHandler
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs import VRS
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -32,7 +34,7 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  gene_normalizer: GeneQueryHandler,
                  vrs: VRS) -> None:
         """Initialize the DelIns validator.
@@ -43,7 +45,7 @@ class Validator(ABC):
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param Translator tlr: Translator class
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
@@ -77,26 +79,6 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def human_description(self, transcript: str, token: Token) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: Human description of the variation change
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def concise_description(self, transcript: str, token: Token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_gene_tokens(
             self, classification: Classification) -> List[GeneMatchToken]:
         """Return a list of gene tokens for a classification.
@@ -108,9 +90,8 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -133,12 +114,16 @@ class Validator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum)\
-            -> None:
+    async def get_valid_invalid_results(
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param List classification_tokens: A list of classification Tokens
@@ -147,8 +132,6 @@ class Validator(ABC):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -156,23 +139,33 @@ class Validator(ABC):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         raise NotImplementedError
 
-    def validate(
-            self, classification: Classification, normalize_endpoint: bool,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+    async def validate(
+            self, classification: Classification,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+            endpoint_name: Optional[Endpoint] = None,
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None,
+            do_liftover: bool = False
     ) -> List[ValidationResult]:
         """Return validation result for a given classification.
 
         :param Classification classification: A classification for a list of
             tokens
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: List of ValidationResult's containing valid and invalid
             results
         """
@@ -186,41 +179,41 @@ class Validator(ABC):
 
         gene_tokens = self.get_gene_tokens(classification)
         if len(gene_tokens) > 1:
-            errors.append('More than one gene symbol found for a single'
-                          f' {self.variation_name()}')
+            errors.append("More than one gene symbol found for a single"
+                          f" {self.variation_name()}")
 
         try:
             # NC_ queries do not have gene tokens
-            transcripts = \
-                self.get_transcripts(gene_tokens, classification, errors)
+            transcripts = await self.get_transcripts(
+                gene_tokens, classification, errors)
         except IndexError:
             transcripts = list()
 
         if len(errors) > 0:
             return [
                 self.get_validation_result(
-                    classification, None, False, 0, {}, '', '',
-                    errors, gene_tokens
+                    classification, None, False, 0, {}, errors, gene_tokens
                 )
             ]
 
         mane_data_found = {
-            'mane_select': dict(),
-            'mane_plus_clinical': dict(),
-            'longest_compatible_remaining': dict(),
-            'grch38': dict()
+            "mane_select": dict(),
+            "mane_plus_clinical": dict(),
+            "longest_compatible_remaining": dict(),
+            "grch38": dict()
         }
 
         # If is_identifier, should only run once
-        if 'HGVS' in classification.matching_tokens:
+        if "HGVS" in classification.matching_tokens:
             is_identifier = True
         else:
             is_identifier = False
 
-        self.get_valid_invalid_results(
+        await self.get_valid_invalid_results(
             classification_tokens, transcripts, classification,
-            results, gene_tokens, normalize_endpoint, mane_data_found,
-            is_identifier, hgvs_dup_del_mode
+            results, gene_tokens, mane_data_found,
+            is_identifier, hgvs_dup_del_mode, endpoint_name, baseline_copies,
+            relative_copy_class, do_liftover
         )
         return results
 
@@ -228,8 +221,7 @@ class Validator(ABC):
     def get_validation_result(
             classification: Classification, classification_token: Token,
             is_valid: bool, confidence_score: int, variation: Dict,
-            human_description: str, concise_description: str, errors: List,
-            gene_tokens: List, identifier: str = None,
+            errors: List, gene_tokens: List, identifier: str = None,
             is_mane_transcript: bool = False) -> ValidationResult:
         """Return a validation result object.
 
@@ -238,9 +230,6 @@ class Validator(ABC):
         :param bool is_valid: Whether or not the classification is valid
         :param int confidence_score: The classification confidence score
         :param Dict variation: A VRS Variation object
-        :param str human_description: A human description describing the
-            variation
-        :param str concise_description: HGVS expression for variation
         :param List errors: A list of errors for the classification
         :param List gene_tokens: List of GeneMatchTokens
         :param str identifier: Identifier for variation
@@ -254,8 +243,6 @@ class Validator(ABC):
             is_valid=is_valid,
             confidence_score=confidence_score,
             variation=variation,
-            human_description=human_description,
-            concise_description=concise_description,
             errors=errors,
             gene_tokens=gene_tokens,
             is_mane_transcript=is_mane_transcript,
@@ -270,11 +257,10 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: List of possible transcript accessions for the variation
         """
-        transcripts = self.transcript_mappings.protein_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
+        transcripts = self.transcript_mappings.protein_transcripts(gene_tokens[0].token)
         if not transcripts:
-            errors.append(f'No transcripts found for gene symbol '
-                          f'{gene_tokens[0].token}')
+            errors.append(f"No transcripts found for gene symbol "
+                          f"{gene_tokens[0].token}")
         return transcripts
 
     def get_coding_dna_transcripts(self, gene_tokens: List,
@@ -286,14 +272,14 @@ class Validator(ABC):
         :return: List of possible transcript accessions for the variation
         """
         transcripts = self.transcript_mappings.coding_dna_transcripts(
-            gene_tokens[0].token, LookupType.GENE_SYMBOL)
+            gene_tokens[0].token)
         if not transcripts:
-            errors.append(f'No transcripts found for gene symbol '
-                          f'{gene_tokens[0].token}')
+            errors.append(f"No transcripts found for gene symbol "
+                          f"{gene_tokens[0].token}")
         return transcripts
 
-    def get_genomic_transcripts(self, classification: Classification,
-                                errors: List) -> Optional[List[str]]:
+    async def get_genomic_transcripts(self, classification: Classification,
+                                      errors: List) -> Optional[List[str]]:
         """Get NC accessions for variations with genomic reference sequence.
 
         :param Classification classification: Classification for a list of
@@ -301,10 +287,10 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: List of possible NC accessions for the variation
         """
-        nc_accessions = self.genomic_base.get_nc_accessions(classification)
+        nc_accessions = await self.genomic_base.get_nc_accessions(classification)
         if not nc_accessions:
-            errors.append('Could not find NC_ accession for '
-                          f'{self.variation_name()}')
+            errors.append("Could not find NC_ accession for "
+                          f"{self.variation_name()}")
         return nc_accessions
 
     def get_classification_tokens(
@@ -328,7 +314,7 @@ class Validator(ABC):
         :return: List of Gene Match Tokens
         """
         return [t for t in classification.all_tokens
-                if t.token_type == 'GeneSymbol']
+                if t.token_type == "GeneSymbol"]
 
     def _add_gene_symbol_to_tokens(self, gene_symbol: str, gene_symbols: List,
                                    gene_tokens: List) -> None:
@@ -358,14 +344,14 @@ class Validator(ABC):
         if not gene_tokens:
             refseq = \
                 ([t.token for t in classification.all_tokens if
-                  t.token_type in ['HGVS', 'ReferenceSequence',
-                                   'LocusReferenceGenomic']] or [None])[0]
+                  t.token_type in ["HGVS", "ReferenceSequence",
+                                   "LocusReferenceGenomic"]] or [None])[0]
 
             if not refseq:
                 return []
 
-            if ':' in refseq:
-                refseq = refseq.split(':')[0]
+            if ":" in refseq:
+                refseq = refseq.split(":")[0]
 
             gene_symbols = list()
             for mapping in mappings:
@@ -418,13 +404,13 @@ class Validator(ABC):
         :param Classification classification: Classification for token
         :return: Accession
         """
-        if 'HGVS' in classification.matching_tokens or \
-                'ReferenceSequence' in classification.matching_tokens:
+        if "HGVS" in classification.matching_tokens or \
+                "ReferenceSequence" in classification.matching_tokens:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type
-                          in ['HGVS', 'ReferenceSequence']][0]
+                          in ["HGVS", "ReferenceSequence"]][0]
             hgvs_expr = hgvs_token.input_string
-            t = hgvs_expr.split(':')[0]
+            t = hgvs_expr.split(":")[0]
         return t
 
     def add_validation_result(
@@ -452,10 +438,7 @@ class Validator(ABC):
                     (variation and variation not in valid_variations):
                 results.append(
                     self.get_validation_result(
-                        classification, s, True, 1, variation,
-                        self.human_description(t, s),
-                        self.concise_description(t, s), [],
-                        gene_tokens,
+                        classification, s, True, 1, variation, [], gene_tokens,
                         identifier=identifier if identifier else t,
                         is_mane_transcript=is_mane_transcript
                     )
@@ -465,19 +448,16 @@ class Validator(ABC):
         else:
             results.append(
                 self.get_validation_result(
-                    classification, s, False, 1, variation,
-                    self.human_description(t, s),
-                    self.concise_description(t, s), errors,
-                    gene_tokens,
+                    classification, s, False, 1, variation, errors, gene_tokens,
                     identifier=identifier if identifier else t,
                     is_mane_transcript=is_mane_transcript
                 )
             )
             return False
 
-    def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
-                           errors: List, pos3: int = None, pos4: int = None,
-                           residue_mode: str = "residue") -> None:
+    async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
+                                 errors: List, pos3: int = None, pos4: int = None,
+                                 residue_mode: str = "residue") -> None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
 
@@ -503,17 +483,16 @@ class Validator(ABC):
             errors.append(f"gene-normalizer unable to find Ensembl location"
                           f"for {gene}")
         else:
-            assembly = self.uta.get_chr_assembly(alt_ac)
+            assembly = await self.uta.get_chr_assembly(alt_ac)
             if assembly:
                 # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
                 # need to liftover to GRCh37 coords
                 chromosome, assembly = assembly
                 for key in gene_start_end.keys():
                     gene_pos = gene_start_end[key]
-                    gene_pos_liftover = \
-                        self.uta.liftover_to_37.convert_coordinate(chromosome,
-                                                                   gene_pos)
-                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:  # noqa: E501
+                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(  # noqa: E501
+                        chromosome, gene_pos)
+                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
                         errors.append(f"{gene_pos} does not"
                                       f" exist on {chromosome}")
                         return None
@@ -541,25 +520,25 @@ class Validator(ABC):
         :param Token s_copy: classification token
         :return: Coordinate, alteration
         """
-        if coordinate == 'g' and mane['status'].lower() != 'grch38':
-            s_copy.molecule_context = 'transcript'
-            s_copy.reference_sequence = 'c'
-            coordinate = s_copy.reference_sequence
+        if coordinate == "g" and mane["status"].lower() != "grch38":
+            s_copy.molecule_context = "transcript"
+            s_copy.coordinate_type = "c"
+            coordinate = s_copy.coordinate_type
 
             if isinstance(s_copy, GenomicSubstitutionToken) and \
-                    mane['strand'] == '-':
+                    mane["strand"] == "-":
                 ref_rev = s_copy.ref_nucleotide[::-1]
                 alt_rev = s_copy.new_nucleotide[::-1]
 
                 complements = {
-                    'A': 'T',
-                    'T': 'A',
-                    'C': 'G',
-                    'G': 'C'
+                    "A": "T",
+                    "T": "A",
+                    "C": "G",
+                    "G": "C"
                 }
 
-                s_copy.ref_nucleotide = ''
-                s_copy.new_nucleotide = ''
+                s_copy.ref_nucleotide = ""
+                s_copy.new_nucleotide = ""
                 for nt in ref_rev:
                     s_copy.ref_nucleotide += complements[nt]
                 for nt in alt_rev:
@@ -591,12 +570,11 @@ class Validator(ABC):
         if coord_alt:
             coordinate = coord_alt[0] if coord_alt[0] else coordinate
             alt = coord_alt[1] if coord_alt[1] else alt
-
         if mane_variation is None:
             new_allele = self.vrs.to_vrs_allele(
-                mane['refseq'], mane['pos'][0], mane['pos'][1],
+                mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
                 coordinate, alt_type, [],
-                cds_start=mane.get('coding_start_site', None), alt=alt
+                cds_start=mane.get("coding_start_site", None), alt=alt
             )
             variation = new_allele
         else:
@@ -605,8 +583,8 @@ class Validator(ABC):
         if not variation:
             return None
 
-        self._add_dict_to_mane_data(mane['refseq'], s_copy, variation,
-                                    mane_data, mane['status'])
+        self._add_dict_to_mane_data(mane["refseq"], s_copy, variation,
+                                    mane_data, mane["status"])
 
     @staticmethod
     def _add_dict_to_mane_data(ac: str, s: Token, variation: Dict,
@@ -620,18 +598,18 @@ class Validator(ABC):
         :param str status: Status for variation (GRCh38, MANE Select,
             MANE Clinical Plus)
         """
-        _id = variation['_id']
-        key = '_'.join(status.lower().split())
+        _id = variation["_id"]
+        key = "_".join(status.lower().split())
 
         if _id in mane_data[key].keys():
-            mane_data[key][_id]['count'] += 1
+            mane_data[key][_id]["count"] += 1
         else:
             mane_data[key][_id] = {
-                'classification_token': s,
-                'accession': ac,
-                'count': 1,
-                'variation': variation,
-                'label': ac  # TODO: Use VRS to translate
+                "classification_token": s,
+                "accession": ac,
+                "count": 1,
+                "variation": variation,
+                "label": ac  # TODO: Use VRS to translate
             }
 
     def add_mane_to_validation_results(
@@ -646,8 +624,8 @@ class Validator(ABC):
         :param List gene_tokens: List of GeneMatchTokens
         """
         mane_data_keys = mane_data.keys()
-        for key in ['mane_select', 'mane_plus_clinical', 'grch38',
-                    'longest_compatible_remaining']:
+        for key in ["mane_select", "mane_plus_clinical", "grch38",
+                    "longest_compatible_remaining"]:
             highest_count = 0
             mane_result = None
             mane_allele = None
@@ -658,17 +636,17 @@ class Validator(ABC):
             for mane_allele_id in _mane_data_keys:
                 data = mane_data[key][mane_allele_id]
 
-                if data['count'] > highest_count:
-                    highest_count = data['count']
+                if data["count"] > highest_count:
+                    highest_count = data["count"]
                     mane_result = data
-                    mane_allele = data['variation']
-                    identifier = data['accession']
+                    mane_allele = data["variation"]
+                    identifier = data["accession"]
 
             if mane_allele:
                 self.add_validation_result(
                     mane_allele, valid_alleles, results, classification,
-                    mane_result['classification_token'],
-                    mane_result['accession'], gene_tokens, [],
+                    mane_result["classification_token"],
+                    mane_result["accession"], gene_tokens, [],
                     identifier=identifier, is_mane_transcript=True
                 )
                 return
@@ -681,10 +659,9 @@ class Validator(ABC):
         :param List errors: List of errors
         :return: Reference sequence
         """
-        seq = self.seqrepo_access.get_sequence(ac, pos)
+        seq, w = self.seqrepo_access.get_reference_sequence(ac, pos)
         if not seq:
-            errors.append(f"Pos {pos} not found on {ac}")
-            return None
+            errors.append(w)
         return seq
 
     @staticmethod
@@ -697,11 +674,11 @@ class Validator(ABC):
         """
         return dict(
             gene=None,
-            refseq=ac if ac.startswith('NC') else None,
-            ensembl=ac if ac.startswith('ENSG') else None,
+            refseq=ac if ac.startswith("NC") else None,
+            ensembl=ac if ac.startswith("ENSG") else None,
             pos=pos,
             strand=None,
-            status='GRCh38'
+            status="GRCh38"
         )
 
     def _is_grch38_assembly(self, t: str) -> bool:
@@ -710,4 +687,4 @@ class Validator(ABC):
         :param str t: Accession
         :return: `True` if accession is GRCh38 assembly. `False` otherwise
         """
-        return 'GRCh38' in [a for a in self.dp.get_metadata(t)['aliases'] if a.startswith('GRCh')][0]  # noqa: E501
+        return "GRCh38" in [a for a in self.dp.get_metadata(t)["aliases"] if a.startswith("GRCh")][0]  # noqa: E501
