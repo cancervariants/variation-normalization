@@ -5,6 +5,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
+    MANETranscript
 
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -12,8 +14,6 @@ from variation.vrs import VRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
-from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from .protein_substitution import ProteinSubstitution
@@ -44,7 +44,7 @@ class Validate:
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  amino_acid_cache: AminoAcidCache,
                  gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the validate class.
@@ -55,7 +55,7 @@ class Validate:
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param Translator tlr: Translator class
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
@@ -89,7 +89,7 @@ class Validate:
             GenomicDuplication(*params)
         ]
 
-    def perform(
+    async def perform(
             self, classifications: List[Classification],
             endpoint_name: Optional[Endpoint] = None, warnings: List = None,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
@@ -121,7 +121,7 @@ class Validate:
             for validator in self.validators:
                 if validator.validates_classification_type(
                         classification.classification_type):
-                    results = validator.validate(
+                    results = await validator.validate(
                         classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
                         endpoint_name=endpoint_name, baseline_copies=baseline_copies,
                         relative_copy_class=relative_copy_class,

@@ -22,9 +22,8 @@ logger.setLevel(logging.DEBUG)
 class GenomicDeletion(DuplicationDeletionBase):
     """The Genomic Deletion Validator class."""
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -33,9 +32,10 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -78,7 +78,7 @@ class GenomicDeletion(DuplicationDeletionBase):
 
                 # Validate pos
                 if gene_tokens:
-                    self.validate_gene_or_accession_pos(
+                    await self.validate_gene_or_accession_pos(
                         t, [start, end], errors, gene=gene_tokens[0].token)
                 else:
                     self.check_reference_sequence(t, s, errors)
@@ -97,7 +97,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                     variation = None
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    self._get_normalize_variation(
+                    await self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end,
                         relative_copy_class=relative_copy_class,
@@ -117,7 +117,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                 classification, gene_tokens
             )
 
-    def _get_normalize_variation(
+    async def _get_normalize_variation(
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict,
             start: int, end: int,
@@ -137,7 +137,7 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param Optional[int] baseline_copies: Baseline copies number
         """
         if gene_tokens:
-            self.add_normalized_genomic_dup_del(
+            await self.add_normalized_genomic_dup_del(
                 s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,
                 SequenceOntology.DELETION, errors, hgvs_dup_del_mode,
                 mane_data_found, relative_copy_class=relative_copy_class,
@@ -145,12 +145,12 @@ class GenomicDeletion(DuplicationDeletionBase):
         else:
             # No gene provided, then use GRCh38 assesmbly
             if not self._is_grch38_assembly(t):
-                grch38 = self.mane_transcript.g_to_grch38(t, start, end)
+                grch38 = await self.mane_transcript.g_to_grch38(t, start, end)
             else:
                 grch38 = dict(ac=t, pos=(start, end))
 
             if grch38:
-                self.validate_gene_or_accession_pos(
+                await self.validate_gene_or_accession_pos(
                     grch38["ac"], [grch38["pos"][0], grch38["pos"][1]], errors)
                 self.add_grch38_to_mane_data(
                     t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,

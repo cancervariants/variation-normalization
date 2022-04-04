@@ -24,6 +24,7 @@ logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
 
+logging.getLogger("uta_tools").setLevel(logging.INFO)
 logging.getLogger("boto3").setLevel(logging.INFO)
 logging.getLogger("botocore").setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.INFO)
@@ -62,17 +63,6 @@ def data_download(path: Path, domain: str, dir: str, fn: str) -> None:
                 remove(f"{path}")
 
 
-SEQREPO_DATA_PATH = "/usr/local/share/seqrepo/latest"
-TRANSCRIPT_MAPPINGS_PATH = f"{APP_ROOT}/data/transcript_mapping.tsv"
-AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
-REFSEQ_GENE_SYMBOL_PATH = f"{APP_ROOT}/data/refseq_gene_symbols.txt"
-data_download(REFSEQ_GENE_SYMBOL_PATH, "ftp.ncbi.nih.gov",
-              "refseq/H_sapiens/RefSeqGene/", "LRG_RefSeqGene")
-REFSEQ_MANE_PATH = f"{APP_ROOT}/data/MANE.GRCh38.v0.93.summary.txt"
-data_download(REFSEQ_MANE_PATH, "ftp.ncbi.nlm.nih.gov",
-              "refseq/MANE/MANE_human/release_0.93/",
-              "MANE.GRCh38.v0.93.summary.txt.gz")
-if "UTA_DB_URL" in environ:
-    UTA_DB_URL = environ["UTA_DB_URL"]
-else:
-    UTA_DB_URL = "postgresql://uta_admin@localhost:5433/uta/uta_20210129"
+AMINO_ACID_PATH = environ.get("AMINO_ACID_PATH", f"{APP_ROOT}/data/amino_acids.csv")
+UTA_DB_URL = environ.get("UTA_DB_URL",
+                         "postgresql://uta_admin@localhost:5433/uta/uta_20210129")

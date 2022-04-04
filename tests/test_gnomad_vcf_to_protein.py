@@ -406,7 +406,22 @@ def protein_insertion2(lrp8_gene_context):
 
 
 @pytest.fixture(scope="module")
-def atad3a_i7v(atad3a_gene_context):
+def atad3a_loc():
+    """Create test fixture for ATAD3A location"""
+    return {
+        "_id": "ga4gh:VSL.h7pLvn-VyN4H7GT0vBj6XD5PENOocxOR",
+        "interval": {
+            "end": {"value": 7, "type": "Number"},
+            "start": {"value": 6, "type": "Number"},
+            "type": "SequenceInterval"
+        },
+        "sequence_id": "ga4gh:SQ.MHPOY_7fv8V9SktyvaTxulVFSK6XCxM8",
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="module")
+def atad3a_i7v(atad3a_gene_context, atad3a_loc):
     """Create test fixture for ATAD3A Ile7Val"""
     params = {
         "id": "normalize.variation:1-1512287-A-G",
@@ -414,16 +429,7 @@ def atad3a_i7v(atad3a_gene_context):
         "variation_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
         "variation": {
             "_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
-            "location": {
-                "_id": "ga4gh:VSL.h7pLvn-VyN4H7GT0vBj6XD5PENOocxOR",
-                "interval": {
-                    "end": {"value": 7, "type": "Number"},
-                    "start": {"value": 6, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.MHPOY_7fv8V9SktyvaTxulVFSK6XCxM8",
-                "type": "SequenceLocation"
-            },
+            "location": atad3a_loc,
             "state": {
                 "sequence": "V",
                 "type": "LiteralSequenceExpression"
@@ -438,62 +444,188 @@ def atad3a_i7v(atad3a_gene_context):
     return VariationDescriptor(**params)
 
 
-def test_substitution(test_query_handler, braf_v600e, mmel1_l30m, atad3a_i7v):
+@pytest.fixture(scope="module")
+def atad3a_i7t(atad3a_gene_context, atad3a_loc):
+    """Create test fixture for ATAD3A Ile7Thr"""
+    params = {
+        "id": "normalize.variation:1-1512288-T-C",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.7ohTnL0ULPFaOESzuh_SIRYgp9zGch_Z",
+        "variation": {
+            "_id": "ga4gh:VA.7ohTnL0ULPFaOESzuh_SIRYgp9zGch_Z",
+            "location": atad3a_loc,
+            "state": {
+                "sequence": "T",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "I",
+        "gene_context": atad3a_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def atad3a_i7m(atad3a_gene_context, atad3a_loc):
+    """Create test fixture for ATAD3A Ile7Met"""
+    params = {
+        "id": "normalize.variation:1-1512289-T-G",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.ua1plOEkzNo23uVhnbSYBSM0jS7to6tN",
+        "variation": {
+            "_id": "ga4gh:VA.ua1plOEkzNo23uVhnbSYBSM0jS7to6tN",
+            "location": atad3a_loc,
+            "state": {
+                "sequence": "M",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "I",
+        "gene_context": atad3a_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="session")
+def braf_v600l(braf_gene_context, braf_600loc):
+    """Create test fixture for BRAF Val600Leu."""
+    params = {
+        "id": "normalize.variation:7-140753337-C-A",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.Ktev5asCsmUbHaQG6N-CdSp_g5FyJxLN",
+        "variation": {
+            "_id": "ga4gh:VA.Ktev5asCsmUbHaQG6N-CdSp_g5FyJxLN",
+            "location": braf_600loc,
+            "state": {
+                "sequence": "L",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "V",
+        "gene_context": braf_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="session")
+def braf_600_silent_mutation(braf_gene_context, braf_600loc):
+    """Create test fixture for BRAF Val600=."""
+    params = {
+        "id": "normalize.variation:7-140753335-C-A",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.YUPFxYUZlYnr7Q4nIPiLV5BJznzF3YKl",
+        "variation": {
+            "_id": "ga4gh:VA.YUPFxYUZlYnr7Q4nIPiLV5BJznzF3YKl",
+            "location": braf_600loc,
+            "state": {
+                "sequence": "V",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "protein",
+        "structural_type": "SO:0001606",
+        "vrs_ref_allele_seq": "V",
+        "gene_context": braf_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.mark.asyncio
+async def test_substitution(test_query_handler, braf_v600e, braf_v600l,
+                            braf_600_silent_mutation, mmel1_l30m, atad3a_i7v,
+                            atad3a_i7t, atad3a_i7m):
     """Test that substitution queries return correct response"""
-    resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-A-T")
+    # Reading Frame 1, Negative Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753337-C-A")
+    assertion_checks(resp, braf_v600l, "7-140753337-C-A", ignore_id=True)
+    assert w == []
+
+    # Reading Frame 2, Negative Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753336-A-T")
     assertion_checks(resp, braf_v600e, "7-140753336-A-T", ignore_id=True)
     assert w == []
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("1-2629397-G-T")
+    # Reading Frame 3, Negative Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753335-C-A")
+    assertion_checks(resp, braf_600_silent_mutation, "7-140753335-C-A", ignore_id=True)
+    assert w == []
+
+    # Reading Frame 3, Negative Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-2629397-G-T")
     assertion_checks(resp, mmel1_l30m, "1-2629397-G-T")
     assert w == []
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("1-1512287-A-G")
+    # Reading Frame 1, Positive Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512287-A-G")
     assertion_checks(resp, atad3a_i7v, "1-1512287-A-G")
     assert w == []
 
+    # Reading Frame 2, Positive Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512288-T-C")
+    assertion_checks(resp, atad3a_i7t, "1-1512288-T-C")
+    assert w == []
 
-def test_silent_mutation(test_query_handler, vhl_silent):
+    # Reading Frame 3, Positive Strand
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512289-T-G")
+    assertion_checks(resp, atad3a_i7m, "1-1512289-T-G", ignore_id=True)
+    assert w == []
+
+
+@pytest.mark.asyncio
+async def test_silent_mutation(test_query_handler, vhl_silent):
     """Test that silent queries return correct response"""
-    resp, w = test_query_handler.gnomad_vcf_to_protein("3-10183714-C-C")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("3-10183714-C-C")
     assertion_checks(resp, vhl_silent, "3-10183714-C-C", ignore_id=True)
     assert w == []
 
 
-def test_insertion(test_query_handler, protein_insertion,
-                   protein_insertion2):
+@pytest.mark.asyncio
+async def test_insertion(test_query_handler, protein_insertion,
+                         protein_insertion2):
     """Test that insertion queries return correct response"""
-    resp, w = test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
     assertion_checks(resp, protein_insertion, "7-55181319-C-CGGGTTG", ignore_id=True)
     assert w == []
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
     assertion_checks(resp, protein_insertion2, "1-53327836-A-ACGC")
     assert w == []
 
 
-def test_deletion(test_query_handler, protein_deletion_np_range,
-                  cdk11a_e314del):
+@pytest.mark.asyncio
+async def test_deletion(test_query_handler, protein_deletion_np_range,
+                        cdk11a_e314del):
     """Test that deletion queries return correct response"""
-    resp, w = test_query_handler.gnomad_vcf_to_protein(
+    resp, w = await test_query_handler.gnomad_vcf_to_protein(
         "17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range,
                      "17-39723966-TTGAGGGAAAACACAT-T", ignore_id=True)
     assert w == []
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
     assertion_checks(resp, cdk11a_e314del, "1-1708855-TTCC-T")
     assert w == []
 
 
-def test_invalid(test_query_handler):
+@pytest.mark.asyncio
+async def test_invalid(test_query_handler):
     """Test that invalid queries return correct response"""
-    resp, w = test_query_handler.gnomad_vcf_to_protein("BRAF V600E")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation.type == "Text"
     assert resp.label == "BRAF V600E"
     assert w == ["BRAF V600E is not a supported gnomad vcf query"]
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation.type == "Text"
     assert resp.label == "7-140753336-T-G"
     assert set(w) == {
@@ -501,7 +633,7 @@ def test_invalid(test_query_handler):
         "Expected T but found A on NC_000007.14 at position 140753336",
     }
 
-    resp, w = test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation.type == "Text"
     assert resp.label == "20-2-TC-TG"
     assert w == ["Unable to get protein variation for 20-2-TC-TG"]

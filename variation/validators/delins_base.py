@@ -44,9 +44,8 @@ class DelInsBase(Validator):
         """
         raise NotImplementedError
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -67,7 +66,7 @@ class DelInsBase(Validator):
         """
         raise NotImplementedError
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -107,10 +106,10 @@ class DelInsBase(Validator):
         :param List errors: List of errors
         """
         if s.end_pos_del:
-            sequence = self.seqrepo_access.get_sequence(t, s.start_pos_del,
-                                                        s.end_pos_del)
+            sequence, w = self.seqrepo_access.get_reference_sequence(
+                t, int(s.start_pos_del), int(s.end_pos_del))
         else:
-            sequence = \
-                self.seqrepo_access.get_sequence(t, s.start_pos_del)
+            sequence, w = self.seqrepo_access.get_reference_sequence(
+                t, int(s.start_pos_del))
         if sequence is None:
-            errors.append("Sequence index error")
+            errors.append(w)

@@ -44,9 +44,8 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -67,7 +66,7 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -99,7 +98,7 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def silent_mutation_valid_invalid_results(
+    async def silent_mutation_valid_invalid_results(
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
             endpoint_name: Optional[Endpoint], mane_data_found: Dict,
@@ -126,7 +125,7 @@ class SingleNucleotideVariationBase(Validator):
                 t = self.get_accession(t, classification)
                 allele = None
                 if s.coordinate_type == "c":
-                    cds_start_end = self.uta.get_cds_start_end(t)
+                    cds_start_end = await self.uta.get_cds_start_end(t)
 
                     if not cds_start_end:
                         cds_start = None
@@ -146,10 +145,10 @@ class SingleNucleotideVariationBase(Validator):
                     )
 
                 if not errors:
-                    sequence = \
-                        self.seqrepo_access.get_sequence(t, s.position)
+                    sequence, w = self.seqrepo_access.get_reference_sequence(
+                        t, s.position)
                     if sequence is None:
-                        errors.append("Sequence index error")
+                        errors.append(w)
                     else:
                         if s.ref_nucleotide:
                             if sequence != s.ref_nucleotide:
@@ -158,33 +157,27 @@ class SingleNucleotideVariationBase(Validator):
                                     f"found {sequence}")
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.coordinate_type,
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.coordinate_type, end_pos=s.position,
                         gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True
-                    )
+                        try_longest_compatible=True)
 
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.coordinate_type, s.alt_type, s)
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def check_ref_nucleotide(self, actual_ref_nuc: str, expected_ref_nuc: str,
                              position: int, t: str, errors: List) -> None:
         """Assert that ref_nuc matches s.ref_nucleotide."""
         if actual_ref_nuc != expected_ref_nuc:
-            errors.append(f"Needed to find {expected_ref_nuc} at"
-                          f" position {position} on {t}"
-                          f" but found {actual_ref_nuc}")
+            errors.append(f"Needed to find {expected_ref_nuc} at position {position} "
+                          f"on {t} but found {actual_ref_nuc}")

@@ -15,8 +15,8 @@ logger.setLevel(logging.DEBUG)
 class CodingDNAInsertion(InsertionBase):
     """The Coding DNA Insertion Validator class."""
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens

@@ -1,8 +1,9 @@
 """Module for commonly used validator methods for protein references."""
 from typing import List
 
+from uta_tools.data_sources import SeqRepoAccess
+
 from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import SeqRepoAccess
 
 
 class ProteinBase:
@@ -26,12 +27,13 @@ class ProteinBase:
         :param int pos: Expected position
         :param List errors: List of errors
         """
-        ref_aa = self.seqrepo_access.get_sequence(t, pos)
-        if ref_aa and len(ref_aa) == 1 \
-                and len(aa) == 3:
-            aa = self.amino_acid_cache.convert_three_to_one(aa)
+        ref_aa, warning = self.seqrepo_access.get_reference_sequence(t, pos)
+        if not ref_aa:
+            errors.append(warning)
+        else:
+            if ref_aa and len(ref_aa) == 1 and len(aa) == 3:
+                aa = self.amino_acid_cache.convert_three_to_one(aa)
 
-        if ref_aa != aa:
-            errors.append(f"Needed to find {aa} at "
-                          f"position {pos} on {t} "
-                          f"but found {ref_aa}")
+            if ref_aa != aa:
+                errors.append(f"Needed to find {aa} at position {pos} on {t} but found"
+                              f" {ref_aa}")
