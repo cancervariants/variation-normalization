@@ -385,7 +385,7 @@ def vrs_python_translate_from(
          description="Return VRS object",
          response_model=HgvsToAbsoluteCopyNumberService,
          response_model_exclude_none=True)
-def hgvs_to_absolute_copy_number(
+async def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for duplication"),
@@ -399,7 +399,7 @@ def hgvs_to_absolute_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToAbsoluteCopyNumberService
     """
-    variation, warnings = query_handler.hgvs_to_absolute_copy_number(
+    variation, warnings = await query_handler.hgvs_to_absolute_copy_number(
         unquote(hgvs_expr.strip()), baseline_copies, do_liftover)
 
     return HgvsToAbsoluteCopyNumberService(
@@ -419,7 +419,7 @@ def hgvs_to_absolute_copy_number(
          description="Return VRS object",
          response_model=HgvsToRelativeCopyNumberService,
          response_model_exclude_none=True)
-def hgvs_to_relative_copy_number(
+async def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(
         ..., description="The relative copy class"),
@@ -433,7 +433,7 @@ def hgvs_to_relative_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToRelativeCopyNumberService
     """
-    variation, warnings = query_handler.hgvs_to_relative_copy_number(
+    variation, warnings = await query_handler.hgvs_to_relative_copy_number(
         unquote(hgvs_expr.strip()), relative_copy_class, do_liftover)
 
     return HgvsToRelativeCopyNumberService(
