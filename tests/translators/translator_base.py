@@ -3,15 +3,14 @@ import yaml
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, \
+    MANETranscriptMappings, UTADatabase, MANETranscript
 
 from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
 from variation.vrs import VRS
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTA
-from variation.mane_transcript import MANETranscript
 
 
 class TranslatorBase:
@@ -29,8 +28,8 @@ class TranslatorBase:
 
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
-        uta = UTA()
-        dp = SeqRepoDataProxy(seqrepo_access.seq_repo_client)
+        uta = UTADatabase()
+        dp = SeqRepoDataProxy(seqrepo_access.seqrepo_client)
         tlr = Translator(data_proxy=dp)
         mane_transcript = MANETranscript(
             seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta)
@@ -69,13 +68,13 @@ class TranslatorBase:
         self.validator = self.validator_instance()
         self.translator = self.translator_instance()
 
-    def test_translator(self):
+    async def test_translator(self):
         """Test that translator matches correctly."""
         self.set_up()
         for x in self.fixtures["tests"]:
             tokens = self.tokenizer.perform(x["query"], [])
             classification = self.classifier.match(tokens)
-            validation_results = self.validator.validate(
+            validation_results = await self.validator.validate(
                 classification, endpoint_name=Endpoint.TO_VRS
             )
             num_valid = 0

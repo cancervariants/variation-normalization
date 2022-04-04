@@ -23,9 +23,8 @@ logger.setLevel(logging.DEBUG)
 class GenomicDuplication(DuplicationDeletionBase):
     """The Genomic Duplication Validator class."""
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -34,9 +33,10 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -72,7 +72,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                result = self._get_variation(
+                result = await self._get_variation(
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
                     gene=gene_tokens[0].token if gene_tokens else None,
                     baseline_copies=baseline_copies,
@@ -82,7 +82,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 end = result["end"]
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    self._get_normalize_variation(
+                    await self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
                         mane_data_found, start, end,
                         relative_copy_class=relative_copy_class,
@@ -102,7 +102,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 classification, gene_tokens
             )
 
-    def _get_variation(
+    async def _get_variation(
         self, s: Token, t: str, errors: List, gene_tokens: List,
         hgvs_dup_del_mode: HGVSDupDelModeEnum, gene: str = None,
         baseline_copies: Optional[int] = None,
@@ -128,7 +128,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 # Format: #_#dup
                 end = s.start_pos2_dup
 
-            self.validate_gene_or_accession_pos(
+            await self.validate_gene_or_accession_pos(
                 t, [start, end], errors, gene=gene)
 
             if not errors:
@@ -140,7 +140,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     pos=(start, end), baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            ival, grch38 = self._get_ival(t, s, gene_tokens, errors)
+            ival, grch38 = await self._get_ival(t, s, gene_tokens, errors)
 
             if not errors:
                 if grch38:
@@ -165,7 +165,7 @@ class GenomicDuplication(DuplicationDeletionBase):
             "variation": variation
         }
 
-    def _get_normalize_variation(
+    async def _get_normalize_variation(
         self, gene_tokens: List, s: Token, t: str, errors: List,
         hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict, start: int,
         end: int, baseline_copies: Optional[int] = None,
@@ -186,7 +186,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # (#_#)_(#_#)
-            ival, grch38 = self._get_ival(t, s, gene_tokens, errors, is_norm=True)
+            ival, grch38 = await self._get_ival(t, s, gene_tokens, errors, is_norm=True)
             self.add_grch38_to_mane_data(
                 t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode, ival=ival,
                 baseline_copies=baseline_copies,
@@ -197,21 +197,21 @@ class GenomicDuplication(DuplicationDeletionBase):
                 gene = gene_tokens[0].token
 
                 # Validate position
-                self._validate_gene_pos(gene, t, start, end, errors)
+                await self._validate_gene_pos(gene, t, start, end, errors)
                 if errors:
                     return
 
-                self.add_normalized_genomic_dup_del(
+                await self.add_normalized_genomic_dup_del(
                     s, t, start, end, gene_tokens[0].token,
                     SequenceOntology.DUPLICATION, errors, hgvs_dup_del_mode,
                     mane_data_found, baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
             else:
-                grch38 = self.mane_transcript.g_to_grch38(
+                grch38 = await self.mane_transcript.g_to_grch38(
                     t, start, end)
 
                 if grch38:
-                    self.validate_gene_or_accession_pos(
+                    await self.validate_gene_or_accession_pos(
                         grch38["ac"], [grch38["pos"][0], grch38["pos"][1]],
                         errors)
                     self.add_grch38_to_mane_data(
@@ -221,7 +221,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                         relative_copy_class=relative_copy_class
                     )
 
-    def _get_ival(
+    async def _get_ival(
             self, t: str, s: Token, gene_tokens: List, errors: List,
             is_norm: bool = False
     ) -> Optional[Tuple[models.SequenceInterval, Dict]]:
@@ -241,7 +241,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
             if is_norm:
-                t, start1, start2, end1, end2, grch38 = self.get_grch38_pos_ac(
+                t, start1, start2, end1, end2, grch38 = await self.get_grch38_pos_ac(
                     t, s.start_pos1_dup, s.start_pos2_dup, pos3=s.end_pos1_dup,
                     pos4=s.end_pos2_dup
                 )
@@ -252,7 +252,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 end2 = s.end_pos2_dup
 
             if start1 and start2 and end1 and end2:
-                self.validate_gene_or_accession_pos(
+                await self.validate_gene_or_accession_pos(
                     t, [start1, start2, end1, end2], errors, gene=gene)
 
                 if not errors:
@@ -262,7 +262,7 @@ class GenomicDuplication(DuplicationDeletionBase):
             if s.start_pos1_dup == "?" and s.end_pos2_dup == "?":
                 # format: (?_#)_(#_?)
                 if is_norm:
-                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                         t, s.start_pos2_dup, s.end_pos1_dup
                     )
                 else:
@@ -270,7 +270,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     end = s.end_pos1_dup
 
                 # Validate positions
-                self.validate_gene_or_accession_pos(
+                await self.validate_gene_or_accession_pos(
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
@@ -285,14 +285,14 @@ class GenomicDuplication(DuplicationDeletionBase):
                     s.end_pos2_dup is None:
                 # format: (?_#)_#
                 if is_norm:
-                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                         t, s.start_pos2_dup, s.end_pos1_dup)
                 else:
                     start = s.start_pos2_dup
                     end = s.end_pos1_dup
 
                 # Validate positions
-                self.validate_gene_or_accession_pos(
+                await self.validate_gene_or_accession_pos(
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
@@ -307,7 +307,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     s.end_pos2_dup == "?":
                 # format: #_(#_?)
                 if is_norm:
-                    t, start, end, _, _, grch38 = self.get_grch38_pos_ac(
+                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
                         t, s.start_pos1_dup, s.end_pos1_dup
                     )
                 else:
@@ -315,7 +315,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     end = s.end_pos1_dup
                 start -= 1
 
-                self.validate_gene_or_accession_pos(
+                await self.validate_gene_or_accession_pos(
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:

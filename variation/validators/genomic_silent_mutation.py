@@ -19,8 +19,8 @@ logger.setLevel(logging.DEBUG)
 class GenomicSilentMutation(SingleNucleotideVariationBase):
     """The Genomic Silent Mutation Validator class."""
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -29,9 +29,10 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -61,7 +62,7 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
-        self.silent_mutation_valid_invalid_results(
+        await self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
             gene_tokens, endpoint_name, mane_data_found, is_identifier
         )

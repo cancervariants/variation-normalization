@@ -24,8 +24,8 @@ logger.setLevel(logging.DEBUG)
 class CodingDNASubstitution(SingleNucleotideVariationBase):
     """The Coding DNA Substitution Validator class."""
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -36,7 +36,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -72,7 +72,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                 errors = list()
 
                 t = self.get_accession(t, classification)
-                cds_start_end = self.uta.get_cds_start_end(t)
+                cds_start_end = await self.uta.get_cds_start_end(t)
                 if cds_start_end is not None:
                     cds_start = cds_start_end[0]
 
@@ -86,37 +86,29 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
                     errors.append(f"Unable to get CDS start for {t}")
 
                 if not errors:
-                    ref_nuc = self.seqrepo_access.get_sequence(
-                        t, s.position + cds_start
-                    )
+                    ref_nuc, _ = self.seqrepo_access.get_reference_sequence(
+                        t, s.position + cds_start)
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.coordinate_type,
-                        ref=s.ref_nucleotide,
-                        try_longest_compatible=True
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.coordinate_type, end_pos=s.position,
+                        ref=s.ref_nucleotide, try_longest_compatible=True
                     )
 
-                    self.add_mane_data(
-                        mane, mane_data_found, s.coordinate_type,
-                        s.alt_type, s, alt=s.new_nucleotide
-                    )
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s, alt=s.new_nucleotide)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.

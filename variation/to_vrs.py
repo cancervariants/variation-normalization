@@ -5,6 +5,8 @@ from urllib.parse import unquote
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
     VariationSet, Text
+from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
+    MANETranscriptMappings, MANETranscript
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
@@ -16,9 +18,6 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
-    UTA, MANETranscriptMappings
-from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.schemas.normalize_response_schema\
@@ -32,7 +31,7 @@ class ToVRS:
                  seqrepo_access: SeqRepoAccess,
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol, amino_acid_cache: AminoAcidCache,
-                 uta: UTA, mane_transcript_mappings: MANETranscriptMappings,
+                 uta: UTADatabase, mane_transcript_mappings: MANETranscriptMappings,
                  mane_transcript: MANETranscript, validator: Validate,
                  translator: Translate,
                  gene_normalizer: GeneQueryHandler,
@@ -46,7 +45,7 @@ class ToVRS:
             data class
         :param GeneSymbol gene_symbol: Class for identifying gene symbols
         :param AminoAcidCache amino_acid_cache: Amino Acid data class
-        :param UTA uta: UTA DB and queries
+        :param UTADatabase uta: UTA DB and queries
         :param MANETranscriptMappings mane_transcript_mappings: Class for
             getting mane transcript data from gene
         :param MANETranscript mane_transcript: Mane transcript data class
@@ -70,7 +69,7 @@ class ToVRS:
         self.gene_normalizer = gene_normalizer
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
-    def get_validations(
+    async def get_validations(
             self, q: str, endpoint_name: Optional[Endpoint] = None,
             hgvs_dup_del_mode: Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] = None,  # noqa: E501
             baseline_copies: Optional[int] = None,
@@ -146,7 +145,7 @@ class ToVRS:
                             f"duplication or deletion"]
                 return None, warnings
 
-        validations = self.validator.perform(
+        validations = await self.validator.perform(
             classifications, endpoint_name=endpoint_name, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
             relative_copy_class=relative_copy_class, do_liftover=do_liftover

@@ -21,8 +21,8 @@ logger.setLevel(logging.DEBUG)
 class CodingDNADelIns(DelInsBase):
     """The Coding DNA DelIns Validator class."""
 
-    def get_transcripts(self, gene_tokens: List, classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -33,7 +33,7 @@ class CodingDNADelIns(DelInsBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_valid_invalid_results(
+    async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
         classification: Classification, results: List, gene_tokens: List,
         mane_data_found: Dict, is_identifier: bool,
@@ -69,7 +69,7 @@ class CodingDNADelIns(DelInsBase):
                 errors = list()
                 t = self.get_accession(t, classification)
 
-                cds_start_end = self.uta.get_cds_start_end(t)
+                cds_start_end = await self.uta.get_cds_start_end(t)
                 if cds_start_end is not None:
                     cds_start = cds_start_end[0]
                     allele = self.vrs.to_vrs_allele(
@@ -85,30 +85,23 @@ class CodingDNADelIns(DelInsBase):
                     self.check_pos_index(t, s, errors)
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_del, s.end_pos_del,
-                        s.coordinate_type,
-                        try_longest_compatible=True
-                    )
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, int(s.start_pos_del), s.coordinate_type,
+                        end_pos=int(s.end_pos_del) if s.end_pos_del else None,
+                        try_longest_compatible=True)
 
-                    self.add_mane_data(
-                        mane, mane_data_found, s.coordinate_type,
-                        s.alt_type, s, alt=s.inserted_sequence1
-                    )
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s, alt=s.inserted_sequence1)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
         if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
     def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
