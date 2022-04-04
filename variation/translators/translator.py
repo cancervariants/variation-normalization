@@ -1,10 +1,14 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, CopyNumber
+
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, AbsoluteCopyNumber, \
+    RelativeCopyNumber
 from pydantic.error_wrappers import ValidationError
+
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.token_response_schema import Token
 
 
 class Translator(ABC):
@@ -16,7 +20,7 @@ class Translator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Check that the token is the correct instance for a translator."""
         raise NotImplementedError
 
@@ -26,17 +30,17 @@ class Translator(ABC):
                            self.is_token_instance(t)]
         len_instance_tokens = len(instance_tokens)
 
-        variation_type = res.variation['type']
+        variation_type = res.variation["type"]
         if len_instance_tokens > 1:
             if len_instance_tokens == 2:
                 if {t.token_type for t in instance_tokens} \
-                        == {'PolypeptideTruncation'}:
+                        == {"PolypeptideTruncation"}:
                     tokens = sorted([t.token.lower() for t in instance_tokens],
                                     key=len)
                     if len(tokens[1]) > len(tokens[0]):
                         t = f"{tokens[0]} ({tokens[0].replace('ter', '*')})"
                         if t.lower() == tokens[1].lower():
-                            if variation_type == 'Allele':
+                            if variation_type == "Allele":
                                 try:
                                     Allele(**res.variation)
                                 except ValidationError:
@@ -44,12 +48,12 @@ class Translator(ABC):
                                 else:
                                     return res.variation
 
-            raise Exception(f'Should not have more than one '
-                            f'{self.__class__.__name__} '
-                            f'token if the result is valid')
+            raise Exception(f"Should not have more than one "
+                            f"{self.__class__.__name__} "
+                            f"token if the result is valid")
 
-        if variation_type == 'Allele':
-            if not res.variation['location']:
+        if variation_type == "Allele":
+            if not res.variation["location"]:
                 raise Exception("Cannot translate an allele with no location")
             try:
                 Allele(**res.variation)
@@ -57,12 +61,19 @@ class Translator(ABC):
                 variation = None
             else:
                 variation = res.variation
-        elif variation_type == 'CopyNumber':
-            if res.variation['subject']['type'] == "Allele":
-                if not res.variation['subject']['location']:
+        elif variation_type == "AbsoluteCopyNumber":
+            if res.variation["subject"]["type"] == "Allele":
+                if not res.variation["subject"]["location"]:
                     raise Exception("Cannot translate a CNV with no location")
             try:
-                CopyNumber(**res.variation)
+                AbsoluteCopyNumber(**res.variation)
+            except ValidationError:
+                variation = None
+            else:
+                variation = res.variation
+        elif variation_type == "RelativeCopyNumber":
+            try:
+                RelativeCopyNumber(**res.variation)
             except ValidationError:
                 variation = None
             else:

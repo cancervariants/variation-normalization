@@ -1,5 +1,6 @@
 """Module for testing Genomic Insertion Translator."""
 import unittest
+
 from variation.classifiers import GenomicInsertionClassifier
 from variation.translators import GenomicInsertion
 from variation.validators import GenomicInsertion as GD_V
@@ -23,4 +24,4 @@ class TestGenomicInsertionTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for genomic insertion."""
-        return 'genomic_insertion'
+        return "genomic_insertion"

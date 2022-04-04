@@ -3,6 +3,7 @@ from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import quote
 import copy
 import json
+from os import environ
 
 import python_jsonschema_objects
 from gene.query import QueryHandler as GeneQueryHandler
@@ -10,11 +11,19 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.core import sha512t24u, ga4gh_identify
 from ga4gh.vrs import models
+from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
+    Haplotype, VariationSet, RelativeCopyNumber
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
+    CanonicalVariation, ComplexVariation
+from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
+    LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, UTATools
 
-from variation import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
-    REFSEQ_GENE_SYMBOL_PATH, AMINO_ACID_PATH, UTA_DB_URL, REFSEQ_MANE_PATH
+from variation import AMINO_ACID_PATH, UTA_DB_URL
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS, \
+    CopyNumberType, RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
-    ReferenceSequence, SequenceOntology
+    CoordinateType, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.to_vrs import ToVRS
 from variation.vrs import VRS
@@ -23,16 +32,10 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.data_sources import SeqRepoAccess, TranscriptMappings, \
-    UTA, MANETranscriptMappings, CodonTable
-from variation.mane_transcript import MANETranscript
+from variation.data_sources import CodonTable
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, CopyNumber, \
-    Haplotype, VariationSet
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation, ComplexVariation
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -43,8 +46,11 @@ class QueryHandler:
     def __init__(self,
                  dynamodb_url: str = "",
                  dynamodb_region: str = "us-east-2",
-                 seqrepo_data_path: str = SEQREPO_DATA_PATH,
+                 seqrepo_data_path: str = None,
                  amino_acids_file_path: str = AMINO_ACID_PATH,
+                 transcript_file_path: str = None,
+                 refseq_file_path: str = None,
+                 mane_data_path: str = None,
                  uta_db_url: str = UTA_DB_URL,
                  uta_db_pwd: Optional[str] = None) -> None:
         """Initialize QueryHandler instance.
@@ -52,6 +58,9 @@ class QueryHandler:
         :param str dynamodb_region: AWS default region for gene-normalizer.
         :param str seqrepo_data_path: Path to seqrepo data directory
         :param str amino_acids_file_path: Path to amino acids file
+        :param str transcript_file_path: Path to transcript mappings file
+        :param str refseq_file_path: Path to refseq gene symbol file
+        :param str mane_data_path: Path to refseq mane data file
         :param str uta_db_url: URL for UTA database
         :param Optional[str] uta_db_pwd: Password for UTA database user
         """
@@ -60,12 +69,26 @@ class QueryHandler:
         )
         self.gene_normalizer = GeneQueryHandler(db_url=dynamodb_url,
                                                 db_region=dynamodb_region)
-        self.seqrepo_access = SeqRepoAccess(
-            seqrepo_data_path=seqrepo_data_path
-        )
+
+        if not seqrepo_data_path:
+            seqrepo_data_path = environ.get("SEQREPO_DATA_PATH", SEQREPO_DATA_PATH)
+        if not transcript_file_path:
+            transcript_file_path = environ.get("TRANSCRIPT_MAPPINGS_PATH",
+                                               TRANSCRIPT_MAPPINGS_PATH)
+        if not refseq_file_path:
+            refseq_file_path = environ.get("LRG_REFSEQGENE_PATH", LRG_REFSEQGENE_PATH)
+        if not mane_data_path:
+            mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
+
+        self.uta_tools = UTATools(seqrepo_data_path=seqrepo_data_path,
+                                  transcript_file_path=transcript_file_path,
+                                  lrg_refseqgene_path=refseq_file_path,
+                                  mane_data_path=mane_data_path,
+                                  db_url=uta_db_url, db_pwd=uta_db_pwd)
+        self.seqrepo_access = self.uta_tools.seqrepo_access
         self.codon_table = CodonTable(self.amino_acid_cache)
-        self.uta = UTA(db_url=uta_db_url, db_pwd=uta_db_pwd)
-        self.dp = SeqRepoDataProxy(self.seqrepo_access.seq_repo_client)
+        self.uta = self.uta_tools.uta_db
+        self.dp = SeqRepoDataProxy(self.seqrepo_access.seqrepo_client)
         self.tlr = Translator(data_proxy=self.dp)
         self.hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         self.vrs = VRS(self.dp, self.seqrepo_access)
@@ -74,31 +97,14 @@ class QueryHandler:
             self.seqrepo_access, self.uta, self.gene_normalizer
         )
 
-    def _init_to_vrs(self,
-                     transcript_file_path: str = TRANSCRIPT_MAPPINGS_PATH,
-                     refseq_file_path: str = REFSEQ_GENE_SYMBOL_PATH,
-                     mane_data_path: str = REFSEQ_MANE_PATH) -> ToVRS:
-        """Return toVRS instance
-
-        :param str transcript_file_path: Path to transcript mappings file
-        :param str refseq_file_path: Path to refseq gene symbol file
-        :param str mane_data_path: Path to refseq mane data file
-        :return: toVRS instance
-        """
+    def _init_to_vrs(self) -> ToVRS:
+        """Return toVRS instance"""
         gene_symbol = GeneSymbol(self.gene_normalizer)
         tokenizer = Tokenize(self.amino_acid_cache, gene_symbol)
         classifier = Classify()
-        transcript_mappings = TranscriptMappings(
-            transcript_file_path=transcript_file_path,
-            refseq_file_path=refseq_file_path
-        )
-        mane_transcript_mappings = MANETranscriptMappings(
-            mane_data_path=mane_data_path
-        )
-        mane_transcript = MANETranscript(
-            self.seqrepo_access, transcript_mappings,
-            mane_transcript_mappings, self.uta
-        )
+        transcript_mappings = self.uta_tools.transcript_mappings
+        mane_transcript_mappings = self.uta_tools.mane_transcript_mappings
+        mane_transcript = self.uta_tools.mane_transcript
         validator = Validate(
             self.seqrepo_access, transcript_mappings, gene_symbol,
             mane_transcript, self.uta, self.dp, self.tlr,
@@ -112,8 +118,8 @@ class QueryHandler:
             self.gene_normalizer, self.hgvs_dup_del_mode
         )
 
-    def to_vrs(self, q: str)\
-            -> Tuple[Optional[Union[List[Allele], List[CopyNumber],
+    async def to_vrs(self, q: str)\
+            -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
                      Optional[List[str]]]:
@@ -122,21 +128,20 @@ class QueryHandler:
         :param str q: The variation to translate
         :return: Validated VRS Variations and list of warnings
         """
-        validations, warnings = \
-            self.to_vrs_handler.get_validations(q)
+        validations, warnings = await self.to_vrs_handler.get_validations(q)
         translations, warnings = \
             self.to_vrs_handler.get_translations(validations, warnings)
 
         if not translations:
             if q and q.strip():
-                text = models.Text(definition=q)
+                text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
             else:
                 translations = None
         return translations, warnings
 
-    def normalize(
+    async def normalize(
             self, q: str,
             hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT  # noqa: E501
     ) -> Optional[VariationDescriptor]:
@@ -150,18 +155,16 @@ class QueryHandler:
             in VRS.
         :return: Variation Descriptor for variation
         """
-        validations, warnings = \
-            self.to_vrs_handler.get_validations(
-                q, normalize_endpoint=True,
-                hgvs_dup_del_mode=hgvs_dup_del_mode
-            )
+        validations, warnings = await self.to_vrs_handler.get_validations(
+            q, endpoint_name=Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode
+        )
         if not validations:
             self.normalize_handler.warnings = warnings
             return None
         return self.normalize_handler.normalize(q, validations,
                                                 warnings)
 
-    def _get_gnomad_vcf_validations(
+    async def _get_gnomad_vcf_validations(
             self, q: str, warnings: List) -> Optional[ValidationSummary]:
         """Get gnomad vcf validation summary
 
@@ -175,8 +178,8 @@ class QueryHandler:
                 warnings.append(f"{q} is not a supported gnomad vcf query")
                 return None
         classifications = self.to_vrs_handler.classifier.perform(tokens)
-        validation_summary = self.to_vrs_handler.validator.perform(
-            classifications, True, warnings,
+        validation_summary = await self.to_vrs_handler.validator.perform(
+            classifications, Endpoint.NORMALIZE, warnings,
             hgvs_dup_del_mode=HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         )
         if not validation_summary:
@@ -193,7 +196,7 @@ class QueryHandler:
         """
         # genomic ac should always be in 38
         alt_ac = variation["location"]["sequence_id"]
-        aliases = self.seqrepo_access.seq_repo_client.translate_identifier(
+        aliases = self.seqrepo_access.seqrepo_client.translate_identifier(
             alt_ac, target_namespaces="refseq")
         return aliases[0].split("refseq:")[-1]
 
@@ -248,41 +251,43 @@ class QueryHandler:
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
-        classification_token.reference_sequence = ReferenceSequence.PROTEIN
+        classification_token.coordinate_type = CoordinateType.PROTEIN
         classification_token.molecule_context = "protein"
         if classification_token.alt_type in ["substitution",
                                              "silent_mutation"]:
             if classification_token.alt_type == "substitution":
                 alt_nuc = classification_token.new_nucleotide
                 classification_token.so_id = \
-                    SequenceOntology.AMINO_ACID_SUBSTITUTION
+                    SequenceOntology.PROTEIN_SUBSTITUTION
             else:
                 alt_nuc = classification_token.ref_nucleotide
                 classification_token.so_id = SequenceOntology.SILENT_MUTATION
+
+            ref = None
             if reading_frame == 1:
                 # first pos
                 if strand == "-":
-                    ref = self.seqrepo_access.get_sequence(
-                        alt_ac, g_start_pos - 2, g_end_pos)
+                    ref, _ = self.seqrepo_access.get_reference_sequence(
+                        alt_ac, g_start_pos - 1, g_end_pos + 2)
                     alt = alt_nuc + ref[1] + ref[0]
                 else:
-                    ref = self.seqrepo_access.get_sequence(
-                        alt_ac, g_start_pos, g_end_pos + 2)
+                    ref, _ = self.seqrepo_access.get_reference_sequence(
+                        alt_ac, g_start_pos + 1, g_end_pos + 4)
                     alt = alt_nuc + ref[1] + ref[2]
             elif reading_frame == 2:
                 # middle pos
-                ref = self.seqrepo_access.get_sequence(
-                    alt_ac, g_start_pos - 1, g_end_pos + 1)
+                ref, _ = self.seqrepo_access.get_reference_sequence(
+                    alt_ac, g_start_pos, g_end_pos + 3)
                 alt = ref[0] + alt_nuc + ref[2]
             elif reading_frame == 3:
                 # last pos
                 if strand == "-":
-                    ref = self.seqrepo_access.get_sequence(
-                        alt_ac, g_start_pos, g_end_pos + 2)
+                    ref, _ = self.seqrepo_access.get_reference_sequence(
+                        alt_ac, g_start_pos + 1, g_end_pos + 4)
                     alt = ref[2] + ref[1] + alt_nuc
                 else:
-                    ref = self.seqrepo_access.get_sequence(
-                        alt_ac, g_start_pos - 2, g_end_pos)
+                    ref, _ = self.seqrepo_access.get_reference_sequence(
+                        alt_ac, g_start_pos - 1, g_end_pos + 2)
                     alt = ref[0] + ref[1] + alt_nuc
 
             if alt and strand == "-":
@@ -291,9 +296,9 @@ class QueryHandler:
                 alt = alt.replace("T", "U")
         elif classification_token.alt_type == "deletion":
             # There is no alt for a deletion
-            classification_token.so_id = SequenceOntology.AMINO_ACID_DELETION
+            classification_token.so_id = SequenceOntology.PROTEIN_DELETION
         elif classification_token.alt_type == "insertion":
-            classification_token.so_id = SequenceOntology.AMINO_ACID_INSERTION
+            classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
                 alt = alt[::-1]
@@ -311,7 +316,7 @@ class QueryHandler:
                 aa_alt += self.codon_table.table[alt[3 * i:(3 * i) + 3]]
             return aa_alt
 
-    def gnomad_vcf_to_protein(
+    async def gnomad_vcf_to_protein(
             self, q: str) -> Tuple[Optional[VariationDescriptor], List]:
         """Get protein consequence for gnomad vcf
 
@@ -324,7 +329,7 @@ class QueryHandler:
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
         warnings = list()
         valid_list = list()
-        validations = self._get_gnomad_vcf_validations(q, warnings)
+        validations = await self._get_gnomad_vcf_validations(q, warnings)
         if not validations:
             return self.normalize_handler.text_variation_resp(q, _id, warnings)
 
@@ -336,7 +341,9 @@ class QueryHandler:
             classification_token = valid_result.classification_token
             alt_ac = self._get_refseq_alt_ac_from_variation(variation)
 
-            # 1-based
+            # 0-based
+            g_start_pos = None
+            g_end_pos = None
             if classification_token.alt_type == "deletion":
                 g_start_pos = classification_token.start_pos_del
                 g_end_pos = classification_token.end_pos_del
@@ -347,26 +354,33 @@ class QueryHandler:
                                                    "substitution"]:
                 g_start_pos = classification_token.position
                 g_end_pos = classification_token.position
-                ref_seq = self.seqrepo_access.get_sequence(alt_ac, g_start_pos)
-                if ref_seq != classification_token.ref_nucleotide:
-                    all_warnings.append(
-                        f"Expected {classification_token.ref_nucleotide}"
-                        f" but found {ref_seq} on {alt_ac} at position"
-                        f" {g_start_pos}"
-                    )
-                    continue
+                ref_seq, w = self.seqrepo_access.get_reference_sequence(
+                    alt_ac, g_start_pos)
+                if not ref_seq:
+                    all_warnings.append(w)
+                else:
+                    if ref_seq != classification_token.ref_nucleotide:
+                        all_warnings.append(
+                            f"Expected {classification_token.ref_nucleotide}"
+                            f" but found {ref_seq} on {alt_ac} at position"
+                            f" {g_start_pos}"
+                        )
+                        continue
             else:
                 all_warnings.append(
                     f"{classification_token.alt_type} alt_type not supported"
                 )
                 continue
 
-            transcripts = self.uta.get_transcripts_from_genomic_pos(
+            g_start_pos -= 1
+            g_end_pos -= 1
+
+            transcripts = await self.uta.get_transcripts_from_genomic_pos(
                 alt_ac, g_start_pos)
 
             if not transcripts:
                 all_warnings.append(f"Unable to get transcripts given {alt_ac}"
-                                    f" and {g_start_pos}")
+                                    f" and {g_start_pos + 1}")
                 continue
             mane_data = self.to_vrs_handler.mane_transcript_mappings.get_mane_from_transcripts(transcripts)  # noqa: E501
             mane_data_len = len(mane_data)
@@ -374,9 +388,8 @@ class QueryHandler:
                 index = mane_data_len - i - 1
                 current_mane_data = mane_data[index]
                 mane_c_ac = current_mane_data["RefSeq_nuc"]
-                mane_tx_genomic_data = self.uta.get_mane_c_genomic_data(
-                    mane_c_ac, alt_ac, g_start_pos, g_end_pos
-                )
+                mane_tx_genomic_data = await self.uta.get_mane_c_genomic_data(
+                    mane_c_ac, alt_ac, g_start_pos, g_end_pos)
                 if not mane_tx_genomic_data:
                     all_warnings.append("Unable to get mane transcript and "
                                         "genomic data")
@@ -384,12 +397,11 @@ class QueryHandler:
                 coding_start_site = mane_tx_genomic_data["coding_start_site"]
                 mane_c_pos_change = \
                     self.to_vrs_handler.mane_transcript.get_mane_c_pos_change(
-                        mane_tx_genomic_data, (g_start_pos, g_end_pos),
-                        coding_start_site)
-                if mane_c_pos_change[0] > mane_c_pos_change[1]:
-                    mane_c_pos_change = (mane_c_pos_change[1],
-                                         mane_c_pos_change[0])
-                reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(mane_c_pos_change[0])  # noqa: E501
+                        mane_tx_genomic_data, coding_start_site)
+
+                # We use 1-based
+                reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(
+                    mane_c_pos_change[0] + 1)
                 if classification_token.alt_type in ["substitution",
                                                      "silent_mutation"]:
                     mane_c_pos_change = self._update_gnomad_vcf_mane_c_pos(
@@ -401,7 +413,9 @@ class QueryHandler:
                         continue
 
                 mane_p = self.to_vrs_handler.mane_transcript._get_mane_p(
-                    current_mane_data, mane_c_pos_change)
+                    current_mane_data,
+                    (mane_c_pos_change[0] + 1, mane_c_pos_change[1] + 1)
+                )
                 if mane_p["pos"][0] > mane_p["pos"][1]:
                     mane_p["pos"] = (mane_p["pos"][1], mane_p["pos"][0])
                 p_ac = mane_p["refseq"]
@@ -465,7 +479,7 @@ class QueryHandler:
         deleted_seq = spdi_parts[2]
         end_pos = start_pos + len(deleted_seq)
         try:
-            sequence = self.seqrepo_access.seq_repo_client.fetch(
+            sequence = self.seqrepo_access.seqrepo_client.fetch(
                 ac, start_pos, end=end_pos)
         except ValueError as e:
             warnings.append(str(e))
@@ -489,10 +503,95 @@ class QueryHandler:
         cpy_canonical_variation = copy.deepcopy(canonical_variation)
         cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
         serialized = json.dumps(
-            cpy_canonical_variation, sort_keys=True, separators=(',', ':'), indent=None
+            cpy_canonical_variation, sort_keys=True, separators=(",", ":"), indent=None
         ).encode("utf-8")
         digest = sha512t24u(serialized)
         # VCC = variation categorical canonical
         canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
+
+    def _hgvs_to_cnv_resp(
+        self, copy_number_type: CopyNumberType, hgvs_expr: str, do_liftover: bool,
+        validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
+        warnings: List[str]
+    ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
+        """Return copy number variation and warnings response
+
+        :param CopyNumberType copy_number_type: The type of copy number variation
+        :param str hgvs_expr: HGVS expression
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
+            summary and warnings for hgvs_expr
+        :param List[str] warnings: List of warnings
+        :return: CopyNumberVariation and warnings
+        """
+        variation = None
+        if do_liftover:
+            valid_result = self.normalize_handler.get_valid_result(
+                hgvs_expr, validations, [])
+            if valid_result:
+                variation = valid_result.variation
+            else:
+                warnings.append(f"Unable to translate {hgvs_expr} to "
+                                f"copy number variation")
+        else:
+            translations, warnings = \
+                self.to_vrs_handler.get_translations(validations, warnings)
+            if translations:
+                variation = translations[0]
+
+        if not variation:
+            if hgvs_expr and hgvs_expr.strip():
+                text = models.Text(definition=hgvs_expr, type="Text")
+                text._id = ga4gh_identify(text)
+                variation = Text(**text.as_dict())
+        else:
+            if copy_number_type == CopyNumberType.ABSOLUTE:
+                variation = AbsoluteCopyNumber(**variation)
+            else:
+                variation = RelativeCopyNumber(**variation)
+        return variation, warnings
+
+    async def hgvs_to_absolute_copy_number(
+        self, hgvs_expr: str, baseline_copies: Optional[int] = None,
+        do_liftover: bool = False
+    ) -> Tuple[Optional[AbsoluteCopyNumber], List[str]]:
+        """Given hgvs, return abolute copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Absolute Copy Number Variation and warnings
+        """
+        validations, warnings = await self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
+            hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
+            baseline_copies=baseline_copies, do_liftover=do_liftover
+        )
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.ABSOLUTE, hgvs_expr, do_liftover, validations, warnings)
+
+    async def hgvs_to_relative_copy_number(
+        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
+        do_liftover: bool = False
+    ) -> Tuple[Optional[RelativeCopyNumber], List[str]]:
+        """Given hgvs, return relative copy number variation
+
+        :param str hgvs_expr: HGVS expression
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Relative Copy Number Variation and warnings
+        """
+        if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
+            return None, [f"{relative_copy_class} is not a valid relative copy class: "
+                          f"{VALID_RELATIVE_COPY_CLASS}"]
+
+        validations, warnings = await self.to_vrs_handler.get_validations(
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
+            hgvs_dup_del_mode=CopyNumberType.RELATIVE,
+            relative_copy_class=relative_copy_class, do_liftover=do_liftover
+        )
+
+        return self._hgvs_to_cnv_resp(
+            CopyNumberType.RELATIVE, hgvs_expr, do_liftover, validations, warnings)

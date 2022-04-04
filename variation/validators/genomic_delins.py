@@ -1,39 +1,48 @@
 """The module for Genomic DelIns Validation."""
+import logging
+from typing import List, Optional, Dict
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import GenomicDelInsToken
-from typing import List, Optional, Dict
+from variation.schemas.token_response_schema import Token
 from variation.schemas.token_response_schema import GeneMatchToken
-import logging
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class GenomicDelIns(DelInsBase):
     """The Genomic DelIns Validator class."""
 
-    def get_transcripts(self, gene_tokens, classification, errors)\
-            -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
-        :param list gene_tokens: A list of gene tokens
+        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
-        :param list errors: List of errors
+        :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_genomic_transcripts(classification, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
-    def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum
+    async def get_valid_invalid_results(
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
 
@@ -43,8 +52,6 @@ class GenomicDelIns(DelInsBase):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -52,6 +59,10 @@ class GenomicDelIns(DelInsBase):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -59,40 +70,34 @@ class GenomicDelIns(DelInsBase):
                 errors = list()
                 t = self.get_accession(t, classification)
                 allele = self.vrs.to_vrs_allele(
-                    t, s.start_pos_del, s.end_pos_del, s.reference_sequence,
+                    t, s.start_pos_del, s.end_pos_del, s.coordinate_type,
                     s.alt_type, errors, alt=s.inserted_sequence1)
 
                 if not errors:
                     self.check_pos_index(t, s, errors)
 
-                if not errors and normalize_endpoint:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_del, s.end_pos_del,
-                        s.reference_sequence,
+                if not errors and endpoint_name == Endpoint.NORMALIZE:
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, int(s.start_pos_del), s.coordinate_type,
+                        end_pos=int(s.end_pos_del) if s.end_pos_del else None,
                         gene=gene_tokens[0].token if gene_tokens else None,
-                        normalize_endpoint=normalize_endpoint
+                        try_longest_compatible=True
                     )
 
-                    self.add_mane_data(
-                        mane, mane_data_found, s.reference_sequence,
-                        s.alt_type, s, alt=s.inserted_sequence1
-                    )
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s, alt=s.inserted_sequence1)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
-        if normalize_endpoint:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+        if endpoint_name == Endpoint.NORMALIZE:
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
-    def get_gene_tokens(self, classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -100,36 +105,18 @@ class GenomicDelIns(DelInsBase):
         """
         return self.get_gene_symbol_tokens(classification)
 
-    def variation_name(self):
+    def variation_name(self) -> str:
         """Return the variation name."""
-        return 'genomic delins'
+        return "genomic delins"
 
-    def is_token_instance(self, t):
+    def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic DelIns."""
-        return t.token_type == 'GenomicDelIns'
+        return t.token_type == "GenomicDelIns"
 
     def validates_classification_type(
-            self,
-            classification_type: ClassificationType) -> bool:
+        self, classification_type: ClassificationType
+    ) -> bool:
         """Return whether or not the classification type is
         Genomic DelIns.
         """
         return classification_type == ClassificationType.GENOMIC_DELINS
-
-    def human_description(self, transcript,
-                          token: GenomicDelInsToken) -> str:
-        """Return a human description of the identified variation."""
-        if token.start_pos_del is not None and token.end_pos_del is not None:
-            position = f"{token.start_pos_del} to {token.end_pos_del}"
-        else:
-            position = token.start_pos_del
-
-        if token.inserted_sequence1 is not None and \
-                token.inserted_sequence2 is not None:
-            sequence = f"{token.inserted_sequence1} to " \
-                       f"{token.inserted_sequence2}"
-        else:
-            sequence = token.inserted_sequence1
-
-        return f"A Genomic DelIns deletion of {position} replaced by " \
-               f"{sequence} on transcript {transcript}"

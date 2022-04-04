@@ -1,4 +1,4 @@
-amino_acid_substitution:
+protein_substitution:
   tests:
     - query: BRAF V600E
       variations: [
@@ -527,7 +527,7 @@ genomic_silent_mutation:
         }
       ]
 
-amino_acid_delins:
+protein_delins:
   tests:
     - query: NP_001333827.1:p.Leu747_Thr751delinsPro
       variations: [
@@ -926,7 +926,7 @@ genomic_delins:
         }
       ]
 
-amino_acid_deletion:
+protein_deletion:
   tests:
     - query: NP_000542.1:p.Phe76del
       variations: [
@@ -1040,7 +1040,7 @@ genomic_deletion:
         }
       ]
 
-amino_acid_insertion:
+protein_insertion:
   tests:
     - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
       variations: []
@@ -1233,7 +1233,7 @@ genomic_uncertain_deletion:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
       variations: [
         {
-          "_id": "ga4gh:VCN.yQJnQz12MXlZGWx6BuzccVGrCCic_tMk",
+          "_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
@@ -1261,13 +1261,13 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "CopyNumber"
+          "type": "AbsoluteCopyNumber"
         }
       ]
     - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
       variations: [
         {
-          "_id": "ga4gh:VCN.gRshXhruFQw-QdKwU4xc2iKBNLIbFNzt",
+          "_id": "ga4gh:VAC.sBsyUfIqJcBr2Sl7rsscPcjlId-wX9_V",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.7Chaj1X9NH2G9sSK1diUKgBEZO4pHqr8",
@@ -1295,13 +1295,13 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "CopyNumber"
+          "type": "AbsoluteCopyNumber"
         }
       ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
       variations: [
         {
-          "_id": "ga4gh:VCN.8o5X1HTglUvwUAFo9vGL5OBnZqgpylys",
+          "_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
@@ -1328,13 +1328,13 @@ genomic_uncertain_deletion:
             "value": 1,
             "type": "Number"
           },
-          "type": "CopyNumber"
+          "type": "AbsoluteCopyNumber"
         }
       ]
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
       variations: [
         {
-          "_id": "ga4gh:VCN._T4dHJIfXB-cpqQSJ5g5pAM1JnwupWuv",
+          "_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
@@ -1361,7 +1361,7 @@ genomic_uncertain_deletion:
             "value": 0,
             "type": "Number"
           },
-          "type": "CopyNumber"
+          "type": "AbsoluteCopyNumber"
         }
       ]
 
@@ -1412,8 +1412,8 @@ genomic_duplication:
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
       variations: [
         {
-          "_id": "ga4gh:VCN.IgQATuKrM_J5MDHm2VemKThFOkzz-7AZ",
-          "type": "CopyNumber",
+          "_id": "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh",
+          "type": "AbsoluteCopyNumber",
           "subject": {
               "location": {
                   "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
@@ -1446,8 +1446,8 @@ genomic_duplication:
     - query: NC_000023.11:g.(?_154021812)_154092209dup
       variations: [
         {
-          "_id": "ga4gh:VCN.eLAZZ-ht1h2dTtZqzhO9TVhBdFufv67-",
-          "type": "CopyNumber",
+          "_id": "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1",
+          "type": "AbsoluteCopyNumber",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
@@ -1479,8 +1479,8 @@ genomic_duplication:
     - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
       variations: [
         {
-          "_id": "ga4gh:VCN.3rvfUmiIb4hSxVQhXKOonuOY6Q3xTkKx",
-          "type": "CopyNumber",
+          "_id": "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML",
+          "type": "AbsoluteCopyNumber",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",

@@ -1,10 +1,12 @@
 """Module for Gene Symbol tokenization."""
 from typing import Optional
+
 from gene.schemas import MatchType
-from .tokenizer import Tokenizer
+from gene.query import QueryHandler as GeneQueryHandler
+
 from variation.schemas.token_response_schema import GeneMatchToken, \
     TokenMatchType
-from gene.query import QueryHandler as GeneQueryHandler
+from .tokenizer import Tokenizer
 
 
 class GeneSymbol(Tokenizer):

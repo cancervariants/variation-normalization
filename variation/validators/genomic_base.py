@@ -1,36 +1,40 @@
 """Module for Genomic Validation methods."""
-from variation.data_sources import UTA
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 import logging
+from typing import List, Optional
+
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from uta_tools.data_sources import UTADatabase
+
+from variation.schemas.classification_response_schema import Classification
 
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
 class GenomicBase:
     """Genomic Base class for validation methods."""
 
-    def __init__(self, dp: SeqRepoDataProxy, uta: UTA):
+    def __init__(self, dp: SeqRepoDataProxy, uta: UTADatabase) -> None:
         """Initialize the Genomic base class.
 
         :param SeqRepoDataProxy dp: Access to seqrepo data
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         """
         self.dp = dp
         self.uta = uta
 
     """The Genomic Base class."""
-    def get_nc_accessions(self, classification):
+    async def get_nc_accessions(self, classification: Classification) -> List[str]:
         """Get NC accession for a given classification."""
         hgvs = [t.token for t in classification.all_tokens if
-                t.token_type in ['HGVS', 'ReferenceSequence']]
+                t.token_type in ["HGVS", "ReferenceSequence"]]
         nc_accessions = []
         if hgvs:
-            nc_accessions = [hgvs[0].split(':')[0]]
+            nc_accessions = [hgvs[0].split(":")[0]]
         else:
             chromosome = [t.token for t in classification.all_tokens if
-                          t.token_type in ['Chromosome']]
+                          t.token_type in ["Chromosome"]]
             if chromosome:
                 chromosome = chromosome[0]
                 for assesmbly in ["GRCh37", "GRCh38"]:
@@ -39,23 +43,23 @@ class GenomicBase:
                         nc_accessions.append(ac)
             else:
                 gene_tokens = [t.token for t in classification.all_tokens
-                               if t.token_type == 'GeneSymbol']
+                               if t.token_type == "GeneSymbol"]
                 if gene_tokens and len(gene_tokens) == 1:
-                    nc_accessions = self.uta.get_ac_from_gene(gene_tokens[0])
+                    nc_accessions = await self.uta.get_ac_from_gene(gene_tokens[0])
         return nc_accessions
 
-    def get_nc_accession(self, identifier):
+    def get_nc_accession(self, identifier: str) -> Optional[str]:
         """Given an identifier (assembly+chr), return nc accession."""
         nc_accession = None
         try:
             metadata = \
                 self.dp.get_metadata(identifier)
         except KeyError:
-            logger.warning('Data Proxy unable to get metadata'
-                           f'for {identifier}')
+            logger.warning("Data Proxy unable to get metadata"
+                           f"for {identifier}")
         else:
-            aliases = [a for a in metadata['aliases'] if
-                       a.startswith('refseq:NC_')]
+            aliases = [a for a in metadata["aliases"] if
+                       a.startswith("refseq:NC_")]
             if aliases:
-                nc_accession = aliases[0].split(':')[-1]
+                nc_accession = aliases[0].split(":")[-1]
         return nc_accession

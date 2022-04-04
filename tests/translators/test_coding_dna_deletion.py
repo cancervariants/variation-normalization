@@ -1,5 +1,6 @@
 """Module for testing Coding DNA Deletion Translator."""
 import unittest
+
 from variation.classifiers import CodingDNADeletionClassifier
 from variation.translators import CodingDNADeletion
 from variation.validators import CodingDNADeletion as CDNAD_V
@@ -23,4 +24,4 @@ class TestCodingDNADeletionTranslator(TranslatorBase, unittest.TestCase):
 
     def fixture_name(self):
         """Return the fixture name for coding DNA deletion."""
-        return 'coding_dna_deletion'
+        return "coding_dna_deletion"

@@ -1,14 +1,18 @@
 """The module for Single Nucleotide Variation Validation."""
 from typing import List, Dict, Optional
-from .validator import Validator
 import logging
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.token_response_schema import Token, GeneMatchToken
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
+from .validator import Validator
 
-logger = logging.getLogger('variation')
+logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
@@ -30,15 +34,6 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def human_description(self, transcript: str, token: Token) -> str:
-        """Return a human description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: Human description of the variation change
-        """
-        raise NotImplementedError
-
     def get_gene_tokens(
             self, classification: Classification) -> List[GeneMatchToken]:
         """Return a list of gene tokens for a classification.
@@ -49,9 +44,8 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def get_transcripts(self, gene_tokens: List,
-                        classification: Classification,
-                        errors: List) -> Optional[List[str]]:
+    async def get_transcripts(self, gene_tokens: List, classification: Classification,
+                              errors: List) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -72,12 +66,16 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    def get_valid_invalid_results(
-            self, classification_tokens: List, transcripts: List,
-            classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
-            is_identifier: bool, hgvs_dup_del_mode: HGVSDupDelModeEnum) \
-            -> None:
+    async def get_valid_invalid_results(
+        self, classification_tokens: List, transcripts: List,
+        classification: Classification, results: List, gene_tokens: List,
+        mane_data_found: Dict, is_identifier: bool,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        endpoint_name: Optional[Endpoint] = None,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        do_liftover: bool = False
+    ) -> None:
         """Add validation result objects to a list of results.
 
         :param List classification_tokens: A list of classification Tokens
@@ -86,8 +84,6 @@ class SingleNucleotideVariationBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -95,13 +91,17 @@ class SingleNucleotideVariationBase(Validator):
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         raise NotImplementedError
 
-    def silent_mutation_valid_invalid_results(
+    async def silent_mutation_valid_invalid_results(
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
-            normalize_endpoint: bool, mane_data_found: Dict,
+            endpoint_name: Optional[Endpoint], mane_data_found: Dict,
             is_identifier: bool) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
@@ -112,8 +112,7 @@ class SingleNucleotideVariationBase(Validator):
             tokens
         :param List results: Stores validation result objects
         :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
@@ -125,8 +124,8 @@ class SingleNucleotideVariationBase(Validator):
 
                 t = self.get_accession(t, classification)
                 allele = None
-                if s.reference_sequence == 'c':
-                    cds_start_end = self.uta.get_cds_start_end(t)
+                if s.coordinate_type == "c":
+                    cds_start_end = await self.uta.get_cds_start_end(t)
 
                     if not cds_start_end:
                         cds_start = None
@@ -140,65 +139,45 @@ class SingleNucleotideVariationBase(Validator):
 
                 if not errors:
                     allele = self.vrs.to_vrs_allele(
-                        t, s.position, s.position, s.reference_sequence,
+                        t, s.position, s.position, s.coordinate_type,
                         s.alt_type, errors, cds_start=cds_start,
                         alt=s.new_nucleotide
                     )
 
                 if not errors:
-                    sequence = \
-                        self.seqrepo_access.get_sequence(t, s.position)
+                    sequence, w = self.seqrepo_access.get_reference_sequence(
+                        t, s.position)
                     if sequence is None:
-                        errors.append('Sequence index error')
+                        errors.append(w)
                     else:
                         if s.ref_nucleotide:
                             if sequence != s.ref_nucleotide:
                                 errors.append(
-                                    f'Expected {s.reference_sequence} but '
-                                    f'found {sequence}')
+                                    f"Expected {s.coordinate_type} but "
+                                    f"found {sequence}")
 
-                if not errors and normalize_endpoint:
-                    mane = self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.position, s.reference_sequence,
+                if not errors and endpoint_name == Endpoint.NORMALIZE:
+                    mane = await self.mane_transcript.get_mane_transcript(
+                        t, s.position, s.coordinate_type, end_pos=s.position,
                         gene=gene_tokens[0].token if gene_tokens else None,
-                        normalize_endpoint=normalize_endpoint
-                    )
+                        try_longest_compatible=True)
 
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.reference_sequence, s.alt_type, s)
+                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                       s.alt_type, s)
 
-                self.add_validation_result(
-                    allele, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
-                )
+                self.add_validation_result(allele, valid_alleles, results,
+                                           classification, s, t, gene_tokens, errors)
 
                 if is_identifier:
                     break
 
-        if normalize_endpoint:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
-            )
+        if endpoint_name == Endpoint.NORMALIZE:
+            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
+                                                classification, gene_tokens)
 
-    def check_ref_nucleotide(self, actual_ref_nuc, expected_ref_nuc,
-                             position, t, errors):
+    def check_ref_nucleotide(self, actual_ref_nuc: str, expected_ref_nuc: str,
+                             position: int, t: str, errors: List) -> None:
         """Assert that ref_nuc matches s.ref_nucleotide."""
         if actual_ref_nuc != expected_ref_nuc:
-            errors.append(f'Needed to find {expected_ref_nuc} at'
-                          f' position {position} on {t}'
-                          f' but found {actual_ref_nuc}')
-
-    def concise_description(self, transcript, token) -> str:
-        """Return a HGVS description of the identified variation.
-
-        :param str transcript: Transcript accession
-        :param Token token: Classification token
-        :return: HGVS expression
-        """
-        prefix = f'{transcript}:{token.reference_sequence}.{token.position}'
-        if token.new_nucleotide == '=':
-            change = "="
-        else:
-            change = f"{token.ref_nucleotide}>{token.new_nucleotide}"
-        return prefix + change
+            errors.append(f"Needed to find {expected_ref_nuc} at position {position} "
+                          f"on {t} but found {actual_ref_nuc}")

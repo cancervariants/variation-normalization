@@ -1,36 +1,40 @@
 """Module for Validation."""
+from typing import List, Optional
+
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs.extras.translator import Translator
+from gene.query import QueryHandler as GeneQueryHandler
+from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
+    MANETranscript
+
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs import VRS
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
-from variation.data_sources import TranscriptMappings, SeqRepoAccess, UTA
-from variation.mane_transcript import MANETranscript
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
-from .amino_acid_substitution import AminoAcidSubstitution
+from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
 from .coding_dna_substitution import CodingDNASubstitution
 from .coding_dna_silent_mutation import CodingDNASilentMutation
 from .genomic_silent_mutation import GenomicSilentMutation
 from .genomic_substitution import GenomicSubstitution
-from .amino_acid_delins import AminoAcidDelIns
+from .protein_delins import ProteinDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
-from .amino_acid_deletion import AminoAcidDeletion
+from .protein_deletion import ProteinDeletion
 from .coding_dna_deletion import CodingDNADeletion
 from .genomic_deletion import GenomicDeletion
-from .amino_acid_insertion import AminoAcidInsertion
+from .protein_insertion import ProteinInsertion
 from .coding_dna_insertion import CodingDNAInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from ga4gh.vrs.extras.translator import Translator
-from typing import List
-from gene.query import QueryHandler as GeneQueryHandler
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs import VRS
 
 
 class Validate:
@@ -40,7 +44,7 @@ class Validate:
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTA, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
                  amino_acid_cache: AminoAcidCache,
                  gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
         """Initialize the validate class.
@@ -51,7 +55,7 @@ class Validate:
         :param GeneSymbol gene_symbol: Gene symbol tokenizer
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
-        :param UTA uta: Access to UTA queries
+        :param UTADatabase uta: Access to UTA queries
         :param Translator tlr: Translator class
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRS vrs: Class for creating VRS objects
@@ -61,23 +65,23 @@ class Validate:
             seqrepo_access, transcript_mappings, gene_symbol,
             mane_transcript, uta, dp, tlr, gene_normalizer, vrs
         ]
-        amino_acid_params = params[:]
-        amino_acid_params.append(amino_acid_cache)
+        protein_params = params[:]
+        protein_params.append(amino_acid_cache)
         self.validators = [
-            AminoAcidSubstitution(*amino_acid_params),
-            PolypeptideTruncation(*amino_acid_params),
-            SilentMutation(*amino_acid_params),
+            ProteinSubstitution(*protein_params),
+            PolypeptideTruncation(*protein_params),
+            SilentMutation(*protein_params),
             CodingDNASubstitution(*params),
             GenomicSubstitution(*params),
             CodingDNASilentMutation(*params),
             GenomicSilentMutation(*params),
-            AminoAcidDelIns(*amino_acid_params),
+            ProteinDelIns(*protein_params),
             CodingDNADelIns(*params),
             GenomicDelIns(*params),
-            AminoAcidDeletion(*amino_acid_params),
+            ProteinDeletion(*protein_params),
             CodingDNADeletion(*params),
             GenomicDeletion(*params),
-            AminoAcidInsertion(*amino_acid_params),
+            ProteinInsertion(*protein_params),
             CodingDNAInsertion(*params),
             GenomicInsertion(*params),
             GenomicDeletionRange(*params),
@@ -85,21 +89,26 @@ class Validate:
             GenomicDuplication(*params)
         ]
 
-    def perform(
+    async def perform(
             self, classifications: List[Classification],
-            normalize_endpoint: bool, warnings: List = None,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT
+            endpoint_name: Optional[Endpoint] = None, warnings: List = None,
+            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None,
+            do_liftover: bool = False
     ) -> ValidationSummary:
         """Validate a list of classifications.
 
         :param List classifications: List of classifications
-        :param bool normalize_endpoint: `True` if normalize endpoint is being
-            used. `False` otherwise.
+        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param List warnings: List of warnings
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
             `repeated_seq_expr`, `literal_seq_expr`.
             This parameter determines how to represent HGVS dup/del expressions
             as VRS objects.
+        :param Optional[int] baseline_copies: Baseline copies number
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: ValidationSummary containing valid and invalid results
         """
         valid_possibilities = list()
@@ -112,8 +121,11 @@ class Validate:
             for validator in self.validators:
                 if validator.validates_classification_type(
                         classification.classification_type):
-                    results = validator.validate(
-                        classification, normalize_endpoint, hgvs_dup_del_mode)
+                    results = await validator.validate(
+                        classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
+                        endpoint_name=endpoint_name, baseline_copies=baseline_copies,
+                        relative_copy_class=relative_copy_class,
+                        do_liftover=do_liftover)
                     for res in results:
                         if res.is_valid:
                             found_classification = True

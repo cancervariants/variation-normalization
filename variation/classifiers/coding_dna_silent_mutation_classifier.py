@@ -1,7 +1,8 @@
 """A module for the DNA Coding Silent Mutation Classifier."""
 from typing import List
-from .set_based_classifier import SetBasedClassifier
+
 from variation.schemas.classification_response_schema import ClassificationType
+from .set_based_classifier import SetBasedClassifier
 
 
 class CodingDNASilentMutationClassifier(SetBasedClassifier):
@@ -14,11 +15,11 @@ class CodingDNASilentMutationClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[str]]:
         """Return the exact match token type candidates."""
         return [
-            ['CodingDNASilentMutation'],
-            ['GeneSymbol', 'AminoAcidSubstitution', 'CodingDNASilentMutation'],
-            ['CodingDNASilentMutation', 'GeneSymbol'],
-            ['GeneSymbol', 'CodingDNASilentMutation'],
-            ['HGVS', 'CodingDNASilentMutation'],
-            ['ReferenceSequence', 'CodingDNASilentMutation'],
-            ['LocusReferenceGenomic', 'CodingDNASilentMutation']
+            ["CodingDNASilentMutation"],
+            ["GeneSymbol", "ProteinSubstitution", "CodingDNASilentMutation"],
+            ["CodingDNASilentMutation", "GeneSymbol"],
+            ["GeneSymbol", "CodingDNASilentMutation"],
+            ["HGVS", "CodingDNASilentMutation"],
+            ["ReferenceSequence", "CodingDNASilentMutation"],
+            ["LocusReferenceGenomic", "CodingDNASilentMutation"]
         ]

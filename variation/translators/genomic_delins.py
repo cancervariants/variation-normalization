@@ -1,7 +1,7 @@
 """Module for Genomic DelIns Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import GenomicDelInsToken
+from variation.schemas.token_response_schema import GenomicDelInsToken, Token
 
 
 class GenomicDelIns(Translator):
@@ -11,6 +11,6 @@ class GenomicDelIns(Translator):
         """Return if classification type is Genomic DelIns."""
         return type == ClassificationType.GENOMIC_DELINS
 
-    def is_token_instance(self, token):
+    def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Genomic DelIns token instance."""
         return isinstance(token, GenomicDelInsToken)
