@@ -63,8 +63,6 @@ def data_download(path: Path, domain: str, dir: str, fn: str) -> None:
                 remove(f"{path}")
 
 
-AMINO_ACID_PATH = f"{APP_ROOT}/data/amino_acids.csv"
-if "UTA_DB_URL" in environ:
-    UTA_DB_URL = environ["UTA_DB_URL"]
-else:
-    UTA_DB_URL = "postgresql://uta_admin@localhost:5433/uta/uta_20210129"
+AMINO_ACID_PATH = environ.get("AMINO_ACID_PATH", f"{APP_ROOT}/data/amino_acids.csv")
+UTA_DB_URL = environ.get("UTA_DB_URL",
+                         "postgresql://uta_admin@localhost:5433/uta/uta_20210129")
