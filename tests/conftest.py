@@ -322,7 +322,22 @@ def erbb2_context():
 
 
 @pytest.fixture(scope="session")
-def braf_v600e(braf_gene_context):
+def braf_600loc():
+    """Create test fixture for BRAF 600 location"""
+    return {
+        "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
+        "interval": {
+            "end": {"value": 600, "type": "Number"},
+            "start": {"value": 599, "type": "Number"},
+            "type": "SequenceInterval"
+        },
+        "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def braf_v600e(braf_gene_context, braf_600loc):
     """Create BRAF V600E protein test fixture."""
     params = {
         "id": "normalize.variation:BRAF%20V600E",
@@ -330,16 +345,7 @@ def braf_v600e(braf_gene_context):
         "variation_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
         "variation": {
             "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
-            "location": {
-                "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
-                "interval": {
-                    "end": {"value": 600, "type": "Number"},
-                    "start": {"value": 599, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
-                "type": "SequenceLocation"
-            },
+            "location": braf_600loc,
             "state": {
                 "sequence": "E",
                 "type": "LiteralSequenceExpression"
