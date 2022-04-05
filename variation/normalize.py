@@ -138,9 +138,10 @@ class Normalize:
                     variation, identifier
                 )
             elif variation["type"] == "AbsoluteCopyNumber":
-                vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    variation["subject"], identifier
-                )
+                loc = {
+                    "location": variation["subject"]
+                }
+                vrs_ref_allele_seq = self.get_ref_allele_seq(loc, identifier)
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

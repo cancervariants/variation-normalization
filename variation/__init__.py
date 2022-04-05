@@ -32,6 +32,7 @@ logging.getLogger("python_jsonschema_objects").setLevel(logging.INFO)
 logging.getLogger("hgvs.parser").setLevel(logging.INFO)
 logging.getLogger("biocommons.seqrepo.seqaliasdb.seqaliasdb").setLevel(logging.INFO)
 logging.getLogger("biocommons.seqrepo.fastadir.fastadir").setLevel(logging.INFO)
+logging.getLogger("asyncio").setLevel(logging.INFO)
 
 if "VARIATION_NORM_EB_PROD" in environ:
     ch = logging.StreamHandler()
