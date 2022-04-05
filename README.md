@@ -2,7 +2,7 @@
 
 # Variation Normalization
 
-Services and guidelines for normalizing variation terms into [VRS (v1.2.0)](https://vrs.ga4gh.org/en/1.2.0) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
