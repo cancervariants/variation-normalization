@@ -31,7 +31,7 @@ fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
 "ga4gh.vrs" = {version = ">=0.7.5.dev1", extras = ["extras"]}
-gene-normalizer = ">=0.1.23"
+gene-normalizer = ">=0.1.26"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = ">=0.0.11"
