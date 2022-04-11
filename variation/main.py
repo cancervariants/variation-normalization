@@ -60,7 +60,7 @@ translate_response_description = "A  response to a validly-formed query."
 q_description = "Variation to translate."
 
 
-@app.get("/variation/toVRS",
+@app.get("/variation/to_vrs",
          summary=translate_summary,
          response_description=translate_response_description,
          response_model=ToVRSService,
