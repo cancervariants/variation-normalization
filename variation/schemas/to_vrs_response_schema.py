@@ -1,4 +1,4 @@
-"""Module for toVRS endpoint response schema."""
+"""Module for to_vrs endpoint response schema."""
 from typing import List, Dict, Type, Any, Optional, Union
 
 from pydantic import BaseModel
