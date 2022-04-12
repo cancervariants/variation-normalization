@@ -26,8 +26,8 @@ Variation Normalization is limited to the following types of variants:
 We are working towards adding more types of variations, coordinates, and representations.
 
 ### Endpoints
-#### /toVRS
-The `/toVRS` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
+#### /to_vrs
+The `/to_vrs` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
 The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 

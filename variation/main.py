@@ -1,4 +1,5 @@
 """Main application for FastAPI."""
+from enum import Enum
 from typing import Dict, Optional
 from datetime import datetime
 from urllib.parse import unquote
@@ -21,6 +22,16 @@ from variation.schemas.normalize_response_schema \
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
+
+
+class Tags(Enum):
+    """Define tags for endpoints"""
+
+    SEQREPO = "SeqRepo"
+    TO_PROTEIN_VARIATION = "To Protein Variation"
+    TO_CANONICAL = "To Canonical Variation"
+    VRS_PYTHON = "VRS-Python"
+    TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
 
 
 app = FastAPI(
@@ -60,7 +71,7 @@ translate_response_description = "A  response to a validly-formed query."
 q_description = "Variation to translate."
 
 
-@app.get("/variation/toVRS",
+@app.get("/variation/to_vrs",
          summary=translate_summary,
          response_description=translate_response_description,
          response_model=ToVRSService,
@@ -138,7 +149,8 @@ async def normalize(
          summary="Given an identifier, use SeqRepo to return a list of aliases.",  # noqa: E501
          response_description="A response to a validly-formed query.",
          response_model=TranslateIdentifierService,
-         description="Return list of aliases for an identifier"
+         description="Return list of aliases for an identifier",
+         tags=[Tags.SEQREPO]
          )
 def translate_identifier(
         identifier: str = Query(..., description="The identifier to find aliases for"),  # noqa: E501
@@ -173,6 +185,61 @@ def translate_identifier(
         ))
 
 
+from_fmt_descr = "Format of input variation to translate. Must be one of `beacon`, " \
+                 "`gnomad`, `hgvs`, or `spdi`"
+
+
+@app.get("/variation/translate_from",
+         summary="Given variation as beacon, gnomad, hgvs or spdi representation, "
+                 "return VRS Allele object using vrs-python's translator class",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Allele object",
+         response_model=TranslateFromService,
+         response_model_exclude_none=True,
+         tags=[Tags.VRS_PYTHON])
+def vrs_python_translate_from(
+    variation: str = Query(..., description="Variation to translate to VRS object."
+                                            " Must be represented as either beacon, "
+                                            "gnomad, hgvs, or spdi."),
+    fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr)
+) -> TranslateFromService:
+    """Given variation query, return VRS Allele object using vrs-python"s translator
+        class
+
+    :param str variation: Variation to translate to VRS object. Must be represented
+        as either beacon, gnomad, hgvs, or spdi
+    :param Optional[TranslateFromFormat] fmt: Format of variation. If not supplied,
+        vrs-python will infer its format.
+    :return: TranslateFromService containing VRS Allele object
+    """
+    variation_query = unquote(variation.strip())
+    warnings = list()
+    vrs_variation = None
+    try:
+        resp = query_handler.tlr.translate_from(variation_query, fmt)
+    except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
+        warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+    except HGVSError as e:
+        warnings.append(f"hgvs raised {type(e).__name__}: {e}")
+    except BioutilsError as e:
+        warnings.append(f"bioutils raised {type(e).__name__}: {e}")
+    else:
+        vrs_variation = resp.as_dict()
+
+    return TranslateFromService(
+        query=TranslateFromQuery(variation=variation_query, fmt=fmt),
+        warnings=warnings,
+        variation=vrs_variation,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        vrs_python_meta_=VrsPythonMeta(
+            version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
 g_to_p_summary = "Given gnomad VCF, return VRSATILE compatible object on " \
                  "protein coordinate."
 g_to_p_response_description = "A response to a validly-formed query."
@@ -187,7 +254,8 @@ q_description = "gnomad VCF to normalize to protein variation."
          response_description=g_to_p_response_description,
          description=g_to_p_description,
          response_model=NormalizeService,
-         response_model_exclude_none=True
+         response_model_exclude_none=True,
+         tags=[Tags.TO_PROTEIN_VARIATION]
          )
 async def gnomad_vcf_to_protein(
     q: str = Query(..., description=q_description)
@@ -249,60 +317,6 @@ async def to_canonical_variation(
         service_meta_=ServiceMeta(
             version=__version__,
             response_datetime=datetime.now()
-        )
-    )
-
-
-from_fmt_descr = "Format of input variation to translate. Must be one of `beacon`, " \
-                 "`gnomad`, `hgvs`, or `spdi`"
-
-
-@app.get("/variation/translate_from",
-         summary="Given variation as beacon, gnomad, hgvs or spdi representation, "
-                 "return VRS Allele object using vrs-python's translator class",
-         response_description="A response to a validly-formed query.",
-         description="Return VRS Allele object",
-         response_model=TranslateFromService,
-         response_model_exclude_none=True)
-def vrs_python_translate_from(
-    variation: str = Query(..., description="Variation to translate to VRS object."
-                                            " Must be represented as either beacon, "
-                                            "gnomad, hgvs, or spdi."),
-    fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr)
-) -> TranslateFromService:
-    """Given variation query, return VRS Allele object using vrs-python"s translator
-        class
-
-    :param str variation: Variation to translate to VRS object. Must be represented
-        as either beacon, gnomad, hgvs, or spdi
-    :param Optional[TranslateFromFormat] fmt: Format of variation. If not supplied,
-        vrs-python will infer its format.
-    :return: TranslateFromService containing VRS Allele object
-    """
-    variation_query = unquote(variation.strip())
-    warnings = list()
-    vrs_variation = None
-    try:
-        resp = query_handler.tlr.translate_from(variation_query, fmt)
-    except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
-        warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
-    except HGVSError as e:
-        warnings.append(f"hgvs raised {type(e).__name__}: {e}")
-    except BioutilsError as e:
-        warnings.append(f"bioutils raised {type(e).__name__}: {e}")
-    else:
-        vrs_variation = resp.as_dict()
-
-    return TranslateFromService(
-        query=TranslateFromQuery(variation=variation_query, fmt=fmt),
-        warnings=warnings,
-        variation=vrs_variation,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
         )
     )
 
@@ -388,7 +402,8 @@ def vrs_python_translate_from(
          response_description="A response to a validly-formed query.",
          description="Return VRS object",
          response_model=HgvsToAbsoluteCopyNumberService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
@@ -422,7 +437,8 @@ async def hgvs_to_absolute_copy_number(
          response_description="A response to a validly-formed query.",
          description="Return VRS object",
          response_model=HgvsToRelativeCopyNumberService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(

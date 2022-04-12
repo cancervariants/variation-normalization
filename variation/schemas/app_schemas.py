@@ -5,7 +5,7 @@ from enum import Enum
 class Endpoint(str, Enum):
     """Define contrains for endpoint names"""
 
-    TO_VRS = "toVRS"
+    TO_VRS = "to_vrs"
     NORMALIZE = "normalize"
     TRANSLATE_IDENTIFIER = "translate_identifier"
     GNOMAD_VCF_TO_PROTEIN = "gnomad_vcf_to_protein"

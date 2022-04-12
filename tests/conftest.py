@@ -89,6 +89,21 @@ def vhl_gene_context():
                     "RCA1"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -111,7 +126,8 @@ def braf_gene_context():
             "RAFB1",
             "B-raf",
             "B-RAF1",
-            "NS7"
+            "NS7",
+            "BRAF-1"
         ],
         "extensions": [
             {
@@ -157,6 +173,21 @@ def braf_gene_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -236,6 +267,21 @@ def egfr_context():
                     "ERBB"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -262,7 +308,9 @@ def erbb2_context():
             "HER-2",
             "HER-2/neu",
             "VSCN2",
-            "MLN 19"
+            "MLN 19",
+            "c-ERB-2",
+            "c-ERB2"
         ],
         "extensions": [
             {
@@ -316,6 +364,21 @@ def erbb2_context():
                     "NGL"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -803,7 +866,11 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:
-                        assert resp_ext.value == test_var.value,\
-                            f"gene_context.{resp_ext.name}"
+                        if isinstance(resp_ext.value, list):
+                            assert set(resp_ext.value) == set(test_var.value), \
+                                f"gene_context.{resp_ext.name}"
+                        else:
+                            assert resp_ext.value == test_var.value,\
+                                f"gene_context.{resp_ext.name}"
     else:
         assert not test_variation_context
