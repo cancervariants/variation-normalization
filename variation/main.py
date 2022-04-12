@@ -16,8 +16,8 @@ from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService, \
-    CanonicalSPDIToCategoricalVariationService
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
+    ToCanonicalVariationService, TranslateIdentifierService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
@@ -216,31 +216,35 @@ complement_descr = "This field indicates that a categorical variation is defined
                    "the categorical variation."
 
 
-@app.get("/variation/canonical_spdi_to_categorical_variation",
-         summary="Given canonical SPDI, return VRSATILE categorical variation object",
+@app.get("/variation/to_canonical_variation",
+         summary="Given SPDI or HGVS, return VRSATILE canonical variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRSATILE categorical variation object",
-         response_model=CanonicalSPDIToCategoricalVariationService,
+         description="Return VRSATILE canonical variation object",
+         response_model=ToCanonicalVariationService,
          response_model_exclude_none=True)
-def canonical_spdi_to_categorical_variation(
-        q: str = Query(..., description="Canonical SPDI"),
+async def to_canonical_variation(
+        q: str = Query(..., description="HGVS or SPDI query"),
+        fmt: ToCanonicalVariationFmt = Query(ToCanonicalVariationFmt.HGVS,
+                                             description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
         complement: bool = Query(False, description=complement_descr)
-) -> CanonicalSPDIToCategoricalVariationService:
+) -> ToCanonicalVariationService:
     """Return categorical variation for canonical SPDI
 
-    :param str q: Canonical SPDI
+    :param str q: HGVS or SPDI query
+    :param ToCanonicalVariationFmt fmt: Format of the input variation. Must be
+        `spdi` or `hgvs`.
     :param bool complement: This field indicates that a categorical variation
         is defined to include (false) or exclude (true) variation concepts matching the
         categorical variation. This is equivalent to a logical NOT operation on the
         categorical variation properties.
-    :return: CanonicalSPDIToCategoricalVariationService for variation query
+    :return: ToCanonicalVariationService for variation query
     """
-    q = unquote(q.strip())
-    resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
-        q, complement=complement)
-    return CanonicalSPDIToCategoricalVariationService(
-        canonical_spdi_query=q,
-        categorical_variation=resp,
+    q = unquote(q)
+    variation, warnings = await query_handler.to_canonical_variation(q, fmt, complement)
+
+    return ToCanonicalVariationService(
+        query=q,
+        canonical_variation=variation,
         warnings=warnings,
         service_meta_=ServiceMeta(
             version=__version__,
