@@ -65,6 +65,21 @@ def limk2_gene_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -162,6 +177,21 @@ def dis3_p63a():
                         "KIAA1008"
                     ],
                     "type": "Extension"
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:20604"
