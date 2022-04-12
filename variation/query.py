@@ -14,7 +14,7 @@ from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import Text, Allele, AbsoluteCopyNumber, \
     Haplotype, VariationSet, RelativeCopyNumber
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation, ComplexVariation
+    CanonicalVariation
 from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, UTATools
 
@@ -37,7 +37,7 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt
 
 
 class QueryHandler:
@@ -99,22 +99,22 @@ class QueryHandler:
 
     def _init_to_vrs(self) -> ToVRS:
         """Return toVRS instance"""
-        gene_symbol = GeneSymbol(self.gene_normalizer)
-        tokenizer = Tokenize(self.amino_acid_cache, gene_symbol)
-        classifier = Classify()
+        self.gene_symbol = GeneSymbol(self.gene_normalizer)
+        self.tokenizer = Tokenize(self.amino_acid_cache, self.gene_symbol)
+        self.classifier = Classify()
         transcript_mappings = self.uta_tools.transcript_mappings
         mane_transcript_mappings = self.uta_tools.mane_transcript_mappings
         mane_transcript = self.uta_tools.mane_transcript
-        validator = Validate(
-            self.seqrepo_access, transcript_mappings, gene_symbol,
+        self.validator = Validate(
+            self.seqrepo_access, transcript_mappings, self.gene_symbol,
             mane_transcript, self.uta, self.dp, self.tlr,
             self.amino_acid_cache, self.gene_normalizer, self.vrs
         )
         translator = Translate()
         return ToVRS(
-            tokenizer, classifier, self.seqrepo_access, transcript_mappings,
-            gene_symbol, self.amino_acid_cache, self.uta,
-            mane_transcript_mappings, mane_transcript, validator, translator,
+            self.tokenizer, self.classifier, self.seqrepo_access, transcript_mappings,
+            self.gene_symbol, self.amino_acid_cache, self.uta,
+            mane_transcript_mappings, mane_transcript, self.validator, translator,
             self.gene_normalizer, self.hgvs_dup_del_mode
         )
 
@@ -445,71 +445,142 @@ class QueryHandler:
                 return self.normalize_handler.text_variation_resp(
                     q, _id, [f"Unable to get protein variation for {q}"])
 
-    def canonical_spdi_to_categorical_variation(
-            self, q: str, complement: bool = False
-    ) -> Tuple[Optional[Union[CanonicalVariation, ComplexVariation]], List]:
-        """Return categorical variation for canonical SPDI
+    async def to_canonical_variation(
+        self, q: str, fmt: ToCanonicalVariationFmt, complement: bool = False,
+    ) -> Tuple[Optional[CanonicalVariation], List]:
+        """Given query as ToCanonicalVariationFmt, return canonical variation
 
-        :param str q: Canonical SPDI
-        :param bool complement: This field indicates that a categorical
-            variation is defined to include (false) or exclude (true) variation
-             concepts matching the categorical variation. This is equivalent to a
-             logical NOT operation on the categorical variation properties.
-        :return: Tuple containing CanonicalVariation and list of warnings
+        :param str q: Query to translate to canonical variation
+        :param ToCanonicalVariationFmt fmt: The representation for `q`
+        :param bool complement: This field indicates that a categorical variation is
+            defined to include (false) or exclude (true) variation concepts matching the
+            categorical variation. This is equivalent to a logical NOT operation on the
+            categorical variation properties.
+        :return: Canonical Variation and list of warnings
         """
         q = q.strip()
         if not q:
             return self.normalize_handler.no_variation_entered()
         warnings = list()
-
         variation = None
-        try:
-            variation = self.tlr.translate_from(q, fmt="spdi")
-        except (ValueError, python_jsonschema_objects.validators.ValidationError) as e:
-            warnings.append(f"vrs-python translator raised error: {e}")
-        except KeyError as e:
-            warnings.append(f"vrs-python translator raised error: "
-                            f"seqrepo could not translate identifier {e}")
-        if warnings or not variation:
-            return None, warnings
 
-        spdi_parts = q.split(":")
-        ac = spdi_parts[0]
-        start_pos = int(spdi_parts[1])  # inter-residue, 0 based
-        deleted_seq = spdi_parts[2]
-        end_pos = start_pos + len(deleted_seq)
-        try:
-            sequence = self.seqrepo_access.seqrepo_client.fetch(
-                ac, start_pos, end=end_pos)
-        except ValueError as e:
-            warnings.append(str(e))
+        if fmt == ToCanonicalVariationFmt.SPDI:
+            variation, warnings = self.spdi_to_canonical_variation(q, warnings)
+        elif fmt == ToCanonicalVariationFmt.HGVS:
+            variation, warnings = await self.hgvs_to_canonical_variation(q, warnings)
         else:
-            if not sequence:
-                warnings.append(f"Position, {start_pos}, does not exist on {ac}")
-            else:
-                if deleted_seq != sequence:
-                    warnings.append(f"Expected to find reference sequence"
-                                    f" {deleted_seq} but found {sequence} on {ac}")
-        if warnings:
-            return None, warnings
+            warnings = [f"fmt, {fmt}, is not supported. "
+                        f"Must be either `spdi` or `hgvs`"]
 
-        variation.location._id = ga4gh_identify(variation.location)
+        if variation and not warnings:
+            variation_type = variation["type"]
+            if variation_type == "Allele":
+                variation["location"]["_id"] = ga4gh_identify(
+                    models.SequenceLocation(**variation["location"]))
+            elif variation_type in ["RelativeCopyNumber", "AbsoluteCopyNumber"]:
+                variation["subject"]["_id"] = ga4gh_identify(
+                    models.SequenceLocation(**variation["subject"]))
+            else:
+                warnings = [f"Variation type, {variation_type}, not supported"]
+
+        if not variation:
+            text = models.Text(definition=q, type="Text")
+            text._id = ga4gh_identify(text)
+            variation = Text(**text.as_dict()).dict(by_alias=True)
+
         canonical_variation = {
             "type": "CanonicalVariation",
             "complement": complement,
-            "variation": variation.as_dict()
+            "variation": variation
         }
 
         cpy_canonical_variation = copy.deepcopy(canonical_variation)
         cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
         serialized = json.dumps(
-            cpy_canonical_variation, sort_keys=True, separators=(",", ":"), indent=None
+            cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
+            indent=None
         ).encode("utf-8")
         digest = sha512t24u(serialized)
         # VCC = variation categorical canonical
         canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
+
+    def spdi_to_canonical_variation(self, q: str,
+                                    warnings: List) -> Tuple[Optional[Dict], List]:
+        """Given SPDI representation, return canonical variation
+
+        :param str q: SPDI query
+        :param List warnings: List of warnings
+        :return: Canonical Variation and warnings
+        """
+        variation = None
+        try:
+            variation = self.tlr.translate_from(
+                q, fmt=ToCanonicalVariationFmt.SPDI.value)
+        except (ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
+            warnings.append(f"vrs-python translator raised error: {e}")
+        except KeyError as e:
+            warnings.append(f"vrs-python translator raised error: "
+                            f"seqrepo could not translate identifier {e}")
+        else:
+            # Validate SPDI
+            spdi_parts = q.split(":")
+            ac = spdi_parts[0]
+            start_pos = int(spdi_parts[1])  # inter-residue, 0 based
+            deleted_seq = spdi_parts[2]
+            end_pos = start_pos + len(deleted_seq)
+            try:
+                sequence = self.seqrepo_access.seqrepo_client.fetch(
+                    ac, start_pos, end=end_pos)
+            except ValueError as e:
+                warnings.append(str(e))
+            else:
+                if not sequence:
+                    warnings.append(f"Position, {start_pos}, does not exist on {ac}")
+                else:
+                    if deleted_seq != sequence:
+                        warnings.append(f"Expected to find reference sequence"
+                                        f" {deleted_seq} but found {sequence} on {ac}")
+
+            if warnings:
+                variation = None
+            else:
+                variation = variation.as_dict()
+        return variation, warnings
+
+    async def hgvs_to_canonical_variation(
+        self, q: str, warnings: List
+    ) -> Tuple[Optional[Dict], List]:
+        """Given HGVS representation, return canonical variation
+
+        :param str q: HGVS query
+        :param List warnings: List of warnings
+        :return: Canonical Variation and warnings
+        """
+        variation = None
+        tokens = self.tokenizer.perform(q, warnings)
+        classifications = self.classifier.perform(tokens)
+        hgvs_classifications = list()
+        for c in classifications:
+            if "HGVS" in c.matching_tokens or "ReferenceSequence" in c.matching_tokens:
+                hgvs_classifications.append(c)
+        if not hgvs_classifications:
+            warnings = [f"{q} is not a supported HGVS expression"]
+            return None, warnings
+
+        validations = await self.validator.perform(
+            classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=False
+        )
+        if not warnings:
+            warnings = validations.warnings
+
+        translations, warnings = self.to_vrs_handler.get_translations(
+            validations, warnings)
+        if translations:
+            variation = translations[0]
+        return variation, warnings
 
     def _hgvs_to_cnv_resp(
         self, copy_number_type: CopyNumberType, hgvs_expr: str, do_liftover: bool,

@@ -1,12 +1,12 @@
 """Module for normalize endpoint response schema."""
 from enum import Enum
-from typing import List, Optional, Dict, Any, Type, Union
+from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation, ComplexVariation
+    CanonicalVariation
 
 
 class HGVSDupDelMode(str, Enum):
@@ -207,11 +207,18 @@ class TranslateIdentifierService(ServiceResponse):
             }
 
 
-class CanonicalSPDIToCategoricalVariationService(ServiceResponse):
-    """A response model for the canonical spdi to categorical variation service"""
+class ToCanonicalVariationFmt(str, Enum):
+    """Define formats for to_canonical endpoint"""
 
-    canonical_spdi_query: str
-    categorical_variation: Optional[Union[CanonicalVariation, ComplexVariation]]
+    HGVS = "hgvs"
+    SPDI = "spdi"
+
+
+class ToCanonicalVariationService(ServiceResponse):
+    """A response model for the to canonical variation service"""
+
+    query: str
+    canonical_variation: CanonicalVariation
 
     class Config:
         """Configure model."""
@@ -219,16 +226,16 @@ class CanonicalSPDIToCategoricalVariationService(ServiceResponse):
         @staticmethod
         def schema_extra(
                 schema: Dict[str, Any],
-                model: Type["CanonicalSPDIToCategoricalVariationService"]) -> None:
+                model: Type["ToCanonicalVariationService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
             for prop in schema.get("properties", {}).values():
                 prop.pop("title", None)
             schema["example"] = {
-                "canonical_spdi_query": "NC_000007.14:140753335:A:T",
+                "query": "NC_000007.14:140753335:A:T",
                 "warnings": [],
-                "categorical_variation": {
+                "canonical_variation": {
                     "_id": "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9",
                     "type": "CanonicalVariation",
                     "complement": False,
