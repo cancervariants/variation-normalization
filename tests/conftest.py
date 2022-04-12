@@ -89,6 +89,21 @@ def vhl_gene_context():
                     "RCA1"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -111,7 +126,8 @@ def braf_gene_context():
             "RAFB1",
             "B-raf",
             "B-RAF1",
-            "NS7"
+            "NS7",
+            "BRAF-1"
         ],
         "extensions": [
             {
@@ -157,6 +173,21 @@ def braf_gene_context():
                         "type": "CytobandInterval"
                     }
                 }
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -236,6 +267,21 @@ def egfr_context():
                     "ERBB"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -262,7 +308,9 @@ def erbb2_context():
             "HER-2",
             "HER-2/neu",
             "VSCN2",
-            "MLN 19"
+            "MLN 19",
+            "c-ERB-2",
+            "c-ERB2"
         ],
         "extensions": [
             {
@@ -316,6 +364,21 @@ def erbb2_context():
                     "NGL"
                 ],
                 "type": "Extension"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ]
     }
@@ -503,16 +566,9 @@ def genomic_dup1_38_vac(genomic_dup1_seq_loc):
     """Create test fixture for absolute copy number dup1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
-        "subject": {
-            "location": genomic_dup1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "_id": "ga4gh:VAC.nZodtrYoDtBJ1kdKCO6zLd7QR7ho4s9v",
+        "subject": genomic_dup1_seq_loc,
+        "copies": {"type": "Number", "value": 3}
     }
 
 
@@ -536,16 +592,9 @@ def genomic_dup2_38_vac(genomic_dup2_seq_loc):
     """Create test fixture for absolute copy number dup2 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y",
-        "subject": {
-            "location": genomic_dup2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "_id": "ga4gh:VAC.0ORNFtrjvEWHYxg3hzO50N16KBm1F2ev",
+        "subject": genomic_dup2_seq_loc,
+        "copies": {"type": "Number", "value": 3}
     }
 
 
@@ -659,16 +708,9 @@ def genomic_del1_38_vac(genomic_del1_seq_loc):
     """Create test fixture for absolute copy number del1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW",
-        "subject": {
-            "location": genomic_del1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "_id": "ga4gh:VAC.bKH1_cS8JOdpvVK3x21RuwMKCo-ETfMK",
+        "subject": genomic_del1_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
 
 
@@ -692,16 +734,9 @@ def genomic_del2_38_vac(genomic_del2_seq_loc):
     """Create test fixture for absolute copy number del1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt",
-        "subject": {
-            "location": genomic_del2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "_id": "ga4gh:VAC.GqRBxR7bquLskRhgmcUiS3tdbwiJ4dDk",
+        "subject": genomic_del2_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
 
 
@@ -831,7 +866,11 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:
-                        assert resp_ext.value == test_var.value,\
-                            f"gene_context.{resp_ext.name}"
+                        if isinstance(resp_ext.value, list):
+                            assert set(resp_ext.value) == set(test_var.value), \
+                                f"gene_context.{resp_ext.name}"
+                        else:
+                            assert resp_ext.value == test_var.value,\
+                                f"gene_context.{resp_ext.name}"
     else:
         assert not test_variation_context

@@ -53,8 +53,6 @@ class Translator(ABC):
                             f"token if the result is valid")
 
         if variation_type == "Allele":
-            if not res.variation["location"]:
-                raise Exception("Cannot translate an allele with no location")
             try:
                 Allele(**res.variation)
             except ValidationError:
@@ -62,9 +60,6 @@ class Translator(ABC):
             else:
                 variation = res.variation
         elif variation_type == "AbsoluteCopyNumber":
-            if res.variation["subject"]["type"] == "Allele":
-                if not res.variation["subject"]["location"]:
-                    raise Exception("Cannot translate a CNV with no location")
             try:
                 AbsoluteCopyNumber(**res.variation)
             except ValidationError:
