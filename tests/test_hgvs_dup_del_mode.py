@@ -355,19 +355,12 @@ def genomic_dup1_free_text_default(genomic_dup1_free_text,
 def genomic_dup1_free_text_cnv(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VAC.Y5AgRjKvgUV29m_Me23v-S67clQuA4Fv"
+    _id = "ga4gh:VAC.qeuDGWVaGZUOf7XmF2xO1k24LvFzGVE1"
     genomic_dup1_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_dup1_free_text_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "subject": genomic_dup1_free_text_seq_loc,
+        "copies": {"type": "Number", "value": 3}
     }
     genomic_dup1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup1_free_text)
@@ -517,20 +510,12 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
 def genomic_dup2_free_text_cnv(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup CNV."""
-    _id = "ga4gh:VAC.JJ0mFb-kh7iAFFq90hOmbIIHuq2LgH4i"
+    _id = "ga4gh:VAC.1X1mLzx7HshdOPfBzeBSKRX41IGh8DId"
     genomic_dup2_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_dup2_free_text_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 2,
-            "max": 3
-        }
+        "subject": genomic_dup2_free_text_seq_loc,
+        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
     }
     genomic_dup2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_free_text)
@@ -580,20 +565,12 @@ def genomic_dup3():
 @pytest.fixture(scope="module")
 def genomic_dup3_default(genomic_dup3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh"
+    _id = "ga4gh:VAC.dvalAo00K9zGaI4lbxATjGTuNImbAefX"
     genomic_dup3["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del3_dup3_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 2,
-            "max": 3
-        }
+        "subject": genomic_del3_dup3_loc,
+        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
     }
     genomic_dup3["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3)
@@ -633,37 +610,29 @@ def genomic_dup3_free_text(dmd_gene_context):
 @pytest.fixture(scope="module")
 def genomic_dup3_free_text_default(genomic_dup3_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VAC.sx53Q7MiG1dc4sQ2RPkk0-K9vgku_jjj"
+    _id = "ga4gh:VAC.2i0YEoNp5g0GLOW_WGrLKIyeG9G1tSDO"
     genomic_dup3_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.6JRgXRroqGleDLuwmOdHSbUK8Lm27fos",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "min": 31147273,
-                        "max": 31147277,
-                        "type": "DefiniteRange"
-                    },
-                    "end": {
-                        "min": 31182738,
-                        "max": 31182740,
-                        "type": "DefiniteRange"
-                    }
+            "_id": "ga4gh:VSL.6JRgXRroqGleDLuwmOdHSbUK8Lm27fos",
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                    "min": 31147273,
+                    "max": 31147277,
+                    "type": "DefiniteRange"
                 },
-                "type": "SequenceLocation",
+                "end": {
+                    "min": 31182738,
+                    "max": 31182740,
+                    "type": "DefiniteRange"
+                }
             },
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
+            "type": "SequenceLocation"
         },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 2,
-            "max": 3
-        }
+        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
     }
     genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
@@ -702,19 +671,12 @@ def genomic_dup4():
 @pytest.fixture(scope="module")
 def genomic_dup4_default(genomic_dup4, genoimc_dup4_loc):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML"
+    _id = "ga4gh:VAC.h594XLS8a4VA6j-ghLaghqXmof8hmF5z"
     genomic_dup4["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genoimc_dup4_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "subject": genoimc_dup4_loc,
+        "copies": {"type": "Number", "value": 3}
     }
     genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
@@ -822,31 +784,27 @@ def genomic_dup4_free_text():
 @pytest.fixture(scope="module")
 def genomic_dup4_free_text_default(genomic_dup4_free_text):
     """Create a test fixture for genomic dup default and cnv."""
-    _id = "ga4gh:VAC.kqDlxaoHDXGgIURb72e5Wv0HNSxkoxwq"
+    _id = "ga4gh:VAC.G0SbODtFctpFS9aufQGvRuGNRTR_D37E"
     genomic_dup4_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.4eNCJnROfnoO-YvGnf-iGCeDHF_68g8H",
-                "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 1674441,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 1684571,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
+            "_id": "ga4gh:VSL.4eNCJnROfnoO-YvGnf-iGCeDHF_68g8H",
+            "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                    "value": 1674441,
+                    "comparator": "<=",
+                    "type": "IndefiniteRange"
                 },
-                "type": "SequenceLocation",
+                "end": {
+                    "value": 1684571,
+                    "comparator": ">=",
+                    "type": "IndefiniteRange"
+                }
             },
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
+            "type": "SequenceLocation"
         },
         "copies": {
             "type": "Number",
@@ -889,20 +847,12 @@ def genomic_dup5():
 
 def genomic_dup5_copy_number(params, genoimc_dup5_loc):
     """Create genomic dup5 copy number object"""
-    _id = "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1"
+    _id = "ga4gh:VAC.UwgjCJsg8XKPX8e2zhtw3jFfeUfgrGAZ"
     params["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genoimc_dup5_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 2,
-            "max": 3
-        }
+        "subject": genoimc_dup5_loc,
+        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
     }
     params["variation_id"] = _id
 
@@ -984,20 +934,12 @@ def genomic_dup6():
 
 def genomic_dup6_copy_number(params, genoimc_dup6_loc):
     """Create genomic dup6 copy number object"""
-    _id = "ga4gh:VAC.v-dhCkHL7W67y3SHp-qfMg7F5DOaAbQn"
+    _id = "ga4gh:VAC.vtHdiIdXvKO4z4M5x_26UoMN4HVW_Kh2"
     params["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genoimc_dup6_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 2,
-            "max": 3
-        }
+        "subject": genoimc_dup6_loc,
+        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
     }
     params["variation_id"] = _id
 
@@ -1180,19 +1122,12 @@ def genomic_del1_free_text_default(genomic_del1_free_text,
 def genomic_del1_free_text_cnv(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VAC.x8JFweASgnLK1pQy-yErcGZxuniFQhip"
+    _id = "ga4gh:VAC.Wgvw8a4LXRY4d1jopC5tZjUlaEKci5Ai"
     genomic_del1_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del1_free_text_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "subject": genomic_del1_free_text_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
     genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
@@ -1342,19 +1277,12 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
 def genomic_del2_free_text_cnv(genomic_del2_free_text,
                                genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
-    _id = "ga4gh:VAC.1Gbot3wdFzNWbyWUiKaV0gY3Dvm1Nef7"
+    _id = "ga4gh:VAC.UKlDhLtC7JSqSCJA0cuusgWhVcFd0hSS"
     genomic_del2_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del2_free_text_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "subject": genomic_del2_free_text_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
     genomic_del2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del2_free_text)
@@ -1404,20 +1332,12 @@ def genomic_del3():
 @pytest.fixture(scope="module")
 def genomic_del3_default(genomic_del3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VAC.o39DwfEb2I-LR9NFKR5cznWrRhI9Vx8b"
+    _id = "ga4gh:VAC.0ZYzw7KuXYv7a_TV3eF5qjRbqN0HvxBx"
     genomic_del3["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del3_dup3_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 0,
-            "max": 1
-        }
+        "subject": genomic_del3_dup3_loc,
+        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
     }
     genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
@@ -1527,37 +1447,29 @@ def genomic_del3_free_text():
 @pytest.fixture(scope="module")
 def genomic_del3_free_text_default(genomic_del3_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VAC.C8fUDphkEtMHUgh-8fHY0KLf86FekCRM"
+    _id = "ga4gh:VAC.7qHhQ6Ppm0JVpSpF8Hh8MW7msSJjfzq8"
     genomic_del3_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.gqWO-oN2bMIXm_YuZR4_beT57QN-kRGJ",
-                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "min": 68839264,
-                        "max": 68839267,
-                        "type": "DefiniteRange"
-                    },
-                    "end": {
-                        "min": 68841121,
-                        "max": 68841126,
-                        "type": "DefiniteRange"
-                    }
+            "_id": "ga4gh:VSL.gqWO-oN2bMIXm_YuZR4_beT57QN-kRGJ",
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                    "min": 68839264,
+                    "max": 68839267,
+                    "type": "DefiniteRange"
                 },
-                "type": "SequenceLocation",
+                "end": {
+                    "min": 68841121,
+                    "max": 68841126,
+                    "type": "DefiniteRange"
+                }
             },
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
+            "type": "SequenceLocation"
         },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 0,
-            "max": 1
-        }
+        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
     }
     genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
@@ -1596,20 +1508,12 @@ def genomic_del4():
 @pytest.fixture(scope="module")
 def genomic_del4_default(genomic_del4, genomic_del4_seq_loc):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L"
+    _id = "ga4gh:VAC.Dyccf3xmoPSN90ksXP2KAb5TuFIkgO6r"
     genomic_del4["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del4_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 0,
-            "max": 1
-        }
+        "subject": genomic_del4_seq_loc,
+        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
     }
     genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
@@ -1704,36 +1608,29 @@ def genomic_del4_free_text():
 @pytest.fixture(scope="module")
 def genomic_del4_free_text_default(genomic_del4_free_text):
     """Create a test fixture for genomic del default and cnv."""
-    _id = "ga4gh:VAC.I3P7IMe7ozWSB2zAxEhm1bk1u9eRQ6E0"
+    _id = "ga4gh:VAC.DrUaDS4OCFqKSvvXhJse2PCduwnZMwkU"
     genomic_del4_free_text["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
         "subject": {
-            "location": {
-                "_id": "ga4gh:VSL.s4_6D986zFS0HIBuEDFl5aq2-VCl45h1",
-                "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
-                "interval": {
-                    "type": "SequenceInterval",
-                    "start": {
-                        "value": 227022027,
-                        "comparator": "<=",
-                        "type": "IndefiniteRange"
-                    },
-                    "end": {
-                        "value": 227025830,
-                        "comparator": ">=",
-                        "type": "IndefiniteRange"
-                    }
+            "_id": "ga4gh:VSL.s4_6D986zFS0HIBuEDFl5aq2-VCl45h1",
+            "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                    "value": 227022027,
+                    "comparator": "<=",
+                    "type": "IndefiniteRange"
                 },
-                "type": "SequenceLocation",
+                "end": {
+                    "value": 227025830,
+                    "comparator": ">=",
+                    "type": "IndefiniteRange"
+                }
             },
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
+            "type": "SequenceLocation"
         },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "copies": {"type": "Number", "value": 1}
     }
     genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
@@ -1760,30 +1657,26 @@ def genomic_uncertain_del_2():
     params = {
         "id": "normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
+        "variation_id": "ga4gh:VAC.aLkuetccbB2s18VjspHlBNpVkrdi5kgh",
         "variation": {
-            "_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
+            "_id": "ga4gh:VAC.aLkuetccbB2s18VjspHlBNpVkrdi5kgh",
             "subject": {
-                "location": {
-                    "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
-                    "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
-                    "interval": {
-                        "start": {
-                            "value": 110104899,
-                            "comparator": "<=",
-                            "type": "IndefiniteRange"
-                        },
-                        "end": {
-                            "value": 110207160,
-                            "comparator": ">=",
-                            "type": "IndefiniteRange"
-                        },
-                        "type": "SequenceInterval"
+                "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
+                "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+                "interval": {
+                    "start": {
+                        "value": 110104899,
+                        "comparator": "<=",
+                        "type": "IndefiniteRange"
                     },
-                    "type": "SequenceLocation"
+                    "end": {
+                        "value": 110207160,
+                        "comparator": ">=",
+                        "type": "IndefiniteRange"
+                    },
+                    "type": "SequenceInterval"
                 },
-                "reverse_complement": False,
-                "type": "DerivedSequenceExpression"
+                "type": "SequenceLocation"
             },
             "copies": {
                 "value": 1,
@@ -1803,30 +1696,26 @@ def genomic_uncertain_del_y():
     params = {
         "id": "normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
+        "variation_id": "ga4gh:VAC.mp3CeUVnK4iCnM5Z2G4MfkwmFEQbeTjR",
         "variation": {
-            "_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
+            "_id": "ga4gh:VAC.mp3CeUVnK4iCnM5Z2G4MfkwmFEQbeTjR",
             "subject": {
-                "location": {
-                    "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
-                    "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-                    "interval": {
-                        "start": {
-                            "value": 14076801,
-                            "comparator": "<=",
-                            "type": "IndefiniteRange"
-                        },
-                        "end": {
-                            "value": 57165209,
-                            "comparator": ">=",
-                            "type": "IndefiniteRange"
-                        },
-                        "type": "SequenceInterval"
+                "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
+                "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                "interval": {
+                    "start": {
+                        "value": 14076801,
+                        "comparator": "<=",
+                        "type": "IndefiniteRange"
                     },
-                    "type": "SequenceLocation"
+                    "end": {
+                        "value": 57165209,
+                        "comparator": ">=",
+                        "type": "IndefiniteRange"
+                    },
+                    "type": "SequenceInterval"
                 },
-                "reverse_complement": False,
-                "type": "DerivedSequenceExpression"
+                "type": "SequenceLocation"
             },
             "copies": {
                 "value": 0,
@@ -1857,20 +1746,12 @@ def genomic_del5():
 
 def genomic_del5_copy_number(params, genomic_del5_seq_loc):
     """Create genomic del5 copy number"""
-    _id = "ga4gh:VAC.WQkCH9rBzLPtB4f6LRb8Y-rhob68h-7M"
+    _id = "ga4gh:VAC.JoRr5--EbLP3qAigSfQP5Y0k67uPE6xD"
     params["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del5_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "DefiniteRange",
-            "min": 0,
-            "max": 1
-        }
+        "subject": genomic_del5_seq_loc,
+        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
     }
     params["variation_id"] = _id
 
@@ -2020,19 +1901,12 @@ def genomic_del6():
 
 def genomic_del6_copy_number(params, genomic_del6_seq_loc):
     """Create genomic del6 copy number"""
-    _id = "ga4gh:VAC.YAyl7c-YMRkbqZymPFI2GKkYSQ9v7EeD"
+    _id = "ga4gh:VAC.6RkHgDOiRMZKMKgI6rmG9C3T6WuMhcex"
     params["variation"] = {
         "type": "AbsoluteCopyNumber",
         "_id": _id,
-        "subject": {
-            "location": genomic_del6_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "subject": genomic_del6_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
     params["variation_id"] = _id
 
