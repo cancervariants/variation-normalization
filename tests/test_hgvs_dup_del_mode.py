@@ -86,6 +86,21 @@ def dmd_gene_context():
                 "value": [
                     "MRX85"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:2928"
@@ -168,6 +183,21 @@ def mecp2_gene_context():
                     "RTT",
                     "MRX79"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:6990"
@@ -310,6 +340,21 @@ def genomic_dup1_free_text():
                         "ena.embl:L19711",
                         "ccds:CCDS2799"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:2666"
@@ -773,6 +818,21 @@ def genomic_dup4_free_text():
                     "value": [
                         "RP13"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:17340"
@@ -1436,6 +1496,21 @@ def genomic_del3_free_text():
                         "CFNS",
                         "EPLG2"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:3226"
@@ -1597,6 +1672,21 @@ def genomic_del4_free_text():
                         "refseq:NM_000092",
                         "uniprot:P53420"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:2206"
@@ -1854,6 +1944,21 @@ def genomic_del5_free_text():
                     "value": [
                         "STK9"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:11411"
@@ -2009,6 +2114,21 @@ def genomic_del6_free_text():
                         "CMD1J",
                         "DFNA10"
                     ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "hgnc_locus_type",
+                    "value": "gene with protein product"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_gene_type",
+                    "value": "protein-coding"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_biotype",
+                    "value": "protein_coding"
                 }
             ],
             "gene_id": "hgnc:3522"

@@ -1,4 +1,4 @@
-"""Module for toVRS endpoint."""
+"""Module for to_vrs endpoint."""
 from typing import Tuple, Optional, List, Union
 from urllib.parse import unquote
 

@@ -1,4 +1,5 @@
 """Main application for FastAPI."""
+from enum import Enum
 from typing import Dict, Optional
 from datetime import datetime
 from urllib.parse import unquote
@@ -21,6 +22,16 @@ from variation.schemas.normalize_response_schema \
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
+
+
+class Tags(Enum):
+    """Define tags for endpoints"""
+
+    SEQREPO = "SeqRepo"
+    TO_PROTEIN_VARIATION = "To Protein Variation"
+    TO_CANONICAL = "To Canonical Variation"
+    VRS_PYTHON = "VRS-Python"
+    TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
 
 
 app = FastAPI(
@@ -60,7 +71,7 @@ translate_response_description = "A  response to a validly-formed query."
 q_description = "Variation to translate."
 
 
-@app.get("/variation/toVRS",
+@app.get("/variation/to_vrs",
          summary=translate_summary,
          response_description=translate_response_description,
          response_model=ToVRSService,
@@ -138,7 +149,8 @@ async def normalize(
          summary="Given an identifier, use SeqRepo to return a list of aliases.",  # noqa: E501
          response_description="A response to a validly-formed query.",
          response_model=TranslateIdentifierService,
-         description="Return list of aliases for an identifier"
+         description="Return list of aliases for an identifier",
+         tags=[Tags.SEQREPO]
          )
 def translate_identifier(
         identifier: str = Query(..., description="The identifier to find aliases for"),  # noqa: E501
@@ -173,82 +185,6 @@ def translate_identifier(
         ))
 
 
-g_to_p_summary = "Given gnomad VCF, return VRSATILE compatible object on " \
-                 "protein coordinate."
-g_to_p_response_description = "A response to a validly-formed query."
-g_to_p_description = \
-    "Return VRSATILE compatible object on protein coordinate for " \
-    "variation provided."
-q_description = "gnomad VCF to normalize to protein variation."
-
-
-@app.get("/variation/gnomad_vcf_to_protein",
-         summary=g_to_p_summary,
-         response_description=g_to_p_response_description,
-         description=g_to_p_description,
-         response_model=NormalizeService,
-         response_model_exclude_none=True
-         )
-async def gnomad_vcf_to_protein(
-    q: str = Query(..., description=q_description)
-) -> NormalizeService:
-    """Return Value Object Descriptor for variation on protein coordinate.
-
-    :param str q: gnomad VCF to normalize to protein variation.
-    :return: NormalizeService for variation
-    """
-    q = unquote(q.strip())
-    resp, warnings = await query_handler.gnomad_vcf_to_protein(q)
-
-    return NormalizeService(
-        variation_query=q,
-        variation_descriptor=resp,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
-
-
-complement_descr = "This field indicates that a categorical variation is defined to " \
-                   "include (false) or exclude (true) variation concepts matching " \
-                   "the categorical variation."
-
-
-@app.get("/variation/canonical_spdi_to_categorical_variation",
-         summary="Given canonical SPDI, return VRSATILE categorical variation object",
-         response_description="A response to a validly-formed query.",
-         description="Return VRSATILE categorical variation object",
-         response_model=CanonicalSPDIToCategoricalVariationService,
-         response_model_exclude_none=True)
-def canonical_spdi_to_categorical_variation(
-        q: str = Query(..., description="Canonical SPDI"),
-        complement: bool = Query(False, description=complement_descr)
-) -> CanonicalSPDIToCategoricalVariationService:
-    """Return categorical variation for canonical SPDI
-
-    :param str q: Canonical SPDI
-    :param bool complement: This field indicates that a categorical variation
-        is defined to include (false) or exclude (true) variation concepts matching the
-        categorical variation. This is equivalent to a logical NOT operation on the
-        categorical variation properties.
-    :return: CanonicalSPDIToCategoricalVariationService for variation query
-    """
-    q = unquote(q.strip())
-    resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
-        q, complement=complement)
-    return CanonicalSPDIToCategoricalVariationService(
-        canonical_spdi_query=q,
-        categorical_variation=resp,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
-
-
 from_fmt_descr = "Format of input variation to translate. Must be one of `beacon`, " \
                  "`gnomad`, `hgvs`, or `spdi`"
 
@@ -259,7 +195,8 @@ from_fmt_descr = "Format of input variation to translate. Must be one of `beacon
          response_description="A response to a validly-formed query.",
          description="Return VRS Allele object",
          response_model=TranslateFromService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.VRS_PYTHON])
 def vrs_python_translate_from(
     variation: str = Query(..., description="Variation to translate to VRS object."
                                             " Must be represented as either beacon, "
@@ -299,6 +236,84 @@ def vrs_python_translate_from(
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
+g_to_p_summary = "Given gnomad VCF, return VRSATILE compatible object on " \
+                 "protein coordinate."
+g_to_p_response_description = "A response to a validly-formed query."
+g_to_p_description = \
+    "Return VRSATILE compatible object on protein coordinate for " \
+    "variation provided."
+q_description = "gnomad VCF to normalize to protein variation."
+
+
+@app.get("/variation/gnomad_vcf_to_protein",
+         summary=g_to_p_summary,
+         response_description=g_to_p_response_description,
+         description=g_to_p_description,
+         response_model=NormalizeService,
+         response_model_exclude_none=True,
+         tags=[Tags.TO_PROTEIN_VARIATION]
+         )
+async def gnomad_vcf_to_protein(
+    q: str = Query(..., description=q_description)
+) -> NormalizeService:
+    """Return Value Object Descriptor for variation on protein coordinate.
+
+    :param str q: gnomad VCF to normalize to protein variation.
+    :return: NormalizeService for variation
+    """
+    q = unquote(q.strip())
+    resp, warnings = await query_handler.gnomad_vcf_to_protein(q)
+
+    return NormalizeService(
+        variation_query=q,
+        variation_descriptor=resp,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
+    )
+
+
+complement_descr = "This field indicates that a categorical variation is defined to " \
+                   "include (false) or exclude (true) variation concepts matching " \
+                   "the categorical variation."
+
+
+@app.get("/variation/canonical_spdi_to_categorical_variation",
+         summary="Given canonical SPDI, return VRSATILE categorical variation object",
+         response_description="A response to a validly-formed query.",
+         description="Return VRSATILE categorical variation object",
+         response_model=CanonicalSPDIToCategoricalVariationService,
+         response_model_exclude_none=True,
+         tags=[Tags.TO_CANONICAL])
+def canonical_spdi_to_categorical_variation(
+        q: str = Query(..., description="Canonical SPDI"),
+        complement: bool = Query(False, description=complement_descr)
+) -> CanonicalSPDIToCategoricalVariationService:
+    """Return categorical variation for canonical SPDI
+
+    :param str q: Canonical SPDI
+    :param bool complement: This field indicates that a categorical variation
+        is defined to include (false) or exclude (true) variation concepts matching the
+        categorical variation. This is equivalent to a logical NOT operation on the
+        categorical variation properties.
+    :return: CanonicalSPDIToCategoricalVariationService for variation query
+    """
+    q = unquote(q.strip())
+    resp, warnings = query_handler.canonical_spdi_to_categorical_variation(
+        q, complement=complement)
+    return CanonicalSPDIToCategoricalVariationService(
+        canonical_spdi_query=q,
+        categorical_variation=resp,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
         )
     )
 
@@ -384,7 +399,8 @@ def vrs_python_translate_from(
          response_description="A response to a validly-formed query.",
          description="Return VRS object",
          response_model=HgvsToAbsoluteCopyNumberService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
@@ -418,7 +434,8 @@ async def hgvs_to_absolute_copy_number(
          response_description="A response to a validly-formed query.",
          description="Return VRS object",
          response_model=HgvsToRelativeCopyNumberService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(

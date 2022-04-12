@@ -98,7 +98,7 @@ class QueryHandler:
         )
 
     def _init_to_vrs(self) -> ToVRS:
-        """Return toVRS instance"""
+        """Return to_vrs instance"""
         gene_symbol = GeneSymbol(self.gene_normalizer)
         tokenizer = Tokenize(self.amino_acid_cache, gene_symbol)
         classifier = Classify()
