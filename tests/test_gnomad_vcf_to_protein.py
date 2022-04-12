@@ -77,6 +77,21 @@ def mmel1_gene_context():
                     "MELL1",
                     "MMEL1"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:14668"
@@ -160,6 +175,21 @@ def cdk11a_gene_context():
                     "CDC2L2",
                     "CDC2L3"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:1730"
@@ -237,6 +267,21 @@ def lrp8_gene_context():
                     "MIPS",
                     "LRP8"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:6700"
@@ -301,6 +346,21 @@ def atad3a_gene_context():
                     "pubmed:28158749",
                     "uniprot:Q9NVI7"
                 ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
             }
         ],
         "gene_id": "hgnc:25567"

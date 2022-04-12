@@ -1,12 +1,12 @@
 """Module for normalize endpoint response schema."""
 from enum import Enum
-from typing import List, Optional, Dict, Any, Type, Union
+from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
 
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation, ComplexVariation
+    CanonicalVariation
 
 
 class HGVSDupDelMode(str, Enum):
@@ -109,8 +109,12 @@ class NormalizeService(ServiceResponse):
                             "ensembl:ENSG00000157764"
                         ],
                         "alternate_labels": [
-                            "B-Raf proto-oncogene, serine/threonine kinase",
-                            "BRAF1"
+                            "BRAF1",
+                            "RAFB1",
+                            "B-raf",
+                            "B-RAF1",
+                            "NS7",
+                            "BRAF-1"
                         ],
                         "extensions": [
                             {
@@ -119,21 +123,26 @@ class NormalizeService(ServiceResponse):
                                 "type": "Extension"
                             },
                             {
+                                "type": "Extension",
+                                "name": "approved_name",
+                                "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                            },
+                            {
                                 "name": "associated_with",
                                 "value": [
-                                    "vega:OTTHUMG00000157457",
                                     "ucsc:uc003vwc.5",
-                                    "ccds:CCDS5863",
-                                    "ccds:CCDS87555",
-                                    "uniprot:P15056",
-                                    "pubmed:2284096",
                                     "pubmed:1565476",
-                                    "cosmic:BRAF",
                                     "omim:164757",
-                                    "orphanet:119066",
+                                    "vega:OTTHUMG00000157457",
+                                    "ccds:CCDS5863",
                                     "iuphar:1943",
+                                    "ccds:CCDS87555",
+                                    "orphanet:119066",
+                                    "refseq:NM_004333",
                                     "ena.embl:M95712",
-                                    "refseq:NM_004333"
+                                    "pubmed:2284096",
+                                    "uniprot:P15056",
+                                    "cosmic:BRAF"
                                 ],
                                 "type": "Extension"
                             },
@@ -151,6 +160,21 @@ class NormalizeService(ServiceResponse):
                                     }
                                 },
                                 "type": "Extension"
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "hgnc_locus_type",
+                                "value": "gene with protein product"
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "ncbi_gene_type",
+                                "value": "protein-coding"
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "ensembl_biotype",
+                                "value": "protein_coding"
                             }
                         ]
                     }
@@ -207,11 +231,18 @@ class TranslateIdentifierService(ServiceResponse):
             }
 
 
-class CanonicalSPDIToCategoricalVariationService(ServiceResponse):
-    """A response model for the canonical spdi to categorical variation service"""
+class ToCanonicalVariationFmt(str, Enum):
+    """Define formats for to_canonical endpoint"""
 
-    canonical_spdi_query: str
-    categorical_variation: Optional[Union[CanonicalVariation, ComplexVariation]]
+    HGVS = "hgvs"
+    SPDI = "spdi"
+
+
+class ToCanonicalVariationService(ServiceResponse):
+    """A response model for the to canonical variation service"""
+
+    query: str
+    canonical_variation: CanonicalVariation
 
     class Config:
         """Configure model."""
@@ -219,16 +250,16 @@ class CanonicalSPDIToCategoricalVariationService(ServiceResponse):
         @staticmethod
         def schema_extra(
                 schema: Dict[str, Any],
-                model: Type["CanonicalSPDIToCategoricalVariationService"]) -> None:
+                model: Type["ToCanonicalVariationService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
             for prop in schema.get("properties", {}).values():
                 prop.pop("title", None)
             schema["example"] = {
-                "canonical_spdi_query": "NC_000007.14:140753335:A:T",
+                "query": "NC_000007.14:140753335:A:T",
                 "warnings": [],
-                "categorical_variation": {
+                "canonical_variation": {
                     "_id": "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9",
                     "type": "CanonicalVariation",
                     "complement": False,

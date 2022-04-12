@@ -1,42 +1,42 @@
 """Module for Classification schema."""
 from typing import List
-from enum import IntEnum
+from enum import IntEnum, Enum
 
 from pydantic import BaseModel
 
 from variation.schemas.token_response_schema import Token
 
 
-class ClassificationType(IntEnum):
+class ClassificationType(str, Enum):
     """Enums for Classification Types."""
 
-    FUSION = 1
-    PROTEIN_SUBSTITUTION = 2
-    POLYPEPTIDE_TRUNCATION = 3
-    SILENT_MUTATION = 4
-    PROTEIN_FRAMESHIFT = 5
-    PROTEIN_ALTERNATE = 6
-    PROTEIN_DELINS = 7
-    PROTEIN_TERMINATION = 8
-    PROTEIN_DUPLICATION = 9
-    ONCOGENIC = 10
-    EXPRESSION = 11
-    COMPLEX = 12
-    CODING_DNA_SUBSTITUTION = 13
-    GENOMIC_SUBSTITUTION = 14
-    CODING_DNA_SILENT_MUTATION = 15
-    GENOMIC_SILENT_MUTATION = 16
-    CODING_DNA_DELINS = 17
-    GENOMIC_DELINS = 18
-    PROTEIN_DELETION = 19
-    CODING_DNA_DELETION = 20
-    GENOMIC_DELETION = 21
-    PROTEIN_INSERTION = 22
-    CODING_DNA_INSERTION = 23
-    GENOMIC_INSERTION = 24
-    GENOMIC_UNCERTAIN_DELETION = 25
-    GENOMIC_DUPLICATION = 26
-    GENOMIC_DELETION_RANGE = 27
+    FUSION = "fusion"
+    PROTEIN_SUBSTITUTION = "protein substitution"
+    POLYPEPTIDE_TRUNCATION = "polypeptide truncation"
+    SILENT_MUTATION = "silent mutation"
+    PROTEIN_FRAMESHIFT = "protein frameshift"
+    PROTEIN_ALTERNATE = "protein alternate"
+    PROTEIN_DELINS = "protein delins"
+    PROTEIN_TERMINATION = "protein termination"
+    PROTEIN_DUPLICATION = "protein duplication"
+    ONCOGENIC = "oncogenic"
+    EXPRESSION = "expression"
+    COMPLEX = "complext"
+    CODING_DNA_SUBSTITUTION = "coding dna substitution"
+    GENOMIC_SUBSTITUTION = "genomic substitution"
+    CODING_DNA_SILENT_MUTATION = "coding dna silent mutation"
+    GENOMIC_SILENT_MUTATION = "genomic silent mutation"
+    CODING_DNA_DELINS = "coding dna delins"
+    GENOMIC_DELINS = "genomic delins"
+    PROTEIN_DELETION = "protein deletion"
+    CODING_DNA_DELETION = "coding dna deletion"
+    GENOMIC_DELETION = "genomic deletion"
+    PROTEIN_INSERTION = "protein insertion"
+    CODING_DNA_INSERTION = "coding dna insertion"
+    GENOMIC_INSERTION = "genomic insertion"
+    GENOMIC_UNCERTAIN_DELETION = "genomic uncertain deletion"
+    GENOMIC_DUPLICATION = "genomic duplication"
+    GENOMIC_DELETION_RANGE = "genomic deletion range"
 
 
 class ConfidenceRating(IntEnum):

@@ -2,7 +2,7 @@
 
 # Variation Normalization
 
-Services and guidelines for normalizing variation terms into [VRS (v1.2.0)](https://vrs.ga4gh.org/en/1.2.0) and [VRSATILE (latest)](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
 
 Public OpenAPI endpoint: https://normalize.cancervariants.org/variation
 
@@ -26,8 +26,8 @@ Variation Normalization is limited to the following types of variants:
 We are working towards adding more types of variations, coordinates, and representations.
 
 ### Endpoints
-#### /toVRS
-The `/toVRS` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
+#### /to_vrs
+The `/to_vrs` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
 The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
 
