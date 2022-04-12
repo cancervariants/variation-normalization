@@ -289,7 +289,8 @@ complement_descr = "This field indicates that a categorical variation is defined
          response_description="A response to a validly-formed query.",
          description="Return VRSATILE canonical variation object",
          response_model=ToCanonicalVariationService,
-         response_model_exclude_none=True)
+         response_model_exclude_none=True,
+         tags=[Tags.TO_CANONICAL])
 async def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
         fmt: ToCanonicalVariationFmt = Query(ToCanonicalVariationFmt.HGVS,
