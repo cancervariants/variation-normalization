@@ -503,16 +503,9 @@ def genomic_dup1_38_vac(genomic_dup1_seq_loc):
     """Create test fixture for absolute copy number dup1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
-        "subject": {
-            "location": genomic_dup1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "_id": "ga4gh:VAC.nZodtrYoDtBJ1kdKCO6zLd7QR7ho4s9v",
+        "subject": genomic_dup1_seq_loc,
+        "copies": {"type": "Number", "value": 3}
     }
 
 
@@ -536,16 +529,9 @@ def genomic_dup2_38_vac(genomic_dup2_seq_loc):
     """Create test fixture for absolute copy number dup2 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.xwy6h-f8s6B3QLiPYKiHZqWjAO7eKe4Y",
-        "subject": {
-            "location": genomic_dup2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 3
-        }
+        "_id": "ga4gh:VAC.0ORNFtrjvEWHYxg3hzO50N16KBm1F2ev",
+        "subject": genomic_dup2_seq_loc,
+        "copies": {"type": "Number", "value": 3}
     }
 
 
@@ -659,16 +645,9 @@ def genomic_del1_38_vac(genomic_del1_seq_loc):
     """Create test fixture for absolute copy number del1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Gww88B2yhxPAT2nrNWaxo9oPyQ5mPrYW",
-        "subject": {
-            "location": genomic_del1_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "_id": "ga4gh:VAC.bKH1_cS8JOdpvVK3x21RuwMKCo-ETfMK",
+        "subject": genomic_del1_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
 
 
@@ -692,16 +671,9 @@ def genomic_del2_38_vac(genomic_del2_seq_loc):
     """Create test fixture for absolute copy number del1 on GRCh38"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.NijRPhc84gKf8xFq4aa3RdOkw6yXAMRt",
-        "subject": {
-            "location": genomic_del2_seq_loc,
-            "reverse_complement": False,
-            "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-            "type": "Number",
-            "value": 1
-        }
+        "_id": "ga4gh:VAC.GqRBxR7bquLskRhgmcUiS3tdbwiJ4dDk",
+        "subject": genomic_del2_seq_loc,
+        "copies": {"type": "Number", "value": 1}
     }
 
 
