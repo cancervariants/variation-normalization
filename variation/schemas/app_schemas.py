@@ -13,3 +13,4 @@ class Endpoint(str, Enum):
     TRANSLATE_FROM = "translate_from"
     HGVS_TO_ABSOLUTE_CN = "hgvs_to_absolute_copy_number"
     HGVS_TO_RELATIVE_CN = "hgvs_to_relative_copy_number"
+    TO_CANONICAL = "to_canonical"
