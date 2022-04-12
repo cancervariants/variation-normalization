@@ -116,7 +116,8 @@ class Validate:
         if not warnings:
             warnings = list()
 
-        found_classification = False
+        found_valid_result = False
+        invalid_classifications = set()
         for classification in classifications:
             for validator in self.validators:
                 if validator.validates_classification_type(
@@ -128,16 +129,19 @@ class Validate:
                         do_liftover=do_liftover)
                     for res in results:
                         if res.is_valid:
-                            found_classification = True
+                            found_valid_result = True
                             valid_possibilities.append(res)
                         else:
                             invalid_possibilities.append(res)
+                            invalid_classifications.add(
+                                classification.classification_type.value)
 
-                if found_classification:
+                if found_valid_result:
                     break
 
-        if not found_classification and not warnings:
-            warnings.append("Unable find a classification")
+        if not found_valid_result and not warnings:
+            warnings.append(f"Unable to find valid result for classifications: "
+                            f"{invalid_classifications}")
 
         return ValidationSummary(
             valid_results=valid_possibilities,
