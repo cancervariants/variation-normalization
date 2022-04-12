@@ -567,7 +567,7 @@ class QueryHandler:
                 hgvs_classifications.append(c)
         if not hgvs_classifications:
             warnings = [f"{q} is not a supported HGVS expression"]
-            return None, warnings
+            return variation, warnings
 
         validations = await self.validator.perform(
             classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
