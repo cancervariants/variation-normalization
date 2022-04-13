@@ -64,7 +64,8 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         """
         await self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens, endpoint_name, mane_data_found, is_identifier
+            gene_tokens, endpoint_name, mane_data_found, is_identifier,
+            do_liftover=do_liftover
         )
 
     def get_gene_tokens(self, classification: Classification) -> List:
