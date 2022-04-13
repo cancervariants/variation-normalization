@@ -143,7 +143,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                 mane_data_found, relative_copy_class=relative_copy_class,
                 baseline_copies=baseline_copies)
         else:
-            # No gene provided, then use GRCh38 assesmbly
+            # No gene provided, then use GRCh38 assembly
             if not self._is_grch38_assembly(t):
                 grch38 = await self.mane_transcript.g_to_grch38(t, start, end)
             else:
