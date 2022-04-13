@@ -447,6 +447,7 @@ class QueryHandler:
 
     async def to_canonical_variation(
         self, q: str, fmt: ToCanonicalVariationFmt, complement: bool = False,
+        do_liftover: bool = False
     ) -> Tuple[Optional[CanonicalVariation], List]:
         """Given query as ToCanonicalVariationFmt, return canonical variation
 
@@ -456,6 +457,7 @@ class QueryHandler:
             defined to include (false) or exclude (true) variation concepts matching the
             categorical variation. This is equivalent to a logical NOT operation on the
             categorical variation properties.
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
         :return: Canonical Variation and list of warnings
         """
         q = q.strip()
@@ -465,9 +467,11 @@ class QueryHandler:
         variation = None
 
         if fmt == ToCanonicalVariationFmt.SPDI:
-            variation, warnings = self.spdi_to_canonical_variation(q, warnings)
+            variation, warnings = await self.spdi_to_canonical_variation(
+                q, warnings, do_liftover)
         elif fmt == ToCanonicalVariationFmt.HGVS:
-            variation, warnings = await self.hgvs_to_canonical_variation(q, warnings)
+            variation, warnings = await self.hgvs_to_canonical_variation(
+                q, warnings, do_liftover)
         else:
             warnings = [f"fmt, {fmt}, is not supported. "
                         f"Must be either `spdi` or `hgvs`"]
@@ -506,15 +510,53 @@ class QueryHandler:
         canonical_variation = CanonicalVariation(**canonical_variation)
         return canonical_variation, warnings
 
-    def spdi_to_canonical_variation(self, q: str,
-                                    warnings: List) -> Tuple[Optional[Dict], List]:
+    async def spdi_to_canonical_variation(
+        self, q: str, warnings: List, do_liftover: bool = False
+    ) -> Tuple[Optional[Dict], List]:
         """Given SPDI representation, return canonical variation
 
         :param str q: SPDI query
         :param List warnings: List of warnings
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Canonical Variation and warnings
         """
         variation = None
+        match = self.tlr.spdi_re.match(q)
+        if not match:
+            warnings.append(f"{q} is not a valid SPDI expression")
+            return variation, warnings
+
+        spdi_parts = q.split(":")
+        ac = spdi_parts[0]
+        start_pos = int(spdi_parts[1])  # inter-residue, 0 based
+        deleted_seq = spdi_parts[2]
+        inserted_seq = spdi_parts[3]
+        end_pos = start_pos + len(deleted_seq)
+
+        if do_liftover:
+            newest_assembly_acs = await self.uta.get_newest_assembly_ac(ac)
+            if not newest_assembly_acs:
+                warnings.append(f"Unable to get newest assemblies for {ac}")
+                return variation, None
+            new_ac = newest_assembly_acs[0][0]
+            if new_ac != ac:
+                ac = new_ac
+                chromosome, warning = self.seqrepo_access.ac_to_chromosome(ac)
+                if not chromosome:
+                    warnings.append(warning)
+                    return variation, warnings
+                chromosome = f"chr{chromosome}"
+
+                pos = start_pos + len(deleted_seq)
+                liftover_resp = self.uta.get_liftover(chromosome, pos)
+                if not liftover_resp:
+                    warnings.append(f"Position {pos} does not exist on "
+                                    f"chromosome {chromosome}")
+                    return variation, warnings
+                start_pos = liftover_resp[1] - len(deleted_seq)
+                end_pos = start_pos + len(deleted_seq)
+                q = f"{ac}:{start_pos}:{deleted_seq}:{inserted_seq}"
+
         try:
             variation = self.tlr.translate_from(
                 q, fmt=ToCanonicalVariationFmt.SPDI.value)
@@ -525,11 +567,6 @@ class QueryHandler:
                             f"seqrepo could not translate identifier {e}")
         else:
             # Validate SPDI
-            spdi_parts = q.split(":")
-            ac = spdi_parts[0]
-            start_pos = int(spdi_parts[1])  # inter-residue, 0 based
-            deleted_seq = spdi_parts[2]
-            end_pos = start_pos + len(deleted_seq)
             try:
                 sequence = self.seqrepo_access.seqrepo_client.fetch(
                     ac, start_pos, end=end_pos)
@@ -550,12 +587,13 @@ class QueryHandler:
         return variation, warnings
 
     async def hgvs_to_canonical_variation(
-        self, q: str, warnings: List
+        self, q: str, warnings: List, do_liftover: bool = False
     ) -> Tuple[Optional[Dict], List]:
         """Given HGVS representation, return canonical variation
 
         :param str q: HGVS query
         :param List warnings: List of warnings
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Canonical Variation and warnings
         """
         variation = None
@@ -571,15 +609,22 @@ class QueryHandler:
 
         validations = await self.validator.perform(
             classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=False
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=do_liftover
         )
         if not warnings:
             warnings = validations.warnings
 
-        translations, warnings = self.to_vrs_handler.get_translations(
-            validations, warnings)
-        if translations:
-            variation = translations[0]
+        if do_liftover:
+            if len(validations.valid_results) > 0:
+                valid_result = self.normalize_handler.get_valid_result(
+                    q, validations, warnings)
+                if valid_result:
+                    variation = valid_result.variation
+        else:
+            translations, warnings = self.to_vrs_handler.get_translations(
+                validations, warnings)
+            if translations:
+                variation = translations[0]
         return variation, warnings
 
     def _hgvs_to_cnv_resp(

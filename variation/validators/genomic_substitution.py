@@ -77,16 +77,19 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.coordinate_type, end_pos=s.position,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True, residue_mode="residue"
-                    )
-
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.coordinate_type, s.alt_type, s,
-                                       alt=s.new_nucleotide)
+                if not errors:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        mane = await self.mane_transcript.get_mane_transcript(
+                            t, s.position, s.coordinate_type, end_pos=s.position,
+                            gene=gene_tokens[0].token if gene_tokens else None,
+                            try_longest_compatible=True, residue_mode="residue"
+                        )
+                        self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                           s.alt_type, s, alt=s.new_nucleotide)
+                    elif do_liftover:
+                        await self.add_liftover_data(
+                            gene_tokens, t, s, errors, valid_alleles, results,
+                            classification)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens, errors)
@@ -97,6 +100,43 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
         if endpoint_name == Endpoint.NORMALIZE:
             self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
                                                 classification, gene_tokens)
+
+    async def add_liftover_data(
+        self, gene_tokens: List, t: str, s: Token, errors: List, valid_alleles: List,
+        results: List, classification: Classification
+    ) -> None:
+        """Add liftover data to results
+
+        :param List gene_tokens: List of GeneMatchTokens for a classification
+        :param str t: Accession
+        :param Token s: Classification token
+        :param List errors: List of errors
+        :param List valid_alleles: List of valid alleles
+        :param List results: List of results data
+        :param Classification classification: A classification for a list of tokens
+        """
+        if gene_tokens:
+            # TODO
+            pass
+        else:
+            if not self._is_grch38_assembly(t):
+                grch38 = await self.mane_transcript.g_to_grch38(t, s.position,
+                                                                s.position)
+            else:
+                grch38 = dict(ac=t, pos=(s.position, s.position))
+
+            if grch38:
+                self._check_index(grch38["ac"], grch38["pos"][0], errors)
+
+                if not errors:
+                    variation = self.vrs.to_vrs_allele(
+                        grch38["ac"], grch38["pos"][0], grch38["pos"][1],
+                        s.coordinate_type, s.alt_type, errors, alt=s.new_nucleotide)
+                    if variation:
+                        self.add_validation_result(
+                            variation, valid_alleles, results, classification, s, t,
+                            gene_tokens, errors, identifier=grch38["ac"],
+                            is_mane_transcript=True)
 
     def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.

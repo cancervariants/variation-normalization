@@ -57,18 +57,35 @@ async def test_canonical_spdi_to_categorical_variation(test_query_handler, varia
                                                        variation2):
     """Test that to_canonical_variation works correctly"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/17014/?new_evidence=true
-    q = " NC_000013.11:20189346:GGG:GG "
+    q = " NC_000013.11:20189346:GGG:GG "  # 38
     resp, w = await test_query_handler.to_canonical_variation(q, fmt="spdi")
     assert resp == variation1
     assert w == []
 
-    q = " NC_000013.11:g.20189349del "
+    q = " NC_000013.10:20763485:GGG:GG "  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="spdi", do_liftover=True)
+    assert resp == variation1
+    assert w == []
+
+    q = " NC_000013.11:g.20189349del "  # 38
     resp, w = await test_query_handler.to_canonical_variation(q, fmt="hgvs")
     assert resp == variation1
     assert w == []
 
+    q = " NC_000013.10:g.20763488del "  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", do_liftover=True)
+    assert resp == variation1
+    assert w == []
+
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/13961/
-    q = "NC_000007.14:140753335:A:T"
+    q = "NC_000007.13:140453135:A:T"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="spdi", complement=True, do_liftover=True)
+    assert resp == variation2
+
+    q = "NC_000007.14:140753335:A:T"  # 38
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="spdi", complement=True)
     assert resp == variation2
@@ -80,7 +97,12 @@ async def test_canonical_spdi_to_categorical_variation(test_query_handler, varia
     cpy_variation2.id = "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9"
     assert resp == cpy_variation2
 
-    q = "NC_000007.14:g.140753336A>T"
+    q = "NC_000007.13:g.140453136A>T"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", complement=True, do_liftover=True)
+    assert resp == variation2
+
+    q = "NC_000007.14:g.140753336A>T"  # 38
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="hgvs", complement=True)
     assert resp == variation2
@@ -115,8 +137,7 @@ async def test_invalid(test_query_handler):
     resp, w = await test_query_handler.to_canonical_variation(
         "NP_004324.2:p.Val600Glu", fmt="spdi")
     assert resp.variation.type == "Text"
-    assert w == ["vrs-python translator raised error: Unable to parse data as "
-                 "spdi variation"]
+    assert w == ["NP_004324.2:p.Val600Glu is not a valid SPDI expression"]
 
     resp, w = await test_query_handler.to_canonical_variation(
         "NC_000013.11:20189346:GCG:GG", fmt="spdi")

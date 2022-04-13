@@ -664,23 +664,6 @@ class Validator(ABC):
             errors.append(w)
         return seq
 
-    @staticmethod
-    def _grch38_dict(ac: str, pos: Tuple[int, int]) -> Dict:
-        """Create dict for normalized concepts
-
-        :param str ac: Acession
-        :param Tuple[int, int] pos: Position changes
-        :return: GRCh38 data
-        """
-        return dict(
-            gene=None,
-            refseq=ac if ac.startswith("NC") else None,
-            ensembl=ac if ac.startswith("ENSG") else None,
-            pos=pos,
-            strand=None,
-            status="GRCh38"
-        )
-
     def _is_grch38_assembly(self, t: str) -> bool:
         """Return whether or not accession is GRCh38 assembly.
 
