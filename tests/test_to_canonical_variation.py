@@ -202,23 +202,23 @@ async def test_to_canonical_variation_insertions(test_query_handler, variation4)
     q = "NC_000001.10:g.2160641_2160642insCTC"  # 37
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)
-    assert resp.dict() == variation4.dict()
+    assert resp == variation4
     assert w == []
 
     q = "NC_000001.11:g.2229202_2229203insCTC"  # 37
     resp, w = await test_query_handler.to_canonical_variation(q, fmt="hgvs")
-    assert resp.dict() == variation4.dict()
+    assert resp == variation4
     assert w == []
 
     q = "NC_000001.10:2160640:C:CCTC"  # 37
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="spdi", do_liftover=True)
-    assert resp.dict() == variation4.dict()
+    assert resp == variation4
     assert w == []
 
     q = "NC_000001.11:2229201:C:CCTC"  # 38
     resp, w = await test_query_handler.to_canonical_variation(q, fmt="spdi")
-    assert resp.dict() == variation4.dict()
+    assert resp == variation4
     assert w == []
 
 
