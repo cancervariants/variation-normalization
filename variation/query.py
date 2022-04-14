@@ -597,6 +597,11 @@ class QueryHandler:
         :return: Canonical Variation and warnings
         """
         variation = None
+        match = self.tlr.hgvs_re.match(q)
+        if not match:
+            warnings.append(f"{q} is not a valid HGVS expression")
+            return variation, warnings
+
         tokens = self.tokenizer.perform(q, warnings)
         classifications = self.classifier.perform(tokens)
         hgvs_classifications = list()
