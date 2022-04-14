@@ -77,16 +77,19 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.coordinate_type, end_pos=s.position,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True, residue_mode="residue"
-                    )
-
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.coordinate_type, s.alt_type, s,
-                                       alt=s.new_nucleotide)
+                if not errors:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        mane = await self.mane_transcript.get_mane_transcript(
+                            t, s.position, s.coordinate_type, end_pos=s.position,
+                            gene=gene_tokens[0].token if gene_tokens else None,
+                            try_longest_compatible=True, residue_mode="residue"
+                        )
+                        self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                           s.alt_type, s, alt=s.new_nucleotide)
+                    elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
+                        await self._liftover_genomic_data(
+                            gene_tokens, t, s, errors, valid_alleles, results,
+                            classification)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens, errors)
