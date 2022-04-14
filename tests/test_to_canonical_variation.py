@@ -52,10 +52,47 @@ def variation2(braf_v600e_genomic_sub):
     return CanonicalVariation(**params)
 
 
+@pytest.fixture(scope="module")
+def variation3(grch38_genomic_insertion_variation):
+    """Create test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
+    params = {
+        "_id": "ga4gh:VCC.Wvq61Rejsn80kUCJkqSXKzCSnRwaRZNm",
+        "complement": False,
+        "type": "CanonicalVariation",
+        "variation": grch38_genomic_insertion_variation
+    }
+    return CanonicalVariation(**params)
+
+
+@pytest.fixture(scope="module")
+def variation4():
+    """Create test fixture for NC_000001.11:g.2229202_2229203insCTC"""
+    params = {
+        "_id": "ga4gh:VCC.DSkrWcvpWq3U1KkxLDXauJs7BmbOZVBA",
+        "complement": False,
+        "type": "CanonicalVariation",
+        "variation": {
+            "_id": "ga4gh:VA.PZ-BIW_H8sMhl65ZU4bgn_99XGirUPpz",
+            "type": "Allele",
+            "location": {
+                "_id": "ga4gh:VSL.ivN4CeEpVq7IPlav6JWMx5cJZ8vO3NKz",
+                "type": "SequenceLocation",
+                "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 2229201},
+                    "end": {"type": "Number", "value": 2229202}
+                }
+            },
+            "state": {"type": "LiteralSequenceExpression", "sequence": "CCTC"}
+        }
+    }
+    return CanonicalVariation(**params)
+
+
 @pytest.mark.asyncio
-async def test_canonical_spdi_to_categorical_variation(test_query_handler, variation1,
-                                                       variation2):
-    """Test that to_canonical_variation works correctly"""
+async def test_to_canonical_variation_deletion(test_query_handler, variation1):
+    """Test that to_canonical_variation works correctly for deletions"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/17014/?new_evidence=true
     q = " NC_000013.11:20189346:GGG:GG "  # 38
     resp, w = await test_query_handler.to_canonical_variation(q, fmt="spdi")
@@ -79,16 +116,22 @@ async def test_canonical_spdi_to_categorical_variation(test_query_handler, varia
     assert resp == variation1
     assert w == []
 
+
+@pytest.mark.asyncio
+async def test_to_canonical_variation_substitution(test_query_handler, variation2):
+    """Test that to_canonical_variation works correctly for substitutions"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/13961/
     q = "NC_000007.13:140453135:A:T"  # 37
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="spdi", complement=True, do_liftover=True)
     assert resp == variation2
+    assert w == []
 
     q = "NC_000007.14:140753335:A:T"  # 38
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="spdi", complement=True)
     assert resp == variation2
+    assert w == []
 
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="spdi", complement=False)
@@ -96,16 +139,19 @@ async def test_canonical_spdi_to_categorical_variation(test_query_handler, varia
     cpy_variation2.complement = False
     cpy_variation2.id = "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9"
     assert resp == cpy_variation2
+    assert w == []
 
     q = "NC_000007.13:g.140453136A>T"  # 37
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="hgvs", complement=True, do_liftover=True)
     assert resp == variation2
+    assert w == []
 
     q = "NC_000007.14:g.140753336A>T"  # 38
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="hgvs", complement=True)
     assert resp == variation2
+    assert w == []
 
     resp, w = await test_query_handler.to_canonical_variation(
         q, fmt="hgvs", complement=False)
@@ -113,6 +159,67 @@ async def test_canonical_spdi_to_categorical_variation(test_query_handler, varia
     cpy_variation2.complement = False
     cpy_variation2.id = "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9"
     assert resp == cpy_variation2
+    assert w == []
+
+
+@pytest.mark.asyncio
+async def test_to_canonical_variation_duplication(test_query_handler, variation3):
+    """Test that to_canonical_variation works correctly for duplications"""
+    # https://www.ncbi.nlm.nih.gov/clinvar/variation/44985/
+    q = "NC_000017.10:g.37880993_37880994insGCTTACGTGATG"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", do_liftover=True)
+    assert resp == variation3
+    assert w == []
+
+    q = "NC_000017.11:g.39724740_39724741insGCTTACGTGATG"  # 38
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", do_liftover=True)  # even tho it's set it wont liftover
+    assert resp == variation3
+    assert w == []
+
+    q = "NC_000017.11:39724731:TACGTGATGGCT:TACGTGATGGCTTACGTGATGGCT"  # 38
+    resp, w = await test_query_handler.to_canonical_variation(q, fmt="spdi")
+    assert resp == variation3
+    assert w == []
+
+    q = "NC_000017.11:g.39724732_39724743dup"  # 38
+    resp, w = await test_query_handler.to_canonical_variation(q, fmt="hgvs")
+    assert resp == variation3
+    assert w == []
+
+    q = "NC_000017.10:g.37880985_37880996dup"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", do_liftover=True)
+    assert resp == variation3
+    assert w == []
+
+
+@pytest.mark.asyncio
+async def test_to_canonical_variation_insertions(test_query_handler, variation4):
+    """Test that to_canonical_variation works correctly for duplications"""
+    # https://www.ncbi.nlm.nih.gov/clinvar/variation/440270/
+    q = "NC_000001.10:g.2160641_2160642insCTC"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="hgvs", do_liftover=True)
+    assert resp.dict() == variation4.dict()
+    assert w == []
+
+    q = "NC_000001.11:g.2229202_2229203insCTC"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(q, fmt="hgvs")
+    assert resp.dict() == variation4.dict()
+    assert w == []
+
+    q = "NC_000001.10:2160640:C:CCTC"  # 37
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="spdi", do_liftover=True)
+    assert resp.dict() == variation4.dict()
+    assert w == []
+
+    q = "NC_000001.11:2229201:C:CCTC"  # 38
+    resp, w = await test_query_handler.to_canonical_variation(q, fmt="spdi")
+    assert resp.dict() == variation4.dict()
+    assert w == []
 
 
 @pytest.mark.asyncio
@@ -155,3 +262,9 @@ async def test_invalid(test_query_handler):
     assert resp.variation.type == "Text"
     assert w == ["Unable to find valid result for classifications:"
                  " {'genomic substitution'}"]
+
+    q = "NC_000001.10:2160640:A:ACTC"
+    resp, w = await test_query_handler.to_canonical_variation(
+        q, fmt="spdi", do_liftover=True)
+    assert resp.variation.type == "Text"
+    assert w == ["Expected to find reference sequence A but found C on NC_000001.11"]
