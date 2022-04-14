@@ -807,6 +807,29 @@ def genomic_del6_seq_loc():
     }
 
 
+@pytest.fixture(scope="session")
+def grch38_genomic_insertion_variation():
+    """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
+    return {
+        "_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
+        "location": {
+            "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
+            "interval": {
+                "end": {"value": 39724743, "type": "Number"},
+                "start": {"value": 39724731, "type": "Number"},
+                "type": "SequenceInterval"
+            },
+            "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+            "type": "SequenceLocation"
+        },
+        "state": {
+            "sequence": "TACGTGATGGCTTACGTGATGGCT",
+            "type": "LiteralSequenceExpression"
+        },
+        "type": "Allele"
+    }
+
+
 def assertion_checks(normalize_response, test_variation, label, ignore_id=False):
     """Check that normalize_response and test_variation are equal."""
     if not ignore_id:

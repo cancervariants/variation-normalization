@@ -102,7 +102,7 @@ class SingleNucleotideVariationBase(Validator):
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
             endpoint_name: Optional[Endpoint], mane_data_found: Dict,
-            is_identifier: bool) -> None:
+            is_identifier: bool, do_liftover: bool = False) -> None:
         """Add validation result objects to a list of results for
         Silent Mutations.
 
@@ -116,6 +116,7 @@ class SingleNucleotideVariationBase(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
+        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
         for s in classification_tokens:
@@ -156,14 +157,18 @@ class SingleNucleotideVariationBase(Validator):
                                     f"Expected {s.coordinate_type} but "
                                     f"found {sequence}")
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.coordinate_type, end_pos=s.position,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True)
-
-                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
-                                       s.alt_type, s)
+                if not errors:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        mane = await self.mane_transcript.get_mane_transcript(
+                            t, s.position, s.coordinate_type, end_pos=s.position,
+                            gene=gene_tokens[0].token if gene_tokens else None,
+                            try_longest_compatible=True)
+                        self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                           s.alt_type, s)
+                    elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
+                        await self._liftover_genomic_data(
+                            gene_tokens, t, s, errors, valid_alleles, results,
+                            classification)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens, errors)
@@ -174,6 +179,32 @@ class SingleNucleotideVariationBase(Validator):
         if endpoint_name == Endpoint.NORMALIZE:
             self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
                                                 classification, gene_tokens)
+
+    async def _liftover_genomic_data(
+        self, gene_tokens: List, t: str, s: Token, errors: List, valid_alleles: List,
+        results: List, classification: Classification
+    ) -> None:
+        """Add liftover data to validation results
+        Currently only works for HGVS expressions.
+
+        :param List gene_tokens: List of GeneMatchTokens for a classification
+        :param str t: Accession
+        :param Token s: Classification token
+        :param List errors: List of errors
+        :param List valid_alleles: List of valid alleles
+        :param List results: List of results data
+        :param Classification classification: A classification for a list of tokens
+        """
+        if not gene_tokens:
+            if not self._is_grch38_assembly(t):
+                grch38 = await self.mane_transcript.g_to_grch38(t, s.position,
+                                                                s.position)
+            else:
+                grch38 = dict(ac=t, pos=(s.position, s.position))
+
+            await self.add_genomic_liftover_to_results(
+                grch38, errors, s.new_nucleotide, valid_alleles, results,
+                classification, s, t, gene_tokens)
 
     def check_ref_nucleotide(self, actual_ref_nuc: str, expected_ref_nuc: str,
                              position: int, t: str, errors: List) -> None:

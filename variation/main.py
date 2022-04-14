@@ -293,9 +293,11 @@ complement_descr = "This field indicates that a categorical variation is defined
          tags=[Tags.TO_CANONICAL])
 async def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
-        fmt: ToCanonicalVariationFmt = Query(ToCanonicalVariationFmt.HGVS,
+        fmt: ToCanonicalVariationFmt = Query(...,
                                              description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
-        complement: bool = Query(False, description=complement_descr)
+        complement: bool = Query(False, description=complement_descr),
+        do_liftover: bool = Query(False, description="Whether or not to liftover to "
+                                  "GRCh38 assembly.")
 ) -> ToCanonicalVariationService:
     """Return categorical variation for canonical SPDI
 
@@ -309,7 +311,8 @@ async def to_canonical_variation(
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
-    variation, warnings = await query_handler.to_canonical_variation(q, fmt, complement)
+    variation, warnings = await query_handler.to_canonical_variation(
+        q, fmt, complement, do_liftover)
 
     return ToCanonicalVariationService(
         query=q,
