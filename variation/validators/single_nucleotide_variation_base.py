@@ -185,6 +185,7 @@ class SingleNucleotideVariationBase(Validator):
         results: List, classification: Classification
     ) -> None:
         """Add liftover data to validation results
+        Currently only works for HGVS expressions.
 
         :param List gene_tokens: List of GeneMatchTokens for a classification
         :param str t: Accession
@@ -194,10 +195,7 @@ class SingleNucleotideVariationBase(Validator):
         :param List results: List of results data
         :param Classification classification: A classification for a list of tokens
         """
-        if gene_tokens:
-            # TODO
-            pass
-        else:
+        if not gene_tokens:
             if not self._is_grch38_assembly(t):
                 grch38 = await self.mane_transcript.g_to_grch38(t, s.position,
                                                                 s.position)
