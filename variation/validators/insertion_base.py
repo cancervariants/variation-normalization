@@ -123,19 +123,9 @@ class InsertionBase(Validator):
             else:
                 grch38 = dict(ac=t, pos=(s.start_pos_flank, s.end_pos_flank))
 
-            if grch38:
-                self._check_index(grch38["ac"], grch38["pos"][0], errors)
-                self._check_index(grch38["ac"], grch38["pos"][1], errors)
-
-                if not errors:
-                    variation = self.vrs.to_vrs_allele(
-                        grch38["ac"], grch38["pos"][0], grch38["pos"][1],
-                        s.coordinate_type, s.alt_type, errors, alt=s.inserted_sequence)
-                    if variation:
-                        self.add_validation_result(
-                            variation, valid_alleles, results, classification, s, t,
-                            gene_tokens, errors, identifier=grch38["ac"],
-                            is_mane_transcript=True)
+            await self.add_genomic_liftover_to_results(
+                grch38, errors, s.inserted_sequence, valid_alleles, results,
+                classification, s, t, gene_tokens)
 
     def get_hgvs_expr(self, classification: Classification, t: str, s: Token,
                       is_hgvs: bool) -> str:

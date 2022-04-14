@@ -255,7 +255,7 @@ async def test_invalid(test_query_handler):
     resp, w = await test_query_handler.to_canonical_variation(
         "NC_000007.14:140753335:A:T", fmt="hgvs")
     assert resp.variation.type == "Text"
-    assert w == ["Unable to tokenize 140753335"]
+    assert w == ["NC_000007.14:140753335:A:T is not a valid HGVS expression"]
 
     resp, w = await test_query_handler.to_canonical_variation(
         "NC_000007.14:g.140753336464564654A>T", fmt="hgvs")
