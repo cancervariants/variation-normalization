@@ -150,9 +150,9 @@ class QueryHandler:
         :param q: Variation to normalize
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
             Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `cnv`, `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to interpret HGVS dup/del expressions
-            in VRS.
+            Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
+            expressions in VRS.
         :return: Variation Descriptor for variation
         """
         validations, warnings = await self.to_vrs_handler.get_validations(
