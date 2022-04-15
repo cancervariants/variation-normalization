@@ -20,8 +20,8 @@ from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
 
 from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS, \
-    CopyNumberType, RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS,\
+    RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     CoordinateType, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -156,8 +156,7 @@ class QueryHandler:
         :return: Variation Descriptor for variation
         """
         validations, warnings = await self.to_vrs_handler.get_validations(
-            q, endpoint_name=Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode
-        )
+            q, endpoint_name=Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode)
         if not validations:
             self.normalize_handler.warnings = warnings
             return None
@@ -633,13 +632,14 @@ class QueryHandler:
         return variation, warnings
 
     def _hgvs_to_cnv_resp(
-        self, copy_number_type: CopyNumberType, hgvs_expr: str, do_liftover: bool,
+        self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
         warnings: List[str]
     ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
         """Return copy number variation and warnings response
 
-        :param CopyNumberType copy_number_type: The type of copy number variation
+        :param HGVSDupDelModeEnum copy_number_type: The type of copy number variation.
+            Must be either `absolute_cnv` or `relative_cnv`
         :param str hgvs_expr: HGVS expression
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
@@ -668,7 +668,7 @@ class QueryHandler:
                 text._id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
         else:
-            if copy_number_type == CopyNumberType.ABSOLUTE:
+            if copy_number_type == HGVSDupDelModeEnum.ABSOLUTE_CNV:
                 variation = AbsoluteCopyNumber(**variation)
             else:
                 variation = RelativeCopyNumber(**variation)
@@ -687,11 +687,12 @@ class QueryHandler:
         """
         validations, warnings = await self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
-            hgvs_dup_del_mode=CopyNumberType.ABSOLUTE,
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.ABSOLUTE_CNV,
             baseline_copies=baseline_copies, do_liftover=do_liftover
         )
         return self._hgvs_to_cnv_resp(
-            CopyNumberType.ABSOLUTE, hgvs_expr, do_liftover, validations, warnings)
+            HGVSDupDelModeEnum.ABSOLUTE_CNV, hgvs_expr, do_liftover, validations,
+            warnings)
 
     async def hgvs_to_relative_copy_number(
         self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
@@ -710,9 +711,10 @@ class QueryHandler:
 
         validations, warnings = await self.to_vrs_handler.get_validations(
             hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
-            hgvs_dup_del_mode=CopyNumberType.RELATIVE,
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.RELATIVE_CNV,
             relative_copy_class=relative_copy_class, do_liftover=do_liftover
         )
 
         return self._hgvs_to_cnv_resp(
-            CopyNumberType.RELATIVE, hgvs_expr, do_liftover, validations, warnings)
+            HGVSDupDelModeEnum.RELATIVE_CNV, hgvs_expr, do_liftover, validations,
+            warnings)
