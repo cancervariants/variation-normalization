@@ -15,7 +15,8 @@ class HGVSDupDelMode(str, Enum):
     """
 
     DEFAULT = "default"
-    CNV = "cnv"
+    ABSOLUTE_CNV = "absolute_cnv"
+    RELATIVE_CNV = "relative_cnv"
     REPEATED_SEQ_EXPR = "repeated_seq_expr"
     LITERAL_SEQ_EXPR = "literal_seq_expr"
 
