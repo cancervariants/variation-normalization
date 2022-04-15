@@ -54,10 +54,9 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class

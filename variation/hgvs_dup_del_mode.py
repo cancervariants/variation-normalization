@@ -54,8 +54,8 @@ class HGVSDupDelMode:
                      chromosome: str = None,
                      allele: Dict = None) -> Optional[Dict]:
         """Use default characteristics to return a variation.
-        If endpoints are ambiguous: cnv
-            handling X chromosome, make cnv a definite range with base 1-2
+        If endpoints are ambiguous: absolute_cnv
+            handling X chromosome, make absolute_cnv a definite range with base 1-2
             handling Y chromosome, base of 1
             handling anything else, base of 2
         elif len del or dup > 100bp:

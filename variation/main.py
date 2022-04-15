@@ -102,7 +102,7 @@ normalize_response_description = "A response to a validly-formed query."
 normalize_description = \
     "Return VRSATILE compatible object for variation provided."
 q_description = "Variation to normalize."
-hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `cnv`, "
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative_cnv`, "
                            "`repeated_seq_expr`, `literal_seq_expr`. This"
                            " parameter determines how to interpret HGVS "
                            "dup/del expressions in VRS.")
@@ -124,9 +124,9 @@ async def normalize(
 
     :param str q: Variation to normalize
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
-        Must be: `default`, `cnv`, `repeated_seq_expr`, `literal_seq_expr`.
-        This parameter determines how to interpret HGVS dup/del expressions
-        in VRS.
+        Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
+        `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
+        expressions in VRS.
     :return: NormalizeService for variation
     """
     normalize_resp = await query_handler.normalize(
