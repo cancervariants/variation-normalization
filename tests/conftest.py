@@ -645,7 +645,7 @@ def genoimc_dup4_loc():
 
 
 @pytest.fixture(scope="session")
-def genoimc_dup5_loc():
+def genomic_dup5_loc():
     """Create genoimc dup5 sequence location"""
     return {
         "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",

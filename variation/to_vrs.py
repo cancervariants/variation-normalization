@@ -112,11 +112,10 @@ class ToVRS:
                             warnings.append(f"hgvs_dup_del_mode must be one of "
                                             f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")  # noqa: E501
                             return None, warnings
-
-                    if hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
-                        if not relative_copy_class:
+                    if hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+                        if not baseline_copies:
                             warnings.append(f"{hgvs_dup_del_mode} mode "
-                                            f"requires `relative_copy_class`")
+                                            f"requires `baseline_copies`")
                             return None, warnings
                 elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
                     hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT

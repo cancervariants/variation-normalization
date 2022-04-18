@@ -217,7 +217,7 @@ class DuplicationDeletionBase(Validator):
                 cds_start=mane["coding_start_site"])
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
-                t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                s.alt_type, allele, errors, hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
                 relative_copy_class=relative_copy_class)
 
@@ -315,7 +315,7 @@ class DuplicationDeletionBase(Validator):
                 s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+            s.alt_type, allele, errors, hgvs_dup_del_mode,
             baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
 
         if grch38_variation:
