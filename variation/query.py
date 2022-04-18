@@ -143,7 +143,9 @@ class QueryHandler:
 
     async def normalize(
             self, q: str,
-            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT  # noqa: E501
+            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,  # noqa: E501
+            baseline_copies: Optional[int] = None,
+            relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> Optional[VariationDescriptor]:
         """Return normalized Variation Descriptor for variation.
 
@@ -153,10 +155,16 @@ class QueryHandler:
             Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
             `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
             expressions in VRS.
+        :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
+            deletions
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+            for HGVS duplications and deletions represented as Relative Copy Number
+            Variation.
         :return: Variation Descriptor for variation
         """
         validations, warnings = await self.to_vrs_handler.get_validations(
-            q, endpoint_name=Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode)
+            q, endpoint_name=Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode,
+            baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
         if not validations:
             self.normalize_handler.warnings = warnings
             return None
@@ -445,8 +453,13 @@ class QueryHandler:
                     q, _id, [f"Unable to get protein variation for {q}"])
 
     async def to_canonical_variation(
-        self, q: str, fmt: ToCanonicalVariationFmt, complement: bool = False,
-        do_liftover: bool = False
+        self, q: str,
+        fmt: ToCanonicalVariationFmt,
+        complement: bool = False,
+        do_liftover: bool = False,
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        baseline_copies: Optional[int] = None
     ) -> Tuple[Optional[CanonicalVariation], List]:
         """Given query as ToCanonicalVariationFmt, return canonical variation
 
@@ -457,6 +470,11 @@ class QueryHandler:
             categorical variation. This is equivalent to a logical NOT operation on the
             categorical variation properties.
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
+        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
+            interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
+            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param Optional[int] baseline_copies: Baseline copies number
         :return: Canonical Variation and list of warnings
         """
         q = q.strip()
@@ -467,10 +485,13 @@ class QueryHandler:
 
         if fmt == ToCanonicalVariationFmt.SPDI:
             variation, warnings = await self.spdi_to_canonical_variation(
-                q, warnings, do_liftover)
+                q, warnings, do_liftover=do_liftover)
         elif fmt == ToCanonicalVariationFmt.HGVS:
             variation, warnings = await self.hgvs_to_canonical_variation(
-                q, warnings, do_liftover)
+                q, warnings, do_liftover=do_liftover,
+                hgvs_dup_del_mode=hgvs_dup_del_mode,
+                relative_copy_class=relative_copy_class,
+                baseline_copies=baseline_copies)
         else:
             warnings = [f"fmt, {fmt}, is not supported. "
                         f"Must be either `spdi` or `hgvs`"]
@@ -586,13 +607,21 @@ class QueryHandler:
         return variation, warnings
 
     async def hgvs_to_canonical_variation(
-        self, q: str, warnings: List, do_liftover: bool = False
+        self, q: str, warnings: List, do_liftover: bool = False,
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        baseline_copies: Optional[int] = None
     ) -> Tuple[Optional[Dict], List]:
         """Given HGVS representation, return canonical variation
 
         :param str q: HGVS query
         :param List warnings: List of warnings
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
+            interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
+            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
+        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param Optional[int] baseline_copies: Baseline copies number
         :return: Canonical Variation and warnings
         """
         variation = None
@@ -611,10 +640,21 @@ class QueryHandler:
             warnings = [f"{q} is not a supported HGVS expression"]
             return variation, warnings
 
+        if hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
+            if relative_copy_class:
+                if relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:
+                    return None, [f"{relative_copy_class} is not a valid relative "
+                                  f"copy class: {VALID_RELATIVE_COPY_CLASS}"]
+        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+            if not baseline_copies:
+                return None, [f"{hgvs_dup_del_mode} requires `baseline_copies`"]
+        elif not hgvs_dup_del_mode:
+            hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+
         validations = await self.validator.perform(
             classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=do_liftover
-        )
+            hgvs_dup_del_mode=hgvs_dup_del_mode, do_liftover=do_liftover,
+            relative_copy_class=relative_copy_class, baseline_copies=baseline_copies)
         if not warnings:
             warnings = validations.warnings
 
@@ -675,13 +715,13 @@ class QueryHandler:
         return variation, warnings
 
     async def hgvs_to_absolute_copy_number(
-        self, hgvs_expr: str, baseline_copies: Optional[int] = None,
+        self, hgvs_expr: str, baseline_copies: int,
         do_liftover: bool = False
     ) -> Tuple[Optional[AbsoluteCopyNumber], List[str]]:
         """Given hgvs, return abolute copy number variation
 
         :param str hgvs_expr: HGVS expression
-        :param Optional[int] baseline_copies: Baseline copies number
+        :param int baseline_copies: Baseline copies number
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Absolute Copy Number Variation and warnings
         """
@@ -695,13 +735,13 @@ class QueryHandler:
             warnings)
 
     async def hgvs_to_relative_copy_number(
-        self, hgvs_expr: str, relative_copy_class: RelativeCopyClass,
+        self, hgvs_expr: str, relative_copy_class: Optional[RelativeCopyClass],
         do_liftover: bool = False
     ) -> Tuple[Optional[RelativeCopyNumber], List[str]]:
         """Given hgvs, return relative copy number variation
 
         :param str hgvs_expr: HGVS expression
-        :param RelativeCopyClass relative_copy_class: The relative copy class
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: Relative Copy Number Variation and warnings
         """

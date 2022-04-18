@@ -105,9 +105,9 @@ def genomic_dup3_abs_38(genomic_del3_dup3_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.dvalAo00K9zGaI4lbxATjGTuNImbAefX",
+        "_id": "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul",
         "subject": genomic_del3_dup3_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -150,9 +150,9 @@ def genomic_dup3_abs_37(genomic_dup3_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.A0wc5mTclTJP_z-lMhuZ-pHeVWI_vq7L",
+        "_id": "ga4gh:VAC.Pv9I4Dqk69w-tX0axaikVqid-pozxU74",
         "subject": genomic_dup3_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -235,23 +235,23 @@ def genomic_dup4_rel_37(genomic_dup4_37_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_abs_38(genoimc_dup5_loc):
+def genomic_dup5_abs_38(genomic_dup5_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.UwgjCJsg8XKPX8e2zhtw3jFfeUfgrGAZ",
-        "subject": genoimc_dup5_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "_id": "ga4gh:VAC.BUEI9XPTvjBvNUoREsXRsm8THNuR5Fe7",
+        "subject": genomic_dup5_loc,
+        "copies": {"type": "Number", "value": 4}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_rel_38(genoimc_dup5_loc):
+def genomic_dup5_rel_38(genomic_dup5_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
         "_id": "ga4gh:VRC.vy8SSVFuaeZTkUCCv6izNCkF0zgbBG7G",
-        "subject": genoimc_dup5_loc,
+        "subject": genomic_dup5_loc,
         "relative_copy_class": "partial loss"
     }
 
@@ -283,9 +283,9 @@ def genomic_dup5_abs_37(genomic_dup5_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.tDxzJ8fPRjdALG4NS4TYvooyrzY6f1ok",
+        "_id": "ga4gh:VAC.1-pcrgINIDzVXrTgs7xshzBQVlhQ_dX8",
         "subject": genomic_dup5_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "copies": {"type": "Number", "value": 4}
     }
 
 
@@ -305,9 +305,9 @@ def genomic_dup6_abs_38(genoimc_dup6_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.vtHdiIdXvKO4z4M5x_26UoMN4HVW_Kh2",
+        "_id": "ga4gh:VAC.ZkgR6TD7VypzVrLAYFnSb-D7DXp62Yfn",
         "subject": genoimc_dup6_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -349,9 +349,9 @@ def genomic_dup6_abs_37(genomic_dup6_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.iffkBKjSE6eslcD6noq7mg1Mzao2f1dg",
+        "_id": "ga4gh:VAC.8u4HiQWnHhwGZtIBF_DEYQCNdaFKOHuN",
         "subject": genomic_dup6_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 2, "max": 3}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -467,9 +467,9 @@ def genomic_del3_abs_38(genomic_del3_dup3_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.0ZYzw7KuXYv7a_TV3eF5qjRbqN0HvxBx",
+        "_id": "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul",
         "subject": genomic_del3_dup3_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -512,9 +512,9 @@ def genomic_del3_abs_37(genomic_del3_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.IUXYnlP4vLf6YAVxDaZU6sxVoS27ueAj",
+        "_id": "ga4gh:VAC.Pv9I4Dqk69w-tX0axaikVqid-pozxU74",
         "subject": genomic_del3_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -534,9 +534,9 @@ def genomic_del4_abs_38(genomic_del4_seq_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Dyccf3xmoPSN90ksXP2KAb5TuFIkgO6r",
+        "_id": "ga4gh:VAC.XCyM9ayMTrarSAMc00sHCmsPcCV8ymIN",
         "subject": genomic_del4_seq_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 4}
     }
 
 
@@ -579,9 +579,9 @@ def genomic_del4_abs_37(genomic_del4_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.myd_sAvC5-hsNwJ9DmmdumdyJa-kj7_o",
+        "_id": "ga4gh:VAC.gXM6rRlCid3C1DmUGT2XynmGXDvt80P6",
         "subject": genomic_del4_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 4}
     }
 
 
@@ -601,9 +601,9 @@ def genomic_del5_abs_38(genomic_del5_seq_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.JoRr5--EbLP3qAigSfQP5Y0k67uPE6xD",
+        "_id": "ga4gh:VAC.9A8BspUwfxSsceIScGOBtivMMASDsaid",
         "subject": genomic_del5_seq_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -645,9 +645,9 @@ def genomic_del5_abs_37(genomic_del5_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.st1tPzrcySJCPvxlV63ZSYXhohXH_rf0",
+        "_id": "ga4gh:VAC.9zhlg8DRSsE87N5SngYrMDWXStzp_WOX",
         "subject": genomic_del5_37_loc,
-        "copies": {"type": "DefiniteRange", "min": 0, "max": 1}
+        "copies": {"type": "Number", "value": 2}
     }
 
 
@@ -734,16 +734,16 @@ async def test_genomic_dup1_absolute_cnv(test_query_handler, genomic_dup1_38_vac
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False, )
     assert resp.dict(by_alias=True) == genomic_dup1_38_vac
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup1_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup1_38_vac
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -779,16 +779,16 @@ async def test_genomic_dup2_absolute_cnv(test_query_handler, genomic_dup2_38_vac
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup2_38_vac
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup2_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup2_38_vac
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -824,16 +824,16 @@ async def test_genomic_dup3_absolute_cnv(test_query_handler, genomic_dup3_abs_38
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=1, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup3_abs_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=1, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup3_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=1, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup3_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -869,16 +869,16 @@ async def test_genomic_dup4_absolute_cnv(test_query_handler, genomic_dup4_abs_38
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup4_abs_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup4_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup4_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -914,16 +914,16 @@ async def test_genomic_dup5_absolute_cnv(test_query_handler, genomic_dup5_abs_38
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup5_abs_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup5_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=3, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup5_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -959,16 +959,16 @@ async def test_genomic_dup6_absolute_cnv(test_query_handler, genomic_dup6_abs_38
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=1, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup6_abs_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=1, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_dup6_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=1, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_dup6_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1004,16 +1004,16 @@ async def test_genomic_del1_absolute_cnv(test_query_handler, genomic_del1_38_vac
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del1_38_vac
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del1_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del1_38_vac
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1049,16 +1049,16 @@ async def test_genomic_del2_absolute_cnv(test_query_handler, genomic_del2_38_vac
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del2_38_vac
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del2_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del2_38_vac
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1094,16 +1094,16 @@ async def test_genomic_del3_absolute_cnv(test_query_handler, genomic_del3_abs_38
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del3_abs_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del3_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=3, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del3_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1139,16 +1139,16 @@ async def test_genomic_del4_absolute_cnv(test_query_handler, genomic_del4_abs_38
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=5, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del4_abs_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=5, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del4_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=5, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del4_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1184,16 +1184,16 @@ async def test_genomic_del5_absolute_cnv(test_query_handler, genomic_del5_abs_38
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del5_abs_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=3, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del5_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=3, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del5_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
@@ -1229,16 +1229,16 @@ async def test_genomic_del6_absolute_cnv(test_query_handler, genomic_del6_abs_38
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del6_abs_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=False)
+        q, baseline_copies=2, do_liftover=False)
     assert resp.dict(by_alias=True) == genomic_del6_abs_37
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(
-        q, baseline_copies=None, do_liftover=True)
+        q, baseline_copies=2, do_liftover=True)
     assert resp.dict(by_alias=True) == genomic_del6_abs_38
 
     resp, _ = await test_query_handler.hgvs_to_absolute_copy_number(

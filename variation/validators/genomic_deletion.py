@@ -88,7 +88,7 @@ class GenomicDeletion(DuplicationDeletionBase):
                         s.coordinate_type, s.alt_type, errors)
 
                     variation = self.hgvs_dup_del_mode.interpret_variation(
-                        t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                        s.alt_type, allele, errors, hgvs_dup_del_mode,
                         pos=(start, end), relative_copy_class=relative_copy_class,
                         baseline_copies=baseline_copies
                     )

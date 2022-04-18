@@ -135,7 +135,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, start, end, s.coordinate_type,
                     s.alt_type, errors)
                 variation = self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                    s.alt_type, allele, errors, hgvs_dup_del_mode,
                     pos=(start, end), baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
@@ -152,7 +152,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 else:
                     pos = None
                 variation = self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors,
+                    s.alt_type, allele, errors,
                     hgvs_dup_del_mode, pos=pos, baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         else:
