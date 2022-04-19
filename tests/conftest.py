@@ -808,20 +808,26 @@ def genomic_del6_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def grch38_genomic_insertion_variation():
+def grch38_genomic_insertion_seq_loc():
+    """Create test fixture for GRCh38 genomic insertioni seq location"""
+    return {
+        "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
+        "interval": {
+            "end": {"value": 39724743, "type": "Number"},
+            "start": {"value": 39724731, "type": "Number"},
+            "type": "SequenceInterval"
+        },
+        "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
     """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
     return {
         "_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
-        "location": {
-            "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
-            "interval": {
-                "end": {"value": 39724743, "type": "Number"},
-                "start": {"value": 39724731, "type": "Number"},
-                "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
-            "type": "SequenceLocation"
-        },
+        "location": grch38_genomic_insertion_seq_loc,
         "state": {
             "sequence": "TACGTGATGGCTTACGTGATGGCT",
             "type": "LiteralSequenceExpression"
