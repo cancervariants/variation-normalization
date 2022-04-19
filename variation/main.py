@@ -118,9 +118,9 @@ hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative
 async def normalize(
     q: str = Query(..., description=q_description),
     hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-        None, description=hgvs_dup_del_mode_decsr),
+        HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
     baseline_copies: Optional[int] = Query(
-        None, description="Baseline copies for HGVS duplications and deletions"),
+        None, description="Baseline copies for HGVS duplications and deletions represented as Absolute Copy Number Variation"),  # noqa: E501
     relative_copy_class: Optional[RelativeCopyClass] = Query(
         None, description="The relative copy class for HGVS duplications and deletions represented as Relative Copy Number Variation.")  # noqa: E501
 ) -> NormalizeService:
@@ -296,6 +296,10 @@ hgvs_dup_del_mode_decsr = "This parameter determines how to interpret HGVS dup/d
                           "expressions in VRS. Must be one of: `default`, " \
                           "`absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, " \
                           "`literal_seq_expr`."
+relative_copy_class_descr = "The relative copy class. Only used when `fmt`=`hgvs` "\
+                            "and Relative CNV."
+baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
+                        "`fmt`=`hgvs` and Absolute CNV.`"
 
 
 @app.get("/variation/to_canonical_variation",
@@ -313,11 +317,11 @@ async def to_canonical_variation(
         do_liftover: bool = Query(False, description="Whether or not to liftover to "
                                   "GRCh38 assembly."),
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-            None, description=hgvs_dup_del_mode_decsr),
+            HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
         relative_copy_class: Optional[RelativeCopyClass] = Query(
-            None, description="The relative copy class"),
+            None, description=relative_copy_class_descr),
         baseline_copies: Optional[int] = Query(
-            None, description="Baseline copies for duplication or deletion")
+            None, description=baseline_copies_descr)
 ) -> ToCanonicalVariationService:
     """Return categorical variation for canonical SPDI
 
@@ -331,8 +335,10 @@ async def to_canonical_variation(
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to interpret
         HGVS dup/del expressions in VRS. Must be one of: `default`, `absolute_cnv`,
         `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-    :param Optional[RelativeCopyClass] relative_copy_class: Relative copy class
+    :param Optional[RelativeCopyClass] relative_copy_class: Relative copy class.
+        Only used when `fmt`=`hgvs` and Relative CNV.
     :param Optional[int] baseline_copies: Baseline copies number
+        Only used when `fmt`=`hgvs` and Absolute CNV
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
