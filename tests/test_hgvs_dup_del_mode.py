@@ -245,6 +245,19 @@ def genomic_dup1_vac(genomic_dup1, genomic_dup1_38_vac):
 
 
 @pytest.fixture(scope="module")
+def genomic_dup1_vrc(genomic_dup1, genomic_dup1_seq_loc):
+    """Create a test fixture for genomic dup relative CNV."""
+    genomic_dup1["variation"] = {
+        "type": "RelativeCopyNumber",
+        "_id": "ga4gh:VRC.dhn3PLeop46_QYTlYxiIW18nrTfYqJ8N",
+        "subject": genomic_dup1_seq_loc,
+        "relative_copy_class": "high-level gain"
+    }
+    genomic_dup1["variation_id"] = genomic_dup1["variation"]["_id"]
+    return VariationDescriptor(**genomic_dup1)
+
+
+@pytest.fixture(scope="module")
 def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.lAyulP9JxvQReKWjpq0LbO50r2UTeMkl"
@@ -473,6 +486,19 @@ def genomic_dup2_lse(genomic_dup2, genomic_dup2_seq_loc):
 def genomic_dup2_vac(genomic_dup2, genomic_dup2_38_vac):
     """Create a test fixture for genomic dup absolute CNV."""
     genomic_dup2["variation"] = genomic_dup2_38_vac
+    genomic_dup2["variation_id"] = genomic_dup2["variation"]["_id"]
+    return VariationDescriptor(**genomic_dup2)
+
+
+@pytest.fixture(scope="module")
+def genomic_dup2_vrc(genomic_dup2, genomic_dup2_seq_loc):
+    """Create a test fixture for genomic dup relative CNV."""
+    genomic_dup2["variation"] = {
+        "type": "RelativeCopyNumber",
+        "_id": "ga4gh:VRC.xuC326dmLBd33E4d-z9JItz0mt24JR-I",
+        "subject": genomic_dup2_seq_loc,
+        "relative_copy_class": "low-level gain"
+    }
     genomic_dup2["variation_id"] = genomic_dup2["variation"]["_id"]
     return VariationDescriptor(**genomic_dup2)
 
@@ -1225,6 +1251,19 @@ def genomic_del1_vac(genomic_del1, genomic_del1_38_vac):
 
 
 @pytest.fixture(scope="module")
+def genomic_del1_vrc(genomic_del1, genomic_del1_seq_loc):
+    """Create a test fixture for genomic del relative CNV."""
+    genomic_del1["variation"] = {
+        "type": "RelativeCopyNumber",
+        "_id": "ga4gh:VRC.FHImCphKfSBeobf9HO6qpu_Bm5U9VfHz",
+        "subject": genomic_del1_seq_loc,
+        "relative_copy_class": "copy neutral"
+    }
+    genomic_del1["variation_id"] = genomic_del1["variation"]["_id"]
+    return VariationDescriptor(**genomic_del1)
+
+
+@pytest.fixture(scope="module")
 def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.6fIEZ3R2W4wIaltUX1jyw9ap5YN6oGDT"
@@ -1375,6 +1414,19 @@ def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
 def genomic_del2_vac(genomic_del2, genomic_del2_38_vac):
     """Create a test fixture for genomic del absolute CNV."""
     genomic_del2["variation"] = genomic_del2_38_vac
+    genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
+    return VariationDescriptor(**genomic_del2)
+
+
+@pytest.fixture(scope="module")
+def genomic_del2_vrc(genomic_del2, genomic_del2_seq_loc):
+    """Create a test fixture for genomic del relative CNV."""
+    genomic_del2["variation"] = {
+        "type": "RelativeCopyNumber",
+        "_id": "ga4gh:VRC.WtEs7KGUIjxWaV9Wx0lCCgDyyWVl-ykM",
+        "subject": genomic_del2_seq_loc,
+        "relative_copy_class": "complete loss"
+    }
     genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
     return VariationDescriptor(**genomic_del2)
 
@@ -2404,7 +2456,7 @@ async def assert_text_variation(query_list, test_query_handler):
 
 @pytest.mark.asyncio
 async def test_genomic_dup1(test_query_handler, genomic_dup1_lse,
-                            genomic_dup1_vac, genomic_dup1_rse,
+                            genomic_dup1_vac, genomic_dup1_vrc, genomic_dup1_rse,
                             genomic_dup1_free_text_lse,
                             genomic_dup1_free_text_vac, genomic_dup1_free_text_rse):
     """Test that genomic duplication works correctly."""
@@ -2417,6 +2469,10 @@ async def test_genomic_dup1(test_query_handler, genomic_dup1_lse,
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup1_vac, q)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="high-level gain")
+    assertion_checks(resp, genomic_dup1_vrc, q)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup1_rse, q)
@@ -2433,6 +2489,10 @@ async def test_genomic_dup1(test_query_handler, genomic_dup1_lse,
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup1_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="high-level gain")
+    assertion_checks(resp, genomic_dup1_vrc, q, ignore_id=True)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup1_rse, q, ignore_id=True)
@@ -2471,8 +2531,9 @@ async def test_genomic_dup1(test_query_handler, genomic_dup1_lse,
 
 @pytest.mark.asyncio
 async def test_genomic_dup2(test_query_handler, genomic_dup2_lse, genomic_dup2_vac,
-                            genomic_dup2_rse, genomic_dup2_free_text_default,
-                            genomic_dup2_free_text_vac, genomic_dup2_free_text_rse):
+                            genomic_dup2_vrc, genomic_dup2_rse,
+                            genomic_dup2_free_text_default, genomic_dup2_free_text_vac,
+                            genomic_dup2_free_text_rse):
     """Test that genomic duplication works correctly."""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp = await test_query_handler.normalize(q, "default")
@@ -2480,6 +2541,9 @@ async def test_genomic_dup2(test_query_handler, genomic_dup2_lse, genomic_dup2_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup2_vac, q)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup2_vrc, q)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup2_rse, q)
@@ -2493,6 +2557,9 @@ async def test_genomic_dup2(test_query_handler, genomic_dup2_lse, genomic_dup2_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup2_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup2_vrc, q, ignore_id=True)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup2_rse, q, ignore_id=True)
@@ -2539,6 +2606,10 @@ async def test_genomic_dup3(test_query_handler, genomic_dup3_vrc, genomic_dup3_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=1)
     assertion_checks(resp, genomic_dup3_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="low-level gain")
+    assertion_checks(resp, genomic_dup3_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup3_rse_lse, q)
 
@@ -2551,6 +2622,9 @@ async def test_genomic_dup3(test_query_handler, genomic_dup3_vrc, genomic_dup3_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=1)
     assertion_checks(resp, genomic_dup3_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup3_vrc, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -2600,6 +2674,9 @@ async def test_genomic_dup4(test_query_handler, genomic_dup4_vac, genomic_dup4_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup4_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup4_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup4_rse_lse, q)
 
@@ -2612,6 +2689,9 @@ async def test_genomic_dup4(test_query_handler, genomic_dup4_vac, genomic_dup4_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup4_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup4_vrc, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -2661,6 +2741,9 @@ async def test_genomic_dup5(test_query_handler, genomic_dup5_vac, genomic_dup5_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup5_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup5_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup5_rse_lse, q)
 
@@ -2673,6 +2756,9 @@ async def test_genomic_dup5(test_query_handler, genomic_dup5_vac, genomic_dup5_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_dup5_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup5_vrc, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -2723,6 +2809,9 @@ async def test_genomic_dup6(test_query_handler, genomic_dup6_vac, genomic_dup6_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=1)
     assertion_checks(resp, genomic_dup6_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup6_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_dup6_rse_lse, q)
 
@@ -2735,6 +2824,9 @@ async def test_genomic_dup6(test_query_handler, genomic_dup6_vac, genomic_dup6_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=1)
     assertion_checks(resp, genomic_dup6_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_dup6_vrc, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -2774,8 +2866,9 @@ async def test_genomic_dup6(test_query_handler, genomic_dup6_vac, genomic_dup6_v
 
 @pytest.mark.asyncio
 async def test_genomic_del1(test_query_handler, genomic_del1_lse, genomic_del1_vac,
-                            genomic_del1_rse, genomic_del1_free_text_lse,
-                            genomic_del1_free_text_vac, genomic_del1_free_text_rse):
+                            genomic_del1_vrc, genomic_del1_rse,
+                            genomic_del1_free_text_lse, genomic_del1_free_text_vac,
+                            genomic_del1_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_query_handler.normalize(q, "default")
@@ -2783,6 +2876,10 @@ async def test_genomic_del1(test_query_handler, genomic_del1_lse, genomic_del1_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del1_vac, q)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="copy neutral")
+    assertion_checks(resp, genomic_del1_vrc, q)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del1_rse, q)
@@ -2796,6 +2893,10 @@ async def test_genomic_del1(test_query_handler, genomic_del1_lse, genomic_del1_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del1_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="copy neutral")
+    assertion_checks(resp, genomic_del1_vrc, q, ignore_id=True)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del1_rse, q, ignore_id=True)
@@ -2846,8 +2947,9 @@ async def test_genomic_del1(test_query_handler, genomic_del1_lse, genomic_del1_v
 
 @pytest.mark.asyncio
 async def test_genomic_del2(test_query_handler, genomic_del2_lse, genomic_del2_vac,
-                            genomic_del2_rse, genomic_del2_free_text_default,
-                            genomic_del2_free_text_cnv, genomic_del2_free_text_rse):
+                            genomic_del2_vrc, genomic_del2_rse,
+                            genomic_del2_free_text_default, genomic_del2_free_text_cnv,
+                            genomic_del2_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_query_handler.normalize(q, "default")
@@ -2855,6 +2957,10 @@ async def test_genomic_del2(test_query_handler, genomic_del2_lse, genomic_del2_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del2_vac, q)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="complete loss")
+    assertion_checks(resp, genomic_del2_vrc, q)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del2_rse, q)
@@ -2868,6 +2974,10 @@ async def test_genomic_del2(test_query_handler, genomic_del2_lse, genomic_del2_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del2_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv",
+                                              relative_copy_class="complete loss")
+    assertion_checks(resp, genomic_del2_vrc, q, ignore_id=True)
 
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del2_rse, q, ignore_id=True)
@@ -2923,6 +3033,9 @@ async def test_genomic_del3(test_query_handler, genomic_del3_vac, genomic_del3_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=3)
     assertion_checks(resp, genomic_del3_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del3_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del3_rse_lse, q)
 
@@ -2935,6 +3048,9 @@ async def test_genomic_del3(test_query_handler, genomic_del3_vac, genomic_del3_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=3)
     assertion_checks(resp, genomic_del3_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del3_vrc, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -2984,6 +3100,9 @@ async def test_genomic_del4(test_query_handler, genomic_del4_vac, genomic_del4_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del4_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del4_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del4_rse_lse, q)
 
@@ -2996,6 +3115,9 @@ async def test_genomic_del4(test_query_handler, genomic_del4_vac, genomic_del4_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del4_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del4_vrc, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -3053,6 +3175,9 @@ async def test_genomic_del5(test_query_handler, genomic_del5_vac, genomic_del5_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=4)
     assertion_checks(resp, genomic_del5_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del5_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del5_rse_lse, q)
 
@@ -3065,6 +3190,9 @@ async def test_genomic_del5(test_query_handler, genomic_del5_vac, genomic_del5_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=4)
     assertion_checks(resp, genomic_del5_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del5_vrc, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
@@ -3116,6 +3244,9 @@ async def test_genomic_del6(test_query_handler, genomic_del6_vac, genomic_del6_v
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del6_vac, q)
 
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del6_vrc, q)
+
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
     assertion_checks(resp, genomic_del6_rse_lse, q)
 
@@ -3128,6 +3259,9 @@ async def test_genomic_del6(test_query_handler, genomic_del6_vac, genomic_del6_v
 
     resp = await test_query_handler.normalize(q, "absolute_cnv", baseline_copies=2)
     assertion_checks(resp, genomic_del6_vac, q, ignore_id=True)
+
+    resp = await test_query_handler.normalize(q, "relative_cnv")
+    assertion_checks(resp, genomic_del6_vrc, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
     resp = await test_query_handler.normalize(q, "repeated_seq_expr")
