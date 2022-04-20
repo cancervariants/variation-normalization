@@ -2,7 +2,7 @@
 from typing import Optional, List, Tuple, Dict
 from urllib.parse import quote
 
-from ga4gh.vrsatile.pydantic.vrs_models import Text
+from ga4gh.vrsatile.pydantic.vrs_models import Text, VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     GeneDescriptor
 from ga4gh.vrs import models
@@ -133,11 +133,12 @@ class Normalize:
         if "uncertain" in token_type:
             warnings = ["Ambiguous regions cannot be normalized"]
         elif "range" not in token_type:
-            if variation["type"] == "Allele":
+            if variation["type"] == VRSTypes.ALLELE.value:
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation["type"] == "AbsoluteCopyNumber":
+            elif variation["type"] in [VRSTypes.ABSOLUTE_COPY_NUMBER.value,
+                                       VRSTypes.RELATIVE_COPY_NUMBER.value]:
                 loc = {
                     "location": variation["subject"]
                 }
