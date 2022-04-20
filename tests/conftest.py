@@ -809,7 +809,7 @@ def genomic_del6_seq_loc():
 
 @pytest.fixture(scope="session")
 def grch38_genomic_insertion_seq_loc():
-    """Create test fixture for GRCh38 genomic insertioni seq location"""
+    """Create test fixture for GRCh38 genomic insertion seq location"""
     return {
         "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
         "interval": {
