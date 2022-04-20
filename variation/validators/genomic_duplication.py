@@ -57,10 +57,9 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -136,7 +135,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, start, end, s.coordinate_type,
                     s.alt_type, errors)
                 variation = self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                    s.alt_type, allele, errors, hgvs_dup_del_mode,
                     pos=(start, end), baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
@@ -153,7 +152,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                 else:
                     pos = None
                 variation = self.hgvs_dup_del_mode.interpret_variation(
-                    t, s.alt_type, allele, errors,
+                    s.alt_type, allele, errors,
                     hgvs_dup_del_mode, pos=pos, baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         else:

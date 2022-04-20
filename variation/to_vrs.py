@@ -10,8 +10,8 @@ from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabas
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES, \
-    CopyNumberType, RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
+    RelativeCopyClass
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -71,7 +71,7 @@ class ToVRS:
 
     async def get_validations(
             self, q: str, endpoint_name: Optional[Endpoint] = None,
-            hgvs_dup_del_mode: Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] = None,  # noqa: E501
+            hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,  # noqa: E501
             baseline_copies: Optional[int] = None,
             relative_copy_class: Optional[RelativeCopyClass] = None,
             do_liftover: bool = False
@@ -80,9 +80,8 @@ class ToVRS:
 
         :param str q: variation to get validation results for
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[Union[HGVSDupDelModeEnum, CopyNumberType]] hgvs_dup_del_mode:
-            This parameter determines how to interpret HGVS dup/del expressions
-            in VRS.
+        :param Optional HGVSDupDelModeEnum hgvs_dup_del_mode: This parameter determines
+            how to interpret HGVS dup/del expressions in VRS.
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
@@ -98,32 +97,33 @@ class ToVRS:
         if Nomenclature.GNOMAD_VCF in nomenclature:
             hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         else:
-            if endpoint_name == Endpoint.NORMALIZE:
+            if endpoint_name in [Endpoint.NORMALIZE, Endpoint.HGVS_TO_ABSOLUTE_CN,
+                                 Endpoint.HGVS_TO_RELATIVE_CN]:
                 if hgvs_dup_del_mode:
                     hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
-                    if not self.hgvs_dup_del_mode.is_valid_dup_del_mode(hgvs_dup_del_mode):  # noqa: E501
-                        warnings.append(
-                            f"hgvs_dup_del_mode must be one of: "
-                            f"{self.hgvs_dup_del_mode.valid_dup_del_modes}")
-                        return None, warnings
-                else:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        if not self.hgvs_dup_del_mode.is_valid_dup_del_mode(hgvs_dup_del_mode):  # noqa: E501
+                            warnings.append(
+                                f"hgvs_dup_del_mode must be one of: "
+                                f"{self.hgvs_dup_del_mode.valid_dup_del_modes}")
+                            return None, warnings
+                    else:
+                        if not self.hgvs_dup_del_mode.is_valid_copy_number_mode(hgvs_dup_del_mode):  # noqa: E501
+                            warnings.append(f"hgvs_dup_del_mode must be one of "
+                                            f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")  # noqa: E501
+                            return None, warnings
+                    if hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+                        if not baseline_copies:
+                            warnings.append(f"{hgvs_dup_del_mode} mode "
+                                            f"requires `baseline_copies`")
+                            return None, warnings
+                elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
                     hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
-            elif endpoint_name in [Endpoint.HGVS_TO_ABSOLUTE_CN,
-                                   Endpoint.HGVS_TO_RELATIVE_CN]:
-                if not hgvs_dup_del_mode:
+                else:
                     warnings.append(f"hgvs_dup_del_mode must be either "
-                                    f"{CopyNumberType.ABSOLUTE.value} or "
-                                    f"{CopyNumberType.RELATIVE.value}")
+                                    f"{HGVSDupDelModeEnum.ABSOLUTE_CNV.value} or "
+                                    f"{HGVSDupDelModeEnum.RELATIVE_CNV.value}")
                     return None, warnings
-                if not self.hgvs_dup_del_mode.is_valid_copy_number_mode(hgvs_dup_del_mode):  # noqa: E501
-                    warnings.append(f"hgvs_dup_del_mode must be one of "
-                                    f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")
-                    return None, warnings
-                if endpoint_name == Endpoint.HGVS_TO_RELATIVE_CN:
-                    if not relative_copy_class:
-                        warnings.append(f"{Endpoint.HGVS_TO_RELATIVE_CN} endpoint "
-                                        f"requires `relative_copy_class`")
-                        return None, warnings
             else:
                 hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
 

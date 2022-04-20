@@ -799,32 +799,13 @@ def grch38_genomic_delins2():
 
 
 @pytest.fixture(scope="module")
-def grch38_genomic_insertion():
-    """Create a test fixture for
-    NC_000017.10:g.37880993_37880994insGCTTACGTGATG.
-    """
+def grch38_genomic_insertion(grch38_genomic_insertion_variation):
+    """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG."""
     params = {
-        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",  # noqa: E501
+        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
-        "variation": {
-            "_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
-            "location": {
-                "_id": "ga4gh:VSL.fJ80Ab9JP0GXtDNeEaoDxE35tlI-k9Cd",
-                "interval": {
-                    "end": {"value": 39724743, "type": "Number"},
-                    "start": {"value": 39724731, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "TACGTGATGGCTTACGTGATGGCT",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
+        "variation": grch38_genomic_insertion_variation,
         "molecule_context": "genomic",
         "structural_type": "SO:0000667",
         "vrs_ref_allele_seq": "TACGTGATGGCT"

@@ -15,9 +15,10 @@ class HGVSDupDelMode(str, Enum):
     """
 
     DEFAULT = "default"
-    CNV = "cnv"
-    REPEATED_SEQ_EXPR = "repeated_seq_expr"
-    LITERAL_SEQ_EXPR = "literal_seq_expr"
+    ABSOLUTE_CNV = "absolute_cnv"
+    RELATIVE_CNV = "relative_cnv"
+    REPEATED_SEQ_EXPR = "repeated_seq_expr"  # VRS Allele
+    LITERAL_SEQ_EXPR = "literal_seq_expr"  # VRS Allele
 
 
 class ServiceMeta(BaseModel):

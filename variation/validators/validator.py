@@ -135,10 +135,9 @@ class Validator(ABC):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -158,10 +157,9 @@ class Validator(ABC):
 
         :param Classification classification: A classification for a list of
             tokens
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -664,23 +662,6 @@ class Validator(ABC):
             errors.append(w)
         return seq
 
-    @staticmethod
-    def _grch38_dict(ac: str, pos: Tuple[int, int]) -> Dict:
-        """Create dict for normalized concepts
-
-        :param str ac: Acession
-        :param Tuple[int, int] pos: Position changes
-        :return: GRCh38 data
-        """
-        return dict(
-            gene=None,
-            refseq=ac if ac.startswith("NC") else None,
-            ensembl=ac if ac.startswith("ENSG") else None,
-            pos=pos,
-            strand=None,
-            status="GRCh38"
-        )
-
     def _is_grch38_assembly(self, t: str) -> bool:
         """Return whether or not accession is GRCh38 assembly.
 
@@ -688,3 +669,35 @@ class Validator(ABC):
         :return: `True` if accession is GRCh38 assembly. `False` otherwise
         """
         return "GRCh38" in [a for a in self.dp.get_metadata(t)["aliases"] if a.startswith("GRCh")][0]  # noqa: E501
+
+    async def add_genomic_liftover_to_results(
+        self, grch38: Dict, errors: List, alt: str, valid_alleles: List, results: List,
+        classification: Classification, s: Token, t: str, gene_tokens: List
+    ) -> None:
+        """Add genomic liftover data to results if genomic GRCh38 variation found
+        Currently only used for to_canonical_variation endpoint with genomic data
+
+        :param Dict grch38: GRCh38 data containing accession and position
+        :param List errors: List of errors
+        :param str alt: Altered sequence
+        :param List valid_alleles: List of valid alleles
+        :param List results: List of results data
+        :param Classification classification: A classification for a list of tokens
+        :param Token s: Classification token
+        :param str t: Accession
+        :param List gene_tokens: List of GeneMatchTokens for a classification
+        """
+        if grch38:
+            self._check_index(grch38["ac"], grch38["pos"][0], errors)
+            if grch38["pos"][0] != grch38["pos"][1]:
+                self._check_index(grch38["ac"], grch38["pos"][1], errors)
+
+            if not errors:
+                variation = self.vrs.to_vrs_allele(
+                    grch38["ac"], grch38["pos"][0], grch38["pos"][1],
+                    s.coordinate_type, s.alt_type, errors, alt=alt)
+                if variation:
+                    self.add_validation_result(
+                        variation, valid_alleles, results, classification, s, t,
+                        gene_tokens, errors, identifier=grch38["ac"],
+                        is_mane_transcript=True)

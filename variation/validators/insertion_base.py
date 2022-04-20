@@ -39,10 +39,9 @@ class InsertionBase(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -76,15 +75,20 @@ class InsertionBase(Validator):
                 if not errors:
                     self.check_pos_index(t, s, errors)
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_flank, s.coordinate_type,
-                        end_pos=s.end_pos_flank,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True
-                    )
-                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
-                                       s.alt_type, s, alt=s.inserted_sequence)
+                if not errors:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        mane = await self.mane_transcript.get_mane_transcript(
+                            t, s.start_pos_flank, s.coordinate_type,
+                            end_pos=s.end_pos_flank,
+                            gene=gene_tokens[0].token if gene_tokens else None,
+                            try_longest_compatible=True
+                        )
+                        self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                           s.alt_type, s, alt=s.inserted_sequence)
+                    elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
+                        await self._liftover_genomic_data(
+                            gene_tokens, t, s, errors, valid_alleles, results,
+                            classification)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens, errors)
@@ -95,6 +99,32 @@ class InsertionBase(Validator):
         if endpoint_name == Endpoint.NORMALIZE:
             self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
                                                 classification, gene_tokens)
+
+    async def _liftover_genomic_data(
+        self, gene_tokens: List, t: str, s: Token, errors: List, valid_alleles: List,
+        results: List, classification: Classification
+    ) -> None:
+        """Add liftover data to validation results.
+        Currently only works for HGVS expressions.
+
+        :param List gene_tokens: List of GeneMatchTokens for a classification
+        :param str t: Accession
+        :param Token s: Classification token
+        :param List errors: List of errors
+        :param List valid_alleles: List of valid alleles
+        :param List results: List of results data
+        :param Classification classification: A classification for a list of tokens
+        """
+        if not gene_tokens:
+            if not self._is_grch38_assembly(t):
+                grch38 = await self.mane_transcript.g_to_grch38(t, s.start_pos_flank,
+                                                                s.end_pos_flank)
+            else:
+                grch38 = dict(ac=t, pos=(s.start_pos_flank, s.end_pos_flank))
+
+            await self.add_genomic_liftover_to_results(
+                grch38, errors, s.inserted_sequence, valid_alleles, results,
+                classification, s, t, gene_tokens)
 
     def get_hgvs_expr(self, classification: Classification, t: str, s: Token,
                       is_hgvs: bool) -> str:

@@ -53,10 +53,9 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -64,7 +63,8 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
         """
         await self.silent_mutation_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
-            gene_tokens, endpoint_name, mane_data_found, is_identifier
+            gene_tokens, endpoint_name, mane_data_found, is_identifier,
+            do_liftover=do_liftover
         )
 
     def get_gene_tokens(self, classification: Classification) -> List:

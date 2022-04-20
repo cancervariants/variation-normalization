@@ -53,10 +53,9 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -77,16 +76,19 @@ class GenomicSubstitution(SingleNucleotideVariationBase):
                     self.check_ref_nucleotide(ref_nuc, s.ref_nucleotide,
                                               s.position, t, errors)
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.position, s.coordinate_type, end_pos=s.position,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True, residue_mode="residue"
-                    )
-
-                    self.add_mane_data(mane, mane_data_found,
-                                       s.coordinate_type, s.alt_type, s,
-                                       alt=s.new_nucleotide)
+                if not errors:
+                    if endpoint_name == Endpoint.NORMALIZE:
+                        mane = await self.mane_transcript.get_mane_transcript(
+                            t, s.position, s.coordinate_type, end_pos=s.position,
+                            gene=gene_tokens[0].token if gene_tokens else None,
+                            try_longest_compatible=True, residue_mode="residue"
+                        )
+                        self.add_mane_data(mane, mane_data_found, s.coordinate_type,
+                                           s.alt_type, s, alt=s.new_nucleotide)
+                    elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
+                        await self._liftover_genomic_data(
+                            gene_tokens, t, s, errors, valid_alleles, results,
+                            classification)
 
                 self.add_validation_result(allele, valid_alleles, results,
                                            classification, s, t, gene_tokens, errors)
