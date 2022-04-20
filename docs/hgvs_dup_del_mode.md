@@ -10,7 +10,7 @@ The mode can be set to `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_
     - relative_cnv
     - if relative_copy_class not provided:
         - relative_copy_class = `partial loss` if del, `low-level gain` if dup
-elif baseline_copies is provided:
+- elif baseline_copies is provided:
     - absolute_cnv
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del
 - elif len del or dup > 100bp: (use outermost coordinates)
