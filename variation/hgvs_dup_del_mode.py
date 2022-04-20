@@ -1,6 +1,6 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
-from typing import Optional, Dict, Tuple, List, Union
+from typing import Optional, Dict, Tuple, List
 import copy
 import json
 
@@ -8,8 +8,7 @@ from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify, sha512t24u
 from uta_tools.data_sources import SeqRepoAccess
 
-from variation.schemas.hgvs_to_copy_number_schema import CopyNumberType, \
-    RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -28,8 +27,9 @@ class HGVSDupDelMode:
         self.seqrepo_access = seqrepo_access
         self.valid_dup_del_modes = {mode.value for mode in
                                     HGVSDupDelModeEnum.__members__.values()}
-        self.valid_copy_number_modes = {cn_type.value for cn_type in
-                                        CopyNumberType.__members__.values()}
+        self.valid_copy_number_modes = {mode.value for mode in
+                                        HGVSDupDelModeEnum.__members__.values() if
+                                        mode.value.endswith("_cnv")}
 
     def is_valid_dup_del_mode(self, mode: str) -> bool:
         """Determine if mode is a valid input for HGVS Dup Del Mode.
@@ -49,70 +49,109 @@ class HGVSDupDelMode:
         copy_number_type_mode = mode.strip().lower()
         return copy_number_type_mode in self.valid_copy_number_modes
 
-    def default_mode(self, ac: str, alt_type: str, pos: Tuple[int, int],
-                     del_or_dup: str, location: Dict,
-                     chromosome: str = None,
-                     allele: Dict = None) -> Optional[Dict]:
+    def default_mode(
+        self, alt_type: str, pos: Tuple[int, int], del_or_dup: str,
+        location: Dict, allele: Dict = None, baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> Optional[Dict]:
         """Use default characteristics to return a variation.
-        If endpoints are ambiguous: cnv
-            handling X chromosome, make cnv a definite range with base 1-2
-            handling Y chromosome, base of 1
-            handling anything else, base of 2
-        elif len del or dup > 100bp:
-            repeated_seq_expr with a derived_seq_expr subject
+        If baseline_copies not provided and endpoints are ambiguous: relative_cnv
+            if relative_copy_class not provided:
+                relative_copy_class = `partial loss` if del, `low-level gain` if dup
+        elif baseline_copies provided: absolute_cnv
+            copies are baseline + 1 for dup, baseline - 1 for del
+        elif len del or dup > 100bp (use outermost coordinates):
+            repeated_seq_expr with a derived_seq_expr subject (Allele)
         else:
             literal_seq_expr (normalized LiteralSequenceExpression Allele)
 
-        :param str ac: Accession
         :param str alt_type: Alteration type
         :param tuple pos: start_pos, end_pos
         :param str del_or_dup: Must be either `del` or `dup`
         :param Dict location: Sequence Location object
-        :param str chromosome: Chromosome
         :param Dict allele: VRS Allele object represented as a dict
+        :param Optional[int] baseline_copies: Baseline copies for Absolute Relative
+            Copy Number Variation
+        :param Optional[RelativeCopyClass] relative_copy_class: Relative copy class
+            for Relative Copy Number Variation
         :return: VRS Variation object represented as a dict
         """
-        if "uncertain" in alt_type or "range" in alt_type:
-            variation = self.cnv_mode(ac, del_or_dup,
-                                      location, chromosome=chromosome)
+        variation = None
+        if not baseline_copies and ("uncertain" in alt_type or "range" in alt_type):
+            variation = self.relative_copy_number_mode(del_or_dup, location,
+                                                       relative_copy_class)
+        elif baseline_copies:
+            variation = self.absolute_copy_number_mode(del_or_dup, location,
+                                                       baseline_copies)
         elif pos and (pos[1] - pos[0] > 100):
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
             variation = self.literal_seq_expr_mode(allele, alt_type)
         return variation
 
-    def cnv_mode(self, ac: str, del_or_dup: str, location: Dict,
-                 chromosome: str = None) -> Optional[Dict]:
+    def _ga4gh_identify_cnv(self, variation: Dict, is_abs: bool = True) -> Dict:
+        """Add ga4gh digest to variation
+
+        :param Dict variation: VRS Copy Number Variation
+        :param bool is_abs: `True` if Absolute Copy Number.
+            `False` if Relative Copy Number.
+        :return: Variation with ga4gh digest identifiers
+        """
+        copy_variation = copy.deepcopy(variation)
+        location_id = variation["subject"]["_id"].split(".")[-1]
+        copy_variation["subject"] = location_id
+        serialized = json.dumps(
+            copy_variation, sort_keys=True, separators=(",", ":"), indent=None
+        ).encode("utf-8")
+        digest = sha512t24u(serialized)
+        if is_abs:
+            variation["_id"] = f"ga4gh:VAC.{digest}"
+        else:
+            variation["_id"] = f"ga4gh:VRC.{digest}"
+        return variation
+
+    def absolute_copy_number_mode(self, del_or_dup: str, location: Dict,
+                                  baseline_copies: int) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
 
-        :param str ac: Accession
         :param str del_or_dup: Must be either `del` or `dup`
         :param Dict location: VRS SequenceLocation
-        :param str chromosome: Chromosome
+        :param int baseline_copies: Baseline copies number
         :return: VRS Copy Number object represented as a dict
         """
-        if chromosome is None:
-            chromosome, _ = self.seqrepo_access.ac_to_chromosome(ac)
+        copies = models.Number(
+            value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,
+            type="Number"
+        )
+        variation = {
+            "type": "AbsoluteCopyNumber",
+            "subject": location,
+            "copies": copies.as_dict()
+        }
+        return self._ga4gh_identify_cnv(variation, is_abs=True)
 
-        if chromosome is None:
-            logger.warning(f"Unable to find chromosome on {ac}")
-            return None
-        if chromosome == "X":
-            copies = models.DefiniteRange(
-                min=0 if del_or_dup == "del" else 2,
-                max=1 if del_or_dup == "del" else 3,
-                type="DefiniteRange"
-            )
-        elif chromosome == "Y":
-            copies = models.Number(
-                value=0 if del_or_dup == "del" else 2, type="Number"
-            )
-        else:
-            # Chr 1-22
-            copies = models.Number(
-                value=1 if del_or_dup == "del" else 3, type="Number"
-            )
-        return self._abs_cnv(location, copies)
+    def relative_copy_number_mode(
+        self, del_or_dup: str, location: Dict,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> Optional[Dict]:
+        """Return relative copy number variation
+
+        :param str del_or_dup: Must be either `del` or `dup`
+        :param Dict location: VRS SequenceLocation
+        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :return: Relative copy number variation as a dict
+        """
+        if not relative_copy_class:
+            if del_or_dup == "del":
+                relative_copy_class = RelativeCopyClass.PARTIAL_LOSS.value
+            else:
+                relative_copy_class = RelativeCopyClass.LOW_LEVEL_GAIN.value
+        variation = {
+            "type": "RelativeCopyNumber",
+            "subject": location,
+            "relative_copy_class": relative_copy_class
+        }
+        return self._ga4gh_identify_cnv(variation, is_abs=False)
 
     def repeated_seq_expr_mode(self, alt_type: str,
                                location: Dict) -> Optional[Dict]:
@@ -180,14 +219,13 @@ class HGVSDupDelMode:
             return variation.as_dict()
 
     def interpret_variation(
-        self, ac: str, alt_type: str, allele: Dict, errors: List,
+        self, alt_type: str, allele: Dict, errors: List,
         hgvs_dup_del_mode: HGVSDupDelModeEnum, pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
         relative_copy_class: Optional[RelativeCopyClass] = None
     ) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
-        :param str ac: Accession
         :param str alt_type: Alteration type
         :param Dict allele: VRS Allele object
         :param List errors: List of errors
@@ -208,100 +246,26 @@ class HGVSDupDelMode:
         else:
             if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
                 variation = self.default_mode(
-                    ac, alt_type, pos, del_or_dup,
-                    allele["location"], allele=allele
-                )
-            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.CNV:
-                variation = self.cnv_mode(ac, del_or_dup, allele["location"])
+                    alt_type, pos, del_or_dup, allele["location"],
+                    allele=allele, baseline_copies=baseline_copies,
+                    relative_copy_class=relative_copy_class)
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
                 variation = self.repeated_seq_expr_mode(
                     alt_type, allele["location"]
                 )
             elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
                 variation = self.literal_seq_expr_mode(allele, alt_type)
-            elif hgvs_dup_del_mode == CopyNumberType.ABSOLUTE:
-                variation = self.absolute_copy_number_mode(
-                    ac, del_or_dup, allele["location"], baseline_copies=baseline_copies)
-            elif hgvs_dup_del_mode == CopyNumberType.RELATIVE:
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+                if baseline_copies:
+                    variation = self.absolute_copy_number_mode(
+                        del_or_dup, allele["location"], baseline_copies)
+                else:
+                    errors.append("`baseline_copies` must be provided for Absolute"
+                                  " Copy Number Variation")
+            elif hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
                 variation = self.relative_copy_number_mode(
-                    allele["location"], relative_copy_class)
+                    del_or_dup, allele["location"],
+                    relative_copy_class=relative_copy_class)
             if not variation:
                 errors.append("Unable to get VRS Variation")
         return variation
-
-    def _ga4gh_identify_cnv(self, variation: Dict, is_abs: bool = True) -> Dict:
-        """Add ga4gh digest to variation
-
-        :param Dict variation: VRS Copy Number Variation
-        :param bool is_abs: `True` if Absolute Copy Number.
-            `False` if Relative Copy Number.
-        :return: Variation with ga4gh digest identifiers
-        """
-        copy_variation = copy.deepcopy(variation)
-        location_id = variation["subject"]["_id"].split(".")[-1]
-        copy_variation["subject"] = location_id
-        serialized = json.dumps(
-            copy_variation, sort_keys=True, separators=(",", ":"), indent=None
-        ).encode("utf-8")
-        digest = sha512t24u(serialized)
-        if is_abs:
-            variation["_id"] = f"ga4gh:VAC.{digest}"
-        else:
-            variation["_id"] = f"ga4gh:VRC.{digest}"
-        return variation
-
-    def _abs_cnv(
-        self, location: Dict,
-        copies: Union[models.DefiniteRange, models.Number, models.IndefiniteRange]
-    ) -> Dict:
-        """Return absolute copy number variation with ga4gh digest as optional id
-
-        :param Union[models.DefiniteRange, models.Number, models.IndefiniteRange] copies:  # noqa E501
-            Copies for absolute copy number variation
-        :param Dict location: VRS SequenceLocation
-        :return: VRS Absolute Copy Number object represented as a dict
-        """
-        variation = {
-            "type": "AbsoluteCopyNumber",
-            "subject": location,
-            "copies": copies.as_dict()
-        }
-        return self._ga4gh_identify_cnv(variation, is_abs=True)
-
-    def absolute_copy_number_mode(
-        self, ac: str, del_or_dup: str, location: Dict,
-        chromosome: Optional[str] = None, baseline_copies: Optional[int] = None
-    ) -> Optional[Dict]:
-        """Return absolute copy number variation
-
-        :param str ac: Accession
-        :param str del_or_dup: Must be either `del` or `dup`
-        :param Dict location: VRS SequenceLocation
-        :param str chromosome: Chromosome
-        :param Optional[int] baseline_copies: Baseline copies number
-        :return: Absolute copy number variation as a dict
-        """
-        if baseline_copies:
-            copies = models.Number(
-                value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,  # noqa: E501
-                type="Number"
-            )
-            return self._abs_cnv(location, copies)
-        else:
-            return self.cnv_mode(ac, del_or_dup, location, chromosome)
-
-    def relative_copy_number_mode(
-        self, location: Dict, relative_copy_class: RelativeCopyClass
-    ) -> Optional[Dict]:
-        """Return relative copy number variation
-
-        :param Dict location: VRS SequenceLocation
-        :param RelativeCopyClass relative_copy_class: The relative copy class
-        :return: Relative copy number variation as a dict
-        """
-        variation = {
-            "type": "RelativeCopyNumber",
-            "subject": location,
-            "relative_copy_class": relative_copy_class
-        }
-        return self._ga4gh_identify_cnv(variation, is_abs=False)
