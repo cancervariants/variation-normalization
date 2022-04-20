@@ -118,10 +118,9 @@ class DuplicationDeletionBase(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -196,10 +195,9 @@ class DuplicationDeletionBase(Validator):
         :param str gene: Gene
         :param str so_id: Sequence ontology id
         :param List errors: List of errors
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Dict mane_data_found: MANE Transcript information found
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
@@ -219,7 +217,7 @@ class DuplicationDeletionBase(Validator):
                 cds_start=mane["coding_start_site"])
 
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
-                t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+                s.alt_type, allele, errors, hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
                 relative_copy_class=relative_copy_class)
 
@@ -292,10 +290,9 @@ class DuplicationDeletionBase(Validator):
         :param List errors: List of errors
         :param Dict grch38: GRCh38 data
         :param Dict mane_data_found: MANE data found for initial query
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `cnv`,
-            `repeated_seq_expr`, `literal_seq_expr`.
-            This parameter determines how to represent HGVS dup/del expressions
-            as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
+            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+            determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optionals[Tuple] ival: Interval
         :param bool use_vrs_allele_range: `True` if allele should be computed
             using `to_vrs_allele_ranges` method. `False` if allele should be
@@ -318,7 +315,7 @@ class DuplicationDeletionBase(Validator):
                 s.alt_type, errors)
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
-            t, s.alt_type, allele, errors, hgvs_dup_del_mode,
+            s.alt_type, allele, errors, hgvs_dup_del_mode,
             baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
 
         if grch38_variation:
