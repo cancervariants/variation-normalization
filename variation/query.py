@@ -22,6 +22,7 @@ from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS,\
     RelativeCopyClass
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import Nomenclature, Token, \
     CoordinateType, SequenceOntology
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -758,3 +759,128 @@ class QueryHandler:
         return self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.RELATIVE_CNV, hgvs_expr, do_liftover, validations,
             warnings)
+
+    @staticmethod
+    def _parsed_to_text(start: int, end: int, total_copies: int, warnings: List[str],
+                        assembly: Optional[str] = None, chr: Optional[str] = None,
+                        accession: Optional[str] = None) -> Tuple[Text, List[str]]:
+        """Return response for invalid query for parsed_to_abs_cnv
+
+        :param int start: Start position as residue coordinate
+        :param int end: End position as residue coordinate
+        :param int total_copies: Total copies for Absolute Copy Number variation object
+        :param List[str] warnings: List of warnings
+        :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
+            will ignore `assembly` and `chr`. If `accession` not set, must provide
+            both `assembly` and `chr`.
+        :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
+        :param Optional[str] accession: Accession. If `accession` is set,
+            will ignore `assembly` and `chr`. If `accession` not set, must provide
+            both `assembly` and `chr`.
+        :return: Tuple containing text variation and warnings
+        """
+        text_label = ""
+        for val, name in [(assembly, "assembly"), (chr, "chr"),
+                          (accession, "accession"), (start, "start"),
+                          (end, "end"), (total_copies, "total_copies")]:
+            val = val if val else "None"
+            text_label += f"{name}={val}&"
+
+        definition = text_label[:-1]
+        variation = models.Text(definition=definition, type="Text")
+        _id = ga4gh_identify(variation)
+        variation = Text(definition=definition, id=_id)
+        return variation, warnings
+
+    def parsed_to_abs_cnv(
+        self, start: int, end: int, total_copies: int,
+        assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
+        accession: Optional[str] = None
+    ) -> Tuple[Union[AbsoluteCopyNumber, Text], List[str]]:
+        """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
+        Copy Number Variation
+
+        :param int start: Start position as residue coordinate
+        :param int end: End position as residue coordinate
+        :param int total_copies: Total copies for Absolute Copy Number variation object
+        :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
+            will ignore `assembly` and `chr`. If `accession` not set, must provide
+            both `assembly` and `chr`.
+        :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
+        :param Optional[str] accession: Accession. If `accession` is set,
+            will ignore `assembly` and `chr`. If `accession` not set, must provide
+            both `assembly` and `chr`.
+        :return: Tuple containing Absolute Copy Number variation and list of warnings
+        """
+        variation = None
+        warnings = list()
+
+        if accession:
+            pass
+        elif assembly and chr:
+
+            if assembly == ClinVarAssembly.HG38:
+                assembly = ClinVarAssembly.GRCH38
+            elif assembly == ClinVarAssembly.HG19:
+                assembly = ClinVarAssembly.GRCH37
+            elif assembly == ClinVarAssembly.HG18:
+                assembly = ClinVarAssembly.NCBI36
+
+            if assembly != ClinVarAssembly.NCBI36:
+                # Variation Normalizer does not support NCBI36 yet
+                query = f"{assembly}:{chr}"
+                aliases, w = self.seqrepo_access.translate_identifier(query)
+                if w:
+                    warnings.append(w)
+                else:
+                    accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
+                    if not accession:
+                        warnings.append(f"Unable to find RefSeq accession for {query}")
+            else:
+                warnings.append(f"{assembly} assembly is not current supported")
+        else:
+            warnings.append("Must provide either `accession` or both `assembly` and "
+                            "`chr`.")
+
+        if warnings:
+            return self._parsed_to_text(start, end, total_copies, warnings, assembly,
+                                        chr, accession)
+
+        try:
+            sequence_id = self.dp.translate_sequence_identifier(accession, "ga4gh")[0]
+        except KeyError:
+            warnings.append(f"{accession} does not exist in SeqRepo")
+        except (IndexError, TypeError):
+            warnings.append(f"{accession} does not have an associated ga4gh identifier")
+
+        if warnings:
+            return self._parsed_to_text(start, end, total_copies, warnings, assembly,
+                                        chr, accession)
+        try:
+            self.seqrepo_access.seqrepo_client[accession][start - 1]
+            self.seqrepo_access.seqrepo_client[accession][end]
+        except ValueError as e:
+            warnings.append(str(e).replace("start", "Position"))
+            return self._parsed_to_text(start, end, total_copies, warnings, assembly,
+                                        chr, accession)
+
+        location = models.SequenceLocation(
+            type="SequenceLocation",
+            sequence_id=sequence_id,
+            interval=models.SequenceInterval(
+                type="SequenceInterval",
+                start=models.IndefiniteRange(
+                    comparator="<=", value=start - 1, type="IndefiniteRange"),
+                end=models.IndefiniteRange(
+                    comparator=">=", value=end, type="IndefiniteRange")
+            )
+        )
+        location._id = ga4gh_identify(location)
+        variation = {
+            "type": "AbsoluteCopyNumber",
+            "subject": location.as_dict(),
+            "copies": {"value": total_copies, "type": "Number"}
+        }
+        variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(variation, is_abs=True)
+        variation = AbsoluteCopyNumber(**variation)
+        return variation, warnings
