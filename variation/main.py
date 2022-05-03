@@ -19,6 +19,8 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
     ToCanonicalVariationService, TranslateIdentifierService
+from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvQuery, \
+    ParsedToAbsCnvService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, VrsPythonMeta
@@ -501,4 +503,60 @@ async def hgvs_to_relative_copy_number(
             response_datetime=datetime.now()
         ),
         relative_copy_number=variation
+    )
+
+
+assembly_descr = "Assembly. If `accession` is set, will ignore `assembly` and `chr`. "\
+                 "If `accession` not set, must provide both `assembly` and `chr`."
+chr_descr = "Chromosome. Must set when `assembly` is set."
+accession_descr = "Accession. If `accession` is set, will ignore `assembly` and "\
+                  "`chr`. If `accession` not set, must provide both `assembly` and `chr`."  # noqa: E501
+start_descr = "Start position as residue coordinate"
+end_descr = "End position as residue coordinate"
+total_copies_descr = "Total copies for Absolute Copy Number variation object"
+
+
+@app.get("/variation/parsed_to_abs_cnv",
+         summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
+         "absolute copy number variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Absolute Copy Number Variation",
+         response_model=ParsedToAbsCnvService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION]
+         )
+def parsed_to_abs_cnv(
+    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
+    chr: Optional[str] = Query(None, description=chr_descr),
+    accession: Optional[str] = Query(None, description=accession_descr),
+    start: int = Query(..., description=start_descr),
+    end: int = Query(..., description=end_descr),
+    total_copies: int = Query(..., description=total_copies_descr)
+) -> ParsedToAbsCnvService:
+    """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
+    Copy Number Variation
+
+    :param int start: Start position as residue coordinate
+    :param int end: End position as residue coordinate
+    :param int total_copies: Total copies for Absolute Copy Number variation object
+    :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
+        will ignore `assembly` and `chr`. If `accession` not set, must provide
+        both `assembly` and `chr`.
+    :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
+    :param Optional[str] accession: Accession. If `accession` is set,
+        will ignore `assembly` and `chr`. If `accession` not set, must provide
+        both `assembly` and `chr`.
+    :return: Tuple containing Absolute Copy Number variation and list of warnings
+    """
+    variation, warnings = query_handler.parsed_to_abs_cnv(
+        start, end, total_copies, assembly, chr, accession)
+    query = ParsedToAbsCnvQuery(assembly=assembly, chr=chr, accession=accession,
+                                start=start, end=end, total_copies=total_copies)
+    return ParsedToAbsCnvService(
+        query=query,
+        absolute_copy_number=variation,
+        warnings=warnings,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        )
     )
