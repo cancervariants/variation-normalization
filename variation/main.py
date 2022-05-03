@@ -542,7 +542,7 @@ def parsed_to_abs_cnv(
         will ignore `assembly` and `chr`. If `accession` not set, must provide
         both `assembly` and `chr`.
     :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
-    :param Optional[str] accession: Accession.If `accession` is set,
+    :param Optional[str] accession: Accession. If `accession` is set,
         will ignore `assembly` and `chr`. If `accession` not set, must provide
         both `assembly` and `chr`.
     :return: Tuple containing Absolute Copy Number variation and list of warnings
