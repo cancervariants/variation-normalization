@@ -25,7 +25,6 @@ psycopg2-binary = "*"
 pytest-asyncio = "*"
 
 [packages]
-hgvs = "*"
 "biocommons.seqrepo" = "*"
 fastapi = "*"
 uvicorn = "*"
