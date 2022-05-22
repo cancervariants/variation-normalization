@@ -35,7 +35,7 @@ h11==0.13.0
 hgvs==1.5.2
 humanfriendly==10.0
 idna==3.3
-importlib-metadata==4.11.3
+importlib-metadata==4.11.4
 inflection==0.5.1
 ipython==8.3.0
 jedi==0.18.1
@@ -84,7 +84,7 @@ tqdm==4.64.0
 traitlets==5.2.1.post0
 typing-extensions==4.2.0
 urllib3==1.26.9
-uta-tools==0.0.16
+uta-tools==0.0.17
 uvicorn==0.17.6
 w3lib==1.22.0
 wcwidth==0.2.5
