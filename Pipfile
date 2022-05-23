@@ -25,7 +25,6 @@ psycopg2-binary = "*"
 pytest-asyncio = "*"
 
 [packages]
-hgvs = "*"
 "biocommons.seqrepo" = "*"
 fastapi = "*"
 uvicorn = "*"
@@ -35,4 +34,4 @@ gene-normalizer = ">=0.1.26"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = ">=0.0.11"
-uta-tools = ">=0.0.15"
+uta-tools = ">=0.0.17"
