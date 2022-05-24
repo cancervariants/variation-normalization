@@ -1,12 +1,11 @@
 """Main application for FastAPI."""
 from enum import Enum
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 from datetime import datetime
 from urllib.parse import unquote
-import json
 
 import pkg_resources
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from pydantic import ValidationError
 import python_jsonschema_objects
@@ -25,9 +24,9 @@ from variation.schemas.normalize_response_schema \
 from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvQuery, \
     ParsedToAbsCnvService
 from .version import __version__
-from .schemas.vrs_python_translator_schema import ErrorResponse, TranslateFromFormat, \
-    TranslateFromService, TranslateFromQuery, TranslateToFormat, TranslateToQuery, \
-    TranslateToService, VrsPythonMeta
+from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
+    TranslateFromService, TranslateFromQuery, TranslateToQuery, TranslateToService, \
+    VrsPythonMeta
 
 
 class Tags(Enum):
@@ -369,68 +368,43 @@ async def to_canonical_variation(
                   "queried format using vrs-python's translator class",
           response_description="A response to a validly-formed query.",
           description="Return variation in queried format representation. "
-                      "Request body must contain `allele` and `fmt`. `allele` is a "
-                      "VRS Allele object represented as a dict. `fmt` must be either "
-                      "`spdi` or `hgvs`",
-          response_model=Union[TranslateToService, ErrorResponse],
+                      "Request body must contain `variation` and `fmt`. `variation` is"
+                      " a VRS Allele object represented as a dict. `fmt` must be either"
+                      " `spdi` or `hgvs`",
+          response_model=TranslateToService,
           response_model_exclude_none=True,
           tags=[Tags.VRS_PYTHON])
 async def vrs_python_translate_to(
-        request: Request) -> Union[ErrorResponse, TranslateToService]:
+        request_body: TranslateToQuery) -> TranslateToService:
     """Given VRS Allele object as a dict, return variation expressed as queried
     format using vrs-python's translator class
 
-    :param Request request: Request body. Request body must contain `allele` and `fmt`.
-        `allele` is a VRS Allele object represented as a dict. `fmt` must be either
-        `spdi` or `hgvs`
-    :return: ErrorResponse if invalid request body. Else, TranslateToService containing
-        variation represented as fmt representation if valid VRS Allele
+    :param TranslateToQuery request_body: Request body. `variation` is a VRS Allele
+        object represented as a dict. `fmt` must be either `spdi` or `hgvs`
+    :return: TranslateToService containing variation represented as fmt representation
+        if valid VRS Allele, and warnings if found
     """
-    r = await request.json()
-    r = json.loads(r)
+    query = request_body
+    request_body = request_body.dict(by_alias=True)
     warnings = list()
-
-    allele_query = r.get("allele")
-    if not allele_query:
-        warnings.append("Missing `allele`. Must be VRS Allele represented as a dict")
-    else:
-        if not isinstance(allele_query, dict):
-            warnings.append("`allele` must be a dict")
-
-    if warnings:
-        return ErrorResponse(errors=warnings)
-
-    fmt_query = r.get("fmt")
-    if not fmt_query:
-        warnings.append("Missing `fmt`. Must be either `hgvs` or `spdi`")
-    else:
-        if not isinstance(fmt_query, str):
-            warnings.append("`fmt` must be a str")
-        else:
-            fmt_query = fmt_query.strip()
-            valid_fmts = {v.value for k, v in TranslateToFormat.__members__.items()}
-            if fmt_query not in valid_fmts:
-                warnings.append(f"{fmt_query} not a valid fmt. "
-                                f"Must be one of {valid_fmts}")
-
-    if warnings:
-        return ErrorResponse(errors=warnings)
 
     allele = None
     try:
-        allele = models.Allele(**r["allele"])
+        allele = models.Allele(**request_body["variation"])
     except ValidationError as e:
         warnings.append(f"`allele` is not a valid VRS Allele: {e}")
+    except python_jsonschema_objects.ValidationError as e:
+        warnings.append(str(e))
 
     variations = list()
     if allele:
         try:
-            variations = query_handler.tlr.translate_to(allele, r["fmt"])
+            variations = query_handler.tlr.translate_to(allele, request_body["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
     return TranslateToService(
-        query=TranslateToQuery(variation=allele_query, fmt=fmt_query),
+        query=query,
         warnings=warnings,
         variations=variations,
         service_meta_=ServiceMeta(

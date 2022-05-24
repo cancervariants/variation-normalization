@@ -1,6 +1,6 @@
 """Module for vrs-python translator endpoint response schema"""
 from enum import Enum
-from typing import Optional, List, Union
+from typing import Any, Dict, Optional, List, Type, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import Allele
 from pydantic import BaseModel
@@ -39,6 +39,47 @@ class TranslateToQuery(BaseModel):
     variation: Allele
     fmt: TranslateToFormat
 
+    class Config:
+        """Class configs."""
+
+        allow_population_by_field_name = True
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["TranslateToQuery"]) -> None:
+            """Configure OpenAPI schema"""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "variation": {
+                    "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
+                    "type": "Allele",
+                    "location": {
+                        "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {
+                                "type": "Number",
+                                "value": 140453135
+                            },
+                            "end": {
+                                "type": "Number",
+                                "value": 140453136
+                            }
+                        }
+                    },
+                    "state": {
+                        "type": "LiteralSequenceExpression",
+                        "sequence": "T"
+                    }
+                },
+                "fmt": "hgvs"
+            }
+
 
 class TranslateFromQuery(BaseModel):
     """Query fields for Translate From Service"""
@@ -66,9 +107,3 @@ class TranslateToService(TranslateService):
     """Response schema for vrs-python translate to endpoint"""
 
     variations: List[StrictStr]
-
-
-class ErrorResponse(BaseModel):
-    """Response for Translate services when request body is invalid"""
-
-    errors: List[StrictStr]
