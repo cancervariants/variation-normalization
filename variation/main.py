@@ -368,9 +368,9 @@ async def to_canonical_variation(
                   "queried format using vrs-python's translator class",
           response_description="A response to a validly-formed query.",
           description="Return variation in queried format representation. "
-                      "Request body must contain `allele` and `fmt`. `allele` is a "
-                      "VRS Allele object represented as a dict. `fmt` must be either "
-                      "`spdi` or `hgvs`",
+                      "Request body must contain `variation` and `fmt`. `variation` is"
+                      " a VRS Allele object represented as a dict. `fmt` must be either"
+                      " `spdi` or `hgvs`",
           response_model=TranslateToService,
           response_model_exclude_none=True,
           tags=[Tags.VRS_PYTHON])
