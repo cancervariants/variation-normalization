@@ -1,6 +1,6 @@
 """Main application for FastAPI."""
 from enum import Enum
-from typing import Dict, Optional
+from typing import Dict, List, Optional, Union
 from datetime import datetime
 from urllib.parse import unquote
 
@@ -25,8 +25,8 @@ from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvQuer
     ParsedToAbsCnvService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
-    TranslateFromService, TranslateFromQuery, TranslateToQuery, TranslateToService, \
-    VrsPythonMeta
+    TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
+    TranslateToService, VrsPythonMeta
 
 
 class Tags(Enum):
@@ -363,6 +363,26 @@ async def to_canonical_variation(
     )
 
 
+def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],
+                warnings: List) -> Optional[models.Allele]:
+    """Return VRS allele object from request body. `warnings` will get updated if
+    exceptions are raised
+
+    :param Union[TranslateToQuery, TranslateToHGVSQuery] request_body: Request body
+        containing `variation`
+    :param List warnings: List of warnings
+    :return: VRS Allele object if valid
+    """
+    allele = None
+    try:
+        allele = models.Allele(**request_body["variation"])
+    except ValidationError as e:
+        warnings.append(f"`allele` is not a valid VRS Allele: {e}")
+    except python_jsonschema_objects.ValidationError as e:
+        warnings.append(str(e))
+    return allele
+
+
 @app.post("/variation/translate_to",
           summary="Given VRS Allele object as a dict, return variation expressed as "
                   "queried format using vrs-python's translator class",
@@ -388,18 +408,66 @@ async def vrs_python_translate_to(
     request_body = request_body.dict(by_alias=True)
     warnings = list()
 
-    allele = None
-    try:
-        allele = models.Allele(**request_body["variation"])
-    except ValidationError as e:
-        warnings.append(f"`allele` is not a valid VRS Allele: {e}")
-    except python_jsonschema_objects.ValidationError as e:
-        warnings.append(str(e))
+    allele = _get_allele(request_body, warnings)
 
     variations = list()
     if allele:
         try:
             variations = query_handler.tlr.translate_to(allele, request_body["fmt"])
+        except ValueError as e:
+            warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
+
+    return TranslateToService(
+        query=query,
+        warnings=warnings,
+        variations=variations,
+        service_meta_=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.now()
+        ),
+        vrs_python_meta_=VrsPythonMeta(
+            version=pkg_resources.get_distribution("ga4gh.vrs").version
+        )
+    )
+
+
+to_hgvs_descr = "Return variation as HGVS expressions. Request body must"\
+                " contain `variation`, a VRS Allele object represented as a dict. "\
+                "Can include optional parameter `namespace`. If `namespace` is not"\
+                " None, returns HGVS strings for the specified namespace. If "\
+                "`namespace` is None, returns HGVS strings for all alias translations."
+
+
+@app.post("/variation/vrs_allele_to_hgvs",
+          summary="Given VRS Allele object as a dict, return HGVS expression(s)",
+          response_description="A response to a validly-formed query.",
+          description=to_hgvs_descr,
+          response_model=TranslateToService,
+          response_model_exclude_none=True,
+          tags=[Tags.VRS_PYTHON])
+async def vrs_python_to_hgvs(
+        request_body: TranslateToHGVSQuery) -> TranslateToService:
+    """Given VRS Allele object as a dict, return variation expressed as HGVS
+        expression(s)
+
+    :param TranslateToHGVSQuery request_body: Request body. `variation` is a VRS Allele
+        object represented as a dict. Can provide optional parameter `namespace`.
+        If `namespace` is not None, returns HGVS strings for the specified namespace.
+        If `namespace` is None, returns HGVS strings for all alias translations.
+    :return: TranslateToService containing variation represented as HGVS representation
+        if valid VRS Allele, and warnings if found
+    """
+    query = request_body
+    request_body = request_body.dict(by_alias=True)
+    warnings = list()
+
+    allele = _get_allele(request_body, warnings)
+
+    variations = list()
+    if allele:
+        try:
+            variations = query_handler.tlr._to_hgvs(
+                allele, namespace=request_body.get("namespace") or "refseq")
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
