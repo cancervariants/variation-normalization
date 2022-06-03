@@ -81,6 +81,54 @@ class TranslateToQuery(BaseModel):
             }
 
 
+class TranslateToHGVSQuery(BaseModel):
+    """Query fields for Translate To HGVS Service"""
+
+    variation: Allele
+    namespace: Optional[str] = None
+
+    class Config:
+        """Class configs."""
+
+        allow_population_by_field_name = True
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["TranslateToHGVSQuery"]) -> None:
+            """Configure OpenAPI schema"""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "variation": {
+                    "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
+                    "type": "Allele",
+                    "location": {
+                        "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {
+                                "type": "Number",
+                                "value": 140453135
+                            },
+                            "end": {
+                                "type": "Number",
+                                "value": 140453136
+                            }
+                        }
+                    },
+                    "state": {
+                        "type": "LiteralSequenceExpression",
+                        "sequence": "T"
+                    }
+                },
+                "namespace": "refseq"
+            }
+
+
 class TranslateFromQuery(BaseModel):
     """Query fields for Translate From Service"""
 
@@ -91,7 +139,7 @@ class TranslateFromQuery(BaseModel):
 class TranslateService(BaseModel):
     """Response schema for vrs-python translator endpoints"""
 
-    query: Union[TranslateFromQuery, TranslateToQuery]
+    query: Union[TranslateFromQuery, TranslateToQuery, TranslateToHGVSQuery]
     warnings: Optional[List[StrictStr]]
     service_meta_: ServiceMeta
     vrs_python_meta_: VrsPythonMeta
