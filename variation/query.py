@@ -17,6 +17,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     CanonicalVariation
 from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, UTATools
+from uta_tools.schemas import Assembly
 
 from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.schemas.app_schemas import Endpoint
@@ -408,7 +409,7 @@ class QueryHandler:
                         mane_tx_genomic_data, coding_start_site)
 
                 # We use 1-based
-                reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(
+                reading_frame = self.to_vrs_handler.mane_transcript._get_reading_frame(
                     mane_c_pos_change[0] + 1)
                 if classification_token.alt_type in ["substitution",
                                                      "silent_mutation"]:
@@ -569,7 +570,7 @@ class QueryHandler:
                 chromosome = f"chr{chromosome}"
 
                 pos = start_pos + len(deleted_seq)
-                liftover_resp = self.uta.get_liftover(chromosome, pos)
+                liftover_resp = self.uta.get_liftover(chromosome, pos, Assembly.GRCH38)
                 if not liftover_resp:
                     warnings.append(f"Position {pos} does not exist on "
                                     f"chromosome {chromosome}")
