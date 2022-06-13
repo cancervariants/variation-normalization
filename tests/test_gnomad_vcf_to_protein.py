@@ -600,10 +600,39 @@ def braf_600_silent_mutation(braf_gene_context, braf_600loc):
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope="module")
+def kras_g12d():
+    """Fixture for KRAS G12C"""
+    return {
+        "id": "ga4gh:VA.NtQTqsdO_Z8G0KpBQ1_z7QsHo_bVN43m",
+        "type": "Allele",
+        "location": {
+            "id": "ga4gh:VSL.Eiio4mQpHp-kXdQWT_AUHrubE8Q18_br",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.fytWhQSNGnA-86vDiQCxTSzgkk_WfQRS",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {
+                    "type": "Number",
+                    "value": 11
+                },
+                "end": {
+                    "type": "Number",
+                    "value": 12
+                }
+            }
+        },
+        "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": "D"
+        }
+    }
+
+
 @pytest.mark.asyncio
 async def test_substitution(test_query_handler, braf_v600e, braf_v600l,
                             braf_600_silent_mutation, mmel1_l30m, atad3a_i7v,
-                            atad3a_i7t, atad3a_i7m):
+                            atad3a_i7t, atad3a_i7m, kras_g12d):
     """Test that substitution queries return correct response"""
     # Reading Frame 1, Negative Strand
     resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753337-C-A")
@@ -639,6 +668,11 @@ async def test_substitution(test_query_handler, braf_v600e, braf_v600l,
     resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512289-T-G")
     assertion_checks(resp, atad3a_i7m, "1-1512289-T-G", ignore_id=True)
     assert w == []
+
+    resp, w = await test_query_handler.gnomad_vcf_to_protein("12-25245350-C-T")
+    assert resp
+    variation = resp.dict()["variation"]
+    assert variation == kras_g12d
 
 
 @pytest.mark.asyncio
