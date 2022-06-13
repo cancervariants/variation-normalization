@@ -17,6 +17,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
     CanonicalVariation
 from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
     LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, UTATools
+from uta_tools.schemas import Assembly, ResidueMode
 
 from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.schemas.app_schemas import Endpoint
@@ -259,6 +260,7 @@ class QueryHandler:
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
+        residue_mode = ResidueMode.INTER_RESIDUE
         classification_token.coordinate_type = CoordinateType.PROTEIN
         classification_token.molecule_context = "protein"
         if classification_token.alt_type in ["substitution",
@@ -276,28 +278,36 @@ class QueryHandler:
                 # first pos
                 if strand == "-":
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos - 1, g_end_pos + 2)
+                        alt_ac, g_start_pos - 2, g_end_pos + 1,
+                        residue_mode=residue_mode)
                     alt = alt_nuc + ref[1] + ref[0]
                 else:
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos + 1, g_end_pos + 4)
+                        alt_ac, g_start_pos, g_end_pos + 3,
+                        residue_mode=residue_mode)
                     alt = alt_nuc + ref[1] + ref[2]
             elif reading_frame == 2:
                 # middle pos
                 ref, _ = self.seqrepo_access.get_reference_sequence(
-                    alt_ac, g_start_pos, g_end_pos + 3)
-                alt = ref[0] + alt_nuc + ref[2]
+                    alt_ac, g_start_pos - 1, g_end_pos + 2,
+                    residue_mode=residue_mode)
+
+                if strand == "-":
+                    alt = ref[2] + alt_nuc + ref[0]
+                else:
+                    alt = ref[0] + alt_nuc + ref[2]
             elif reading_frame == 3:
                 # last pos
                 if strand == "-":
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos + 1, g_end_pos + 4)
+                        alt_ac, g_start_pos, g_end_pos + 3,
+                        residue_mode=residue_mode)
                     alt = ref[2] + ref[1] + alt_nuc
                 else:
                     ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos - 1, g_end_pos + 2)
+                        alt_ac, g_start_pos - 2, g_end_pos + 1,
+                        residue_mode=residue_mode)
                     alt = ref[0] + ref[1] + alt_nuc
-
             if alt and strand == "-":
                 alt = self.codon_table.dna_to_rna(alt)
             else:
@@ -408,7 +418,7 @@ class QueryHandler:
                         mane_tx_genomic_data, coding_start_site)
 
                 # We use 1-based
-                reading_frame = self.to_vrs_handler.mane_transcript.get_reading_frame(
+                reading_frame = self.to_vrs_handler.mane_transcript._get_reading_frame(
                     mane_c_pos_change[0] + 1)
                 if classification_token.alt_type in ["substitution",
                                                      "silent_mutation"]:
@@ -569,7 +579,7 @@ class QueryHandler:
                 chromosome = f"chr{chromosome}"
 
                 pos = start_pos + len(deleted_seq)
-                liftover_resp = self.uta.get_liftover(chromosome, pos)
+                liftover_resp = self.uta.get_liftover(chromosome, pos, Assembly.GRCH38)
                 if not liftover_resp:
                     warnings.append(f"Position {pos} does not exist on "
                                     f"chromosome {chromosome}")
