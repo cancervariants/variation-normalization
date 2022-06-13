@@ -32,7 +32,8 @@ class TranslatorBase:
         dp = SeqRepoDataProxy(seqrepo_access.seqrepo_client)
         tlr = Translator(data_proxy=dp)
         mane_transcript = MANETranscript(
-            seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta)
+            seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
+            gene_normalizer)
         vrs = VRS(dp, seqrepo_access)
 
         cls.aa_params = [
