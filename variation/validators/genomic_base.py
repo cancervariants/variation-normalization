@@ -2,8 +2,7 @@
 import logging
 from typing import List, Optional
 
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
-from uta_tools.data_sources import UTADatabase
+from uta_tools.data_sources import UTADatabase, SeqRepoAccess
 
 from variation.schemas.classification_response_schema import Classification
 
@@ -15,13 +14,13 @@ logger.setLevel(logging.DEBUG)
 class GenomicBase:
     """Genomic Base class for validation methods."""
 
-    def __init__(self, dp: SeqRepoDataProxy, uta: UTADatabase) -> None:
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTADatabase) -> None:
         """Initialize the Genomic base class.
 
         :param SeqRepoDataProxy dp: Access to seqrepo data
         :param UTADatabase uta: Access to UTA queries
         """
-        self.dp = dp
+        self.seqrepo_access = seqrepo_access
         self.uta = uta
 
     """The Genomic Base class."""
@@ -52,14 +51,13 @@ class GenomicBase:
         """Given an identifier (assembly+chr), return nc accession."""
         nc_accession = None
         try:
-            metadata = \
-                self.dp.get_metadata(identifier)
+            translated_identifiers, _ = self.seqrepo_access.translate_identifier(
+                identifier)
         except KeyError:
             logger.warning("Data Proxy unable to get metadata"
                            f"for {identifier}")
         else:
-            aliases = [a for a in metadata["aliases"] if
-                       a.startswith("refseq:NC_")]
+            aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
             if aliases:
                 nc_accession = aliases[0].split(":")[-1]
         return nc_accession

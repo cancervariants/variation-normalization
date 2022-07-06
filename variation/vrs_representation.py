@@ -1,22 +1,21 @@
-"""Module for creating VRS objects"""
+"""Module for generating VRS objects"""
 from typing import List, Optional, Tuple, Union, Dict
 
-from ga4gh.vrs import models, normalize
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
-from bioutils.accessions import coerce_namespace
 from uta_tools.data_sources import SeqRepoAccess
+from bioutils.accessions import coerce_namespace
 
 
-class VRS:
-    """VRS class"""
+class VRSRepresentation:
+    """Class for representing VRS objects"""
 
-    def __init__(self, dp: SeqRepoDataProxy,
-                 seqrepo_access: SeqRepoAccess) -> None:
-        """Initialize VRS class
+    def __init__(self, dp: SeqRepoDataProxy, seqrepo_access: SeqRepoAccess) -> None:
+        """Initialize the VRSRepresentation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param SeqRepoDataProxy dp: SeqRepoDataProxy
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         """
         self.seqrepo_access = seqrepo_access
         self.dp = dp
@@ -137,12 +136,17 @@ class VRS:
             errors.append("Unable to get allele")
             return None
 
-        seq_id = self.dp.translate_sequence_identifier(
-            allele.location.sequence_id._value, "ga4gh")[0]
-        allele.location.sequence_id = seq_id
-        allele.location._id = ga4gh_identify(allele.location)
-        allele._id = ga4gh_identify(allele)
-        return allele.as_dict()
+        seq_id, w = self.seqrepo_access.translate_identifier(
+            allele.location.sequence_id._value, "ga4gh")
+        if seq_id:
+            seq_id = seq_id[0]
+            allele.location.sequence_id = seq_id
+            allele.location._id = ga4gh_identify(allele.location)
+            allele._id = ga4gh_identify(allele)
+            return allele.as_dict()
+        else:
+            errors.append(w)
+            return None
 
     def to_vrs_allele(
             self, ac: str, start: int, end: int, coordinate: str,
