@@ -3,7 +3,6 @@ import logging
 from typing import List, Optional, Dict
 
 from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
@@ -16,7 +15,7 @@ from variation.tokenizers.caches import AminoAcidCache
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs import VRS
+from variation.vrs_representation import VRSRepresentation
 from .validator import Validator
 from .protein_base import ProteinBase
 
@@ -31,8 +30,8 @@ class PolypeptideSequenceVariationBase(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS,
+                 uta: UTADatabase, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation,
                  amino_acid_cache: AminoAcidCache) -> None:
         """Initialize the validator.
 
@@ -43,13 +42,14 @@ class PolypeptideSequenceVariationBase(Validator):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTADatabase uta: Access to UTA queries
+        :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRS vrs: Class for creating VRS objects
-        :param amino_acid_cache: Amino Acid codes and conversions
+        :param VRSRepresentation vrs: Class for creating VRS objects
+        :param AminoAcidCache amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer, vrs
+            uta, tlr, gene_normalizer, vrs
         )
         self._amino_acid_cache = amino_acid_cache
         self.protein_base = ProteinBase(seq_repo_access, amino_acid_cache)

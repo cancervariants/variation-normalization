@@ -6,7 +6,6 @@ import logging
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, MANETranscript, \
     UTADatabase
@@ -21,7 +20,7 @@ from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs import VRS
+from variation.vrs_representation import VRSRepresentation
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -34,9 +33,9 @@ class Validator(ABC):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, tlr: Translator,
                  gene_normalizer: GeneQueryHandler,
-                 vrs: VRS) -> None:
+                 vrs: VRSRepresentation) -> None:
         """Initialize the DelIns validator.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -46,17 +45,16 @@ class Validator(ABC):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTADatabase uta: Access to UTA queries
-        :param Translator tlr: Translator class
+        :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRS vrs: Class for creating VRS objects
+        :param VRSRepresentation vrs: Class for creating VRS objects
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self._gene_matcher = gene_symbol
-        self.dp = dp
         self.tlr = tlr
         self.uta = uta
-        self.genomic_base = GenomicBase(self.dp, self.uta)
+        self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
         self.mane_transcript = mane_transcript
         self.gene_normalizer = gene_normalizer
         self.vrs = vrs
@@ -668,7 +666,10 @@ class Validator(ABC):
         :param str t: Accession
         :return: `True` if accession is GRCh38 assembly. `False` otherwise
         """
-        return "GRCh38" in [a for a in self.dp.get_metadata(t)["aliases"] if a.startswith("GRCh")][0]  # noqa: E501
+        translated_identifiers, w = self.seqrepo_access.translate_identifier(t)
+        if translated_identifiers:
+            return "GRCh38" in ([a for a in translated_identifiers if a.startswith("GRCh")] or [None])[0]  # noqa: E501
+        return False
 
     async def add_genomic_liftover_to_results(
         self, grch38: Dict, errors: List, alt: str, valid_alleles: List, results: List,

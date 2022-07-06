@@ -6,6 +6,12 @@ from variation.schemas.service_schema import ClinVarAssembly
 
 
 @pytest.fixture(scope="module")
+def test_handler(test_query_handler):
+    """Create test fixture for copy number variation handler"""
+    return test_query_handler.to_copy_number_handler
+
+
+@pytest.fixture(scope="module")
 def copy_number_gain1():
     """Create test fixture for clinvar copy number gain.
     https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
@@ -129,140 +135,140 @@ def copy_number_loss2():
     return AbsoluteCopyNumber(**variation)
 
 
-def test_parsed_copy_number_gain(test_query_handler, copy_number_gain1,
+def test_parsed_copy_number_gain(test_handler, copy_number_gain1,
                                  copy_number_gain2):
     """Test that parsed_to_abs_cnv works for parsed copy number gain queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         143134063, 143284670, 3, assembly="GRCh37", chr="chr1")
     assert resp.dict() == copy_number_gain1.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         143134063, 143284670, 3, assembly="hg19", chr="chr1")
     assert resp.dict() == copy_number_gain1.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         143134063, 143284670, 3, accession="NC_000001.10")
     assert resp.dict() == copy_number_gain1.dict()
     assert w == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, assembly="GRCh38", chr="chr15")
     assert resp.dict() == copy_number_gain2.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, assembly="GRCh38", chr="15")
     assert resp.dict() == copy_number_gain2.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, assembly="hg38", chr="chr15")
     assert resp.dict() == copy_number_gain2.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, accession="NC_000015.10")
     assert resp.dict() == copy_number_gain2.dict()
     assert w == []
 
 
-def test_parsed_copy_number_loss(test_query_handler, copy_number_loss1,
+def test_parsed_copy_number_loss(test_handler, copy_number_loss1,
                                  copy_number_loss2):
     """Test that parsed_to_abs_cnv works for parsed copy number loss queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/1299222/?new_evidence=true
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10491132, 10535643, 1, assembly=ClinVarAssembly.GRCH37, chr="chrX")
     assert resp.dict() == copy_number_loss1.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10491132, 10535643, 1, assembly=ClinVarAssembly.HG19, chr="chrX")
     assert resp.dict() == copy_number_loss1.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10491132, 10535643, 1, assembly=ClinVarAssembly.HG19, chr="X")
     assert resp.dict() == copy_number_loss1.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10491132, 10535643, 1, accession="NC_000023.10")
     assert resp.dict() == copy_number_loss1.dict()
     assert w == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/148425/?new_evidence=true
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10001, 1223133, 0, assembly=ClinVarAssembly.GRCH38, chr="chrY")
     assert resp.dict() == copy_number_loss2.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10001, 1223133, 0, assembly=ClinVarAssembly.HG38, chr="chrY")
     assert resp.dict() == copy_number_loss2.dict()
     assert w == []
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10001, 1223133, 0, accession="NC_000024.10")
     assert resp.dict() == copy_number_loss2.dict()
     assert w == []
 
 
-def test_invalid(test_query_handler):
+def test_invalid(test_handler):
     """Test invalid queries returns Text variation and warnings"""
     # NCBI36/hg18 assembly
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/443961/?new_evidence=true
     expected_w = ["NCBI36 assembly is not current supported"]
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         2623228, 3150942, 3, assembly=ClinVarAssembly.NCBI36, chr="chr1")
     assert resp.type == "Text"
     assert w == expected_w
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         2623228, 3150942, 3, assembly=ClinVarAssembly.HG18, chr="chr1")
     assert resp.type == "Text"
     assert w == expected_w
 
     # Must give both assembly + chr or accession
     expected_w = ["Must provide either `accession` or both `assembly` and `chr`."]
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, assembly="hg38")
     assert resp.type == "Text"
     assert w == expected_w
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2, chr="chr15")
     assert resp.type == "Text"
     assert w == expected_w
 
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 32217725, 2)
     assert resp.type == "Text"
     assert w == expected_w
 
     # invalid chr
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10001, 1223133, 0, assembly=ClinVarAssembly.GRCH38, chr="z")
     assert resp.type == "Text"
     assert w == ["SeqRepo unable to get translated identifiers for GRCh38:z"]
 
     # invalid assembly
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10001, 1223133, 0, assembly="GRCh99", chr="Y")
     assert resp.type == "Text"
     assert w == ["SeqRepo unable to get translated identifiers for GRCh99:Y"]
 
     # invalid accession
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         10491132, 10535643, 1, accession="NC_00002310")
     assert resp.type == "Text"
-    assert w == ["NC_00002310 does not exist in SeqRepo"]
+    assert w == ["SeqRepo unable to get translated identifiers for NC_00002310"]
 
     # Invalid position
-    resp, w = test_query_handler.parsed_to_abs_cnv(
+    resp, w = test_handler.parsed_to_abs_cnv(
         31738809, 2302991250, 2, accession="NC_000015.10")
     assert resp.type == "Text"
     assert w == ["Position out of range (2302991250)"]
