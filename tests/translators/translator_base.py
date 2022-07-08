@@ -8,7 +8,7 @@ from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, \
 
 from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
-from variation.vrs import VRS
+from variation.vrs_representation import VRSRepresentation
 from variation.tokenizers import Tokenize, GeneSymbol
 from variation.tokenizers.caches import AminoAcidCache
 
@@ -34,11 +34,11 @@ class TranslatorBase:
         mane_transcript = MANETranscript(
             seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
             gene_normalizer)
-        vrs = VRS(dp, seqrepo_access)
+        vrs = VRSRepresentation(dp, seqrepo_access)
 
         cls.aa_params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr, gene_normalizer,
+            mane_transcript, uta, tlr, gene_normalizer,
             vrs, amino_acid_cache
         ]
         cls.params = cls.aa_params[:-1]

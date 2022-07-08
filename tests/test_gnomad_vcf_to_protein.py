@@ -6,6 +6,12 @@ from tests.conftest import assertion_checks
 
 
 @pytest.fixture(scope="module")
+def test_handler(test_query_handler):
+    """Create test fixture for gnomad vcf to protein handler"""
+    return test_query_handler.gnomad_vcf_to_protein_handler
+
+
+@pytest.fixture(scope="module")
 def mmel1_gene_context():
     """Create MMEL1 gene context test fixture"""
     return {
@@ -630,96 +636,96 @@ def kras_g12d():
 
 
 @pytest.mark.asyncio
-async def test_substitution(test_query_handler, braf_v600e, braf_v600l,
+async def test_substitution(test_handler, braf_v600e, braf_v600l,
                             braf_600_silent_mutation, mmel1_l30m, atad3a_i7v,
                             atad3a_i7t, atad3a_i7m, kras_g12d):
     """Test that substitution queries return correct response"""
     # Reading Frame 1, Negative Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753337-C-A")
+    resp, w = await test_handler.gnomad_vcf_to_protein("7-140753337-C-A")
     assertion_checks(resp, braf_v600l, "7-140753337-C-A", ignore_id=True)
     assert w == []
 
     # Reading Frame 2, Negative Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753336-A-T")
+    resp, w = await test_handler.gnomad_vcf_to_protein("7-140753336-A-T")
     assertion_checks(resp, braf_v600e, "7-140753336-A-T", ignore_id=True)
     assert w == []
 
     # Reading Frame 3, Negative Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753335-C-A")
+    resp, w = await test_handler.gnomad_vcf_to_protein("7-140753335-C-A")
     assertion_checks(resp, braf_600_silent_mutation, "7-140753335-C-A", ignore_id=True)
     assert w == []
 
     # Reading Frame 3, Negative Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-2629397-G-T")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-2629397-G-T")
     assertion_checks(resp, mmel1_l30m, "1-2629397-G-T")
     assert w == []
 
     # Reading Frame 1, Positive Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512287-A-G")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-1512287-A-G")
     assertion_checks(resp, atad3a_i7v, "1-1512287-A-G")
     assert w == []
 
     # Reading Frame 2, Positive Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512288-T-C")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-1512288-T-C")
     assertion_checks(resp, atad3a_i7t, "1-1512288-T-C")
     assert w == []
 
     # Reading Frame 3, Positive Strand
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1512289-T-G")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-1512289-T-G")
     assertion_checks(resp, atad3a_i7m, "1-1512289-T-G", ignore_id=True)
     assert w == []
 
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("12-25245350-C-T")
+    resp, w = await test_handler.gnomad_vcf_to_protein("12-25245350-C-T")
     assert resp
     variation = resp.dict()["variation"]
     assert variation == kras_g12d
 
 
 @pytest.mark.asyncio
-async def test_silent_mutation(test_query_handler, vhl_silent):
+async def test_silent_mutation(test_handler, vhl_silent):
     """Test that silent queries return correct response"""
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("3-10183714-C-C")
+    resp, w = await test_handler.gnomad_vcf_to_protein("3-10183714-C-C")
     assertion_checks(resp, vhl_silent, "3-10183714-C-C", ignore_id=True)
     assert w == []
 
 
 @pytest.mark.asyncio
-async def test_insertion(test_query_handler, protein_insertion,
+async def test_insertion(test_handler, protein_insertion,
                          protein_insertion2):
     """Test that insertion queries return correct response"""
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    resp, w = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
     assertion_checks(resp, protein_insertion, "7-55181319-C-CGGGTTG", ignore_id=True)
     assert w == []
 
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
     assertion_checks(resp, protein_insertion2, "1-53327836-A-ACGC")
     assert w == []
 
 
 @pytest.mark.asyncio
-async def test_deletion(test_query_handler, protein_deletion_np_range,
+async def test_deletion(test_handler, protein_deletion_np_range,
                         cdk11a_e314del):
     """Test that deletion queries return correct response"""
-    resp, w = await test_query_handler.gnomad_vcf_to_protein(
+    resp, w = await test_handler.gnomad_vcf_to_protein(
         "17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range,
                      "17-39723966-TTGAGGGAAAACACAT-T", ignore_id=True)
     assert w == []
 
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
+    resp, w = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
     assertion_checks(resp, cdk11a_e314del, "1-1708855-TTCC-T")
     assert w == []
 
 
 @pytest.mark.asyncio
-async def test_invalid(test_query_handler):
+async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("BRAF V600E")
+    resp, w = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation.type == "Text"
     assert resp.label == "BRAF V600E"
     assert w == ["BRAF V600E is not a supported gnomad vcf query"]
 
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("7-140753336-T-G")
+    resp, w = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation.type == "Text"
     assert resp.label == "7-140753336-T-G"
     assert set(w) == {
@@ -727,7 +733,7 @@ async def test_invalid(test_query_handler):
         "Expected T but found A on NC_000007.14 at position 140753336",
     }
 
-    resp, w = await test_query_handler.gnomad_vcf_to_protein("20-2-TC-TG")
+    resp, w = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation.type == "Text"
     assert resp.label == "20-2-TC-TG"
     assert w == ["Unable to get protein variation for 20-2-TC-TG"]

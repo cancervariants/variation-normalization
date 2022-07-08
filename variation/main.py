@@ -89,7 +89,7 @@ async def to_vrs(q: str = Query(..., description=q_description)) -> ToVRSService
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
-    translations, warnings = await query_handler.to_vrs(unquote(q))
+    translations, warnings = await query_handler.to_vrs_handler.to_vrs(unquote(q))
 
     return ToVRSService(
         search_term=q,
@@ -143,7 +143,7 @@ async def normalize(
         Variation.
     :return: NormalizeService for variation
     """
-    normalize_resp = await query_handler.normalize(
+    normalize_resp = await query_handler.normalize_handler.normalize(
         unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
         baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
     warnings = query_handler.normalize_handler.warnings if \
@@ -182,7 +182,7 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        aliases = query_handler.seqrepo_access.seqrepo_client.translate_identifier(  # noqa: E501
+        aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(  # noqa: E501
             identifier, target_namespaces=target_namespaces)
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
@@ -231,7 +231,7 @@ def vrs_python_translate_from(
     warnings = list()
     vrs_variation = None
     try:
-        resp = query_handler.tlr.translate_from(variation_query, fmt)
+        resp = query_handler._tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
@@ -281,7 +281,8 @@ async def gnomad_vcf_to_protein(
     :return: NormalizeService for variation
     """
     q = unquote(q.strip())
-    resp, warnings = await query_handler.gnomad_vcf_to_protein(q)
+    resp, warnings =\
+        await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
 
     return NormalizeService(
         variation_query=q,
@@ -347,7 +348,7 @@ async def to_canonical_variation(
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
-    variation, warnings = await query_handler.to_canonical_variation(
+    variation, warnings = await query_handler.to_canonical_handler.to_canonical_variation(  # noqa: E501
         q, fmt, complement, do_liftover=do_liftover,
         hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
         relative_copy_class=relative_copy_class)
@@ -413,7 +414,7 @@ async def vrs_python_translate_to(
     variations = list()
     if allele:
         try:
-            variations = query_handler.tlr.translate_to(allele, request_body["fmt"])
+            variations = query_handler._tlr.translate_to(allele, request_body["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
@@ -466,7 +467,7 @@ async def vrs_python_to_hgvs(
     variations = list()
     if allele:
         try:
-            variations = query_handler.tlr._to_hgvs(
+            variations = query_handler._tlr._to_hgvs(
                 allele, namespace=request_body.get("namespace") or "refseq")
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
@@ -506,7 +507,7 @@ async def hgvs_to_absolute_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToAbsoluteCopyNumberService
     """
-    variation, warnings = await query_handler.hgvs_to_absolute_copy_number(
+    variation, warnings = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(  # noqa: E501
         unquote(hgvs_expr.strip()), baseline_copies, do_liftover)
 
     return HgvsToAbsoluteCopyNumberService(
@@ -541,7 +542,7 @@ async def hgvs_to_relative_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToRelativeCopyNumberService
     """
-    variation, warnings = await query_handler.hgvs_to_relative_copy_number(
+    variation, warnings = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(  # noqa: E501
         unquote(hgvs_expr.strip()), relative_copy_class, do_liftover)
 
     return HgvsToRelativeCopyNumberService(
@@ -596,7 +597,7 @@ def parsed_to_abs_cnv(
         both `assembly` and `chr`.
     :return: Tuple containing Absolute Copy Number variation and list of warnings
     """
-    variation, warnings = query_handler.parsed_to_abs_cnv(
+    variation, warnings = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
         start, end, total_copies, assembly, chr, accession)
     query = ParsedToAbsCnvQuery(assembly=assembly, chr=chr, accession=accession,
                                 start=start, end=end, total_copies=total_copies)

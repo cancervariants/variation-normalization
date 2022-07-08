@@ -2,7 +2,6 @@
 from typing import List, Optional
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
@@ -10,7 +9,7 @@ from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabas
 
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs import VRS
+from variation.vrs_representation import VRSRepresentation
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
@@ -44,9 +43,9 @@ class Validate:
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
+                 uta: UTADatabase, tlr: Translator,
                  amino_acid_cache: AminoAcidCache,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
+                 gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
         """Initialize the validate class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
@@ -56,14 +55,15 @@ class Validate:
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTADatabase uta: Access to UTA queries
-        :param Translator tlr: Translator class
+        :param Translator tlr: Class for translating nomenclatures to and from VRS
+        :param AminoAcidCache amino_acid_cache: Amino Acid codes and conversions
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRS vrs: Class for creating VRS objects
+        :param VRSRepresentation vrs: Class for representing VRS objects
         :param amino_acid_cache: Amino Acid codes and conversions
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, dp, tlr, gene_normalizer, vrs
+            mane_transcript, uta, tlr, gene_normalizer, vrs
         ]
         protein_params = params[:]
         protein_params.append(amino_acid_cache)

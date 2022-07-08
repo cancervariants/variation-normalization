@@ -3,7 +3,6 @@ import logging
 from typing import List, Optional, Dict, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
@@ -21,7 +20,7 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
-from variation.vrs import VRS
+from variation.vrs_representation import VRSRepresentation
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -34,8 +33,8 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTADatabase, dp: SeqRepoDataProxy, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRS) -> None:
+                 uta: UTADatabase, tlr: Translator,
+                 gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
         """Initialize the Genomic Deletion Range validator.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
@@ -45,12 +44,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param MANETranscript mane_transcript: Access MANE Transcript
             information
         :param UTADatabase uta: Access to UTA queries
+        :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRS vrs: Class for creating VRS objects
+        :param VRSRepresentation vrs: Class for creating VRS objects
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, dp, tlr, gene_normalizer, vrs
+            uta, tlr, gene_normalizer, vrs
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 

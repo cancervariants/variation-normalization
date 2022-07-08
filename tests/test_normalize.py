@@ -11,6 +11,12 @@ from tests.conftest import assertion_checks
 
 
 @pytest.fixture(scope="module")
+def test_handler(test_query_handler):
+    """Create test fixture for normalize handler"""
+    return test_query_handler.normalize_handler
+
+
+@pytest.fixture(scope="module")
 def limk2_gene_context():
     """Create LIMK2 gene context test fixture."""
     return {
@@ -814,253 +820,253 @@ def grch38_genomic_insertion(grch38_genomic_insertion_variation):
 
 
 @pytest.mark.asyncio
-async def test_protein_substitution(test_query_handler, braf_v600e, dis3_p63a):
+async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     """Test that protein substitutions normalize correctly."""
-    resp = await test_query_handler.normalize("     BRAF      V600E    ")
+    resp = await test_handler.normalize("     BRAF      V600E    ")
     assertion_checks(resp, braf_v600e, "BRAF      V600E")
 
     braf_id = "normalize.variation:BRAF%20V600E"
 
-    resp = await test_query_handler.normalize("NP_004324.2:p.Val600Glu")
+    resp = await test_handler.normalize("NP_004324.2:p.Val600Glu")
     assert resp.id == "normalize.variation:NP_004324.2%3Ap.Val600Glu"
     resp.id = braf_id
     assertion_checks(resp, braf_v600e, "NP_004324.2:p.Val600Glu")
 
-    resp = await test_query_handler.normalize("braf v512e")
+    resp = await test_handler.normalize("braf v512e")
     assert resp.id == "normalize.variation:braf%20v512e"
     resp.id = braf_id
     assertion_checks(resp, braf_v600e, "braf v512e")
 
-    resp = await test_query_handler.normalize(" NP_001365404.1:p.Val512Glu  ")
+    resp = await test_handler.normalize(" NP_001365404.1:p.Val512Glu  ")
     assert resp.id == "normalize.variation:NP_001365404.1%3Ap.Val512Glu"
     resp.id = braf_id
     assertion_checks(resp, braf_v600e, "NP_001365404.1:p.Val512Glu")
 
-    resp = await test_query_handler.normalize("DIS3 P63A")
+    resp = await test_handler.normalize("DIS3 P63A")
     assertion_checks(resp, dis3_p63a, "DIS3 P63A")
 
 
 @pytest.mark.asyncio
-async def test_polypeptide_truncation(test_query_handler, vhl):
+async def test_polypeptide_truncation(test_handler, vhl):
     """Test that polypeptide truncations normalize correctly."""
-    resp = await test_query_handler.normalize("NP_000542.1:p.Tyr185Ter")
+    resp = await test_handler.normalize("NP_000542.1:p.Tyr185Ter")
     assertion_checks(resp, vhl, "NP_000542.1:p.Tyr185Ter")
 
 
 @pytest.mark.asyncio
-async def test_silent_mutation(test_query_handler, vhl_silent):
+async def test_silent_mutation(test_handler, vhl_silent):
     """Test that silent mutations normalize correctly."""
-    resp = await test_query_handler.normalize("NP_000542.1:p.Pro61=")
+    resp = await test_handler.normalize("NP_000542.1:p.Pro61=")
     assertion_checks(resp, vhl_silent, "NP_000542.1:p.Pro61=")
 
 
 @pytest.mark.asyncio
 async def test_coding_dna_and_genomic_substitution(
-        test_query_handler, braf_v600e_nucleotide, genomic_substitution,
+        test_handler, braf_v600e_nucleotide, genomic_substitution,
         genomic_sub_grch38, egfr_grch38_sub, grch38_braf_genom_sub):
     """Test that coding dna and genomic substitutions normalize correctly."""
-    resp = await test_query_handler.normalize("NM_004333.4:c.1799T>A")
+    resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
     assertion_checks(resp, braf_v600e_nucleotide, "NM_004333.4:c.1799T>A")
 
     # MANE transcript
     refseq_id = "normalize.variation:NM_004333.4%3Ac.1799T%3EA"
 
     # TODO: Check if this should return a different VRS object?
-    resp = await test_query_handler.normalize("ENST00000288602.10:c.1799T>A")
+    resp = await test_handler.normalize("ENST00000288602.10:c.1799T>A")
     assert resp.id == "normalize.variation:ENST00000288602.10%3Ac.1799T%3EA"
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "ENST00000288602.10:c.1799T>A")
 
-    resp = await test_query_handler.normalize("BRAF V600E c.1799T>A")
+    resp = await test_handler.normalize("BRAF V600E c.1799T>A")
     assert resp.id == "normalize.variation:BRAF%20V600E%20c.1799T%3EA"
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "BRAF V600E c.1799T>A")
 
-    resp = await test_query_handler.normalize("BRAF V600E (c.1799T>A)")
+    resp = await test_handler.normalize("BRAF V600E (c.1799T>A)")
     assert resp.id == "normalize.variation:BRAF%20V600E%20%28c.1799T%3EA%29"
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "BRAF V600E (c.1799T>A)")
 
-    resp = await test_query_handler.normalize("BRAF c.1799T>A")
+    resp = await test_handler.normalize("BRAF c.1799T>A")
     assert resp.id == "normalize.variation:BRAF%20c.1799T%3EA"
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "BRAF c.1799T>A")
 
-    resp = await test_query_handler.normalize("NC_000007.13:g.140453136A>T")
+    resp = await test_handler.normalize("NC_000007.13:g.140453136A>T")
     assertion_checks(resp, grch38_braf_genom_sub, "NC_000007.13:g.140453136A>T")
 
     fixture_id = "normalize.variation:NC_000007.13%3Ag.140453136A%3ET"
-    resp = await test_query_handler.normalize("7-140453136-A-T")  # 37
+    resp = await test_handler.normalize("7-140453136-A-T")  # 37
     assert resp.id == "normalize.variation:7-140453136-A-T"
     resp.id = fixture_id
     assertion_checks(resp, grch38_braf_genom_sub, "7-140453136-A-T")
 
-    resp = await test_query_handler.normalize("7-140753336-A-T")  # 38
+    resp = await test_handler.normalize("7-140753336-A-T")  # 38
     assert resp.id == "normalize.variation:7-140753336-A-T"
     resp.id = fixture_id
     assertion_checks(resp, grch38_braf_genom_sub, "7-140753336-A-T")
 
-    resp = await test_query_handler.normalize("BRAF V600E (g.140453136A>T)")
+    resp = await test_handler.normalize("BRAF V600E (g.140453136A>T)")
     assert resp.id == "normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29"  # noqa: E501
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "BRAF V600E (g.140453136A>T)")
 
-    resp = await test_query_handler.normalize("BRAF g.140453136A>T")
+    resp = await test_handler.normalize("BRAF g.140453136A>T")
     assert resp.id == "normalize.variation:BRAF%20g.140453136A%3ET"
     resp.id = refseq_id
     assertion_checks(resp, braf_v600e_nucleotide, "BRAF g.140453136A>T")
 
     # More than 1 gene (EGFR and EGFR-AS1)
-    resp = await test_query_handler.normalize("NC_000007.13:g.55249071C>T")
+    resp = await test_handler.normalize("NC_000007.13:g.55249071C>T")
     assertion_checks(resp, genomic_sub_grch38, "NC_000007.13:g.55249071C>T")
 
-    resp = await test_query_handler.normalize("EGFR g.55249071C>T")
+    resp = await test_handler.normalize("EGFR g.55249071C>T")
     assert resp.id == "normalize.variation:EGFR%20g.55249071C%3ET"
     resp.id = "normalize.variation:NC_000007.13%3Ag.55249071C%3ET"
     assertion_checks(resp, genomic_substitution, "EGFR g.55249071C>T")
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_silent_mutation(test_query_handler,
+async def test_coding_dna_silent_mutation(test_handler,
                                           coding_dna_silent_mutation,
                                           braf_gene_context):
     """Test that Coding DNA Silent Mutation normalizes correctly."""
-    resp = await test_query_handler.normalize("NM_004333.4:c.1799= ")
+    resp = await test_handler.normalize("NM_004333.4:c.1799= ")
     assertion_checks(resp, coding_dna_silent_mutation, "NM_004333.4:c.1799=")
 
     fixture_id = "normalize.variation:NM_004333.4%3Ac.1799%3D"
 
-    resp = await test_query_handler.normalize("ENST00000288602.11:c.1799=")
+    resp = await test_handler.normalize("ENST00000288602.11:c.1799=")
     assert resp.id == "normalize.variation:ENST00000288602.11%3Ac.1799%3D"
     resp.id = fixture_id
     assertion_checks(resp, coding_dna_silent_mutation, "ENST00000288602.11:c.1799=")
 
     # TODO: What to do for older Ensembl transcripts that aren"t found
     #  in seqrepo or UTA
-    # resp = await test_query_handler.normalize("ENST00000288602.6:c.1799=")
+    # resp = await test_handler.normalize("ENST00000288602.6:c.1799=")
     # assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
     #                                           1798, 1799)
     # assert resp.id == "normalize.variation:ENST00000288602.6%3Ac.1799%3D"
     # assert resp.label == "ENST00000288602.6:c.1799="
     # assert resp.molecule_context == "transcript"
 
-    resp = await test_query_handler.normalize("BRAF    c.1799=")
+    resp = await test_handler.normalize("BRAF    c.1799=")
     assert resp.id == "normalize.variation:BRAF%20c.1799%3D"
     resp.id = fixture_id
     assertion_checks(resp, coding_dna_silent_mutation, "BRAF    c.1799=")
 
-    resp = await test_query_handler.normalize("  BRAF  V600E  c.1799=  ")
+    resp = await test_handler.normalize("  BRAF  V600E  c.1799=  ")
     assert resp.id == "normalize.variation:BRAF%20V600E%20c.1799%3D"
     resp.id = fixture_id
     assertion_checks(resp, coding_dna_silent_mutation, "BRAF  V600E  c.1799=")
 
 
 @pytest.mark.asyncio
-async def test_genomic_silent_mutation(test_query_handler, nc_000007_silent_mutation,
+async def test_genomic_silent_mutation(test_handler, nc_000007_silent_mutation,
                                        braf_gene_context,
                                        grch38_braf_genom_silent_mutation):
     """Test that genomic silent mutation normalizes correctly."""
-    resp = await test_query_handler.normalize("NC_000007.13:g.140453136=")
+    resp = await test_handler.normalize("NC_000007.13:g.140453136=")
     assertion_checks(resp, grch38_braf_genom_silent_mutation,
                      "NC_000007.13:g.140453136=")
 
     fixture_id = "normalize.variation:NC_000007.13%3Ag.140453136%3D"
-    resp = await test_query_handler.normalize("7-140453136-A-A")
+    resp = await test_handler.normalize("7-140453136-A-A")
     assert resp.id == "normalize.variation:7-140453136-A-A"
     resp.id = fixture_id
     assertion_checks(resp, grch38_braf_genom_silent_mutation, "7-140453136-A-A")
 
-    resp = await test_query_handler.normalize("7-140753336-A-A")
+    resp = await test_handler.normalize("7-140753336-A-A")
     assert resp.id == "normalize.variation:7-140753336-A-A"
     resp.id = fixture_id
     assertion_checks(resp, grch38_braf_genom_silent_mutation, "7-140753336-A-A")
 
-    resp = await test_query_handler.normalize("BRAF g.140453136=")
+    resp = await test_handler.normalize("BRAF g.140453136=")
     assert resp.id == "normalize.variation:BRAF%20g.140453136%3D"
     resp.id = fixture_id
     assertion_checks(resp, nc_000007_silent_mutation, "BRAF g.140453136=")
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_delins(test_query_handler, nm_004448_coding_dna_delins,
+async def test_coding_dna_delins(test_handler, nm_004448_coding_dna_delins,
                                  nm_000551):
     """Test that Coding DNA DelIns normalizes correctly."""
-    resp = await test_query_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
+    resp = await test_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
     assertion_checks(resp, nm_004448_coding_dna_delins,
                      "NM_004448.4:c.2326_2327delinsCT")
 
     # TODO: Test ENST###.c
 
-    resp = await test_query_handler.normalize("NM_000551.3:c.615delinsAA")
+    resp = await test_handler.normalize("NM_000551.3:c.615delinsAA")
     nm_000551.id = "normalize.variation:NM_000551.3%3Ac.615delinsAA"
     assertion_checks(resp, nm_000551, "NM_000551.3:c.615delinsAA")
 
 
 @pytest.mark.asyncio
-async def test_genomic_delins(test_query_handler, nc_000007_genomic_delins,
+async def test_genomic_delins(test_handler, nc_000007_genomic_delins,
                               nm_000551, grch38_genomic_delins1,
                               grch38_genomic_delins2):
     """Test that Genomic DelIns normalizes correctly."""
-    resp = await test_query_handler.normalize(
+    resp = await test_handler.normalize(
         "NC_000007.13:g.140453135_140453136delinsAT"
     )
     assertion_checks(resp, grch38_genomic_delins1,
                      "NC_000007.13:g.140453135_140453136delinsAT")
 
-    resp = await test_query_handler.normalize("NC_000003.12:g.10149938delinsAA")
+    resp = await test_handler.normalize("NC_000003.12:g.10149938delinsAA")
     assertion_checks(resp, grch38_genomic_delins2, "NC_000003.12:g.10149938delinsAA")
 
 
 @pytest.mark.asyncio
-async def test_protein_delins(test_query_handler, protein_delins):
+async def test_protein_delins(test_handler, protein_delins):
     """Test that Amnio Acid DelIns normalizes correctly."""
-    resp = await test_query_handler.normalize("NP_001333827.1:p.Leu747_Thr751delinsPro")
+    resp = await test_handler.normalize("NP_001333827.1:p.Leu747_Thr751delinsPro")
     assertion_checks(resp, protein_delins, "NP_001333827.1:p.Leu747_Thr751delinsPro")
 
-    resp = await test_query_handler.normalize("EGFR p.Leu747_Thr751delinsPro")
+    resp = await test_handler.normalize("EGFR p.Leu747_Thr751delinsPro")
     assert resp.id == "normalize.variation:EGFR%20p.Leu747_Thr751delinsPro"
     resp.id = "normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro"
     assertion_checks(resp, protein_delins, "EGFR p.Leu747_Thr751delinsPro")
 
-    resp = await test_query_handler.normalize("EGFR Leu747_Thr751delinsPro")
+    resp = await test_handler.normalize("EGFR Leu747_Thr751delinsPro")
     assert resp.id == "normalize.variation:EGFR%20Leu747_Thr751delinsPro"
     resp.id = "normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro"
     assertion_checks(resp, protein_delins, "EGFR Leu747_Thr751delinsPro")
 
-    resp = await test_query_handler.normalize("EGFR L747_T751delinsP")
+    resp = await test_handler.normalize("EGFR L747_T751delinsP")
     assert resp.id == "normalize.variation:EGFR%20L747_T751delinsP"
     resp.id = "normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro"
     assertion_checks(resp, protein_delins, "EGFR L747_T751delinsP")
 
 
 @pytest.mark.asyncio
-async def test_protein_deletion(test_query_handler, protein_deletion_np_range):
+async def test_protein_deletion(test_handler, protein_deletion_np_range):
     """Test that Protein Deletion normalizes correctly."""
-    resp = await test_query_handler.normalize("NP_004439.2:p.Leu755_Thr759del")
+    resp = await test_handler.normalize("NP_004439.2:p.Leu755_Thr759del")
     assertion_checks(resp, protein_deletion_np_range,
                      "NP_004439.2:p.Leu755_Thr759del")
 
-    resp = await test_query_handler.normalize("ERBB2 p.Leu755_Thr759del")
+    resp = await test_handler.normalize("ERBB2 p.Leu755_Thr759del")
     assert resp.id == "normalize.variation:ERBB2%20p.Leu755_Thr759del"
     resp.id = "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del"
     assertion_checks(resp, protein_deletion_np_range, "ERBB2 p.Leu755_Thr759del")
 
-    resp = await test_query_handler.normalize("ERBB2 Leu755_Thr759del")
+    resp = await test_handler.normalize("ERBB2 Leu755_Thr759del")
     assert resp.id == "normalize.variation:ERBB2%20Leu755_Thr759del"
     resp.id = "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del"
     assertion_checks(resp, protein_deletion_np_range, "ERBB2 Leu755_Thr759del")
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_deletion(test_query_handler, coding_dna_deletion):
+async def test_coding_dna_deletion(test_handler, coding_dna_deletion):
     """Test that coding dna deletion normalizes correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_caid?caid=CA645372623  # noqa: E501
     q = "NM_004448.3:c.2264_2278delTGAGGGAAAACACAT"
-    resp = await test_query_handler.normalize(q)
+    resp = await test_handler.normalize(q)
     assertion_checks(resp, coding_dna_deletion, q)
 
     q = "ERBB2 c.2264_2278delTGAGGGAAAACACAT"
-    resp = await test_query_handler.normalize(q)
+    resp = await test_handler.normalize(q)
     assert resp.id == \
            "normalize.variation:ERBB2%20c.2264_2278delTGAGGGAAAACACAT"
     resp.id = "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT"
@@ -1068,9 +1074,9 @@ async def test_coding_dna_deletion(test_query_handler, coding_dna_deletion):
 
 
 @pytest.mark.asyncio
-async def test_protein_insertion(test_query_handler, protein_insertion):
+async def test_protein_insertion(test_handler, protein_insertion):
     """Test that protein insertion normalizes correctly."""
-    resp = await test_query_handler.normalize("NP_005219.2:p.Asp770_Asn771insGlyLeu")
+    resp = await test_handler.normalize("NP_005219.2:p.Asp770_Asn771insGlyLeu")
     assertion_checks(resp, protein_insertion, "NP_005219.2:p.Asp770_Asn771insGlyLeu")
 
     def change_resp(response):
@@ -1078,56 +1084,56 @@ async def test_protein_insertion(test_query_handler, protein_insertion):
             "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu"
         response.id = fixture_id
 
-    resp = await test_query_handler.normalize("EGFR D770_N771insGL")
+    resp = await test_handler.normalize("EGFR D770_N771insGL")
     assert resp.id == "normalize.variation:EGFR%20D770_N771insGL"
     change_resp(resp)
     assertion_checks(resp, protein_insertion, "EGFR D770_N771insGL")
 
-    resp = await test_query_handler.normalize("EGFR p.D770_N771insGL")
+    resp = await test_handler.normalize("EGFR p.D770_N771insGL")
     assert resp.id == "normalize.variation:EGFR%20p.D770_N771insGL"
     change_resp(resp)
     assertion_checks(resp, protein_insertion, "EGFR p.D770_N771insGL")
 
-    resp = await test_query_handler.normalize("EGFR Asp770_Asn771insGlyLeu")
+    resp = await test_handler.normalize("EGFR Asp770_Asn771insGlyLeu")
     assert resp.id == "normalize.variation:EGFR%20Asp770_Asn771insGlyLeu"
     change_resp(resp)
     assertion_checks(resp, protein_insertion, "EGFR Asp770_Asn771insGlyLeu")
 
-    resp = await test_query_handler.normalize("EGFR p.Asp770_Asn771insGlyLeu")
+    resp = await test_handler.normalize("EGFR p.Asp770_Asn771insGlyLeu")
     assert resp.id == "normalize.variation:EGFR%20p.Asp770_Asn771insGlyLeu"
     change_resp(resp)
     assertion_checks(resp, protein_insertion, "EGFR p.Asp770_Asn771insGlyLeu")
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_insertion(test_query_handler, coding_dna_insertion):
+async def test_coding_dna_insertion(test_handler, coding_dna_insertion):
     """Test that coding dna insertion normalizes correctly."""
-    resp = await test_query_handler.normalize("ENST00000331728.9:c.2049_2050insA")
+    resp = await test_handler.normalize("ENST00000331728.9:c.2049_2050insA")
     assertion_checks(resp, coding_dna_insertion, "ENST00000331728.9:c.2049_2050insA")
 
     # TODO: issue-136
-    # resp = await test_query_handler.normalize("LIMK2 c.2049_2050insA")
+    # resp = await test_handler.normalize("LIMK2 c.2049_2050insA")
     # assert resp.id == "normalize.variation:LIMK2%20c.2049_2050insA"
     # resp.id = "normalize.variation:ENST00000331728.9%3Ac.2049_2050insA"
     # assertion_checks(resp, coding_dna_insertion)
 
 
 @pytest.mark.asyncio
-async def test_genomic_insertion(test_query_handler, genomic_insertion,
+async def test_genomic_insertion(test_handler, genomic_insertion,
                                  grch38_genomic_insertion):
     """Test that genomic insertion normalizes correctly."""
-    resp = await test_query_handler.normalize("NC_000017.10:g.37880993_37880994insGCTTACGTGATG")  # noqa: E501
+    resp = await test_handler.normalize("NC_000017.10:g.37880993_37880994insGCTTACGTGATG")  # noqa: E501
     assertion_checks(resp, grch38_genomic_insertion,
                      "NC_000017.10:g.37880993_37880994insGCTTACGTGATG")
 
     fixture_id = \
         "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG"
-    resp = await test_query_handler.normalize("17-37880993-G-GGCTTACGTGATG")
+    resp = await test_handler.normalize("17-37880993-G-GGCTTACGTGATG")
     assert resp.id == "normalize.variation:17-37880993-G-GGCTTACGTGATG"
     resp.id = fixture_id
     assertion_checks(resp, grch38_genomic_insertion, "17-37880993-G-GGCTTACGTGATG")
 
-    resp = await test_query_handler.normalize(
+    resp = await test_handler.normalize(
         "ERBB2 g.37880993_37880994insGCTTACGTGATG")
     assert resp.id ==\
            "normalize.variation:ERBB2%20g.37880993_37880994insGCTTACGTGATG"
@@ -1137,20 +1143,20 @@ async def test_genomic_insertion(test_query_handler, genomic_insertion,
 
 
 @pytest.mark.asyncio
-async def test_valid_queries(test_query_handler):
+async def test_valid_queries(test_handler):
     """Test that valid queries don"t throw exceptions. Used for queries that
     revealed bugs in service.
     """
-    assert await test_query_handler.normalize("CCND1 Y44D")
+    assert await test_handler.normalize("CCND1 Y44D")
 
-    resp = await test_query_handler.normalize("NC_000002.12:g.73448098_73448100delCTC")
+    resp = await test_handler.normalize("NC_000002.12:g.73448098_73448100delCTC")
     assert resp
     assert resp.variation.state.sequence == "CTC"
     assert resp.variation.id == "ga4gh:VA.7qNgfRjiDwephtGOuwtXm04YcXDSY47x"
 
 
 @pytest.mark.asyncio
-async def test_no_matches(test_query_handler):
+async def test_no_matches(test_handler):
     """Test no matches work correctly."""
     queries = [
         "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
@@ -1165,25 +1171,25 @@ async def test_no_matches(test_query_handler):
         "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)"
     ]
     for q in queries:
-        resp = await test_query_handler.normalize(q)
+        resp = await test_handler.normalize(q)
         assert resp.type == "VariationDescriptor", q
         assert resp.variation.type == "Text", q
         assert resp.label == q.strip(), q
 
-    resp = await test_query_handler.normalize("clinvar:10")
+    resp = await test_handler.normalize("clinvar:10")
     assert resp.type == "VariationDescriptor"
     assert resp.label == "clinvar:10"
     assert resp.variation.type == "Text"
     assert resp.variation.definition == "clinvar:10"
     assert resp.variation.id == "ga4gh:VT.xw9m9LZAyn6Z2-GPGwcpDT0ixqCm5g36"
 
-    resp = await test_query_handler.normalize("   ")
+    resp = await test_handler.normalize("   ")
     assert resp is None
 
-    resp = await test_query_handler.normalize("")
+    resp = await test_handler.normalize("")
     assert resp is None
 
-    resp = await test_query_handler.normalize(None)
+    resp = await test_handler.normalize(None)
     assert resp is None
 
 
