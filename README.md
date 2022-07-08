@@ -23,44 +23,49 @@ Variation Normalization is limited to the following types of variants:
 * gnomAD-style VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
   * **genomic (g.)**: substitution, deletion, insertion
 
+Variation Normalizer accepts input from GRCh37 or GRCh8 assemblies.
+
 We are working towards adding more types of variations, coordinates, and representations.
 
 ### Endpoints
-#### /to_vrs
+
 The `/to_vrs` endpoint returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/1.2.0/terms_and_model.html#variation).
 
-The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation.
+The `/normalize` endpoint returns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) containing the MANE Transcript, if one is found. If a genomic query is not given a gene, `normalize` will return its GRCh38 representation. Variation Normalizer relies on [UTA Tools](https://github.com/GenomicMedLab/uta-tools) for retrieving MANE Transcript data. More information on the transcript selection algorithm can be found [here](https://github.com/GenomicMedLab/uta-tools/blob/main/docs/TranscriptSelectionPriority.md).
 
-The steps for retrieving MANE Transcript data is as follows:
-1. Map starting annotation layer to genomic
-2. Liftover to preferred GRCh38\
-    *We only support lifting over from GRCh37.*
-3. Select preferred compatible annotation
-    1. MANE Select
-    2. MANE Plus Clinical
-    3. Longest Compatible Remaining Transcript
-4. Map back to starting annotation layer
+## Developer Instructions
 
-## Backend Services
+Clone the repo:
+```
+git clone https://github.com/cancervariants/variation-normalization.git
+cd variation-normalization
+```
+
+For a development install, we recommend using Pipenv. See the
+[pipenv docs](https://pipenv-fork.readthedocs.io/en/latest/#install-pipenv-today)
+for direction on installing pipenv in your compute environment.
+
+Once installed, from the project root dir, just run:
+
+```commandline
+pipenv shell
+pipenv lock && pipenv sync
+pipenv install --dev
+```
+
+### Backend Services
 
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
-Once pipenv is installed:
-```commandline
-pipenv shell
-pipenv lock
-pipenv sync
-```
-
-### Gene Normalizer
+#### Gene Normalizer
 
 Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
 
-You must also have Gene Normalization's DynamoDB running for the application to work.
+You must also have Gene Normalization's DynamoDB running in a separate terminal for the application to work.
 
-For more information about the gene-normalizer, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
+For more information about the gene-normalizer and how to load the database, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
-### SeqRepo
+#### SeqRepo
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
 
 Variation Normalizer uses seqrepo to retrieve sequences at given positions on a transcript.
@@ -70,13 +75,23 @@ From the _root_ directory:
 pip install seqrepo
 sudo mkdir /usr/local/share/seqrepo
 sudo chown $USER /usr/local/share/seqrepo
-seqrepo pull -i 2021-01-29
+seqrepo pull -i 2021-01-29  # Replace with latest version using `seqrepo list-remote-instances` if outdated
 ```
 
-### UTA
-Variation Normalizer also uses [uta](https://github.com/biocommons/uta).
+If you get an error similar to the one below:
+```
+PermissionError: [Error 13] Permission denied: '/usr/local/share/seqrepo/2021-01-29._fkuefgd' -> '/usr/local/share/seqrepo/2021-01-29'
+```
 
-Variation Normalizer uses UTA to retrieve MANE Transcript data.
+You will want to do the following:\
+(*Might not be ._fkuefgd, so replace with your error message path*)
+```console
+sudo mv /usr/local/share/seqrepo/2021-01-29._fkuefgd /usr/local/share/seqrepo/2021-01-29
+exit
+```
+
+#### UTA
+Variation Normalizer also uses [UTA Tools](https://github.com/GenomicMedLab/uta-tools) which uses [UTA](https://github.com/biocommons/uta) as the underlying PostgreSQL database.
 
 _The following commands will likely need modification appropriate for the installation environment._
 1. Install [PostgreSQL](https://www.postgresql.org/)
@@ -95,13 +110,13 @@ curl -O http://dl.biocommons.org/uta/$UTA_VERSION
 gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5433
 ```
 
+##### UTA Installation Issues
+If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
+
+##### Connecting to the UTA database
 To connect to the UTA database, you can use the default url (`postgresql://uta_admin@localhost:5433/uta/uta_20210129`). If you use the default url, you must either set the password using environment variable `UTA_PASSWORD` or setting the parameter `db_pwd` in the UTA class.
 
-If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host/database/schema`.
-
-### PyLiftover
-
-Variation Normalizer uses [PyLiftover](https://github.com/konstantint/pyliftover) to convert GRCh37 coordinates to GRCh38 coordinates.
+If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host:port/database/schema`.
 
 ## Starting the Variation Normalization Service Locally
 `gene-normalizer`s dynamodb and the `uta` database must be running.
