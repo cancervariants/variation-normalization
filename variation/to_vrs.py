@@ -1,13 +1,17 @@
 """Module for to_vrs endpoint."""
-from typing import Tuple, Optional, List, Union
+from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import unquote
 
-from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
     VariationSet, Text
-from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
-    MANETranscriptMappings, MANETranscript
+from ga4gh.vrs import models
+from ga4gh.core import ga4gh_identify
+from uta_tools.schemas import ResidueMode
+from uta_tools.data_sources import SeqRepoAccess
+from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
+from variation.schemas.normalize_response_schema\
+    import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
@@ -18,55 +22,31 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.vrs_representation import VRSRepresentation
 
 
-class ToVRS:
+class ToVRS(VRSRepresentation):
     """The class for translating variation strings to VRS representations."""
 
-    def __init__(self, tokenizer: Tokenize, classifier: Classify,
-                 seqrepo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol, amino_acid_cache: AminoAcidCache,
-                 uta: UTADatabase, mane_transcript_mappings: MANETranscriptMappings,
-                 mane_transcript: MANETranscript, validator: Validate,
-                 translator: Translate,
-                 gene_normalizer: GeneQueryHandler,
-                 hgvs_dup_del_mode: HGVSDupDelMode) -> None:
-        """Initialize the ToVRS class.
+    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+                 tokenizer: Tokenize, classifier: Classify, validator: Validate,
+                 translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode) -> None:
+        """Initialize the ToVrsAndVrsatile class.
 
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param TranscriptMappings transcript_mappings: Transcript mappings
-            data class
-        :param GeneSymbol gene_symbol: Class for identifying gene symbols
-        :param AminoAcidCache amino_acid_cache: Amino Acid data class
-        :param UTADatabase uta: UTA DB and queries
-        :param MANETranscriptMappings mane_transcript_mappings: Class for
-            getting mane transcript data from gene
-        :param MANETranscript mane_transcript: Mane transcript data class
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
-        :param GeneQueryHandler gene_normalizer: Gene normalizer access
         :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
             HGVS dup/del expressions
         """
+        super().__init__(dp, seqrepo_access)
         self.tokenizer = tokenizer
         self.classifier = classifier
-        self.seq_repo_access = seqrepo_access
-        self.transcript_mappings = transcript_mappings
-        self.gene_symbol = gene_symbol
-        self.amino_acid_cache = amino_acid_cache
-        self.uta = uta
-        self.mane_transcript_mappings = mane_transcript_mappings
-        self.mane_transcript = mane_transcript
         self.validator = validator
         self.translator = translator
-        self.gene_normalizer = gene_normalizer
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     async def get_validations(
@@ -174,4 +154,53 @@ class ToVRS:
                     translations.append(result)
             if not translations and not warnings:
                 warnings.append("Unable to validate variation")
+        return translations, warnings
+
+    def get_ref_allele_seq(self, allele: Dict,
+                           identifier: str) -> Optional[str]:
+        """Return ref allele seq for transcript.
+
+        :param Dict allele: VRS Allele object
+        :param str identifier: Identifier for allele
+        :return: Ref seq allele
+        """
+        start = None
+        end = None
+        interval = allele["location"]["interval"]
+        ival_type = interval["type"]
+        if ival_type == "SequenceInterval":
+            if interval["start"]["type"] == "Number":
+                start = interval["start"]["value"]
+                end = interval["end"]["value"]
+
+                if start == end:
+                    return None
+
+        if start is None and end is None:
+            return None
+
+        ref, _ = self.seqrepo_access.get_reference_sequence(
+            identifier, start, end, residue_mode=ResidueMode.INTER_RESIDUE)
+
+        return ref
+
+    async def to_vrs(self, q: str)\
+        -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber], List[Text],
+                                List[Haplotype], List[VariationSet]]],
+                 Optional[List[str]]]:
+        """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
+
+        :param str q: The variation to translate
+        :return: Validated VRS Variations and list of warnings
+        """
+        validations, warnings = await self.get_validations(q)
+        translations, warnings = self.get_translations(validations, warnings)
+
+        if not translations:
+            if q and q.strip():
+                text = models.Text(definition=q, type="Text")
+                text._id = ga4gh_identify(text)
+                translations = [Text(**text.as_dict())]
+            else:
+                translations = None
         return translations, warnings
