@@ -237,54 +237,54 @@ async def test_to_canonical_variation_deletion(
     """Test that to_canonical_variation works correctly for deletions"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/17014/?new_evidence=true
     q = " NC_000013.11:20189346:GGG:GG "  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="spdi")
-    assert resp == variation1_lse
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="spdi")
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
     q = " NC_000013.10:20763485:GGG:GG "  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", do_liftover=True)
-    assert resp == variation1_lse
-    assert w == []
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
     q = " NC_000013.11:g.20189349del "  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="hgvs")
-    assert resp == variation1_lse
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="hgvs")
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
     q = " NC_000013.10:g.20763488del "  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)
-    assert resp == variation1_lse
-    assert w == []
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
     # Testing hgvs dup del mode params
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="default")
-    assert resp == variation1_lse
-    assert w == []
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="absolute_cnv",
         baseline_copies=3)
-    assert resp == variation1_abs_cnv
-    assert w == []
+    assert resp.canonical_variation == variation1_abs_cnv
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
         relative_copy_class="complete loss")
-    assert resp == variation1_rel_cnv
-    assert w == []
+    assert resp.canonical_variation == variation1_rel_cnv
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="repeated_seq_expr")
-    assert resp == variation1_rse
-    assert w == []
+    assert resp.canonical_variation == variation1_rse
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="literal_seq_expr")
-    assert resp == variation1_lse
-    assert w == []
+    assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
 
 
 @pytest.mark.asyncio
@@ -292,52 +292,52 @@ async def test_to_canonical_variation_substitution(test_handler, variation2):
     """Test that to_canonical_variation works correctly for substitutions"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/13961/
     q = "NC_000007.13:140453135:A:T"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", complement=True, do_liftover=True)
-    assert resp == variation2
-    assert w == []
+    assert resp.canonical_variation == variation2
+    assert resp.warnings == []
 
     q = "NC_000007.14:140753335:A:T"  # 38
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", complement=True)
-    assert resp == variation2
-    assert w == []
+    assert resp.canonical_variation == variation2
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", complement=False)
     cpy_variation2 = copy.deepcopy(variation2)
     cpy_variation2.complement = False
     cpy_variation2.id = "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9"
-    assert resp == cpy_variation2
-    assert w == []
+    assert resp.canonical_variation == cpy_variation2
+    assert resp.warnings == []
 
     q = "NC_000007.13:g.140453136A>T"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", complement=True, do_liftover=True)
-    assert resp == variation2
-    assert w == []
+    assert resp.canonical_variation == variation2
+    assert resp.warnings == []
 
     q = "NC_000007.14:g.140753336A>T"  # 38
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", complement=True)
-    assert resp == variation2
-    assert w == []
+    assert resp.canonical_variation == variation2
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", complement=False)
     cpy_variation2 = copy.deepcopy(variation2)
     cpy_variation2.complement = False
     cpy_variation2.id = "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9"
-    assert resp == cpy_variation2
-    assert w == []
+    assert resp.canonical_variation == cpy_variation2
+    assert resp.warnings == []
 
     # HGVS Dup Del Mode should not affect
     for mode in [m.value for m in HGVSDupDelModeEnum.__members__.values()]:
-        resp, w = await test_handler.to_canonical_variation(
+        resp = await test_handler.to_canonical_variation(
             q, fmt="hgvs", complement=True, hgvs_dup_del_mode=mode,
             baseline_copies=2)
-        assert resp == variation2
-        assert w == []
+        assert resp.canonical_variation == variation2
+        assert resp.warnings == []
 
 
 @pytest.mark.asyncio
@@ -348,60 +348,60 @@ async def test_to_canonical_variation_duplication(
     """Test that to_canonical_variation works correctly for duplications"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/44985/
     q = "NC_000017.10:g.37880993_37880994insGCTTACGTGATG"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)
-    assert resp == variation3_lse
-    assert w == []
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
     q = "NC_000017.11:g.39724740_39724741insGCTTACGTGATG"  # 38
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)  # even tho it's set it wont liftover
-    assert resp == variation3_lse
-    assert w == []
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
     q = "NC_000017.11:39724731:TACGTGATGGCT:TACGTGATGGCTTACGTGATGGCT"  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="spdi")
-    assert resp == variation3_lse
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="spdi")
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
     q = "NC_000017.11:g.39724732_39724743dup"  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="hgvs")
-    assert resp == variation3_lse
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="hgvs")
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
     q = "NC_000017.10:g.37880985_37880996dup"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)
-    assert resp == variation3_lse
-    assert w == []
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
     # Testing hgvs dup del mode params
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="default")
-    assert resp == variation3_lse
-    assert w == []
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="absolute_cnv",
         baseline_copies=1)
-    assert resp == variation3_abs_cnv
-    assert w == []
+    assert resp.canonical_variation == variation3_abs_cnv
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
         relative_copy_class="high-level gain")
-    assert resp == variation3_rel_cnv
-    assert w == []
+    assert resp.canonical_variation == variation3_rel_cnv
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="repeated_seq_expr")
-    assert resp == variation3_rse
-    assert w == []
+    assert resp.canonical_variation == variation3_rse
+    assert resp.warnings == []
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="literal_seq_expr")
-    assert resp == variation3_lse
-    assert w == []
+    assert resp.canonical_variation == variation3_lse
+    assert resp.warnings == []
 
 
 @pytest.mark.asyncio
@@ -409,84 +409,86 @@ async def test_to_canonical_variation_insertions(test_handler, variation4):
     """Test that to_canonical_variation works correctly for duplications"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/440270/
     q = "NC_000001.10:g.2160641_2160642insCTC"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True)
-    assert resp == variation4
-    assert w == []
+    assert resp.canonical_variation == variation4
+    assert resp.warnings == []
 
     q = "NC_000001.11:g.2229202_2229203insCTC"  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="hgvs")
-    assert resp == variation4
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="hgvs")
+    assert resp.canonical_variation == variation4
+    assert resp.warnings == []
 
     # HGVS Dup Del Mode should not affect
     for mode in [m.value for m in HGVSDupDelModeEnum.__members__.values()]:
-        resp, w = await test_handler.to_canonical_variation(
+        resp = await test_handler.to_canonical_variation(
             q, fmt="hgvs", hgvs_dup_del_mode=mode, baseline_copies=2)
-        assert resp == variation4
-        assert w == []
+        assert resp.canonical_variation == variation4
+        assert resp.warnings == []
 
     q = "NC_000001.10:2160640:C:CCTC"  # 37
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", do_liftover=True)
-    assert resp == variation4
-    assert w == []
+    assert resp.canonical_variation == variation4
+    assert resp.warnings == []
 
     q = "NC_000001.11:2229201:C:CCTC"  # 38
-    resp, w = await test_handler.to_canonical_variation(q, fmt="spdi")
-    assert resp == variation4
-    assert w == []
+    resp = await test_handler.to_canonical_variation(q, fmt="spdi")
+    assert resp.canonical_variation == variation4
+    assert resp.warnings == []
 
 
 @pytest.mark.asyncio
 async def test_invalid(test_handler):
     """Test that invalid queries return the correct response"""
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000013.11:201845654659346:GGG:GG", fmt="spdi")
-    assert resp.variation.type == "Text"
-    assert w == ["start out of range (201845654659346)"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["start out of range (201845654659346)"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000013.11:2018459346:GGG:GG", fmt="spdi")
-    assert resp.variation.type == "Text"
-    assert w == ["Position, 2018459346, does not exist on NC_000013.11"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["Position, 2018459346, does not exist on NC_000013.11"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000013.1:20189346:GGG:GG", fmt="spdi")
-    assert resp.variation.type == "Text"
-    assert w == ["vrs-python translator raised error: seqrepo could not translate "
-                 "identifier 'refseq:NC_000013.1'"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["vrs-python translator raised error: seqrepo could not "
+                             "translate identifier 'refseq:NC_000013.1'"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NP_004324.2:p.Val600Glu", fmt="spdi")
-    assert resp.variation.type == "Text"
-    assert w == ["NP_004324.2:p.Val600Glu is not a valid SPDI expression"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["NP_004324.2:p.Val600Glu is not a valid SPDI expression"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000013.11:20189346:GCG:GG", fmt="spdi")
-    assert resp.variation.type == "Text"
-    assert w ==\
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings ==\
            ["Expected to find reference sequence GCG but found GGG on NC_000013.11"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000007.14:140753335:A:T", fmt="hgvs")
-    assert resp.variation.type == "Text"
-    assert w == ["NC_000007.14:140753335:A:T is not a valid HGVS expression"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == \
+        ["NC_000007.14:140753335:A:T is not a valid HGVS expression"]
 
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         "NC_000007.14:g.140753336464564654A>T", fmt="hgvs")
-    assert resp.variation.type == "Text"
-    assert w == ["Unable to find valid result for classifications:"
-                 " {'genomic substitution'}"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["Unable to find valid result for classifications:"
+                             " {'genomic substitution'}"]
 
     q = "NC_000001.10:2160640:A:ACTC"
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", do_liftover=True)
-    assert resp.variation.type == "Text"
-    assert w == ["Expected to find reference sequence A but found C on NC_000001.11"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == \
+        ["Expected to find reference sequence A but found C on NC_000001.11"]
 
     q = " NC_000013.11:g.20189349del "  # 38
-    resp, w = await test_handler.to_canonical_variation(
+    resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", hgvs_dup_del_mode="absolute_cnv")
-    assert resp.variation.type == "Text"
-    assert w == ["absolute_cnv requires `baseline_copies`"]
+    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.warnings == ["absolute_cnv requires `baseline_copies`"]

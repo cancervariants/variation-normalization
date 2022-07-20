@@ -21,8 +21,7 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
     ToCanonicalVariationService, TranslateIdentifierService
-from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvQuery, \
-    ParsedToAbsCnvService
+from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
@@ -89,17 +88,8 @@ async def to_vrs(q: str = Query(..., description=q_description)) -> ToVRSService
     :param str q: The variation to translate
     :return: ToVRSService model for variation
     """
-    translations, warnings = await query_handler.to_vrs_handler.to_vrs(unquote(q))
-
-    return ToVRSService(
-        search_term=q,
-        variations=translations,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        ),
-        warnings=warnings
-    )
+    resp = await query_handler.to_vrs_handler.to_vrs(unquote(q))
+    return resp
 
 
 normalize_summary = "Given variation, return VRSATILE compatible object."
@@ -146,29 +136,18 @@ async def normalize(
     normalize_resp = await query_handler.normalize_handler.normalize(
         unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
         baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
-    warnings = query_handler.normalize_handler.warnings if \
-        query_handler.normalize_handler.warnings else None
-
-    return NormalizeService(
-        variation_query=q,
-        variation_descriptor=normalize_resp,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
+    return normalize_resp
 
 
 @app.get("/variation/translate_identifier",
-         summary="Given an identifier, use SeqRepo to return a list of aliases.",  # noqa: E501
+         summary="Given an identifier, use SeqRepo to return a list of aliases.",
          response_description="A response to a validly-formed query.",
          response_model=TranslateIdentifierService,
          description="Return list of aliases for an identifier",
          tags=[Tags.SEQREPO]
          )
 def translate_identifier(
-        identifier: str = Query(..., description="The identifier to find aliases for"),  # noqa: E501
+        identifier: str = Query(..., description="The identifier to find aliases for"),
         target_namespaces: Optional[str] = Query(None, description="The namespaces of the aliases, separated by commas")  # noqa: E501
 ) -> TranslateIdentifierService:
     """Return data containing identifier aliases.
@@ -182,7 +161,7 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(  # noqa: E501
+        aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(
             identifier, target_namespaces=target_namespaces)
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
@@ -281,18 +260,8 @@ async def gnomad_vcf_to_protein(
     :return: NormalizeService for variation
     """
     q = unquote(q.strip())
-    resp, warnings =\
-        await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
-
-    return NormalizeService(
-        variation_query=q,
-        variation_descriptor=resp,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
+    resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
+    return resp
 
 
 complement_descr = "This field indicates that a categorical variation is defined to " \
@@ -348,20 +317,11 @@ async def to_canonical_variation(
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
-    variation, warnings = await query_handler.to_canonical_handler.to_canonical_variation(  # noqa: E501
+    resp = await query_handler.to_canonical_handler.to_canonical_variation(
         q, fmt, complement, do_liftover=do_liftover,
         hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
         relative_copy_class=relative_copy_class)
-
-    return ToCanonicalVariationService(
-        query=q,
-        canonical_variation=variation,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
+    return resp
 
 
 def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],
@@ -507,18 +467,9 @@ async def hgvs_to_absolute_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToAbsoluteCopyNumberService
     """
-    variation, warnings = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(  # noqa: E501
+    resp = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(
         unquote(hgvs_expr.strip()), baseline_copies, do_liftover)
-
-    return HgvsToAbsoluteCopyNumberService(
-        hgvs_expr=hgvs_expr,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        ),
-        absolute_copy_number=variation
-    )
+    return resp
 
 
 @app.get("/variation/hgvs_to_relative_copy_number",
@@ -542,18 +493,9 @@ async def hgvs_to_relative_copy_number(
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToRelativeCopyNumberService
     """
-    variation, warnings = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(  # noqa: E501
+    resp = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(
         unquote(hgvs_expr.strip()), relative_copy_class, do_liftover)
-
-    return HgvsToRelativeCopyNumberService(
-        hgvs_expr=hgvs_expr,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        ),
-        relative_copy_number=variation
-    )
+    return resp
 
 
 assembly_descr = "Assembly. If `accession` is set, will ignore `assembly` and `chr`. "\
@@ -597,16 +539,6 @@ def parsed_to_abs_cnv(
         both `assembly` and `chr`.
     :return: Tuple containing Absolute Copy Number variation and list of warnings
     """
-    variation, warnings = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
+    resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
         start, end, total_copies, assembly, chr, accession)
-    query = ParsedToAbsCnvQuery(assembly=assembly, chr=chr, accession=accession,
-                                start=start, end=end, total_copies=total_copies)
-    return ParsedToAbsCnvService(
-        query=query,
-        absolute_copy_number=variation,
-        warnings=warnings,
-        service_meta_=ServiceMeta(
-            version=__version__,
-            response_datetime=datetime.now()
-        )
-    )
+    return resp

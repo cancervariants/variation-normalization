@@ -2,6 +2,7 @@
 from typing import Optional, List, Tuple, Dict
 import copy
 import json
+from datetime import datetime
 
 import python_jsonschema_objects
 from ga4gh.vrsatile.pydantic.vrs_models import Text
@@ -16,7 +17,8 @@ from uta_tools.data_sources import UTADatabase, SeqRepoAccess
 from variation.classifiers.classify import Classify
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.normalize_response_schema import ToCanonicalVariationFmt
+from variation.schemas.normalize_response_schema import ServiceMeta, \
+    ToCanonicalVariationFmt, ToCanonicalVariationService
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS,\
@@ -26,6 +28,7 @@ from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
 from variation.utils import get_mane_valid_result, no_variation_entered
 from variation.validators.validate import Validate
+from variation.version import __version__
 
 
 class ToCanonicalVariation(ToVRS):
@@ -61,7 +64,7 @@ class ToCanonicalVariation(ToVRS):
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
         relative_copy_class: Optional[RelativeCopyClass] = None,
         baseline_copies: Optional[int] = None
-    ) -> Tuple[Optional[CanonicalVariation], List]:
+    ) -> ToCanonicalVariationService:
         """Given query as ToCanonicalVariationFmt, return canonical variation
 
         :param str q: Query to translate to canonical variation
@@ -76,60 +79,70 @@ class ToCanonicalVariation(ToVRS):
             `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
         :param RelativeCopyClass relative_copy_class: The relative copy class
         :param Optional[int] baseline_copies: Baseline copies number
-        :return: Canonical Variation and list of warnings
+        :return: ToCanonicalVariationService containing Canonical Variation and
+            list of warnings
         """
         q = q.strip()
-        if not q:
-            return no_variation_entered()
-        warnings = list()
         variation = None
-
-        if fmt == ToCanonicalVariationFmt.SPDI:
-            variation, warnings = await self.spdi_to_canonical_variation(
-                q, warnings, do_liftover=do_liftover)
-        elif fmt == ToCanonicalVariationFmt.HGVS:
-            variation, warnings = await self.hgvs_to_canonical_variation(
-                q, warnings, do_liftover=do_liftover,
-                hgvs_dup_del_mode=hgvs_dup_del_mode,
-                relative_copy_class=relative_copy_class,
-                baseline_copies=baseline_copies)
-        else:
-            warnings = [f"fmt, {fmt}, is not supported. "
-                        f"Must be either `spdi` or `hgvs`"]
-
-        if variation and not warnings:
-            variation_type = variation["type"]
-            if variation_type == "Allele":
-                variation["location"]["_id"] = ga4gh_identify(
-                    models.SequenceLocation(**variation["location"]))
-            elif variation_type in ["RelativeCopyNumber", "AbsoluteCopyNumber"]:
-                variation["subject"]["_id"] = ga4gh_identify(
-                    models.SequenceLocation(**variation["subject"]))
+        warnings = list()
+        if q:
+            if fmt == ToCanonicalVariationFmt.SPDI:
+                variation, warnings = await self.spdi_to_canonical_variation(
+                    q, warnings, do_liftover=do_liftover)
+            elif fmt == ToCanonicalVariationFmt.HGVS:
+                variation, warnings = await self.hgvs_to_canonical_variation(
+                    q, warnings, do_liftover=do_liftover,
+                    hgvs_dup_del_mode=hgvs_dup_del_mode,
+                    relative_copy_class=relative_copy_class,
+                    baseline_copies=baseline_copies)
             else:
-                warnings = [f"Variation type, {variation_type}, not supported"]
+                warnings = [f"fmt, {fmt}, is not supported. "
+                            f"Must be either `spdi` or `hgvs`"]
 
-        if not variation:
-            text = models.Text(definition=q, type="Text")
-            text._id = ga4gh_identify(text)
-            variation = Text(**text.as_dict()).dict(by_alias=True)
+            if variation and not warnings:
+                variation_type = variation["type"]
+                if variation_type == "Allele":
+                    variation["location"]["_id"] = ga4gh_identify(
+                        models.SequenceLocation(**variation["location"]))
+                elif variation_type in ["RelativeCopyNumber", "AbsoluteCopyNumber"]:
+                    variation["subject"]["_id"] = ga4gh_identify(
+                        models.SequenceLocation(**variation["subject"]))
+                else:
+                    warnings = [f"Variation type, {variation_type}, not supported"]
 
-        canonical_variation = {
-            "type": "CanonicalVariation",
-            "complement": complement,
-            "variation": variation
-        }
+            if not variation:
+                text = models.Text(definition=q, type="Text")
+                text._id = ga4gh_identify(text)
+                variation = Text(**text.as_dict()).dict(by_alias=True)
 
-        cpy_canonical_variation = copy.deepcopy(canonical_variation)
-        cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
-        serialized = json.dumps(
-            cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
-            indent=None
-        ).encode("utf-8")
-        digest = sha512t24u(serialized)
-        # VCC = variation categorical canonical
-        canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
-        canonical_variation = CanonicalVariation(**canonical_variation)
-        return canonical_variation, warnings
+            canonical_variation = {
+                "type": "CanonicalVariation",
+                "complement": complement,
+                "variation": variation
+            }
+
+            cpy_canonical_variation = copy.deepcopy(canonical_variation)
+            cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
+            serialized = json.dumps(
+                cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
+                indent=None
+            ).encode("utf-8")
+            digest = sha512t24u(serialized)
+            # VCC = variation categorical canonical
+            canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
+            canonical_variation = CanonicalVariation(**canonical_variation)
+        else:
+            canonical_variation, warnings = no_variation_entered()
+
+        return ToCanonicalVariationService(
+            query=q,
+            canonical_variation=canonical_variation,
+            warnings=warnings,
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
 
     async def spdi_to_canonical_variation(
         self, q: str, warnings: List, do_liftover: bool = False
