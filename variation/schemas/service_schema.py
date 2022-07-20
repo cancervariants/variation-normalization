@@ -33,7 +33,7 @@ class ParsedToAbsCnvQuery(BaseModel):
 class ParsedToAbsCnvService(ServiceResponse):
     """A response for translating parsed components to Absolute Copy Number"""
 
-    query: ParsedToAbsCnvQuery
+    query: Optional[ParsedToAbsCnvQuery] = None
     absolute_copy_number: Union[Text, AbsoluteCopyNumber]
 
     class Config:
