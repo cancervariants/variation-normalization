@@ -1,8 +1,8 @@
 """Module for Variation Normalization."""
 from typing import Optional
 from urllib.parse import quote
+from datetime import datetime
 
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from gene.query import QueryHandler as GeneQueryHandler
 from uta_tools.data_sources import SeqRepoAccess, UTADatabase
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
@@ -17,8 +17,9 @@ from variation.utils import get_mane_valid_result, no_variation_entered, \
 from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+    import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from variation.version import __version__
 
 
 class Normalize(ToVRSATILE):
@@ -44,14 +45,13 @@ class Normalize(ToVRSATILE):
         super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.uta = uta
-        self.warnings = list()
 
     async def normalize(
         self, q: str,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,
         baseline_copies: Optional[int] = None,
         relative_copy_class: Optional[RelativeCopyClass] = None
-    ) -> Optional[VariationDescriptor]:
+    ) -> NormalizeService:
         """Normalize a given variation.
 
         :param str q: The variation to normalize
@@ -65,32 +65,38 @@ class Normalize(ToVRSATILE):
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
             for HGVS duplications and deletions represented as Relative Copy Number
             Variation.
-        :return: An variation descriptor for a valid result if one exists.
-            Else, None.
+        :return: NormalizeService with variation descriptor and warnings
         """
+        vd = None
         warnings = list()
         if not q:
-            resp, warnings = no_variation_entered()
+            vd, warnings = no_variation_entered()
         else:
             validations, warnings = await self.get_validations(
                 q, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
                 relative_copy_class=relative_copy_class)
-            if not validations:
-                self.warnings = warnings
-                return None
 
-            label = q.strip()
-            _id = f"normalize.variation:{quote(' '.join(label.split()))}"
-            if len(validations.valid_results) > 0:
-                valid_result = get_mane_valid_result(q, validations, warnings)
-                resp, warnings = self.get_variation_descriptor(
-                    label, valid_result.variation, valid_result, _id, warnings)
-            else:
-                if not label:
-                    resp, warnings = no_variation_entered()
+            if validations:
+                label = q.strip()
+                _id = f"normalize.variation:{quote(' '.join(label.split()))}"
+                if len(validations.valid_results) > 0:
+                    valid_result = get_mane_valid_result(q, validations, warnings)
+                    vd, warnings = self.get_variation_descriptor(
+                        label, valid_result.variation, valid_result, _id, warnings)
                 else:
-                    resp, warnings = text_variation_resp(label, _id, warnings)
-        self.warnings = warnings
-        return resp
+                    if not label:
+                        vd, warnings = no_variation_entered()
+                    else:
+                        vd, warnings = text_variation_resp(label, _id, warnings)
+
+        return NormalizeService(
+            variation_query=q,
+            variation_descriptor=vd,
+            warnings=warnings,
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )

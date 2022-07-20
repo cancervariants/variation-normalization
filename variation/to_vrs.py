@@ -1,6 +1,7 @@
 """Module for to_vrs endpoint."""
 from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import unquote
+from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
     VariationSet, Text
@@ -11,11 +12,12 @@ from uta_tools.data_sources import SeqRepoAccess
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
 from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+    import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
     RelativeCopyClass
+from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -23,6 +25,7 @@ from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
 from variation.vrs_representation import VRSRepresentation
+from variation.version import __version__
 
 
 class ToVRS(VRSRepresentation):
@@ -184,14 +187,11 @@ class ToVRS(VRSRepresentation):
 
         return ref
 
-    async def to_vrs(self, q: str)\
-        -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber], List[Text],
-                                List[Haplotype], List[VariationSet]]],
-                 Optional[List[str]]]:
+    async def to_vrs(self, q: str) -> ToVRSService:
         """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
 
         :param str q: The variation to translate
-        :return: Validated VRS Variations and list of warnings
+        :return: ToVRSService containing VRS variations and warnings
         """
         validations, warnings = await self.get_validations(q)
         translations, warnings = self.get_translations(validations, warnings)
@@ -203,4 +203,13 @@ class ToVRS(VRSRepresentation):
                 translations = [Text(**text.as_dict())]
             else:
                 translations = None
-        return translations, warnings
+
+        return ToVRSService(
+            search_term=q,
+            variations=translations,
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            ),
+            warnings=warnings
+        )
