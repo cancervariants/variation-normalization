@@ -68,11 +68,15 @@ def custom_openapi() -> Dict:
 
 app.openapi = custom_openapi
 
-translate_summary = "Translate a variation to a VRS compatible object."
-translate_description = ("Translate a variation into Variation Representation "
-                         "Specification (VRS) compatible representations.")
+translate_summary = ("Translate a human readable variation description to VRS"
+                     " variation(s).")
+translate_description = ("Translate a human readable variation description to "
+                         "VRS variation(s)."
+                         " Performs fully-justified allele normalization. "
+                         " Does not do any liftover operations or make any inferences "
+                         "about the query.")
 translate_response_description = "A  response to a validly-formed query."
-q_description = "Variation to translate."
+q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
 
 
 @app.get("/variation/to_vrs",
@@ -83,20 +87,26 @@ q_description = "Variation to translate."
          response_model_exclude_none=True
          )
 async def to_vrs(q: str = Query(..., description=q_description)) -> ToVRSService:
-    """Return a VRS-like representation of all validated variations for the search term.  # noqa: E501, D400
+    """Translate a human readable variation description to VRS variation(s).
+        Performs fully-justified allele normalization. Does not do any liftover
+        operations or make any inferences about the query.
 
-    :param str q: The variation to translate
+    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
     :return: ToVRSService model for variation
     """
     resp = await query_handler.to_vrs_handler.to_vrs(unquote(q))
     return resp
 
 
-normalize_summary = "Given variation, return VRSATILE compatible object."
+normalize_summary = ("Normalizes and translates a human readable variation description "
+                     "to a single VRSATILE Variation Descriptor.")
 normalize_response_description = "A response to a validly-formed query."
-normalize_description = \
-    "Return VRSATILE compatible object for variation provided."
-q_description = "Variation to normalize."
+normalize_description = ("Normalizes and translates a human readable variation "
+                         "description to a single VRSATILE Variation Descriptor. "
+                         "Performs fully-justified allele normalization. Will liftover"
+                         " to GRCh38 and aligns to a priority transcript. Will make "
+                         "inferences about the query.")
+q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
 hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative_cnv`, "
                            "`repeated_seq_expr`, `literal_seq_expr`. This"
                            " parameter determines how to interpret HGVS "
@@ -119,18 +129,21 @@ async def normalize(
     relative_copy_class: Optional[RelativeCopyClass] = Query(
         None, description="The relative copy class for HGVS duplications and deletions represented as Relative Copy Number Variation.")  # noqa: E501
 ) -> NormalizeService:
-    """Return Value Object Descriptor for variation.
+    """Normalize and translate a human readable variation description to a single
+        VRSATILE Variation Descriptor. Performs fully-justified allele normalization.
+        Will liftover to GRCh38 and aligns to a priority transcript. Will make
+        inferences about the query.
 
-    :param str q: Variation to normalize
+    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
         Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
         `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
         expressions in VRS.
     :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
-        deletions
+        deletions. Required when `hgvs_dup_del_mode` is set to `absolute_cnv`.
     :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         for HGVS duplications and deletions represented as Relative Copy Number
-        Variation.
+        Variation. If not set, will use default `relative_copy_class` for query.
     :return: NormalizeService for variation
     """
     normalize_resp = await query_handler.normalize_handler.normalize(
@@ -234,12 +247,10 @@ def vrs_python_translate_from(
     )
 
 
-g_to_p_summary = "Given gnomad VCF, return VRSATILE compatible object on " \
-                 "protein coordinate."
+g_to_p_summary = "Given gnomad VCF, return VRSATILE object on protein coordinate."
 g_to_p_response_description = "A response to a validly-formed query."
 g_to_p_description = \
-    "Return VRSATILE compatible object on protein coordinate for " \
-    "variation provided."
+    "Return VRSATILE object on protein coordinate for variation provided."
 q_description = "gnomad VCF to normalize to protein variation."
 
 
@@ -278,9 +289,9 @@ baseline_copies_descr = "Baseline copies for duplication or deletion. Only used 
 
 
 @app.get("/variation/to_canonical_variation",
-         summary="Given SPDI or HGVS, return VRSATILE canonical variation",
+         summary="Given SPDI or HGVS, return VRSATILE Canonical Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRSATILE canonical variation object",
+         description="Return VRSATILE Canonical Variation",
          response_model=ToCanonicalVariationService,
          response_model_exclude_none=True,
          tags=[Tags.TO_CANONICAL])
@@ -447,9 +458,9 @@ async def vrs_python_to_hgvs(
 
 
 @app.get("/variation/hgvs_to_absolute_copy_number",
-         summary="Given HGVS expression, return absolute copy number variation",
+         summary="Given HGVS expression, return VRS Absolute Copy Number Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRS object",
+         description="Return VRS Absoluter Copy Number Variation",
          response_model=HgvsToAbsoluteCopyNumberService,
          response_model_exclude_none=True,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
@@ -473,9 +484,9 @@ async def hgvs_to_absolute_copy_number(
 
 
 @app.get("/variation/hgvs_to_relative_copy_number",
-         summary="Given HGVS expression, return relative copy number variation",
+         summary="Given HGVS expression, return VRS Relative Copy Number Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRS object",
+         description="Return VRS Relative Copy Number Variation",
          response_model=HgvsToRelativeCopyNumberService,
          response_model_exclude_none=True,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
@@ -510,7 +521,7 @@ total_copies_descr = "Total copies for Absolute Copy Number variation object"
 
 @app.get("/variation/parsed_to_abs_cnv",
          summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
-         "absolute copy number variation",
+         "VRS Absolute Copy Number Variation",
          response_description="A response to a validly-formed query.",
          description="Return VRS Absolute Copy Number Variation",
          response_model=ParsedToAbsCnvService,
