@@ -13,6 +13,7 @@ APP_ROOT = Path(__file__).resolve().parents[0]
 
 if "VARIATION_NORM_EB_PROD" in environ:
     environ["GENE_NORM_EB_PROD"] = "true"
+    environ["UTA_DB_PROD"] = "true"
     LOG_FN = "/tmp/variation.log"
 else:
     LOG_FN = "variation.log"
