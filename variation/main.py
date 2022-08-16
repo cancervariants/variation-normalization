@@ -68,6 +68,9 @@ def custom_openapi() -> Dict:
 
 app.openapi = custom_openapi
 
+to_vrs_untranslatable_descr = ("`True` returns VRS Text object when unable to translate"
+                               " or normalize query. `False` returns an empty list "
+                               "when unable to translate or normalize query.")
 translate_summary = ("Translate a human readable variation description to VRS"
                      " variation(s).")
 translate_description = ("Translate a human readable variation description to "
@@ -83,20 +86,30 @@ q_description = "Human readable variation description on GRCh37 or GRCh38 assemb
          summary=translate_summary,
          response_description=translate_response_description,
          response_model=ToVRSService,
-         description=translate_description,
-         response_model_exclude_none=True
+         description=translate_description
          )
-async def to_vrs(q: str = Query(..., description=q_description)) -> ToVRSService:
+async def to_vrs(
+    q: str = Query(..., description=q_description),
+    untranslatable_returns_text: bool = Query(False,
+                                              description=to_vrs_untranslatable_descr)
+) -> ToVRSService:
     """Translate a human readable variation description to VRS variation(s).
         Performs fully-justified allele normalization. Does not do any liftover
         operations or make any inferences about the query.
 
     :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` returns empty list when
+        unable to translate or normalize query.
     :return: ToVRSService model for variation
     """
-    resp = await query_handler.to_vrs_handler.to_vrs(unquote(q))
+    resp = await query_handler.to_vrs_handler.to_vrs(unquote(q),
+                                                     untranslatable_returns_text)
     return resp
 
+untranslatable_descr = ("`True` returns VRS Text object when unable to translate or "
+                        "normalize query. `False` returns `None` when unable to "
+                        "translate or normalize query.")
 
 normalize_summary = ("Normalizes and translates a human readable variation description "
                      "to a single VRSATILE Variation Descriptor.")
@@ -117,8 +130,7 @@ hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative
          summary=normalize_summary,
          response_description=normalize_response_description,
          response_model=NormalizeService,
-         description=normalize_description,
-         response_model_exclude_none=True
+         description=normalize_description
          )
 async def normalize(
     q: str = Query(..., description=q_description),
@@ -127,7 +139,8 @@ async def normalize(
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for HGVS duplications and deletions represented as Absolute Copy Number Variation"),  # noqa: E501
     relative_copy_class: Optional[RelativeCopyClass] = Query(
-        None, description="The relative copy class for HGVS duplications and deletions represented as Relative Copy Number Variation.")  # noqa: E501
+        None, description="The relative copy class for HGVS duplications and deletions represented as Relative Copy Number Variation."),  # noqa: E501
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> NormalizeService:
     """Normalize and translate a human readable variation description to a single
         VRSATILE Variation Descriptor. Performs fully-justified allele normalization.
@@ -144,11 +157,15 @@ async def normalize(
     :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         for HGVS duplications and deletions represented as Relative Copy Number
         Variation. If not set, will use default `relative_copy_class` for query.
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: NormalizeService for variation
     """
     normalize_resp = await query_handler.normalize_handler.normalize(
         unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
-        baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
+        baseline_copies=baseline_copies, relative_copy_class=relative_copy_class,
+        untranslatable_returns_text=untranslatable_returns_text)
     return normalize_resp
 
 
@@ -202,7 +219,6 @@ from_fmt_descr = "Format of input variation to translate. Must be one of `beacon
          response_description="A response to a validly-formed query.",
          description="Return VRS Allele object",
          response_model=TranslateFromService,
-         response_model_exclude_none=True,
          tags=[Tags.VRS_PYTHON])
 def vrs_python_translate_from(
     variation: str = Query(..., description="Variation to translate to VRS object."
@@ -259,19 +275,23 @@ q_description = "gnomad VCF to normalize to protein variation."
          response_description=g_to_p_response_description,
          description=g_to_p_description,
          response_model=NormalizeService,
-         response_model_exclude_none=True,
          tags=[Tags.TO_PROTEIN_VARIATION]
          )
 async def gnomad_vcf_to_protein(
-    q: str = Query(..., description=q_description)
+    q: str = Query(..., description=q_description),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> NormalizeService:
     """Return Value Object Descriptor for variation on protein coordinate.
 
     :param str q: gnomad VCF to normalize to protein variation.
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: NormalizeService for variation
     """
     q = unquote(q.strip())
-    resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
+    resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
+        q, untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -293,7 +313,6 @@ baseline_copies_descr = "Baseline copies for duplication or deletion. Only used 
          response_description="A response to a validly-formed query.",
          description="Return VRSATILE Canonical Variation",
          response_model=ToCanonicalVariationService,
-         response_model_exclude_none=True,
          tags=[Tags.TO_CANONICAL])
 async def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
@@ -307,7 +326,9 @@ async def to_canonical_variation(
         relative_copy_class: Optional[RelativeCopyClass] = Query(
             None, description=relative_copy_class_descr),
         baseline_copies: Optional[int] = Query(
-            None, description=baseline_copies_descr)
+            None, description=baseline_copies_descr),
+        untranslatable_returns_text: bool = Query(
+            False, description=untranslatable_descr)
 ) -> ToCanonicalVariationService:
     """Return categorical variation for canonical SPDI
 
@@ -325,13 +346,17 @@ async def to_canonical_variation(
         Only used when `fmt`=`hgvs` and Relative CNV.
     :param Optional[int] baseline_copies: Baseline copies number
         Only used when `fmt`=`hgvs` and Absolute CNV
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
     resp = await query_handler.to_canonical_handler.to_canonical_variation(
         q, fmt, complement, do_liftover=do_liftover,
         hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-        relative_copy_class=relative_copy_class)
+        relative_copy_class=relative_copy_class,
+        untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -364,7 +389,6 @@ def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],
                       " a VRS Allele object represented as a dict. `fmt` must be either"
                       " `spdi` or `hgvs`",
           response_model=TranslateToService,
-          response_model_exclude_none=True,
           tags=[Tags.VRS_PYTHON])
 async def vrs_python_translate_to(
         request_body: TranslateToQuery) -> TranslateToService:
@@ -415,7 +439,6 @@ to_hgvs_descr = "Return variation as HGVS expressions. Request body must"\
           response_description="A response to a validly-formed query.",
           description=to_hgvs_descr,
           response_model=TranslateToService,
-          response_model_exclude_none=True,
           tags=[Tags.VRS_PYTHON])
 async def vrs_python_to_hgvs(
         request_body: TranslateToHGVSQuery) -> TranslateToService:
@@ -462,24 +485,28 @@ async def vrs_python_to_hgvs(
          response_description="A response to a validly-formed query.",
          description="Return VRS Absoluter Copy Number Variation",
          response_model=HgvsToAbsoluteCopyNumberService,
-         response_model_exclude_none=True,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for duplication"),
     do_liftover: bool = Query(False, description="Whether or not to liftover "
-                              "to GRCh38 assembly.")
+                              "to GRCh38 assembly."),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> HgvsToAbsoluteCopyNumberService:
     """Given hgvs expression, return absolute copy number variation
 
     :param str hgvs_expr: HGVS expression
     :param Optional[int] baseline_copies: Baseline copies number
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: HgvsToAbsoluteCopyNumberService
     """
     resp = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(
-        unquote(hgvs_expr.strip()), baseline_copies, do_liftover)
+        unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
+        untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -488,24 +515,28 @@ async def hgvs_to_absolute_copy_number(
          response_description="A response to a validly-formed query.",
          description="Return VRS Relative Copy Number Variation",
          response_model=HgvsToRelativeCopyNumberService,
-         response_model_exclude_none=True,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
 async def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(
         ..., description="The relative copy class"),
     do_liftover: bool = Query(False, description="Whether or not to liftover "
-                              "to GRCh38 assembly.")
+                              "to GRCh38 assembly."),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> HgvsToRelativeCopyNumberService:
     """Given hgvs expression, return relative copy number variation
 
     :param str hgvs_expr: HGVS expression
     :param RelativeCopyClass relative_copy_class: Relative copy class
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: HgvsToRelativeCopyNumberService
     """
     resp = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(
-        unquote(hgvs_expr.strip()), relative_copy_class, do_liftover)
+        unquote(hgvs_expr.strip()), relative_copy_class, do_liftover,
+        untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -533,7 +564,8 @@ def parsed_to_abs_cnv(
     accession: Optional[str] = Query(None, description=accession_descr),
     start: int = Query(..., description=start_descr),
     end: int = Query(..., description=end_descr),
-    total_copies: int = Query(..., description=total_copies_descr)
+    total_copies: int = Query(..., description=total_copies_descr),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToAbsCnvService:
     """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
     Copy Number Variation
@@ -548,8 +580,12 @@ def parsed_to_abs_cnv(
     :param Optional[str] accession: Accession. If `accession` is set,
         will ignore `assembly` and `chr`. If `accession` not set, must provide
         both `assembly` and `chr`.
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
     :return: Tuple containing Absolute Copy Number variation and list of warnings
     """
     resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
-        start, end, total_copies, assembly, chr, accession)
+        start, end, total_copies, assembly, chr, accession,
+        untranslatable_returns_text=untranslatable_returns_text)
     return resp

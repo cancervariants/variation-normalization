@@ -1290,7 +1290,8 @@ async def test_invalid_cnv(test_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"
     resp = await test_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=True)
+        q, relative_copy_class="low-level gain", do_liftover=True,
+        untranslatable_returns_text=True)
     assert set(resp.warnings) == {"Unable to translate DAG1 g.49568695dup to copy number variation",  # noqa: E501
                                   "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.relative_copy_number.type == "Text"
@@ -1300,4 +1301,4 @@ async def test_invalid_cnv(test_handler):
         q, relative_copy_class="low-level gain", do_liftover=True)
     assert set(resp.warnings) == {"Unable to translate braf v600e to copy number variation",  # noqa: E501
                                   "braf v600e is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
-    assert resp.relative_copy_number.type == "Text"
+    assert resp.relative_copy_number is None

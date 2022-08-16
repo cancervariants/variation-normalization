@@ -15,7 +15,7 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
-from variation.utils import no_variation_entered, text_variation_resp
+from variation.utils import no_variation_entered, no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.token_response_schema import Nomenclature, Token, \
@@ -222,10 +222,15 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 aa_alt += self.codon_table.table[alt[3 * i:(3 * i) + 3]]
             return aa_alt
 
-    async def gnomad_vcf_to_protein(self, q: str) -> NormalizeService:
+    async def gnomad_vcf_to_protein(
+        self, q: str, untranslatable_returns_text: bool = False
+    ) -> NormalizeService:
         """Get protein consequence for gnomad vcf
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: Normalize Service containing variation descriptor and warnings
         """
         q = q.strip()
@@ -343,12 +348,15 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     vd, warnings = valid_list[0]
                 else:
                     if all_warnings:
-                        vd, warnings = text_variation_resp(q, _id, all_warnings)
+                        vd, warnings = no_variation_resp(q, _id, all_warnings,
+                                                         untranslatable_returns_text)
                     else:
-                        vd, warnings = text_variation_resp(
-                            q, _id, [f"Unable to get protein variation for {q}"])
+                        vd, warnings = no_variation_resp(
+                            q, _id, [f"Unable to get protein variation for {q}"],
+                            untranslatable_returns_text)
             else:
-                vd, warnings = text_variation_resp(q, _id, warnings)
+                vd, warnings = no_variation_resp(q, _id, warnings,
+                                                 untranslatable_returns_text)
         else:
             vd, warnings = no_variation_entered()
 
