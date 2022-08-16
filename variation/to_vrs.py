@@ -187,22 +187,26 @@ class ToVRS(VRSRepresentation):
 
         return ref
 
-    async def to_vrs(self, q: str) -> ToVRSService:
+    async def to_vrs(self, q: str,
+                     untranslatable_returns_text: bool = False) -> ToVRSService:
         """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
 
         :param str q: The variation to translate
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` returns empty list when
+            unable to translate or normalize query.
         :return: ToVRSService containing VRS variations and warnings
         """
         validations, warnings = await self.get_validations(q)
         translations, warnings = self.get_translations(validations, warnings)
 
         if not translations:
-            if q and q.strip():
+            if untranslatable_returns_text and q and q.strip():
                 text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
             else:
-                translations = None
+                translations = []
 
         return ToVRSService(
             search_term=q,

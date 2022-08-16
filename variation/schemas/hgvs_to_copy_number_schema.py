@@ -1,5 +1,5 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
-from typing import Type, Any, Dict, Union
+from typing import Optional, Type, Any, Dict, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass, AbsoluteCopyNumber, \
     RelativeCopyNumber, Text
@@ -24,7 +24,7 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
     """A response for translating HGVS to absolute copy number."""
 
     hgvs_expr: StrictStr
-    absolute_copy_number: Union[AbsoluteCopyNumber, Text]
+    absolute_copy_number: Optional[Union[AbsoluteCopyNumber, Text]]
 
     class Config:
         """Configure model."""
@@ -71,7 +71,7 @@ class HgvsToRelativeCopyNumberService(ServiceResponse):
     """A response for translating HGVS to relative copy number."""
 
     hgvs_expr: StrictStr
-    relative_copy_number: Union[RelativeCopyNumber, Text]
+    relative_copy_number: Optional[Union[RelativeCopyNumber, Text]]
 
     class Config:
         """Configure model."""

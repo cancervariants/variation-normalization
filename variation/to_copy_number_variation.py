@@ -60,7 +60,7 @@ class ToCopyNumberVariation(ToVRS):
     def _hgvs_to_cnv_resp(
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
-        warnings: List[str]
+        warnings: List[str], untranslatable_returns_text: bool = False
     ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
         """Return copy number variation and warnings response
 
@@ -71,6 +71,9 @@ class ToCopyNumberVariation(ToVRS):
         :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
             summary and warnings for hgvs_expr
         :param List[str] warnings: List of warnings
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: CopyNumberVariation and warnings
         """
         variation = None
@@ -87,7 +90,7 @@ class ToCopyNumberVariation(ToVRS):
                 variation = translations[0]
 
         if not variation:
-            if hgvs_expr and hgvs_expr.strip():
+            if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:
                 text = models.Text(definition=hgvs_expr, type="Text")
                 text._id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
@@ -100,13 +103,16 @@ class ToCopyNumberVariation(ToVRS):
 
     async def hgvs_to_absolute_copy_number(
         self, hgvs_expr: str, baseline_copies: int,
-        do_liftover: bool = False
+        do_liftover: bool = False, untranslatable_returns_text: bool = False
     ) -> HgvsToAbsoluteCopyNumberService:
         """Given hgvs, return abolute copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param int baseline_copies: Baseline copies number
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: HgvsToAbsoluteCopyNumberService containing Absolute Copy Number
             Variation and warnings
         """
@@ -117,7 +123,7 @@ class ToCopyNumberVariation(ToVRS):
         )
         abs_cnv, warnings = self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.ABSOLUTE_CNV, hgvs_expr, do_liftover, validations,
-            warnings)
+            warnings, untranslatable_returns_text)
 
         return HgvsToAbsoluteCopyNumberService(
             hgvs_expr=hgvs_expr,
@@ -131,13 +137,16 @@ class ToCopyNumberVariation(ToVRS):
 
     async def hgvs_to_relative_copy_number(
         self, hgvs_expr: str, relative_copy_class: Optional[RelativeCopyClass],
-        do_liftover: bool = False
+        do_liftover: bool = False, untranslatable_returns_text: bool = False
     ) -> HgvsToRelativeCopyNumberService:
         """Given hgvs, return relative copy number variation
 
         :param str hgvs_expr: HGVS expression
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: HgvsToRelativeCopyNumberService containing Relative Copy Number
             Variation and warnings
         """
@@ -153,7 +162,7 @@ class ToCopyNumberVariation(ToVRS):
 
         rel_cnv, warnings = self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.RELATIVE_CNV, hgvs_expr, do_liftover, validations,
-            warnings)
+            warnings, untranslatable_returns_text)
 
         return HgvsToRelativeCopyNumberService(
             hgvs_expr=hgvs_expr,
@@ -168,7 +177,7 @@ class ToCopyNumberVariation(ToVRS):
     def parsed_to_abs_cnv(
         self, start: int, end: int, total_copies: int,
         assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
-        accession: Optional[str] = None
+        accession: Optional[str] = None, untranslatable_returns_text: bool = False
     ) -> ParsedToAbsCnvService:
         """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
         Copy Number Variation
@@ -183,6 +192,9 @@ class ToCopyNumberVariation(ToVRS):
         :param Optional[str] accession: Accession. If `accession` is set,
             will ignore `assembly` and `chr`. If `accession` not set, must provide
             both `assembly` and `chr`.
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: ParsedToAbsCnvService containing Absolute Copy Number variation
             and list of warnings
         """
@@ -223,8 +235,9 @@ class ToCopyNumberVariation(ToVRS):
                                 "and `chr`.")
 
         if warnings:
-            variation, warnings = self._parsed_to_text(
-                start, end, total_copies, warnings, assembly, chr, accession)
+            if untranslatable_returns_text:
+                variation, warnings = self._parsed_to_text(
+                    start, end, total_copies, warnings, assembly, chr, accession)
         else:
             try:
                 sequence_id, w = self.seqrepo_access.translate_identifier(accession,
@@ -239,16 +252,19 @@ class ToCopyNumberVariation(ToVRS):
                     sequence_id = sequence_id[0]
 
             if warnings:
-                variation, warnings = self._parsed_to_text(
-                    start, end, total_copies, warnings, assembly, chr, accession)
+                if untranslatable_returns_text:
+                    variation, warnings = self._parsed_to_text(
+                        start, end, total_copies, warnings, assembly, chr, accession)
             else:
                 try:
                     self.seqrepo_access.seqrepo_client[accession][start - 1]
                     self.seqrepo_access.seqrepo_client[accession][end]
                 except ValueError as e:
                     warnings.append(str(e).replace("start", "Position"))
-                    variation, warnings = self._parsed_to_text(
-                        start, end, total_copies, warnings, assembly, chr, accession)
+                    if untranslatable_returns_text:
+                        variation, warnings = self._parsed_to_text(
+                            start, end, total_copies, warnings, assembly, chr,
+                            accession)
                 else:
                     location = models.SequenceLocation(
                         type="SequenceLocation",

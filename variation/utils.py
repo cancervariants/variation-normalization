@@ -44,24 +44,29 @@ def get_mane_valid_result(q: str, validations: ValidationSummary,
     return valid_result
 
 
-def text_variation_resp(
-        label: str, _id: str,
-        warnings: List) -> Tuple[VariationDescriptor, List]:
-    """Return text variation for queries that could not be normalized
+def no_variation_resp(
+    label: str, _id: str, warnings: List, untranslatable_returns_text: bool = False
+) -> Tuple[Optional[VariationDescriptor], List]:
+    """Return Variation Descriptor with variation set as Text or return `None` for
+    queries that could not be normalized
 
     :param str label: Initial input query
     :param str _id: _id field for variation descriptor
     :param List warnings: List of warnings
-    :return: Variation descriptor, warnings
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: Variation descriptor or `None`, warnings
     """
     warning = f"Unable to translate {label}"
-    text = models.Text(definition=label, type="Text")
-    text._id = ga4gh_identify(text)
-    resp = VariationDescriptor(
-        id=_id,
-        label=label,
-        variation=Text(**text.as_dict())
-    )
+    if untranslatable_returns_text:
+        text = models.Text(definition=label, type="Text")
+        text._id = ga4gh_identify(text)
+        variation = Text(**text.as_dict())
+        resp = VariationDescriptor(id=_id, label=label, variation=variation)
+    else:
+        resp = None
+
     if not warnings:
         warnings.append(warning)
     return resp, warnings

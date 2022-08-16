@@ -13,7 +13,7 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
 from variation.utils import get_mane_valid_result, no_variation_entered, \
-    text_variation_resp
+    no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
@@ -50,7 +50,8 @@ class Normalize(ToVRSATILE):
         self, q: str,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None
+        relative_copy_class: Optional[RelativeCopyClass] = None,
+        untranslatable_returns_text: bool = False
     ) -> NormalizeService:
         """Normalize a given variation.
 
@@ -65,6 +66,9 @@ class Normalize(ToVRSATILE):
         :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
             for HGVS duplications and deletions represented as Relative Copy Number
             Variation.
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: NormalizeService with variation descriptor and warnings
         """
         vd = None
@@ -89,7 +93,8 @@ class Normalize(ToVRSATILE):
                     if not label:
                         vd, warnings = no_variation_entered()
                     else:
-                        vd, warnings = text_variation_resp(label, _id, warnings)
+                        vd, warnings = no_variation_resp(label, _id, warnings,
+                                                         untranslatable_returns_text)
 
         return NormalizeService(
             variation_query=q,
