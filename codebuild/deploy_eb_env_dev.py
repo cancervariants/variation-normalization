@@ -3,7 +3,7 @@ import boto3
 import time
 elasticbeanstalk = boto3.client('elasticbeanstalk')
 servicecatalog = boto3.client('servicecatalog')
-terminate_time = 12
+terminate_time = 720
 eb_app_name = "VariationNormalization"
 eb_env_name = "VariationNormalization-dev-env"
 sc_product_id = "prod-mmw6ymv2ntzl2"
