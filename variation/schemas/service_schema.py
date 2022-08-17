@@ -34,7 +34,7 @@ class ParsedToAbsCnvService(ServiceResponse):
     """A response for translating parsed components to Absolute Copy Number"""
 
     query: Optional[ParsedToAbsCnvQuery] = None
-    absolute_copy_number: Union[Text, AbsoluteCopyNumber]
+    absolute_copy_number: Optional[Union[Text, AbsoluteCopyNumber]]
 
     class Config:
         """Configure model."""

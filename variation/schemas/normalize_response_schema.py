@@ -243,7 +243,7 @@ class ToCanonicalVariationService(ServiceResponse):
     """A response model for the to canonical variation service"""
 
     query: str
-    canonical_variation: CanonicalVariation
+    canonical_variation: Optional[CanonicalVariation]
 
     class Config:
         """Configure model."""

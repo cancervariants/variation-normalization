@@ -63,7 +63,8 @@ class ToCanonicalVariation(ToVRS):
         do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
         relative_copy_class: Optional[RelativeCopyClass] = None,
-        baseline_copies: Optional[int] = None
+        baseline_copies: Optional[int] = None,
+        untranslatable_returns_text: bool = False
     ) -> ToCanonicalVariationService:
         """Given query as ToCanonicalVariationFmt, return canonical variation
 
@@ -79,6 +80,9 @@ class ToCanonicalVariation(ToVRS):
             `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
         :param RelativeCopyClass relative_copy_class: The relative copy class
         :param Optional[int] baseline_copies: Baseline copies number
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
         :return: ToCanonicalVariationService containing Canonical Variation and
             list of warnings
         """
@@ -110,27 +114,30 @@ class ToCanonicalVariation(ToVRS):
                 else:
                     warnings = [f"Variation type, {variation_type}, not supported"]
 
-            if not variation:
+            if not variation and untranslatable_returns_text:
                 text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
                 variation = Text(**text.as_dict()).dict(by_alias=True)
 
-            canonical_variation = {
-                "type": "CanonicalVariation",
-                "complement": complement,
-                "variation": variation
-            }
+            if variation:
+                canonical_variation = {
+                    "type": "CanonicalVariation",
+                    "complement": complement,
+                    "variation": variation
+                }
 
-            cpy_canonical_variation = copy.deepcopy(canonical_variation)
-            cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
-            serialized = json.dumps(
-                cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
-                indent=None
-            ).encode("utf-8")
-            digest = sha512t24u(serialized)
-            # VCC = variation categorical canonical
-            canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
-            canonical_variation = CanonicalVariation(**canonical_variation)
+                cpy_canonical_variation = copy.deepcopy(canonical_variation)
+                cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
+                serialized = json.dumps(
+                    cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
+                    indent=None
+                ).encode("utf-8")
+                digest = sha512t24u(serialized)
+                # VCC = variation categorical canonical
+                canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
+                canonical_variation = CanonicalVariation(**canonical_variation)
+            else:
+                canonical_variation = None
         else:
             canonical_variation, warnings = no_variation_entered()
 

@@ -442,53 +442,54 @@ async def test_to_canonical_variation_insertions(test_handler, variation4):
 async def test_invalid(test_handler):
     """Test that invalid queries return the correct response"""
     resp = await test_handler.to_canonical_variation(
-        "NC_000013.11:201845654659346:GGG:GG", fmt="spdi")
+        "NC_000013.11:201845654659346:GGG:GG", fmt="spdi",
+        untranslatable_returns_text=True)
     assert resp.canonical_variation.variation.type == "Text"
     assert resp.warnings == ["start out of range (201845654659346)"]
 
     resp = await test_handler.to_canonical_variation(
-        "NC_000013.11:2018459346:GGG:GG", fmt="spdi")
+        "NC_000013.11:2018459346:GGG:GG", fmt="spdi", untranslatable_returns_text=True)
     assert resp.canonical_variation.variation.type == "Text"
     assert resp.warnings == ["Position, 2018459346, does not exist on NC_000013.11"]
 
     resp = await test_handler.to_canonical_variation(
-        "NC_000013.1:20189346:GGG:GG", fmt="spdi")
+        "NC_000013.1:20189346:GGG:GG", fmt="spdi", untranslatable_returns_text=True)
     assert resp.canonical_variation.variation.type == "Text"
     assert resp.warnings == ["vrs-python translator raised error: seqrepo could not "
                              "translate identifier 'refseq:NC_000013.1'"]
 
     resp = await test_handler.to_canonical_variation(
-        "NP_004324.2:p.Val600Glu", fmt="spdi")
+        "NP_004324.2:p.Val600Glu", fmt="spdi", untranslatable_returns_text=True)
     assert resp.canonical_variation.variation.type == "Text"
     assert resp.warnings == ["NP_004324.2:p.Val600Glu is not a valid SPDI expression"]
 
     resp = await test_handler.to_canonical_variation(
-        "NC_000013.11:20189346:GCG:GG", fmt="spdi")
+        "NC_000013.11:20189346:GCG:GG", fmt="spdi", untranslatable_returns_text=True)
     assert resp.canonical_variation.variation.type == "Text"
     assert resp.warnings ==\
            ["Expected to find reference sequence GCG but found GGG on NC_000013.11"]
 
     resp = await test_handler.to_canonical_variation(
         "NC_000007.14:140753335:A:T", fmt="hgvs")
-    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.canonical_variation is None
     assert resp.warnings == \
         ["NC_000007.14:140753335:A:T is not a valid HGVS expression"]
 
     resp = await test_handler.to_canonical_variation(
         "NC_000007.14:g.140753336464564654A>T", fmt="hgvs")
-    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.canonical_variation is None
     assert resp.warnings == ["Unable to find valid result for classifications:"
                              " {'genomic substitution'}"]
 
     q = "NC_000001.10:2160640:A:ACTC"
     resp = await test_handler.to_canonical_variation(
         q, fmt="spdi", do_liftover=True)
-    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.canonical_variation is None
     assert resp.warnings == \
         ["Expected to find reference sequence A but found C on NC_000001.11"]
 
     q = " NC_000013.11:g.20189349del "  # 38
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", hgvs_dup_del_mode="absolute_cnv")
-    assert resp.canonical_variation.variation.type == "Text"
+    assert resp.canonical_variation is None
     assert resp.warnings == ["absolute_cnv requires `baseline_copies`"]

@@ -1225,18 +1225,13 @@ async def test_no_matches(test_handler):
         "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)"
     ]
     for q in queries:
-        resp = await test_handler.normalize(q)
+        resp = await test_handler.normalize(q, untranslatable_returns_text=True)
         assert resp.variation_descriptor.type == "VariationDescriptor", q
         assert resp.variation_descriptor.variation.type == "Text", q
         assert resp.variation_descriptor.label == q.strip(), q
 
     resp = await test_handler.normalize("clinvar:10")
-    assert resp.variation_descriptor.type == "VariationDescriptor"
-    assert resp.variation_descriptor.label == "clinvar:10"
-    assert resp.variation_descriptor.variation.type == "Text"
-    assert resp.variation_descriptor.variation.definition == "clinvar:10"
-    assert resp.variation_descriptor.variation.id == \
-        "ga4gh:VT.xw9m9LZAyn6Z2-GPGwcpDT0ixqCm5g36"
+    assert resp.variation_descriptor is None
 
     resp = await test_handler.normalize("   ")
     assert resp.variation_descriptor is None
