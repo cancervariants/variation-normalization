@@ -726,12 +726,17 @@ async def test_deletion(test_handler, protein_deletion_np_range,
 @pytest.mark.asyncio
 async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
+    resp = await test_handler.gnomad_vcf_to_protein("dummy")
+    assert resp.variation_descriptor is None
+
+    resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E",
+                                                    untranslatable_returns_text=True)
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "BRAF V600E"
     assert resp.warnings == ["BRAF V600E is not a supported gnomad vcf query"]
 
-    resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
+    resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G",
+                                                    untranslatable_returns_text=True)
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "7-140753336-T-G"
     assert set(resp.warnings) == {
@@ -739,7 +744,8 @@ async def test_invalid(test_handler):
         "Expected T but found A on NC_000007.14 at position 140753336",
     }
 
-    resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
+    resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG",
+                                                    untranslatable_returns_text=True)
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "20-2-TC-TG"
     assert resp.warnings == ["Unable to get protein variation for 20-2-TC-TG"]

@@ -2455,7 +2455,8 @@ def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
 async def assert_text_variation(query_list, test_handler):
     """Make assertion checks for invalid queries"""
     for q in query_list:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, "default",
+                                            untranslatable_returns_text=True)
         assert resp.variation_descriptor.label == q.strip()
         assert (resp.variation_descriptor.variation.type == "Text"), q
 
@@ -2625,10 +2626,12 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
                                         relative_copy_class="low-level gain")
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
@@ -2642,10 +2645,12 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2663,11 +2668,13 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
                          ignore_id=True)
 
         genomic_dup3_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -2696,10 +2703,12 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
@@ -2713,10 +2722,12 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2733,12 +2744,14 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
                          ignore_id=True)
 
         genomic_dup4_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         genomic_dup4_free_text_rse_lse.variation.definition = q
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -2767,10 +2780,12 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
@@ -2784,10 +2799,12 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2804,11 +2821,13 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
                          ignore_id=True)
 
         genomic_dup5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -2819,7 +2838,8 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
         "MECP2 g.(?_154021812)_154097733dup"  # 37
         "MECP2 g.(?_154021572)_154092209dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, "default",
+                                            untranslatable_returns_text=True)
         assert resp.variation_descriptor.variation.type == "Text"
 
 
@@ -2839,10 +2859,12 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
@@ -2856,10 +2878,12 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -2876,11 +2900,13 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
                          ignore_id=True)
 
         genomic_dup6_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -2891,7 +2917,8 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
         "MECP2 g.154021812_(154097733_?)dup"  # 37
         "MECP2 g.154021572_(154092209_?)dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, "default",
+                                            untranslatable_returns_text=True)
         assert resp.variation_descriptor.variation.type == "Text"
 
 
@@ -3075,10 +3102,12 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
@@ -3092,10 +3121,12 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
     # Free Text
@@ -3112,11 +3143,13 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
                          ignore_id=True)
 
         genomic_del3_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -3146,10 +3179,12 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
@@ -3163,10 +3198,12 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
     q = "NC_000002.12:g.(?_110104900)_(110207160_?)del"
@@ -3191,11 +3228,13 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_vac, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -3225,10 +3264,12 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
@@ -3242,10 +3283,12 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
     # Free text
@@ -3263,11 +3306,13 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
                          ignore_id=True)
 
         genomic_del5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -3298,10 +3343,12 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
     resp = await test_handler.normalize(q, "relative_cnv")
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
@@ -3315,10 +3362,12 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, "literal_seq_expr",
+                                        untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
     # Free text
@@ -3336,11 +3385,13 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
                          ignore_id=True)
 
         genomic_del6_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, "repeated_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, "literal_seq_expr",
+                                            untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
                          ignore_id=True)
 
@@ -3377,7 +3428,7 @@ async def test_parameters(test_handler):
     assert resp.warnings == []
 
     resp = await test_handler.normalize(q, " absolute_CnV ")
-    assert not resp.variation_descriptor
+    assert resp.variation_descriptor is None
     assert resp.warnings == ["absolute_cnv mode requires `baseline_copies`"]
 
     resp = await test_handler.normalize(q, " relative_CnV ")

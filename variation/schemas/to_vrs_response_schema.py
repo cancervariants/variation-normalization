@@ -15,7 +15,7 @@ class ToVRSService(BaseModel):
     search_term: StrictStr
     warnings: Optional[List[StrictStr]]
     variations: Optional[Union[List[Allele], List[Text], List[Haplotype],
-                               List[AbsoluteCopyNumber], List[VariationSet]]] = None
+                               List[AbsoluteCopyNumber], List[VariationSet]]] = []
     service_meta_: ServiceMeta
 
     class Config:
