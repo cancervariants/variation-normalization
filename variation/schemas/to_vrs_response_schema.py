@@ -33,23 +33,14 @@ class ToVRSService(BaseModel):
                 "search_term": "BRAF V600E",
                 "variations": [
                     {
-                        "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
+                        "id": "ga4gh:VA.Lado-KeGuXLnOX2-j920r67p9Z-3TCzb",
                         "type": "Allele",
                         "location": {
-                            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",  # noqa: E501
+                            "id": "ga4gh:SL.x5j9BVC93gA1W7YrmMzFIP1Iyk4ipaal",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",  # noqa: E501
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 599
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 600
-                                }
-                            }
+                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                            "start": {"type": "Number", "value": 599},
+                            "end": {"type": "Number", "value": 600}
                         },
                         "state": {
                             "type": "LiteralSequenceExpression",
@@ -57,23 +48,14 @@ class ToVRSService(BaseModel):
                         }
                     },
                     {
-                        "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
+                        "id": "ga4gh:VA.YZ6lbo8JEu_JdGCQYZ2_emQUBZjCxA4z",
                         "type": "Allele",
                         "location": {
-                            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",  # noqa: E501
+                            "id": "ga4gh:SL.cxWCch3FsZlYpW3xpPknj4WltsZedn4B",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",  # noqa: E501
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 599
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 600
-                                }
-                            }
+                            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+                            "start": {"type": "Number", "value": 599},
+                            "end": {"type": "Number", "value": 600}
                         },
                         "state": {
                             "type": "LiteralSequenceExpression",
@@ -81,23 +63,14 @@ class ToVRSService(BaseModel):
                         }
                     },
                     {
-                        "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
+                        "id": "ga4gh:VA.Ej4bIR7tJHGvVHrWkYTC0Jv7AlGfSnyc",
                         "type": "Allele",
                         "location": {
-                            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",  # noqa: E501
+                            "id": "ga4gh:SL.3ZYFXkQ-98YRuh0PQ1E42W2Ex5J6DMHS",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",  # noqa: E501
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 599
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 600
-                                }
-                            }
+                            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+                            "start": {"type": "Number", "value": 599},
+                            "end": {"type": "Number", "value": 600}
                         },
                         "state": {
                             "type": "LiteralSequenceExpression",
@@ -105,22 +78,19 @@ class ToVRSService(BaseModel):
                         }
                     },
                     {
-                        "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
+                        "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
                         "type": "Allele",
                         "location": {
-                            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",  # noqa: E501
+                            "id": "ga4gh:SL.xfBTztcmMstx8jrrdgPiE_BUoLHLFMMS",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",  # noqa: E501
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 599
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 600
-                                }
+                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                            "start": {
+                                "type": "Number",
+                                "value": 599
+                            },
+                            "end": {
+                                "type": "Number",
+                                "value": 600
                             }
                         },
                         "state": {

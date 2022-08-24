@@ -54,7 +54,7 @@ class ToVRSATILE(ToVRS):
         :param Optional[str] gene: Gene symbol
         :return: Variation descriptor, warnings
         """
-        variation_id = variation["_id"]
+        variation_id = variation["id"]
         identifier = valid_result.identifier
         token_type = valid_result.classification_token.token_type.lower()
 
@@ -62,16 +62,12 @@ class ToVRSATILE(ToVRS):
         if "uncertain" in token_type:
             warnings = ["Ambiguous regions cannot be normalized"]
         elif "range" not in token_type:
-            if variation["type"] == VRSTypes.ALLELE.value:
+            if variation["type"] in {VRSTypes.ALLELE.value,
+                                     VRSTypes.ABSOLUTE_COPY_NUMBER.value,
+                                     VRSTypes.RELATIVE_COPY_NUMBER.value}:
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation, identifier
                 )
-            elif variation["type"] in [VRSTypes.ABSOLUTE_COPY_NUMBER.value,
-                                       VRSTypes.RELATIVE_COPY_NUMBER.value]:
-                loc = {
-                    "location": variation["subject"]
-                }
-                vrs_ref_allele_seq = self.get_ref_allele_seq(loc, identifier)
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

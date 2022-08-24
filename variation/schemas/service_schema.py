@@ -57,24 +57,21 @@ class ParsedToAbsCnvService(ServiceResponse):
                     "total_copies": 3
                 },
                 "absolute_copy_number": {
-                    "_id": "ga4gh:VAC.accZJeJtNj0Zqv7KVqkT87ClTlg-4nwa",
+                    "id": "ga4gh:ACN.cbjEAj7SGM_RPXxs7foqsO0ZsNwz_kNM",
                     "type": "AbsoluteCopyNumber",
-                    "subject": {
-                        "_id": "ga4gh:VSL.JTsxd9PiPZaIPL9Tl3ss78GYYnDeogvf",
+                    "location": {
+                        "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-                        "interval": {
-                            "type": "SequenceInterval",
-                            "start": {
-                                "type": "IndefiniteRange",
-                                "value": 143134062,
-                                "comparator": "<="
-                            },
-                            "end": {
-                                "type": "IndefiniteRange",
-                                "value": 143284670,
-                                "comparator": ">="
-                            }
+                        "start": {
+                            "type": "IndefiniteRange",
+                            "value": 143134062,
+                            "comparator": "<="
+                        },
+                        "end": {
+                            "type": "IndefiniteRange",
+                            "value": 143284670,
+                            "comparator": ">="
                         }
                     },
                     "copies": {"type": "Number", "value": 3}

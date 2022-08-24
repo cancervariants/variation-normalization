@@ -1,6 +1,6 @@
 """The module for Genomic Duplication Validation."""
 import logging
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Union
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
@@ -139,14 +139,14 @@ class GenomicDuplication(DuplicationDeletionBase):
                     pos=(start, end), baseline_copies=baseline_copies,
                     relative_copy_class=relative_copy_class)
         elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            ival, grch38 = await self._get_ival(t, s, gene_tokens, errors)
+            ival, grch38 = await self._get_ival(t, s, errors, gene_tokens)
 
             if not errors:
                 if grch38:
                     t = grch38["ac"]
 
                 allele = self.vrs.to_vrs_allele_ranges(
-                    t, s.coordinate_type, s.alt_type, errors, ival)
+                    t, s.coordinate_type, s.alt_type, errors, ival[0], ival[1])
                 if start is not None and end is not None:
                     pos = (start, end)
                 else:
@@ -185,10 +185,10 @@ class GenomicDuplication(DuplicationDeletionBase):
         """
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # (#_#)_(#_#)
-            ival, grch38 = await self._get_ival(t, s, gene_tokens, errors, is_norm=True)
+            ival, grch38 = await self._get_ival(t, s, errors, gene_tokens, is_norm=True)
             self.add_grch38_to_mane_data(
-                t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode, ival=ival,
-                baseline_copies=baseline_copies,
+                t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode, start=ival[0],
+                end=ival[1], baseline_copies=baseline_copies,
                 relative_copy_class=relative_copy_class)
         else:
             # #dup or #_#dup
@@ -221,9 +221,10 @@ class GenomicDuplication(DuplicationDeletionBase):
                     )
 
     async def _get_ival(
-            self, t: str, s: Token, gene_tokens: List, errors: List,
-            is_norm: bool = False
-    ) -> Optional[Tuple[models.SequenceInterval, Dict]]:
+        self, t: str, s: Token, errors: List, gene_tokens: List, is_norm: bool = False
+    ) -> Optional[Tuple[Tuple[Union[models.Number, models.DefiniteRange, models.IndefiniteRange],  # noqa: E501
+                              Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],  # noqa: E501
+                        Dict]]:
         """Get ival for variations with ranges.
 
         :param str t: Accession
@@ -232,7 +233,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param List errors: List of errors
         :param bool is_norm: `True` if normalize endpoint is being used.
             `False` otherwise.
-        :return: Sequence Interval and GRCh38 data if normalize endpoint
+        :return: (Start, End)  and GRCh38 data if normalize endpoint
             is being used
         """
         ival, start, end, grch38 = None, None, None, None
@@ -255,7 +256,7 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, [start1, start2, end1, end2], errors, gene=gene)
 
                 if not errors:
-                    ival = self.vrs.get_ival_certain_range(
+                    ival = self.vrs.get_start_end_definite_range(
                         start1, start2, end1, end2)
         else:
             if s.start_pos1_dup == "?" and s.end_pos2_dup == "?":
@@ -273,11 +274,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
-                    ival = models.SequenceInterval(
-                        start=self.vrs.get_start_indef_range(start),
-                        end=self.vrs.get_end_indef_range(end),
-                        type="SequenceInterval"
-                    )
+                    ival = (self.vrs.get_start_indef_range(start),
+                            self.vrs.get_end_indef_range(end))
             elif s.start_pos1_dup == "?" and \
                     s.start_pos2_dup != "?" and \
                     s.end_pos1_dup != "?" and \
@@ -295,11 +293,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
-                    ival = models.SequenceInterval(
-                        start=self.vrs.get_start_indef_range(start),
-                        end=models.Number(value=end, type="Number"),
-                        type="SequenceInterval"
-                    )
+                    ival = (self.vrs.get_start_indef_range(start),
+                            models.Number(value=end, type="Number"))
             elif s.start_pos1_dup != "?" and \
                     s.start_pos2_dup is None and \
                     s.end_pos1_dup != "?" and \
@@ -318,11 +313,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                     t, [start, end], errors, gene=gene)
 
                 if not errors and start and end:
-                    ival = models.SequenceInterval(
-                        start=models.Number(value=start, type="Number"),
-                        end=self.vrs.get_end_indef_range(end),
-                        type="SequenceInterval"
-                    )
+                    ival = (models.Number(value=start, type="Number"),
+                            self.vrs.get_end_indef_range(end))
             else:
                 errors.append("Not yet supported")
         return ival, grch38

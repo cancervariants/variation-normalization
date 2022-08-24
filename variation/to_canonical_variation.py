@@ -1,14 +1,12 @@
 """Module containing To Canonical Variation work"""
 from typing import Optional, List, Tuple, Dict
-import copy
-import json
 from datetime import datetime
 
 import python_jsonschema_objects
-from ga4gh.vrsatile.pydantic.vrs_models import Text
+from ga4gh.vrsatile.pydantic.vrs_models import Text, VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import CanonicalVariation
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from uta_tools.schemas import Assembly
@@ -59,7 +57,6 @@ class ToCanonicalVariation(ToVRS):
     async def to_canonical_variation(
         self, q: str,
         fmt: ToCanonicalVariationFmt,
-        complement: bool = False,
         do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
         relative_copy_class: Optional[RelativeCopyClass] = None,
@@ -70,10 +67,6 @@ class ToCanonicalVariation(ToVRS):
 
         :param str q: Query to translate to canonical variation
         :param ToCanonicalVariationFmt fmt: The representation for `q`
-        :param bool complement: This field indicates that a categorical variation is
-            defined to include (false) or exclude (true) variation concepts matching the
-            categorical variation. This is equivalent to a logical NOT operation on the
-            categorical variation properties.
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
@@ -105,36 +98,26 @@ class ToCanonicalVariation(ToVRS):
 
             if variation and not warnings:
                 variation_type = variation["type"]
-                if variation_type == "Allele":
-                    variation["location"]["_id"] = ga4gh_identify(
-                        models.SequenceLocation(**variation["location"]))
-                elif variation_type in ["RelativeCopyNumber", "AbsoluteCopyNumber"]:
-                    variation["subject"]["_id"] = ga4gh_identify(
-                        models.SequenceLocation(**variation["subject"]))
+                if variation_type in {VRSTypes.ALLELE.value,
+                                      VRSTypes.ABSOLUTE_COPY_NUMBER.value,
+                                      VRSTypes.RELATIVE_COPY_NUMBER.value}:
+                    variation["location"]["id"] = ga4gh_identify(
+                        models.Location(**variation["location"]))
                 else:
                     warnings = [f"Variation type, {variation_type}, not supported"]
 
             if not variation and untranslatable_returns_text:
                 text = models.Text(definition=q, type="Text")
-                text._id = ga4gh_identify(text)
+                text.id = ga4gh_identify(text)
                 variation = Text(**text.as_dict()).dict(by_alias=True)
 
             if variation:
                 canonical_variation = {
                     "type": "CanonicalVariation",
-                    "complement": complement,
-                    "variation": variation
+                    "canonical_context": variation
                 }
-
-                cpy_canonical_variation = copy.deepcopy(canonical_variation)
-                cpy_canonical_variation["variation"] = canonical_variation["variation"]["_id"].split(".")[-1]  # noqa: E501
-                serialized = json.dumps(
-                    cpy_canonical_variation, sort_keys=True, separators=(",", ":"),
-                    indent=None
-                ).encode("utf-8")
-                digest = sha512t24u(serialized)
-                # VCC = variation categorical canonical
-                canonical_variation["_id"] = f"ga4gh:VCC.{digest}"
+                canonical_variation["id"] = ga4gh_identify(
+                    models.CanonicalVariation(**canonical_variation))
                 canonical_variation = CanonicalVariation(**canonical_variation)
             else:
                 canonical_variation = None

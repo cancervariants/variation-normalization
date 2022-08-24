@@ -1,6 +1,6 @@
 """The module for Genomic Deletion Range Validation."""
 import logging
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from ga4gh.vrs.extras.translator import Translator
@@ -152,7 +152,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
                 t = grch38["ac"]
 
             allele = self.vrs.to_vrs_allele_ranges(
-                t, s.coordinate_type, s.alt_type, errors, ival)
+                t, s.coordinate_type, s.alt_type, errors, ival[0], ival[1])
 
             if start is not None and end is not None:
                 pos = (start, end)
@@ -185,13 +185,14 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         ival, grch38 = await self._get_ival(t, s, errors, gene_tokens, is_norm=True)
         self.add_grch38_to_mane_data(
             t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-            ival=ival, relative_copy_class=relative_copy_class,
+            start=ival[0], end=ival[1], relative_copy_class=relative_copy_class,
             baseline_copies=baseline_copies)
 
     async def _get_ival(
-            self, t: str, s: Token, errors: List, gene_tokens: List,
-            is_norm: bool = False
-    ) -> Optional[Tuple[Optional[models.SequenceInterval], Optional[Dict]]]:
+        self, t: str, s: Token, errors: List, gene_tokens: List, is_norm: bool = False
+    ) -> Optional[Tuple[Tuple[Union[models.Number, models.DefiniteRange, models.IndefiniteRange],  # noqa: E501
+                              Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],  # noqa: E501
+                        Dict]]:
         """Get ival for variations with ranges.
 
         :param str t: Accession
@@ -200,7 +201,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param List gene_tokens: LIst of gene tokens
         :param bool is_norm: `True` if normalize endpoint is being used.
             `False` otherwise.
-        :return: Sequence Interval and GRCh38 data if normalize endpoint
+        :return: (Start, End) and GRCh38 data if normalize endpoint
             is being used
         """
         ival, grch38, start1, start2, end1, end2 = None, None, None, None, None, None  # noqa: E501
@@ -221,9 +222,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             t, [start1, start2, end1, end2], errors, gene=gene)
 
         if not errors and start1 and start2 and end1 and end2:
-            ival = self.vrs.get_ival_certain_range(
-                start1, start2, end1, end2
-            )
+            ival = self.vrs.get_start_end_definite_range(start1, start2, end1, end2)
 
         return ival, grch38
 

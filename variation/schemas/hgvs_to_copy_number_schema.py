@@ -40,21 +40,14 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "absolute_copy_number": {
-                    "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
+                    "id": "ga4gh:ACN._C6yp4SRGVfuRmMiJShIKYCK3dSX0vNF",
                     "type": "AbsoluteCopyNumber",
-                    "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                    "location": {
+                        "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "start": {"type": "Number", "value": 49531260},
+                        "end": {"type": "Number", "value": 49531262}
                     },
                     "copies": {"type": "Number", "value": 3}
                 },
@@ -87,21 +80,14 @@ class HgvsToRelativeCopyNumberService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "relative_copy_number": {
-                    "_id": "ga4gh:VRC.XiXamTGYJ43rc8xheleMKcjxEBOFp82l",
+                    "id": "ga4gh:RCN._1Nz0yj2g9Q6cRO8j6oRi5peUJYjTAga",
                     "type": "RelativeCopyNumber",
-                    "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                    "location": {
+                        "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "start": {"type": "Number", "value": 49531260},
+                        "end": {"type": "Number", "value": 49531262}
                     },
                     "relative_copy_class": "complete loss"
                 },

@@ -61,7 +61,7 @@ def no_variation_resp(
     warning = f"Unable to translate {label}"
     if untranslatable_returns_text:
         text = models.Text(definition=label, type="Text")
-        text._id = ga4gh_identify(text)
+        text.id = ga4gh_identify(text)
         variation = Text(**text.as_dict())
         resp = VariationDescriptor(id=_id, label=label, variation=variation)
     else:

@@ -15,24 +15,21 @@ def genomic_dup1_rel_38(genomic_dup1_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.4ClST-L7j5CLv0buuOS5p3Yvp8GCByjF",
-        "subject": genomic_dup1_seq_loc,
+        "id": "ga4gh:RCN._1Nz0yj2g9Q6cRO8j6oRi5peUJYjTAga",
+        "location": genomic_dup1_seq_loc,
         "relative_copy_class": "complete loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup1_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.CXcLL6RUPkro3dLXN0miGEzlzPYiqw2q",
+        "id": "ga4gh:SL.PoXklQujGEI2KSuYEhM_boWkdZNe6XVp",
         "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 49568693, "type": "Number"},
-            "end": {"value": 49568695, "type": "Number"},
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 49568693, "type": "Number"},
+        "end": {"value": 49568695, "type": "Number"},
+        "type": "SequenceLocation"
     }
 
 
@@ -41,8 +38,8 @@ def genomic_dup1_abs_37(genomic_dup1_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.hGeC0s0RZSX1FEb7ggN6KhAjZUyVF5mU",
-        "subject": genomic_dup1_37_loc,
+        "id": "ga4gh:ACN.JWc1vKWUXuxG6l5CdftVGD6axJ91geGj",
+        "location": genomic_dup1_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
@@ -52,8 +49,8 @@ def genomic_dup1_rel_37(genomic_dup1_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.OqSxkdmM95Dq-V-ZqMe7wXFXO9T0-8gP",
-        "subject": genomic_dup1_37_loc,
+        "id": "ga4gh:RCN.dfqRkwlXaJqc8ZtG5mORZU4Cdsp3DTcz",
+        "location": genomic_dup1_37_loc,
         "relative_copy_class": "complete loss"
     }
 
@@ -63,23 +60,20 @@ def genomic_dup2_rel_38(genomic_dup2_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.WLuxOcKidzwkLQ4Z5AyH7bfZiSg-srFw",
-        "subject": genomic_dup2_seq_loc,
+        "id": "ga4gh:RCN.U9sPvq7Ggxf3jzcJlTD_53dAaesWZ6-o",
+        "location": genomic_dup2_seq_loc,
         "relative_copy_class": "partial loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup2_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.VY7qo3C2Nl-bpRtjOQ6MODJ2FfGUJRV1",
+        "id": "ga4gh:SL.rfaH4tbIPn7o3ZnmMqjxtZPq_57vxjc0",
         "sequence_id": "ga4gh:SQ.W6wLoIFOn4G7cjopxPxYNk2lcEqhLQFb",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 2137938, "type": "Number"},
-            "end": {"value": 2137949, "type": "Number"},
-        },
+        "start": {"value": 2137938, "type": "Number"},
+        "end": {"value": 2137949, "type": "Number"},
         "type": "SequenceLocation"
     }
 
@@ -89,8 +83,8 @@ def genomic_dup2_abs_37(genomic_dup2_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.L1_P5Tf41A-b29DN9Jg5T-c33iAhW1A8",
-        "subject": genomic_dup2_37_loc,
+        "id": "ga4gh:ACN.ElLSWlxkk5iSfG0E3IONQRXJUzIcBhED",
+        "location": genomic_dup2_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
@@ -100,8 +94,8 @@ def genomic_dup2_rel_37(genomic_dup2_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.zkTN-KUrBo_Bc3l5Wfczpb0lOktb77qE",
-        "subject": genomic_dup2_37_loc,
+        "id": "ga4gh:RCN.BmS2zuzMCgnrbgU5zZgqwaPEBCGV6Wxo",
+        "location": genomic_dup2_37_loc,
         "relative_copy_class": "partial loss"
     }
 
@@ -111,8 +105,8 @@ def genomic_dup3_abs_38(genomic_del3_dup3_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul",
-        "subject": genomic_del3_dup3_loc,
+        "id": "ga4gh:ACN.2ZUQcccwvtoGZ5LZZRUoDZp6218Y6sQK",
+        "location": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -122,31 +116,20 @@ def genomic_dup3_rel_38(genomic_del3_dup3_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.dAPJs31x9cI8bL3yJP-8BMOKGMMcCCbH",
-        "subject": genomic_del3_dup3_loc,
+        "id": "ga4gh:RCN.FoK9bxEWUcnG6yb4MQwuEOKnyvmJQHWQ",
+        "location": genomic_del3_dup3_loc,
         "relative_copy_class": "high-level gain"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup3_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.hDvTkhN210ZKyZOhilS7FxaKUCJgj6JC",
+        "id": "ga4gh:SL.MmBA0qlC0J6yxWTyqhpsd4H_oErccpUD",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "min": 31078343,
-                "max": 31118467,
-                "type": "DefiniteRange"
-            },
-            "end": {
-                "min": 33292396,
-                "max": 33435269,
-                "type": "DefiniteRange"
-            }
-        },
+        "start": {"min": 31078343, "max": 31118467, "type": "DefiniteRange"},
+        "end": {"min": 33292396, "max": 33435269, "type": "DefiniteRange"},
         "type": "SequenceLocation"
     }
 
@@ -156,8 +139,8 @@ def genomic_dup3_abs_37(genomic_dup3_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Pv9I4Dqk69w-tX0axaikVqid-pozxU74",
-        "subject": genomic_dup3_37_loc,
+        "id": "ga4gh:ACN.3ZeHMw-dKq2hTNEL9zzihfCPP2ZQV6zl",
+        "location": genomic_dup3_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -167,8 +150,8 @@ def genomic_dup3_rel_37(genomic_dup3_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.4nV0gzcAm_tPMbfkrqtezaA61uZUEWzt",
-        "subject": genomic_dup3_37_loc,
+        "id": "ga4gh:RCN.oBHqFRckDEI_Z5urrQ_oexexObWv39FS",
+        "location": genomic_dup3_37_loc,
         "relative_copy_class": "high-level gain"
     }
 
@@ -178,8 +161,8 @@ def genomic_dup4_abs_38(genoimc_dup4_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.h594XLS8a4VA6j-ghLaghqXmof8hmF5z",
-        "subject": genoimc_dup4_loc,
+        "id": "ga4gh:ACN.OBSQ6SY9waWJ7YOyYA_qK0te_mTfOT4A",
+        "location": genoimc_dup4_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
@@ -189,32 +172,21 @@ def genomic_dup4_rel_38(genoimc_dup4_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.99KSUw5LDOqDK2ETM81En2fCYEFCfIiL",
-        "subject": genoimc_dup4_loc,
+        "id": "ga4gh:RCN.4aCUMyIGHAaqGLGnWdGF3pU81nMPiRMf",
+        "location": genoimc_dup4_loc,
         "relative_copy_class": "complete loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup4_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.ypfdWazLg2-FkZhRH0EQDGwH5IqlAyLh",
+        "id": "ga4gh:SL.RUcHRUFPNBJhkwXz-WzUZLbT7XOlddAv",
         "sequence_id": "ga4gh:SQ.iy_UbUrvECxFRX5LPTH_KPojdlT7BKsf",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 29652251,
-                "comparator": "<=",
-                "type": "IndefiniteRange"
-            },
-            "end": {
-                "value": 29981821,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 29652251, "comparator": "<=", "type": "IndefiniteRange"},
+        "end": {"value": 29981821, "comparator": ">=", "type": "IndefiniteRange"},
+        "type": "SequenceLocation"
     }
 
 
@@ -223,8 +195,8 @@ def genomic_dup4_abs_37(genomic_dup4_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.CYSRgw_prwhAhTZGM9blaEvmDjj952Uf",
-        "subject": genomic_dup4_37_loc,
+        "id": "ga4gh:ACN.rloHun4f85F8QJ__SxoKMJFxA5IiNTMB",
+        "location": genomic_dup4_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
@@ -234,8 +206,8 @@ def genomic_dup4_rel_37(genomic_dup4_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.X4mJ6dPachx66ssyvWpLraCAYe04YPO4",
-        "subject": genomic_dup4_37_loc,
+        "id": "ga4gh:RCN.U5eCTbzeX2JOyWFfQ9xOYacjbBKcz4lM",
+        "location": genomic_dup4_37_loc,
         "relative_copy_class": "complete loss"
     }
 
@@ -245,8 +217,8 @@ def genomic_dup5_abs_38(genomic_dup5_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.BUEI9XPTvjBvNUoREsXRsm8THNuR5Fe7",
-        "subject": genomic_dup5_loc,
+        "id": "ga4gh:ACN.oW400VdyoT8TChxzOLVl4oQLonMStzkK",
+        "location": genomic_dup5_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
@@ -256,31 +228,21 @@ def genomic_dup5_rel_38(genomic_dup5_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.vy8SSVFuaeZTkUCCv6izNCkF0zgbBG7G",
-        "subject": genomic_dup5_loc,
+        "id": "ga4gh:RCN.y4ia336ms3p6s51U36K5-kkXeW9PFXMz",
+        "location": genomic_dup5_loc,
         "relative_copy_class": "partial loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.5pVsde3FHXnOaO0jONcisMHAfcjqmXiD",
+        "id": "ga4gh:SL.1ELvCCFb5kq7_k47XzpatrJMgtvW74Co",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 153287262,
-                "comparator": "<=",
-                "type": "IndefiniteRange"
-            },
-            "end": {
-                "value": 153357667,
-                "type": "Number"
-            }
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 153287262, "comparator": "<=", "type": "IndefiniteRange"},
+        "end": {"value": 153357667, "type": "Number"},
+        "type": "SequenceLocation"
     }
 
 
@@ -289,8 +251,8 @@ def genomic_dup5_abs_37(genomic_dup5_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.1-pcrgINIDzVXrTgs7xshzBQVlhQ_dX8",
-        "subject": genomic_dup5_37_loc,
+        "id": "ga4gh:ACN.1k68ebEgFbNe9-FonMK620m_wbBkFIyZ",
+        "location": genomic_dup5_37_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
@@ -300,8 +262,8 @@ def genomic_dup5_rel_37(genomic_dup5_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.v0u8jwoIYvE03wW7jfzw9-O-8N-LQp_N",
-        "subject": genomic_dup5_37_loc,
+        "id": "ga4gh:RCN.AQqRwFtHFlvZG9Lcl28flKTITe_9wR3Z",
+        "location": genomic_dup5_37_loc,
         "relative_copy_class": "partial loss"
     }
 
@@ -311,8 +273,8 @@ def genomic_dup6_abs_38(genoimc_dup6_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.ZkgR6TD7VypzVrLAYFnSb-D7DXp62Yfn",
-        "subject": genoimc_dup6_loc,
+        "id": "ga4gh:ACN.6q8D5d_ie9MO0HdNEJmRJmGMg8C5LdAM",
+        "location": genoimc_dup6_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -322,31 +284,21 @@ def genomic_dup6_rel_38(genoimc_dup6_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.dUyDSJDl72tWZKG2AcQEe83mIW3RCcQE",
-        "subject": genoimc_dup6_loc,
+        "id": "ga4gh:RCN.popti3moTOvPqsqPopElu7-TqgINIq6I",
+        "location": genoimc_dup6_loc,
         "relative_copy_class": "copy neutral"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_37_loc():
-    """Create test fixture GRCh37 duplication subject"""
+    """Create test fixture GRCh37 duplication location"""
     return {
-        "_id": "ga4gh:VSL.4FthtlBwSSEa3O0CUPw-DnKYz4Jnfa3n",
+        "id": "ga4gh:SL.GdeHSPT6RDTaMycAXoD_rqhMjumKGd-4",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 153287262,
-                "type": "Number"
-            },
-            "end": {
-                "value": 153357667,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 153287262, "type": "Number"},
+        "end": {"value": 153357667, "comparator": ">=", "type": "IndefiniteRange"},
+        "type": "SequenceLocation"
     }
 
 
@@ -355,8 +307,8 @@ def genomic_dup6_abs_37(genomic_dup6_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.8u4HiQWnHhwGZtIBF_DEYQCNdaFKOHuN",
-        "subject": genomic_dup6_37_loc,
+        "id": "ga4gh:ACN.3RqSmp3UqxFy_1V7M8bYWEVi3vmIvM_C",
+        "location": genomic_dup6_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -366,8 +318,8 @@ def genomic_dup6_rel_37(genomic_dup6_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC._Dy2mGmY7n0gYqFcnZqmgTCdlcChFUnC",
-        "subject": genomic_dup6_37_loc,
+        "id": "ga4gh:RCN.Lvhuup_Md0tsrN6eqO5kV3sUO4vRtMsW",
+        "location": genomic_dup6_37_loc,
         "relative_copy_class": "copy neutral"
     }
 
@@ -377,24 +329,21 @@ def genomic_del1_rel_38(genomic_del1_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.FHImCphKfSBeobf9HO6qpu_Bm5U9VfHz",
-        "subject": genomic_del1_seq_loc,
+        "id": "ga4gh:RCN.z7MU8QUSR_aeWG7MP161H4jwPGoyo1No",
+        "location": genomic_del1_seq_loc,
         "relative_copy_class": "copy neutral"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del1_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.IpNE_OIaSJSeiiJTEwrxyiRsgpUay8_n",
+        "id": "ga4gh:SL.QtY9ACIT6TJAae_KDSAZKJfBLerBbFfq",
         "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 10191494, "type": "Number"},
-            "end": {"value": 10191495, "type": "Number"},
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 10191494, "type": "Number"},
+        "end": {"value": 10191495, "type": "Number"},
+        "type": "SequenceLocation"
     }
 
 
@@ -403,8 +352,8 @@ def genomic_del1_abs_37(genomic_del1_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.u4Dcmgh8rV8WxRxdrd4W6qA0bTCkS8KP",
-        "subject": genomic_del1_37_loc,
+        "id": "ga4gh:ACN.oZ1GlVH9riWL7autRckjfTdef7MqVHex",
+        "location": genomic_del1_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
@@ -414,8 +363,8 @@ def genomic_del1_rel_37(genomic_del1_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.2_BewkjhJtvj8J814SE0RVxp-OdYxJSo",
-        "subject": genomic_del1_37_loc,
+        "id": "ga4gh:RCN.bT-NgstX8QjwhOR3FMbQmfXozLQ9wdHB",
+        "location": genomic_del1_37_loc,
         "relative_copy_class": "copy neutral"
     }
 
@@ -425,24 +374,21 @@ def genomic_del2_rel_38(genomic_del2_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.xyQ8SLzsBZmeo5M3Aoii-3iED0CeB4m5",
-        "subject": genomic_del2_seq_loc,
+        "id": "ga4gh:RCN.xXa8l2bXplY26DKNBDTttUUc0aN1Pwpo",
+        "location": genomic_del2_seq_loc,
         "relative_copy_class": "low-level gain"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del2_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.B-feFlnwavUnci2jFAqG8WOQrqFAZJ6N",
+        "id": "ga4gh:SL.XXW-NlnipMp1hTv0xGdTY-RsjDUUZWht",
         "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {"value": 10188278, "type": "Number"},
-            "end": {"value": 10188297, "type": "Number"},
-        },
-        "type": "SequenceLocation",
+        "start": {"value": 10188278, "type": "Number"},
+        "end": {"value": 10188297, "type": "Number"},
+        "type": "SequenceLocation"
     }
 
 
@@ -451,8 +397,8 @@ def genomic_del2_abs_37(genomic_del2_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.wWy6pg25aZzAuDwEAcO18yD0QuSArYlE",
-        "subject": genomic_del2_37_loc,
+        "id": "ga4gh:ACN.doD8TUapoh2ekJQalFu2pqhU6RgMg2VI",
+        "location": genomic_del2_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
@@ -462,8 +408,8 @@ def genomic_del2_rel_37(genomic_del2_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC._iD9fTzI_KBtCOlI_6izwiUzjyoEZOft",
-        "subject": genomic_del2_37_loc,
+        "id": "ga4gh:RCN.Kw5y22t_9O3R_DBfP43ZgXkuLtrjbK2e",
+        "location": genomic_del2_37_loc,
         "relative_copy_class": "low-level gain"
     }
 
@@ -473,8 +419,8 @@ def genomic_del3_abs_38(genomic_del3_dup3_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul",
-        "subject": genomic_del3_dup3_loc,
+        "id": "ga4gh:ACN.2ZUQcccwvtoGZ5LZZRUoDZp6218Y6sQK",
+        "location": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -484,32 +430,21 @@ def genomic_del3_rel_38(genomic_del3_dup3_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.14ULmT3TSo6-du1BQehVkX14OH_92j4F",
-        "subject": genomic_del3_dup3_loc,
+        "id": "ga4gh:RCN.RoVV-V_2zSMFA8IUJSs3Ah8Y-3jh6ktV",
+        "location": genomic_del3_dup3_loc,
         "relative_copy_class": "complete loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del3_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.hDvTkhN210ZKyZOhilS7FxaKUCJgj6JC",
+        "id": "ga4gh:SL.MmBA0qlC0J6yxWTyqhpsd4H_oErccpUD",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "min": 31078343,
-                "max": 31118467,
-                "type": "DefiniteRange"
-            },
-            "end": {
-                "min": 33292396,
-                "max": 33435269,
-                "type": "DefiniteRange"
-            }
-        },
-        "type": "SequenceLocation",
+        "start": {"min": 31078343, "max": 31118467, "type": "DefiniteRange"},
+        "end": {"min": 33292396, "max": 33435269, "type": "DefiniteRange"},
+        "type": "SequenceLocation"
     }
 
 
@@ -518,8 +453,8 @@ def genomic_del3_abs_37(genomic_del3_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.Pv9I4Dqk69w-tX0axaikVqid-pozxU74",
-        "subject": genomic_del3_37_loc,
+        "id": "ga4gh:ACN.3ZeHMw-dKq2hTNEL9zzihfCPP2ZQV6zl",
+        "location": genomic_del3_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -529,8 +464,8 @@ def genomic_del3_rel_37(genomic_del3_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.tA7GSAeHf_MMDlSbDNGwnmrIfPxDN3et",
-        "subject": genomic_del3_37_loc,
+        "id": "ga4gh:RCN.rKupZ9FRkAXrYtZmaMd_7RF6vU4fOxLS",
+        "location": genomic_del3_37_loc,
         "relative_copy_class": "complete loss"
     }
 
@@ -540,8 +475,8 @@ def genomic_del4_abs_38(genomic_del4_seq_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.XCyM9ayMTrarSAMc00sHCmsPcCV8ymIN",
-        "subject": genomic_del4_seq_loc,
+        "id": "ga4gh:ACN.RTb0O1AM8twFPfcArsuu_Hiffs98GcXm",
+        "location": genomic_del4_seq_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
@@ -551,31 +486,20 @@ def genomic_del4_rel_38(genomic_del4_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.dtwRjvChZ6LuyDXyWTnVGQJidyfJsQfe",
-        "subject": genomic_del4_seq_loc,
+        "id": "ga4gh:RCN.BwZOFAfo5u8TcwbR3DMi8qbIImv96VQU",
+        "location": genomic_del4_seq_loc,
         "relative_copy_class": "partial loss"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del4_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.7Chaj1X9NH2G9sSK1diUKgBEZO4pHqr8",
+        "id": "ga4gh:SL.ghgq_DzgZ93L1gVXbnHKEQwBzwnNdfSJ",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 31138612,
-                "comparator": "<=",
-                "type": "IndefiniteRange"
-            },
-            "end": {
-                "value": 33357594,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
-        },
+        "start": {"value": 31138612, "comparator": "<=", "type": "IndefiniteRange"},
+        "end": {"value": 33357594, "comparator": ">=", "type": "IndefiniteRange"},
         "type": "SequenceLocation"
     }
 
@@ -585,8 +509,8 @@ def genomic_del4_abs_37(genomic_del4_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.gXM6rRlCid3C1DmUGT2XynmGXDvt80P6",
-        "subject": genomic_del4_37_loc,
+        "id": "ga4gh:ACN.4Lg4kT2VZ4yCjntMcVXy7wyrbAGflrTp",
+        "location": genomic_del4_37_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
@@ -596,8 +520,8 @@ def genomic_del4_rel_37(genomic_del4_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.-s62STiIcHBm1bo6iJw_Gjtnu-gea_x_",
-        "subject": genomic_del4_37_loc,
+        "id": "ga4gh:RCN.xeNugTAGZ5HPU5hyoOa6Jk_lzQKFj-2S",
+        "location": genomic_del4_37_loc,
         "relative_copy_class": "partial loss"
     }
 
@@ -607,8 +531,8 @@ def genomic_del5_abs_38(genomic_del5_seq_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.9A8BspUwfxSsceIScGOBtivMMASDsaid",
-        "subject": genomic_del5_seq_loc,
+        "id": "ga4gh:ACN.2su0y7vCqZmbTBU1cqKTOAR7m9vkNqBW",
+        "location": genomic_del5_seq_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -618,30 +542,20 @@ def genomic_del5_rel_38(genomic_del5_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.rs2ifklHL-urqO6p4wUUNIh60n_JbCsv",
-        "subject": genomic_del5_seq_loc,
+        "id": "ga4gh:RCN.y5LOigojbNT1BqtAv9BsKQ7-2i-iL8jA",
+        "location": genomic_del5_seq_loc,
         "relative_copy_class": "copy neutral"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.BXq1jg19bLLthS20Ux3MZJaXEeAAyuW9",
+        "id": "ga4gh:SL.kJXgk4nQIwS53UN5gxgIFIPcNSt53n8O",
         "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 18593473,
-                "comparator": "<=",
-                "type": "IndefiniteRange"
-            },
-            "end": {
-                "value": 18671749,
-                "type": "Number"
-            }
-        },
+        "start": {"value": 18593473, "comparator": "<=", "type": "IndefiniteRange"},
+        "end": {"value": 18671749, "type": "Number"},
         "type": "SequenceLocation"
     }
 
@@ -651,8 +565,8 @@ def genomic_del5_abs_37(genomic_del5_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.9zhlg8DRSsE87N5SngYrMDWXStzp_WOX",
-        "subject": genomic_del5_37_loc,
+        "id": "ga4gh:ACN.GxN5Fwl4w9NpVZSOXdxOMvrpPLmGWEd_",
+        "location": genomic_del5_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
@@ -662,8 +576,8 @@ def genomic_del5_rel_37(genomic_del5_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.bRyIyKsXFopd8L5vhyZ55xucloQRdxQS",
-        "subject": genomic_del5_37_loc,
+        "id": "ga4gh:RCN.jExtRl5UIhAlKPw68TtcA05-Gfi6cXQZ",
+        "location": genomic_del5_37_loc,
         "relative_copy_class": "copy neutral"
     }
 
@@ -673,8 +587,8 @@ def genomic_del6_abs_38(genomic_del6_seq_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.6RkHgDOiRMZKMKgI6rmG9C3T6WuMhcex",
-        "subject": genomic_del6_seq_loc,
+        "id": "ga4gh:ACN.ZnnJNutwCrHNzFQamAWXMbLC7PfILmqA",
+        "location": genomic_del6_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
@@ -684,30 +598,20 @@ def genomic_del6_rel_38(genomic_del6_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.5sY9YBXF0L685VHdNB1ZVuD3PCI3AjDf",
-        "subject": genomic_del6_seq_loc,
+        "id": "ga4gh:RCN.nmDpVRjFPJZF4K-HxmIgcAewOKtCOfGC",
+        "location": genomic_del6_seq_loc,
         "relative_copy_class": "low-level gain"
     }
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_37_loc():
-    """Create test fixture GRCh37 deletion subject"""
+    """Create test fixture GRCh37 deletion location"""
     return {
-        "_id": "ga4gh:VSL.FtOUv03wexaJWg_U7DISUtrM5WPdX60d",
+        "id": "ga4gh:SL.LU0WrrgeZ-HIG7f0LF_eS0yGvhDtiHuT",
         "sequence_id": "ga4gh:SQ.KqaUhJMW3CDjhoVtBetdEKT1n6hM-7Ek",
-        "interval": {
-            "type": "SequenceInterval",
-            "start": {
-                "value": 133783901,
-                "type": "Number"
-            },
-            "end": {
-                "value": 133785996,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
-        },
+        "start": {"value": 133783901, "type": "Number"},
+        "end": {"value": 133785996, "comparator": ">=", "type": "IndefiniteRange"},
         "type": "SequenceLocation"
     }
 
@@ -717,8 +621,8 @@ def genomic_del6_abs_37(genomic_del6_37_loc):
     """Create test fixture absolute copy number variation"""
     return {
         "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.60XjT6dzYKX8rn6ocG4AVAxCoUFfdjI6",
-        "subject": genomic_del6_37_loc,
+        "id": "ga4gh:ACN.aOQqe7zijdBB8VKaMSW97V2YVPeBnYMv",
+        "location": genomic_del6_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
@@ -728,8 +632,8 @@ def genomic_del6_rel_37(genomic_del6_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "_id": "ga4gh:VRC.wg_fX9QY-izwXjdP3Xqsjj69df-hyFob",
-        "subject": genomic_del6_37_loc,
+        "id": "ga4gh:RCN.C597L06IPEjWaoP-ktRkPxbbayBWBg12",
+        "location": genomic_del6_37_loc,
         "relative_copy_class": "low-level gain"
     }
 
@@ -756,7 +660,7 @@ async def test_genomic_dup1_absolute_cnv(test_handler, genomic_dup1_38_vac,
         q, baseline_copies=1, do_liftover=True)
     expected = copy.deepcopy(genomic_dup1_38_vac)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:VAC.WssYmdwNjxfDZNsN0fIMt0dZvGuj5FiL"
+    expected["id"] = "ga4gh:ACN.1IRAq_PwqIELC3n5kjZsr5X-xLmzGxrL"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -801,7 +705,7 @@ async def test_genomic_dup2_absolute_cnv(test_handler, genomic_dup2_38_vac,
         q, baseline_copies=1, do_liftover=True)
     expected = copy.deepcopy(genomic_dup2_38_vac)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:VAC.dJw2a6Ft5QLcMr55dW7AJhZAFIC4AOOZ"
+    expected["id"] = "ga4gh:ACN.rDCO3xAHcwYBhdNPP8qqzy6t62jrNFYs"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -846,7 +750,7 @@ async def test_genomic_dup3_absolute_cnv(test_handler, genomic_dup3_abs_38,
         q, baseline_copies=2, do_liftover=True)
     expected = copy.deepcopy(genomic_dup3_abs_38)
     expected["copies"] = {"value": 3, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.F95CRBT6lq24zbMfzDGJRlIPr2YTzCP6"
+    expected["id"] = "ga4gh:ACN.I1zTu1vvN_OIrSWh9mbPLFyZQnyl1jsu"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -891,7 +795,7 @@ async def test_genomic_dup4_absolute_cnv(test_handler, genomic_dup4_abs_38,
         q, baseline_copies=1, do_liftover=True)
     expected = copy.deepcopy(genomic_dup4_abs_38)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:VAC.4DWr_DnOSASkH3D_oQfwFSYpfbjic8h2"
+    expected["id"] = "ga4gh:ACN.jLffc6gpShAdrPSDMbn4r9-a3KOBIk0h"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -936,7 +840,7 @@ async def test_genomic_dup5_absolute_cnv(test_handler, genomic_dup5_abs_38,
         q, baseline_copies=4, do_liftover=True)
     expected = copy.deepcopy(genomic_dup5_abs_38)
     expected["copies"] = {"value": 5, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.8jpu_iCkX1viYFmmOhxjr_54-1Ra2htN"
+    expected["id"] = "ga4gh:ACN.74oGYuYCD0rAx1tjbTCG6EeZkfH2hLx9"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -981,7 +885,7 @@ async def test_genomic_dup6_absolute_cnv(test_handler, genomic_dup6_abs_38,
         q, baseline_copies=2, do_liftover=True)
     expected = copy.deepcopy(genomic_dup6_abs_38)
     expected["copies"] = {"value": 3, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.duHtKr9ejX_YCRUqUfn-x_I0F9LmXYD8"
+    expected["id"] = "ga4gh:ACN.uxA-iMw_FRIvuh9EBS8E-Loqr-Kzjd0c"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1026,7 +930,7 @@ async def test_genomic_del1_absolute_cnv(test_handler, genomic_del1_38_vac,
         q, baseline_copies=3, do_liftover=True)
     expected = copy.deepcopy(genomic_del1_38_vac)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:VAC.GPMXa216PdJGGjbwm4fGMxz-Ixwx7k8a"
+    expected["id"] = "ga4gh:ACN.6fvLDf6cBMYpIAu9xbjSWn8YL4ru0eM-"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1071,7 +975,7 @@ async def test_genomic_del2_absolute_cnv(test_handler, genomic_del2_38_vac,
         q, baseline_copies=4, do_liftover=True)
     expected = copy.deepcopy(genomic_del2_38_vac)
     expected["copies"]["value"] = 3
-    expected["_id"] = "ga4gh:VAC.AfTepmH6qmkb9wypryJF4bj7dOkAOzjp"
+    expected["id"] = "ga4gh:ACN.1mf7xNFTZu8JsC1twohPFCEF4IY_OPhq"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1116,7 +1020,7 @@ async def test_genomic_del3_absolute_cnv(test_handler, genomic_del3_abs_38,
         q, baseline_copies=2, do_liftover=True)
     expected = copy.deepcopy(genomic_del3_abs_38)
     expected["copies"] = {"value": 1, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.ErMN6pFh9a0Qiirf-o3096XY3yjl73de"
+    expected["id"] = "ga4gh:ACN.Q41L3gg0DJBgQj4BSVIdCEt41Hkh0U_S"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1161,7 +1065,7 @@ async def test_genomic_del4_absolute_cnv(test_handler, genomic_del4_abs_38,
         q, baseline_copies=3, do_liftover=True)
     expected = copy.deepcopy(genomic_del4_abs_38)
     expected["copies"] = {"value": 2, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.CK7qBFD64kIib5frYSFOxYXOqNbqfXVj"
+    expected["id"] = "ga4gh:ACN.YwVdXUJiRe_yLUbJT1WZ_4vKXOPhUk_-"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1206,7 +1110,7 @@ async def test_genomic_del5_absolute_cnv(test_handler, genomic_del5_abs_38,
         q, baseline_copies=2, do_liftover=True)
     expected = copy.deepcopy(genomic_del5_abs_38)
     expected["copies"] = {"value": 1, "type": "Number"}
-    expected["_id"] = "ga4gh:VAC.OAF6eGtER6jSRo2Y8srmitbxns5rMc7z"
+    expected["id"] = "ga4gh:ACN.MPb2oPn0bAT-Cqz3UNjtf9EQ4JT2sIyR"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 
@@ -1251,7 +1155,7 @@ async def test_genomic_del6_absolute_cnv(test_handler, genomic_del6_abs_38,
         q, baseline_copies=3, do_liftover=True)
     expected = copy.deepcopy(genomic_del6_abs_38)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:VAC.LZbbbtfCrpqAntJKaya0Qa9j0Lm5-u1R"
+    expected["id"] = "ga4gh:ACN.FIfMZ5asuZULdupfFV5FmUxLeeszG4Vl"
     assert resp.absolute_copy_number.dict(by_alias=True) == expected
 
 

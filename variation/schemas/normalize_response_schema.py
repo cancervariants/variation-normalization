@@ -78,17 +78,14 @@ class NormalizeService(ServiceResponse):
                     "id": "normalize.variation:BRAF%20V600E",
                     "label": "BRAF V600E",
                     "type": "VariationDescriptor",
-                    "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
+                    "variation_id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
                     "variation": {
-                        "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
+                        "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
                         "location": {
-                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
-                            "interval": {
-                                "end": {"value": 640, "type": "Number"},
-                                "start": {"value": 639, "type": "Number"},
-                                "type": "SequenceInterval"
-                            },
-                            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
+                            "id": "ga4gh:SL.xfBTztcmMstx8jrrdgPiE_BUoLHLFMMS",
+                            "end": {"value": 600, "type": "Number"},
+                            "start": {"value": 599, "type": "Number"},
+                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
                             "type": "SequenceLocation"
                         },
                         "state": {
@@ -150,15 +147,12 @@ class NormalizeService(ServiceResponse):
                             {
                                 "name": "chromosome_location",
                                 "value": {
-                                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
+                                    "id": "ga4gh:CL.ZZZYpOwuW1BLLJXc_Dm4eVZ5E0smVYCc",
                                     "type": "ChromosomeLocation",
                                     "species_id": "taxonomy:9606",
                                     "chr": "7",
-                                    "interval": {
-                                        "end": "q34",
-                                        "start": "q34",
-                                        "type": "CytobandInterval"
-                                    }
+                                    "end": "q34",
+                                    "start": "q34",
                                 },
                                 "type": "Extension"
                             },
@@ -261,27 +255,17 @@ class ToCanonicalVariationService(ServiceResponse):
                 "query": "NC_000007.14:140753335:A:T",
                 "warnings": [],
                 "canonical_variation": {
-                    "_id": "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9",
+                    "id": "ga4gh:CLV.dP6z4p7SoGJFmlFQcjOQo2d1mXuo1QiY",
                     "type": "CanonicalVariation",
-                    "complement": False,
-                    "variation": {
-                        "_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
+                    "canonical_context": {
+                        "id": "ga4gh:VA.3xFHF399HGbG1JUf5uwcj3oWVKZJ70oX",
                         "type": "Allele",
                         "location": {
-                            "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
+                            "id": "ga4gh:SL.WBLxdkoypnRME6b8tJtlOWqZKU1ruqY1",
                             "type": "SequenceLocation",
                             "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 140753335
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 140753336
-                                }
-                            }
+                            "start": {"type": "Number", "value": 140753335},
+                            "end": {"type": "Number", "value": 140753336}
                         },
                         "state": {
                             "type": "LiteralSequenceExpression",

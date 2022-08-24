@@ -1,8 +1,9 @@
 """The base class for Duplication and Deletion Validation."""
 import logging
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrs import models
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
@@ -276,13 +277,15 @@ class DuplicationDeletionBase(Validator):
         return t, pos1, pos2, pos3, pos4, grch38_start
 
     def add_grch38_to_mane_data(
-            self, t: str, s: Token, errors: List,
-            grch38: Dict, mane_data_found: Dict,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            ival: Optional[Tuple] = None,
-            use_vrs_allele_range: bool = True,
-            baseline_copies: Optional[int] = None,
-            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
+        self, t: str, s: Token, errors: List,
+        grch38: Dict, mane_data_found: Dict,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum,
+        start: Optional[Union[models.Number, models.DefiniteRange, models.IndefiniteRange]] = None,  # noqa: E501
+        end: Optional[Union[models.Number, models.DefiniteRange, models.IndefiniteRange]] = None,  # noqa: E501
+        use_vrs_allele_range: bool = True,
+        baseline_copies: Optional[int] = None,
+        relative_copy_class: Optional[RelativeCopyClass] = None
+    ) -> None:
         """Add grch38 variation to mane data
 
         :param str t: Accession
@@ -293,7 +296,12 @@ class DuplicationDeletionBase(Validator):
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
             `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
             determines how to represent HGVS dup/del expressions as VRS objects.
-        :param Optionals[Tuple] ival: Interval
+        :param start: start pos
+        :type start:
+            models.Number or models.DefiniteRange or models.IndefiniteRange or None
+        :param end: end pos
+        :type end:
+            models.Number or models.DefiniteRange or models.IndefiniteRange or None
         :param bool use_vrs_allele_range: `True` if allele should be computed
             using `to_vrs_allele_ranges` method. `False` if allele should be
             computed using `to_vrs_allele` method.
@@ -308,7 +316,7 @@ class DuplicationDeletionBase(Validator):
 
         if use_vrs_allele_range:
             allele = self.vrs.to_vrs_allele_ranges(
-                t, s.coordinate_type, s.alt_type, errors, ival)
+                t, s.coordinate_type, s.alt_type, errors, start, end)
         else:
             allele = self.vrs.to_vrs_allele(
                 t, grch38["pos"][0], grch38["pos"][1], s.coordinate_type,
