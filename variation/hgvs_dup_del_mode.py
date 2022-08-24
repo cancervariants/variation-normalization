@@ -1,11 +1,9 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
 from typing import Optional, Dict, Tuple, List
-import copy
-import json
 
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 from uta_tools.data_sources import SeqRepoAccess
 
 from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
@@ -89,27 +87,6 @@ class HGVSDupDelMode:
             variation = self.literal_seq_expr_mode(allele, alt_type)
         return variation
 
-    def _ga4gh_identify_cnv(self, variation: Dict, is_abs: bool = True) -> Dict:
-        """Add ga4gh digest to variation
-
-        :param Dict variation: VRS Copy Number Variation
-        :param bool is_abs: `True` if Absolute Copy Number.
-            `False` if Relative Copy Number.
-        :return: Variation with ga4gh digest identifiers
-        """
-        copy_variation = copy.deepcopy(variation)
-        location_id = variation["subject"]["_id"].split(".")[-1]
-        copy_variation["subject"] = location_id
-        serialized = json.dumps(
-            copy_variation, sort_keys=True, separators=(",", ":"), indent=None
-        ).encode("utf-8")
-        digest = sha512t24u(serialized)
-        if is_abs:
-            variation["_id"] = f"ga4gh:VAC.{digest}"
-        else:
-            variation["_id"] = f"ga4gh:VRC.{digest}"
-        return variation
-
     def absolute_copy_number_mode(self, del_or_dup: str, location: Dict,
                                   baseline_copies: int) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
@@ -125,10 +102,11 @@ class HGVSDupDelMode:
         )
         variation = {
             "type": "AbsoluteCopyNumber",
-            "subject": location,
+            "location": location,
             "copies": copies.as_dict()
         }
-        return self._ga4gh_identify_cnv(variation, is_abs=True)
+        variation["id"] = ga4gh_identify(models.AbsoluteCopyNumber(**variation))
+        return variation
 
     def relative_copy_number_mode(
         self, del_or_dup: str, location: Dict,
@@ -148,13 +126,13 @@ class HGVSDupDelMode:
                 relative_copy_class = RelativeCopyClass.LOW_LEVEL_GAIN.value
         variation = {
             "type": "RelativeCopyNumber",
-            "subject": location,
+            "location": location,
             "relative_copy_class": relative_copy_class
         }
-        return self._ga4gh_identify_cnv(variation, is_abs=False)
+        variation["id"] = ga4gh_identify(models.RelativeCopyNumber(**variation))
+        return variation
 
-    def repeated_seq_expr_mode(self, alt_type: str,
-                               location: Dict) -> Optional[Dict]:
+    def repeated_seq_expr_mode(self, alt_type: str, location: Dict) -> Optional[Dict]:
         """Return a VRS Allele with a RepeatedSequenceExpression.
         The RepeatedSequenceExpression subject will be a
             DerivedSequenceExpression.
@@ -215,7 +193,7 @@ class HGVSDupDelMode:
         if variation is None:
             return None
         else:
-            variation._id = ga4gh_identify(variation)
+            variation.id = ga4gh_identify(variation)
             return variation.as_dict()
 
     def interpret_variation(

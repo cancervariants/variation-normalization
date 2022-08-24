@@ -54,23 +54,14 @@ class TranslateToQuery(BaseModel):
                 prop.pop("title", None)
             schema["example"] = {
                 "variation": {
-                    "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
+                    "id": "ga4gh:VA.SZBa9i7RbGcqpNrKYssI5wJ20-34K2-s",
                     "type": "Allele",
                     "location": {
-                        "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
+                        "id": "ga4gh:SL.EIeKWMSblp-B7TgXVm-JrHrbsf9czDhk",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
-                        "interval": {
-                            "type": "SequenceInterval",
-                            "start": {
-                                "type": "Number",
-                                "value": 140453135
-                            },
-                            "end": {
-                                "type": "Number",
-                                "value": 140453136
-                            }
-                        }
+                        "start": {"type": "Number", "value": 140453135},
+                        "end": {"type": "Number", "value": 140453136}
                     },
                     "state": {
                         "type": "LiteralSequenceExpression",
@@ -102,23 +93,14 @@ class TranslateToHGVSQuery(BaseModel):
                 prop.pop("title", None)
             schema["example"] = {
                 "variation": {
-                    "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
+                    "id": "ga4gh:VA.SZBa9i7RbGcqpNrKYssI5wJ20-34K2-s",
                     "type": "Allele",
                     "location": {
-                        "_id": "ga4gh:VSL.8cQ9y-2J75mg5ioJvbqtgwiskdUV4zuO",
+                        "id": "ga4gh:SL.EIeKWMSblp-B7TgXVm-JrHrbsf9czDhk",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
-                        "interval": {
-                            "type": "SequenceInterval",
-                            "start": {
-                                "type": "Number",
-                                "value": 140453135
-                            },
-                            "end": {
-                                "type": "Number",
-                                "value": 140453136
-                            }
-                        }
+                        "start": {"type": "Number", "value": 140453135},
+                        "end": {"type": "Number", "value": 140453136}
                     },
                     "state": {
                         "type": "LiteralSequenceExpression",

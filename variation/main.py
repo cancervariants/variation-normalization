@@ -318,7 +318,6 @@ async def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
         fmt: ToCanonicalVariationFmt = Query(...,
                                              description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
-        complement: bool = Query(False, description=complement_descr),
         do_liftover: bool = Query(False, description="Whether or not to liftover to "
                                   "GRCh38 assembly."),
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
@@ -335,10 +334,6 @@ async def to_canonical_variation(
     :param str q: HGVS or SPDI query
     :param ToCanonicalVariationFmt fmt: Format of the input variation. Must be
         `spdi` or `hgvs`.
-    :param bool complement: This field indicates that a categorical variation
-        is defined to include (false) or exclude (true) variation concepts matching the
-        categorical variation. This is equivalent to a logical NOT operation on the
-        categorical variation properties.
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to interpret
         HGVS dup/del expressions in VRS. Must be one of: `default`, `absolute_cnv`,
         `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
@@ -353,7 +348,7 @@ async def to_canonical_variation(
     """
     q = unquote(q)
     resp = await query_handler.to_canonical_handler.to_canonical_variation(
-        q, fmt, complement, do_liftover=do_liftover,
+        q, fmt, do_liftover=do_liftover,
         hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
         relative_copy_class=relative_copy_class,
         untranslatable_returns_text=untranslatable_returns_text)

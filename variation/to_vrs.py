@@ -169,15 +169,13 @@ class ToVRS(VRSRepresentation):
         """
         start = None
         end = None
-        interval = allele["location"]["interval"]
-        ival_type = interval["type"]
-        if ival_type == "SequenceInterval":
-            if interval["start"]["type"] == "Number":
-                start = interval["start"]["value"]
-                end = interval["end"]["value"]
+        location = allele["location"]
+        if location["start"]["type"] == "Number":
+            start = location["start"]["value"]
+            end = location["end"]["value"]
 
-                if start == end:
-                    return None
+            if start == end:
+                return None
 
         if start is None and end is None:
             return None
@@ -203,7 +201,7 @@ class ToVRS(VRSRepresentation):
         if not translations:
             if untranslatable_returns_text and q and q.strip():
                 text = models.Text(definition=q, type="Text")
-                text._id = ga4gh_identify(text)
+                text.id = ga4gh_identify(text)
                 translations = [Text(**text.as_dict())]
             else:
                 translations = []

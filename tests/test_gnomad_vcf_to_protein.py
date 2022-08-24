@@ -48,12 +48,9 @@ def mmel1_gene_context():
                 "name": "chromosome_location",
                 "value": {
                     "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.32",
-                        "end": "p36.32"
-                    },
-                    "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
+                    "start": "p36.32",
+                    "end": "p36.32",
+                    "id": "ga4gh:CL.GvnxCN3xVRhtAGEabC3Tl1p3wsHM7-J7",
                     "type": "ChromosomeLocation",
                     "chr": "1"
                 }
@@ -142,12 +139,9 @@ def cdk11a_gene_context():
                 "name": "chromosome_location",
                 "value": {
                     "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.33",
-                        "end": "p36.33"
-                    },
-                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                    "start": "p36.33",
+                    "end": "p36.33",
+                    "id": "ga4gh:CL.08UTaK9ZRrooFYQRV-WD5k2Z4iOyTmMG",
                     "type": "ChromosomeLocation",
                     "chr": "1"
                 }
@@ -237,12 +231,9 @@ def lrp8_gene_context():
                 "name": "chromosome_location",
                 "value": {
                     "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p32.3",
-                        "end": "p32.3"
-                    },
-                    "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
+                    "start": "p32.3",
+                    "end": "p32.3",
+                    "id": "ga4gh:CL.u-8S9gYnhTxY-5dMXCjo_ZMuDMVbbobs",
                     "type": "ChromosomeLocation",
                     "chr": "1"
                 }
@@ -326,12 +317,9 @@ def atad3a_gene_context():
                 "name": "chromosome_location",
                 "value": {
                     "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.33",
-                        "end": "p36.33"
-                    },
-                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                    "start": "p36.33",
+                    "end": "p36.33",
+                    "id": "ga4gh:CL.08UTaK9ZRrooFYQRV-WD5k2Z4iOyTmMG",
                     "type": "ChromosomeLocation",
                     "chr": "1"
                 }
@@ -379,16 +367,13 @@ def mmel1_l30m(mmel1_gene_context):
     params = {
         "id": "normalize.variation:1-2629397-G-T",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.9TFIzZ8M_qfiAfZTO1QvZ6toS4I_j4Z9",
+        "variation_id": "ga4gh:VA.TNZKL_HZqeU1anmA0vGWnvV_RjsNb1mB",
         "variation": {
-            "_id": "ga4gh:VA.9TFIzZ8M_qfiAfZTO1QvZ6toS4I_j4Z9",
+            "id": "ga4gh:VA.TNZKL_HZqeU1anmA0vGWnvV_RjsNb1mB",
             "location": {
-                "_id": "ga4gh:VSL.0h5OViQETz4k5QePhKFiQJE038yy4jpS",
-                "interval": {
-                    "end": {"value": 30, "type": "Number"},
-                    "start": {"value": 29, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
+                "id": "ga4gh:SL.faQG3PE4Z3J2sCLd2mvOi5GtbcNeTs3K",
+                "end": {"value": 30, "type": "Number"},
+                "start": {"value": 29, "type": "Number"},
                 "sequence_id": "ga4gh:SQ.iQ8F_pnsiQOLohiV2qh3OWRZiftUt8jZ",
                 "type": "SequenceLocation"
             },
@@ -412,16 +397,13 @@ def cdk11a_e314del(cdk11a_gene_context):
     params = {
         "id": "normalize.variation:1-1708855-TTCC-T",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.6GUBUCcortzNbx7Q5DMPzxiFTnvPowhi",
+        "variation_id": "ga4gh:VA.onGUSj8yycu9JLUsygAcvY5T2eRZGeN-",
         "variation": {
-            "_id": "ga4gh:VA.6GUBUCcortzNbx7Q5DMPzxiFTnvPowhi",
+            "id": "ga4gh:VA.onGUSj8yycu9JLUsygAcvY5T2eRZGeN-",
             "location": {
-                "_id": "ga4gh:VSL.tnCPFL4wpErBLA6rnIcFrRUGpaO1639_",
-                "interval": {
-                    "end": {"value": 321, "type": "Number"},
-                    "start": {"value": 308, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
+                "id": "ga4gh:SL.PfUIK14UgNsxxUrI_6FFv68SC_tvItrP",
+                "end": {"value": 321, "type": "Number"},
+                "start": {"value": 308, "type": "Number"},
                 "sequence_id": "ga4gh:SQ.N728VSRRMHJ1SrhJgKqJOCaa3l5Z4sqm",
                 "type": "SequenceLocation"
             },
@@ -445,16 +427,13 @@ def protein_insertion2(lrp8_gene_context):
     params = {
         "id": "normalize.variation:1-53327836-A-ACGC",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.O1MlG0mAJcxpAfd-dRZ_ZXhMdbm3OHHx",
+        "variation_id": "ga4gh:VA.pt-iZhrxYtI6FjWk8bxxUXWKsH_rFj2t",
         "variation": {
-            "_id": "ga4gh:VA.O1MlG0mAJcxpAfd-dRZ_ZXhMdbm3OHHx",
+            "id": "ga4gh:VA.pt-iZhrxYtI6FjWk8bxxUXWKsH_rFj2t",
             "location": {
-                "_id": "ga4gh:VSL.5jPV69Go1DH3XWb1bbRpoiz-GeEtIxYv",
-                "interval": {
-                    "end": {"value": 25, "type": "Number"},
-                    "start": {"value": 25, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
+                "id": "ga4gh:SL.lfzCaOsWzXwPOpCa9boheo2N-OGLlsMV",
+                "end": {"value": 25, "type": "Number"},
+                "start": {"value": 25, "type": "Number"},
                 "sequence_id": "ga4gh:SQ.qgIh8--4F6IpxRwX_lVtD2BhepH5B5Ef",
                 "type": "SequenceLocation"
             },
@@ -475,12 +454,9 @@ def protein_insertion2(lrp8_gene_context):
 def atad3a_loc():
     """Create test fixture for ATAD3A location"""
     return {
-        "_id": "ga4gh:VSL.h7pLvn-VyN4H7GT0vBj6XD5PENOocxOR",
-        "interval": {
-            "end": {"value": 7, "type": "Number"},
-            "start": {"value": 6, "type": "Number"},
-            "type": "SequenceInterval"
-        },
+        "id": "ga4gh:SL.gPvwSGKYW_3l4spkahhv6nA4VO3Oe9ye",
+        "end": {"value": 7, "type": "Number"},
+        "start": {"value": 6, "type": "Number"},
         "sequence_id": "ga4gh:SQ.MHPOY_7fv8V9SktyvaTxulVFSK6XCxM8",
         "type": "SequenceLocation"
     }
@@ -492,9 +468,9 @@ def atad3a_i7v(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512287-A-G",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
+        "variation_id": "ga4gh:VA.0n_eZ3A0nCDSf3D8tBPsmg5-sOU2eYS1",
         "variation": {
-            "_id": "ga4gh:VA.T4StYcC72ctAMe5FGzI9XkyYbLr6VxVk",
+            "id": "ga4gh:VA.0n_eZ3A0nCDSf3D8tBPsmg5-sOU2eYS1",
             "location": atad3a_loc,
             "state": {
                 "sequence": "V",
@@ -516,9 +492,9 @@ def atad3a_i7t(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512288-T-C",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.7ohTnL0ULPFaOESzuh_SIRYgp9zGch_Z",
+        "variation_id": "ga4gh:VA.xvlGODCInBKado5IkXueBbkHY248GQeG",
         "variation": {
-            "_id": "ga4gh:VA.7ohTnL0ULPFaOESzuh_SIRYgp9zGch_Z",
+            "id": "ga4gh:VA.xvlGODCInBKado5IkXueBbkHY248GQeG",
             "location": atad3a_loc,
             "state": {
                 "sequence": "T",
@@ -540,9 +516,9 @@ def atad3a_i7m(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512289-T-G",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.ua1plOEkzNo23uVhnbSYBSM0jS7to6tN",
+        "variation_id": "ga4gh:VA.SB4A2_i6ldjbr02igJtvMBOMxVxw_371",
         "variation": {
-            "_id": "ga4gh:VA.ua1plOEkzNo23uVhnbSYBSM0jS7to6tN",
+            "id": "ga4gh:VA.SB4A2_i6ldjbr02igJtvMBOMxVxw_371",
             "location": atad3a_loc,
             "state": {
                 "sequence": "M",
@@ -564,9 +540,9 @@ def braf_v600l(braf_gene_context, braf_600loc):
     params = {
         "id": "normalize.variation:7-140753337-C-A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Ktev5asCsmUbHaQG6N-CdSp_g5FyJxLN",
+        "variation_id": "ga4gh:VA.HVHeMnSZ0nIsCxqI9xE35RaiBhcSo9IS",
         "variation": {
-            "_id": "ga4gh:VA.Ktev5asCsmUbHaQG6N-CdSp_g5FyJxLN",
+            "id": "ga4gh:VA.HVHeMnSZ0nIsCxqI9xE35RaiBhcSo9IS",
             "location": braf_600loc,
             "state": {
                 "sequence": "L",
@@ -588,9 +564,9 @@ def braf_600_silent_mutation(braf_gene_context, braf_600loc):
     params = {
         "id": "normalize.variation:7-140753335-C-A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.YUPFxYUZlYnr7Q4nIPiLV5BJznzF3YKl",
+        "variation_id": "ga4gh:VA.dbEtYnjAkO0rz_D2y_xaLusONuEW27Qd",
         "variation": {
-            "_id": "ga4gh:VA.YUPFxYUZlYnr7Q4nIPiLV5BJznzF3YKl",
+            "id": "ga4gh:VA.dbEtYnjAkO0rz_D2y_xaLusONuEW27Qd",
             "location": braf_600loc,
             "state": {
                 "sequence": "V",
@@ -610,23 +586,14 @@ def braf_600_silent_mutation(braf_gene_context, braf_600loc):
 def kras_g12d():
     """Fixture for KRAS G12C"""
     return {
-        "id": "ga4gh:VA.NtQTqsdO_Z8G0KpBQ1_z7QsHo_bVN43m",
+        "id": "ga4gh:VA.jSiuIG2uZEbml8MfCtZi3J9jPBCBiaPw",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:VSL.Eiio4mQpHp-kXdQWT_AUHrubE8Q18_br",
+            "id": "ga4gh:SL.NZ2azyPR9iXnUHx3Kv2Eam1DeprkcoQR",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.fytWhQSNGnA-86vDiQCxTSzgkk_WfQRS",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "Number",
-                    "value": 11
-                },
-                "end": {
-                    "type": "Number",
-                    "value": 12
-                }
-            }
+            "start": {"type": "Number", "value": 11},
+            "end": {"type": "Number", "value": 12}
         },
         "state": {
             "type": "LiteralSequenceExpression",

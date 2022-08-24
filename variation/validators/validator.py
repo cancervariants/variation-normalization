@@ -472,8 +472,8 @@ class Validator(ABC):
             ensembl_resp = resp.source_matches[0]
             if ensembl_resp.records[0].locations:
                 ensembl_loc = ensembl_resp.records[0].locations[0]
-                gene_start_end["start"] = ensembl_loc.interval.start.value
-                gene_start_end["end"] = ensembl_loc.interval.end.value - 1
+                gene_start_end["start"] = ensembl_loc.start.value
+                gene_start_end["end"] = ensembl_loc.end.value - 1
 
         if gene_start_end["start"] is None and gene_start_end["end"] is None:
             errors.append(f"gene-normalizer unable to find Ensembl location"
@@ -486,7 +486,7 @@ class Validator(ABC):
                 chromosome, assembly = assembly
                 for key in gene_start_end.keys():
                     gene_pos = gene_start_end[key]
-                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(  # noqa: E501
+                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(
                         chromosome, gene_pos)
                     if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
                         errors.append(f"{gene_pos} does not"
@@ -594,7 +594,7 @@ class Validator(ABC):
         :param str status: Status for variation (GRCh38, MANE Select,
             MANE Clinical Plus)
         """
-        _id = variation["_id"]
+        _id = variation["id"]
         key = "_".join(status.lower().split())
 
         if _id in mane_data[key].keys():

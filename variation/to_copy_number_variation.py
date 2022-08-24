@@ -92,7 +92,7 @@ class ToCopyNumberVariation(ToVRS):
         if not variation:
             if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:
                 text = models.Text(definition=hgvs_expr, type="Text")
-                text._id = ga4gh_identify(text)
+                text.id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
         else:
             if copy_number_type == HGVSDupDelModeEnum.ABSOLUTE_CNV:
@@ -269,26 +269,23 @@ class ToCopyNumberVariation(ToVRS):
                     location = models.SequenceLocation(
                         type="SequenceLocation",
                         sequence_id=sequence_id,
-                        interval=models.SequenceInterval(
-                            type="SequenceInterval",
-                            start=models.IndefiniteRange(
-                                comparator="<=",
-                                value=start - 1,
-                                type="IndefiniteRange"),
-                            end=models.IndefiniteRange(
-                                comparator=">=",
-                                value=end,
-                                type="IndefiniteRange")
-                        )
+                        start=models.IndefiniteRange(
+                            comparator="<=",
+                            value=start - 1,
+                            type="IndefiniteRange"),
+                        end=models.IndefiniteRange(
+                            comparator=">=",
+                            value=end,
+                            type="IndefiniteRange")
                     )
-                    location._id = ga4gh_identify(location)
+                    location.id = ga4gh_identify(location)
                     variation = {
                         "type": "AbsoluteCopyNumber",
-                        "subject": location.as_dict(),
+                        "location": location.as_dict(),
                         "copies": {"value": total_copies, "type": "Number"}
                     }
-                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
-                        variation, is_abs=True)
+                    variation["id"] = ga4gh_identify(
+                        models.AbsoluteCopyNumber(**variation))
                     variation = AbsoluteCopyNumber(**variation)
 
         return ParsedToAbsCnvService(

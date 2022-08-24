@@ -18,23 +18,20 @@ def copy_number_gain1():
     """
     variation = {
         "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:VAC.accZJeJtNj0Zqv7KVqkT87ClTlg-4nwa",
-        "subject": {
+        "id": "ga4gh:ACN.cbjEAj7SGM_RPXxs7foqsO0ZsNwz_kNM",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:VSL.JTsxd9PiPZaIPL9Tl3ss78GYYnDeogvf",
+            "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
             "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "IndefiniteRange",
-                    "value": 143134062,
-                    "comparator": "<="
-                },
-                "end": {
-                    "type": "IndefiniteRange",
-                    "value": 143284670,
-                    "comparator": ">="
-                }
+            "start": {
+                "type": "IndefiniteRange",
+                "value": 143134062,
+                "comparator": "<="
+            },
+            "end": {
+                "type": "IndefiniteRange",
+                "value": 143284670,
+                "comparator": ">="
             }
         },
         "copies": {"type": "Number", "value": 3}
@@ -49,23 +46,20 @@ def copy_number_gain2():
     """
     variation = {
         "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:VAC.oTO2JUsQdoJ2fudae5uO5uVNvIu7oA8m",
-        "subject": {
+        "id": "ga4gh:ACN.fsOa7sCcy0fFbtRM2SnZ6-4sDMzTwBUp",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:VSL.9moblqAMqfEryr9pRUxqZMiOkqbsy5Ml",
+            "id": "ga4gh:SL.xBw2DuIlDmgOswPardadgzXmVdJmrLZF",
             "sequence_id": "ga4gh:SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "IndefiniteRange",
-                    "value": 31738808,
-                    "comparator": "<="
-                },
-                "end": {
-                    "type": "IndefiniteRange",
-                    "value": 32217725,
-                    "comparator": ">="
-                }
+            "start": {
+                "type": "IndefiniteRange",
+                "value": 31738808,
+                "comparator": "<="
+            },
+            "end": {
+                "type": "IndefiniteRange",
+                "value": 32217725,
+                "comparator": ">="
             }
         },
         "copies": {"type": "Number", "value": 2}
@@ -80,23 +74,20 @@ def copy_number_loss1():
     """
     variation = {
         "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:VAC.5QpagPqyrE4vUigmRi58NrPmPhQsI7kM",
-        "subject": {
+        "id": "ga4gh:ACN.W03nu2WLL5PKmgjkz_V4lK1BR5sH0ivM",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:VSL.Szlw1t4YMuaO7lLwFJ-T7fGTcXuhNNKB",
+            "id": "ga4gh:SL.aIbLtN8y8GbKG91n5_sJR3f2dVUrydeD",
             "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "IndefiniteRange",
-                    "value": 10491131,
-                    "comparator": "<="
-                },
-                "end": {
-                    "type": "IndefiniteRange",
-                    "value": 10535643,
-                    "comparator": ">="
-                }
+            "start": {
+                "type": "IndefiniteRange",
+                "value": 10491131,
+                "comparator": "<="
+            },
+            "end": {
+                "type": "IndefiniteRange",
+                "value": 10535643,
+                "comparator": ">="
             }
         },
         "copies": {"type": "Number", "value": 1}
@@ -111,23 +102,20 @@ def copy_number_loss2():
     """
     variation = {
         "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:VAC.ZWN8WnEksqBj4bKFIB60Wag6hGeeobB5",
-        "subject": {
+        "id": "ga4gh:ACN.vBG8jppEaX-zmEIxcTNL-9NFBB0wBbWi",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:VSL.Bp-86GeYti1DBmrj_Dtz7qNIMF5ygx5y",
+            "id": "ga4gh:SL.n35LAVyENzd6BVllBUUxzI2p5TgJpKAl",
             "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "IndefiniteRange",
-                    "value": 10000,
-                    "comparator": "<="
-                },
-                "end": {
-                    "type": "IndefiniteRange",
-                    "value": 1223133,
-                    "comparator": ">="
-                }
+            "start": {
+                "type": "IndefiniteRange",
+                "value": 10000,
+                "comparator": "<="
+            },
+            "end": {
+                "type": "IndefiniteRange",
+                "value": 1223133,
+                "comparator": ">="
             }
         },
         "copies": {"type": "Number", "value": 0}

@@ -1,5 +1,5 @@
 """The module for Genomic Uncertain Deletion Validation."""
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Dict, Tuple, Union
 import logging
 
 from ga4gh.vrs import models
@@ -122,7 +122,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 t = grch38["ac"]
 
             allele = self.vrs.to_vrs_allele_ranges(
-                t, s.coordinate_type, s.alt_type, errors, ival)
+                t, s.coordinate_type, s.alt_type, errors, ival[0], ival[1])
             if start is not None and end is not None:
                 pos = (start, end)
             else:
@@ -160,13 +160,14 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 t, s, errors, gene_tokens, is_norm=True)
             self.add_grch38_to_mane_data(
                 t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-                ival=ival, relative_copy_class=relative_copy_class,
+                start=ival[0], end=ival[1], relative_copy_class=relative_copy_class,
                 baseline_copies=baseline_copies)
 
     async def _get_ival(
-        self, t: str, s: Token, errors: List, gene_tokens: List,
-        is_norm: bool = False
-    ) -> Optional[Tuple[models.SequenceInterval, Dict]]:
+        self, t: str, s: Token, errors: List, gene_tokens: List, is_norm: bool = False
+    ) -> Optional[Tuple[Tuple[Union[models.Number, models.DefiniteRange, models.IndefiniteRange],  # noqa: E501
+                              Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],  # noqa: E501
+                        Dict]]:
         """Get ival for variations with ranges.
 
         :param str t: Accession
@@ -174,7 +175,7 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
         :param List errors: List of errors
         :param bool is_norm: `True` if normalize endpoint is being used.
             `False` otherwise.
-        :return: Sequence Interval and GRCh38 data if normalize endpoint
+        :return: (Start, End) and GRCh38 data if normalize endpoint
             is being used
         """
         ival = None
@@ -194,11 +195,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 t, [start, end], errors, gene=gene)
 
             if not errors and start and end:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(start),
-                    end=self.vrs.get_end_indef_range(end),
-                    type="SequenceInterval"
-                )
+                ival = (self.vrs.get_start_indef_range(start),
+                        self.vrs.get_end_indef_range(end))
         elif s.start_pos1_del == "?" and \
                 s.start_pos2_del != "?" and \
                 s.end_pos1_del != "?" and \
@@ -217,11 +215,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
             )
 
             if not errors and start and end:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(start),  # noqa: E501
-                    end=models.Number(value=end, type="Number"),
-                    type="SequenceInterval"
-                )
+                ival = (self.vrs.get_start_indef_range(start),
+                        models.Number(value=end, type="Number"))
         elif s.start_pos1_del != "?" and \
                 s.start_pos2_del is None and \
                 s.end_pos1_del != "?" and \
@@ -241,11 +236,8 @@ class GenomicUncertainDeletion(DuplicationDeletionBase):
                 t, [start, end], errors, gene=gene)
 
             if not errors and start and end:
-                ival = models.SequenceInterval(
-                    start=models.Number(value=start, type="Number"),
-                    end=self.vrs.get_end_indef_range(end),
-                    type="SequenceInterval"
-                )
+                ival = (models.Number(value=start, type="Number"),
+                        self.vrs.get_end_indef_range(end))
         else:
             errors.append("Not yet supported")
         return ival, grch38
