@@ -28,7 +28,7 @@ def vhl_gene_context():
         "id": "normalize.gene:VHL",
         "type": "GeneDescriptor",
         "label": "VHL",
-        "gene_id": "hgnc:12687",
+        "gene": "hgnc:12687",
         "xrefs": [
             "ncbigene:7428",
             "ensembl:ENSG00000134086"
@@ -112,7 +112,7 @@ def braf_gene_context():
         "id": "normalize.gene:BRAF",
         "type": "GeneDescriptor",
         "label": "BRAF",
-        "gene_id": "hgnc:1097",
+        "gene": "hgnc:1097",
         "xrefs": [
             "ncbigene:673",
             "ensembl:ENSG00000157764"
@@ -193,7 +193,7 @@ def egfr_context():
         "id": "normalize.gene:EGFR",
         "type": "GeneDescriptor",
         "label": "EGFR",
-        "gene_id": "hgnc:3236",
+        "gene": "hgnc:3236",
         "xrefs": [
             "ncbigene:1956",
             "ensembl:ENSG00000146648"
@@ -284,7 +284,7 @@ def erbb2_context():
         "id": "normalize.gene:ERBB2",
         "type": "GeneDescriptor",
         "label": "ERBB2",
-        "gene_id": "hgnc:3430",
+        "gene": "hgnc:3430",
         "xrefs": [
             "ncbigene:2064",
             "ensembl:ENSG00000141736"
@@ -394,7 +394,6 @@ def braf_v600e(braf_gene_context, braf_600loc):
     params = {
         "id": "normalize.variation:BRAF%20V600E",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
         "variation": {
             "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
             "location": braf_600loc,
@@ -418,7 +417,6 @@ def vhl_silent(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.hFvpLOEfU4Qtxd1_pdSx-_XnIJng9Xnb",
         "variation": {
             "id": "ga4gh:VA.hFvpLOEfU4Qtxd1_pdSx-_XnIJng9Xnb",
             "location": {
@@ -448,7 +446,6 @@ def protein_insertion(egfr_context):
     params = {
         "id": "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Daydg17safvIKs_ENTrvKpfoSooKgImP",
         "variation": {
             "id": "ga4gh:VA.Daydg17safvIKs_ENTrvKpfoSooKgImP",
             "location": {
@@ -479,7 +476,6 @@ def protein_deletion_np_range(erbb2_context):
     params = {
         "id": "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.gb8REjJatcpIgb1B3LKiIDI4DhJd70Bk",
         "variation": {
             "id": "ga4gh:VA.gb8REjJatcpIgb1B3LKiIDI4DhJd70Bk",
             "location": {
@@ -731,15 +727,10 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
         assert normalize_response.id == test_variation.id, "id"
     assert normalize_response.label == label
     assert normalize_response.type == test_variation.type, "type"
-    assert normalize_response.variation_id == \
-           test_variation.variation_id, "variation_id"
     if test_variation.variation.type != "Text":
         if test_variation.variation.id:
             assert normalize_response.variation.id == \
                    test_variation.variation.id, "variation.id"
-            if test_variation.variation_id:
-                assert normalize_response.variation_id == \
-                       normalize_response.variation.id, "variation_id == variation.id"
         assert normalize_response.variation == test_variation.variation, "variation"
     else:
         if not ignore_id:
@@ -761,8 +752,8 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
             assert resp_gene_context.id == test_variation_context.id, "gene_context.id"
         assert resp_gene_context.label == \
                test_variation_context.label, "gene_context.label"
-        assert resp_gene_context.gene_id ==\
-               test_variation_context.gene_id, "gene_context.gene_id"
+        assert resp_gene_context.gene ==\
+               test_variation_context.gene, "gene_context.gene"
         assert set(resp_gene_context.xrefs) ==\
                set(test_variation_context.xrefs), "gene_context.xrefs"
         if test_variation_context.alternate_labels:
