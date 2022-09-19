@@ -44,6 +44,31 @@ def variation1_lse(variation1_seq_loc):
 
 
 @pytest.fixture(scope="module")
+def variation_del_lse():
+    """Create test fixture for NC_000013.11:20003096:C:"""
+    params = {
+        "id": "ga4gh:CLV.6_wBT_bhV-hwjaqDxq3kEs3nyILkF4du",
+        "type": "CanonicalVariation",
+        "canonical_context": {
+            "id": "ga4gh:VA.l55oQYOlWUoYwAxb4trpbqmMNaknTa1U",
+            "type": "Allele",
+            "location": {
+                "id": "ga4gh:SL.aEhVhpZMgXXidD4yA4wQbqxKPAf2gnjq",
+                "end": {"value": 20003097, "type": "Number"},
+                "start": {"value": 20003096, "type": "Number"},
+                "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "type": "LiteralSequenceExpression",
+                "sequence": ""
+            }
+        }
+    }
+    return CanonicalVariation(**params)
+
+
+@pytest.fixture(scope="module")
 def variation1_abs_cnv(variation1_seq_loc):
     """Create test fixture for variation1 represented as absolute cnv"""
     params = {
@@ -208,7 +233,7 @@ def variation4():
 @pytest.mark.asyncio
 async def test_to_canonical_variation_deletion(
     test_handler, variation1_lse, variation1_abs_cnv, variation1_rel_cnv,
-    variation1_rse
+    variation1_rse, variation_del_lse
 ):
     """Test that to_canonical_variation works correctly for deletions"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/17014/?new_evidence=true
@@ -230,6 +255,23 @@ async def test_to_canonical_variation_deletion(
     q = " NC_000013.10:g.20763488del "  # 37
     resp = await test_handler.to_canonical_variation(q, fmt="hgvs", do_liftover=True)
     assert resp.canonical_variation == variation1_lse
+    assert resp.warnings == []
+
+    # Deletion
+    # https://www.ncbi.nlm.nih.gov/clinvar/variation/1373966/?new_evidence=true
+    resp = await test_handler.to_canonical_variation(
+        "NC_000013.11:20003096:C:", fmt="spdi")
+    assert resp.canonical_variation == variation_del_lse
+    assert resp.warnings == []
+
+    resp = await test_handler.to_canonical_variation(
+        "NC_000013.11:20003096:1:", fmt="spdi")
+    assert resp.canonical_variation == variation_del_lse
+    assert resp.warnings == []
+
+    resp = await test_handler.to_canonical_variation(
+        "NC_000013.11:g.20003097del", fmt="hgvs")
+    assert resp.canonical_variation == variation_del_lse
     assert resp.warnings == []
 
     # Testing hgvs dup del mode params
