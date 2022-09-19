@@ -155,7 +155,15 @@ class ToCanonicalVariation(ToVRS):
         start_pos = int(spdi_parts[1])  # inter-residue, 0 based
         deleted_seq = spdi_parts[2]
         inserted_seq = spdi_parts[3]
-        end_pos = start_pos + len(deleted_seq)
+        deleted_seq_is_int = False  # deleted seq can either be int or str
+
+        try:
+            int(deleted_seq)
+        except ValueError:
+            end_pos = start_pos + len(deleted_seq)
+        else:
+            deleted_seq_is_int = True
+            end_pos = start_pos + int(deleted_seq)
 
         if do_liftover:
             newest_assembly_acs = await self.uta.get_newest_assembly_ac(ac)
@@ -200,7 +208,7 @@ class ToCanonicalVariation(ToVRS):
                 if not sequence:
                     warnings.append(f"Position, {start_pos}, does not exist on {ac}")
                 else:
-                    if deleted_seq != sequence:
+                    if not deleted_seq_is_int and deleted_seq != sequence:
                         warnings.append(f"Expected to find reference sequence"
                                         f" {deleted_seq} but found {sequence} on {ac}")
 

@@ -29,7 +29,7 @@ pytest-asyncio = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
-"ga4gh.vrs" = {version = ">=0.8.6dev0", extras = ["extras"]}
+"ga4gh.vrs" = {version = ">=0.8.7dev0", extras = ["extras"]}
 gene-normalizer = ">=0.2.1"
 pyliftover = "*"
 boto3 = "*"
