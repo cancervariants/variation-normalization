@@ -54,7 +54,6 @@ class ToVRSATILE(ToVRS):
         :param Optional[str] gene: Gene symbol
         :return: Variation descriptor, warnings
         """
-        variation_id = variation["id"]
         identifier = valid_result.identifier
         token_type = valid_result.classification_token.token_type.lower()
 
@@ -81,7 +80,6 @@ class ToVRSATILE(ToVRS):
         return VariationDescriptor(
             id=_id,
             label=label,
-            variation_id=variation_id,
             variation=variation,
             molecule_context=valid_result.classification_token.molecule_context,
             structural_type=valid_result.classification_token.so_id,

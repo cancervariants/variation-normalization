@@ -106,7 +106,7 @@ def dmd_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:2928"
+        "gene": "hgnc:2928"
     }
 
 
@@ -200,7 +200,7 @@ def mecp2_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:6990"
+        "gene": "hgnc:6990"
     }
 
 
@@ -210,7 +210,6 @@ def genomic_dup1():
     params = {
         "id": "normalize.variation:NC_000003.12%3Ag.49531262dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
@@ -223,7 +222,6 @@ def genomic_dup1():
 def genomic_dup1_lse(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup LSE."""
     _id = "ga4gh:VA.J4tgSfdlqvfFtIFW2QY_ux7RKzFco2pd"
-    genomic_dup1["variation_id"] = _id
     genomic_dup1["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -240,7 +238,6 @@ def genomic_dup1_lse(genomic_dup1, genomic_dup1_seq_loc):
 def genomic_dup1_vac(genomic_dup1, genomic_dup1_38_vac):
     """Create a test fixture for genomic dup absolute CNV."""
     genomic_dup1["variation"] = genomic_dup1_38_vac
-    genomic_dup1["variation_id"] = genomic_dup1["variation"]["id"]
     return VariationDescriptor(**genomic_dup1)
 
 
@@ -253,7 +250,6 @@ def genomic_dup1_vrc(genomic_dup1, genomic_dup1_seq_loc):
         "location": genomic_dup1_seq_loc,
         "relative_copy_class": "high-level gain"
     }
-    genomic_dup1["variation_id"] = genomic_dup1["variation"]["id"]
     return VariationDescriptor(**genomic_dup1)
 
 
@@ -278,7 +274,6 @@ def genomic_dup1_rse(genomic_dup1, genomic_dup1_seq_loc):
             }
         }
     }
-    genomic_dup1["variation_id"] = _id
     return VariationDescriptor(**genomic_dup1)
 
 
@@ -288,7 +283,6 @@ def genomic_dup1_free_text():
     params = {
         "id": "normalize.variation:DAG1%20g.49568695dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
         "structural_type": "SO:1000035",
@@ -367,7 +361,7 @@ def genomic_dup1_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:2666"
+            "gene": "hgnc:2666"
         }
     }
     return params
@@ -390,7 +384,6 @@ def genomic_dup1_free_text_lse(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup LSE."""
     _id = "ga4gh:VA.qkuCWe2_OQeWHXjHUa8NQpDitjhYpNhm"
-    genomic_dup1_free_text["variation_id"] = _id
     genomic_dup1_free_text["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -414,7 +407,6 @@ def genomic_dup1_free_text_vac(genomic_dup1_free_text,
         "location": genomic_dup1_free_text_seq_loc,
         "copies": {"type": "Number", "value": 3}
     }
-    genomic_dup1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
@@ -440,7 +432,6 @@ def genomic_dup1_free_text_rse(genomic_dup1_free_text,
             }
         }
     }
-    genomic_dup1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup1_free_text)
 
 
@@ -450,7 +441,6 @@ def genomic_dup2():
     params = {
         "id": "normalize.variation:NC_000016.10%3Ag.2087938_2087948dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
@@ -463,7 +453,6 @@ def genomic_dup2():
 def genomic_dup2_lse(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup LSE."""
     _id = "ga4gh:VA.9veMbNiqeGwZKcYUlMrJsQ4vknTDmNrG"
-    genomic_dup2["variation_id"] = _id
     genomic_dup2["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -480,7 +469,6 @@ def genomic_dup2_lse(genomic_dup2, genomic_dup2_seq_loc):
 def genomic_dup2_vac(genomic_dup2, genomic_dup2_38_vac):
     """Create a test fixture for genomic dup absolute CNV."""
     genomic_dup2["variation"] = genomic_dup2_38_vac
-    genomic_dup2["variation_id"] = genomic_dup2["variation"]["id"]
     return VariationDescriptor(**genomic_dup2)
 
 
@@ -493,7 +481,6 @@ def genomic_dup2_vrc(genomic_dup2, genomic_dup2_seq_loc):
         "location": genomic_dup2_seq_loc,
         "relative_copy_class": "low-level gain"
     }
-    genomic_dup2["variation_id"] = genomic_dup2["variation"]["id"]
     return VariationDescriptor(**genomic_dup2)
 
 
@@ -518,7 +505,6 @@ def genomic_dup2_rse(genomic_dup2, genomic_dup2_seq_loc):
             }
         }
     }
-    genomic_dup2["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2)
 
 
@@ -528,7 +514,6 @@ def genomic_dup2_free_text(dmd_gene_context):
     params = {
         "id": "normalize.variation:TSC2%20g.2137939_2137949dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
         "structural_type": "SO:1000035",
@@ -555,7 +540,6 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
                                    genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.ofKjBdAtvrfIAng0zLYiScDbfzIMfZSm"
-    genomic_dup2_free_text["variation_id"] = _id
     genomic_dup2_free_text["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -579,7 +563,6 @@ def genomic_dup2_free_text_vac(genomic_dup2_free_text,
         "location": genomic_dup2_free_text_seq_loc,
         "copies": {"type": "Number", "value": 3}
     }
-    genomic_dup2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
@@ -605,7 +588,6 @@ def genomic_dup2_free_text_rse(genomic_dup2_free_text,
             }
         }
     }
-    genomic_dup2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
@@ -615,7 +597,6 @@ def genomic_dup3():
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.%2831060227_31100351%29_%2833274278_33417151%29dup",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -634,7 +615,6 @@ def genomic_dup3_vac(genomic_dup3, genomic_del3_dup3_loc):
         "location": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
-    genomic_dup3["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3)
 
 
@@ -648,7 +628,6 @@ def genomic_dup3_vrc(genomic_dup3, genomic_del3_dup3_loc):
         "location": genomic_del3_dup3_loc,
         "relative_copy_class": "low-level gain"
     }
-    genomic_dup3["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3)
 
 
@@ -673,7 +652,6 @@ def genomic_dup3_free_text(dmd_gene_context):
     params = {
         "id": "normalize.variation:DMD%20g.%2831147274_31147278%29_%2831182737_31182739%29dup",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -705,7 +683,6 @@ def genomic_dup3_free_text_vrc(genomic_dup3_free_text, genomic_dup3_free_text_su
         "location": genomic_dup3_free_text_subject,
         "relative_copy_class": "low-level gain"
     }
-    genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
 
 
@@ -719,7 +696,6 @@ def genomic_dup3_free_text_vac(genomic_dup3_free_text, genomic_dup3_free_text_su
         "location": genomic_dup3_free_text_subject,
         "copies": {"type": "Number", "value": 4}
     }
-    genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
 
 
@@ -744,7 +720,6 @@ def genomic_dup4():
     params = {
         "id": "normalize.variation:NC_000020.11%3Ag.%28%3F_30417576%29_%2831394018_%3F%29dup",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -763,7 +738,6 @@ def genomic_dup4_vrc(genomic_dup4, genoimc_dup4_loc):
         "location": genoimc_dup4_loc,
         "relative_copy_class": "low-level gain"
     }
-    genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
 
 
@@ -777,7 +751,6 @@ def genomic_dup4_vac(genomic_dup4, genoimc_dup4_loc):
         "location": genoimc_dup4_loc,
         "copies": {"type": "Number", "value": 3}
     }
-    genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
 
 
@@ -800,9 +773,8 @@ def genomic_dup4_rse_lse(genomic_dup4):
 def genomic_dup4_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",  # noqa: E501
+        "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -886,7 +858,7 @@ def genomic_dup4_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:17340"
+            "gene": "hgnc:17340"
         }
     }
     return params
@@ -914,7 +886,6 @@ def genomic_dup4_free_text_vrc(genomic_dup4_free_text, genomic_dup4_free_text_su
         "location": genomic_dup4_free_text_subject,
         "relative_copy_class": "low-level gain"
     }
-    genomic_dup4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4_free_text)
 
 
@@ -928,7 +899,6 @@ def genomic_dup4_free_text_vac(genomic_dup4_free_text, genomic_dup4_free_text_su
         "location": genomic_dup4_free_text_subject,
         "copies": {"type": "Number", "value": 3}
     }
-    genomic_dup4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4_free_text)
 
 
@@ -951,9 +921,8 @@ def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
 def genomic_dup5():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_154021812%29_154092209dup",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_154021812%29_154092209dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -971,7 +940,6 @@ def genomic_dup5_abs_cnv(params, genomic_dup5_loc):
         "location": genomic_dup5_loc,
         "copies": {"type": "Number", "value": 3}
     }
-    params["variation_id"] = _id
 
 
 def genomic_dup5_rel_cnv(params, genomic_dup5_loc):
@@ -983,7 +951,6 @@ def genomic_dup5_rel_cnv(params, genomic_dup5_loc):
         "location": genomic_dup5_loc,
         "relative_copy_class": "low-level gain"
     }
-    params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
@@ -1021,7 +988,6 @@ def genomic_dup5_free_text(mecp2_gene_context):
     params = {
         "id": "normalize.variation:MECP2%20g.%28%3F_154021812%29_154092209dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -1064,9 +1030,8 @@ def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
 def genomic_dup6():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.154021812_%28154092209_%3F%29dup",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.154021812_%28154092209_%3F%29dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -1084,7 +1049,6 @@ def genomic_dup6_rel_cnv(params, genoimc_dup6_loc):
         "location": genoimc_dup6_loc,
         "relative_copy_class": "low-level gain"
     }
-    params["variation_id"] = _id
 
 
 def genomic_dup6_abs_cnv(params, genoimc_dup6_loc):
@@ -1096,7 +1060,6 @@ def genomic_dup6_abs_cnv(params, genoimc_dup6_loc):
         "location": genoimc_dup6_loc,
         "copies": {"type": "Number", "value": 2}
     }
-    params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
@@ -1134,7 +1097,6 @@ def genomic_dup6_free_text(mecp2_gene_context):
     params = {
         "id": "normalize.variation:MECP2%20g.154021812_%28154092209_%3F%29dup",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
@@ -1179,7 +1141,6 @@ def genomic_del1():
     params = {
         "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
@@ -1192,7 +1153,6 @@ def genomic_del1():
 def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
     _id = "ga4gh:VA.FVRzUwKTV-A-8zvxPUyREBR9mCunjIPO"
-    genomic_del1["variation_id"] = _id
     genomic_del1["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -1209,7 +1169,6 @@ def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
 def genomic_del1_vac(genomic_del1, genomic_del1_38_vac):
     """Create a test fixture for genomic del absolute CNV."""
     genomic_del1["variation"] = genomic_del1_38_vac
-    genomic_del1["variation_id"] = genomic_del1["variation"]["id"]
     return VariationDescriptor(**genomic_del1)
 
 
@@ -1222,7 +1181,6 @@ def genomic_del1_vrc(genomic_del1, genomic_del1_seq_loc):
         "location": genomic_del1_seq_loc,
         "relative_copy_class": "copy neutral"
     }
-    genomic_del1["variation_id"] = genomic_del1["variation"]["id"]
     return VariationDescriptor(**genomic_del1)
 
 
@@ -1247,7 +1205,6 @@ def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
             }
         }
     }
-    genomic_del1["variation_id"] = _id
     return VariationDescriptor(**genomic_del1)
 
 
@@ -1257,7 +1214,6 @@ def genomic_del1_free_text(vhl_gene_context):
     params = {
         "id": "normalize.variation:VHL%20g.10191495del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
@@ -1284,7 +1240,6 @@ def genomic_del1_free_text_lse(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del LSE."""
     _id = "ga4gh:VA.VbssoYULETSOoFI0FwjGypt2YinbTEOc"
-    genomic_del1_free_text["variation_id"] = _id
     genomic_del1_free_text["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -1308,7 +1263,6 @@ def genomic_del1_free_text_vac(genomic_del1_free_text,
         "location": genomic_del1_free_text_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
-    genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
 
 
@@ -1334,7 +1288,6 @@ def genomic_del1_free_text_rse(genomic_del1_free_text,
             }
         }
     }
-    genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
 
 
@@ -1344,7 +1297,6 @@ def genomic_del2():
     params = {
         "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
@@ -1357,7 +1309,6 @@ def genomic_del2():
 def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del LSE."""
     _id = "ga4gh:VA.UgJSDSWAaJFwhRm56LA0Gez47_PYqv0k"
-    genomic_del2["variation_id"] = _id
     genomic_del2["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -1374,7 +1325,6 @@ def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
 def genomic_del2_vac(genomic_del2, genomic_del2_38_vac):
     """Create a test fixture for genomic del absolute CNV."""
     genomic_del2["variation"] = genomic_del2_38_vac
-    genomic_del2["variation_id"] = genomic_del2["variation"]["id"]
     return VariationDescriptor(**genomic_del2)
 
 
@@ -1387,7 +1337,6 @@ def genomic_del2_vrc(genomic_del2, genomic_del2_seq_loc):
         "location": genomic_del2_seq_loc,
         "relative_copy_class": "complete loss"
     }
-    genomic_del2["variation_id"] = genomic_del2["variation"]["id"]
     return VariationDescriptor(**genomic_del2)
 
 
@@ -1412,7 +1361,6 @@ def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
             }
         }
     }
-    genomic_del2["variation_id"] = _id
     return VariationDescriptor(**genomic_del2)
 
 
@@ -1422,7 +1370,6 @@ def genomic_del2_free_text(vhl_gene_context):
     params = {
         "id": "normalize.variation:VHL%20g.10188279_10188297del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
@@ -1449,7 +1396,6 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
                                    genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.6wTYBh0btGq6SlXDu4V7iEK9UrehXS-6"
-    genomic_del2_free_text["variation_id"] = _id
     genomic_del2_free_text["variation"] = {
         "type": "Allele",
         "id": _id,
@@ -1473,7 +1419,6 @@ def genomic_del2_free_text_cnv(genomic_del2_free_text,
         "location": genomic_del2_free_text_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
-    genomic_del2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del2_free_text)
 
 
@@ -1499,7 +1444,6 @@ def genomic_del2_free_text_rse(genomic_del2_free_text,
             }
         }
     }
-    genomic_del2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del2_free_text)
 
 
@@ -1509,7 +1453,6 @@ def genomic_del3():
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.%2831060227_31100351%29_%2833274278_33417151%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -1528,7 +1471,6 @@ def genomic_del3_vrc(genomic_del3, genomic_del3_dup3_loc):
         "location": genomic_del3_dup3_loc,
         "relative_copy_class": "partial loss"
     }
-    genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
 
 
@@ -1542,7 +1484,6 @@ def genomic_del3_vac(genomic_del3, genomic_del3_dup3_loc):
         "location": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
-    genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
 
 
@@ -1555,7 +1496,7 @@ def genomic_del3_rse_lse(genomic_del3):
         "variation": {
             "id": "ga4gh:VT.tmA3mpMy9HKUweaB8aYsq6uuejEx9iK7",
             "type": "Text",
-            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # noqa: E501
+            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"
         }
     }
     return VariationDescriptor(**params)
@@ -1567,7 +1508,6 @@ def genomic_del3_free_text():
     params = {
         "id": "normalize.variation:EFNB1%20g.%2868839265_68839268%29_%2868841120_68841125%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -1653,7 +1593,7 @@ def genomic_del3_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:3226"
+            "gene": "hgnc:3226"
         }
     }
     return params
@@ -1681,7 +1621,6 @@ def genomic_del3_free_text_vrc(genomic_del3_free_text, genomic_del3_free_text_su
         "location": genomic_del3_free_text_subject,
         "relative_copy_class": "partial loss"
     }
-    genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
 
 
@@ -1695,7 +1634,6 @@ def genomic_del3_free_text_vac(genomic_del3_free_text, genomic_del3_free_text_su
         "location": genomic_del3_free_text_subject,
         "copies": {"type": "Number", "value": 2}
     }
-    genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
 
 
@@ -1720,7 +1658,6 @@ def genomic_del4():
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -1739,7 +1676,6 @@ def genomic_del4_vrc(genomic_del4, genomic_del4_seq_loc):
         "location": genomic_del4_seq_loc,
         "relative_copy_class": "partial loss"
     }
-    genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
 
 
@@ -1753,7 +1689,6 @@ def genomic_del4_vac(genomic_del4, genomic_del4_seq_loc):
         "location": genomic_del4_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
-    genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
 
 
@@ -1778,7 +1713,6 @@ def genomic_del4_free_text():
     params = {
         "id": "normalize.variation:COL4A4%20g.%28%3F_227022028%29_%28227025830_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -1849,7 +1783,7 @@ def genomic_del4_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:2206"
+            "gene": "hgnc:2206"
         }
     }
     return params
@@ -1877,7 +1811,6 @@ def genomic_del4_free_text_vrc(genomic_del4_free_text, genomic_del4_free_text_su
         "location": genomic_del4_free_text_subject,
         "relative_copy_class": "partial loss"
     }
-    genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
 
 
@@ -1891,7 +1824,6 @@ def genomic_del4_free_text_vac(genomic_del4_free_text, genomic_del4_free_text_su
         "location": genomic_del4_free_text_subject,
         "copies": {"type": "Number", "value": 1}
     }
-    genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
 
 
@@ -1916,7 +1848,6 @@ def genomic_uncertain_del_2():
     params = {
         "id": "normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:RCN.7EM-Wsg_7mmAE1LW8cmRI3QwKhJCA24a",
         "variation": {
             "id": "ga4gh:RCN.7EM-Wsg_7mmAE1LW8cmRI3QwKhJCA24a",
             "location": {
@@ -1949,7 +1880,6 @@ def genomic_uncertain_del_y():
     params = {
         "id": "normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:RCN.2q7DKevv8nUh87Sl00Z7l50h047Ti2at",
         "variation": {
             "id": "ga4gh:RCN.2q7DKevv8nUh87Sl00Z7l50h047Ti2at",
             "location": {
@@ -1980,9 +1910,8 @@ def genomic_uncertain_del_y():
 def genomic_del5():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_18575354%29_18653629del",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_18575354%29_18653629del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -2000,7 +1929,6 @@ def genomic_del5_abs_cnv(params, genomic_del5_seq_loc):
         "location": genomic_del5_seq_loc,
         "copies": {"type": "Number", "value": 3}
     }
-    params["variation_id"] = _id
 
 
 def genomic_del5_rel_cnv(params, genomic_del5_seq_loc):
@@ -2012,7 +1940,6 @@ def genomic_del5_rel_cnv(params, genomic_del5_seq_loc):
         "location": genomic_del5_seq_loc,
         "relative_copy_class": "partial loss"
     }
-    params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
@@ -2050,7 +1977,6 @@ def genomic_del5_free_text():
     params = {
         "id": "normalize.variation:CDKL5%20g.%28%3F_18575354%29_18653629del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -2134,7 +2060,7 @@ def genomic_del5_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:11411"
+            "gene": "hgnc:11411"
         }
     }
     return params
@@ -2173,9 +2099,8 @@ def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
 def genomic_del6():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",  # noqa: E501
+        "id": "normalize.variation:NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -2193,7 +2118,6 @@ def genomic_del6_rel_cnv(params, genomic_del6_seq_loc):
         "location": genomic_del6_seq_loc,
         "relative_copy_class": "partial loss"
     }
-    params["variation_id"] = _id
 
 
 def genomic_del6_abs_cnv(params, genomic_del6_seq_loc):
@@ -2205,7 +2129,6 @@ def genomic_del6_abs_cnv(params, genomic_del6_seq_loc):
         "location": genomic_del6_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
-    params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
@@ -2243,7 +2166,6 @@ def genomic_del6_free_text():
     params = {
         "id": "normalize.variation:EYA4%20g.133462764_%28133464858_%3F%29del",
         "type": "VariationDescriptor",
-        "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0001743",
@@ -2327,7 +2249,7 @@ def genomic_del6_free_text():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:3522"
+            "gene": "hgnc:3522"
         }
     }
     return params

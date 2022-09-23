@@ -97,7 +97,7 @@ def mmel1_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:14668"
+        "gene": "hgnc:14668"
     }
 
 
@@ -192,7 +192,7 @@ def cdk11a_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:1730"
+        "gene": "hgnc:1730"
     }
 
 
@@ -281,7 +281,7 @@ def lrp8_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:6700"
+        "gene": "hgnc:6700"
     }
 
 
@@ -357,7 +357,7 @@ def atad3a_gene_context():
                 "value": "protein_coding"
             }
         ],
-        "gene_id": "hgnc:25567"
+        "gene": "hgnc:25567"
     }
 
 
@@ -367,7 +367,6 @@ def mmel1_l30m(mmel1_gene_context):
     params = {
         "id": "normalize.variation:1-2629397-G-T",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.TNZKL_HZqeU1anmA0vGWnvV_RjsNb1mB",
         "variation": {
             "id": "ga4gh:VA.TNZKL_HZqeU1anmA0vGWnvV_RjsNb1mB",
             "location": {
@@ -397,7 +396,6 @@ def cdk11a_e314del(cdk11a_gene_context):
     params = {
         "id": "normalize.variation:1-1708855-TTCC-T",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.onGUSj8yycu9JLUsygAcvY5T2eRZGeN-",
         "variation": {
             "id": "ga4gh:VA.onGUSj8yycu9JLUsygAcvY5T2eRZGeN-",
             "location": {
@@ -427,7 +425,6 @@ def protein_insertion2(lrp8_gene_context):
     params = {
         "id": "normalize.variation:1-53327836-A-ACGC",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.pt-iZhrxYtI6FjWk8bxxUXWKsH_rFj2t",
         "variation": {
             "id": "ga4gh:VA.pt-iZhrxYtI6FjWk8bxxUXWKsH_rFj2t",
             "location": {
@@ -468,7 +465,6 @@ def atad3a_i7v(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512287-A-G",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.0n_eZ3A0nCDSf3D8tBPsmg5-sOU2eYS1",
         "variation": {
             "id": "ga4gh:VA.0n_eZ3A0nCDSf3D8tBPsmg5-sOU2eYS1",
             "location": atad3a_loc,
@@ -492,7 +488,6 @@ def atad3a_i7t(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512288-T-C",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.xvlGODCInBKado5IkXueBbkHY248GQeG",
         "variation": {
             "id": "ga4gh:VA.xvlGODCInBKado5IkXueBbkHY248GQeG",
             "location": atad3a_loc,
@@ -516,7 +511,6 @@ def atad3a_i7m(atad3a_gene_context, atad3a_loc):
     params = {
         "id": "normalize.variation:1-1512289-T-G",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.SB4A2_i6ldjbr02igJtvMBOMxVxw_371",
         "variation": {
             "id": "ga4gh:VA.SB4A2_i6ldjbr02igJtvMBOMxVxw_371",
             "location": atad3a_loc,
@@ -540,7 +534,6 @@ def braf_v600l(braf_gene_context, braf_600loc):
     params = {
         "id": "normalize.variation:7-140753337-C-A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.HVHeMnSZ0nIsCxqI9xE35RaiBhcSo9IS",
         "variation": {
             "id": "ga4gh:VA.HVHeMnSZ0nIsCxqI9xE35RaiBhcSo9IS",
             "location": braf_600loc,
@@ -564,7 +557,6 @@ def braf_600_silent_mutation(braf_gene_context, braf_600loc):
     params = {
         "id": "normalize.variation:7-140753335-C-A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.dbEtYnjAkO0rz_D2y_xaLusONuEW27Qd",
         "variation": {
             "id": "ga4gh:VA.dbEtYnjAkO0rz_D2y_xaLusONuEW27Qd",
             "location": braf_600loc,

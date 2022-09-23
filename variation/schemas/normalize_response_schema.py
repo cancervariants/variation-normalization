@@ -44,7 +44,7 @@ class ServiceMeta(BaseModel):
                 "name": "variation-normalizer",
                 "version": "0.1.0",
                 "response_datetime": "2021-04-05T16:44:15.367831",
-                "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
+                "url": "https://github.com/cancervariants/variation-normalization"
             }
 
 
@@ -78,7 +78,6 @@ class NormalizeService(ServiceResponse):
                     "id": "normalize.variation:BRAF%20V600E",
                     "label": "BRAF V600E",
                     "type": "VariationDescriptor",
-                    "variation_id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
                     "variation": {
                         "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
                         "location": {
@@ -101,7 +100,7 @@ class NormalizeService(ServiceResponse):
                         "id": "normalize.gene:BRAF",
                         "type": "GeneDescriptor",
                         "label": "BRAF",
-                        "gene_id": "hgnc:1097",
+                        "gene": "hgnc:1097",
                         "xrefs": [
                             "ncbigene:673",
                             "ensembl:ENSG00000157764"
@@ -178,7 +177,7 @@ class NormalizeService(ServiceResponse):
                     "name": "variation-normalizer",
                     "version": "0.2.17",
                     "response_datetime": "2022-01-26T22:23:41.821673",
-                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
+                    "url": "https://github.com/cancervariants/variation-normalization"
                 }
             }
 
@@ -221,7 +220,7 @@ class TranslateIdentifierService(ServiceResponse):
                     "name": "variation-normalizer",
                     "version": "0.2.14",
                     "response_datetime": "2021-11-18T14:10:53.909158",
-                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
+                    "url": "https://github.com/cancervariants/variation-normalization"
                 }
             }
 

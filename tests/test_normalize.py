@@ -23,7 +23,7 @@ def limk2_gene_context():
         "id": "normalize.gene:LIMK2",
         "type": "GeneDescriptor",
         "label": "LIMK2",
-        "gene_id": "hgnc:6614",
+        "gene": "hgnc:6614",
         "xrefs": [
             "ncbigene:3985",
             "ensembl:ENSG00000182541"
@@ -94,7 +94,6 @@ def dis3_p63a():
     params = {
         "id": "normalize.variation:DIS3%20P63A",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.a6x8Rwd4ZkbfpC7ze6sJLPIrTWh-idrJ",
         "variation": {
             "id": "ga4gh:VA.a6x8Rwd4ZkbfpC7ze6sJLPIrTWh-idrJ",
             "location": {
@@ -191,7 +190,7 @@ def dis3_p63a():
                     "value": "protein_coding"
                 }
             ],
-            "gene_id": "hgnc:20604"
+            "gene": "hgnc:20604"
         },
         "vrs_ref_allele_seq": "P"
     }
@@ -204,7 +203,6 @@ def vhl(vhl_gene_context):
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Tyr185Ter",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.1QkysTg-l3UDx4vjlf0rPaYfJWPKl40T",
         "variation": {
             "id": "ga4gh:VA.1QkysTg-l3UDx4vjlf0rPaYfJWPKl40T",
             "location": {
@@ -236,7 +234,6 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799T%3EA",
         "type": "VariationDescriptor",
-        "variation_id": variation["id"],
         "variation": variation,
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
@@ -252,7 +249,6 @@ def nm_004448_coding_dna_delins(erbb2_context):
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.8pRTvdPPwD2BiMd0hrZ9jeJrGJjKODCl",
         "variation": {
             "id": "ga4gh:VA.8pRTvdPPwD2BiMd0hrZ9jeJrGJjKODCl",
             "location": {
@@ -280,9 +276,8 @@ def nm_004448_coding_dna_delins(erbb2_context):
 def nc_000007_genomic_delins(braf_gene_context):
     """Create test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
     params = {
-        "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
+        "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.EyuZWI5WHHEk-Ih0fUPhVd7AuDu9AEVC",
         "variation": {
             "id": "ga4gh:VA.EyuZWI5WHHEk-Ih0fUPhVd7AuDu9AEVC",
             "location": {
@@ -312,7 +307,6 @@ def nm_000551(vhl_gene_context):
     params = {
         "id": "normalize.variation:temp",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.1dJA9Ok8-NQYd34NFH3FEffcupe3D7Af",
         "variation": {
             "id": "ga4gh:VA.1dJA9Ok8-NQYd34NFH3FEffcupe3D7Af",
             "location": {
@@ -364,7 +358,6 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NM_004333.4%3Ac.1799%3D",
         "type": "VariationDescriptor",
-        "variation_id": value["id"],
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -383,7 +376,6 @@ def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453136%3D",
         "type": "VariationDescriptor",
-        "variation_id": value["id"],
         "variation": value,
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
@@ -399,7 +391,6 @@ def protein_delins(egfr_context):
     params = {
         "id": "normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.l8IoVM1nO9s8D0o5UBsJS43IjUepddtR",
         "variation": {
             "id": "ga4gh:VA.l8IoVM1nO9s8D0o5UBsJS43IjUepddtR",
             "location": {
@@ -431,7 +422,6 @@ def coding_dna_deletion(erbb2_context):
     params = {
         "id": "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.tQXi6GzpBF2RxR7qUHZvUoVibSU4Wb5c",
         "variation": {
             "id": "ga4gh:VA.tQXi6GzpBF2RxR7qUHZvUoVibSU4Wb5c",
             "location": {
@@ -461,7 +451,6 @@ def coding_dna_insertion(limk2_gene_context):
     params = {
         "id": "normalize.variation:ENST00000331728.9%3Ac.2049_2050insA",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.NuvjUrfrwALQWlI0qkWEiv4IngxNZO8f",
         "variation": {
             "id": "ga4gh:VA.NuvjUrfrwALQWlI0qkWEiv4IngxNZO8f",
             "location": {
@@ -488,9 +477,8 @@ def coding_dna_insertion(limk2_gene_context):
 def genomic_insertion(erbb2_context):
     """Create a gene insertion test fixture."""
     params = {
-        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",  # noqa: E501
+        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.mIIHczyLBr_Z6Vr8_ja3VawRrDgOr3R9",
         "variation": {
             "id": "ga4gh:VA.mIIHczyLBr_Z6Vr8_ja3VawRrDgOr3R9",
             "location": {
@@ -520,7 +508,6 @@ def genomic_substitution(egfr_context):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.55249071C%3ET",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.zKeMa2Pee-Z9NFDbDNhe2-LWfaH553YQ",
         "variation": {
             "id": "ga4gh:VA.zKeMa2Pee-Z9NFDbDNhe2-LWfaH553YQ",
             "location": {
@@ -550,7 +537,6 @@ def genomic_sub_grch38():
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.55249071C%3ET",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.AlXJ7wD4w6XiHdZeGyF2eLTuBj7PdChR",
         "variation": {
             "id": "ga4gh:VA.AlXJ7wD4w6XiHdZeGyF2eLTuBj7PdChR",
             "location": {
@@ -579,7 +565,6 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.55249071C%3ET",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.AlXJ7wD4w6XiHdZeGyF2eLTuBj7PdChR",
         "variation": {
             "id": "ga4gh:VA.AlXJ7wD4w6XiHdZeGyF2eLTuBj7PdChR",
             "location": {
@@ -609,7 +594,6 @@ def genomic_uncertain_del_x():
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:ACN.gT8vZlUghIFxFv-ztGpOQirOGgwjyvjW",
         "variation": {
             "id": "ga4gh:ACN.gT8vZlUghIFxFv-ztGpOQirOGgwjyvjW",
             "location": {
@@ -646,7 +630,6 @@ def grch38_braf_genom_sub(braf_v600e_genomic_sub):
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453136A%3ET",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.3xFHF399HGbG1JUf5uwcj3oWVKZJ70oX",
         "variation": braf_v600e_genomic_sub,
         "molecule_context": "genomic",
         "structural_type": "SO:0001483",
@@ -661,7 +644,6 @@ def grch38_braf_genom_silent_mutation():
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453136%3D",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.XsQzkHmPY63Zsvn1NgrgDtA51ESlA_s9",
         "variation": {
             "id": "ga4gh:VA.XsQzkHmPY63Zsvn1NgrgDtA51ESlA_s9",
             "location": {
@@ -690,7 +672,6 @@ def grch38_genomic_delins1():
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.yeG4TlAgUCuYgV2azqbwflAThd-1SqJG",
         "variation": {
             "id": "ga4gh:VA.yeG4TlAgUCuYgV2azqbwflAThd-1SqJG",
             "location": {
@@ -719,7 +700,6 @@ def grch38_genomic_delins2():
     params = {
         "id": "normalize.variation:NC_000003.12%3Ag.10149938delinsAA",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.NdPljo96MLPteFfhvZV5LnqrFpdDa1W5",
         "variation": {
             "id": "ga4gh:VA.NdPljo96MLPteFfhvZV5LnqrFpdDa1W5",
             "location": {
@@ -748,7 +728,6 @@ def grch38_genomic_insertion(grch38_genomic_insertion_variation):
     params = {
         "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.Zx2gPVfZkaplqGNrv1rzPvj3rjx0soSd",
         "variation": grch38_genomic_insertion_variation,
         "molecule_context": "genomic",
         "structural_type": "SO:0000667",
