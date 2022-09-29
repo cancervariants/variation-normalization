@@ -22,6 +22,7 @@ from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
+from .amplification import Amplification
 
 
 class Translate:
@@ -48,7 +49,8 @@ class Translate:
             GenomicInsertion(),
             GenomicDeletionRange(),
             GenomicUncertainDeletion(),
-            GenomicDuplication()
+            GenomicDuplication(),
+            Amplification()
         ]
 
     def perform(self, res: ValidationResult) -> Optional[Dict]:

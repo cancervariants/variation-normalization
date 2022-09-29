@@ -958,7 +958,7 @@ def genomic_dup4_rse_lse(genomic_dup4):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_free_text():
+def genomic_dup4_free_text(prpf8_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
         "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",  # noqa: E501
@@ -968,145 +968,7 @@ def genomic_dup4_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
         "vrs_ref_allele_seq": None,
-        "gene_context": {
-            "id": "normalize.gene:PRPF8",
-            "type": "GeneDescriptor",
-            "label": "PRPF8",
-            "xrefs": [
-                "ensembl:ENSG00000174231",
-                "ncbigene:10594"
-            ],
-            "alternate_labels": [
-                "PRPC8",
-                "PRP8",
-                "HPRP8",
-                "Prp8",
-                "RP13",
-                "hPrp8",
-                "SNRNP220"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "approved_name",
-                    "value": "pre-mRNA processing factor 8"
-                },
-                {
-                    "type": "Extension",
-                    "name": "hgnc_locations",
-                    "value": [
-                        {
-                            "species_id": "taxonomy:9606",
-                            "interval": {
-                                "type": "CytobandInterval",
-                                "start": "p13.3",
-                                "end": "p13.3"
-                            },
-                            "_id": "ga4gh:VCL.GJ_KKaBnwZCC9_0vezbSxp_yAwM6R8c4",
-                            "type": "ChromosomeLocation",
-                            "chr": "17"
-                        }
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "ensembl_locations",
-                    "value": [
-                        {
-                            "_id": "ga4gh:VSL.REtW8dfZCgDLEvo58qhp-dkN-hHiRtDx",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
-                            "interval": {
-                                "start": {"type": "Number", "value": 1650628},
-                                "end": {"type": "Number", "value": 1684867},
-                                "type": "SequenceInterval"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "ncbi_locations",
-                    "value": [
-                        {
-                            "_id": "ga4gh:VCL.GJ_KKaBnwZCC9_0vezbSxp_yAwM6R8c4",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "17",
-                            "interval": {
-                                "end": "p13.3",
-                                "start": "p13.3",
-                                "type": "CytobandInterval"
-                            }
-                        },
-                        {
-                            "_id": "ga4gh:VSL.REtW8dfZCgDLEvo58qhp-dkN-hHiRtDx",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
-                            "interval": {
-                                "start": {"type": "Number", "value": 1650628},
-                                "end": {"type": "Number", "value": 1684867},
-                                "type": "SequenceInterval"
-                            }
-                        },
-                        {
-                            "_id": "ga4gh:VSL.5FvYcab11zKZuo57GyafVqW9IykgsjAh",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.3Wx-9rRd5d7m3WxtJ_HScX3Bz1MiQWjR",
-                            "interval": {
-                                "start": {"type": "Number", "value": 80656},
-                                "end": {"type": "Number", "value": 114895},
-                                "type": "SequenceInterval"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "pubmed:10411133",
-                        "ucsc:uc002fte.3",
-                        "pubmed:11468273",
-                        "orphanet:118066",
-                        "ccds:CCDS11010",
-                        "refseq:NM_006445",
-                        "vega:OTTHUMG00000090553",
-                        "uniprot:Q6P2Q9",
-                        "ena.embl:AB007510",
-                        "omim:607300"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "previous_symbols",
-                    "value": [
-                        "RP13"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "hgnc_locus_type",
-                    "value": "gene with protein product"
-                },
-                {
-                    "type": "Extension",
-                    "name": "ncbi_gene_type",
-                    "value": "protein-coding"
-                },
-                {
-                    "type": "Extension",
-                    "name": "ensembl_biotype",
-                    "value": "protein_coding"
-                }
-            ],
-            "gene_id": "hgnc:17340"
-        }
+        "gene_context": prpf8_gene_context
     }
     return params
 

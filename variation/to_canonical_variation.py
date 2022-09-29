@@ -13,6 +13,7 @@ from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from cool_seq_tool.schemas import Assembly
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classifiers.classify import Classify
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -37,6 +38,7 @@ class ToCanonicalVariation(ToVRS):
     def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+                 gene_normalizer: GeneQueryHandler,
                  tlr: Translator, uta: UTADatabase) -> None:
         """Initialize the to canonical variation class
 
@@ -52,7 +54,7 @@ class ToCanonicalVariation(ToVRS):
         :param UTADatabase uta: Access to UTA queries
         """
         super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
-                         translator, hgvs_dup_del_mode)
+                         translator, hgvs_dup_del_mode, gene_normalizer)
         self.tlr = tlr
         self.uta = uta
 
