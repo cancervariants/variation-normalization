@@ -34,6 +34,7 @@ from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
+from .amplification import Amplification
 
 
 class Validate:
@@ -86,7 +87,8 @@ class Validate:
             GenomicInsertion(*params),
             GenomicDeletionRange(*params),
             GenomicUncertainDeletion(*params),
-            GenomicDuplication(*params)
+            GenomicDuplication(*params),
+            Amplification(*params)
         ]
 
     async def perform(

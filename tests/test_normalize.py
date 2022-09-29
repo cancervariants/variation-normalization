@@ -59,15 +59,51 @@ def limk2_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "id": "ga4gh:CL.KBAnK_M5EYz7BgiSFEBVe5bumSQZMZCH",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "22",
-                    "end": "q12.2",
-                    "start": "q12.2",
-                }
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "start": "q12.2",
+                        "species_id": "taxonomy:9606",
+                        "end": "q12.2",
+                        "id": "ga4gh:CL.KBAnK_M5EYz7BgiSFEBVe5bumSQZMZCH",
+                        "type": "ChromosomeLocation",
+                        "chr": "22"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
+                        "start": {"type": "Number", "value": 31212238},
+                        "end": {"type": "Number", "value": 31280080},
+                        "id": "ga4gh:SL.Ua34lSYPYmZaLD6Z35xeQvPufWkjgACx",
+                        "type": "SequenceLocation"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "start": "q12.2",
+                        "species_id": "taxonomy:9606",
+                        "end": "q12.2",
+                        "id": "ga4gh:CL.KBAnK_M5EYz7BgiSFEBVe5bumSQZMZCH",
+                        "type": "ChromosomeLocation",
+                        "chr": "22"
+                    },
+                    {
+                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
+                        "start": {"type": "Number", "value": 31212297},
+                        "end": {"type": "Number", "value": 31280080},
+                        "id": "ga4gh:SL.IYX4bZbjM0oEs867-TGLMZir1uGVUe9e",
+                        "type": "SequenceLocation"
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -138,16 +174,52 @@ def dis3_p63a():
                     "type": "Extension"
                 },
                 {
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "q21.33",
-                        "end": "q21.33",
-                        "id": "ga4gh:CL.JTDhW5oR-EHamvKqwkIsaK2WJ3mbQavd",
-                        "type": "ChromosomeLocation",
-                        "chr": "13"
-                    },
-                    "type": "Extension"
+                    "type": "Extension",
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "q21.33",
+                            "species_id": "taxonomy:9606",
+                            "end": "q21.33",
+                            "id": "ga4gh:CL.JTDhW5oR-EHamvKqwkIsaK2WJ3mbQavd",
+                            "type": "ChromosomeLocation",
+                            "chr": "13"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
+                            "start": {"type": "Number", "value": 72752168},
+                            "end": {"type": "Number", "value": 72782096},
+                            "id": "ga4gh:SL.dYnx63NfP-d8SIjjQceHxJzYRFX5UTw3",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "q21.33",
+                            "species_id": "taxonomy:9606",
+                            "end": "q21.33",
+                            "id": "ga4gh:CL.JTDhW5oR-EHamvKqwkIsaK2WJ3mbQavd",
+                            "type": "ChromosomeLocation",
+                            "chr": "13"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
+                            "start": {"type": "Number", "value": 72752168},
+                            "end": {"type": "Number", "value": 72781900},
+                            "id": "ga4gh:SL.sPGgBGS0T1s_P8mJXbzDOWHC2Ur0n55i",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "name": "associated_with",
@@ -1110,6 +1182,23 @@ async def test_genomic_insertion(test_handler, genomic_insertion,
     resp.variation_descriptor.id = fixture_id
     assertion_checks(resp.variation_descriptor, genomic_insertion,
                      "ERBB2 g.37880993_37880994insGCTTACGTGATG")
+
+
+@pytest.mark.asyncio
+async def test_amplification(test_handler, braf_amplification, prpf8_amplification):
+    """Test that amplification normalizes correctly."""
+    q = "BRAF Amplification"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, braf_amplification, q)
+
+    # Gene with > 1 sequence location
+    q = "PRPF8 AMPLIFICATION"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, prpf8_amplification, q)
+
+    # Gene with no location. This should NOT return a variation
+    resp = await test_handler.normalize("IFNR amplification")
+    assert resp.variation_descriptor is None
 
 
 @pytest.mark.asyncio

@@ -1,6 +1,7 @@
 """Module for generating VRS objects"""
 from typing import List, Optional, Tuple, Union, Dict
 
+from ga4gh.vrsatile.pydantic.vrs_models import CURIE, RelativeCopyClass
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
@@ -258,3 +259,23 @@ class VRSRepresentation:
             return None
 
         return self.vrs_allele(ac, start, end, sstate, alt_type, errors)
+
+    def to_rel_cnv(
+        self,
+        location: Union[models.SequenceLocation, models.ChromosomeLocation, CURIE],
+        relative_copy_class: RelativeCopyClass
+    ) -> Dict:
+        """Return VRS Relative Copy Number Variation
+
+        :param location: Location for relative copy number
+        :type location: models.SequenceLocation or models.ChromosomeLocation or CURIE
+        :param RelativeCopyClass relative_copy_class: Relative copy class value
+        :return: VRS Relative Copy Number Variation represented as a dictionary
+        """
+        location.id = ga4gh_identify(location)
+        rcn = models.RelativeCopyNumber(
+            location=location,
+            relative_copy_class=relative_copy_class.value
+        )
+        rcn.id = ga4gh_identify(rcn)
+        return rcn.as_dict()

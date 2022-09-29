@@ -86,14 +86,14 @@ class QueryHandler:
         translator = Translate()
         hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
         to_vrs_params = [self._seqrepo_access, dp, tokenizer, classifier, validator,
-                         translator, hgvs_dup_del_mode]
+                         translator, hgvs_dup_del_mode, gene_normalizer]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
-        self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params + [gene_normalizer])
-        self.normalize_handler = Normalize(*to_vrs_params + [gene_normalizer, uta_db])
+        self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params)
+        self.normalize_handler = Normalize(*to_vrs_params + [uta_db])
 
         codon_table = CodonTable(amino_acid_cache)
         mane_transcript_mappings = uta_tools.mane_transcript_mappings
-        to_protein_params = to_vrs_params + [gene_normalizer, uta_db,
+        to_protein_params = to_vrs_params + [uta_db,
                                              mane_transcript, mane_transcript_mappings,
                                              codon_table]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(

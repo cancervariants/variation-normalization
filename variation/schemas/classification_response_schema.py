@@ -37,6 +37,7 @@ class ClassificationType(str, Enum):
     GENOMIC_UNCERTAIN_DELETION = "genomic uncertain deletion"
     GENOMIC_DUPLICATION = "genomic duplication"
     GENOMIC_DELETION_RANGE = "genomic deletion range"
+    AMPLIFICATION = "amplification"
 
 
 class ConfidenceRating(IntEnum):

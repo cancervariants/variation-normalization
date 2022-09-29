@@ -21,4 +21,5 @@ from .genomic_insertion_classifier import GenomicInsertionClassifier
 from .genomic_uncertain_deletion_classifier import GenomicUncertainDeletionClassifier
 from .genomic_duplication_classifier import GenomicDuplicationClassifier
 from .genomic_deletion_range_classifier import GenomicDeletionRangeClassifier
+from .amplification_classifier import AmplificationClassifier
 from .classify import Classify
