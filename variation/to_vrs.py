@@ -10,6 +10,7 @@ from ga4gh.core import ga4gh_identify
 from uta_tools.schemas import ResidueMode
 from uta_tools.data_sources import SeqRepoAccess
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
@@ -33,7 +34,8 @@ class ToVRS(VRSRepresentation):
 
     def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
-                 translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode) -> None:
+                 translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+                 gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the ToVrsAndVrsatile class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
@@ -44,6 +46,7 @@ class ToVRS(VRSRepresentation):
         :param Translate translator: Translating valid inputs
         :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
             HGVS dup/del expressions
+        :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         """
         super().__init__(dp, seqrepo_access)
         self.tokenizer = tokenizer
@@ -51,6 +54,7 @@ class ToVRS(VRSRepresentation):
         self.validator = validator
         self.translator = translator
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
+        self.gene_normalizer = gene_normalizer
 
     async def get_validations(
             self, q: str, endpoint_name: Optional[Endpoint] = None,

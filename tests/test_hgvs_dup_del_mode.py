@@ -49,15 +49,51 @@ def dmd_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "start": "p21.2",
-                    "end": "p21.1",
-                    "id": "ga4gh:CL.7D3ErxYNxYRlDyaNuBIV9EKeo--IT2iS",
-                    "type": "ChromosomeLocation",
-                    "chr": "X"
-                }
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "start": "p21.2",
+                        "species_id": "taxonomy:9606",
+                        "end": "p21.1",
+                        "id": "ga4gh:CL.7D3ErxYNxYRlDyaNuBIV9EKeo--IT2iS",
+                        "type": "ChromosomeLocation",
+                        "chr": "X"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                        "start": {"type": "Number", "value": 31097676},
+                        "end": {"type": "Number", "value": 33339609},
+                        "id": "ga4gh:SL.081XvoVZ6nrKP7eL3WYzxT9jaaOCzkhL",
+                        "type": "SequenceLocation"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "start": "p21.2",
+                        "species_id": "taxonomy:9606",
+                        "end": "p21.1",
+                        "id": "ga4gh:CL.7D3ErxYNxYRlDyaNuBIV9EKeo--IT2iS",
+                        "type": "ChromosomeLocation",
+                        "chr": "X"
+                    },
+                    {
+                        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                        "start": {"type": "Number", "value": 31119221},
+                        "end": {"type": "Number", "value": 33339388},
+                        "id": "ga4gh:SL.2bZU81pbYIJ9XMr9AdVLjSCLbnIWETpP",
+                        "type": "SequenceLocation"
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -146,15 +182,51 @@ def mecp2_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "start": "q28",
-                    "end": "q28",
-                    "id": "ga4gh:CL.p5Va-YpCTrSTYWyJrpR-rvnxO1YWPIDY",
-                    "type": "ChromosomeLocation",
-                    "chr": "X"
-                }
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "start": "q28",
+                        "species_id": "taxonomy:9606",
+                        "end": "q28",
+                        "id": "ga4gh:CL.p5Va-YpCTrSTYWyJrpR-rvnxO1YWPIDY",
+                        "type": "ChromosomeLocation",
+                        "chr": "X"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                        "start": {"type": "Number", "value": 154021572},
+                        "end": {"type": "Number", "value": 154137103},
+                        "id": "ga4gh:SL.Uuj7gHULlyViNu26NAKb-BYQQlwWl-nl",
+                        "type": "SequenceLocation"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "start": "q28",
+                        "species_id": "taxonomy:9606",
+                        "end": "q28",
+                        "id": "ga4gh:CL.p5Va-YpCTrSTYWyJrpR-rvnxO1YWPIDY",
+                        "type": "ChromosomeLocation",
+                        "chr": "X"
+                    },
+                    {
+                        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                        "start": {"type": "Number", "value": 154021572},
+                        "end": {"type": "Number", "value": 154097717},
+                        "id": "ga4gh:SL.I42_vCrJN_amx660Ip98MNLo15sLf78y",
+                        "type": "SequenceLocation"
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -318,15 +390,51 @@ def genomic_dup1_free_text():
                 },
                 {
                     "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "p21.31",
-                        "end": "p21.31",
-                        "id": "ga4gh:CL.soO7dXM3WndwwT134GGncAwGwcwBqpnS",
-                        "type": "ChromosomeLocation",
-                        "chr": "3"
-                    }
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "p21.31",
+                            "species_id": "taxonomy:9606",
+                            "end": "p21.31",
+                            "id": "ga4gh:CL.soO7dXM3WndwwT134GGncAwGwcwBqpnS",
+                            "type": "ChromosomeLocation",
+                            "chr": "3"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                            "start": {"type": "Number", "value": 49468712},
+                            "end": {"type": "Number", "value": 49535618},
+                            "id": "ga4gh:SL.fHRl53Y9yJQRZEKBJudCWi9fCmoJkRpr",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "p21.31",
+                            "species_id": "taxonomy:9606",
+                            "end": "p21.31",
+                            "id": "ga4gh:CL.soO7dXM3WndwwT134GGncAwGwcwBqpnS",
+                            "type": "ChromosomeLocation",
+                            "chr": "3"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                            "start": {"type": "Number", "value": 49468947},
+                            "end": {"type": "Number", "value": 49535615},
+                            "id": "ga4gh:SL.lkkR67zXG7ErpiU3Zgg_dHLj3BfeUgeD",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "type": "Extension",
@@ -770,7 +878,7 @@ def genomic_dup4_rse_lse(genomic_dup4):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_free_text():
+def genomic_dup4_free_text(prpf8_gene_context):
     """Create test fixture containing params for genomic dup VD."""
     params = {
         "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",
@@ -779,87 +887,7 @@ def genomic_dup4_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0001742",
         "vrs_ref_allele_seq": None,
-        "gene_context": {
-            "id": "normalize.gene:PRPF8",
-            "type": "GeneDescriptor",
-            "label": "PRPF8",
-            "xrefs": [
-                "ensembl:ENSG00000174231",
-                "ncbigene:10594"
-            ],
-            "alternate_labels": [
-                "PRPC8",
-                "PRP8",
-                "HPRP8",
-                "Prp8",
-                "RP13",
-                "hPrp8",
-                "SNRNP220"
-            ],
-            "extensions": [
-                {
-                    "type": "Extension",
-                    "name": "symbol_status",
-                    "value": "approved"
-                },
-                {
-                    "type": "Extension",
-                    "name": "approved_name",
-                    "value": "pre-mRNA processing factor 8"
-                },
-                {
-                    "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "p13.3",
-                        "end": "p13.3",
-                        "id": "ga4gh:CL.cgXboJas91hqg8zGKLMZYN0RdB_RCj6k",
-                        "type": "ChromosomeLocation",
-                        "chr": "17"
-                    }
-                },
-                {
-                    "type": "Extension",
-                    "name": "associated_with",
-                    "value": [
-                        "pubmed:10411133",
-                        "ucsc:uc002fte.3",
-                        "pubmed:11468273",
-                        "orphanet:118066",
-                        "ccds:CCDS11010",
-                        "refseq:NM_006445",
-                        "vega:OTTHUMG00000090553",
-                        "uniprot:Q6P2Q9",
-                        "ena.embl:AB007510",
-                        "omim:607300"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "previous_symbols",
-                    "value": [
-                        "RP13"
-                    ]
-                },
-                {
-                    "type": "Extension",
-                    "name": "hgnc_locus_type",
-                    "value": "gene with protein product"
-                },
-                {
-                    "type": "Extension",
-                    "name": "ncbi_gene_type",
-                    "value": "protein-coding"
-                },
-                {
-                    "type": "Extension",
-                    "name": "ensembl_biotype",
-                    "value": "protein_coding"
-                }
-            ],
-            "gene": "hgnc:17340"
-        }
+        "gene_context": prpf8_gene_context
     }
     return params
 
@@ -1542,15 +1570,51 @@ def genomic_del3_free_text():
                 },
                 {
                     "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "q13.1",
-                        "end": "q13.1",
-                        "id": "ga4gh:CL.gZnektnDFlImvvJ_gmIzLx8Efyqv2l29",
-                        "type": "ChromosomeLocation",
-                        "chr": "X"
-                    }
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "q13.1",
+                            "species_id": "taxonomy:9606",
+                            "end": "q13.1",
+                            "id": "ga4gh:CL.gZnektnDFlImvvJ_gmIzLx8Efyqv2l29",
+                            "type": "ChromosomeLocation",
+                            "chr": "X"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                            "start": {"type": "Number", "value": 68829020},
+                            "end": {"type": "Number", "value": 68842160},
+                            "id": "ga4gh:SL.V7E2fQj-6rsfrtuKGzimED9QfHH3VYZ_",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "q13.1",
+                            "species_id": "taxonomy:9606",
+                            "end": "q13.1",
+                            "id": "ga4gh:CL.gZnektnDFlImvvJ_gmIzLx8Efyqv2l29",
+                            "type": "ChromosomeLocation",
+                            "chr": "X"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                            "start": {"type": "Number", "value": 68829020},
+                            "end": {"type": "Number", "value": 68842160},
+                            "id": "ga4gh:SL.V7E2fQj-6rsfrtuKGzimED9QfHH3VYZ_",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "type": "Extension",
@@ -1743,15 +1807,51 @@ def genomic_del4_free_text():
                 },
                 {
                     "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "q36.3",
-                        "end": "q36.3",
-                        "id": "ga4gh:CL.9SOUKUdu11HvIXHPui35LFZpUp9TECF6",
-                        "type": "ChromosomeLocation",
-                        "chr": "2"
-                    }
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "q36.3",
+                            "species_id": "taxonomy:9606",
+                            "end": "q36.3",
+                            "id": "ga4gh:CL.9SOUKUdu11HvIXHPui35LFZpUp9TECF6",
+                            "type": "ChromosomeLocation",
+                            "chr": "2"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+                            "start": {"type": "Number", "value": 227002713},
+                            "end": {"type": "Number", "value": 227164453},
+                            "id": "ga4gh:SL.CH493telUZ1gAEeEnoqpgNa0VKEyT5VC",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "q36.3",
+                            "species_id": "taxonomy:9606",
+                            "end": "q36.3",
+                            "id": "ga4gh:CL.9SOUKUdu11HvIXHPui35LFZpUp9TECF6",
+                            "type": "ChromosomeLocation",
+                            "chr": "2"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+                            "start": {"type": "Number", "value": 226967359},
+                            "end": {"type": "Number", "value": 227164488},
+                            "id": "ga4gh:SL.e-Ty4NmeFryclpEaX5QxBfSfdC6G2e_O",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "type": "Extension",
@@ -2009,15 +2109,51 @@ def genomic_del5_free_text():
                 },
                 {
                     "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "p22.13",
-                        "end": "p22.13",
-                        "id": "ga4gh:CL.so_qfQ0i7DCprrv5baguJALdalff7oAW",
-                        "type": "ChromosomeLocation",
-                        "chr": "X"
-                    }
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "p22.13",
+                            "species_id": "taxonomy:9606",
+                            "end": "p22.13",
+                            "id": "ga4gh:CL.so_qfQ0i7DCprrv5baguJALdalff7oAW",
+                            "type": "ChromosomeLocation",
+                            "chr": "X"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                            "start": {"type": "Number", "value": 18425582},
+                            "end": {"type": "Number", "value": 18653629},
+                            "id": "ga4gh:SL.Qj0u3-sNh4MsUOFS0Qze-nrvV0yLkZ4x",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "p22.13",
+                            "species_id": "taxonomy:9606",
+                            "end": "p22.13",
+                            "id": "ga4gh:CL.so_qfQ0i7DCprrv5baguJALdalff7oAW",
+                            "type": "ChromosomeLocation",
+                            "chr": "X"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                            "start": {"type": "Number", "value": 18425607},
+                            "end": {"type": "Number", "value": 18653629},
+                            "id": "ga4gh:SL.Kf3fsGFQcbdUuLznaHLv5USvhPMehTGR",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "type": "Extension",
@@ -2196,15 +2332,51 @@ def genomic_del6_free_text():
                 },
                 {
                     "type": "Extension",
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "start": "q23.2",
-                        "end": "q23.2",
-                        "id": "ga4gh:CL.mVXPq-PjEnHwc-7o9vpkOzOhSAghUu4d",
-                        "type": "ChromosomeLocation",
-                        "chr": "6"
-                    }
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "start": "q23.2",
+                            "species_id": "taxonomy:9606",
+                            "end": "q23.2",
+                            "id": "ga4gh:CL.mVXPq-PjEnHwc-7o9vpkOzOhSAghUu4d",
+                            "type": "ChromosomeLocation",
+                            "chr": "6"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "sequence_id": "ga4gh:SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
+                            "start": {"type": "Number", "value": 133240513},
+                            "end": {"type": "Number", "value": 133532128},
+                            "id": "ga4gh:SL.TZeSm3UWJSO5OTWcYkkzVQSiXxIiisuA",
+                            "type": "SequenceLocation"
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "start": "q23.2",
+                            "species_id": "taxonomy:9606",
+                            "end": "q23.2",
+                            "id": "ga4gh:CL.mVXPq-PjEnHwc-7o9vpkOzOhSAghUu4d",
+                            "type": "ChromosomeLocation",
+                            "chr": "6"
+                        },
+                        {
+                            "sequence_id": "ga4gh:SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
+                            "start": {"type": "Number", "value": 133240592},
+                            "end": {"type": "Number", "value": 133532128},
+                            "id": "ga4gh:SL.vziYaZUZisvLKfzt4Gd2IVvOO6z0bBeO",
+                            "type": "SequenceLocation"
+                        }
+                    ]
                 },
                 {
                     "type": "Extension",
