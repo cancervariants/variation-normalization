@@ -68,6 +68,7 @@ def vhl_gene_context():
                     "vega:OTTHUMG00000128668",
                     "ccds:CCDS2598",
                     "ena.embl:L15409",
+                    "iuphar:3204",
                     "orphanet:120467",
                     "ccds:CCDS2597",
                     "uniprot:P40337"
