@@ -62,6 +62,7 @@ def vhl_gene_context():
                     "vega:OTTHUMG00000128668",
                     "ccds:CCDS2598",
                     "ena.embl:L15409",
+                    "iuphar:3204",
                     "orphanet:120467",
                     "ccds:CCDS2597",
                     "uniprot:P40337"
@@ -69,19 +70,63 @@ def vhl_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id":
-                        "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "3",
-                    "interval": {
-                        "end": "p25.3",
-                        "start": "p25.3",
-                        "type": "CytobandInterval"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "3",
+                        "interval": {
+                            "end": "p25.3",
+                            "start": "p25.3",
+                            "type": "CytobandInterval"
+                        }
                     }
-                }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.NV92_npjixjlSl1kkRs9Ld8-LjLwv3sq",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "start": {"type": "Number", "value": 10141777},
+                            "end": {"type": "Number", "value": 10153667},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.S-TtMfLdsgZPVRrWEf1-jiZMyTDCt5y1",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "3",
+                        "interval": {
+                            "end": "p25.3",
+                            "start": "p25.3",
+                            "type": "CytobandInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.NV92_npjixjlSl1kkRs9Ld8-LjLwv3sq",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "start": {"type": "Number", "value": 10141777},
+                            "end": {"type": "Number", "value": 10153667},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "name": "previous_symbols",
@@ -161,18 +206,63 @@ def braf_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "7",
-                    "interval": {
-                        "end": "q34",
-                        "start": "q34",
-                        "type": "CytobandInterval"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "q34",
+                            "start": "q34",
+                            "type": "CytobandInterval"
+                        }
                     }
-                }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.amNWL6i7F2nbSZAf2QLTRTujxuDrd0pR",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "interval": {
+                            "start": {"type": "Number", "value": 140719326},
+                            "end": {"type": "Number", "value": 140924929},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "q34",
+                            "start": "q34",
+                            "type": "CytobandInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "interval": {
+                            "start": {"type": "Number", "value": 140713327},
+                            "end": {"type": "Number", "value": 140924929},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -248,18 +338,63 @@ def egfr_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.wgFi9e72ZIIJaOfLx5gaOeGrwP_IZoQ2",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "7",
-                    "interval": {
-                        "end": "p11.2",
-                        "start": "p11.2",
-                        "type": "CytobandInterval"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.wgFi9e72ZIIJaOfLx5gaOeGrwP_IZoQ2",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "p11.2",
+                            "start": "p11.2",
+                            "type": "CytobandInterval"
+                        }
                     }
-                }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.X7hBAPGdirjTLYdjgxKOmcUxaDOWVvUb",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "interval": {
+                            "start": {"type": "Number", "value": 55019016},
+                            "end": {"type": "Number", "value": 55211628},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.wgFi9e72ZIIJaOfLx5gaOeGrwP_IZoQ2",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "7",
+                        "interval": {
+                            "end": "p11.2",
+                            "start": "p11.2",
+                            "type": "CytobandInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.X7hBAPGdirjTLYdjgxKOmcUxaDOWVvUb",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "interval": {
+                            "start": {"type": "Number", "value": 55019016},
+                            "end": {"type": "Number", "value": 55211628},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "name": "previous_symbols",
@@ -310,7 +445,9 @@ def erbb2_context():
             "VSCN2",
             "MLN 19",
             "c-ERB-2",
-            "c-ERB2"
+            "c-ERB2",
+            "MLN-19",
+            "p185(erbB2)"
         ],
         "extensions": [
             {
@@ -340,23 +477,71 @@ def erbb2_context():
                     "ccds:CCDS32642",
                     "ccds:CCDS45667",
                     "cosmic:ERBB2",
-                    "iuphar:2019"
+                    "iuphar:2019",
+                    "pubmed:1675005",
+                    "pubmed:2885835",
+                    "pubmed:2903500"
                 ]
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "17",
-                    "interval": {
-                        "end": "q12",
-                        "start": "q12",
-                        "type": "CytobandInterval"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "17",
+                        "interval": {
+                            "end": "q12",
+                            "start": "q12",
+                            "type": "CytobandInterval"
+                        }
                     }
-                }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.vNjrFKHvtcTYoMjyGSIRwNDTFgkr4rCW",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+                        "interval": {
+                            "start": {"type": "Number", "value": 39687913},
+                            "end": {"type": "Number", "value": 39730426},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.pS7M3aeNymozN9LKeAwVDEB5H1nt4Kqy",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "17",
+                        "interval": {
+                            "end": "q12",
+                            "start": "q12",
+                            "type": "CytobandInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.CB10a-ECqV97KH8BtESJmsh6JA8FW4zr",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+                        "interval": {
+                            "start": {"type": "Number", "value": 39688093},
+                            "end": {"type": "Number", "value": 39728658},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "name": "previous_symbols",
@@ -888,14 +1073,11 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
         for resp_ext in resp_gene_context.extensions:
             for test_var in test_variation_context.extensions:
                 if resp_ext.name == test_var.name:
-                    if resp_ext.name == "chromosome_location":
-                        assert resp_ext.value == test_var.value, \
-                            "gene_context.chromosome_location"
-                    elif resp_ext.name == "associated_with":
+                    if resp_ext.name == "associated_with":
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:
-                        if isinstance(resp_ext.value, list):
+                        if isinstance(resp_ext.value, list) and not isinstance(resp_ext.value[0], dict):  # noqa: E501
                             assert set(resp_ext.value) == set(test_var.value), \
                                 f"gene_context.{resp_ext.name}"
                         else:

@@ -45,18 +45,73 @@ def mmel1_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.32",
-                        "end": "p36.32"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p36.32",
+                            "end": "p36.32"
+                        },
+                        "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
+                        "type": "ChromosomeLocation",
+                        "chr": "1"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.IPoku1gYr0vkl-A69vmEQ08MQ69zUqD1",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 2590638},
+                            "end": {"type": "Number", "value": 2633016},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "1",
+                        "interval": {
+                            "end": "p36.32",
+                            "start": "p36.32",
+                            "type": "CytobandInterval"
+                        }
                     },
-                    "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
-                    "type": "ChromosomeLocation",
-                    "chr": "1"
-                }
+                    {
+                        "_id": "ga4gh:VSL.IPoku1gYr0vkl-A69vmEQ08MQ69zUqD1",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 2590638},
+                            "end": {"type": "Number", "value": 2633016},
+                            "type": "SequenceInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.XXHohp7WTwnDP6qHi880nc3bfyK4_kOP",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.7_Exoebfll2KSxWkHO_CTYB7L35bVXb8",
+                        "interval": {
+                            "start": {"type": "Number", "value": 141828},
+                            "end": {"type": "Number", "value": 184203},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -139,18 +194,63 @@ def cdk11a_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.33",
-                        "end": "p36.33"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p36.33",
+                            "end": "p36.33"
+                        },
+                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                        "type": "ChromosomeLocation",
+                        "chr": "1"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.QRhe6PtLVVYL-0IGwSkJRptqPAvCtX3C",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 1702378},
+                            "end": {"type": "Number", "value": 1724357},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "1",
+                        "interval": {
+                            "end": "p36.33",
+                            "start": "p36.33",
+                            "type": "CytobandInterval"
+                        }
                     },
-                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                    "type": "ChromosomeLocation",
-                    "chr": "1"
-                }
+                    {
+                        "_id": "ga4gh:VSL.QRhe6PtLVVYL-0IGwSkJRptqPAvCtX3C",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 1702378},
+                            "end": {"type": "Number", "value": 1724357},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -234,18 +334,63 @@ def lrp8_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p32.3",
-                        "end": "p32.3"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p32.3",
+                            "end": "p32.3"
+                        },
+                        "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
+                        "type": "ChromosomeLocation",
+                        "chr": "1"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.b-ZZhs0dVgSYpFeXUyiZqup1RR2CW54r",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 53242363},
+                            "end": {"type": "Number", "value": 53328469},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "1",
+                        "interval": {
+                            "end": "p32.3",
+                            "start": "p32.3",
+                            "type": "CytobandInterval"
+                        }
                     },
-                    "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
-                    "type": "ChromosomeLocation",
-                    "chr": "1"
-                }
+                    {
+                        "_id": "ga4gh:VSL.skIG-_HGkK6zid8ZI47evnZnm7PquEd6",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 53242363},
+                            "end": {"type": "Number", "value": 53328070},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -323,18 +468,63 @@ def atad3a_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "species_id": "taxonomy:9606",
-                    "interval": {
-                        "type": "CytobandInterval",
-                        "start": "p36.33",
-                        "end": "p36.33"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "species_id": "taxonomy:9606",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p36.33",
+                            "end": "p36.33"
+                        },
+                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                        "type": "ChromosomeLocation",
+                        "chr": "1"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.fvV1IfQDGo0Du1KyazPB61c5EsmlyNV4",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 1512161},
+                            "end": {"type": "Number", "value": 1534685},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "1",
+                        "interval": {
+                            "end": "p36.33",
+                            "start": "p36.33",
+                            "type": "CytobandInterval"
+                        }
                     },
-                    "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                    "type": "ChromosomeLocation",
-                    "chr": "1"
-                }
+                    {
+                        "_id": "ga4gh:VSL.fvV1IfQDGo0Du1KyazPB61c5EsmlyNV4",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                        "interval": {
+                            "start": {"type": "Number", "value": 1512161},
+                            "end": {"type": "Number", "value": 1534685},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
