@@ -59,18 +59,63 @@ def limk2_gene_context():
             },
             {
                 "type": "Extension",
-                "name": "chromosome_location",
-                "value": {
-                    "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
-                    "type": "ChromosomeLocation",
-                    "species_id": "taxonomy:9606",
-                    "chr": "22",
-                    "interval": {
-                        "end": "q12.2",
-                        "start": "q12.2",
-                        "type": "CytobandInterval"
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "22",
+                        "interval": {
+                            "end": "q12.2",
+                            "start": "q12.2",
+                            "type": "CytobandInterval"
+                        }
                     }
-                }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VSL.Mat3OiuXCd7vNWAGB5lOKaSf_ESc_xK9",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
+                        "interval": {
+                            "start": {"type": "Number", "value": 31212238},
+                            "end": {"type": "Number", "value": 31280080},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "22",
+                        "interval": {
+                            "end": "q12.2",
+                            "start": "q12.2",
+                            "type": "CytobandInterval"
+                        }
+                    },
+                    {
+                        "_id": "ga4gh:VSL.N1dI0SlDciU-8OsmdjEfSKdVDp-Q5_lf",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
+                        "interval": {
+                            "start": {"type": "Number", "value": 31212297},
+                            "end": {"type": "Number", "value": 31280080},
+                            "type": "SequenceInterval"
+                        }
+                    }
+                ]
             },
             {
                 "type": "Extension",
@@ -145,19 +190,64 @@ def dis3_p63a():
                     "type": "Extension"
                 },
                 {
-                    "name": "chromosome_location",
-                    "value": {
-                        "species_id": "taxonomy:9606",
-                        "interval": {
-                            "type": "CytobandInterval",
-                            "start": "q21.33",
-                            "end": "q21.33"
-                        },
-                        "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
-                        "type": "ChromosomeLocation",
-                        "chr": "13"
-                    },
+                    "name": "hgnc_locations",
+                    "value": [
+                        {
+                            "species_id": "taxonomy:9606",
+                            "interval": {
+                                "type": "CytobandInterval",
+                                "start": "q21.33",
+                                "end": "q21.33"
+                            },
+                            "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
+                            "type": "ChromosomeLocation",
+                            "chr": "13"
+                        }
+                    ],
                     "type": "Extension"
+                },
+                {
+                    "type": "Extension",
+                    "name": "ensembl_locations",
+                    "value": [
+                        {
+                            "_id": "ga4gh:VSL.HZtod8n11kD7jCAbtsJLDGwLKCEhRWO1",
+                            "type": "SequenceLocation",
+                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
+                            "interval": {
+                                "start": {"type": "Number", "value": 72752168},
+                                "end": {"type": "Number", "value": 72782096},
+                                "type": "SequenceInterval"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "Extension",
+                    "name": "ncbi_locations",
+                    "value": [
+                        {
+                            "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
+                            "type": "ChromosomeLocation",
+                            "species_id": "taxonomy:9606",
+                            "chr": "13",
+                            "interval": {
+                                "end": "q21.33",
+                                "start": "q21.33",
+                                "type": "CytobandInterval"
+                            }
+                        },
+                        {
+                            "_id": "ga4gh:VSL.BIRwPLT8rtyOnhd3aUXaz4xlHC4P4zA8",
+                            "type": "SequenceLocation",
+                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
+                            "interval": {
+                                "start": {"type": "Number", "value": 72752168},
+                                "end": {"type": "Number", "value": 72781900},
+                                "type": "SequenceInterval"
+                            }
+                        }
+                    ]
                 },
                 {
                     "name": "associated_with",

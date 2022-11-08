@@ -119,9 +119,9 @@ class NormalizeService(ServiceResponse):
                         ],
                         "extensions": [
                             {
+                                "type": "Extension",
                                 "name": "symbol_status",
-                                "value": "approved",
-                                "type": "Extension"
+                                "value": "approved"
                             },
                             {
                                 "type": "Extension",
@@ -129,6 +129,7 @@ class NormalizeService(ServiceResponse):
                                 "value": "B-Raf proto-oncogene, serine/threonine kinase"
                             },
                             {
+                                "type": "Extension",
                                 "name": "associated_with",
                                 "value": [
                                     "ucsc:uc003vwc.5",
@@ -144,23 +145,67 @@ class NormalizeService(ServiceResponse):
                                     "pubmed:2284096",
                                     "uniprot:P15056",
                                     "cosmic:BRAF"
-                                ],
-                                "type": "Extension"
+                                ]
                             },
                             {
-                                "name": "chromosome_location",
-                                "value": {
-                                    "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
-                                    "type": "ChromosomeLocation",
-                                    "species_id": "taxonomy:9606",
-                                    "chr": "7",
-                                    "interval": {
-                                        "end": "q34",
-                                        "start": "q34",
-                                        "type": "CytobandInterval"
+                                "type": "Extension",
+                                "name": "hgnc_locations",
+                                "value": [
+                                    {
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
+                                        "type": "ChromosomeLocation",
+                                        "species_id": "taxonomy:9606",
+                                        "chr": "7",
+                                        "interval": {
+                                            "end": "q34",
+                                            "start": "q34",
+                                            "type": "CytobandInterval"
+                                        }
                                     }
-                                },
-                                "type": "Extension"
+                                ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "ensembl_locations",
+                                "value": [
+                                    {
+                                        "_id": "ga4gh:VSL.amNWL6i7F2nbSZAf2QLTRTujxuDrd0pR",  # noqa: E501
+                                        "type": "SequenceLocation",
+                                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",  # noqa: E501
+                                        "interval": {
+                                            "start": {"type": "Number", "value": 140719326},  # noqa: E501
+                                            "end": {"type": "Number", "value": 140924929},  # noqa: E501
+                                            "type": "SequenceInterval"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "Extension",
+                                "name": "ncbi_locations",
+                                "value": [
+                                    {
+                                        "_id": "ga4gh:VCL.O6yCQ1cnThOrTfK9YUgMlTfM6HTqbrKw",  # noqa: E501
+                                        "type": "ChromosomeLocation",
+                                        "species_id": "taxonomy:9606",
+                                        "chr": "7",
+                                        "interval": {
+                                            "end": "q34",
+                                            "start": "q34",
+                                            "type": "CytobandInterval"
+                                        }
+                                    },
+                                    {
+                                        "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",  # noqa: E501
+                                        "type": "SequenceLocation",
+                                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",  # noqa: E501
+                                        "interval": {
+                                            "start": {"type": "Number", "value": 140713327},  # noqa: E501
+                                            "end": {"type": "Number", "value": 140924929},  # noqa: E501
+                                            "type": "SequenceInterval"
+                                        }
+                                    }
+                                ]
                             },
                             {
                                 "type": "Extension",
