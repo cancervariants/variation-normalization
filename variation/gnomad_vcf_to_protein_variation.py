@@ -242,6 +242,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             valid_list = list()
             validations = await self._get_gnomad_vcf_validations(q, warnings)
             if validations:
+                validations.valid_results = sorted(validations.valid_results,
+                                                   key=lambda x: x.is_mane_transcript,
+                                                   reverse=True)
                 all_warnings = list()
                 for valid_result in validations.valid_results:
                     warnings = list()
@@ -339,10 +342,22 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                 classification_token.alt_type, [], alt=aa_alt
                             )
                             if variation:
-                                valid_list.append(
-                                    self.get_variation_descriptor(
-                                        q, variation, valid_result, _id, warnings,
-                                        gene=current_mane_data["HGNC_ID"]))
+                                vd_and_warnings = self.get_variation_descriptor(
+                                    q, variation, valid_result, _id, warnings,
+                                    gene=current_mane_data["HGNC_ID"])
+                                if valid_result.is_mane_transcript:
+                                    vd, warnings = vd_and_warnings
+                                    return NormalizeService(
+                                        variation_query=q,
+                                        variation_descriptor=vd,
+                                        warnings=warnings,
+                                        service_meta_=ServiceMeta(
+                                            version=__version__,
+                                            response_datetime=datetime.now()
+                                        )
+                                    )
+                                else:
+                                    valid_list.append(vd_and_warnings)
 
                 if valid_list:
                     vd, warnings = valid_list[0]
