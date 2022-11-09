@@ -7,8 +7,8 @@ import logging
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.extras.translator import Translator
-from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, MANETranscript, \
-    UTADatabase
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, \
+    MANETranscript, UTADatabase
 
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
