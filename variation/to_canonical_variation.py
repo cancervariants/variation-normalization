@@ -9,8 +9,8 @@ from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from uta_tools.schemas import Assembly
-from uta_tools.data_sources import UTADatabase, SeqRepoAccess
+from cool_seq_tool.schemas import Assembly
+from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classifiers.classify import Classify
@@ -40,7 +40,7 @@ class ToCanonicalVariation(ToVRS):
                  tlr: Translator, uta: UTADatabase) -> None:
         """Initialize the to canonical variation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens

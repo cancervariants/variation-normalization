@@ -7,8 +7,8 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNu
     VariationSet, Text
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from uta_tools.schemas import ResidueMode
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -38,7 +38,7 @@ class ToVRS(VRSRepresentation):
                  gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the ToVrsAndVrsatile class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens

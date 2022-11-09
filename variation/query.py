@@ -5,8 +5,8 @@ from os import environ
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from uta_tools import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
-    LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, UTATools
+from cool_seq_tool import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
+    LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, CoolSeqTool
 
 from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.tokenizers import GeneSymbol
@@ -58,12 +58,12 @@ class QueryHandler:
             refseq_file_path = environ.get("LRG_REFSEQGENE_PATH", LRG_REFSEQGENE_PATH)
         if not mane_data_path:
             mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
-        uta_tools = UTATools(seqrepo_data_path=seqrepo_data_path,
-                             transcript_file_path=transcript_file_path,
-                             lrg_refseqgene_path=refseq_file_path,
-                             mane_data_path=mane_data_path,
-                             db_url=uta_db_url, db_pwd=uta_db_pwd)
-        self._seqrepo_access = uta_tools.seqrepo_access
+        cool_seq_tool = CoolSeqTool(seqrepo_data_path=seqrepo_data_path,
+                                    transcript_file_path=transcript_file_path,
+                                    lrg_refseqgene_path=refseq_file_path,
+                                    mane_data_path=mane_data_path,
+                                    db_url=uta_db_url, db_pwd=uta_db_pwd)
+        self._seqrepo_access = cool_seq_tool.seqrepo_access
 
         dp = SeqRepoDataProxy(self._seqrepo_access.seqrepo_client)
 
@@ -75,9 +75,9 @@ class QueryHandler:
         gene_symbol = GeneSymbol(gene_normalizer)
         tokenizer = Tokenize(amino_acid_cache, gene_symbol)
         classifier = Classify()
-        uta_db = uta_tools.uta_db
-        mane_transcript = uta_tools.mane_transcript
-        transcript_mappings = uta_tools.transcript_mappings
+        uta_db = cool_seq_tool.uta_db
+        mane_transcript = cool_seq_tool.mane_transcript
+        transcript_mappings = cool_seq_tool.transcript_mappings
         self._tlr = Translator(data_proxy=dp)
         validator = Validate(
             self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
@@ -92,7 +92,7 @@ class QueryHandler:
         self.normalize_handler = Normalize(*to_vrs_params + [uta_db])
 
         codon_table = CodonTable(amino_acid_cache)
-        mane_transcript_mappings = uta_tools.mane_transcript_mappings
+        mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
         to_protein_params = to_vrs_params + [uta_db,
                                              mane_transcript, mane_transcript_mappings,
                                              codon_table]

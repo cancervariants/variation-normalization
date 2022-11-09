@@ -23,7 +23,7 @@ logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
 
-logging.getLogger("uta_tools").setLevel(logging.INFO)
+logging.getLogger("cool_seq_tool").setLevel(logging.INFO)
 logging.getLogger("boto3").setLevel(logging.INFO)
 logging.getLogger("botocore").setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.INFO)

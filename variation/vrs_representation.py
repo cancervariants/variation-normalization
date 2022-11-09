@@ -5,7 +5,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CURIE, RelativeCopyClass
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess
 from bioutils.accessions import coerce_namespace
 
 
@@ -15,7 +15,7 @@ class VRSRepresentation:
     def __init__(self, dp: SeqRepoDataProxy, seqrepo_access: SeqRepoAccess) -> None:
         """Initialize the VRSRepresentation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         """
         self.seqrepo_access = seqrepo_access
