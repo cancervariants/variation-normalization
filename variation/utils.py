@@ -6,7 +6,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import Text
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.validation_response_schema import ValidationSummary, \

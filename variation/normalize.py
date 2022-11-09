@@ -4,7 +4,7 @@ from urllib.parse import quote
 from datetime import datetime
 
 from gene.query import QueryHandler as GeneQueryHandler
-from uta_tools.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
 from variation.classifiers.classify import Classify
@@ -31,7 +31,7 @@ class Normalize(ToVRSATILE):
                  gene_normalizer: GeneQueryHandler, uta: UTADatabase) -> None:
         """Initialize Normalize class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens

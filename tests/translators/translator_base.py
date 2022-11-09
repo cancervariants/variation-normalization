@@ -3,7 +3,7 @@ import yaml
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
-from uta_tools.data_sources import TranscriptMappings, SeqRepoAccess, \
+from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTADatabase, MANETranscript
 
 from tests import PROJECT_ROOT
