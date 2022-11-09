@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -26,7 +26,7 @@ class ToVRSATILE(ToVRS):
                  gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the ToVRSATILE class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
