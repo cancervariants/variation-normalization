@@ -1,7 +1,7 @@
 """Module for commonly used validator methods for protein references."""
 from typing import List
 
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.tokenizers.caches import AminoAcidCache
 

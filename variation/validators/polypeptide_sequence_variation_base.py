@@ -5,7 +5,7 @@ from typing import List, Optional, Dict
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
-from uta_tools.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
     MANETranscript
 
 from variation.schemas.app_schemas import Endpoint

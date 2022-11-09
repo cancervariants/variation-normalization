@@ -3,9 +3,9 @@ from typing import Optional, Tuple, List, Dict
 from urllib.parse import quote
 from datetime import datetime
 
-from uta_tools.data_sources import SeqRepoAccess, UTADatabase, MANETranscript,\
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscript,\
     MANETranscriptMappings
-from uta_tools.schemas import ResidueMode
+from cool_seq_tool.schemas import ResidueMode
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
@@ -38,7 +38,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                  codon_table: CodonTable) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via UTA Tools
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens

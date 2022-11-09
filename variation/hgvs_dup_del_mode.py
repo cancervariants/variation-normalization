@@ -6,7 +6,7 @@ import json
 
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify, sha512t24u
-from uta_tools.data_sources import SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.normalize_response_schema\
