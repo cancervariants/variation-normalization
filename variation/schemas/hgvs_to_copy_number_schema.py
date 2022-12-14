@@ -89,7 +89,7 @@ class HgvsToRelativeCopyNumberService(ServiceResponse):
                         "start": {"type": "Number", "value": 49531260},
                         "end": {"type": "Number", "value": 49531262}
                     },
-                    "relative_copy_class": "complete loss"
+                    "relative_copy_class": "EFO:0030069"
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",

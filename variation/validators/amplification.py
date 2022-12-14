@@ -61,8 +61,9 @@ class Amplification(Validator):
                 seq_loc = get_priority_sequence_location(
                     gene_descriptor, self.seqrepo_access)
                 if seq_loc:
-                    rcn = self.vrs.to_rel_cnv(models.SequenceLocation(**seq_loc),
-                                              RelativeCopyClass.HIGH_LEVEL_GAIN)
+                    rcn = self.vrs.to_rel_cnv(
+                        models.SequenceLocation(**seq_loc),
+                        RelativeCopyClass.HIGH_LEVEL_COPY_NUMBER_GAIN)
                 else:
                     errors.append(f"No SequenceLocation found for gene: {gene}")
             else:

@@ -256,7 +256,7 @@ class ToCanonicalVariation(ToVRS):
 
         if hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
             if relative_copy_class:
-                if relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:
+                if relative_copy_class.upper() not in VALID_RELATIVE_COPY_CLASS:
                     return None, [f"{relative_copy_class} is not a valid relative "
                                   f"copy class: {VALID_RELATIVE_COPY_CLASS}"]
         elif hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:

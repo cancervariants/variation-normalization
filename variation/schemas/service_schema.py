@@ -133,7 +133,7 @@ class AmplificationToRelCnvService(ServiceResponse):
                         "start": {"type": "Number", "value": 140713327},
                         "end": {"type": "Number", "value": 140924929}
                     },
-                    "relative_copy_class": "high-level gain"
+                    "relative_copy_class": "EFO:0030072"
                 },
                 "service_meta_": {
                     "version": "0.7.dev0",

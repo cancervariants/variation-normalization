@@ -152,7 +152,7 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToRelativeCopyNumberService containing Relative Copy Number
             Variation and warnings
         """
-        if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
+        if relative_copy_class and relative_copy_class.upper() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
             return None, [f"{relative_copy_class} is not a valid relative copy class: "
                           f"{VALID_RELATIVE_COPY_CLASS}"]
 
@@ -371,7 +371,7 @@ class ToCopyNumberVariation(ToVRS):
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_rcn = models.RelativeCopyNumber(
                         location=vrs_location,
-                        relative_copy_class=RelativeCopyClass.HIGH_LEVEL_GAIN.value)
+                        relative_copy_class=RelativeCopyClass.HIGH_LEVEL_COPY_NUMBER_GAIN.value)  # noqa: E501
                     vrs_rcn.id = ga4gh_identify(vrs_rcn)
                     variation = RelativeCopyNumber(**vrs_rcn.as_dict())
             else:

@@ -254,7 +254,7 @@ class ToCanonicalVariationService(ServiceResponse):
                 "query": "NC_000007.14:140753335:A:T",
                 "warnings": [],
                 "canonical_variation": {
-                    "id": "ga4gh:CLV.dP6z4p7SoGJFmlFQcjOQo2d1mXuo1QiY",
+                    "id": "ga4gh:CAN.dP6z4p7SoGJFmlFQcjOQo2d1mXuo1QiY",
                     "type": "CanonicalVariation",
                     "canonical_context": {
                         "id": "ga4gh:VA.3xFHF399HGbG1JUf5uwcj3oWVKZJ70oX",
