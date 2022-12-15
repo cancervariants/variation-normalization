@@ -1020,9 +1020,9 @@ def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
         "id": "normalize.variation:BRAF%20Amplification",
         "type": "VariationDescriptor",
         "variation": {
-            "id": "ga4gh:RCN.avsI73-9i6ykDIRB3eB89jeU1lhyBbYt",
+            "id": "ga4gh:RCN.tXX8oMzsJx3r9ZlqQlzk_K8Luz-bswdT",
             "location": braf_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
+            "relative_copy_class": "EFO:0030072",
             "type": "RelativeCopyNumber"
         },
         "molecule_context": "genomic",
@@ -1039,9 +1039,9 @@ def prpf8_amplification(prpf8_ncbi_seq_loc, prpf8_gene_context):
         "id": "normalize.variation:PRPF8%20AMPLIFICATION",
         "type": "VariationDescriptor",
         "variation": {
-            "id": "ga4gh:RCN.w44H1MxQusrCBDxUoLr30E1iJBMGXF14",
+            "id": "ga4gh:RCN.DW0vRfIA0aI4AR0epEh_k-qrB2pdpZVw",
             "location": prpf8_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
+            "relative_copy_class": "EFO:0030072",
             "type": "RelativeCopyNumber"
         },
         "molecule_context": "genomic",

@@ -9,9 +9,9 @@ def genomic_dup1_rel_38(genomic_dup1_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN._1Nz0yj2g9Q6cRO8j6oRi5peUJYjTAga",
+        "id": "ga4gh:RCN.erAJfClNaRMtgJ6ZPzresRJaKdiSGhNr",
         "location": genomic_dup1_seq_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -43,9 +43,9 @@ def genomic_dup1_rel_37(genomic_dup1_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.dfqRkwlXaJqc8ZtG5mORZU4Cdsp3DTcz",
+        "id": "ga4gh:RCN.wSv8wmG69FZKMK-PO3MoS1j-sUUfF6CH",
         "location": genomic_dup1_37_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -54,9 +54,9 @@ def genomic_dup2_rel_38(genomic_dup2_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.U9sPvq7Ggxf3jzcJlTD_53dAaesWZ6-o",
+        "id": "ga4gh:RCN.fB4IGlSyBw6q70NwdCiHm2tQlSvM2fB6",
         "location": genomic_dup2_seq_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -88,9 +88,9 @@ def genomic_dup2_rel_37(genomic_dup2_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.BmS2zuzMCgnrbgU5zZgqwaPEBCGV6Wxo",
+        "id": "ga4gh:RCN.jzaEHj_5CYAd0wSrIygdhZViFH3lhcii",
         "location": genomic_dup2_37_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -110,9 +110,9 @@ def genomic_dup3_rel_38(genomic_del3_dup3_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.FoK9bxEWUcnG6yb4MQwuEOKnyvmJQHWQ",
+        "id": "ga4gh:RCN.zn-lzk4_0ijOoPr4cSIB7aX9XySZD91a",
         "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "high-level gain"
+        "relative_copy_class": "EFO:0030072"
     }
 
 
@@ -144,9 +144,9 @@ def genomic_dup3_rel_37(genomic_dup3_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.oBHqFRckDEI_Z5urrQ_oexexObWv39FS",
+        "id": "ga4gh:RCN.aXMmX6vH8bdQpBi_YwlqIfXvpnZVCIzc",
         "location": genomic_dup3_37_loc,
-        "relative_copy_class": "high-level gain"
+        "relative_copy_class": "EFO:0030072"
     }
 
 
@@ -166,9 +166,9 @@ def genomic_dup4_rel_38(genoimc_dup4_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.4aCUMyIGHAaqGLGnWdGF3pU81nMPiRMf",
+        "id": "ga4gh:RCN.R84TneS5Lo52LXV1QvBTC-VHCNbTmbuG",
         "location": genoimc_dup4_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -200,9 +200,9 @@ def genomic_dup4_rel_37(genomic_dup4_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.U5eCTbzeX2JOyWFfQ9xOYacjbBKcz4lM",
+        "id": "ga4gh:RCN.PqgGxKRXyLsyTnuDFfjXdy6WOS92Xvhd",
         "location": genomic_dup4_37_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -222,9 +222,9 @@ def genomic_dup5_rel_38(genomic_dup5_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.y4ia336ms3p6s51U36K5-kkXeW9PFXMz",
+        "id": "ga4gh:RCN.1sQgwjUh4hWLa8AQ6kH4eXAurJnJSkZr",
         "location": genomic_dup5_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -256,9 +256,9 @@ def genomic_dup5_rel_37(genomic_dup5_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.AQqRwFtHFlvZG9Lcl28flKTITe_9wR3Z",
+        "id": "ga4gh:RCN.eDwyniE1UOiei4d5Wr92yMeAJRdx7iR8",
         "location": genomic_dup5_37_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -278,9 +278,9 @@ def genomic_dup6_rel_38(genoimc_dup6_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.popti3moTOvPqsqPopElu7-TqgINIq6I",
+        "id": "ga4gh:RCN.D3sNrwDztEGdbHArugYZOKz4XSBTEHYg",
         "location": genoimc_dup6_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -312,9 +312,9 @@ def genomic_dup6_rel_37(genomic_dup6_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.Lvhuup_Md0tsrN6eqO5kV3sUO4vRtMsW",
+        "id": "ga4gh:RCN.zixYHRqtbfeHVj5QLVhWmxFFVImrlvB-",
         "location": genomic_dup6_37_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -323,9 +323,9 @@ def genomic_del1_rel_38(genomic_del1_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.z7MU8QUSR_aeWG7MP161H4jwPGoyo1No",
+        "id": "ga4gh:RCN.89rlJ6oV422qg04Rhb25rhZJF46LUPqR",
         "location": genomic_del1_seq_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -357,9 +357,9 @@ def genomic_del1_rel_37(genomic_del1_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.bT-NgstX8QjwhOR3FMbQmfXozLQ9wdHB",
+        "id": "ga4gh:RCN.K2fiI9tIcmUkB4QICqvxNQuWiueRLF2t",
         "location": genomic_del1_37_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -368,9 +368,9 @@ def genomic_del2_rel_38(genomic_del2_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.xXa8l2bXplY26DKNBDTttUUc0aN1Pwpo",
+        "id": "ga4gh:RCN.4dy3yka2_hd_8S_TEnJ9BxQB3AvP3kkK",
         "location": genomic_del2_seq_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030071"
     }
 
 
@@ -402,9 +402,9 @@ def genomic_del2_rel_37(genomic_del2_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.Kw5y22t_9O3R_DBfP43ZgXkuLtrjbK2e",
+        "id": "ga4gh:RCN.Yhu2MHBFqzBlgyw7nc84fgSfEez6DUQG",
         "location": genomic_del2_37_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030071"
     }
 
 
@@ -424,9 +424,9 @@ def genomic_del3_rel_38(genomic_del3_dup3_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.RoVV-V_2zSMFA8IUJSs3Ah8Y-3jh6ktV",
+        "id": "ga4gh:RCN.l0fNhTdZcTwNkEan8gViP1dK2d3DQmTn",
         "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -458,9 +458,9 @@ def genomic_del3_rel_37(genomic_del3_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.rKupZ9FRkAXrYtZmaMd_7RF6vU4fOxLS",
+        "id": "ga4gh:RCN.01hSqtbuhzMI2uSd7bdKN34vWI1gQpCc",
         "location": genomic_del3_37_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
 
 
@@ -480,9 +480,9 @@ def genomic_del4_rel_38(genomic_del4_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.BwZOFAfo5u8TcwbR3DMi8qbIImv96VQU",
+        "id": "ga4gh:RCN.Tgjw-QKM3gbgXROH2OX4WqiSNVXr6zn-",
         "location": genomic_del4_seq_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -514,9 +514,9 @@ def genomic_del4_rel_37(genomic_del4_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.xeNugTAGZ5HPU5hyoOa6Jk_lzQKFj-2S",
+        "id": "ga4gh:RCN.GLYkGWKznmABnCVcImNuwRNvxBt3Txrc",
         "location": genomic_del4_37_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030068"
     }
 
 
@@ -536,9 +536,9 @@ def genomic_del5_rel_38(genomic_del5_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.y5LOigojbNT1BqtAv9BsKQ7-2i-iL8jA",
+        "id": "ga4gh:RCN.P0LWls1SeRF881B-uhomC8B4BHc6Fo2R",
         "location": genomic_del5_seq_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -570,9 +570,9 @@ def genomic_del5_rel_37(genomic_del5_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.jExtRl5UIhAlKPw68TtcA05-Gfi6cXQZ",
+        "id": "ga4gh:RCN.G_CYcPca9J4V1w1C6T4mdShdgSsAPhyp",
         "location": genomic_del5_37_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -592,9 +592,9 @@ def genomic_del6_rel_38(genomic_del6_seq_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.nmDpVRjFPJZF4K-HxmIgcAewOKtCOfGC",
+        "id": "ga4gh:RCN.113rZRmZgUMR61kPvn0IaLrhQvd5K_ox",
         "location": genomic_del6_seq_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030071"
     }
 
 
@@ -626,9 +626,9 @@ def genomic_del6_rel_37(genomic_del6_37_loc):
     """Create test fixture relative copy number variation"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.C597L06IPEjWaoP-ktRkPxbbayBWBg12",
+        "id": "ga4gh:RCN.W-sFtBYitL5YSfGjqN5XnHjglqf9y91d",
         "location": genomic_del6_37_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030071"
     }
 
 
@@ -664,16 +664,16 @@ async def test_genomic_dup1_relative_cnv(test_cnv_handler, genomic_dup1_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_38
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030069", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_38
 
 
@@ -709,16 +709,16 @@ async def test_genomic_dup2_relative_cnv(test_cnv_handler, genomic_dup2_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_38
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030068", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_38
 
 
@@ -754,16 +754,16 @@ async def test_genomic_dup3_relative_cnv(test_cnv_handler, genomic_dup3_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="high-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030072", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="high-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030072", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="high-level gain", do_liftover=True)
+        q, relative_copy_class="EFO:0030072", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_38
 
 
@@ -799,16 +799,16 @@ async def test_genomic_dup4_relative_cnv(test_cnv_handler, genomic_dup4_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030069", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_38
 
 
@@ -844,16 +844,16 @@ async def test_genomic_dup5_relative_cnv(test_cnv_handler, genomic_dup5_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030068", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_38
 
 
@@ -889,16 +889,16 @@ async def test_genomic_dup6_relative_cnv(test_cnv_handler, genomic_dup6_rel_38,
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=True)
+        q, relative_copy_class="EFO:0030067", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_38
 
 
@@ -934,16 +934,16 @@ async def test_genomic_del1_relative_cnv(test_cnv_handler, genomic_del1_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_38
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=True)
+        q, relative_copy_class="EFO:0030067", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_38
 
 
@@ -979,16 +979,16 @@ async def test_genomic_del2_relative_cnv(test_cnv_handler, genomic_del2_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030071", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_38
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030071", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=True)
+        q, relative_copy_class="EFO:0030071", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_38
 
 
@@ -1024,16 +1024,16 @@ async def test_genomic_del3_relative_cnv(test_cnv_handler, genomic_del3_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030069", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="complete loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030069", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_38
 
 
@@ -1069,16 +1069,16 @@ async def test_genomic_del4_relative_cnv(test_cnv_handler, genomic_del4_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=False)
+        q, relative_copy_class="EFO:0030068", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="partial loss", do_liftover=True)
+        q, relative_copy_class="EFO:0030068", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_38
 
 
@@ -1114,16 +1114,16 @@ async def test_genomic_del5_relative_cnv(test_cnv_handler, genomic_del5_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=False)
+        q, relative_copy_class="EFO:0030067", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="copy neutral", do_liftover=True)
+        q, relative_copy_class="EFO:0030067", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_38
 
 
@@ -1159,16 +1159,16 @@ async def test_genomic_del6_relative_cnv(test_cnv_handler, genomic_del6_rel_38,
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030071", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=False)
+        q, relative_copy_class="EFO:0030071", do_liftover=False)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_37
 
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=True)
+        q, relative_copy_class="EFO:0030071", do_liftover=True)
     assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_38
 
 
@@ -1179,8 +1179,9 @@ async def test_invalid_cnv_parameters(test_cnv_handler):
     resp, w = await test_cnv_handler.hgvs_to_relative_copy_number(
         q, relative_copy_class="low-level gains", do_liftover=True)
     assert resp is None
-    assert w == ["low-level gains is not a valid relative copy class: ['complete loss', "  # noqa: E501
-                 "'partial loss', 'copy neutral', 'low-level gain', 'high-level gain']"]
+    assert w == ["low-level gains is not a valid relative copy class: ['EFO:0030070', "
+                 "'EFO:0030072', 'EFO:0030071', 'EFO:0030067', 'EFO:0030069', "
+                 "'EFO:0030068']"]
 
 
 @pytest.mark.asyncio
@@ -1188,7 +1189,7 @@ async def test_invalid_cnv(test_cnv_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=True,
+        q, relative_copy_class="EFO:0030071", do_liftover=True,
         untranslatable_returns_text=True)
     assert set(resp.warnings) == {"Unable to translate DAG1 g.49568695dup to copy number variation",  # noqa: E501
                                   "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
@@ -1196,7 +1197,7 @@ async def test_invalid_cnv(test_cnv_handler):
 
     q = "braf v600e"
     resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gain", do_liftover=True)
+        q, relative_copy_class="EFO:0030071", do_liftover=True)
     assert set(resp.warnings) == {"Unable to translate braf v600e to copy number variation",  # noqa: E501
                                   "braf v600e is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.relative_copy_number is None

@@ -28,7 +28,7 @@ def variation1_seq_loc():
 def variation1_lse(variation1_seq_loc):
     """Create test fixture for NC_000013.11:20189346:GGG:GG"""
     params = {
-        "id": "ga4gh:CLV.tg0nG9q1DMP_J-vcWiaASPW44GMEh47k",
+        "id": "ga4gh:CAN.tg0nG9q1DMP_J-vcWiaASPW44GMEh47k",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:VA.jkAILAe4dK4tQ3y2hz-GHtZRAnbVC__T",
@@ -47,7 +47,7 @@ def variation1_lse(variation1_seq_loc):
 def variation_del_lse():
     """Create test fixture for NC_000013.11:20003096:C:"""
     params = {
-        "id": "ga4gh:CLV.6_wBT_bhV-hwjaqDxq3kEs3nyILkF4du",
+        "id": "ga4gh:CAN.6_wBT_bhV-hwjaqDxq3kEs3nyILkF4du",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:VA.l55oQYOlWUoYwAxb4trpbqmMNaknTa1U",
@@ -72,7 +72,7 @@ def variation_del_lse():
 def variation1_abs_cnv(variation1_seq_loc):
     """Create test fixture for variation1 represented as absolute cnv"""
     params = {
-        "id": "ga4gh:CLV.hQ2OOqFOxd_bdXJbZx4-AwJgvQcPZeLq",
+        "id": "ga4gh:CAN.hQ2OOqFOxd_bdXJbZx4-AwJgvQcPZeLq",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:ACN.p_KPDMw49gN0frUAlt_FRBN7Ls4vToZu",
@@ -88,13 +88,13 @@ def variation1_abs_cnv(variation1_seq_loc):
 def variation1_rel_cnv(variation1_seq_loc):
     """Create test fixture for variation1 represented as relative cnv"""
     params = {
-        "id": "ga4gh:CLV.Ue8qumkG57LEqjS2_xXeW9PVDuKDKdd0",
+        "id": "ga4gh:CAN.YIYLpl8tuoDp9ckZ-1f1QQJ5q0-i3q-J",
         "type": "CanonicalVariation",
         "canonical_context": {
-            "id": "ga4gh:RCN.FEoHs6XOuAI0Lx5mJfKN4LF4iLpmeJZu",
+            "id": "ga4gh:RCN.0DNPg6rTfM6GLGrUSF_pLl3VM_3sQl2z",
             "type": "RelativeCopyNumber",
             "location": variation1_seq_loc,
-            "relative_copy_class": "complete loss"
+            "relative_copy_class": "EFO:0030069"
         }
     }
     return CanonicalVariation(**params)
@@ -104,7 +104,7 @@ def variation1_rel_cnv(variation1_seq_loc):
 def variation1_rse(variation1_seq_loc):
     """Create test fixture for variation1 represented as RSE"""
     params = {
-        "id": "ga4gh:CLV.oizMWSwBdIddFvs_vA8YqxR7YWupBMrF",
+        "id": "ga4gh:CAN.oizMWSwBdIddFvs_vA8YqxR7YWupBMrF",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:VA.91WFk_XWzbzUEI-SfYZip8r1g7I5wqBo",
@@ -131,7 +131,7 @@ def variation1_rse(variation1_seq_loc):
 def variation2(braf_v600e_genomic_sub):
     """Create test fixture for NC_000007.14:140753335:A:T"""
     params = {
-        "id": "ga4gh:CLV.dP6z4p7SoGJFmlFQcjOQo2d1mXuo1QiY",
+        "id": "ga4gh:CAN.dP6z4p7SoGJFmlFQcjOQo2d1mXuo1QiY",
         "type": "CanonicalVariation",
         "canonical_context": braf_v600e_genomic_sub
     }
@@ -142,7 +142,7 @@ def variation2(braf_v600e_genomic_sub):
 def variation3_lse(grch38_genomic_insertion_variation):
     """Create test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
     params = {
-        "id": "ga4gh:CLV.8Pi46FGQsmKIb-6Q0NYKQh0baDBOMvFF",
+        "id": "ga4gh:CAN.8Pi46FGQsmKIb-6Q0NYKQh0baDBOMvFF",
         "type": "CanonicalVariation",
         "canonical_context": grch38_genomic_insertion_variation
     }
@@ -153,7 +153,7 @@ def variation3_lse(grch38_genomic_insertion_variation):
 def variation3_abs_cnv(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as absolute cnv"""
     params = {
-        "id": "ga4gh:CLV.DzOrKfPgfowNyivzu3WP48H8iPFiLdd1",
+        "id": "ga4gh:CAN.DzOrKfPgfowNyivzu3WP48H8iPFiLdd1",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:ACN.e_Nd4RGisOcOmrWVklM-3gGZIo6jSnml",
@@ -169,13 +169,13 @@ def variation3_abs_cnv(grch38_genomic_insertion_seq_loc):
 def variation3_rel_cnv(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as relative cnv"""
     params = {
-        "id": "ga4gh:CLV.3VhMDipw7_25RSuPvtz-DCYhzjQCoED7",
+        "id": "ga4gh:CAN.wdQ6AQqEUxX9cV7rImNqOMq6r_freYfZ",
         "type": "CanonicalVariation",
         "canonical_context": {
-            "id": "ga4gh:RCN.XOeH_PqiR6pkFMmHewn9SjxZEOOZoXVp",
+            "id": "ga4gh:RCN.A9ykWRgv47k6MJx8aNQLfn0-LyTlPliO",
             "type": "RelativeCopyNumber",
             "location": grch38_genomic_insertion_seq_loc,
-            "relative_copy_class": "high-level gain"
+            "relative_copy_class": "EFO:0030072"
         }
     }
     return CanonicalVariation(**params)
@@ -185,7 +185,7 @@ def variation3_rel_cnv(grch38_genomic_insertion_seq_loc):
 def variation3_rse(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as RSE"""
     params = {
-        "id": "ga4gh:CLV.Ohalqu5SLmNmwjaE00v26KskGfggXwjq",
+        "id": "ga4gh:CAN.Ohalqu5SLmNmwjaE00v26KskGfggXwjq",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:VA.j6BnT9kvqTO_BQCjTsOzhcnjiwNlhMHv",
@@ -212,7 +212,7 @@ def variation3_rse(grch38_genomic_insertion_seq_loc):
 def variation4():
     """Create test fixture for NC_000001.11:g.2229202_2229203insCTC"""
     params = {
-        "id": "ga4gh:CLV.azUwFImJO4pTH6rSRx6UItCoxJcTvxln",
+        "id": "ga4gh:CAN.azUwFImJO4pTH6rSRx6UItCoxJcTvxln",
         "type": "CanonicalVariation",
         "canonical_context": {
             "id": "ga4gh:VA.M9Ekcss52lqr1IoX3wZeLTxVsrPW1MSq",
@@ -288,7 +288,7 @@ async def test_to_canonical_variation_deletion(
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
-        relative_copy_class="complete loss")
+        relative_copy_class="EFO:0030069")
     assert resp.canonical_variation == variation1_rel_cnv
     assert resp.warnings == []
 
@@ -384,7 +384,7 @@ async def test_to_canonical_variation_duplication(
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
-        relative_copy_class="high-level gain")
+        relative_copy_class="EFO:0030072")
     assert resp.canonical_variation == variation3_rel_cnv
     assert resp.warnings == []
 

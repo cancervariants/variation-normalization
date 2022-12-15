@@ -1,4 +1,6 @@
 """Module for testing HGVS Dup Del mode."""
+from copy import deepcopy
+
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
@@ -318,9 +320,9 @@ def genomic_dup1_vrc(genomic_dup1, genomic_dup1_seq_loc):
     """Create a test fixture for genomic dup relative CNV."""
     genomic_dup1["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.qSnPCsf9ylOaecpSBjTkxWFqxmmyYWtL",
+        "id": "ga4gh:RCN.UBQCyZ7lHIJN6FoQHp3gURfJSWN31S09",
         "location": genomic_dup1_seq_loc,
-        "relative_copy_class": "high-level gain"
+        "relative_copy_class": "EFO:0030072"
     }
     return VariationDescriptor(**genomic_dup1)
 
@@ -585,9 +587,9 @@ def genomic_dup2_vrc(genomic_dup2, genomic_dup2_seq_loc):
     """Create a test fixture for genomic dup relative CNV."""
     genomic_dup2["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.zizBAY460E_wbra9Y6oCxojd8YCbIfnx",
+        "id": "ga4gh:RCN.ClUoNekweei4SUxyjxeLnxagD6vKQ1w7",
         "location": genomic_dup2_seq_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
     return VariationDescriptor(**genomic_dup2)
 
@@ -729,12 +731,11 @@ def genomic_dup3_vac(genomic_dup3, genomic_del3_dup3_loc):
 @pytest.fixture(scope="module")
 def genomic_dup3_vrc(genomic_dup3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic dup relative cnv."""
-    _id = "ga4gh:RCN.4m1TD2538i7v4NQ_OeJ-pIEhlRpYZ3_y"
     genomic_dup3["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.pkRuYZTdIFaA_b9TPc7Czk56VNj1xGz3",
         "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
     return VariationDescriptor(**genomic_dup3)
 
@@ -784,12 +785,11 @@ def genomic_dup3_free_text_subject():
 @pytest.fixture(scope="module")
 def genomic_dup3_free_text_vrc(genomic_dup3_free_text, genomic_dup3_free_text_subject):
     """Create a test fixture for genomic dup relative cnv."""
-    _id = "ga4gh:RCN.ReWfNwAnchjIPJQEXM038T9M3OsOO7yK"
     genomic_dup3_free_text["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.roF4IsQUR-ZxU_c4KMw9WoDrRnhfA75O",
         "location": genomic_dup3_free_text_subject,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
     return VariationDescriptor(**genomic_dup3_free_text)
 
@@ -839,12 +839,11 @@ def genomic_dup4():
 @pytest.fixture(scope="module")
 def genomic_dup4_vrc(genomic_dup4, genoimc_dup4_loc):
     """Create a test fixture for genomic dup relative cnv."""
-    _id = "ga4gh:RCN.uSGvLYzpzivqDzhuKR44DHc5imZJSmoV"
     genomic_dup4["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.cFmUKSZQQ-CuOqG468ZyP_zF63WflwoF",
         "location": genoimc_dup4_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
     return VariationDescriptor(**genomic_dup4)
 
@@ -907,12 +906,11 @@ def genomic_dup4_free_text_subject():
 @pytest.fixture(scope="module")
 def genomic_dup4_free_text_vrc(genomic_dup4_free_text, genomic_dup4_free_text_subject):
     """Create a test fixture for genomic dup relative cnv."""
-    _id = "ga4gh:RCN.Cf9r8JDpUC18VkkEv44jf8b8WMqUIRFu"
     genomic_dup4_free_text["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.LB5BaDj-GkVlpVAIG9kJSir1uO4DoZ6X",
         "location": genomic_dup4_free_text_subject,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
     return VariationDescriptor(**genomic_dup4_free_text)
 
@@ -972,12 +970,11 @@ def genomic_dup5_abs_cnv(params, genomic_dup5_loc):
 
 def genomic_dup5_rel_cnv(params, genomic_dup5_loc):
     """Create genomic dup4 relative cnv"""
-    _id = "ga4gh:RCN.tr_brFSOfykm3I3ufLQTS9pV8KKjqLhK"
     params["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.1sn-uR3OiG0SbGd-f2IkujiqjcUHzxo3",
         "location": genomic_dup5_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
 
 
@@ -1070,12 +1067,11 @@ def genomic_dup6():
 
 def genomic_dup6_rel_cnv(params, genoimc_dup6_loc):
     """Create genomic dup6 relative cnv"""
-    _id = "ga4gh:RCN.c5Uq3TFDNpQSyDlbXb0BRonw9AYHHk0H"
     params["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.Mb9dPwnAm_KSrifZ0955Lse7Ubr5PaGG",
         "location": genoimc_dup6_loc,
-        "relative_copy_class": "low-level gain"
+        "relative_copy_class": "EFO:0030070"
     }
 
 
@@ -1205,9 +1201,9 @@ def genomic_del1_vrc(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del relative CNV."""
     genomic_del1["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.z7MU8QUSR_aeWG7MP161H4jwPGoyo1No",
+        "id": "ga4gh:RCN.89rlJ6oV422qg04Rhb25rhZJF46LUPqR",
         "location": genomic_del1_seq_loc,
-        "relative_copy_class": "copy neutral"
+        "relative_copy_class": "EFO:0030067"
     }
     return VariationDescriptor(**genomic_del1)
 
@@ -1361,9 +1357,9 @@ def genomic_del2_vrc(genomic_del2, genomic_del2_seq_loc):
     """Create a test fixture for genomic del relative CNV."""
     genomic_del2["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN._19twDngCtP3U-8ED2Kly2HM53I_7CV7",
+        "id": "ga4gh:RCN.Ai0Z31nuQtHGJ-0Vl8ARrblr0xiKW9d-",
         "location": genomic_del2_seq_loc,
-        "relative_copy_class": "complete loss"
+        "relative_copy_class": "EFO:0030069"
     }
     return VariationDescriptor(**genomic_del2)
 
@@ -1492,12 +1488,11 @@ def genomic_del3():
 @pytest.fixture(scope="module")
 def genomic_del3_vrc(genomic_del3, genomic_del3_dup3_loc):
     """Create a test fixture for genomic del relative cnv."""
-    _id = "ga4gh:RCN.dYerC8FSiqcexo8X1n3XUKpAckoAsfOK"
     genomic_del3["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.OPd0F6EMNNugGkKFBbl4f1We0WwtL9uI",
         "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
     return VariationDescriptor(**genomic_del3)
 
@@ -1678,12 +1673,11 @@ def genomic_del3_free_text_subject():
 @pytest.fixture(scope="module")
 def genomic_del3_free_text_vrc(genomic_del3_free_text, genomic_del3_free_text_subject):
     """Create a test fixture for genomic del relative cnv."""
-    _id = "ga4gh:RCN.6c0tRlHyFYGSeDEmSyn0nrZJLQDkwVsG"
     genomic_del3_free_text["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.jHNFu709utJ1TkGwQkY1NxmYfRqzof5N",
         "location": genomic_del3_free_text_subject,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
     return VariationDescriptor(**genomic_del3_free_text)
 
@@ -1733,12 +1727,11 @@ def genomic_del4():
 @pytest.fixture(scope="module")
 def genomic_del4_vrc(genomic_del4, genomic_del4_seq_loc):
     """Create a test fixture for genomic del relative cnv."""
-    _id = "ga4gh:RCN.BwZOFAfo5u8TcwbR3DMi8qbIImv96VQU"
     genomic_del4["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.euSDpT11wTt9o9lzlk16lc340OBX2_ij",
         "location": genomic_del4_seq_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
     return VariationDescriptor(**genomic_del4)
 
@@ -1904,12 +1897,11 @@ def genomic_del4_free_text_subject():
 @pytest.fixture(scope="module")
 def genomic_del4_free_text_vrc(genomic_del4_free_text, genomic_del4_free_text_subject):
     """Create a test fixture for genomic del relative cnv."""
-    _id = "ga4gh:RCN.XqfrZ9k9mwDO0cM9duK7ooOih0iR1H2Q"
     genomic_del4_free_text["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.fcVXdxFIjLmULNFOLewLKq9xPvNeVNDm",
         "location": genomic_del4_free_text_subject,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
     return VariationDescriptor(**genomic_del4_free_text)
 
@@ -1949,7 +1941,7 @@ def genomic_uncertain_del_2():
         "id": "normalize.variation:NC_000002.12%3Ag.%28%3F_110104900%29_%28110207160_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation": {
-            "id": "ga4gh:RCN.7EM-Wsg_7mmAE1LW8cmRI3QwKhJCA24a",
+            "id": "ga4gh:RCN.0saHzDrnktHex2tkYyPxQanKwjLUZQu6",
             "location": {
                 "id": "ga4gh:SL.gUeB872FGVaphqoSAfI0gz4KXJvpZKL_",
                 "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
@@ -1965,7 +1957,7 @@ def genomic_uncertain_del_2():
                 },
                 "type": "SequenceLocation"
             },
-            "relative_copy_class": "partial loss",
+            "relative_copy_class": "EFO:0030067",
             "type": "RelativeCopyNumber"
         },
         "molecule_context": "genomic",
@@ -1981,7 +1973,7 @@ def genomic_uncertain_del_y():
         "id": "normalize.variation:NC_000024.10%3Ag.%28%3F_14076802%29_%2857165209_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation": {
-            "id": "ga4gh:RCN.2q7DKevv8nUh87Sl00Z7l50h047Ti2at",
+            "id": "ga4gh:RCN.7Nl4T845v9vuVS4PUB8HI4-tLPsEWU6e",
             "location": {
                 "id": "ga4gh:SL.ykRzA8IFueiCG7oznnN4teL2nXXBshHV",
                 "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -1997,7 +1989,7 @@ def genomic_uncertain_del_y():
                 },
                 "type": "SequenceLocation"
             },
-            "relative_copy_class": "partial loss",
+            "relative_copy_class": "EFO:0030067",
             "type": "RelativeCopyNumber"
         },
         "molecule_context": "genomic",
@@ -2033,12 +2025,11 @@ def genomic_del5_abs_cnv(params, genomic_del5_seq_loc):
 
 def genomic_del5_rel_cnv(params, genomic_del5_seq_loc):
     """Create genomic del5 relative cnv"""
-    _id = "ga4gh:RCN.9rG3a5u3JODwQGVrv1IgAjG6SZgdvraH"
     params["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.P0LWls1SeRF881B-uhomC8B4BHc6Fo2R",
         "location": genomic_del5_seq_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -2247,12 +2238,11 @@ def genomic_del6():
 
 def genomic_del6_rel_cnv(params, genomic_del6_seq_loc):
     """Create genomic del6 relative cnv"""
-    _id = "ga4gh:RCN.zsagK87b_RdK4_QZGMnbNl39LCuJUjAr"
     params["variation"] = {
         "type": "RelativeCopyNumber",
-        "id": _id,
+        "id": "ga4gh:RCN.gQwVlnomQRAffyySAQdj3PYxnEalHrXK",
         "location": genomic_del6_seq_loc,
-        "relative_copy_class": "partial loss"
+        "relative_copy_class": "EFO:0030067"
     }
 
 
@@ -2483,7 +2473,7 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     assertion_checks(resp.variation_descriptor, genomic_dup1_vac, q)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="high-level gain")
+                                        relative_copy_class="EFO:0030072")
     assertion_checks(resp.variation_descriptor, genomic_dup1_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2503,7 +2493,7 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     assertion_checks(resp.variation_descriptor, genomic_dup1_vac, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="high-level gain")
+                                        relative_copy_class="EFO:0030072")
     assertion_checks(resp.variation_descriptor, genomic_dup1_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2628,8 +2618,11 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
     assertion_checks(resp.variation_descriptor, genomic_dup3_vac, q)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="low-level gain")
-    assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q)
+                                        relative_copy_class="EFO:0030071")
+    test_var = deepcopy(genomic_dup3_vrc)
+    test_var.variation.relative_copy_class = "EFO:0030071"
+    test_var.variation.id = "ga4gh:RCN.lR7qHx5BeS4yJlaopO8JteBq1AO3Kv9m"
+    assertion_checks(resp.variation_descriptor, test_var, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
                                         untranslatable_returns_text=True)
@@ -2941,7 +2934,7 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
     assertion_checks(resp.variation_descriptor, genomic_del1_vac, q)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="copy neutral")
+                                        relative_copy_class="EFO:0030067")
     assertion_checks(resp.variation_descriptor, genomic_del1_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2958,7 +2951,7 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
     assertion_checks(resp.variation_descriptor, genomic_del1_vac, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="copy neutral")
+                                        relative_copy_class="EFO:0030067")
     assertion_checks(resp.variation_descriptor, genomic_del1_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3026,7 +3019,7 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_vac,
     assertion_checks(resp.variation_descriptor, genomic_del2_vac, q)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="complete loss")
+                                        relative_copy_class="EFO:0030069")
     assertion_checks(resp.variation_descriptor, genomic_del2_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3043,7 +3036,7 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_vac,
     assertion_checks(resp.variation_descriptor, genomic_del2_vac, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="complete loss")
+                                        relative_copy_class="EFO:0030069")
     assertion_checks(resp.variation_descriptor, genomic_del2_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")

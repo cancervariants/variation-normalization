@@ -7,8 +7,8 @@ def kit_amplification():
     """Create test fixture for KIT amplification"""
     return {
         "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.bLLqdZZ_t8SbF1Ay6bws-HpuJqbOvtCs",
-        "relative_copy_class": "high-level gain",
+        "id": "ga4gh:RCN.B25HjtfWQuCtYyeiiVKRy0rHQm7GNOVX",
+        "relative_copy_class": "EFO:0030072",
         "location": {
             "type": "SequenceLocation",
             "id": "ga4gh:SL.7SSzl2VSAZyrt_GrMAQlIJuuegXS7KA5",

@@ -9,7 +9,7 @@ The mode can be set to `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_
 - if baseline_copies is not set and endpoints are ambiguous:
     - relative_cnv
     - if relative_copy_class not provided:
-        - relative_copy_class = `partial loss` if del, `low-level gain` if dup
+        - relative_copy_class = `EFO:0030067` (copy number loss) if del, `EFO:0030070` (copy number gain) if dup
 - elif baseline_copies is provided:
     - absolute_cnv
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del

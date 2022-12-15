@@ -5,8 +5,8 @@ from typing import Optional, Dict, Tuple, List
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
 
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -55,7 +55,8 @@ class HGVSDupDelMode:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous: relative_cnv
             if relative_copy_class not provided:
-                relative_copy_class = `partial loss` if del, `low-level gain` if dup
+                relative_copy_class = `EFO:0030067` (copy number loss) if del,
+                    `EFO:0030070` (copy number gain) if dup
         elif baseline_copies provided: absolute_cnv
             copies are baseline + 1 for dup, baseline - 1 for del
         elif len del or dup > 100bp (use outermost coordinates):
@@ -121,9 +122,9 @@ class HGVSDupDelMode:
         """
         if not relative_copy_class:
             if del_or_dup == "del":
-                relative_copy_class = RelativeCopyClass.PARTIAL_LOSS.value
+                relative_copy_class = RelativeCopyClass.COPY_NUMBER_LOSS.value
             else:
-                relative_copy_class = RelativeCopyClass.LOW_LEVEL_GAIN.value
+                relative_copy_class = RelativeCopyClass.COPY_NUMBER_GAIN.value
         variation = {
             "type": "RelativeCopyNumber",
             "location": location,
