@@ -29,8 +29,8 @@ pytest-asyncio = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
-"ga4gh.vrs" = {version = "==0.8.0dev0", extras = ["extras"]}
-gene-normalizer = "~=0.1.30"
+"ga4gh.vrs" = {version = "~=0.8.1.dev0", extras = ["extras"]}
+gene-normalizer = "~=0.1.31"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = "~=0.0.11"
