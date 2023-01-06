@@ -225,7 +225,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
     async def gnomad_vcf_to_protein(
         self, q: str, untranslatable_returns_text: bool = False
     ) -> NormalizeService:
-        """Get protein consequence for gnomad vcf
+        """Get MANE protein consequence for gnomad vcf (chr-pos-ref-alt).
+        Assumes using GRCh38 coordinates
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
@@ -281,27 +282,22 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         )
                         continue
 
+                    chromosome = q.split("-")[:-1][0]
+                    mane_data = self.mane_transcript_mappings.get_mane_data_from_chr_pos(  # noqa: E501
+                        chromosome, g_start_pos, g_end_pos)
+                    mane_data_len = len(mane_data)
                     g_start_pos -= 1
                     g_end_pos -= 1
 
-                    transcripts = await self.uta.get_transcripts_from_genomic_pos(
-                        alt_ac, g_start_pos)
-
-                    if not transcripts:
-                        all_warnings.append(f"Unable to get transcripts given {alt_ac}"
-                                            f" and {g_start_pos + 1}")
-                        continue
-                    mane_data = self.mane_transcript_mappings.get_mane_from_transcripts(transcripts)  # noqa: E501
-                    mane_data_len = len(mane_data)
                     for i in range(mane_data_len):
-                        index = mane_data_len - i - 1
-                        current_mane_data = mane_data[index]
+                        current_mane_data = mane_data[i]
                         mane_c_ac = current_mane_data["RefSeq_nuc"]
                         mane_tx_genomic_data = await self.uta.get_mane_c_genomic_data(
                             mane_c_ac, alt_ac, g_start_pos, g_end_pos)
                         if not mane_tx_genomic_data:
                             all_warnings.append("Unable to get mane transcript and "
                                                 "genomic data")
+                            continue
 
                         coding_start_site = mane_tx_genomic_data["coding_start_site"]
                         mane_c_pos_change = \

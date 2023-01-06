@@ -264,11 +264,11 @@ def vrs_python_translate_from(
     )
 
 
-g_to_p_summary = "Given gnomad VCF, return VRSATILE object on protein coordinate."
+g_to_p_summary = "Given GRCh38 gnomAD VCF, return VRSATILE object on MANE protein coordinate."  # noqa: E501
 g_to_p_response_description = "A response to a validly-formed query."
 g_to_p_description = \
     "Return VRSATILE object on protein coordinate for variation provided."
-q_description = "gnomad VCF to normalize to protein variation."
+q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."  # noqa: E501
 
 
 @app.get("/variation/gnomad_vcf_to_protein",

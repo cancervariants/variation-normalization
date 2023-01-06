@@ -798,8 +798,9 @@ async def test_substitution(test_handler, braf_v600e, braf_v600l,
 @pytest.mark.asyncio
 async def test_silent_mutation(test_handler, vhl_silent):
     """Test that silent queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("3-10183714-C-C")
-    assertion_checks(resp.variation_descriptor, vhl_silent, "3-10183714-C-C",
+    # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
+    resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-C")
+    assertion_checks(resp.variation_descriptor, vhl_silent, "3-10142030-C-C",
                      ignore_id=True)
     assert resp.warnings == []
 
@@ -850,8 +851,8 @@ async def test_invalid(test_handler):
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "7-140753336-T-G"
     assert set(resp.warnings) == {
-        "Unable to get transcripts given NC_000007.13 and 140753336",
         "Expected T but found A on NC_000007.14 at position 140753336",
+        "Unable to get mane transcript and genomic data"
     }
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG",
