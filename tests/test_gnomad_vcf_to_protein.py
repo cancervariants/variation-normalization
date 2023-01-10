@@ -932,7 +932,10 @@ async def test_invalid(test_handler):
     assert resp.variation_descriptor.label == "7-140753336-T-G"
     assert set(resp.warnings) == {
         "Expected T but found A on NC_000007.14 at position 140753336",
-        "Unable to get mane transcript and genomic data"
+        "Unable to get MANE data for NM_004333.6 using NC_000007.13 at positions"
+        " 140753335 to 140753335",  # MANE Select
+        "Unable to get MANE data for NM_001374258.1 using NC_000007.13 at positions"
+        " 140753335 to 140753335"  # MANE Plus Clinical
     }
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG",
