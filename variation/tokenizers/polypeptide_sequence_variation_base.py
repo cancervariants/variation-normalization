@@ -16,6 +16,7 @@ class PolypeptideSequenceVariationBase(Tokenizer):
         """Initialize the Polypeptide Sequence Variation Base Class."""
         self.splitter = re.compile(r"(\d+)")
         self.psub = None
+        self.valid_amino_acids = aa3_to_aa1_lut.values()
 
     def _set_psub(self, amino_acid: str, position: int, new_amino_acid: str) -> None:
         """Initialize protein substitution.
@@ -37,9 +38,8 @@ class PolypeptideSequenceVariationBase(Tokenizer):
 
     def _is_valid_amino_acid(self, amino_acids: List) -> bool:
         """Return whether or not amino acids are valid."""
-        valid = aa3_to_aa1_lut.values()
         for amino_acid_code in amino_acids:
-            if amino_acid_code not in valid:
+            if amino_acid_code not in self.valid_amino_acids:
                 return False
         return True
 
