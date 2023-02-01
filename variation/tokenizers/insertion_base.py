@@ -4,22 +4,20 @@ from typing import Optional, Dict, List
 
 from variation.schemas.token_response_schema import Insertion, TokenMatchType, Token
 from .tokenizer import Tokenizer
-from .caches import AminoAcidCache, NucleotideCache
+from .caches import NucleotideCache
 from .tokenize_base import TokenizeBase
 
 
 class InsertionBase(Tokenizer):
     """Class for tokenizing Insertion."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache,
-                 nucleotide_cache: NucleotideCache) -> None:
+    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
         """Initialize the Insertion Class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
         self.parts = None
-        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
+        self.tokenize_base = TokenizeBase(nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[Insertion]:
         """Return tokens that match the input string."""

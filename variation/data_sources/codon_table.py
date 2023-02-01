@@ -1,7 +1,7 @@
 """Module for Codon Table."""
 from typing import Dict, List
 
-from variation.tokenizers.caches import AminoAcidCache
+from bioutils.sequences import aa3_to_aa1
 
 
 MULTIPLE_CODONS = {"Leu", "Ser", "Arg"}
@@ -10,13 +10,9 @@ MULTIPLE_CODONS = {"Leu", "Ser", "Arg"}
 class CodonTable:
     """Class for codon table data."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize codon table class.
-
-        :param AminoAcidCache amino_acid_cache: Amino acid code data
-        """
+    def __init__(self) -> None:
+        """Initialize codon table class."""
         self.table = self._set_codon_table()
-        self.amino_acid_cache = amino_acid_cache
         self._dna_to_rna = {
             "T": "A", "A": "U",
             "G": "C", "C": "G"
@@ -53,9 +49,10 @@ class CodonTable:
         :param str amino_acid: Amino acid to get codons for
         :return: List of codons
         """
-        amino_acid = amino_acid.upper()
         if len(amino_acid) == 3:
-            amino_acid = self.amino_acid_cache.convert_three_to_one(amino_acid)
+            amino_acid = aa3_to_aa1(amino_acid.capitalize())
+        else:
+            amino_acid = amino_acid.upper()
 
         codons = list()
         for k, v in self.table.items():

@@ -2,7 +2,6 @@
 from typing import Iterable, List
 
 from variation.schemas.token_response_schema import Token, TokenMatchType
-from variation.tokenizers.caches.amino_acid_cache import AminoAcidCache
 from .gene_symbol import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
@@ -33,8 +32,7 @@ from .caches import NucleotideCache
 class Tokenize:
     """The tokenize class."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache,
-                 gene_symbol: GeneSymbol) -> None:
+    def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
         nucleotide_cache = NucleotideCache()
         self.tokenizers = (
@@ -43,22 +41,22 @@ class Tokenize:
             LocusReferenceGenomic(),
             GnomadVCF(),
             gene_symbol,
-            ProteinSubstitution(amino_acid_cache),
-            PolypeptideTruncation(amino_acid_cache),
-            SilentMutation(amino_acid_cache),
+            ProteinSubstitution(),
+            PolypeptideTruncation(),
+            SilentMutation(),
             CodingDNASubstitution(),
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
-            ProteinDelIns(amino_acid_cache, nucleotide_cache),
-            CodingDNADelIns(amino_acid_cache, nucleotide_cache),
-            GenomicDelIns(amino_acid_cache, nucleotide_cache),
-            ProteinDeletion(amino_acid_cache, nucleotide_cache),
-            CodingDNADeletion(amino_acid_cache, nucleotide_cache),
-            GenomicDeletion(amino_acid_cache, nucleotide_cache),
-            ProteinInsertion(amino_acid_cache, nucleotide_cache),
-            CodingDNAInsertion(amino_acid_cache, nucleotide_cache),
-            GenomicInsertion(amino_acid_cache, nucleotide_cache),
+            ProteinDelIns(nucleotide_cache),
+            CodingDNADelIns(nucleotide_cache),
+            GenomicDelIns(nucleotide_cache),
+            ProteinDeletion(nucleotide_cache),
+            CodingDNADeletion(nucleotide_cache),
+            GenomicDeletion(nucleotide_cache),
+            ProteinInsertion(nucleotide_cache),
+            CodingDNAInsertion(nucleotide_cache),
+            GenomicInsertion(nucleotide_cache),
             GenomicUncertainDeletion(),
             GenomicDuplication(),
             GenomicDeletionRange()
