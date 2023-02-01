@@ -3,7 +3,8 @@ import re
 from abc import abstractmethod
 from typing import List, Optional
 
-from .caches import AminoAcidCache
+from bioutils.sequences import aa3_to_aa1, aa3_to_aa1_lut
+
 from .tokenizer import Tokenizer
 from ..schemas.token_response_schema import Token
 
@@ -11,12 +12,8 @@ from ..schemas.token_response_schema import Token
 class PolypeptideSequenceVariationBase(Tokenizer):
     """Class for tokenizing Polypeptide Sequence Variations."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache) -> None:
-        """Initialize the Polypeptide Sequence Variation Base Class.
-
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes.
-        """
-        self.amino_acid_cache = amino_acid_cache
+    def __init__(self) -> None:
+        """Initialize the Polypeptide Sequence Variation Base Class."""
         self.splitter = re.compile(r"(\d+)")
         self.psub = None
 
@@ -27,17 +24,22 @@ class PolypeptideSequenceVariationBase(Tokenizer):
         :param int position: The position of the amino acid substituted
         :param str new_amino_acid: The new amino_acid
         """
-        self.psub["amino_acid"] = amino_acid.upper() if len(amino_acid) == 1 \
-            else self.amino_acid_cache.convert_three_to_one(amino_acid)
+        for (key, aa_val) in [("amino_acid", amino_acid),
+                              ("new_amino_acid", new_amino_acid)]:
+            if len(aa_val) == 1:
+                self.psub[key] = aa_val.upper()
+            else:
+                try:
+                    self.psub[key] = aa3_to_aa1(aa_val.capitalize())
+                except KeyError:
+                    self.psub[key] = None
         self.psub["position"] = int(position)
-        self.psub["new_amino_acid"] = new_amino_acid.upper() if \
-            len(new_amino_acid) == 1 else \
-            self.amino_acid_cache.convert_three_to_one(new_amino_acid)
 
     def _is_valid_amino_acid(self, amino_acids: List) -> bool:
         """Return whether or not amino acids are valid."""
+        valid = aa3_to_aa1_lut.values()
         for amino_acid_code in amino_acids:
-            if not self.amino_acid_cache.__contains__(amino_acid_code):
+            if amino_acid_code not in valid:
                 return False
         return True
 

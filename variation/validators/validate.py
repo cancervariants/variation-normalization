@@ -14,7 +14,6 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
 from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
 from .silent_mutation import SilentMutation
@@ -45,7 +44,6 @@ class Validate:
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
                  uta: UTADatabase, tlr: Translator,
-                 amino_acid_cache: AminoAcidCache,
                  gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
         """Initialize the validate class.
 
@@ -57,32 +55,28 @@ class Validate:
             information
         :param UTADatabase uta: Access to UTA queries
         :param Translator tlr: Class for translating nomenclatures to and from VRS
-        :param AminoAcidCache amino_acid_cache: Amino Acid codes and conversions
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRSRepresentation vrs: Class for representing VRS objects
-        :param amino_acid_cache: Amino Acid codes and conversions
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
             mane_transcript, uta, tlr, gene_normalizer, vrs
         ]
-        protein_params = params[:]
-        protein_params.append(amino_acid_cache)
         self.validators = [
-            ProteinSubstitution(*protein_params),
-            PolypeptideTruncation(*protein_params),
-            SilentMutation(*protein_params),
+            ProteinSubstitution(*params),
+            PolypeptideTruncation(*params),
+            SilentMutation(*params),
             CodingDNASubstitution(*params),
             GenomicSubstitution(*params),
             CodingDNASilentMutation(*params),
             GenomicSilentMutation(*params),
-            ProteinDelIns(*protein_params),
+            ProteinDelIns(*params),
             CodingDNADelIns(*params),
             GenomicDelIns(*params),
-            ProteinDeletion(*protein_params),
+            ProteinDeletion(*params),
             CodingDNADeletion(*params),
             GenomicDeletion(*params),
-            ProteinInsertion(*protein_params),
+            ProteinInsertion(*params),
             CodingDNAInsertion(*params),
             GenomicInsertion(*params),
             GenomicDeletionRange(*params),

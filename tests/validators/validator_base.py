@@ -10,7 +10,6 @@ from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
 from variation.vrs_representation import VRSRepresentation
 from variation.tokenizers import Tokenize, GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
 
 
 class ValidatorBase:
@@ -21,10 +20,9 @@ class ValidatorBase:
         """Set up the test cases."""
         with open(f"{PROJECT_ROOT}/tests/fixtures/validators.yml") as stream:
             cls.all_fixtures = yaml.safe_load(stream)
-        amino_acid_cache = AminoAcidCache()
         gene_normalizer = GeneQueryHandler()
         gene_symbol = GeneSymbol(gene_normalizer)
-        cls.tokenizer = Tokenize(amino_acid_cache, gene_symbol)
+        cls.tokenizer = Tokenize(gene_symbol)
 
         seqrepo_access = SeqRepoAccess()
         transcript_mappings = TranscriptMappings()
@@ -38,8 +36,7 @@ class ValidatorBase:
 
         cls.aa_params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, tlr, gene_normalizer,
-            vrs, amino_acid_cache
+            mane_transcript, uta, tlr, gene_normalizer, vrs
         ]
         cls.params = cls.aa_params[:-1]
 

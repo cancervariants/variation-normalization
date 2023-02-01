@@ -2,13 +2,12 @@
 import pytest
 
 from variation.data_sources.codon_table import CodonTable
-from variation.tokenizers.caches import AminoAcidCache
 
 
 @pytest.fixture(scope="module")
 def test_codon_table():
     """Build codon table test fixture."""
-    return CodonTable(AminoAcidCache())
+    return CodonTable()
 
 
 def test_get_codons(test_codon_table):

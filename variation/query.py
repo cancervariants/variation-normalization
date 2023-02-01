@@ -10,7 +10,6 @@ from cool_seq_tool import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
 
 from variation import AMINO_ACID_PATH, UTA_DB_URL
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.to_vrs import VRSRepresentation, ToVRS
 from variation.classifiers import Classify
@@ -69,11 +68,10 @@ class QueryHandler:
 
         vrs_representation = VRSRepresentation(dp, self._seqrepo_access)
 
-        amino_acid_cache = AminoAcidCache(amino_acids_file_path=amino_acids_file_path)
         gene_normalizer = GeneQueryHandler(db_url=dynamodb_url,
                                            db_region=dynamodb_region)
         gene_symbol = GeneSymbol(gene_normalizer)
-        tokenizer = Tokenize(amino_acid_cache, gene_symbol)
+        tokenizer = Tokenize(gene_symbol)
         classifier = Classify()
         uta_db = cool_seq_tool.uta_db
         mane_transcript = cool_seq_tool.mane_transcript
@@ -81,7 +79,7 @@ class QueryHandler:
         self._tlr = Translator(data_proxy=dp)
         validator = Validate(
             self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta_db, self._tlr, amino_acid_cache, gene_normalizer, vrs_representation
+            uta_db, self._tlr, gene_normalizer, vrs_representation
         )
         translator = Translate()
         hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
@@ -91,7 +89,7 @@ class QueryHandler:
         self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params)
         self.normalize_handler = Normalize(*to_vrs_params + [uta_db])
 
-        codon_table = CodonTable(amino_acid_cache)
+        codon_table = CodonTable()
         mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
         to_protein_params = to_vrs_params + [uta_db,
                                              mane_transcript, mane_transcript_mappings,

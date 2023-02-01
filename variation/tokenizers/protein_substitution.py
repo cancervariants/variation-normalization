@@ -21,6 +21,10 @@ class ProteinSubstitution(PolypeptideSequenceVariationBase):
 
         input_string = str(input_string).lower()
 
+        if input_string.endswith(("*", "ter")):
+            # Handled in polypeptide truncation
+            return None
+
         psub_parts = None
         self.psub = {
             "amino_acid": None,

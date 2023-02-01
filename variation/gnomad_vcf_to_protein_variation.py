@@ -243,12 +243,26 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             valid_list = list()
             validations = await self._get_gnomad_vcf_validations(q, warnings)
             if validations:
-                all_warnings = list()
+                validations.valid_results = sorted(validations.valid_results,
+                                                   key=lambda x: x.is_mane_transcript,
+                                                   reverse=True)
+
+                all_warnings = set()
+                checked_valid_results = list()
                 for valid_result in validations.valid_results:
                     warnings = list()
                     # all gnomad vcf will be alleles with a literal seq expression
                     variation = valid_result.variation
                     classification_token = valid_result.classification_token
+
+                    # We do not need to check the same variation that has the same
+                    # classification
+                    checked_tuple = (variation["id"], valid_result.identifier,
+                                     valid_result.classification.classification_type.value)  # noqa: E501
+                    if checked_tuple in checked_valid_results:
+                        continue
+
+                    checked_valid_results.append(checked_tuple)
                     alt_ac = self._get_refseq_alt_ac_from_variation(variation)
 
                     # 0-based
@@ -267,17 +281,17 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         ref_seq, w = self.seqrepo_access.get_reference_sequence(
                             alt_ac, g_start_pos)
                         if not ref_seq:
-                            all_warnings.append(w)
+                            all_warnings.add(w)
                         else:
                             if ref_seq != classification_token.ref_nucleotide:
-                                all_warnings.append(
+                                all_warnings.add(
                                     f"Expected {classification_token.ref_nucleotide}"
                                     f" but found {ref_seq} on {alt_ac} at position"
                                     f" {g_start_pos}"
                                 )
                                 continue
                     else:
-                        all_warnings.append(
+                        all_warnings.add(
                             f"{classification_token.alt_type} alt_type not supported"
                         )
                         continue
@@ -295,8 +309,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         mane_tx_genomic_data = await self.uta.get_mane_c_genomic_data(
                             mane_c_ac, alt_ac, g_start_pos, g_end_pos)
                         if not mane_tx_genomic_data:
-                            all_warnings.append("Unable to get mane transcript and "
-                                                "genomic data")
+                            all_warnings.add(
+                                f"Unable to get MANE data for {mane_c_ac} using "
+                                f"{alt_ac} at positions {g_start_pos} to {g_end_pos}")
                             continue
 
                         coding_start_site = mane_tx_genomic_data["coding_start_site"]
@@ -314,7 +329,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                 coding_start_site, warnings)
                             if mane_c_pos_change is None:
                                 if len(warnings) > 0:
-                                    all_warnings.append(warnings[0])
+                                    all_warnings.add(warnings[0])
                                 continue
 
                         mane_p = self.mane_transcript._get_mane_p(
@@ -344,7 +359,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     vd, warnings = valid_list[0]
                 else:
                     if all_warnings:
-                        vd, warnings = no_variation_resp(q, _id, all_warnings,
+                        vd, warnings = no_variation_resp(q, _id, list(all_warnings),
                                                          untranslatable_returns_text)
                     else:
                         vd, warnings = no_variation_resp(

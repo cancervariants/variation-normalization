@@ -1,7 +1,7 @@
 """A module for testing Genomic Deletion Tokenization."""
 import unittest
 
-from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import NucleotideCache
 from variation.tokenizers import GenomicDeletion
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +11,7 @@ class TestGenomicDeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Genomic Deletion instance."""
-        return GenomicDeletion(AminoAcidCache(), NucleotideCache())
+        return GenomicDeletion(NucleotideCache())
 
     def token_type(self):
         """Return genomic deletion token type."""

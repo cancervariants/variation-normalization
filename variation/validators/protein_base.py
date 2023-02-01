@@ -2,22 +2,18 @@
 from typing import List
 
 from cool_seq_tool.data_sources import SeqRepoAccess
-
-from variation.tokenizers.caches import AminoAcidCache
+from bioutils.sequences import aa3_to_aa1
 
 
 class ProteinBase:
     """Protein Base class."""
 
-    def __init__(self, seq_repo_access: SeqRepoAccess,
-                 amino_acid_cache: AminoAcidCache) -> None:
+    def __init__(self, seq_repo_access: SeqRepoAccess) -> None:
         """Initialize Protein Base class.
 
         :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
-        :param AminoAcidCache amino_acid_cache: Amino acid code data
         """
         self.seqrepo_access = seq_repo_access
-        self.amino_acid_cache = amino_acid_cache
 
     def check_ref_aa(self, t: str, aa: str, pos: int, errors: List) -> None:
         """Check that reference protein matches actual protein.
@@ -32,7 +28,7 @@ class ProteinBase:
             errors.append(warning)
         else:
             if ref_aa and len(ref_aa) == 1 and len(aa) == 3:
-                aa = self.amino_acid_cache.convert_three_to_one(aa)
+                aa = aa3_to_aa1(aa.capitalize())
 
             if ref_aa != aa:
                 errors.append(f"Needed to find {aa} at position {pos} on {t} but found"
