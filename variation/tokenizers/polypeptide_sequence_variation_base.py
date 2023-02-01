@@ -12,11 +12,12 @@ from ..schemas.token_response_schema import Token
 class PolypeptideSequenceVariationBase(Tokenizer):
     """Class for tokenizing Polypeptide Sequence Variations."""
 
+    valid_amino_acids = aa3_to_aa1_lut.values()
+
     def __init__(self) -> None:
         """Initialize the Polypeptide Sequence Variation Base Class."""
         self.splitter = re.compile(r"(\d+)")
         self.psub = None
-        self.valid_amino_acids = aa3_to_aa1_lut.values()
 
     def _set_psub(self, amino_acid: str, position: int, new_amino_acid: str) -> None:
         """Initialize protein substitution.

@@ -83,7 +83,7 @@ class TokenizeBase:
         else:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
-                if len(aa) != 3 or aa not in aa3_to_aa1_lut:
+                if len(aa) != 3 or aa.capitalize() not in aa3_to_aa1_lut:
                     if aa != "ter":
                         return None
 
@@ -92,9 +92,7 @@ class TokenizeBase:
                 except KeyError:
                     return None
 
-        if not inserted_sequence:
-            return None
-        return inserted_sequence
+        return inserted_sequence if inserted_sequence else None
 
     def get_aa_pos_range(self,
                          parts: List) -> Optional[Tuple[str, str, str, int, bool]]:
