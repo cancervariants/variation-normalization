@@ -83,8 +83,9 @@ class TokenizeBase:
         else:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
-                if all((len(aa) != 3, aa not in aa3_to_aa1_lut, aa != "ter")):
-                    return None
+                if len(aa) != 3 or aa not in aa3_to_aa1_lut:
+                    if aa != "ter":
+                        return None
 
                 try:
                     inserted_sequence += aa3_to_aa1(aa.capitalize())
