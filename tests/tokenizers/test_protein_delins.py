@@ -1,7 +1,7 @@
 """A module for testing Protein DelIns tokenization."""
 import unittest
 
-from variation.tokenizers.caches import AminoAcidCache, NucleotideCache
+from variation.tokenizers.caches import NucleotideCache
 from variation.tokenizers import ProteinDelIns
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +11,7 @@ class TestProteinDelInsTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Protein DelIns instance."""
-        return ProteinDelIns(AminoAcidCache(), NucleotideCache())
+        return ProteinDelIns(NucleotideCache())
 
     def token_type(self):
         """Return protein delins token type."""

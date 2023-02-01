@@ -5,7 +5,7 @@ from pydantic.error_wrappers import ValidationError
 
 from variation.schemas.token_response_schema import ProteinInsertionToken, \
     TokenMatchType
-from .caches import AminoAcidCache, NucleotideCache
+from .caches import NucleotideCache
 from .tokenizer import Tokenizer
 from .tokenize_base import TokenizeBase
 
@@ -13,15 +13,13 @@ from .tokenize_base import TokenizeBase
 class ProteinInsertion(Tokenizer):
     """Class for tokenizing Insertions on the protein reference sequence."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache,
-                 nucleotide_cache: NucleotideCache) -> None:
+    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
         """Initialize the Protein Insertion Class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
         self.parts = None
-        self.tokenize_base = TokenizeBase(amino_acid_cache, nucleotide_cache)
+        self.tokenize_base = TokenizeBase(nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[ProteinInsertionToken]:
         """Return token that match the input string."""
