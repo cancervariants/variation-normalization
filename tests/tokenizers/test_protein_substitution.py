@@ -1,7 +1,6 @@
 """A module for testing Protein Substitution tokenization."""
 import unittest
 
-from variation.tokenizers.caches import AminoAcidCache
 from variation.tokenizers import ProteinSubstitution
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +10,7 @@ class TestProteinSubstitutionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return protein substitution instance."""
-        return ProteinSubstitution(AminoAcidCache())
+        return ProteinSubstitution()
 
     def token_type(self):
         """Return protein substitution token type."""

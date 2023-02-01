@@ -2,21 +2,20 @@
 from typing import Tuple, Optional, Union, List
 import re
 
-from variation.tokenizers.caches import NucleotideCache, AminoAcidCache
+from bioutils.sequences import aa3_to_aa1_lut, aa3_to_aa1, aa1_to_aa3
+
+from variation.tokenizers.caches import NucleotideCache
 
 
 class TokenizeBase:
     """Class for Tokenize methods."""
 
-    def __init__(self, amino_acid_cache: AminoAcidCache,
-                 nucleotide_cache: NucleotideCache) -> None:
+    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
         """Initialize Token Base class.
 
-        :param AminoAcidCache amino_acid_cache: Valid amino acid codes
         :param NucleotideCache nucleotide_cache: Valid nucleotides
         """
         self.nucleotide_cache = nucleotide_cache
-        self.amino_acid_cache = amino_acid_cache
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
 
     def get_amino_acid_and_pos(
@@ -43,14 +42,19 @@ class TokenizeBase:
         if len(aa) == 1:
             if not used_one_letter:
                 used_one_letter = True
-            tmp_aa = \
-                self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]
+
+            try:
+                tmp_aa = aa1_to_aa3(aa.upper())
+            except KeyError:
+                tmp_aa = None
         else:
-            tmp_aa = aa
+            if aa.capitalize() in aa3_to_aa1_lut:
+                tmp_aa = aa
+            else:
+                tmp_aa = None
         pos = char_and_digits[1]
 
-        if not self.amino_acid_cache.__contains__(tmp_aa) \
-                or not pos.isdigit():
+        if not tmp_aa or not pos.isdigit():
             return None
         return aa.upper(), pos, used_one_letter
 
@@ -71,7 +75,7 @@ class TokenizeBase:
                 if len(aa) != 1:
                     return None
                 try:
-                    self.amino_acid_cache.amino_acid_code_conversion[aa.upper()]  # noqa: E501
+                    aa3_to_aa1_lut[aa1_to_aa3(aa.upper())]
                 except KeyError:
                     return None
                 else:
@@ -79,13 +83,15 @@ class TokenizeBase:
         else:
             for i in range(0, len(parts[1]), 3):
                 aa = parts[1][i:i + 3]
-                if len(aa) != 3 or not self.amino_acid_cache.__contains__(aa):
-                    if aa != "ter":
-                        return None
-                inserted_sequence += \
-                    self.amino_acid_cache.convert_three_to_one(aa)
+                if all((len(aa) != 3, aa not in aa3_to_aa1_lut, aa != "ter")):
+                    return None
 
-        if inserted_sequence == "":
+                try:
+                    inserted_sequence += aa3_to_aa1(aa.capitalize())
+                except KeyError:
+                    return None
+
+        if not inserted_sequence:
             return None
         return inserted_sequence
 
