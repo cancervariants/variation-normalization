@@ -800,10 +800,10 @@ def braf_600_silent_mutation(braf_gene_context, braf_600loc):
 def kras_g12d():
     """Fixture for KRAS G12C"""
     return {
-        "id": "ga4gh:VA.NtQTqsdO_Z8G0KpBQ1_z7QsHo_bVN43m",
+        "_id": "ga4gh:VA.NtQTqsdO_Z8G0KpBQ1_z7QsHo_bVN43m",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:VSL.Eiio4mQpHp-kXdQWT_AUHrubE8Q18_br",
+            "_id": "ga4gh:VSL.Eiio4mQpHp-kXdQWT_AUHrubE8Q18_br",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.fytWhQSNGnA-86vDiQCxTSzgkk_WfQRS",
             "interval": {
@@ -871,7 +871,7 @@ async def test_substitution(test_handler, braf_v600e, braf_v600l,
 
     resp = await test_handler.gnomad_vcf_to_protein("12-25245350-C-T")
     assert resp
-    variation = resp.variation_descriptor.dict()["variation"]
+    variation = resp.variation_descriptor.dict(by_alias=True)["variation"]
     assert variation == kras_g12d
 
 

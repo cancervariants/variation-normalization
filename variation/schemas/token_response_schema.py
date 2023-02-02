@@ -3,6 +3,7 @@ from typing import List, Union, Dict, Any, Type, Optional, Literal
 from enum import IntEnum, Enum
 
 from pydantic import BaseModel
+from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 
 
 class TokenMatchType(IntEnum):
@@ -21,6 +22,7 @@ class TokenType(str, Enum):
     # TODO: Add other token types (issue 162)
     GENOMIC_DUPLICATION = "GenomicDuplication"
     GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
+    AMPLIFICATION = "Amplification"
 
 
 class Nomenclature(str, Enum):
@@ -47,6 +49,7 @@ class SequenceOntology(str, Enum):
     COPY_NUMBER_LOSS = "SO:0001743"
     DUPLICATION = "SO:1000035"
     COPY_NUMBER_GAIN = "SO:0001742"
+    FEATURE_AMPLIFICATION = "SO:0001880"
 
 
 class Token(BaseModel):
@@ -85,6 +88,7 @@ class GeneMatchToken(Token):
 
     matched_value: str
     token_type = "GeneSymbol"
+    gene_descriptor: Optional[GeneDescriptor]
 
     class Config:
         """Configure model."""
@@ -625,3 +629,12 @@ class ChromosomeToken(Token):
 
     chromosome: str
     token_type = "Chromosome"
+
+
+class AmplificationToken(Token):
+    """Amplification token"""
+
+    token_type = TokenType.AMPLIFICATION
+    molecule_context = "genomic"
+    so_id = SequenceOntology.FEATURE_AMPLIFICATION
+    alt_type = "amplification"

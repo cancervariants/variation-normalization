@@ -3,7 +3,8 @@ from enum import Enum
 from typing import Optional, Union, Dict, Any, Type
 
 from pydantic import BaseModel, StrictStr
-from ga4gh.vrsatile.pydantic.vrs_models import AbsoluteCopyNumber, Text
+from ga4gh.vrsatile.pydantic.vrs_models import AbsoluteCopyNumber, Text, \
+    SequenceLocation, RelativeCopyNumber
 
 from variation.schemas.normalize_response_schema import ServiceResponse
 
@@ -83,6 +84,67 @@ class ParsedToAbsCnvService(ServiceResponse):
                     "name": "variation-normalizer",
                     "version": "0.2.17",
                     "response_datetime": "2022-01-26T22:23:41.821673",
+                    "url": "https://github.com/cancervariants/variation-normalization"
+                }
+            }
+
+
+class AmplificationToRelCnvQuery(BaseModel):
+    """Define query for amplification to relative copy number variation endpoint"""
+
+    gene: str
+    sequence_id: Optional[str]
+    start: Optional[int]
+    end: Optional[int]
+    sequence_location: Optional[SequenceLocation]
+
+
+class AmplificationToRelCnvService(ServiceResponse):
+    """A response for translating Amplification queries to Relative Copy Number"""
+
+    query: Optional[AmplificationToRelCnvQuery] = None
+    amplification_label: Optional[str]
+    relative_copy_number: Optional[Union[Text, RelativeCopyNumber]]
+
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["AmplificationToRelCnvService"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "query": {
+                    "gene": "braf",
+                    "sequence_id": None,
+                    "start": None,
+                    "end": None,
+                    "sequence_location": None
+                },
+                "amplification_label": "BRAF Amplification",
+                "relative_copy_number": {
+                    "_id": "ga4gh:VRC.xen6aWxQhI6dPTFqBWOx1z9MPJ41gzn2",
+                    "type": "RelativeCopyNumber",
+                    "subject": {
+                        "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 140713327},
+                            "end": {"type": "Number", "value": 140924929}
+                        }
+                    },
+                    "relative_copy_class": "high-level gain"
+                },
+                "service_meta_": {
+                    "version": "0.7.dev0",
+                    "response_datetime": "2022-09-29T15:08:18.696882",
+                    "name": "variation-normalizer",
                     "url": "https://github.com/cancervariants/variation-normalization"
                 }
             }

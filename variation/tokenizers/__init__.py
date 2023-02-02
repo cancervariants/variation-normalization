@@ -29,3 +29,4 @@ from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
 from .gnomad_vcf import GnomadVCF
+from .free_text_categorical import FreeTextCategorical
