@@ -21,7 +21,8 @@ from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
     ToCanonicalVariationService, TranslateIdentifierService
-from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvService
+from variation.schemas.service_schema import AmplificationToRelCnvService, \
+    ClinVarAssembly, ParsedToAbsCnvService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
@@ -587,5 +588,50 @@ def parsed_to_abs_cnv(
     """
     resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
         start, end, total_copies, assembly, chr, accession,
+        untranslatable_returns_text=untranslatable_returns_text)
+    return resp
+
+
+amplification_to_rel_cnv_descr = ("Translate amplification to VRS Relative Copy Number "
+                                  "Variation. If `sequence_id`, `start`, and `end` are "
+                                  "all provided, will return a SequenceLocation with "
+                                  "those properties. Else, gene-normalizer will be "
+                                  "used to retrieve the SequenceLocation.")
+
+
+@app.get("/variation/amplification_to_rel_cnv",
+         summary="Given amplification query, return VRS Relative Copy Number Variation",
+         response_description="A response to a validly-formed query.",
+         description=amplification_to_rel_cnv_descr,
+         response_model=AmplificationToRelCnvService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION])
+def amplification_to_rel_cnv(
+    gene: str = Query(..., description="Gene query"),
+    sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
+    start: Optional[int] = Query(None,
+                                 description="Start position as residue coordinate"),
+    end: Optional[int] = Query(None, description="End position as residue coordinate"),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> AmplificationToRelCnvService:
+    """Given amplification query, return Relative Copy Number Variation
+    Parameter priority:
+        1. sequence_id, start, end (must provide ALL)
+        2. use the gene-normalizer to get the SequenceLocation
+
+    :param str gene: Gene query
+    :param Optional[str] sequence_id: Sequence ID for the location. If set,
+        must also provide `start` and `end`
+    :param Optional[int] start: Start position as residue coordinate for the sequence
+        location. If set, must also provide `sequence_id` and `end`
+    :param Optional[int] end: End position as residue coordinate for the sequence
+        location. If set, must also provide `sequence_id` and `start`
+    :param bool untranslatable_returns_text: `True` return VRS Text Object when
+        unable to translate or normalize query. `False` return `None` when
+        unable to translate or normalize query.
+    :return: AmplificationToRelCnvService containing Relative Copy Number and
+        list of warnings
+    """
+    resp = query_handler.to_copy_number_handler.amplification_to_rel_cnv(
+        gene=gene, sequence_id=sequence_id, start=start, end=end,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp

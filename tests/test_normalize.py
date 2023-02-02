@@ -1286,6 +1286,23 @@ async def test_genomic_insertion(test_handler, genomic_insertion,
 
 
 @pytest.mark.asyncio
+async def test_amplification(test_handler, braf_amplification, prpf8_amplification):
+    """Test that amplification normalizes correctly."""
+    q = "BRAF Amplification"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, braf_amplification, q)
+
+    # Gene with > 1 sequence location
+    q = "PRPF8 AMPLIFICATION"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, prpf8_amplification, q)
+
+    # Gene with no location. This should NOT return a variation
+    resp = await test_handler.normalize("IFNR amplification")
+    assert resp.variation_descriptor is None
+
+
+@pytest.mark.asyncio
 async def test_valid_queries(test_handler):
     """Test that valid queries don"t throw exceptions. Used for queries that
     revealed bugs in service.

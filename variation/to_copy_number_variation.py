@@ -3,22 +3,24 @@ from typing import Tuple, Optional, List, Union
 from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import AbsoluteCopyNumber, RelativeCopyNumber, \
-    Text
+    Text, RelativeCopyClass
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
+from gene.schemas import MatchType as GeneMatchType
 
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService, \
-    RelativeCopyClass, VALID_RELATIVE_COPY_CLASS
-from variation.schemas.service_schema import ClinVarAssembly, ParsedToAbsCnvQuery,\
+    VALID_RELATIVE_COPY_CLASS
+from variation.schemas.service_schema import AmplificationToRelCnvQuery, \
+    AmplificationToRelCnvService, ClinVarAssembly, ParsedToAbsCnvQuery, \
     ParsedToAbsCnvService
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
-from variation.utils import get_mane_valid_result
+from variation.utils import get_mane_valid_result, get_priority_sequence_location
 from variation.version import __version__
 
 
@@ -300,3 +302,100 @@ class ToCopyNumberVariation(ToVRS):
                 response_datetime=datetime.now()
             )
         )
+
+    def amplification_to_rel_cnv(
+        self, gene: str, sequence_id: Optional[str] = None, start: Optional[int] = None,
+        end: Optional[int] = None, untranslatable_returns_text: bool = False
+    ) -> AmplificationToRelCnvService:
+        """Return Relative Copy Number Variation for Amplification query
+        Parameter priority:
+            1. sequence_id, start, end (must provide ALL)
+            2. use the gene-normalizer to get the SequenceLocation
+
+        :param str gene: Gene query
+        :param Optional[str] sequence_id: Sequence ID for the location. If set,
+            must also provide `start` and `end`
+        :param Optional[int] start: Start position as residue coordinate for the
+            sequence location. If set, must also provide `sequence_id` and `end`
+        :param Optional[int] end: End position as residue coordinate for the sequence
+            location. If set, must also provide `sequence_id` and `start`
+        :param bool untranslatable_returns_text: `True` return VRS Text Object when
+            unable to translate or normalize query. `False` return `None` when
+            unable to translate or normalize query.
+        :return: AmplificationToRelCnvService containing Relative Copy Number and
+            list of warnings
+        """
+        warnings = list()
+        amplification_label = None
+        variation = None
+        try:
+            og_query = AmplificationToRelCnvQuery(
+                gene=gene, sequence_id=sequence_id, start=start, end=end)
+        except ValidationError as e:
+            warnings.append(str(e))
+            og_query = None
+        else:
+            # Need to validate the input gene
+            gene_norm_resp = self.gene_normalizer.normalize(gene)
+            if gene_norm_resp.match_type != GeneMatchType.NO_MATCH:
+                vrs_location = None
+                gene_descriptor = gene_norm_resp.gene_descriptor
+                gene_norm_label = gene_descriptor.label
+                amplification_label = f"{gene_norm_label} Amplification"
+                if all((sequence_id, start, end)):
+                    # User provided input to make sequence location
+                    seq_id, w = self.seqrepo_access.translate_identifier(
+                        sequence_id, "ga4gh")
+                    if w:
+                        warnings.append(w)
+                    else:
+                        # Validate start/end are actually on the sequence
+                        _, w = self.seqrepo_access.get_reference_sequence(
+                            sequence_id, start, end)
+                        if w:
+                            warnings.append(w)
+                        else:
+                            vrs_location = models.SequenceLocation(
+                                type="SequenceLocation",
+                                sequence_id=seq_id[0],
+                                interval=models.SequenceInterval(
+                                    type="SequenceInterval",
+                                    start=models.Number(type="Number", value=start - 1),
+                                    end=models.Number(type="Number", value=end)))
+                else:
+                    # Use gene normalizer to get sequence location
+                    seq_loc = get_priority_sequence_location(
+                        gene_descriptor, self.seqrepo_access)
+                    if seq_loc:
+                        vrs_location = models.SequenceLocation(**seq_loc)
+                    else:
+                        warnings.append(
+                            f"gene-normalizer could not find a priority sequence "
+                            f"location for gene: {gene_norm_label}")
+
+                if vrs_location:
+                    vrs_location._id = ga4gh_identify(vrs_location)
+                    variation = {
+                        "type": "RelativeCopyNumber",
+                        "subject": vrs_location.as_dict(),
+                        "relative_copy_class": RelativeCopyClass.HIGH_LEVEL_GAIN.value
+                    }
+                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
+                        variation, is_abs=False)
+                    variation = RelativeCopyNumber(**variation)
+            else:
+                warnings.append(f"gene-normalizer returned no match for gene: {gene}")
+
+        if not variation and untranslatable_returns_text:
+            text_variation = models.Text(definition=amplification_label, type="Text")
+            text_variation.id = ga4gh_identify(text_variation)
+            variation = Text(**text_variation.as_dict())
+
+        return AmplificationToRelCnvService(
+            query=og_query,
+            amplification_label=amplification_label,
+            relative_copy_number=variation,
+            warnings=warnings,
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()))

@@ -42,16 +42,19 @@ class GeneSymbol(Tokenizer):
             match_type = TokenMatchType.UNSPECIFIED
 
         if match_type != TokenMatchType.UNSPECIFIED:
-            label = norm_resp.gene_descriptor.label
+            gene_descriptor = norm_resp.gene_descriptor
+            label = gene_descriptor.label
         else:
             label = upper_input
+            gene_descriptor = None
 
         if norm_match_type != 0:
             gene_match_token = GeneMatchToken(
                 token=label,
                 input_string=input_string,
                 matched_value=label,
-                match_type=match_type
+                match_type=match_type,
+                gene_descriptor=gene_descriptor
             )
             self._gene_cache[upper_input] = gene_match_token
             return gene_match_token

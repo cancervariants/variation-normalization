@@ -22,6 +22,12 @@ def test_query_handler():
 
 
 @pytest.fixture(scope="session")
+def test_cnv_handler(test_query_handler):
+    """Create test fixture for copy number variation handler"""
+    return test_query_handler.to_copy_number_handler
+
+
+@pytest.fixture(scope="session")
 def vhl_gene_context():
     """Create a VHL gene context."""
     return {
@@ -155,7 +161,22 @@ def vhl_gene_context():
 
 
 @pytest.fixture(scope="session")
-def braf_gene_context():
+def braf_ncbi_seq_loc():
+    """Create test fixture for BRAF ncbi priority sequence location"""
+    return {
+        "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
+        "type": "SequenceLocation",
+        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+        "interval": {
+            "start": {"type": "Number", "value": 140713327},
+            "end": {"type": "Number", "value": 140924929},
+            "type": "SequenceInterval"
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def braf_gene_context(braf_ncbi_seq_loc):
     """Create BRAF gene context test fixture."""
     return {
         "id": "normalize.gene:BRAF",
@@ -252,16 +273,7 @@ def braf_gene_context():
                             "type": "CytobandInterval"
                         }
                     },
-                    {
-                        "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
-                        "interval": {
-                            "start": {"type": "Number", "value": 140713327},
-                            "end": {"type": "Number", "value": 140924929},
-                            "type": "SequenceInterval"
-                        }
-                    }
+                    braf_ncbi_seq_loc
                 ]
             },
             {
@@ -566,6 +578,156 @@ def erbb2_context():
                 "value": "protein_coding"
             }
         ]
+    }
+
+
+@pytest.fixture(scope="session")
+def prpf8_ncbi_seq_loc():
+    """Create test fixture for PRPF8 ncbi priority sequence location"""
+    return {
+        "_id": "ga4gh:VSL.REtW8dfZCgDLEvo58qhp-dkN-hHiRtDx",
+        "type": "SequenceLocation",
+        "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"type": "Number", "value": 1650628},
+            "end": {"type": "Number", "value": 1684867}
+        }
+    }
+
+
+@pytest.fixture(scope="session")
+def prpf8_gene_context(prpf8_ncbi_seq_loc):
+    """Create test fixture for PRPF8 gene context"""
+    return {
+        "id": "normalize.gene:PRPF8",
+        "type": "GeneDescriptor",
+        "label": "PRPF8",
+        "xrefs": [
+            "ensembl:ENSG00000174231",
+            "ncbigene:10594"
+        ],
+        "alternate_labels": [
+            "PRPC8",
+            "PRP8",
+            "HPRP8",
+            "Prp8",
+            "RP13",
+            "hPrp8",
+            "SNRNP220"
+        ],
+        "extensions": [
+            {
+                "type": "Extension",
+                "name": "symbol_status",
+                "value": "approved"
+            },
+            {
+                "type": "Extension",
+                "name": "approved_name",
+                "value": "pre-mRNA processing factor 8"
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locations",
+                "value": [
+                    {
+                        "type": "ChromosomeLocation",
+                        "_id": "ga4gh:VCL.GJ_KKaBnwZCC9_0vezbSxp_yAwM6R8c4",
+                        "species_id": "taxonomy:9606",
+                        "chr": "17",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p13.3",
+                            "end": "p13.3"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_locations",
+                "value": [
+                    {
+                        "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 1650628},
+                            "end": {"type": "Number", "value": 1684867},
+                        },
+                        "_id": "ga4gh:VSL.REtW8dfZCgDLEvo58qhp-dkN-hHiRtDx",
+                        "type": "SequenceLocation"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_locations",
+                "value": [
+                    {
+                        "_id": "ga4gh:VCL.GJ_KKaBnwZCC9_0vezbSxp_yAwM6R8c4",
+                        "type": "ChromosomeLocation",
+                        "species_id": "taxonomy:9606",
+                        "chr": "17",
+                        "interval": {
+                            "type": "CytobandInterval",
+                            "start": "p13.3",
+                            "end": "p13.3"
+                        }
+                    },
+                    prpf8_ncbi_seq_loc,
+                    {
+                        "sequence_id": "ga4gh:SQ.3Wx-9rRd5d7m3WxtJ_HScX3Bz1MiQWjR",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 80656},
+                            "end": {"type": "Number", "value": 114895}
+                        },
+                        "_id": "ga4gh:VSL.5FvYcab11zKZuo57GyafVqW9IykgsjAh",
+                        "type": "SequenceLocation"
+                    }
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "associated_with",
+                "value": [
+                    "pubmed:10411133",
+                    "ucsc:uc002fte.3",
+                    "pubmed:11468273",
+                    "orphanet:118066",
+                    "ccds:CCDS11010",
+                    "refseq:NM_006445",
+                    "vega:OTTHUMG00000090553",
+                    "uniprot:Q6P2Q9",
+                    "ena.embl:AB007510",
+                    "omim:607300"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "previous_symbols",
+                "value": [
+                    "RP13"
+                ]
+            },
+            {
+                "type": "Extension",
+                "name": "hgnc_locus_type",
+                "value": "gene with protein product"
+            },
+            {
+                "type": "Extension",
+                "name": "ncbi_gene_type",
+                "value": "protein-coding"
+            },
+            {
+                "type": "Extension",
+                "name": "ensembl_biotype",
+                "value": "protein_coding"
+            }
+        ],
+        "gene_id": "hgnc:17340"
     }
 
 
@@ -1021,6 +1183,48 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
     }
 
 
+@pytest.fixture(scope="session")
+def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
+    """Create test fixture for BRAF Amplification"""
+    _id = "ga4gh:VRC.xen6aWxQhI6dPTFqBWOx1z9MPJ41gzn2"
+    params = {
+        "id": "normalize.variation:BRAF%20Amplification",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "subject": braf_ncbi_seq_loc,
+            "relative_copy_class": "high-level gain",
+            "type": "RelativeCopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001880",
+        "gene_context": braf_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="session")
+def prpf8_amplification(prpf8_ncbi_seq_loc, prpf8_gene_context):
+    """Create test fixture for PRPF8 Amplification"""
+    _id = "ga4gh:VRC.7t6n9UAxMmw4UCE1EEytBKJxQtslWlen"
+    params = {
+        "id": "normalize.variation:PRPF8%20AMPLIFICATION",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "subject": prpf8_ncbi_seq_loc,
+            "relative_copy_class": "high-level gain",
+            "type": "RelativeCopyNumber"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0001880",
+        "gene_context": prpf8_gene_context
+    }
+    return VariationDescriptor(**params)
+
+
 def assertion_checks(normalize_response, test_variation, label, ignore_id=False):
     """Check that normalize_response and test_variation are equal."""
     if not ignore_id:
@@ -1057,8 +1261,7 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
     test_variation_context = test_variation.gene_context
     if resp_gene_context:
         if not ignore_id:
-            assert resp_gene_context.id == \
-                   test_variation_context.id, "gene_context.id"
+            assert resp_gene_context.id == test_variation_context.id, "gene_context.id"
         assert resp_gene_context.label == \
                test_variation_context.label, "gene_context.label"
         assert resp_gene_context.gene_id ==\
@@ -1069,15 +1272,18 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
             assert set(resp_gene_context.alternate_labels) == \
                    set(test_variation_context.alternate_labels), "gene_context.alternate_labels"  # noqa: E501
         assert len(resp_gene_context.extensions) == \
-               len(test_variation_context.extensions), "len gene_context.extensions"  # noqa: E501
+               len(test_variation_context.extensions), "len gene_context.extensions"
         for resp_ext in resp_gene_context.extensions:
             for test_var in test_variation_context.extensions:
                 if resp_ext.name == test_var.name:
-                    if resp_ext.name == "associated_with":
+                    if resp_ext.name == "chromosome_location":
+                        assert resp_ext.value == test_var.value, \
+                            "gene_context.chromosome_location"
+                    elif resp_ext.name == "associated_with":
                         assert set(resp_ext.value) == set(test_var.value), \
                             "gene_context.associated_with"
                     else:
-                        if isinstance(resp_ext.value, list) and not isinstance(resp_ext.value[0], dict):  # noqa: E501
+                        if isinstance(test_var.value, list) and isinstance(test_var.value[0], str):  # noqa: E501
                             assert set(resp_ext.value) == set(test_var.value), \
                                 f"gene_context.{resp_ext.name}"
                         else:
