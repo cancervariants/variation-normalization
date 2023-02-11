@@ -34,7 +34,7 @@ humanfriendly==10.0 ; python_version >= '2.7' and python_version not in '3.0, 3.
 idna==3.4 ; python_version >= '3.5'
 importlib-metadata==6.0.0 ; python_version >= '3.7'
 inflection==0.5.1 ; python_version >= '3.5'
-ipython==8.9.0 ; python_version >= '3.8'
+ipython==8.10.0 ; python_version >= '3.8'
 jedi==0.18.2 ; python_version >= '3.6'
 jmespath==1.0.1 ; python_version >= '3.7'
 jsonschema==3.2.0
