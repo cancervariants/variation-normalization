@@ -1,0 +1,940 @@
+variant_id	gene_name	variant_name	category
+823	EPCAM	3' Exon Deletion	Region Defined Variant
+433	HIF1A	3' UTR Polymorphism	Region Defined Variant
+265	TYMS	5' TANDEM REPEAT	Other
+3195	VHL	A149fs (c.444dup)	Copy Number
+2144	VHL	A56fs (c.166dup)	Copy Number
+1579	EGFR	A767_V769dupASV	Copy Number
+780	GLI1	ACTB::GLI1	Fusion
+3702	NTRK2	AFAP1::NTRK2	Fusion
+2577	PDGFRB	AGGF1::PDGFRB C843G	Fusion
+285	BRAF	AGK::BRAF	Fusion
+184	BRAF	AKAP9::BRAF	Fusion
+552	ALK	ALK Fusion G1269A	Fusion
+2211	BAP1	ALTERNATIVE TRANSCRIPT (ATI)	Other
+2772	NRG1	APP::NRG1	Fusion
+3460	AR	AR alternative transcripts	Other
+3622	TFE3	ASPSCR1::TFE3	Fusion
+2846	JAK2	ATF7IP::JAK2	Fusion
+2632	PDGFRB	ATF7IP::PDGFRB	Fusion
+2178	NRG1	ATP1B1::NRG1	Fusion
+1296	CTNNB1	Activating Mutation	Functional Gene Function
+2649	KRAS	Activating Mutation	Functional Gene Function
+2657	ERBB2	Activating Mutation	Functional Gene Function
+3737	EZH2	Activating Mutation	Functional Gene Function
+839	ALK	Alternative Transcript (ATI)	Other
+709	BRCA1	Alu insertion	Rearrangements
+461	PML	B2 DOMAIN MUTATION	Region Defined Variant
+3312	FGFR1	BAG4::FGFR1	Fusion
+3251	BCOR	BCOR::CCNB3	Fusion
+1	ABL1	BCR::ABL	Fusion
+1607	ABL1	BCR::ABL A365V	Fusion
+1608	ABL1	BCR::ABL A366G	Fusion
+1612	ABL1	BCR::ABL A397P	Fusion
+1027	ABL1	BCR::ABL D276G	Fusion
+2900	ABL1	BCR::ABL D363G	Fusion
+1532	ABL1	BCR::ABL D421G	Fusion
+3	ABL1	BCR::ABL E255K	Fusion
+2890	ABL1	BCR::ABL E255K V299L	Fusion
+1173	ABL1	BCR::ABL E255V	Fusion
+1526	ABL1	BCR::ABL E279K	Fusion
+2886	ABL1	BCR::ABL E279K	Fusion
+2887	ABL1	BCR::ABL E292L	Fusion
+1183	ABL1	BCR::ABL E292V	Fusion
+1487	ABL1	BCR::ABL E355G	Fusion
+2948	ABL1	BCR::ABL E450Q	Fusion
+1534	ABL1	BCR::ABL E450V	Fusion
+1536	ABL1	BCR::ABL E453A	Fusion
+1535	ABL1	BCR::ABL E453K	Fusion
+1509	ABL1	BCR::ABL E453Q	Fusion
+2370	ABL1	BCR::ABL E459K	Fusion
+2901	ABL1	BCR::ABL E98G	Fusion
+1507	ABL1	BCR::ABL F311I	Fusion
+1528	ABL1	BCR::ABL F311L	Fusion
+2358	ABL1	BCR::ABL F311V	Fusion
+2359	ABL1	BCR::ABL F317C	Fusion
+1625	ABL1	BCR::ABL F317I	Fusion
+241	ABL1	BCR::ABL F317L	Fusion
+2888	ABL1	BCR::ABL F317R	Fusion
+2343	ABL1	BCR::ABL F317S	Fusion
+1525	ABL1	BCR::ABL F317V	Fusion
+1184	ABL1	BCR::ABL F359C	Fusion
+1523	ABL1	BCR::ABL F359I	Fusion
+892	ABL1	BCR::ABL F359V	Fusion
+1152	ABL1	BCR::ABL F486S	Fusion
+1023	ABL1	BCR::ABL G250E	Fusion
+1233	ABL1	BCR::ABL G398R	Fusion
+1531	ABL1	BCR::ABL H396P	Fusion
+1030	ABL1	BCR::ABL H396R	Fusion
+1533	ABL1	BCR::ABL I432T	Fusion
+2340	ABL1	BCR::ABL L248R	Fusion
+2889	ABL1	BCR::ABL L248R and F359I	Fusion
+1022	ABL1	BCR::ABL L248V	Fusion
+2902	ABL1	BCR::ABL L364I	Fusion
+1530	ABL1	BCR::ABL L364P	Fusion
+1230	ABL1	BCR::ABL L384M	Fusion
+1232	ABL1	BCR::ABL L387F	Fusion
+1488	ABL1	BCR::ABL L387M	Fusion
+1021	ABL1	BCR::ABL M244V	Fusion
+2949	ABL1	BCR::ABL M244V and L364I	Fusion
+1524	ABL1	BCR::ABL M343T	Fusion
+1029	ABL1	BCR::ABL M351T	Fusion
+2954	ABL1	BCR::ABL M388L	Fusion
+2951	ABL1	BCR::ABL N146S	Fusion
+1529	ABL1	BCR::ABL N331S	Fusion
+1640	ABL1	BCR::ABL N336S	Fusion
+2950	ABL1	BCR::ABL N49S	Fusion
+1537	ABL1	BCR::ABL P480A	Fusion
+1024	ABL1	BCR::ABL Q252H	Fusion
+1600	ABL1	BCR::ABL Q252R	Fusion
+1527	ABL1	BCR::ABL Q300R	Fusion
+1613	ABL1	BCR::ABL S417Y	Fusion
+2953	ABL1	BCR::ABL S438C	Fusion
+2335	ABL1	BCR::ABL T315A	Fusion
+2	ABL1	BCR::ABL T315I	Fusion
+2885	ABL1	BCR::ABL T315V	Fusion
+2903	ABL1	BCR::ABL V186A	Fusion
+2952	ABL1	BCR::ABL V298I	Fusion
+1231	ABL1	BCR::ABL V299L	Fusion
+1609	ABL1	BCR::ABL V379I	Fusion
+1026	ABL1	BCR::ABL Y253F	Fusion
+2909	ABL1	BCR::ABL Y253F	Fusion
+1025	ABL1	BCR::ABL Y253H	Fusion
+2860	JAK2	BCR::JAK2	Fusion
+2971	PDGFRA	BCR::PDGFRA	Fusion
+594	CEBPA	BIALLELIC INACTIVATION	Other
+656	BRAF	BRAF::CUL1	Fusion
+719	BRD4	BRD4::NUTM1	Fusion
+532	PALB2	Biallelic Inactivation	Other
+2132	VHL	C77fs (c.228dup)	Copy Number
+2769	ALK	CAD::ALK	Fusion
+2630	CBFA2T3	CBFA2T3::GLIS2	Fusion
+431	CBFB	CBFB::MYH11	Fusion
+626	RET	CCDC6::RET	Fusion
+341	CD44	CD44s Expression	Expression
+2771	NRG1	CD74::NRG1	Fusion
+465	ROS1	CD74::ROS1 G2032R	Fusion
+518	ROS1	CD74::ROS1 G2101A	Fusion
+516	ROS1	CD74::ROS1 L2026M	Fusion
+517	ROS1	CD74::ROS1 L2155S	Fusion
+3270	ABL1	CENPC::ABL1	Fusion
+3252	CIC	CIC::DUX4	Fusion
+3987	CIC	CIC::LEUTX 	Fusion
+520	ALK	CLTC::ALK	Fusion
+3991	PDGFB	COL1A1-PDGFB fusion	Fusion
+2972	PDGFB	COL1A1::PDGFB	Fusion
+821	HLA-C	COPY-NEUTRAL LOSS OF HETEROZYGOSITY	Genotypes Compound
+599	CTLA4	CTLA4::CD28	Fusion
+2229	BRAF	CUX1::BRAF	Fusion
+447	FGF13	CYTOPLASMIC EXPRESSION	Expression
+1283	CDK2	CYTOPLASMIC EXPRESSION	Expression
+360	CDKN1B	CYTOPLASMIC MISLOCALIZATION	Other
+191	EGFR	Copy Number Variation	Copy Number
+746	MLH1	D667FS	Functional Protein Consequence
+2394	NTRK1	DDR2::NTRK1	Fusion
+2706	DEK	DEK::AFF2	Fusion
+647	LRP1B	DELETION	Functional Gene Function
+2685	DGKH	DGKH::ZFAND3	Fusion
+242	TP53	DNA Binding Domain Mutation	Region Defined Variant
+31	PRKACA	DNAJB1::PRKACA	Fusion
+738	DPYD	DPYD*13 HOMOZYGOSITY	Genotypes Compound
+737	DPYD	DPYD*2A HOMOZYGOSITY	Genotypes Compound
+2589	DUX4	DUX4::IGH	Fusion
+334	VEGFA	Decreased Peri-therapeutic Expression	Expression
+221	TP53	Deleterious Mutation	Region Defined Variant
+200	IKZF1	Deletion	Functional Gene Function
+213	PTEN	Deletion	Functional Gene Function
+250	GSTP1	Deletion	Functional Gene Function
+646	SMAD4	Deletion	Functional Gene Function
+696	SMARCB1	Deletion	Functional Gene Function
+856	CREBBP	Deletion	Functional Gene Function
+1982	SUFU	Deletion	Functional Gene Function
+1983	PTCH1	Deletion	Functional Gene Function
+2654	CDKN2A	Deletion	Functional Gene Function
+2932	VHL	Deletion	Functional Gene Function
+3309	ATRX	Deletion	Functional Gene Function
+4314	CDKN2B	Deletion	Functional Gene Function
+4316	PAX5	Deletion	Functional Gene Function
+4317	ERG	Deletion	Functional Gene Function
+526	BCL2L11	Deletion Polymorphism	Region Defined Variant
+3009	ABL1	Double Ph	Rearrangements
+725	MLH1	E13fs	Functional Protein Consequence
+763	MSH2	E28FS	Functional Protein Consequence
+2847	JAK2	EBF1::JAK2	Fusion
+535	PDGFRB	EBF1::PDGFRB	Fusion
+4294	EGFR	EGFR::BRAF	Fusion
+4283	EGFR	EGFR::PPARGC1A	Fusion
+4282	EGFR	EGFR::PURB	Fusion
+2203	EGFR	EGFR::RAD51	Fusion
+4241	EGFR	EGFR::SEPT14	Fusion
+4343	EGFR	EGFR::VSTM2A	Fusion
+4344	EGFR	EGFR::WIF1	Fusion
+5	ALK	EML4::ALK	Fusion
+528	ALK	EML4::ALK  V1180L	Fusion
+6	ALK	EML4::ALK C1156Y	Fusion
+2813	ALK	EML4::ALK G1202del	Fusion
+308	ALK	EML4::ALK G1269A	Fusion
+589	ALK	EML4::ALK I1171S	Fusion
+7	ALK	EML4::ALK L1196M	Fusion
+172	ALK	EML4::ALK S1206Y	Fusion
+173	ALK	EML4::ALK T1151INST	Fusion
+501	ALK	EML4::ALK e2-e20	Fusion
+500	ALK	EML4::ALK e20-e20	Fusion
+3204	ALK	EML4::ALK e6-e19 G1269A and Amplification	Fusion
+503	ALK	EML4::ALK e6-e20	Fusion
+4020	EML4	EML4::NTRK3	Fusion
+4299	NTRK3	EML4::NTRK3	Fusion
+2750	ALK	EML6::ALK e1-e20 and FBXO11::ALK e1-e20	Fusion
+4075	EML6	EML6::NTRK3	Fusion
+4308	ALK	ERC1::ALK	Fusion
+2575	ABL1	ETV6::ABL1	Fusion
+2859	JAK2	ETV6::JAK2	Fusion
+3700	NTRK1	ETV6::NTRK1	Fusion
+2396	NTRK2	ETV6::NTRK2	Fusion
+801	NTRK3	ETV6::NTRK3	Fusion
+805	NTRK3	ETV6::NTRK3 G623R	Fusion
+3140	ETV6	ETV6::RUNX1	Fusion
+3054	EWSR1	EWSR1::ATF1	Fusion
+717	DDIT3	EWSR1::DDIT3	Fusion
+194	ERG	EWSR1::ERG	Fusion
+706	EWSR1	EWSR1::FLI1	Fusion
+164	FLI1	EWSR1::FLI1 e7-e6	Fusion
+2385	EWSR1	EWSR1::NR4A3	Fusion
+2941	EWSR1	EWSR1::WT1	Fusion
+2472	VHL	EXON 1-2 DELETION and BRK1 DELETION	Region Defined Variant
+303	STK11	EXON 1-2 MUTATION	Region Defined Variant
+2893	DPYD	EXON 11-19 DELETION	Region Defined Variant
+86	NPM1	EXON 12 MUTATION	Region Defined Variant
+557	ASXL1	EXON 12 MUTATION	Region Defined Variant
+266	LRP1B	EXON 12-22 DELETION	Region Defined Variant
+464	MET	EXON 14 MUTATION and AMPLIFICATION	Region Defined Variant
+74	KRAS	EXON 2 Mutations	Region Defined Variant
+1940	VHL	EXON 2-3 DELETION	Region Defined Variant
+559	CALR	EXON 9 FRAMESHIFT	Other
+25	CDK4	EXPRESSION	Expression
+57	GATA2	EXPRESSION	Expression
+158	AURKA	EXPRESSION	Expression
+182	BAP1	EXPRESSION	Expression
+278	AKT2	EXPRESSION	Expression
+316	TGFA	EXPRESSION	Expression
+318	EREG	EXPRESSION	Expression
+319	EFNA2	EXPRESSION	Expression
+326	CBLC	EXPRESSION	Expression
+328	DEFA1	EXPRESSION	Expression
+335	DNMT1	EXPRESSION	Expression
+337	PDCD4	EXPRESSION	Expression
+339	TFF3	EXPRESSION	Expression
+342	EGF	EXPRESSION	Expression
+343	MDM2	EXPRESSION	Expression
+344	HMOX1	EXPRESSION	Expression
+355	CDKN1A	EXPRESSION	Expression
+356	ALCAM	EXPRESSION	Expression
+357	STMN1	EXPRESSION	Expression
+361	ERBB3	EXPRESSION	Expression
+363	UGT1A	EXPRESSION	Expression
+365	ERBB4	EXPRESSION	Expression
+366	SLFN11	EXPRESSION	Expression
+372	CDKN1B	EXPRESSION	Expression
+373	AGR2	EXPRESSION	Expression
+380	IGF1R	EXPRESSION	Expression
+381	EPHB4	EXPRESSION	Expression
+383	TOP2A	EXPRESSION	Expression
+384	TOP1	EXPRESSION	Expression
+386	HSPA5	EXPRESSION	Expression
+389	TUBB3	EXPRESSION	Expression
+392	CFLAR	EXPRESSION	Expression
+393	PROM1	EXPRESSION	Expression
+394	FOXP3	EXPRESSION	Expression
+398	DUSP6	EXPRESSION	Expression
+400	HSPB1	EXPRESSION	Expression
+401	NQO1	EXPRESSION	Expression
+405	CXCR4	EXPRESSION	Expression
+406	MAGEH1	EXPRESSION	Expression
+410	CDX2	EXPRESSION	Expression
+412	POU5F1	EXPRESSION	Expression
+423	HLA-DRA	EXPRESSION	Expression
+429	KIT	EXPRESSION	Expression
+444	NEDD9	EXPRESSION	Expression
+474	CIP2A	EXPRESSION	Expression
+476	MIR218-1	EXPRESSION	Expression
+492	ECSCR	EXPRESSION	Expression
+493	ROBO4	EXPRESSION	Expression
+537	RB1	EXPRESSION	Expression
+546	ACTA1	EXPRESSION	Expression
+624	MKI67	EXPRESSION	Expression
+625	RAD23B	EXPRESSION	Expression
+651	AXL	EXPRESSION	Expression
+652	GAS6	EXPRESSION	Expression
+660	HIF1A	EXPRESSION	Expression
+662	MLH1	EXPRESSION	Expression
+670	MYCL	EXPRESSION	Expression
+671	HGF	EXPRESSION	Expression
+673	FGF2	EXPRESSION	Expression
+700	KIF23	EXPRESSION	Expression
+857	NTRK3	EXPRESSION	Expression
+1258	PTPRF	EXPRESSION	Expression
+1262	MDM4	EXPRESSION	Expression
+1284	DCC	EXPRESSION	Expression
+2163	CTLA4	EXPRESSION	Expression
+2207	PDCD1LG2	EXPRESSION	Expression
+2208	LAG3	EXPRESSION	Expression
+2594	ASCL1	EXPRESSION	Expression
+2984	CXCL10	EXPRESSION	Expression
+3042	CDK6	EXPRESSION	Expression
+3330	TCF19	EXPRESSION	Expression
+2870	VHL	Exon 1 (Frameshift)	Other
+844	VHL	Exon 1 Deletion	Region Defined Variant
+2465	VHL	Exon 1 del (151nt)	Region Defined Variant
+845	VHL	Exon 1-2 Deletion	Region Defined Variant
+843	VHL	Exon 1-3 Deletion	Region Defined Variant
+106	PIK3CA	Exon 10 Mutation	Region Defined Variant
+1991	PIK3CA	Exon 10 and Exon 21 Mutation	Region Defined Variant
+3311	PIK3CA	Exon 10 or Exon 21 Mutation	Region Defined Variant
+66	KIT	Exon 11 Mutation	Region Defined Variant
+2643	KIT	Exon 13 Mutation	Region Defined Variant
+69	KIT	Exon 14 Mutation	Region Defined Variant
+2778	MET	Exon 14 Mutation	Region Defined Variant
+324	MET	Exon 14 Skipping Mutation	Region Defined Variant
+2650	BRAF	Exon 15 Mutation	Region Defined Variant
+2623	PDGFRA	Exon 18 Mutation	Region Defined Variant
+375	EGFR	Exon 18 Overexpression	Other
+2257	EGFR	Exon 18 deletion	Region Defined Variant
+133	EGFR	Exon 19 Deletion	Region Defined Variant
+1938	VHL	Exon 2 Deletion	Region Defined Variant
+75	KRAS	Exon 2 Mutation	Region Defined Variant
+1971	VHL	Exon 2-3 Deletion	Region Defined Variant
+726	EGFR	Exon 20 Insertion	Other
+2854	ERBB2	Exon 20 Insertion	Other
+105	PIK3CA	Exon 21 Mutation	Region Defined Variant
+1939	VHL	Exon 3 Deletion	Region Defined Variant
+1973	VHL	Exon 3 Deletion	Region Defined Variant
+2047	CTNNB1	Exon 3 Deletion	Region Defined Variant
+2892	CTNNB1	Exon 3 Mutation	Region Defined Variant
+3749	VHL	Exon 3 Variant	Region Defined Variant
+252	EGFR	Exon 4 Deletion	Region Defined Variant
+350	SETBP1	Exon 4 Mutation	Region Defined Variant
+550	ALK	Exon 4-11 Deletion	Region Defined Variant
+129	WT1	Exon 7 Mutation	Region Defined Variant
+130	WT1	Exon 9 Mutation	Region Defined Variant
+509	KIT	Exon 9 Mutation	Region Defined Variant
+3100	VHL	Exon Deletion	Region Defined Variant
+19	CCND1	Expression	Expression
+210	PGR	Expression	Expression
+268	FGFR1	Expression	Expression
+276	CD274	Expression	Expression
+313	PTEN	Expression	Expression
+314	NRG1	Expression	Expression
+315	AREG	Expression	Expression
+329	ERCC1	Expression	Expression
+354	EGFR	Expression	Expression
+376	ZEB1	Expression	Expression
+397	BRCA1	Expression	Expression
+533	SMAD4	Expression	Expression
+683	PAX8	Expression	Expression
+2209	DLL3	Expression	Expression
+2595	HDAC2	Expression	Expression
+2914	ALK	Expression	Expression
+2966	MGMT	Expression	Expression
+2993	CDK5	Expression	Expression
+3014	CSF1R	Expression	Expression
+3319	BTK	Expression	Expression
+3320	BLK	Expression	Expression
+3992	STAT1	Expression	Expression
+4336	FLT3LG	Expression	Expression
+2621	KIT	F506_F508DUP	Copy Number
+2158	VHL	F76fs (c.222_225dup)	Copy Number
+1912	VHL	F76fs (c.223_224insT)	Copy Number
+2656	BRAF	FAM131B::BRAF	Fusion
+2987	BRAF	FAM73A::BRAF	Fusion
+2743	FGFR1	FGFR1OP2::FGFR1	Fusion
+783	FGFR2	FGFR2::AHCYL1	Fusion
+782	FGFR2	FGFR2::BICC1	Fusion
+52	FGFR2	FGFR2::MGEA5	Fusion
+54	FGFR2	FGFR2::TACC3	Fusion
+53	FGFR3	FGFR3::BAIAP2L1	Fusion
+830	FGFR3	FGFR3::TACC3	Fusion
+574	PDGFRA	FIP1L1::PDGFRA	Fusion
+577	PDGFRA	FIP1L1::PDGFRA T674I	Fusion
+2682	ABL1	FOXP1::ABL1	Fusion
+667	MEN1	FRAMESHIFT TRUNCATION	Functional Protein Consequence
+722	DDIT3	FUS::DDIT3	Fusion
+3149	RELA	FUSION	Fusion
+428	MRE11	Frameshift	Functional Protein Consequence
+2812	MBD4	Frameshift	Functional Protein Consequence
+124	TSC1	Frameshift Truncation	Functional Protein Consequence
+419	NTRK1	Fusion	Fusion
+499	ALK	Fusion	Fusion
+524	DUX4	Fusion	Fusion
+567	PDGFRA	Fusion	Fusion
+568	PDGFRB	Fusion	Fusion
+569	FGFR1	Fusion	Fusion
+1277	NTRK3	Fusion	Fusion
+1687	RET	Fusion	Fusion
+1691	FGFR3	Fusion	Fusion
+2202	FGFR2	Fusion	Fusion
+2286	NRG1	Fusion	Fusion
+2566	ABL1	Fusion	Fusion
+2571	ABL2	Fusion	Fusion
+2572	JAK2	Fusion	Fusion
+2639	BRAF	Fusion	Fusion
+2640	NTRK2	Fusion	Fusion
+2693	ROS1	Fusion	Fusion
+2779	STAT6	Fusion	Fusion
+2806	KMT2A	Fusion	Fusion
+2830	ETV1	Fusion	Fusion
+3081	RAF1	Fusion	Fusion
+3315	TP53	Fusion	Fusion
+3957	RASGRF1	Fusion	Fusion
+3742	KIT	G3BP2::KIT	Fusion
+817	ERBB2	G778_P780DUP	Copy Number
+3214	JAK2	GOLGA5::JAK2	Fusion
+2395	NTRK1	GON4L::NTRK1	Fusion
+2770	ROS1	GOPC::ROS1	Fusion
+2061	ACVR1	Gain-of-Function	Functional Gene Function
+2172	MTOR	Gain-of-Function	Functional Gene Function
+1765	EGFR	Gain-of-function	Functional Gene Function
+2581	NCOA2	HEY1::NCOA2	Fusion
+588	ALK	HIP1::ALK I1171N	Fusion
+2969	HMGA2	HMGA2::LPP	Fusion
+3597	DDR2	High expression	Expression
+271	ATR	I774FS	Functional Protein Consequence
+765	MSH6	I891FS	Functional Protein Consequence
+151	BCL2	IGH::BCL2	Fusion
+2663	CRLF2	IGH::CRLF2	Fusion
+4309	FGFR3	IGHA1::FGFR3	Fusion
+2686	IL2RB	IL2RB::MYH9	Fusion
+218	SMARCA4	INACTIVATING MUTATION	Functional Gene Function
+2238	BARD1	ISOFORM EXPRESSION	Expression
+3118	FLT3	ITD & TKD MUTATIONS	Functional Gene Function
+2895	NUDT15	Inactivating Mutation	Functional Gene Function
+67	KIT	Internal Duplication	Copy Number
+2659	FGFR1	Internal Duplication	Copy Number
+4150	BCOR	Internal tandem duplication	Copy Number
+4229	BCOR	Internal tandem duplication (ITD)	Copy Number
+279	NF2	K159fs	Functional Protein Consequence
+1872	VHL	K159fs (c.473dup)	Copy Number
+3010	ABL1	K356dup	Copy Number
+3273	MSH3	K383fs	Functional Protein Consequence
+1166	ATM	K468FS	Functional Protein Consequence
+3158	NTRK2	KANK1::NTRK2	Fusion
+4001	ALK	KANK4::ALK	Fusion
+618	BRAF	KIAA1549::BRAF	Fusion
+4300	EGFR	KIF5B::EGFR	Fusion
+2707	MET	KIF5B::MET	Fusion
+273	RET	KIF5B::RET	Fusion
+1689	RET	KIF5B::RET G810A	Fusion
+1688	RET	KIF5B::RET V804L	Fusion
+3552	KMT2A	KMT2A::ABI1	Fusion
+3551	KMT2A	KMT2A::AF10	Fusion
+3550	KMT2A	KMT2A::AF6	Fusion
+432	KMT2A	KMT2A::MLLT3	Fusion
+3117	KMT2A	KMT2A::MLLT4	Fusion
+2210	ASNS	KMT2E::ASNS	Fusion
+3471	KRAS	KRAS4A underexpression	Expression
+413	ERBB2	Kinase Domain Mutation	Region Defined Variant
+1783	VHL	L158fs (c.471dupT)	Copy Number
+1318	TP53	L3 Domain Mutation	Region Defined Variant
+1278	NTRK1	LMNA::NTRK1	Fusion
+1282	NTRK1	LMNA::NTRK1 G595R and G667C	Fusion
+3225	NTRK1	LMNA::NTRK1 e11-e10	Fusion
+3223	NTRK1	LMNA::NTRK1 e2-e10	Fusion
+3224	NTRK1	LMNA::NTRK1 e2-e11	Fusion
+564	SMAD4	LOSS	Functional Gene Function
+809	MSH6	LOSS	Functional Gene Function
+3659	SMARCB1	LOSS OF NUCLEAR PROTEIN EXPRESSION	Expression
+2596	LZTR1	LOSS-OF-FUNCTION	Functional Gene Function
+2755	FUBP1	LOSS-OF-FUNCTION	Functional Gene Function
+2968	HMGA2	LPP::HMGA2	Fusion
+3272	ABL1	LSM14A::ABL1	Fusion
+23	CCND3	Loss	Functional Gene Function
+214	PTEN	Loss	Functional Gene Function
+370	MRE11	Loss	Functional Gene Function
+436	VHL	Loss	Functional Gene Function
+485	STK11	Loss	Functional Gene Function
+554	CDKN2A	Loss	Functional Gene Function
+555	CDKN2B	Loss	Functional Gene Function
+672	SOX10	Loss	Functional Gene Function
+697	NF2	Loss	Functional Gene Function
+698	NF1	Loss	Functional Gene Function
+808	MSH2	Loss	Functional Gene Function
+853	NBN	Loss	Functional Gene Function
+925	STK11	Loss	Functional Gene Function
+1876	CIC	Loss	Functional Gene Function
+1879	ATXN1L	Loss	Functional Gene Function
+1880	ATM	Loss	Functional Gene Function
+2212	BAP1	Loss	Functional Gene Function
+2230	ASS1	Loss	Functional Gene Function
+2232	FLCN	Loss	Functional Gene Function
+2234	KMT2D	Loss	Functional Gene Function
+2365	TF	Loss	Functional Gene Function
+2644	SMARCA4	Loss	Functional Gene Function
+2754	PRKN	Loss	Functional Gene Function
+3202	SMARCB1	Loss	Functional Gene Function
+4310	KDM6A	Loss	Functional Gene Function
+125	TSC1	Loss-of-function	Functional Gene Function
+131	BRCA1	Loss-of-function	Functional Gene Function
+132	BRCA2	Loss-of-function	Functional Gene Function
+159	VHL	Loss-of-function	Functional Gene Function
+167	KMT2D	Loss-of-function	Functional Gene Function
+230	CHEK2	Loss-of-function	Functional Gene Function
+236	CDK12	Loss-of-function	Functional Gene Function
+534	FANCC	Loss-of-function	Functional Gene Function
+601	NOTCH1	Loss-of-function	Functional Gene Function
+606	RB1	Loss-of-function	Functional Gene Function
+637	FBXW7	Loss-of-function	Functional Gene Function
+721	CYP2D6	Loss-of-function	Functional Gene Function
+819	PTPRB	Loss-of-function	Functional Gene Function
+1293	ARID1A	Loss-of-function	Functional Gene Function
+2171	TSC2	Loss-of-function	Functional Gene Function
+2219	BARD1	Loss-of-function	Functional Gene Function
+2235	RASA1	Loss-of-function	Functional Gene Function
+2236	ATM	Loss-of-function	Functional Gene Function
+2415	SMAD4	Loss-of-function	Functional Gene Function
+2424	KMT2C	Loss-of-function	Functional Gene Function
+2565	PTPN12	Loss-of-function	Functional Gene Function
+2705	PBRM1	Loss-of-function	Functional Gene Function
+3316	MEN1	Loss-of-function	Functional Gene Function
+4269	ATRX	Loss-of-function	Functional Gene Function
+1889	VHL	M54fs (c.161dup)	Copy Number
+2227	BRAF	MACF1::BRAF	Fusion
+3988	MAP3K8	MAP3K8 fusion 	Fusion
+3148	MEF2D	MEF2D Rearrangement	Rearrangements
+30	CSF1R	MEF2D::CSF1R	Fusion
+2894	MET	MET::ATXN7L1	Fusion
+538	MLH1	METHYLATION	Epigenetic Modification
+784	CDKN2B	METHYLATION	Epigenetic Modification
+3114	MN1	MN1::CXXC5	Fusion
+217	SMARCA4	MUTATION	Region Defined Variant
+521	U2AF1	MUTATION	Region Defined Variant
+595	SRSF2	MUTATION	Region Defined Variant
+623	POT1	MUTATION	Region Defined Variant
+644	PRDM1	MUTATION	Region Defined Variant
+659	NF2	MUTATION	Region Defined Variant
+664	CDH1	MUTATION	Region Defined Variant
+665	RHOA	MUTATION	Region Defined Variant
+668	KMT2C	MUTATION	Region Defined Variant
+669	STAG2	MUTATION	Region Defined Variant
+674	EIF1AX	MUTATION	Region Defined Variant
+2169	BTK	MUTATION	Region Defined Variant
+2170	PLCG2	MUTATION	Region Defined Variant
+2652	H3-3A	MUTATION	Region Defined Variant
+2761	ZRSR2	MUTATION	Region Defined Variant
+2773	RABL3	MUTATION	Region Defined Variant
+3052	CD79B	MUTATION	Region Defined Variant
+3073	CARD11	MUTATION	Region Defined Variant
+3138	NPM1	MUTATION	Region Defined Variant
+2665	MYB	MYB::GATA1	Fusion
+4327	MYB	MYB::QKI	Fusion
+3586	MYC	MYC AND (BCL2 OR BCL6) TRANSLOCATION	Rearrangements
+29	CEBPA	Mutation	Region Defined Variant
+155	RUNX1	Mutation	Region Defined Variant
+157	TET2	Mutation	Region Defined Variant
+160	VHL	Mutation	Region Defined Variant
+161	PBRM1	Mutation	Region Defined Variant
+163	EZH2	Mutation	Region Defined Variant
+174	APC	Mutation	Region Defined Variant
+177	ASXL1	Mutation	Region Defined Variant
+178	ATM	Mutation	Region Defined Variant
+183	BAP1	Mutation	Region Defined Variant
+185	BRCA1	Mutation	Region Defined Variant
+186	BRCA2	Mutation	Region Defined Variant
+189	DNMT3A	Mutation	Region Defined Variant
+206	NOTCH1	Mutation	Region Defined Variant
+208	NRAS	Mutation	Region Defined Variant
+215	SF3B1	Mutation	Region Defined Variant
+216	SMAD4	Mutation	Region Defined Variant
+222	TP53	Mutation	Region Defined Variant
+275	HRAS	Mutation	Region Defined Variant
+277	MTOR	Mutation	Region Defined Variant
+281	FBXW7	Mutation	Region Defined Variant
+297	RIT1	Mutation	Region Defined Variant
+300	SMO	Mutation	Region Defined Variant
+301	PTCH1	Mutation	Region Defined Variant
+310	ERBB4	Mutation	Region Defined Variant
+311	PIK3CA	Mutation	Region Defined Variant
+323	MET	Mutation	Region Defined Variant
+327	PTPRD	Mutation	Region Defined Variant
+336	KRAS	Mutation	Region Defined Variant
+388	KIT	Mutation	Region Defined Variant
+399	BRAF	Mutation	Region Defined Variant
+442	EGFR	Mutation	Region Defined Variant
+505	GNAQ	Mutation	Region Defined Variant
+506	GNA11	Mutation	Region Defined Variant
+510	PTEN	Mutation	Region Defined Variant
+511	FGFR2	Mutation	Region Defined Variant
+512	ALK	Mutation	Region Defined Variant
+519	FLT3	Mutation	Region Defined Variant
+560	CSF3R	Mutation	Region Defined Variant
+570	IDH2	Mutation	Region Defined Variant
+587	NF1	Mutation	Region Defined Variant
+600	AR	Mutation	Region Defined Variant
+633	PIK3R1	Mutation	Region Defined Variant
+645	IDH1	Mutation	Region Defined Variant
+663	BCOR	Mutation	Region Defined Variant
+666	ERBB2	Mutation	Region Defined Variant
+713	CRBN	Mutation	Region Defined Variant
+715	STK11	Mutation	Region Defined Variant
+797	POLE	Mutation	Region Defined Variant
+799	RB1	Mutation	Region Defined Variant
+827	FGFR3	Mutation	Region Defined Variant
+1690	RET	Mutation	Region Defined Variant
+2231	FLCN	Mutation	Region Defined Variant
+2233	BCL2	Mutation	Region Defined Variant
+2237	KDM5C	Mutation	Region Defined Variant
+2388	CALR	Mutation	Region Defined Variant
+2567	ETV6	Mutation	Region Defined Variant
+2641	FGFR1	Mutation	Region Defined Variant
+2642	PTPN11	Mutation	Region Defined Variant
+2668	FOXO3	Mutation	Region Defined Variant
+2692	B2M	Mutation	Region Defined Variant
+2699	CBL	Mutation	Region Defined Variant
+2704	CDKN2A	Mutation	Region Defined Variant
+2749	NFE2L2	Mutation	Region Defined Variant
+2759	PALB2	Mutation	Region Defined Variant
+2760	MPL	Mutation	Region Defined Variant
+2764	CDK12	Mutation	Region Defined Variant
+2898	NT5C2	Mutation	Region Defined Variant
+2958	SDHB	Mutation	Region Defined Variant
+2983	ACVR1	Mutation	Region Defined Variant
+3072	GATA2	Mutation	Region Defined Variant
+3115	GATA1	Mutation	Region Defined Variant
+3203	ATRX	Mutation	Region Defined Variant
+3274	PDGFRA	Mutation	Region Defined Variant
+4018	MS4A1	Mutation	Region Defined Variant
+28	CEBPA	N-TERMINAL FRAME SHIFT	Functional Protein Consequence
+513	ALK	NPM::ALK	Fusion
+2883	BRAF	NRF1::BRAF	Fusion
+2762	NRG1	NRG1 FUSIONS	Fusion
+340	DKK1	NUCLEAR EXPRESSION	Expression
+368	BIRC5	NUCLEAR EXPRESSION	Expression
+391	IGF1R	NUCLEAR EXPRESSION	Expression
+438	PSMB8	NUCLEAR EXPRESSION	Expression
+439	PBK	NUCLEAR EXPRESSION	Expression
+490	HSPH1	NUCLEAR EXPRESSION	Expression
+494	PIM1	NUCLEAR EXPRESSION	Expression
+364	ERBB4	NUCLEAR TRANSLOCATION	Rearrangements
+3271	ABL1	NUP153::ABL1	Fusion
+2660	ABL1	NUP214::ABL1	Fusion
+3111	NUP98	NUP98::KDM5A	Fusion
+2593	NUP98	NUP98::NSD1	Fusion
+2376	ABL1	Non-P-Loop Mutation	Region Defined Variant
+2082	VHL	Null (Partial deletion of Exon 1)	Region Defined Variant
+1951	VHL	Null (Partial deletion of Exon 2)	Region Defined Variant
+1952	VHL	Null (Partial deletion of Exon 3)	Region Defined Variant
+2083	VHL	Null (Partial deletion of Exons 1 & 2)	Region Defined Variant
+2036	VHL	Null (Partial deletion of Exons 2 & 3)	Region Defined Variant
+3296	VHL	Null (rearrangement)	Rearrangements
+2974	JAK2	OFD1::JAK2	Fusion
+21	CCND2	OVEREXPRESSION	Expression
+205	NCOA3	OVEREXPRESSION	Expression
+296	RIT1	OVEREXPRESSION	Expression
+305	SYK	OVEREXPRESSION	Expression
+345	SPHK1	OVEREXPRESSION	Expression
+348	PBK	OVEREXPRESSION	Expression
+359	AR	OVEREXPRESSION	Expression
+378	PTP4A3	OVEREXPRESSION	Expression
+396	JAK1	OVEREXPRESSION	Expression
+434	HIF1A	OVEREXPRESSION	Expression
+440	PTTG1	OVEREXPRESSION	Expression
+796	RRM2	OVEREXPRESSION	Expression
+1299	MERTK	OVEREXPRESSION	Expression
+2362	PIK3CA	OVEREXPRESSION	Expression
+2419	NR2F2	OVEREXPRESSION	Expression
+2586	PARP1	OVEREXPRESSION	Expression
+2917	LYN	OVEREXPRESSION	Expression
+2981	WDR12	OVEREXPRESSION	Expression
+2982	PLK1	OVEREXPRESSION	Expression
+3112	PALB2	Oncogenic Mutations (loss of function alterations)	Functional Gene Function
+3113	ATM	Oncogenic Mutations (loss of function alterations)	Functional Gene Function
+20	CCND1	Overexpression	Expression
+24	CCNE1	Overexpression	Expression
+152	BCL2	Overexpression	Expression
+156	IGF2	Overexpression	Expression
+181	AURKA	Overexpression	Expression
+193	EGFR	Overexpression	Expression
+289	ERBB3	Overexpression	Expression
+290	NT5E	Overexpression	Expression
+291	EZH2	Overexpression	Expression
+292	MYD88	Overexpression	Expression
+325	FGFR3	Overexpression	Expression
+346	CASP8	Overexpression	Expression
+347	TYMS	Overexpression	Expression
+377	TIMP1	Overexpression	Expression
+408	ABCC10	Overexpression	Expression
+435	EPAS1	Overexpression	Expression
+472	ALDH1A2	Overexpression	Expression
+481	DDX43	Overexpression	Expression
+483	TBK1	Overexpression	Expression
+486	HAVCR2	Overexpression	Expression
+525	B4GALT1	Overexpression	Expression
+529	SIRT1	Overexpression	Expression
+539	PTPN11	Overexpression	Expression
+547	RB1	Overexpression	Expression
+578	BIRC5	Overexpression	Expression
+597	RET	Overexpression	Expression
+602	CDK6	Overexpression	Expression
+603	FLT3	Overexpression	Expression
+607	ESR1	Overexpression	Expression
+619	PTGS2	Overexpression	Expression
+621	MET	Overexpression	Expression
+639	JUN	Overexpression	Expression
+640	FOS	Overexpression	Expression
+653	ETV4	Overexpression	Expression
+693	SGK1	Overexpression	Expression
+795	RRM1	Overexpression	Expression
+858	CSF1	Overexpression	Expression
+859	ROS1	Overexpression	Expression
+860	NTRK1	Overexpression	Expression
+866	MITF	Overexpression	Expression
+869	YAP1	Overexpression	Expression
+875	ERBB2	Overexpression	Expression
+1256	TERT	Overexpression	Expression
+1259	AEBP1	Overexpression	Expression
+1273	CTAG1B	Overexpression	Expression
+1274	CTAG2	Overexpression	Expression
+1279	BRD4	Overexpression	Expression
+1301	AKT3	Overexpression	Expression
+1303	MYC	Overexpression	Expression
+1306	TP53	Overexpression	Expression
+1693	CHEK1	Overexpression	Expression
+1877	ETV1	Overexpression	Expression
+1878	ETV5	Overexpression	Expression
+2167	FGFR4	Overexpression	Expression
+2204	KDR	Overexpression	Expression
+2239	TPT1	Overexpression	Expression
+2360	AKT1	Overexpression	Expression
+2363	PIK3R2	Overexpression	Expression
+2410	ERCC1	Overexpression	Expression
+2417	FGFR2	Overexpression	Expression
+2578	NOTCH3	Overexpression	Expression
+2584	CDK9	Overexpression	Expression
+2585	VEGFA	Overexpression	Expression
+2588	EPOR	Overexpression	Expression
+2635	ALK	Overexpression	Expression
+2636	CDK4	Overexpression	Expression
+2679	WEE1	Overexpression	Expression
+2717	PSMD4	Overexpression	Expression
+2739	CRLF2	Overexpression	Expression
+2784	FGF19	Overexpression	Expression
+2808	WNT11	Overexpression	Expression
+2904	FGFR1	Overexpression	Expression
+2908	TACSTD2	Overexpression	Expression
+2911	IL6	Overexpression	Expression
+2915	ABCB1	Overexpression	Expression
+2944	PDGFRA	Overexpression	Expression
+2955	STAT1	Overexpression	Expression
+2970	VEGFC	Overexpression	Expression
+2973	PDGFRB	Overexpression	Expression
+2978	MIR21	Overexpression	Expression
+2980	IL33	Overexpression	Expression
+2985	CCN2	Overexpression	Expression
+3006	FOXC2	Overexpression	Expression
+3007	ZEB1	Overexpression	Expression
+3008	CUL7	Overexpression	Expression
+3139	MECOM	Overexpression	Expression
+3243	ACTL6A	Overexpression	Expression
+3249	MYCN	Overexpression	Expression
+3259	IGF1R	Overexpression	Expression
+3277	ZHX2	Overexpression	Expression
+3279	HDAC2	Overexpression	Expression
+3306	HDAC9	Overexpression	Expression
+3307	FOXF1	Overexpression	Expression
+3568	JAK2	Overexpression	Expression
+3569	STAT5B	Overexpression	Expression
+3598	DDR2	Overexpression	Expression
+3599	HDAC6	Overexpression	Expression
+3646	HOXC10	Overexpression	Expression
+3728	SLC29A1	Overexpression	Expression
+3731	KIT	Overexpression	Expression
+3732	HSP90B1	Overexpression	Expression
+3733	KRAS	Overexpression	Expression
+3734	COX2	Overexpression	Expression
+3735	BRAF	Overexpression	Expression
+3746	CCNE2	Overexpression	Expression
+4237	AURKB	Overexpression	Expression
+4297	FGFR1	Overexpression	Expression
+3415	AR	Overexpression of AR-V9	Expression
+3324	VEGFA	Overexpression of VEGF121	Expression
+3325	VEGFA	Overexpression of VEGF121 and VEGF110	Expression
+2375	ABL1	P-Loop Mutation	Region Defined Variant
+2495	VHL	P138fs (c.410dup)	Copy Number
+207	NOTCH1	P2514FS	Functional Protein Consequence
+2350	CRLF2	P2RY8::CRLF2	Fusion
+756	MLH1	P536FS	Functional Protein Consequence
+4224	AKT1	P68-C77dup	Copy Number
+477	BRCA1	P968FS	Functional Protein Consequence
+3525	ABL2	PAG1::ABL2	Fusion
+286	BRAF	PAPSS1::BRAF	Fusion
+2582	FOXO1	PAX3::FOXO1	Fusion
+2861	JAK2	PAX5::JAK2	Fusion
+2583	FOXO1	PAX7::FOXO1	Fusion
+209	PAX8	PAX8::PPARG	Fusion
+571	JAK2	PCM1::JAK2	Fusion
+2289	NTRK1	PDE4DIP::NTRK1	Fusion
+387	EIF4EBP1	PHOSPHORYLATION	Epigenetic Modification
+395	RPS6	PHOSPHORYLATION	Epigenetic Modification
+632	RB1	PHOSPHORYLATION	Epigenetic Modification
+108	PML	PML::RARA	Fusion
+3025	PML	PML::RARA A216T	Fusion
+462	PML	PML::RARA A216V	Fusion
+463	PML	PML::RARA L218P	Fusion
+3024	PML	PML::RARA S214L	Fusion
+2848	JAK2	PPFIBP1::JAK2	Fusion
+617	BRAF	PPFIBP2::BRAF	Fusion
+22	CCND2	PROMOTER DEMETHYLATION	Epigenetic Modification
+2254	DBI	PROMOTER DEMETHYLATION	Epigenetic Modification
+711	KLLN	PROMOTER METHYLATION	Epigenetic Modification
+2683	PTK2B	PTK2B::KDM6A	Fusion
+2684	PTK2B	PTK2B::STAG2	Fusion
+27	CDKN2A	Promoter Hypermethylation	Epigenetic Modification
+333	PTPRT	Promoter Hypermethylation	Epigenetic Modification
+374	NAPRT	Promoter Hypermethylation	Epigenetic Modification
+85	MGMT	Promoter Methylation	Epigenetic Modification
+744	MLH1	Q426FS	Functional Protein Consequence
+1105	KRAS	Q61FS	Functional Protein Consequence
+3029	BCL2	R107_R110dup	Copy Number
+2021	VHL	R108dup (c.322_324dup)	Copy Number
+735	MLH1	R687FS	Functional Protein Consequence
+1165	ATM	R777FS	Functional Protein Consequence
+3268	ABL1	RANBP2::ABL1	Fusion
+514	ALK	RANBP2::ALK	Fusion
+3116	RBM15	RBM15::MKL1	Fusion
+3207	MET	RBPMS::MET	Fusion
+2681	ABL1	RCSD1::ABL1	Fusion
+2891	RCSD1	RCSD1::ABL1	Fusion
+3526	ABL2	RCSD1::ABL2	Fusion
+3527	CSF1R	RCSD1::ABL2	Fusion
+2865	JAK2	RFX3::JAK2	Fusion
+740	DPYD	RS67376798 HOMOZYGOSITY	Genotypes Compound
+3126	RUNX1	RUNX1::RUNX1T1	Fusion
+1863	EGFR	Rare Exon 18-21 Mutation	Region Defined Variant
+269	ROS1	Rearrangement	Rearrangements
+2439	VHL	Rearrangement	Rearrangements
+3141	KMT2A	Rearrangement	Rearrangements
+4003	PDGFB	Rearrangement 	Rearrangements
+4338	CRLF2	Rearrangement 	Rearrangements
+3080	VHL	S139fs	Functional Protein Consequence
+616	B2M	S14FS	Functional Protein Consequence
+138	NOTCH1	S2275FS	Functional Protein Consequence
+3257	AKT1	S473 Phosphorylation	Epigenetic Modification
+1511	EGFR	S768_D770dup	Copy Number
+4253	NTRK1	SCP2::NTRK1	Fusion
+2179	NRG1	SDC4::NRG1	Fusion
+4251	EGFR	SEC61G::EGFR	Fusion
+416	ERBB2	SERUM LEVELS	Expression
+487	MMP2	SERUM LEVELS	Expression
+488	MMP9	SERUM LEVELS	Expression
+3287	ABL1	SFPQ::ABL1	Fusion
+411	STAT3	SH2 DOMAIN MUTATION	Region Defined Variant
+3986	SH3PXD2A	SH3PXD2A::HTRA1	Fusion
+2166	NRG1	SLC3A2::NRG1	Fusion
+2975	JAK2	SMU1::JAK2	Fusion
+2976	JAK2	SNX29::JAK2	Fusion
+2678	ABL1	SNX2::ABL1	Fusion
+800	NTRK1	SQSTM1::NTRK1	Fusion
+448	SSX1	SS18::SSX1	Fusion
+449	SSX2	SS18::SSX2	Fusion
+450	SSX4	SS18::SSX4	Fusion
+3566	CSF1R	SSBP2::CSF1R	Fusion
+2661	JAK2	SSBP2::JAK2	Fusion
+2849	JAK2	STRN3::JAK2	Fusion
+2218	ALK	STRN::ALK	Fusion
+2287	NTRK2	STRN::NTRK2	Fusion
+385	PRKAA2	T172 PHOSPHORYLATION	Epigenetic Modification
+1298	BRAF	T599dup	Copy Number
+3517	ZNF384	TAF15::ZNF384	Fusion
+3359	CSF1R	TBL1XR1::CSF1R	Fusion
+2862	JAK2	TERF2::JAK2	Fusion
+3730	TFE3	TFE3 fusion	Fusion
+576	ROS1	TFG::ROS1	Fusion
+56	FLT3	TKD MUTATION	Functional Gene Function
+2371	ABL1	TKD MUTATION	Functional Gene Function
+3128	TLX3	TLX3::BCL11B	Fusion
+195	ERG	TMPRSS2::ERG	Fusion
+707	TMPRSS2	TMPRSS2::ERG	Fusion
+774	PDGFRA	TNKS2::PDGFRA	Fusion
+2992	NTRK1	TPM3::NTRK1	Fusion
+2850	JAK2	TPR::JAK2	Fusion
+3465	NTRK1	TPR::NTRK1	Fusion
+287	BRAF	TRIM24::BRAF	Fusion
+2393	NTRK1	TRIM63::NTRK1	Fusion
+739	FOS	TRUNCATING FUSION	Fusion
+4026	FGFR2	Translocation	Rearrangements
+4027	FGFR3	Translocation	Rearrangements
+417	THBS2	UNDEREXPRESSION	Expression
+441	LEPR	UNDEREXPRESSION	Expression
+446	KRT18	UNDEREXPRESSION	Expression
+498	MIR218-1	UNDEREXPRESSION	Expression
+2418	SPRY2	UNDEREXPRESSION	Expression
+2863	JAK2	USP25::JAK2	Fusion
+179	ATM	Underexpression	Expression
+282	SMAD4	Underexpression	Expression
+304	STK11	Underexpression	Expression
+349	SMARCA4	Underexpression	Expression
+382	TYMS	Underexpression	Expression
+403	BRCA1	Underexpression	Expression
+422	STAG2	Underexpression	Expression
+473	ALDH1A2	Underexpression	Expression
+475	CIP2A	Underexpression	Expression
+648	ATRX	Underexpression	Expression
+654	STAG3	Underexpression	Expression
+695	SMARCB1	Underexpression	Expression
+867	MTAP	Underexpression	Expression
+868	VPS37A	Underexpression	Expression
+1255	MGMT	Underexpression	Expression
+1257	RRM1	Underexpression	Expression
+2108	ARID1A	Underexpression	Expression
+2164	CX3CL1	Underexpression	Expression
+2384	PBLD	Underexpression	Expression
+2386	ERRFI1	Underexpression	Expression
+2392	PTPN6	Underexpression	Expression
+2409	ERCC1	Underexpression	Expression
+2412	FGFR2	Underexpression	Expression
+3459	AR	V1 expression	Expression
+1167	ATM	V1268FS	Functional Protein Consequence
+750	MLH1	V213FS	Functional Protein Consequence
+137	NOTCH1	V2444FS	Functional Protein Consequence
+762	MSH2	V273FS	Functional Protein Consequence
+605	PTEN	V317FS	Functional Protein Consequence
+3461	AR	V567es expression	Expression
+362	AR	V7 EXPRESSION	Expression
+2159	AR	V9 EXPRESSION	Expression
+3729	TFE3	VCF::TFE3	Fusion
+3701	NTRK2	VCL::NTRK2	Fusion
+3303	CHD7	VCV000625197, Translocation (t(8;X)(q12.2;p22.13)), CHD7–BEND2 fusion	Other
+3321	VEGFA	VEGF165b Overexpression	Expression
+4242	EGFR	VOPP1::EGFR	Fusion
+2027	VHL	W117fs (c.349dup)	Copy Number
+87	NPM1	W288FS	Functional Protein Consequence
+2299	VHL	W88fs (c.261dup)	Copy Number
+2228	BRAF	WASFL::BRAF	Fusion
+426	BRAF	WILD TYPE	Genotypes Easy
+2366	PTEN	WILD TYPE	Genotypes Easy
+2651	KIT	WILDTYPE	Genotypes Easy
+742	WWTR1	WWTR1::CAMTA1	Fusion
+369	TP53	Wildtype	Genotypes Easy
+2174	EGFR	Wildtype	Genotypes Easy
+2590	PIK3CA	Wildtype	Genotypes Easy
+3200	KRAS	Wildtype	Genotypes Easy
+390	EGFR	Y1092 PHOSPHORYLATION	Epigenetic Modification
+245	NF2	Y177fs	Functional Protein Consequence
+414	ERBB2	Y772_A775DUP	Copy Number
+3578	ABL2	ZC3HAV1::ABL2	Fusion
+657	BRAF	ZKSCAN1::BRAF	Fusion
+3269	ABL1	ZMIZ1::ABL1	Fusion
+466	FGFR1	ZNF198::FGFR1	Fusion
+2864	JAK2	ZNF274::JAK2	Fusion
+2977	JAK2	ZNF430::JAK2	Fusion
+3481	ESR2	alternative transcripts	Other
+2349	IL7R	exon 6 mutations	Region Defined Variant
+3752	SSTR5	expression	Expression
+2226	BRAF	intron 10 rearrangement	Rearrangements
+2225	BRAF	intron 9 rearrangement	Rearrangements
+2814	DRD5	low expression	Expression
+2845	HOXD8	mutation	Region Defined Variant
+3322	VEGFA	overexpression of VEGF-Axxxa	Expression
+2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number
+272	CDKN2A	p16 Expression	Expression
+3478	ESR2	underexpression beta-1	Expression
+2748	ETV6	~DEPRECATED-ETV6::NTRK3 FUSION	Fusion
+2718	CCNE1	ｍRNA expression low	Expression
