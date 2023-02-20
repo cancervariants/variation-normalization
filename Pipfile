@@ -5,22 +5,16 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
-jupyterlab = "*"
 pytest-cov = "*"
 flake8 = "*"
 flake8-docstrings = "*"
 flake8-quotes = "*"
 flake8-annotations = "*"
 flake8-import-order = "*"
-coveralls = "*"
-coverage = "*"
 pre-commit = "*"
 variation-normalizer = {editable = true, path = "."}
-pyyaml = "*"
 jupyter = "*"
 ipykernel = "*"
-twine = "*"
-matplotlib = "*"
 psycopg2-binary = "*"
 pytest-asyncio = "*"
 
@@ -30,8 +24,8 @@ fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
 "ga4gh.vrs" = {version = ">=0.9.0.dev0", extras = ["extras"]}
-gene-normalizer = ">=0.2.7"
+gene-normalizer = ">=0.2.8"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = ">=0.1.0.dev7"
-cool-seq-tool = ">=0.1.5"
+cool-seq-tool = ">=0.1.6"
