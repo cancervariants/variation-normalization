@@ -14,8 +14,8 @@ variant_id	query	query_type	exception_raised	message	warnings
 3718	AR A748V	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3725	AR A765T	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1307	TP53 ALTERATION	protein	False	unable to normalize	['Unable to tokenize ALTERATION']
-842	BRAF APC	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
-2758	BRCA1 ATM	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
+842	BRAF APC	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
+2758	BRCA1 ATM	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
 309	EGFR AUTOCRINE ACTIVATION	protein	False	unable to normalize	['Unable to tokenize AUTOCRINE', 'Unable to tokenize ACTIVATION']
 3510	BCL2L11 Alternative splicing	protein	False	unable to normalize	['Unable to tokenize Alternative', 'Unable to tokenize splicing']
 2844	MITF Amplificatioin	protein	False	unable to normalize	['Unable to tokenize Amplificatioin']
@@ -65,8 +65,8 @@ variant_id	query	query_type	exception_raised	message	warnings
 1635	EGFR E746_A750>IP	protein	False	unable to normalize	['Unable to tokenize E746_A750>IP']
 1433	EGFR E746_S752>A	protein	False	unable to normalize	['Unable to tokenize E746_S752>A']
 1003	EGFR E746_T751>I	protein	False	unable to normalize	['Unable to tokenize E746_T751>I']
-3484	FN1 EDB	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
-2670	EPHB2 EPHB2	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
+3484	FN1 EDB	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
+2670	EPHB2 EPHB2	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
 4005	EWSR1 EWSR1-ERG	protein	False	unable to normalize	['Unable to tokenize EWSR1-ERG']
 1854	EGFR Ex19 del L858R	protein	False	unable to normalize	['Unable to tokenize Ex19', 'Unable to tokenize del']
 457	FCGR3A F212V	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -75,7 +75,7 @@ variant_id	query	query_type	exception_raised	message	warnings
 92	NRAS G12	protein	False	unable to normalize	['Unable to tokenize G12']
 77	KRAS G12/G13	protein	False	unable to normalize	['Unable to tokenize G12/G13']
 596	NRAS G12/G13	protein	False	unable to normalize	['Unable to tokenize G12/G13']
-80	KRAS G13	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
+80	KRAS G13	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
 3793	TP53 G177E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3152	GNA11 G209P	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3153	GNAQ G209P	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -151,7 +151,7 @@ variant_id	query	query_type	exception_raised	message	warnings
 1866	EGFR L861	protein	False	unable to normalize	['Unable to tokenize L861']
 3483	LGR5 LGR5FL	protein	False	unable to normalize	['Unable to tokenize LGR5FL']
 302	PTCH1 LOH	protein	False	unable to normalize	['Unable to tokenize LOH']
-1247	BRCA2 M1R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
+1247	BRCA2 M1R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
 638	RB1 M695FS*26	protein	False	unable to normalize	['Unable to tokenize M695FS*26']
 3435	MYOD1 MYOD1 L122R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3127	WT1 Mutations	protein	False	unable to normalize	['Unable to tokenize Mutations']
@@ -263,5 +263,64 @@ variant_id	query	query_type	exception_raised	message	warnings
 1546	KIT T417_D419DELTYDINSI	protein	False	unable to normalize	['Unable to tokenize T417_D419DELTYDINSI']
 3445	BRAF T598I	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 4074	TFEB TFEB amplification	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'amplification'}""]"
-2669	TGFBR3 TGFBR3	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'silent mutation', 'coding dna insertion', 'amplification', 'genomic insertion', 'genomic deletion range', 'genomic duplication', 'genomic uncertain deletion', 'coding dna silent mutation', 'coding dna substitution', 'protein delins', 'genomic silent mutation', 'coding dna deletion', 'protein insertion', 'protein substitution', 'protein deletion', 'genomic delins', 'coding dna delins', 'polypeptide truncation', 'genomic substitution', 'genomic deletion'}""]"
+2669	TGFBR3 TGFBR3	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
 3473	TNC TNC-L	protein	False	unable to normalize	['Unable to tokenize TNC-L']
+3486	TOP2A TOP2A/90	protein	False	unable to normalize	['Unable to tokenize TOP2A/90']
+590	BIRC3 TRUNCATING MUTATION	protein	False	unable to normalize	['Unable to tokenize TRUNCATING', 'Unable to tokenize MUTATION']
+708	BRCA2 TRUNCATING MUTATION	protein	False	unable to normalize	['Unable to tokenize TRUNCATING', 'Unable to tokenize MUTATION']
+3110	CREBBP TRUNCATING MUTATIONS AND DELETERIOUS SUBSTITUTIONS	protein	False	unable to normalize	['Unable to tokenize TRUNCATING', 'Unable to tokenize MUTATIONS', 'Unable to tokenize AND', 'Unable to tokenize DELETERIOUS', 'Unable to tokenize SUBSTITUTIONS']
+223	TP53 Truncating Mutation	protein	False	unable to normalize	['Unable to tokenize Truncating', 'Unable to tokenize Mutation']
+729	UGT1A1 UGT1A1*28	protein	False	unable to normalize	['Unable to tokenize UGT1A1*28']
+732	UGT1A1 UGT1A1*60	protein	False	unable to normalize	['Unable to tokenize UGT1A1*60']
+2624	TP53 V135A	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+1316	KIT V559	protein	False	unable to normalize	['Unable to tokenize V559']
+3452	BRAF V599D	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3446	BRAF V599E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3453	BRAF V599K	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3454	BRAF V599R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+17	BRAF V600	protein	False	unable to normalize	['Unable to tokenize V600']
+2820	BRAF V600_K601>E	protein	False	unable to normalize	['Unable to tokenize V600_K601>E']
+2821	BRAF V600_S602>DT	protein	False	unable to normalize	['Unable to tokenize V600_S602>DT']
+2825	BRAF V601E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3721	AR V757A	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3722	AR V757I	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+1310	ERBB2 V773	protein	False	unable to normalize	['Unable to tokenize V773']
+312	EGFR VIII	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'genomic substitution', 'amplification', 'coding dna silent mutation', 'genomic silent mutation', 'protein substitution', 'coding dna deletion', 'genomic delins', 'protein delins', 'coding dna delins', 'protein deletion', 'genomic insertion', 'silent mutation', 'genomic duplication', 'polypeptide truncation', 'genomic uncertain deletion', 'genomic deletion', 'coding dna insertion', 'genomic deletion range', 'coding dna substitution', 'protein insertion'}""]"
+2728	TP53 W146	protein	False	unable to normalize	['Unable to tokenize W146']
+1539	PDGFRA W559_R560DELWR	protein	False	unable to normalize	['Unable to tokenize W559_R560DELWR']
+176	AR W742	protein	False	unable to normalize	['Unable to tokenize W742']
+2720	TP53 Y205	protein	False	unable to normalize	['Unable to tokenize Y205']
+1542	KIT Y553_W557DELYEVQW	protein	False	unable to normalize	['Unable to tokenize Y553_W557DELYEVQW']
+3327	FLT3 Y572Δ	protein	False	unable to normalize	['Unable to tokenize Y572Δ']
+165	EZH2 Y646	protein	False	unable to normalize	['Unable to tokenize Y646']
+3518	EZH2 Y646F, Y646N, Y646S, Y646H, Y646C, A682G, A692V	protein	False	unable to normalize	['Unable to tokenize Y646F,', 'Unable to tokenize Y646N,', 'Unable to tokenize Y646S,', 'Unable to tokenize Y646H,', 'Unable to tokenize Y646C,', 'Unable to tokenize A682G,']
+3055	FLT3 Y693	protein	False	unable to normalize	['Unable to tokenize Y693']
+1672	EGFR Y69FS*11	protein	False	unable to normalize	['Unable to tokenize Y69FS*11']
+3724	AR Y763C	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+3410	TEK Y897C and R915C	protein	False	unable to normalize	['Unable to tokenize and']
+3477	ESR2 beta-2 and beta-5	protein	False	unable to normalize	['Unable to tokenize beta-2', 'Unable to tokenize and']
+3511	CD19 delta-ex2, delta-ex5-6	protein	False	unable to normalize	['Unable to tokenize delta-ex2,', 'Unable to tokenize delta-ex5-6']
+3487	BRCA1 delta11q	protein	False	unable to normalize	['Unable to tokenize delta11q']
+3482	LGR5 delta5	protein	False	unable to normalize	['Unable to tokenize delta5']
+2807	BRCA1 gBRCAm	protein	False	unable to normalize	['Unable to tokenize gBRCAm']
+3323	VEGFA low ratio of VEGF165b/VEGFtotal	protein	False	unable to normalize	['Unable to tokenize low', 'Unable to tokenize ratio', 'Unable to tokenize VEGF165b/VEGFtotal']
+3057	GATA1 p.Ser51Alafs*86	protein	False	unable to normalize	['Unable to tokenize p.Ser51Alafs*86']
+3512	BRAF p61BRAF(V600E)	protein	False	unable to normalize	['Unable to tokenize p61BRAF(V600E)']
+3313	CDKN1A rs1059234	protein	False	unable to normalize	['Unable to tokenize rs1059234']
+2787	PRNCR1 rs1456315	protein	False	unable to normalize	['Unable to tokenize rs1456315']
+256	KIT rs17084733	protein	False	unable to normalize	['Unable to tokenize rs17084733']
+2671	CDKN1A rs1801270	protein	False	unable to normalize	['Unable to tokenize rs1801270']
+3314	CDKN1A rs1801270 and rs1059234	protein	False	unable to normalize	['Unable to tokenize rs1801270', 'Unable to tokenize and', 'Unable to tokenize rs1059234']
+705	GADD45A rs681673	protein	False	unable to normalize	['Unable to tokenize rs681673']
+3703	GALNT14 rs9679162	protein	False	unable to normalize	['Unable to tokenize rs9679162']
+4284	VHL t(1;3)(p36.3;p25)	protein	False	unable to normalize	['Unable to tokenize t(1;3)(p36.3;p25)']
+2429	VHL t(1;3)(q32;q13.3)	protein	False	unable to normalize	['Unable to tokenize t(1;3)(q32;q13.3)']
+2876	VHL t(2;3)(q35;q21)	protein	False	unable to normalize	['Unable to tokenize t(2;3)(q35;q21)']
+3265	VHL t(3;12)(q13.13;q24.23)	protein	False	unable to normalize	['Unable to tokenize t(3;12)(q13.13;q24.23)']
+4009	VHL t(3;12)(q13.2;q24.1)	protein	False	unable to normalize	['Unable to tokenize t(3;12)(q13.2;q24.1)']
+3524	MECOM t(3;21)(q26.2;q22)	protein	False	unable to normalize	['Unable to tokenize t(3;21)(q26.2;q22)']
+3264	VHL t(3;6)(p12.3;q24.3)	protein	False	unable to normalize	['Unable to tokenize t(3;6)(p12.3;q24.3)']
+4008	VHL t(3;6)(p13;q25.1)	protein	False	unable to normalize	['Unable to tokenize t(3;6)(p13;q25.1)']
+3351	VHL t(3;8)(p13;q24.1)	protein	False	unable to normalize	['Unable to tokenize t(3;8)(p13;q24.1)']
+3508	CD274 v242	protein	False	unable to normalize	['Unable to tokenize v242']
+2422	NTRK3 ~DEPRECATED-ETV6-NTRK3	protein	False	unable to normalize	['Unable to tokenize ~DEPRECATED-ETV6-NTRK3']
