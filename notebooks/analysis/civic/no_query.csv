@@ -290,7 +290,7 @@ variant_id	variant_name
 3013	R82_V84del (c.243delGCGCGTCGT)
 2264	R82_V84del (c.244_252del)
 3747	S111I (c.332G>T)
-4171	S111N (c.332G>A)
+4171	S111N (c.332G>A) 
 2316	S139fs (c.415insC)
 4154	S168Tfs*2 (c.503_513del)
 3135	S38P (c.112T>C)
@@ -399,7 +399,7 @@ variant_id	variant_name
 3039	c.652T>A
 3050	c.7089+1del
 3051	c.7515+1_2del
-2433	c.89c297
+2433	c.89c297 
 3049	c.902-1G>T
 3101	c.–65_–55dup11
 4191	c.–65_–55dup11 AND  3' UTR alteration (c.*1149A>G)
