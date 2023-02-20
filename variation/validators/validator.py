@@ -668,7 +668,7 @@ class Validator(ABC):
         """
         translated_identifiers, w = self.seqrepo_access.translate_identifier(t)
         if translated_identifiers:
-            return "GRCh38" in ([a for a in translated_identifiers if a.startswith("GRCh")] or [None])[0]  # noqa: E501
+            return "GRCh38" in ([a for a in translated_identifiers if a.startswith("GRCh")] or [dict()])[0]  # noqa: E501
         return False
 
     async def add_genomic_liftover_to_results(
