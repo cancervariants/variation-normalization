@@ -1315,6 +1315,9 @@ async def test_valid_queries(test_handler):
     assert resp.variation_descriptor.variation.id == \
         "ga4gh:VA.7qNgfRjiDwephtGOuwtXm04YcXDSY47x"
 
+    resp = await test_handler.normalize("NG_008212.3:g.5426_5445del")
+    assert resp.variation_descriptor
+
 
 @pytest.mark.asyncio
 async def test_no_matches(test_handler):
