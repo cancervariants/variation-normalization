@@ -666,9 +666,9 @@ class Validator(ABC):
         :param str t: Accession
         :return: `True` if accession is GRCh38 assembly. `False` otherwise
         """
-        translated_identifiers, w = self.seqrepo_access.translate_identifier(t)
+        translated_identifiers, _ = self.seqrepo_access.translate_identifier(t)
         if translated_identifiers:
-            return "GRCh38" in ([a for a in translated_identifiers if a.startswith("GRCh")] or [None])[0]  # noqa: E501
+            return bool([a for a in translated_identifiers if a.startswith("GRCh38")])
         return False
 
     async def add_genomic_liftover_to_results(
