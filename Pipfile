@@ -5,24 +5,18 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
-jupyterlab = "*"
+pytest-asyncio = "*"
 pytest-cov = "*"
 flake8 = "*"
 flake8-docstrings = "*"
 flake8-quotes = "*"
 flake8-annotations = "*"
 flake8-import-order = "*"
-coveralls = "*"
-coverage = "*"
 pre-commit = "*"
 variation-normalizer = {editable = true, path = "."}
-pyyaml = "*"
 jupyter = "*"
 ipykernel = "*"
-twine = "*"
-matplotlib = "*"
 psycopg2-binary = "*"
-pytest-asyncio = "*"
 
 [packages]
 "biocommons.seqrepo" = "*"
@@ -30,9 +24,8 @@ fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
 "ga4gh.vrs" = {version = "~=0.8.1.dev0", extras = ["extras"]}
-gene-normalizer = "~=0.1.31"
+gene-normalizer = "~=0.1.32"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = "~=0.0.11"
-cool-seq-tool = ">=0.1.5"
-bioutils = "*"
+cool-seq-tool = ">=0.1.6"
