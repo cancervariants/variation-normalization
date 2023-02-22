@@ -1,6 +1,5 @@
 variant_id	query	query_type	exception_raised	message	warnings
 748	MLH1 *757L	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-2390	MAP2K1 56_61QKQKVG>R	protein	False	unable to normalize	['Unable to tokenize 56_61QKQKVG>R']
 3718	AR A748V	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3725	AR A765T	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 2844	MITF Amplificatioin	protein	False	unable to normalize	['Unable to tokenize Amplificatioin']
@@ -10,22 +9,16 @@ variant_id	query	query_type	exception_raised	message	warnings
 3706	AR D221H	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3713	AR D528G	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 2833	NECTIN4 D594H	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3231	FLT3 D835 & I836	protein	False	unable to normalize	['Unable to tokenize D835', 'Unable to tokenize &', 'Unable to tokenize I836']
 943	PDGFRA D842_H845DELDIMH	protein	False	unable to normalize	['Unable to tokenize D842_H845DELDIMH']
 2514	3-10183806-A-CC	genomic	False	unable to normalize	['Unable to find valid result for classifications: set()']
 3023	PML DELETION (p.K227_T233del)	protein	False	unable to normalize	['Unable to tokenize DELETION', 'Unable to tokenize (p.K227_T233del)']
-1663	BRAF DELNVTAP	protein	False	unable to normalize	['Unable to tokenize DELNVTAP']
 2414	MAP2K1 E102_I103delEI	protein	False	unable to normalize	['Unable to tokenize E102_I103delEI']
 2994	MAEA E151INT	protein	False	unable to normalize	['Unable to tokenize E151INT']
-2591	DICER1 E1813 mutations	protein	False	unable to normalize	['Unable to tokenize E1813', 'Unable to tokenize mutations']
 3707	AR E198G	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3328	FLT3 E573Δ	protein	False	unable to normalize	['Unable to tokenize E573Δ']
 1577	EGFR E709_T710>D	protein	False	unable to normalize	['Unable to tokenize E709_T710>D']
 1635	EGFR E746_A750>IP	protein	False	unable to normalize	['Unable to tokenize E746_A750>IP']
 1433	EGFR E746_S752>A	protein	False	unable to normalize	['Unable to tokenize E746_S752>A']
 1003	EGFR E746_T751>I	protein	False	unable to normalize	['Unable to tokenize E746_T751>I']
-4005	EWSR1 EWSR1-ERG	protein	False	unable to normalize	['Unable to tokenize EWSR1-ERG']
-1854	EGFR Ex19 del L858R	protein	False	unable to normalize	['Unable to tokenize Ex19', 'Unable to tokenize del']
 457	FCGR3A F212V	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3450	BRAF F594L	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3793	TP53 G177E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -36,11 +29,7 @@ variant_id	query	query_type	exception_raised	message	warnings
 4298	FGFR3 G802_X807del	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein deletion'}""]"
 4240	TYR GRCh37/hg19 11q14.3(chr11:88960991-88961138)x160	protein	False	unable to normalize	['Unable to tokenize GRCh37/hg19', 'Unable to tokenize 11q14.3(chr11:88960991-88961138)x160']
 3305	TNFRSF17 Gain	protein	False	unable to normalize	['Unable to tokenize Gain']
-3766	PIK3CA H1047L or H1047R	protein	False	unable to normalize	['Unable to tokenize or']
 3448	BRAF I462S	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-2744	IKZF1 IKZF1 deletion and mutation	protein	False	unable to normalize	['Unable to tokenize deletion', 'Unable to tokenize and', 'Unable to tokenize mutation']
-788	CHEK2 IVS2+1G>A	protein	False	unable to normalize	['Unable to tokenize IVS2+1G>A']
-2674	RB1 IVS20, A-G, -2	protein	False	unable to normalize	['Unable to tokenize IVS20,', 'Unable to tokenize A-G,', 'Unable to tokenize -2']
 2137	3-10191481-GAA-C	genomic	False	unable to normalize	['Unable to find valid result for classifications: set()']
 2815	H3C2 K27M	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3939	H3-3A K27M	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -52,7 +41,6 @@ variant_id	query	query_type	exception_raised	message	warnings
 3455	BRAF K600E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3714	AR K720E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1638	EGFR K745_E749delKELRE	protein	False	unable to normalize	['Unable to tokenize K745_E749delKELRE']
-3472	KRAS KRAS4A	protein	False	unable to normalize	['Unable to tokenize KRAS4A']
 4114	TP53 L139N	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 424	MYD88 L265P	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1540	PDGFRA L579M	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -64,11 +52,8 @@ variant_id	query	query_type	exception_raised	message	warnings
 4221	AKT2 L78_Q79ins	protein	False	unable to normalize	['Unable to tokenize L78_Q79ins']
 3483	LGR5 LGR5FL	protein	False	unable to normalize	['Unable to tokenize LGR5FL']
 3435	MYOD1 MYOD1 L122R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3127	WT1 Mutations	protein	False	unable to normalize	['Unable to tokenize Mutations']
 3719	AR N756D	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1581	EGFR N771>GY	protein	False	unable to normalize	['Unable to tokenize N771>GY']
-1320	ERBB2 NON-AMPLIFICATION	protein	False	unable to normalize	['Unable to tokenize NON-AMPLIFICATION']
-3740	NTRK1 NTRK1 amplification	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'amplification'}""]"
 2408	BRAF Non-V600	protein	False	unable to normalize	['Unable to tokenize Non-V600']
 3711	AR P340L	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3712	AR P504L	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -76,26 +61,21 @@ variant_id	query	query_type	exception_raised	message	warnings
 2916	PRPS1 PRPS1 MUTATION	protein	False	unable to normalize	['Unable to tokenize MUTATION']
 1643	SCN8A Q225X	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 2700	CBL Q294E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3326	FLT3 Q575Δ	protein	False	unable to normalize	['Unable to tokenize Q575Δ']
 3726	AR Q798E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-4000	RAF1 QKI-RAF1	protein	False	unable to normalize	['Unable to tokenize QKI-RAF1']
 1975	3-10191506-CGGAGC-T	genomic	False	unable to normalize	['Unable to find valid result for classifications: set()']
 3069	NTRK3 R248C	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3447	BRAF R461I	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3716	AR R726L	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3411	TEK R849W and R1108*	protein	False	unable to normalize	['Unable to tokenize and']
 3674	NOTCH1 S2514A	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3676	NOTCH1 S2514E	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3677	NOTCH1 S2514P	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3709	AR S296R	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-3329	FLT3 S574Δ	protein	False	unable to normalize	['Unable to tokenize S574Δ']
 891	EGFR S752_I759delSPKANKEI	protein	False	unable to normalize	['Unable to tokenize S752_I759delSPKANKEI']
 3723	AR S759P	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 536	SULT1E1 SNP	protein	False	unable to normalize	['Unable to tokenize SNP']
 3675	NOTCH1 T2512A	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1546	KIT T417_D419DELTYDINSI	protein	False	unable to normalize	['Unable to tokenize T417_D419DELTYDINSI']
 3445	BRAF T598I	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-4074	TFEB TFEB amplification	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'amplification'}""]"
 729	UGT1A1 UGT1A1*28	protein	False	unable to normalize	['Unable to tokenize UGT1A1*28']
 732	UGT1A1 UGT1A1*60	protein	False	unable to normalize	['Unable to tokenize UGT1A1*60']
 2624	TP53 V135A	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
@@ -110,8 +90,6 @@ variant_id	query	query_type	exception_raised	message	warnings
 3722	AR V757I	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1539	PDGFRA W559_R560DELWR	protein	False	unable to normalize	['Unable to tokenize W559_R560DELWR']
 1542	KIT Y553_W557DELYEVQW	protein	False	unable to normalize	['Unable to tokenize Y553_W557DELYEVQW']
-3327	FLT3 Y572Δ	protein	False	unable to normalize	['Unable to tokenize Y572Δ']
 3518	EZH2 Y646F, Y646N, Y646S, Y646H, Y646C, A682G, A692V	protein	False	unable to normalize	['Unable to tokenize Y646F,', 'Unable to tokenize Y646N,', 'Unable to tokenize Y646S,', 'Unable to tokenize Y646H,', 'Unable to tokenize Y646C,', 'Unable to tokenize A682G,']
 3724	AR Y763C	protein	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-2807	BRCA1 gBRCAm	protein	False	unable to normalize	['Unable to tokenize gBRCAm']
 3512	BRAF p61BRAF(V600E)	protein	False	unable to normalize	['Unable to tokenize p61BRAF(V600E)']

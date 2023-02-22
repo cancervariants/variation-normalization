@@ -8,6 +8,7 @@ variant_id	gene_name	variant_name	category
 433	HIF1A	3' UTR Polymorphism	Region Defined Variant
 2367	VHL	3p26.3-25.3 11Mb del	Region Defined Variant
 265	TYMS	5' TANDEM REPEAT	Other
+2390	MAP2K1	56_61QKQKVG>R	Rearrangements
 4187	VHL	5kb Deletion	Region Defined Variant
 2727	ERBB2	A129	Protein Consequence
 2729	TP53	A129	Protein Consequence
@@ -163,12 +164,14 @@ variant_id	gene_name	variant_name	category
 2767	BRAF	D594	Protein Consequence
 746	MLH1	D667FS	Protein Consequence
 437	FLT3	D835	Protein Consequence
+3231	FLT3	D835 & I836	Protein Consequence
 613	FLT3	D835H/Y	Protein Consequence
 2394	NTRK1	DDR2::NTRK1	Fusion
 2706	DEK	DEK::AFF2	Fusion
 522	BRAF	DEL 485-490	Region Defined Variant
 954	KIT	DEL 554-558	Region Defined Variant
 647	LRP1B	DELETION	Gene Function
+1663	BRAF	DELNVTAP	Incomplete Variants
 2685	DGKH	DGKH::ZFAND3	Fusion
 242	TP53	DNA Binding Domain Mutation	Region Defined Variant
 31	PRKACA	DNAJB1::PRKACA	Fusion
@@ -195,10 +198,12 @@ variant_id	gene_name	variant_name	category
 526	BCL2L11	Deletion Polymorphism	Region Defined Variant
 3009	ABL1	Double Ph	Rearrangements
 725	MLH1	E13fs	Protein Consequence
+2591	DICER1	E1813 mutations	Protein Consequence
 572	MTOR	E2014K and E2419K	Protein Consequence
 2730	TP53	E204	Protein Consequence
 763	MSH2	E28FS	Protein Consequence
 2763	PIK3CA	E545	Protein Consequence
+3328	FLT3	E573Δ	Other
 1544	FLT3	E611_F612INS25	Protein Consequence
 2258	EGFR	E709A and G719C	Protein Consequence
 2256	EGFR	E709K and G719A	Protein Consequence
@@ -238,6 +243,7 @@ variant_id	gene_name	variant_name	category
 801	NTRK3	ETV6::NTRK3	Fusion
 805	NTRK3	ETV6::NTRK3 G623R	Fusion
 3140	ETV6	ETV6::RUNX1	Fusion
+4005	EWSR1	EWSR1-ERG	Fusion
 3054	EWSR1	EWSR1::ATF1	Fusion
 717	DDIT3	EWSR1::DDIT3	Fusion
 194	ERG	EWSR1::ERG	Fusion
@@ -326,6 +332,7 @@ variant_id	gene_name	variant_name	category
 2984	CXCL10	EXPRESSION	Expression
 3042	CDK6	EXPRESSION	Expression
 3330	TCF19	EXPRESSION	Expression
+1854	EGFR	Ex19 del L858R	Region Defined Variant
 2870	VHL	Exon 1 (Frameshift)	Other
 844	VHL	Exon 1 Deletion	Region Defined Variant
 2465	VHL	Exon 1 del (151nt)	Region Defined Variant
@@ -452,6 +459,7 @@ variant_id	gene_name	variant_name	category
 2061	ACVR1	Gain-of-Function	Gene Function
 2172	MTOR	Gain-of-Function	Gene Function
 1765	EGFR	Gain-of-function	Gene Function
+3766	PIK3CA	H1047L or H1047R	Protein Consequence
 2581	NCOA2	HEY1::NCOA2	Fusion
 588	ALK	HIP1::ALK I1171N	Fusion
 2969	HMGA2	HMGA2::LPP	Fusion
@@ -463,6 +471,7 @@ variant_id	gene_name	variant_name	category
 151	BCL2	IGH::BCL2	Fusion
 2663	CRLF2	IGH::CRLF2	Fusion
 4309	FGFR3	IGHA1::FGFR3	Fusion
+2744	IKZF1	IKZF1 deletion and mutation	Region Defined Variant
 2686	IL2RB	IL2RB::MYH9	Fusion
 218	SMARCA4	INACTIVATING MUTATION	Gene Function
 2238	BARD1	ISOFORM EXPRESSION	Expression
@@ -480,6 +489,8 @@ variant_id	gene_name	variant_name	category
 2785	FLT3	ITD N676K	Rearrangements
 3218	FLT3	ITD and co-mutations	Rearrangements
 3208	FLT3	ITD&F691(I/L)	Rearrangements
+788	CHEK2	IVS2+1G>A	Other
+2674	RB1	IVS20, A-G, -2	Other
 2895	NUDT15	Inactivating Mutation	Gene Function
 67	KIT	Internal Duplication	Copy Number
 2659	FGFR1	Internal Duplication	Copy Number
@@ -512,7 +523,8 @@ variant_id	gene_name	variant_name	category
 432	KMT2A	KMT2A::MLLT3	Fusion
 3117	KMT2A	KMT2A::MLLT4	Fusion
 2210	ASNS	KMT2E::ASNS	Fusion
-3471	KRAS	KRAS4A underexpression	Expression
+3472	KRAS	KRAS4A	Other
+3471	KRAS	KRAS4A underexpression	Other
 413	ERBB2	Kinase Domain Mutation	Region Defined Variant
 2731	TP53	L114	Protein Consequence
 1783	VHL	L158fs (c.471dupT)	Copy Number
@@ -693,10 +705,13 @@ variant_id	gene_name	variant_name	category
 3203	ATRX	Mutation	Region Defined Variant
 3274	PDGFRA	Mutation	Region Defined Variant
 4018	MS4A1	Mutation	Region Defined Variant
+3127	WT1	Mutations	Region Defined Variant
 28	CEBPA	N-TERMINAL FRAME SHIFT	Protein Consequence
+1320	ERBB2	NON-AMPLIFICATION	Copy Number
 513	ALK	NPM::ALK	Fusion
 2883	BRAF	NRF1::BRAF	Fusion
 2762	NRG1	NRG1 FUSIONS	Fusion
+3740	NTRK1	NTRK1 amplification	Copy Number
 340	DKK1	NUCLEAR EXPRESSION	Expression
 368	BIRC5	NUCLEAR EXPRESSION	Expression
 391	IGF1R	NUCLEAR EXPRESSION	Expression
@@ -918,10 +933,12 @@ variant_id	gene_name	variant_name	category
 507	GNAQ	Q209	Protein Consequence
 558	GNA11	Q209	Protein Consequence
 744	MLH1	Q426FS	Protein Consequence
+3326	FLT3	Q575Δ	Other
 94	NRAS	Q61	Protein Consequence
 203	KRAS	Q61	Protein Consequence
 2570	HRAS	Q61	Protein Consequence
 1105	KRAS	Q61FS	Protein Consequence
+4000	RAF1	QKI-RAF1	Fusion
 3029	BCL2	R107_R110dup	Copy Number
 2021	VHL	R108dup (c.322_324dup)	Copy Number
 58	IDH1	R132	Protein Consequence
@@ -935,6 +952,7 @@ variant_id	gene_name	variant_name	category
 2597	DICER1	R392fs and E1813D	Protein Consequence
 735	MLH1	R687FS	Protein Consequence
 1165	ATM	R777FS	Protein Consequence
+3411	TEK	R849W and R1108*	Protein Consequence
 32	DNMT3A	R882	Protein Consequence
 3268	ABL1	RANBP2::ABL1	Fusion
 514	ALK	RANBP2::ALK	Fusion
@@ -977,6 +995,7 @@ variant_id	gene_name	variant_name	category
 497	ERBB2	S310F/Y	Protein Consequence
 128	U2AF1	S34Y/F	Protein Consequence
 3257	AKT1	S473 Phosphorylation	Epigenetic Modification
+3329	FLT3	S574Δ	Other
 1676	FBXW7	S668FS*39	Protein Consequence
 720	EGFR	S720	Protein Consequence
 1511	EGFR	S768_D770dup	Copy Number
@@ -1016,6 +1035,7 @@ variant_id	gene_name	variant_name	category
 3359	CSF1R	TBL1XR1::CSF1R	Fusion
 2862	JAK2	TERF2::JAK2	Fusion
 3730	TFE3	TFE3 fusion	Fusion
+4074	TFEB	TFEB amplification	Copy Number
 576	ROS1	TFG::ROS1	Fusion
 2669	TGFBR3	TGFBR3	Protein Consequence
 56	FLT3	TKD MUTATION	Gene Function
@@ -1102,6 +1122,7 @@ variant_id	gene_name	variant_name	category
 390	EGFR	Y1092 PHOSPHORYLATION	Epigenetic Modification
 245	NF2	Y177fs	Protein Consequence
 2720	TP53	Y205	Protein Consequence
+3327	FLT3	Y572Δ	Other
 165	EZH2	Y646	Protein Consequence
 3055	FLT3	Y693	Protein Consequence
 1672	EGFR	Y69FS*11	Protein Consequence
@@ -1120,6 +1141,7 @@ variant_id	gene_name	variant_name	category
 3482	LGR5	delta5	Other
 2349	IL7R	exon 6 mutations	Region Defined Variant
 3752	SSTR5	expression	Expression
+2807	BRCA1	gBRCAm	Other
 2226	BRAF	intron 10 rearrangement	Rearrangements
 2225	BRAF	intron 9 rearrangement	Rearrangements
 2814	DRD5	low expression	Expression
