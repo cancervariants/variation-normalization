@@ -4,13 +4,10 @@ variant_id	variant_name
 4216	 W8* (c.23G>A)
 4278	 Y112C (c.335A>G)
 4232	 c.212+1G>T
-2488	*214G (c.640T>G)
 3196	*214Gext*14 (c.640T>G)
 2930	106insR (c.316insGCC)
 3083	180fs*22 (c.540delC)
 3102	3' UTR alteration (c.*1149A>G)
-2024	3'UTR alteration (c.639+10C>G)
-3194	A122V (c.365C>T)
 2482	A149fs (c.446delG)
 2023	A149fs (c.449del14-nt)
 2962	A28fsX109 (c.83insG)
@@ -20,13 +17,11 @@ variant_id	variant_name
 4181	C162Y(c.486C>G) and L188V(c.562C>G) and P81S(c.241C>T) and F119L(c.357C>G)
 4108	C77Sfs*82 (c.230del)
 3245	C77fs (c.230del)
-3133	D121N (c.361G>A)
 3567	D121Y(c.361G>T)
 2553	D121_A122del (c.361_366del)
 3156	D126Efs* (c.377_378insG)
 1918	D126FS (c.375_376insC)
 3179	D126N (c.376G>A) / S183L (c.548C>T)
-3040	D143= (c.429C>T)
 4207	D143= (c.429C>T) and c.340+770T>C
 4153	D143Efs*13 (c.429_438del)
 1844	D143fs (c.430delG)
@@ -34,7 +29,6 @@ variant_id	variant_name
 3260	D213E (c.639T>G)
 2673	D679N (c.2035G>A)
 3360	D92V (c.275A>T)
-2514	D92fs (c.275delinsCC)
 2963	D96H (c.238G>C)
 4192	Deletion AND I151S(c.452T>G)
 4193	Deletion AND R200W (c.598C>T)
@@ -94,9 +88,7 @@ variant_id	variant_name
 2135	G123fs (c.369_375delGACACAC)
 3099	G127_L128delinsGF (c.381_382delinsTT)
 4172	G144Dfs*15 (c.431del)
-2290	G144E (c.431G>A)
 4211	G144R (c.430G>A) and c.340+694_340+711dup
-3197	G144R (c.430G>C)
 2319	G144fs (c.429_430insGGAC)
 2320	G144fs (c.430_433delGGAC)
 1949	G144fs (c.432insG)
@@ -113,9 +105,7 @@ variant_id	variant_name
 4093	H191Tfs*11 (c.571del)
 2328	H191fs (c.570_574delCCACC)
 1965	I109TfsX50 (c.326delT)
-2476	I151N (c.452T>A)
 2095	I151fs (c.452insA)
-3146	I75S (c.224T>G)
 3136	I75Sfs*84 (c.223del)
 3154	I75Yfs*57 (c.224dupT)
 2487	I75del (c.221delTCA)
@@ -125,7 +115,6 @@ variant_id	variant_name
 4088	K159Efs*15 (c.473dup)
 4089	K159delinsI* (c.475_476insTTT)
 4100	K159fs (c.472_473insT)
-2137	K159fs (c.474_476delGAAinsC)
 2040	K159fs (c.477_478insCA)
 2327	K171fs (c.512_516delAGCCT)
 2140	K196fs (c.584_585delAG)
@@ -134,7 +123,6 @@ variant_id	variant_name
 2312	L116fs (c.347delT)
 2381	L118P (c.353T>C) and R107G  (c.319C>G)
 2313	L118fs (c.349_350insG)
-3066	L128F (c.382C>T)
 1768	L129Q (c.386insAGA)
 3172	L129Wfs*?(c.383delT)
 1996	L129fs (c.384delT)
@@ -162,7 +150,6 @@ variant_id	variant_name
 2506	L85_E94del (c.254_283del30bp)
 1925	L85fs (c.253_254ins38)
 2305	L85fs (c.253delC)
-2549	L89R (c.266T>G)
 3164	L89S (c.265C>T)
 3720	M3I(c.3G>A) and M211L (c.631A>C)
 2497	M54Gfs*77 (c.160_161delAT)
@@ -193,7 +180,6 @@ variant_id	variant_name
 4264	Null (c.341+1_341–1)
 3248	P103H (c.308C>A)
 4265	P119L (c.355T>C)
-2866	P138= (c.414A>G)
 2526	P146Gfs*14 (c.435_436insGG)
 3162	P154= (c.462A>G)
 4262	P154Qfs4*(c.461delC)
@@ -228,12 +214,10 @@ variant_id	variant_name
 3199	P97L (c.290C>T) and L116P (c.347T>C)
 4189	Partial Deletion and P61=( c.183C>G)
 2443	Q132Hfs*45 (c.343_395dup)
-1882	Q132P (c.395A>C)
 2267	Q132fs (c.395_396delAA)
 2321	Q145H (c.435G>T)
 2155	Q145Tfs* (c.432_433insA)
 2525	Q145fs (c.433_437delCAGCC)
-1943	Q164H (c.492G>C)
 4212	Q164H (c.492G>T) and c.340+574A>T
 4094	Q203Gfs*52 (c.607_608del)
 2383	Q203TfsX53 (c.606dupA)
@@ -251,8 +235,6 @@ variant_id	variant_name
 3633	R108dup (c.322_324dupCGC)
 3656	R108fs (c.322_323insTG)
 2537	R108fs (c.323delGC)
-2877	R120* (c.358A>T)
-2494	R120T (c.359G>C)
 2552	R120fs*158 (c.359delG)
 2996	R1273* (c.3817C>T)
 4096	R161* (c.481C>T) AND R200fs (c.598del)
@@ -266,7 +248,6 @@ variant_id	variant_name
 4239	R167W(c.499C>T)
 2486	R167fs (c.501insTTGTCCGT)
 1779	R167fs (c.502insTTGTCCGT)
-1975	R167fsX4 (c.499_504delinsT)
 3187	R176Gfs*26 (c.526del)
 3355	R177SFS*22 (c.531_542delinsTC)
 4266	R177Tfs*23 (c.530_536del)
@@ -290,10 +271,9 @@ variant_id	variant_name
 3013	R82_V84del (c.243delGCGCGTCGT)
 2264	R82_V84del (c.244_252del)
 3747	S111I (c.332G>T)
-4171	S111N (c.332G>A) 
+4171	S111N (c.332G>A)
 2316	S139fs (c.415insC)
 4154	S168Tfs*2 (c.503_513del)
-3135	S38P (c.112T>C)
 4076	S43_E47del (c.123_137del)
 4231	S43_E47dup (c.123_137dup)
 4099	S65* (c.189_192del)
@@ -303,7 +283,6 @@ variant_id	variant_name
 2462	S72fs (c.216delC)
 4109	S80Ifs*79 (c.239del)
 4184	S80N (c.239G>A) and P25L (c.74C>T)
-1792	S80R (c.240T>G)
 2518	Splice Region (c.340 3_340 10delACGGGCCCinsCG)
 4162	Splice Region (c.340+1_340+5del)
 4226	Splice Region (c.340+2T>C)
@@ -385,7 +364,6 @@ variant_id	variant_name
 4209	c.340+694_340+711dup
 3041	c.340+770T>C
 4178	c.340+770T>C and R200W (c.598C>T)
-3161	c.340+7G>A
 2435	c.341-59_341-14del
 4197	c.341-59_341-14del AND F136fs (c.408delT)
 4152	c.358ins2
@@ -399,7 +377,7 @@ variant_id	variant_name
 3039	c.652T>A
 3050	c.7089+1del
 3051	c.7515+1_2del
-2433	c.89c297 
+2433	c.89c297
 3049	c.902-1G>T
 3101	c.–65_–55dup11
 4191	c.–65_–55dup11 AND  3' UTR alteration (c.*1149A>G)

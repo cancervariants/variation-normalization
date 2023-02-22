@@ -1,7 +1,17 @@
 variant_id	gene_name	variant_name	category
+4188	VHL	10kb Deletion	Region Defined Variant
+785	CHEK2	1100DELC	Protein Consequence
+2438	VHL	235 (CAG-TAG)	Other
+4186	VHL	2kb Deletion	Region Defined Variant
 823	EPCAM	3' Exon Deletion	Region Defined Variant
+253	EGFR	3' UTR MUTATION	Region Defined Variant
 433	HIF1A	3' UTR Polymorphism	Region Defined Variant
+2367	VHL	3p26.3-25.3 11Mb del	Region Defined Variant
 265	TYMS	5' TANDEM REPEAT	Other
+4187	VHL	5kb Deletion	Region Defined Variant
+2727	ERBB2	A129	Protein Consequence
+2729	TP53	A129	Protein Consequence
+2979	KRAS	A146	Protein Consequence
 3195	VHL	A149fs (c.444dup)	Copy Number
 2144	VHL	A56fs (c.166dup)	Copy Number
 1579	EGFR	A767_V769dupASV	Copy Number
@@ -11,18 +21,23 @@ variant_id	gene_name	variant_name	category
 285	BRAF	AGK::BRAF	Fusion
 184	BRAF	AKAP9::BRAF	Fusion
 552	ALK	ALK Fusion G1269A	Fusion
+1307	TP53	ALTERATION	Region Defined Variant
 2211	BAP1	ALTERNATIVE TRANSCRIPT (ATI)	Other
+842	BRAF	APC	Incomplete Variants
 2772	NRG1	APP::NRG1	Fusion
 3460	AR	AR alternative transcripts	Other
 3622	TFE3	ASPSCR1::TFE3	Fusion
 2846	JAK2	ATF7IP::JAK2	Fusion
 2632	PDGFRB	ATF7IP::PDGFRB	Fusion
+2758	BRCA1	ATM	Incomplete Variants
 2178	NRG1	ATP1B1::NRG1	Fusion
-1296	CTNNB1	Activating Mutation	Functional Gene Function
-2649	KRAS	Activating Mutation	Functional Gene Function
-2657	ERBB2	Activating Mutation	Functional Gene Function
-3737	EZH2	Activating Mutation	Functional Gene Function
+309	EGFR	AUTOCRINE ACTIVATION	Expression
+1296	CTNNB1	Activating Mutation	Gene Function
+2649	KRAS	Activating Mutation	Gene Function
+2657	ERBB2	Activating Mutation	Gene Function
+3737	EZH2	Activating Mutation	Gene Function
 839	ALK	Alternative Transcript (ATI)	Other
+3510	BCL2L11	Alternative splicing	Other
 709	BRCA1	Alu insertion	Rearrangements
 461	PML	B2 DOMAIN MUTATION	Region Defined Variant
 3312	FGFR1	BAG4::FGFR1	Fusion
@@ -106,62 +121,90 @@ variant_id	gene_name	variant_name	category
 656	BRAF	BRAF::CUL1	Fusion
 719	BRD4	BRD4::NUTM1	Fusion
 532	PALB2	Biallelic Inactivation	Other
+2391	MAP2K1	C121S and G128D	Protein Consequence
 2132	VHL	C77fs (c.228dup)	Copy Number
 2769	ALK	CAD::ALK	Fusion
 2630	CBFA2T3	CBFA2T3::GLIS2	Fusion
 431	CBFB	CBFB::MYH11	Fusion
 626	RET	CCDC6::RET	Fusion
 341	CD44	CD44s Expression	Expression
+3386	CD44	CD44v5 and CD44v6	Expression
+3373	CD44	CD44v6	Other
+3388	CD44	CD44v6 and CD44v10	Expression
+3387	CD44	CD44v6+/CD44s-	Expression
+3369	CD44	CD44v8-10	Expression
+3368	CD44	CD44v9	Other
+3367	CD44	CD4v8-v10 and CD44v3-v10	Expression
 2771	NRG1	CD74::NRG1	Fusion
 465	ROS1	CD74::ROS1 G2032R	Fusion
 518	ROS1	CD74::ROS1 G2101A	Fusion
 516	ROS1	CD74::ROS1 L2026M	Fusion
 517	ROS1	CD74::ROS1 L2155S	Fusion
+3474	CEACAM1	CEACAM1-L	Other
+3475	CEACAM1	CEACAM1-S	Other
 3270	ABL1	CENPC::ABL1	Fusion
 3252	CIC	CIC::DUX4	Fusion
 3987	CIC	CIC::LEUTX 	Fusion
 520	ALK	CLTC::ALK	Fusion
 3991	PDGFB	COL1A1-PDGFB fusion	Fusion
 2972	PDGFB	COL1A1::PDGFB	Fusion
+1300	TP53	CONSERVED DOMAIN MUT	Other
 821	HLA-C	COPY-NEUTRAL LOSS OF HETEROZYGOSITY	Genotypes Compound
 599	CTLA4	CTLA4::CD28	Fusion
 2229	BRAF	CUX1::BRAF	Fusion
 447	FGF13	CYTOPLASMIC EXPRESSION	Expression
 1283	CDK2	CYTOPLASMIC EXPRESSION	Expression
 360	CDKN1B	CYTOPLASMIC MISLOCALIZATION	Other
+3408	TEK	Cis double mutants	Other
+2800	BRAF	Class 2 Mutations	Other
+2801	BRAF	Class 3 Mutations	Other
 191	EGFR	Copy Number Variation	Copy Number
-746	MLH1	D667FS	Functional Protein Consequence
+2734	TP53	D184	Protein Consequence
+2767	BRAF	D594	Protein Consequence
+746	MLH1	D667FS	Protein Consequence
+437	FLT3	D835	Protein Consequence
+613	FLT3	D835H/Y	Protein Consequence
 2394	NTRK1	DDR2::NTRK1	Fusion
 2706	DEK	DEK::AFF2	Fusion
-647	LRP1B	DELETION	Functional Gene Function
+522	BRAF	DEL 485-490	Region Defined Variant
+954	KIT	DEL 554-558	Region Defined Variant
+647	LRP1B	DELETION	Gene Function
 2685	DGKH	DGKH::ZFAND3	Fusion
 242	TP53	DNA Binding Domain Mutation	Region Defined Variant
 31	PRKACA	DNAJB1::PRKACA	Fusion
 738	DPYD	DPYD*13 HOMOZYGOSITY	Genotypes Compound
 737	DPYD	DPYD*2A HOMOZYGOSITY	Genotypes Compound
 2589	DUX4	DUX4::IGH	Fusion
+3509	AIMP2	DX2	Protein Consequence
 334	VEGFA	Decreased Peri-therapeutic Expression	Expression
 221	TP53	Deleterious Mutation	Region Defined Variant
-200	IKZF1	Deletion	Functional Gene Function
-213	PTEN	Deletion	Functional Gene Function
-250	GSTP1	Deletion	Functional Gene Function
-646	SMAD4	Deletion	Functional Gene Function
-696	SMARCB1	Deletion	Functional Gene Function
-856	CREBBP	Deletion	Functional Gene Function
-1982	SUFU	Deletion	Functional Gene Function
-1983	PTCH1	Deletion	Functional Gene Function
-2654	CDKN2A	Deletion	Functional Gene Function
-2932	VHL	Deletion	Functional Gene Function
-3309	ATRX	Deletion	Functional Gene Function
-4314	CDKN2B	Deletion	Functional Gene Function
-4316	PAX5	Deletion	Functional Gene Function
-4317	ERG	Deletion	Functional Gene Function
+200	IKZF1	Deletion	Gene Function
+213	PTEN	Deletion	Gene Function
+250	GSTP1	Deletion	Gene Function
+646	SMAD4	Deletion	Gene Function
+696	SMARCB1	Deletion	Gene Function
+856	CREBBP	Deletion	Gene Function
+1982	SUFU	Deletion	Gene Function
+1983	PTCH1	Deletion	Gene Function
+2654	CDKN2A	Deletion	Gene Function
+2932	VHL	Deletion	Gene Function
+3309	ATRX	Deletion	Gene Function
+4314	CDKN2B	Deletion	Gene Function
+4316	PAX5	Deletion	Gene Function
+4317	ERG	Deletion	Gene Function
 526	BCL2L11	Deletion Polymorphism	Region Defined Variant
 3009	ABL1	Double Ph	Rearrangements
-725	MLH1	E13fs	Functional Protein Consequence
-763	MSH2	E28FS	Functional Protein Consequence
+725	MLH1	E13fs	Protein Consequence
+572	MTOR	E2014K and E2419K	Protein Consequence
+2730	TP53	E204	Protein Consequence
+763	MSH2	E28FS	Protein Consequence
+2763	PIK3CA	E545	Protein Consequence
+1544	FLT3	E611_F612INS25	Protein Consequence
+2258	EGFR	E709A and G719C	Protein Consequence
+2256	EGFR	E709K and G719A	Protein Consequence
 2847	JAK2	EBF1::JAK2	Fusion
 535	PDGFRB	EBF1::PDGFRB	Fusion
+3484	FN1	EDB	Incomplete Variants
 4294	EGFR	EGFR::BRAF	Fusion
 4283	EGFR	EGFR::PPARGC1A	Fusion
 4282	EGFR	EGFR::PURB	Fusion
@@ -186,6 +229,7 @@ variant_id	gene_name	variant_name	category
 4299	NTRK3	EML4::NTRK3	Fusion
 2750	ALK	EML6::ALK e1-e20 and FBXO11::ALK e1-e20	Fusion
 4075	EML6	EML6::NTRK3	Fusion
+2670	EPHB2	EPHB2	Protein Consequence
 4308	ALK	ERC1::ALK	Fusion
 2575	ABL1	ETV6::ABL1	Fusion
 2859	JAK2	ETV6::JAK2	Fusion
@@ -356,12 +400,12 @@ variant_id	gene_name	variant_name	category
 574	PDGFRA	FIP1L1::PDGFRA	Fusion
 577	PDGFRA	FIP1L1::PDGFRA T674I	Fusion
 2682	ABL1	FOXP1::ABL1	Fusion
-667	MEN1	FRAMESHIFT TRUNCATION	Functional Protein Consequence
+667	MEN1	FRAMESHIFT TRUNCATION	Protein Consequence
 722	DDIT3	FUS::DDIT3	Fusion
 3149	RELA	FUSION	Fusion
-428	MRE11	Frameshift	Functional Protein Consequence
-2812	MBD4	Frameshift	Functional Protein Consequence
-124	TSC1	Frameshift Truncation	Functional Protein Consequence
+428	MRE11	Frameshift	Protein Consequence
+2812	MBD4	Frameshift	Protein Consequence
+124	TSC1	Frameshift Truncation	Protein Consequence
 419	NTRK1	Fusion	Fusion
 499	ALK	Fusion	Fusion
 524	DUX4	Fusion	Fusion
@@ -385,37 +429,75 @@ variant_id	gene_name	variant_name	category
 3081	RAF1	Fusion	Fusion
 3315	TP53	Fusion	Fusion
 3957	RASGRF1	Fusion	Fusion
+76	KRAS	G12	Protein Consequence
+92	NRAS	G12	Protein Consequence
+77	KRAS	G12/G13	Protein Consequence
+596	NRAS	G12/G13	Protein Consequence
+80	KRAS	G13	Protein Consequence
+2721	TP53	G245	Protein Consequence
+2724	TP53	G266	Protein Consequence
+3587	H3-3A	G34	Protein Consequence
 3742	KIT	G3BP2::KIT	Fusion
+2822	BRAF	G469	Protein Consequence
+3469	NTRK1	G595R and G667S	Protein Consequence
+2768	BRAF	G596	Protein Consequence
+730	MLH1	G606FS*2	Protein Consequence
+718	EGFR	G719	Protein Consequence
+1557	ERBB2	G776INSV_G/C	Protein Consequence
 817	ERBB2	G778_P780DUP	Copy Number
+3033	RET	G810	Protein Consequence
 3214	JAK2	GOLGA5::JAK2	Fusion
 2395	NTRK1	GON4L::NTRK1	Fusion
 2770	ROS1	GOPC::ROS1	Fusion
-2061	ACVR1	Gain-of-Function	Functional Gene Function
-2172	MTOR	Gain-of-Function	Functional Gene Function
-1765	EGFR	Gain-of-function	Functional Gene Function
+2061	ACVR1	Gain-of-Function	Gene Function
+2172	MTOR	Gain-of-Function	Gene Function
+1765	EGFR	Gain-of-function	Gene Function
 2581	NCOA2	HEY1::NCOA2	Fusion
 588	ALK	HIP1::ALK I1171N	Fusion
 2969	HMGA2	HMGA2::LPP	Fusion
 3597	DDR2	High expression	Expression
-271	ATR	I774FS	Functional Protein Consequence
-765	MSH6	I891FS	Functional Protein Consequence
+527	ALK	I1171	Protein Consequence
+271	ATR	I774FS	Protein Consequence
+3232	FLT3	I836	Protein Consequence
+765	MSH6	I891FS	Protein Consequence
 151	BCL2	IGH::BCL2	Fusion
 2663	CRLF2	IGH::CRLF2	Fusion
 4309	FGFR3	IGHA1::FGFR3	Fusion
 2686	IL2RB	IL2RB::MYH9	Fusion
-218	SMARCA4	INACTIVATING MUTATION	Functional Gene Function
+218	SMARCA4	INACTIVATING MUTATION	Gene Function
 2238	BARD1	ISOFORM EXPRESSION	Expression
-3118	FLT3	ITD & TKD MUTATIONS	Functional Gene Function
-2895	NUDT15	Inactivating Mutation	Functional Gene Function
+55	FLT3	ITD	Rearrangements
+3220	FLT3	ITD  N676D	Rearrangements
+3209	FLT3	ITD & D835(V/Y/F/H)	Rearrangements
+3211	FLT3	ITD & D839G	Rearrangements
+3284	FLT3	ITD & L601F	Rearrangements
+3636	FLT3	ITD & N841K	Rearrangements
+3118	FLT3	ITD & TKD MUTATIONS	Other
+3283	FLT3	ITD & Y597F	Rearrangements
+3210	FLT3	ITD & Y842C	Rearrangements
+3219	FLT3	ITD D651G	Rearrangements
+3221	FLT3	ITD I687F	Rearrangements
+2785	FLT3	ITD N676K	Rearrangements
+3218	FLT3	ITD and co-mutations	Rearrangements
+3208	FLT3	ITD&F691(I/L)	Rearrangements
+2895	NUDT15	Inactivating Mutation	Gene Function
 67	KIT	Internal Duplication	Copy Number
 2659	FGFR1	Internal Duplication	Copy Number
 4150	BCOR	Internal tandem duplication	Copy Number
-4229	BCOR	Internal tandem duplication (ITD)	Copy Number
-279	NF2	K159fs	Functional Protein Consequence
+4229	BCOR	Internal tandem duplication (ITD)	Other
+257	EZH2	Intron 6 Mutation	Region Defined Variant
+2722	TP53	K132	Protein Consequence
+279	NF2	K159fs	Protein Consequence
 1872	VHL	K159fs (c.473dup)	Copy Number
+2988	PCNA	K164R LOSS-OF-MODIFICATION	Other
+3476	H3-3A	K27	Protein Consequence
 3010	ABL1	K356dup	Copy Number
-3273	MSH3	K383fs	Functional Protein Consequence
-1166	ATM	K468FS	Functional Protein Consequence
+3273	MSH3	K383fs	Protein Consequence
+4177	PDGFRA	K385	Protein Consequence
+1166	ATM	K468FS	Protein Consequence
+2765	BRAF	K601	Protein Consequence
+508	PMS2	K706FS*19	Protein Consequence
+2964	RUNX1	K90fsX101	Protein Consequence
 3158	NTRK2	KANK1::NTRK2	Fusion
 4001	ALK	KANK4::ALK	Fusion
 618	BRAF	KIAA1549::BRAF	Fusion
@@ -432,70 +514,80 @@ variant_id	gene_name	variant_name	category
 2210	ASNS	KMT2E::ASNS	Fusion
 3471	KRAS	KRAS4A underexpression	Expression
 413	ERBB2	Kinase Domain Mutation	Region Defined Variant
+2731	TP53	L114	Protein Consequence
 1783	VHL	L158fs (c.471dupT)	Copy Number
+2735	TP53	L206	Protein Consequence
 1318	TP53	L3 Domain Mutation	Region Defined Variant
+1677	FBXW7	L403FS*34	Protein Consequence
+541	PALB2	L531FS*30	Protein Consequence
+2766	BRAF	L597	Protein Consequence
+2997	EGFR	L718V and L718Q	Protein Consequence
+1866	EGFR	L861	Protein Consequence
 1278	NTRK1	LMNA::NTRK1	Fusion
 1282	NTRK1	LMNA::NTRK1 G595R and G667C	Fusion
 3225	NTRK1	LMNA::NTRK1 e11-e10	Fusion
 3223	NTRK1	LMNA::NTRK1 e2-e10	Fusion
 3224	NTRK1	LMNA::NTRK1 e2-e11	Fusion
-564	SMAD4	LOSS	Functional Gene Function
-809	MSH6	LOSS	Functional Gene Function
+302	PTCH1	LOH	Genotypes Compound
+564	SMAD4	LOSS	Gene Function
+809	MSH6	LOSS	Gene Function
 3659	SMARCB1	LOSS OF NUCLEAR PROTEIN EXPRESSION	Expression
-2596	LZTR1	LOSS-OF-FUNCTION	Functional Gene Function
-2755	FUBP1	LOSS-OF-FUNCTION	Functional Gene Function
+2596	LZTR1	LOSS-OF-FUNCTION	Gene Function
+2755	FUBP1	LOSS-OF-FUNCTION	Gene Function
 2968	HMGA2	LPP::HMGA2	Fusion
 3272	ABL1	LSM14A::ABL1	Fusion
-23	CCND3	Loss	Functional Gene Function
-214	PTEN	Loss	Functional Gene Function
-370	MRE11	Loss	Functional Gene Function
-436	VHL	Loss	Functional Gene Function
-485	STK11	Loss	Functional Gene Function
-554	CDKN2A	Loss	Functional Gene Function
-555	CDKN2B	Loss	Functional Gene Function
-672	SOX10	Loss	Functional Gene Function
-697	NF2	Loss	Functional Gene Function
-698	NF1	Loss	Functional Gene Function
-808	MSH2	Loss	Functional Gene Function
-853	NBN	Loss	Functional Gene Function
-925	STK11	Loss	Functional Gene Function
-1876	CIC	Loss	Functional Gene Function
-1879	ATXN1L	Loss	Functional Gene Function
-1880	ATM	Loss	Functional Gene Function
-2212	BAP1	Loss	Functional Gene Function
-2230	ASS1	Loss	Functional Gene Function
-2232	FLCN	Loss	Functional Gene Function
-2234	KMT2D	Loss	Functional Gene Function
-2365	TF	Loss	Functional Gene Function
-2644	SMARCA4	Loss	Functional Gene Function
-2754	PRKN	Loss	Functional Gene Function
-3202	SMARCB1	Loss	Functional Gene Function
-4310	KDM6A	Loss	Functional Gene Function
-125	TSC1	Loss-of-function	Functional Gene Function
-131	BRCA1	Loss-of-function	Functional Gene Function
-132	BRCA2	Loss-of-function	Functional Gene Function
-159	VHL	Loss-of-function	Functional Gene Function
-167	KMT2D	Loss-of-function	Functional Gene Function
-230	CHEK2	Loss-of-function	Functional Gene Function
-236	CDK12	Loss-of-function	Functional Gene Function
-534	FANCC	Loss-of-function	Functional Gene Function
-601	NOTCH1	Loss-of-function	Functional Gene Function
-606	RB1	Loss-of-function	Functional Gene Function
-637	FBXW7	Loss-of-function	Functional Gene Function
-721	CYP2D6	Loss-of-function	Functional Gene Function
-819	PTPRB	Loss-of-function	Functional Gene Function
-1293	ARID1A	Loss-of-function	Functional Gene Function
-2171	TSC2	Loss-of-function	Functional Gene Function
-2219	BARD1	Loss-of-function	Functional Gene Function
-2235	RASA1	Loss-of-function	Functional Gene Function
-2236	ATM	Loss-of-function	Functional Gene Function
-2415	SMAD4	Loss-of-function	Functional Gene Function
-2424	KMT2C	Loss-of-function	Functional Gene Function
-2565	PTPN12	Loss-of-function	Functional Gene Function
-2705	PBRM1	Loss-of-function	Functional Gene Function
-3316	MEN1	Loss-of-function	Functional Gene Function
-4269	ATRX	Loss-of-function	Functional Gene Function
+23	CCND3	Loss	Gene Function
+214	PTEN	Loss	Gene Function
+370	MRE11	Loss	Gene Function
+436	VHL	Loss	Gene Function
+485	STK11	Loss	Gene Function
+554	CDKN2A	Loss	Gene Function
+555	CDKN2B	Loss	Gene Function
+672	SOX10	Loss	Gene Function
+697	NF2	Loss	Gene Function
+698	NF1	Loss	Gene Function
+808	MSH2	Loss	Gene Function
+853	NBN	Loss	Gene Function
+925	STK11	Loss	Gene Function
+1876	CIC	Loss	Gene Function
+1879	ATXN1L	Loss	Gene Function
+1880	ATM	Loss	Gene Function
+2212	BAP1	Loss	Gene Function
+2230	ASS1	Loss	Gene Function
+2232	FLCN	Loss	Gene Function
+2234	KMT2D	Loss	Gene Function
+2365	TF	Loss	Gene Function
+2644	SMARCA4	Loss	Gene Function
+2754	PRKN	Loss	Gene Function
+3202	SMARCB1	Loss	Gene Function
+4310	KDM6A	Loss	Gene Function
+125	TSC1	Loss-of-function	Gene Function
+131	BRCA1	Loss-of-function	Gene Function
+132	BRCA2	Loss-of-function	Gene Function
+159	VHL	Loss-of-function	Gene Function
+167	KMT2D	Loss-of-function	Gene Function
+230	CHEK2	Loss-of-function	Gene Function
+236	CDK12	Loss-of-function	Gene Function
+534	FANCC	Loss-of-function	Gene Function
+601	NOTCH1	Loss-of-function	Gene Function
+606	RB1	Loss-of-function	Gene Function
+637	FBXW7	Loss-of-function	Gene Function
+721	CYP2D6	Loss-of-function	Gene Function
+819	PTPRB	Loss-of-function	Gene Function
+1293	ARID1A	Loss-of-function	Gene Function
+2171	TSC2	Loss-of-function	Gene Function
+2219	BARD1	Loss-of-function	Gene Function
+2235	RASA1	Loss-of-function	Gene Function
+2236	ATM	Loss-of-function	Gene Function
+2415	SMAD4	Loss-of-function	Gene Function
+2424	KMT2C	Loss-of-function	Gene Function
+2565	PTPN12	Loss-of-function	Gene Function
+2705	PBRM1	Loss-of-function	Gene Function
+3316	MEN1	Loss-of-function	Gene Function
+4269	ATRX	Loss-of-function	Gene Function
+1247	BRCA2	M1R	Incomplete Variants
 1889	VHL	M54fs (c.161dup)	Copy Number
+638	RB1	M695FS*26	Protein Consequence
 2227	BRAF	MACF1::BRAF	Fusion
 3988	MAP3K8	MAP3K8 fusion 	Fusion
 3148	MEF2D	MEF2D Rearrangement	Rearrangements
@@ -601,7 +693,7 @@ variant_id	gene_name	variant_name	category
 3203	ATRX	Mutation	Region Defined Variant
 3274	PDGFRA	Mutation	Region Defined Variant
 4018	MS4A1	Mutation	Region Defined Variant
-28	CEBPA	N-TERMINAL FRAME SHIFT	Functional Protein Consequence
+28	CEBPA	N-TERMINAL FRAME SHIFT	Protein Consequence
 513	ALK	NPM::ALK	Fusion
 2883	BRAF	NRF1::BRAF	Fusion
 2762	NRG1	NRG1 FUSIONS	Fusion
@@ -618,12 +710,21 @@ variant_id	gene_name	variant_name	category
 3111	NUP98	NUP98::KDM5A	Fusion
 2593	NUP98	NUP98::NSD1	Fusion
 2376	ABL1	Non-P-Loop Mutation	Region Defined Variant
-2082	VHL	Null (Partial deletion of Exon 1)	Region Defined Variant
-1951	VHL	Null (Partial deletion of Exon 2)	Region Defined Variant
-1952	VHL	Null (Partial deletion of Exon 3)	Region Defined Variant
-2083	VHL	Null (Partial deletion of Exons 1 & 2)	Region Defined Variant
-2036	VHL	Null (Partial deletion of Exons 2 & 3)	Region Defined Variant
-3296	VHL	Null (rearrangement)	Rearrangements
+3297	VHL	Null (11 kb 3' deletion)	Gene Function
+2016	VHL	Null (Complete deletion)	Gene Function
+2182	VHL	Null (Large deletion)	Gene Function
+1947	VHL	Null (Partial deletion of 4.6 Kb)	Gene Function
+2082	VHL	Null (Partial deletion of Exon 1)	Other
+1951	VHL	Null (Partial deletion of Exon 2)	Other
+1952	VHL	Null (Partial deletion of Exon 3)	Other
+2083	VHL	Null (Partial deletion of Exons 1 & 2)	Other
+2036	VHL	Null (Partial deletion of Exons 2 & 3)	Other
+2103	VHL	Null (Partial deletion)	Gene Function
+3361	VHL	Null (del one VHL allele)	Gene Function
+3180	VHL	Null (deletion)	Gene Function
+3188	VHL	Null (large 3' deletion)	Gene Function
+3262	VHL	Null (point mutation codon 238)	Gene Function
+3296	VHL	Null (rearrangement)	Other
 2974	JAK2	OFD1::JAK2	Fusion
 21	CCND2	OVEREXPRESSION	Expression
 205	NCOA3	OVEREXPRESSION	Expression
@@ -644,8 +745,8 @@ variant_id	gene_name	variant_name	category
 2917	LYN	OVEREXPRESSION	Expression
 2981	WDR12	OVEREXPRESSION	Expression
 2982	PLK1	OVEREXPRESSION	Expression
-3112	PALB2	Oncogenic Mutations (loss of function alterations)	Functional Gene Function
-3113	ATM	Oncogenic Mutations (loss of function alterations)	Functional Gene Function
+3112	PALB2	Oncogenic Mutations (loss of function alterations)	Other
+3113	ATM	Oncogenic Mutations (loss of function alterations)	Other
 20	CCND1	Overexpression	Expression
 24	CCNE1	Overexpression	Expression
 152	BCL2	Overexpression	Expression
@@ -757,12 +858,16 @@ variant_id	gene_name	variant_name	category
 3324	VEGFA	Overexpression of VEGF121	Expression
 3325	VEGFA	Overexpression of VEGF121 and VEGF110	Expression
 2375	ABL1	P-Loop Mutation	Region Defined Variant
+1682	ARID1A	P1175FS*5	Protein Consequence
 2495	VHL	P138fs (c.410dup)	Copy Number
-207	NOTCH1	P2514FS	Functional Protein Consequence
+2732	TP53	P153	Protein Consequence
+207	NOTCH1	P2514FS	Protein Consequence
+2726	TP53	P278	Protein Consequence
 2350	CRLF2	P2RY8::CRLF2	Fusion
-756	MLH1	P536FS	Functional Protein Consequence
+756	MLH1	P536FS	Protein Consequence
 4224	AKT1	P68-C77dup	Copy Number
-477	BRCA1	P968FS	Functional Protein Consequence
+41	ERBB2	P780INS	Rearrangements
+477	BRCA1	P968FS	Protein Consequence
 3525	ABL2	PAG1::ABL2	Fusion
 286	BRAF	PAPSS1::BRAF	Fusion
 2582	FOXO1	PAX3::FOXO1	Fusion
@@ -781,21 +886,56 @@ variant_id	gene_name	variant_name	category
 3024	PML	PML::RARA S214L	Fusion
 2848	JAK2	PPFIBP1::JAK2	Fusion
 617	BRAF	PPFIBP2::BRAF	Fusion
+3235	PRKAR1A	PRKAR1A LOH, allelic imbalance 17q	Genotypes Compound
 22	CCND2	PROMOTER DEMETHYLATION	Epigenetic Modification
 2254	DBI	PROMOTER DEMETHYLATION	Epigenetic Modification
 711	KLLN	PROMOTER METHYLATION	Epigenetic Modification
 2683	PTK2B	PTK2B::KDM6A	Fusion
 2684	PTK2B	PTK2B::STAG2	Fusion
+2184	VHL	Partial deletion of 0.7 Kb	Region Defined Variant
+4200	VHL	Partial deletion of 0.8 kb	Region Defined Variant
+2185	VHL	Partial deletion of 1 Kb	Region Defined Variant
+2186	VHL	Partial deletion of 1.2 Kb	Region Defined Variant
+2187	VHL	Partial deletion of 1.5 Kb	Region Defined Variant
+3999	VHL	Partial deletion of 10 Kb	Region Defined Variant
+2188	VHL	Partial deletion of 11 Kb	Region Defined Variant
+2189	VHL	Partial deletion of 12 Kb	Region Defined Variant
+3095	VHL	Partial deletion of 2 Kb	Region Defined Variant
+2191	VHL	Partial deletion of 3 Kb	Region Defined Variant
+2190	VHL	Partial deletion of 3.5 Kb	Region Defined Variant
+2492	VHL	Partial deletion of 4 Kb	Region Defined Variant
+2193	VHL	Partial deletion of 7 Kb	Region Defined Variant
+2192	VHL	Partial deletion of 7.5 Kb	Region Defined Variant
+2194	VHL	Partial deletion of 8.2 Kb	Region Defined Variant
+3466	NTRK1	Point Mutations	Other
+3467	NTRK3	Point Mutations	Other
 27	CDKN2A	Promoter Hypermethylation	Epigenetic Modification
 333	PTPRT	Promoter Hypermethylation	Epigenetic Modification
 374	NAPRT	Promoter Hypermethylation	Epigenetic Modification
 85	MGMT	Promoter Methylation	Epigenetic Modification
-744	MLH1	Q426FS	Functional Protein Consequence
-1105	KRAS	Q61FS	Functional Protein Consequence
+220	TERT	Promoter Mutation	Expression
+127	U2AF1	Q157P/R	Protein Consequence
+507	GNAQ	Q209	Protein Consequence
+558	GNA11	Q209	Protein Consequence
+744	MLH1	Q426FS	Protein Consequence
+94	NRAS	Q61	Protein Consequence
+203	KRAS	Q61	Protein Consequence
+2570	HRAS	Q61	Protein Consequence
+1105	KRAS	Q61FS	Protein Consequence
 3029	BCL2	R107_R110dup	Copy Number
 2021	VHL	R108dup (c.322_324dup)	Copy Number
-735	MLH1	R687FS	Functional Protein Consequence
-1165	ATM	R777FS	Functional Protein Consequence
+58	IDH1	R132	Protein Consequence
+804	RUNX1	R135FSX177	Protein Consequence
+62	IDH2	R140	Protein Consequence
+199	IDH2	R172	Protein Consequence
+876	GNAS	R201	Protein Consequence
+2723	TP53	R248	Protein Consequence
+119	TP53	R249	Protein Consequence
+2725	TP53	R273	Protein Consequence
+2597	DICER1	R392fs and E1813D	Protein Consequence
+735	MLH1	R687FS	Protein Consequence
+1165	ATM	R777FS	Protein Consequence
+32	DNMT3A	R882	Protein Consequence
 3268	ABL1	RANBP2::ABL1	Fusion
 514	ALK	RANBP2::ALK	Fusion
 3116	RBM15	RBM15::MKL1	Fusion
@@ -805,19 +945,42 @@ variant_id	gene_name	variant_name	category
 3526	ABL2	RCSD1::ABL2	Fusion
 3527	CSF1R	RCSD1::ABL2	Fusion
 2865	JAK2	RFX3::JAK2	Fusion
-740	DPYD	RS67376798 HOMOZYGOSITY	Genotypes Compound
+332	FNTB	RS11623866	Other
+338	MGMT	RS16906252	Other
+643	CBLB	RS2305035	Other
+421	TERT	RS2736100	Other
+699	SH2B3	RS3184504	Other
+779	TYMS	RS34743033	Other
+642	MDM2	RS34886328	Other
+482	KIT	RS3733542	Other
+641	CDKN2A	RS3814960	Other
+331	WEE1	RS3910384	Other
+777	SLCO1B1	RS4149056	Other
+445	ETS2	RS461155	Other
+548	PPP1R15A	RS557806	Other
+254	KRAS	RS61764370	Other
+740	DPYD	RS67376798 HOMOZYGOSITY	Other
+255	ERCC5	RS751402	Other
 3126	RUNX1	RUNX1::RUNX1T1	Fusion
 1863	EGFR	Rare Exon 18-21 Mutation	Region Defined Variant
+2334	EGFR	Rare Mutation	Other
+3222	PIK3CA	Rare Mutation	Other
 269	ROS1	Rearrangement	Rearrangements
 2439	VHL	Rearrangement	Rearrangements
 3141	KMT2A	Rearrangement	Rearrangements
 4003	PDGFB	Rearrangement 	Rearrangements
 4338	CRLF2	Rearrangement 	Rearrangements
-3080	VHL	S139fs	Functional Protein Consequence
-616	B2M	S14FS	Functional Protein Consequence
-138	NOTCH1	S2275FS	Functional Protein Consequence
+3080	VHL	S139fs	Protein Consequence
+616	B2M	S14FS	Protein Consequence
+2856	ROS1	S1986Y/F	Protein Consequence
+138	NOTCH1	S2275FS	Protein Consequence
+497	ERBB2	S310F/Y	Protein Consequence
+128	U2AF1	S34Y/F	Protein Consequence
 3257	AKT1	S473 Phosphorylation	Epigenetic Modification
+1676	FBXW7	S668FS*39	Protein Consequence
+720	EGFR	S720	Protein Consequence
 1511	EGFR	S768_D770dup	Copy Number
+451	ABCB1	S893A/T	Protein Consequence
 4253	NTRK1	SCP2::NTRK1	Fusion
 2179	NRG1	SDC4::NRG1	Fusion
 4251	EGFR	SEC61G::EGFR	Fusion
@@ -829,8 +992,10 @@ variant_id	gene_name	variant_name	category
 3986	SH3PXD2A	SH3PXD2A::HTRA1	Fusion
 2166	NRG1	SLC3A2::NRG1	Fusion
 2975	JAK2	SMU1::JAK2	Fusion
+495	MDM2	SNP309	Protein Consequence
 2976	JAK2	SNX29::JAK2	Fusion
 2678	ABL1	SNX2::ABL1	Fusion
+478	AR	SPLICE VARIANT 7	Other
 800	NTRK1	SQSTM1::NTRK1	Fusion
 448	SSX1	SS18::SSX1	Fusion
 449	SSX2	SS18::SSX2	Fusion
@@ -840,6 +1005,11 @@ variant_id	gene_name	variant_name	category
 2849	JAK2	STRN3::JAK2	Fusion
 2218	ALK	STRN::ALK	Fusion
 2287	NTRK2	STRN::NTRK2	Fusion
+3108	VHL	Single Allele Deletion	Genotypes Compound
+3409	TEK	T1105N and T1106N	Protein Consequence
+810	RUNX1	T148HFSX9	Protein Consequence
+491	HSPH1	T17 DELETION	Region Defined Variant
+2733	TP53	T170	Protein Consequence
 385	PRKAA2	T172 PHOSPHORYLATION	Epigenetic Modification
 1298	BRAF	T599dup	Copy Number
 3517	ZNF384	TAF15::ZNF384	Fusion
@@ -847,20 +1017,27 @@ variant_id	gene_name	variant_name	category
 2862	JAK2	TERF2::JAK2	Fusion
 3730	TFE3	TFE3 fusion	Fusion
 576	ROS1	TFG::ROS1	Fusion
-56	FLT3	TKD MUTATION	Functional Gene Function
-2371	ABL1	TKD MUTATION	Functional Gene Function
+2669	TGFBR3	TGFBR3	Protein Consequence
+56	FLT3	TKD MUTATION	Gene Function
+2371	ABL1	TKD MUTATION	Gene Function
 3128	TLX3	TLX3::BCL11B	Fusion
 195	ERG	TMPRSS2::ERG	Fusion
 707	TMPRSS2	TMPRSS2::ERG	Fusion
+3473	TNC	TNC-L	Expression
 774	PDGFRA	TNKS2::PDGFRA	Fusion
+3486	TOP2A	TOP2A/90	Other
 2992	NTRK1	TPM3::NTRK1	Fusion
 2850	JAK2	TPR::JAK2	Fusion
 3465	NTRK1	TPR::NTRK1	Fusion
 287	BRAF	TRIM24::BRAF	Fusion
 2393	NTRK1	TRIM63::NTRK1	Fusion
 739	FOS	TRUNCATING FUSION	Fusion
+590	BIRC3	TRUNCATING MUTATION	Protein Consequence
+708	BRCA2	TRUNCATING MUTATION	Protein Consequence
+3110	CREBBP	TRUNCATING MUTATIONS AND DELETERIOUS SUBSTITUTIONS	Protein Consequence
 4026	FGFR2	Translocation	Rearrangements
 4027	FGFR3	Translocation	Rearrangements
+223	TP53	Truncating Mutation	Protein Consequence
 417	THBS2	UNDEREXPRESSION	Expression
 441	LEPR	UNDEREXPRESSION	Expression
 446	KRT18	UNDEREXPRESSION	Expression
@@ -891,21 +1068,27 @@ variant_id	gene_name	variant_name	category
 2409	ERCC1	Underexpression	Expression
 2412	FGFR2	Underexpression	Expression
 3459	AR	V1 expression	Expression
-1167	ATM	V1268FS	Functional Protein Consequence
-750	MLH1	V213FS	Functional Protein Consequence
-137	NOTCH1	V2444FS	Functional Protein Consequence
-762	MSH2	V273FS	Functional Protein Consequence
-605	PTEN	V317FS	Functional Protein Consequence
+1167	ATM	V1268FS	Protein Consequence
+750	MLH1	V213FS	Protein Consequence
+137	NOTCH1	V2444FS	Protein Consequence
+762	MSH2	V273FS	Protein Consequence
+605	PTEN	V317FS	Protein Consequence
+1316	KIT	V559	Protein Consequence
 3461	AR	V567es expression	Expression
+17	BRAF	V600	Protein Consequence
 362	AR	V7 EXPRESSION	Expression
+1310	ERBB2	V773	Protein Consequence
 2159	AR	V9 EXPRESSION	Expression
 3729	TFE3	VCF::TFE3	Fusion
 3701	NTRK2	VCL::NTRK2	Fusion
 3303	CHD7	VCV000625197, Translocation (t(8;X)(q12.2;p22.13)), CHD7–BEND2 fusion	Other
 3321	VEGFA	VEGF165b Overexpression	Expression
+312	EGFR	VIII	Gene Function
 4242	EGFR	VOPP1::EGFR	Fusion
 2027	VHL	W117fs (c.349dup)	Copy Number
-87	NPM1	W288FS	Functional Protein Consequence
+2728	TP53	W146	Protein Consequence
+87	NPM1	W288FS	Protein Consequence
+176	AR	W742	Protein Consequence
 2299	VHL	W88fs (c.261dup)	Copy Number
 2228	BRAF	WASFL::BRAF	Fusion
 426	BRAF	WILD TYPE	Genotypes Easy
@@ -917,8 +1100,13 @@ variant_id	gene_name	variant_name	category
 2590	PIK3CA	Wildtype	Genotypes Easy
 3200	KRAS	Wildtype	Genotypes Easy
 390	EGFR	Y1092 PHOSPHORYLATION	Epigenetic Modification
-245	NF2	Y177fs	Functional Protein Consequence
+245	NF2	Y177fs	Protein Consequence
+2720	TP53	Y205	Protein Consequence
+165	EZH2	Y646	Protein Consequence
+3055	FLT3	Y693	Protein Consequence
+1672	EGFR	Y69FS*11	Protein Consequence
 414	ERBB2	Y772_A775DUP	Copy Number
+3410	TEK	Y897C and R915C	Protein Consequence
 3578	ABL2	ZC3HAV1::ABL2	Fusion
 657	BRAF	ZKSCAN1::BRAF	Fusion
 3269	ABL1	ZMIZ1::ABL1	Fusion
@@ -926,15 +1114,39 @@ variant_id	gene_name	variant_name	category
 2864	JAK2	ZNF274::JAK2	Fusion
 2977	JAK2	ZNF430::JAK2	Fusion
 3481	ESR2	alternative transcripts	Other
+3477	ESR2	beta-2 and beta-5	Other
+3511	CD19	delta-ex2, delta-ex5-6	Other
+3487	BRCA1	delta11q	Other
+3482	LGR5	delta5	Other
 2349	IL7R	exon 6 mutations	Region Defined Variant
 3752	SSTR5	expression	Expression
 2226	BRAF	intron 10 rearrangement	Rearrangements
 2225	BRAF	intron 9 rearrangement	Rearrangements
 2814	DRD5	low expression	Expression
+3323	VEGFA	low ratio of VEGF165b/VEGFtotal	Expression
 2845	HOXD8	mutation	Region Defined Variant
 3322	VEGFA	overexpression of VEGF-Axxxa	Expression
 2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number
+3057	GATA1	p.Ser51Alafs*86	Protein Consequence
 272	CDKN2A	p16 Expression	Expression
-3478	ESR2	underexpression beta-1	Expression
-2748	ETV6	~DEPRECATED-ETV6::NTRK3 FUSION	Fusion
+3313	CDKN1A	rs1059234	Other
+2787	PRNCR1	rs1456315	Other
+256	KIT	rs17084733	Other
+2671	CDKN1A	rs1801270	Other
+3314	CDKN1A	rs1801270 and rs1059234	Other
+705	GADD45A	rs681673	Other
+3703	GALNT14	rs9679162	Other
+4284	VHL	t(1;3)(p36.3;p25)	Rearrangements
+2429	VHL	t(1;3)(q32;q13.3)	Rearrangements
+2876	VHL	t(2;3)(q35;q21)	Rearrangements
+3265	VHL	t(3;12)(q13.13;q24.23)	Rearrangements
+4009	VHL	t(3;12)(q13.2;q24.1)	Rearrangements
+3524	MECOM	t(3;21)(q26.2;q22)	Rearrangements
+3264	VHL	t(3;6)(p12.3;q24.3)	Rearrangements
+4008	VHL	t(3;6)(p13;q25.1)	Rearrangements
+3351	VHL	t(3;8)(p13;q24.1)	Rearrangements
+3478	ESR2	underexpression beta-1	Other
+3508	CD274	v242	Protein Consequence
+2422	NTRK3	~DEPRECATED-ETV6-NTRK3	Other
+2748	ETV6	~DEPRECATED-ETV6::NTRK3 FUSION	Other
 2718	CCNE1	ｍRNA expression low	Expression
