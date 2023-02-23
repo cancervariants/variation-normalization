@@ -128,6 +128,7 @@ variant_id	gene_name	variant_name	category
 2630	CBFA2T3	CBFA2T3::GLIS2	Fusion
 431	CBFB	CBFB::MYH11	Fusion
 626	RET	CCDC6::RET	Fusion
+3385	CD44	CD44s	Expression
 341	CD44	CD44s Expression	Expression
 3386	CD44	CD44v5 and CD44v6	Expression
 3373	CD44	CD44v6	Other
@@ -136,11 +137,11 @@ variant_id	gene_name	variant_name	category
 3369	CD44	CD44v8-10	Expression
 3368	CD44	CD44v9	Other
 3367	CD44	CD4v8-v10 and CD44v3-v10	Expression
-2771	NRG1	CD74::NRG1	Fusion
-465	ROS1	CD74::ROS1 G2032R	Fusion
-518	ROS1	CD74::ROS1 G2101A	Fusion
-516	ROS1	CD74::ROS1 L2026M	Fusion
-517	ROS1	CD74::ROS1 L2155S	Fusion
+2771	NRG1	CD74::NRG1	Other
+465	ROS1	CD74::ROS1 G2032R	Other
+518	ROS1	CD74::ROS1 G2101A	Other
+516	ROS1	CD74::ROS1 L2026M	Other
+517	ROS1	CD74::ROS1 L2155S	Other
 3474	CEACAM1	CEACAM1-L	Other
 3475	CEACAM1	CEACAM1-S	Other
 3270	ABL1	CENPC::ABL1	Fusion
@@ -545,6 +546,7 @@ variant_id	gene_name	variant_name	category
 1011	EGFR	L747_P753>Q	Rearrangements
 4221	AKT2	L78_Q79ins	Rearrangements
 1866	EGFR	L861	Protein Consequence
+3483	LGR5	LGR5FL	Expression
 1278	NTRK1	LMNA::NTRK1	Fusion
 1282	NTRK1	LMNA::NTRK1 G595R and G667C	Fusion
 3225	NTRK1	LMNA::NTRK1 e11-e10	Fusion
@@ -735,6 +737,7 @@ variant_id	gene_name	variant_name	category
 3111	NUP98	NUP98::KDM5A	Fusion
 2593	NUP98	NUP98::NSD1	Fusion
 2376	ABL1	Non-P-Loop Mutation	Region Defined Variant
+2408	BRAF	Non-V600	Region Defined Variant
 3297	VHL	Null (11 kb 3' deletion)	Gene Function
 2016	VHL	Null (Complete deletion)	Gene Function
 2182	VHL	Null (Large deletion)	Gene Function
@@ -1021,6 +1024,7 @@ variant_id	gene_name	variant_name	category
 3986	SH3PXD2A	SH3PXD2A::HTRA1	Fusion
 2166	NRG1	SLC3A2::NRG1	Fusion
 2975	JAK2	SMU1::JAK2	Fusion
+536	SULT1E1	SNP	Region Defined Variant
 495	MDM2	SNP309	Protein Consequence
 2976	JAK2	SNX29::JAK2	Fusion
 2678	ABL1	SNX2::ABL1	Fusion
@@ -1068,6 +1072,8 @@ variant_id	gene_name	variant_name	category
 4026	FGFR2	Translocation	Rearrangements
 4027	FGFR3	Translocation	Rearrangements
 223	TP53	Truncating Mutation	Protein Consequence
+729	UGT1A1	UGT1A1*28	Genotypes Easy
+732	UGT1A1	UGT1A1*60	Genotypes Easy
 417	THBS2	UNDEREXPRESSION	Expression
 441	LEPR	UNDEREXPRESSION	Expression
 446	KRT18	UNDEREXPRESSION	Expression
@@ -1163,6 +1169,7 @@ variant_id	gene_name	variant_name	category
 2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number
 3057	GATA1	p.Ser51Alafs*86	Protein Consequence
 272	CDKN2A	p16 Expression	Expression
+3512	BRAF	p61BRAF(V600E)	Genotypes Easy
 3313	CDKN1A	rs1059234	Other
 2787	PRNCR1	rs1456315	Other
 256	KIT	rs17084733	Other
