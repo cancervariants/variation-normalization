@@ -166,6 +166,7 @@ variant_id	gene_name	variant_name	category
 437	FLT3	D835	Protein Consequence
 3231	FLT3	D835 & I836	Protein Consequence
 613	FLT3	D835H/Y	Protein Consequence
+943	PDGFRA	D842_H845DELDIMH	Rearrangements
 2394	NTRK1	DDR2::NTRK1	Fusion
 2706	DEK	DEK::AFF2	Fusion
 522	BRAF	DEL 485-490	Region Defined Variant
@@ -207,6 +208,10 @@ variant_id	gene_name	variant_name	category
 1544	FLT3	E611_F612INS25	Protein Consequence
 2258	EGFR	E709A and G719C	Protein Consequence
 2256	EGFR	E709K and G719A	Protein Consequence
+1577	EGFR	E709_T710>D	Rearrangements
+1635	EGFR	E746_A750>IP	Rearrangements
+1433	EGFR	E746_S752>A	Rearrangements
+1003	EGFR	E746_T751>I	Rearrangements
 2847	JAK2	EBF1::JAK2	Fusion
 535	PDGFRB	EBF1::PDGFRB	Fusion
 3484	FN1	EDB	Incomplete Variants
@@ -456,9 +461,11 @@ variant_id	gene_name	variant_name	category
 3214	JAK2	GOLGA5::JAK2	Fusion
 2395	NTRK1	GON4L::NTRK1	Fusion
 2770	ROS1	GOPC::ROS1	Fusion
-2061	ACVR1	Gain-of-Function	Gene Function
-2172	MTOR	Gain-of-Function	Gene Function
-1765	EGFR	Gain-of-function	Gene Function
+4240	TYR	GRCh37/hg19 11q14.3(chr11:88960991-88961138)x160	Copy Number
+3305	TNFRSF17	Gain	Copy Number
+2061	ACVR1	Gain-of-Function	Other
+2172	MTOR	Gain-of-Function	Other
+1765	EGFR	Gain-of-function	Other
 3766	PIK3CA	H1047L or H1047R	Protein Consequence
 2581	NCOA2	HEY1::NCOA2	Fusion
 588	ALK	HIP1::ALK I1171N	Fusion
@@ -534,6 +541,9 @@ variant_id	gene_name	variant_name	category
 541	PALB2	L531FS*30	Protein Consequence
 2766	BRAF	L597	Protein Consequence
 2997	EGFR	L718V and L718Q	Protein Consequence
+1006	EGFR	L747_A750>P	Rearrangements
+1011	EGFR	L747_P753>Q	Rearrangements
+4221	AKT2	L78_Q79ins	Rearrangements
 1866	EGFR	L861	Protein Consequence
 1278	NTRK1	LMNA::NTRK1	Fusion
 1282	NTRK1	LMNA::NTRK1 G595R and G667C	Fusion
@@ -928,7 +938,7 @@ variant_id	gene_name	variant_name	category
 333	PTPRT	Promoter Hypermethylation	Epigenetic Modification
 374	NAPRT	Promoter Hypermethylation	Epigenetic Modification
 85	MGMT	Promoter Methylation	Epigenetic Modification
-220	TERT	Promoter Mutation	Expression
+220	TERT	Promoter Mutation	Region Defined Variant
 127	U2AF1	Q157P/R	Protein Consequence
 507	GNAQ	Q209	Protein Consequence
 558	GNA11	Q209	Protein Consequence
@@ -1096,6 +1106,8 @@ variant_id	gene_name	variant_name	category
 1316	KIT	V559	Protein Consequence
 3461	AR	V567es expression	Expression
 17	BRAF	V600	Protein Consequence
+2820	BRAF	V600_K601>E	Rearrangements
+2821	BRAF	V600_S602>DT	Rearrangements
 362	AR	V7 EXPRESSION	Expression
 1310	ERBB2	V773	Protein Consequence
 2159	AR	V9 EXPRESSION	Expression
