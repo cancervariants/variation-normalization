@@ -173,6 +173,7 @@ variant_id	gene_name	variant_name	category
 522	BRAF	DEL 485-490	Region Defined Variant
 954	KIT	DEL 554-558	Region Defined Variant
 647	LRP1B	DELETION	Gene Function
+3023	PML	DELETION (p.K227_T233del)	Protein Consequence
 1663	BRAF	DELNVTAP	Incomplete Variants
 2685	DGKH	DGKH::ZFAND3	Fusion
 242	TP53	DNA Binding Domain Mutation	Region Defined Variant
@@ -200,6 +201,7 @@ variant_id	gene_name	variant_name	category
 526	BCL2L11	Deletion Polymorphism	Region Defined Variant
 3009	ABL1	Double Ph	Rearrangements
 725	MLH1	E13fs	Protein Consequence
+2994	MAEA	E151INT	Other
 2591	DICER1	E1813 mutations	Protein Consequence
 572	MTOR	E2014K and E2419K	Protein Consequence
 2730	TP53	E204	Protein Consequence
@@ -514,6 +516,7 @@ variant_id	gene_name	variant_name	category
 3273	MSH3	K383fs	Protein Consequence
 4177	PDGFRA	K385	Protein Consequence
 1166	ATM	K468FS	Protein Consequence
+1549	KIT	K558NP	Rearrangements
 2765	BRAF	K601	Protein Consequence
 508	PMS2	K706FS*19	Protein Consequence
 2964	RUNX1	K90fsX101	Protein Consequence
@@ -719,6 +722,7 @@ variant_id	gene_name	variant_name	category
 4018	MS4A1	Mutation	Region Defined Variant
 3127	WT1	Mutations	Region Defined Variant
 28	CEBPA	N-TERMINAL FRAME SHIFT	Protein Consequence
+1581	EGFR	N771>GY	Rearrangements
 1320	ERBB2	NON-AMPLIFICATION	Copy Number
 513	ALK	NPM::ALK	Fusion
 2883	BRAF	NRF1::BRAF	Fusion
@@ -918,6 +922,7 @@ variant_id	gene_name	variant_name	category
 22	CCND2	PROMOTER DEMETHYLATION	Epigenetic Modification
 2254	DBI	PROMOTER DEMETHYLATION	Epigenetic Modification
 711	KLLN	PROMOTER METHYLATION	Epigenetic Modification
+2916	PRPS1	PRPS1 MUTATION	Region Defined Variant
 2683	PTK2B	PTK2B::KDM6A	Fusion
 2684	PTK2B	PTK2B::STAG2	Fusion
 2184	VHL	Partial deletion of 0.7 Kb	Region Defined Variant
@@ -1142,6 +1147,7 @@ variant_id	gene_name	variant_name	category
 2720	TP53	Y205	Protein Consequence
 3327	FLT3	Y572Δ	Other
 165	EZH2	Y646	Protein Consequence
+3518	EZH2	Y646F, Y646N, Y646S, Y646H, Y646C, A682G, A692V	Protein Consequence
 3055	FLT3	Y693	Protein Consequence
 1672	EGFR	Y69FS*11	Protein Consequence
 414	ERBB2	Y772_A775DUP	Copy Number
