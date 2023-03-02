@@ -24,13 +24,13 @@ variant_id	gene_name	variant_name	category
 552	ALK	ALK Fusion G1269A	Fusion
 1307	TP53	ALTERATION	Region Defined Variant
 2211	BAP1	ALTERNATIVE TRANSCRIPT (ATI)	Other
-842	BRAF	APC	Incomplete Variants
+842	BRAF	APC	Other
 2772	NRG1	APP::NRG1	Fusion
 3460	AR	AR alternative transcripts	Other
 3622	TFE3	ASPSCR1::TFE3	Fusion
 2846	JAK2	ATF7IP::JAK2	Fusion
 2632	PDGFRB	ATF7IP::PDGFRB	Fusion
-2758	BRCA1	ATM	Incomplete Variants
+2758	BRCA1	ATM	Other
 2178	NRG1	ATP1B1::NRG1	Fusion
 309	EGFR	AUTOCRINE ACTIVATION	Expression
 1296	CTNNB1	Activating Mutation	Gene Function
@@ -174,7 +174,7 @@ variant_id	gene_name	variant_name	category
 954	KIT	DEL 554-558	Region Defined Variant
 647	LRP1B	DELETION	Gene Function
 3023	PML	DELETION (p.K227_T233del)	Protein Consequence
-1663	BRAF	DELNVTAP	Incomplete Variants
+1663	BRAF	DELNVTAP	Other
 2685	DGKH	DGKH::ZFAND3	Fusion
 242	TP53	DNA Binding Domain Mutation	Region Defined Variant
 31	PRKACA	DNAJB1::PRKACA	Fusion
@@ -217,7 +217,7 @@ variant_id	gene_name	variant_name	category
 1003	EGFR	E746_T751>I	Rearrangements
 2847	JAK2	EBF1::JAK2	Fusion
 535	PDGFRB	EBF1::PDGFRB	Fusion
-3484	FN1	EDB	Incomplete Variants
+3484	FN1	EDB	Other
 4294	EGFR	EGFR::BRAF	Fusion
 4283	EGFR	EGFR::PPARGC1A	Fusion
 4282	EGFR	EGFR::PURB	Fusion
@@ -612,7 +612,7 @@ variant_id	gene_name	variant_name	category
 2705	PBRM1	Loss-of-function	Gene Function
 3316	MEN1	Loss-of-function	Gene Function
 4269	ATRX	Loss-of-function	Gene Function
-1247	BRCA2	M1R	Incomplete Variants
+1247	BRCA2	M1R	Other
 1889	VHL	M54fs (c.161dup)	Copy Number
 638	RB1	M695FS*26	Protein Consequence
 2227	BRAF	MACF1::BRAF	Fusion
