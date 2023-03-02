@@ -74,6 +74,7 @@ class QueryHandler:
         tokenizer = Tokenize(gene_symbol)
         classifier = Classify()
         uta_db = cool_seq_tool.uta_db
+        self.alignment_mapper = cool_seq_tool.alignment_mapper
         mane_transcript = cool_seq_tool.mane_transcript
         transcript_mappings = cool_seq_tool.transcript_mappings
         self._tlr = Translator(data_proxy=dp)
