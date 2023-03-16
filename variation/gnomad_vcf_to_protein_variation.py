@@ -257,7 +257,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
 
                     # We do not need to check the same variation that has the same
                     # classification
-                    checked_tuple = (variation["_id"], valid_result.identifier,
+                    checked_tuple = (variation["id"], valid_result.identifier,
                                      valid_result.classification.classification_type.value)  # noqa: E501
                     if checked_tuple in checked_valid_results:
                         continue
