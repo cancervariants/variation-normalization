@@ -15,7 +15,6 @@ from variation.schemas.app_schemas import Endpoint
 from variation.validators.validator import Validator
 from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
-from variation.tokenizers.caches import AminoAcidCache
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs_representation import VRSRepresentation
@@ -33,7 +32,7 @@ class ProteinInsertion(Validator):
         self, seq_repo_access: SeqRepoAccess, transcript_mappings: TranscriptMappings,
         gene_symbol: GeneSymbol, mane_transcript: MANETranscript, uta: UTADatabase,
         tlr: Translator, gene_normalizer: GeneQueryHandler,
-        vrs: VRSRepresentation, amino_acid_cache: AminoAcidCache
+        vrs: VRSRepresentation
     ) -> None:
         """Initialize the validator.
 
@@ -47,14 +46,12 @@ class ProteinInsertion(Validator):
         :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
         :param VRSRepresentation vrs: Class for creating VRS objects
-        :param AminoAcidCache amino_acid_cache: Amino Acid codes and conversions
         """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
             uta, tlr, gene_normalizer, vrs
         )
-        self._amino_acid_cache = amino_acid_cache
-        self.protein_base = ProteinBase(seq_repo_access, amino_acid_cache)
+        self.protein_base = ProteinBase(seq_repo_access)
         self.mane_transcript = mane_transcript
 
     async def get_transcripts(self, gene_tokens: List, classification: Classification,
