@@ -1217,6 +1217,18 @@ async def test_valid_queries(test_handler):
     resp = await test_handler.normalize("NG_008212.3:g.5426_5445del")
     assert resp.variation_descriptor
 
+    # Test ambiguous IUPAC code N
+    for q in [
+        "NC_000017.10:g.7572948_7572949insTTTTTTTTTNNNNN",
+        "NC_000007.13:g.140453136A>N",
+        "NC_000007.13:g.140453135_140453136delinsATN",
+        "NM_007294.3:c.2902_2903insTCN",
+        "NM_004333.4:c.1799T>N",
+        "NM_001289937.1:c.2326_2327delinsCTN"
+    ]:
+        resp = await test_handler.normalize(q)
+        assert resp.variation_descriptor, q
+
 
 @pytest.mark.asyncio
 async def test_no_matches(test_handler):
