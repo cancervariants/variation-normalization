@@ -996,6 +996,24 @@ coding_dna_insertion:
           "type": "Allele"
         }
       ]
+    - query: NM_007294.3:c.2902_2903insTCN
+      variations: [
+        {
+          "id": "ga4gh:VA.2ExmF5WVBErQGHCz9aVZcimL4Olc80R8",
+          "location": {
+            "id": "ga4gh:SL.sK0bv9E-NuGjQN7KccgioQf_C2T31asg",
+            "end": { "value": 2904, "type": "Number" },
+            "start": { "value": 2902, "type": "Number" },
+            "sequence_id": "ga4gh:SQ.jj1RAXMGdOU-D39IRYnDX_fXcM7LQvb6",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "TCNTC",
+            "type": "LiteralSequenceExpression"
+          },
+          "type": "Allele"
+        }
+      ]
 
 genomic_insertion:
   tests:
@@ -1047,6 +1065,24 @@ genomic_insertion:
           "state": {
             "type": "LiteralSequenceExpression",
             "sequence": "T"
+          }
+        }
+      ]
+    - query: NC_000017.10:g.7572948_7572949insTTTTTTTTTNNNNN
+      variations: [
+        {
+          "id": "ga4gh:VA.Ux7Fb_aTsaQy7R4rRd6Fl-jfMTjzBFHR",
+          "type": "Allele",
+          "location": {
+            "id": "ga4gh:SL.9r-97Aaw5kcbFash8MXNyASr25_kWLSH",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.AjWXsI7AkTK35XW9pgd3UbjpC3MAevlz",
+            "start": { "value": 7572948, "type": "Number" },
+            "end": { "value": 7572948, "type": "Number" }
+          },
+          "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": "TTTTTTTTTNNNNN"
           }
         }
       ]

@@ -91,6 +91,7 @@ coding_dna_substitution:
     - token: (c.233A>G)
     - token: c.509T>A
     - token: c.54G>H
+    - token: c.54G>N
   should_not_match:
     - token: (c.292T>C
     - token: g.292T>C
@@ -109,6 +110,7 @@ genomic_substition:
     - token: (g.233A>G)
     - token: g.509T>A
     - token: g.54G>H
+    - token: g.54G>N
   should_not_match:
     - token: (g.292T>C
     - token: c.292T>C
@@ -197,7 +199,6 @@ coding_dna_delins:
     - token: c.delinsTGG
     - token: c.d_delinsTG
 
-
 genomic_delins:
   should_match:
     - token: g.32386323delinsGA
@@ -209,6 +210,7 @@ genomic_delins:
 #    - token: g.812_829delins908_925
     - token: (g.301_302delinsGG)
     - token: g.10149938delinsAA
+    - token: g.10149938delinsAAN
   should_not_match:
     - token: g.150_147delinsTGG
     - token: 32386323delinsGA
@@ -334,6 +336,7 @@ genomic_insertion:
     - token: g.123_124insAGC
     - token: g.32867861_32867862insT
     - token: g.37881011_37881012insGGCTCCCCA
+    - token: g.7572948_7572949insN
   should_not_match:
     - token: g.123_124insAGCX
     - token: c.169_170insAla
