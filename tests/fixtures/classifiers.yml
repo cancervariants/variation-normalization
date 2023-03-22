@@ -181,8 +181,10 @@ protein_deletion:
       confidence: ConfidenceRating.EXACT
     - query: NP_004439.2:c.Leu755_Thr759del
       confidence: ConfidenceRating.INTERSECTION
+    - query: EGFR L747_T751delLREAT
+      confidence: ConfidenceRating.EXACT
   should_not_match:
-    - query: fakegene Leu755_Thr759delLeu
+    - query: fakegene g.Leu755_Thr759delLeu
     - query: GENE c.L755del
 
 coding_dna_deletion:

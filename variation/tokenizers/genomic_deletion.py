@@ -9,6 +9,10 @@ class GenomicDeletion(DeletionBase):
     """Class for tokenizing Deletion at the genomic reference sequence."""
 
     def return_token(self, params: Dict) -> Optional[GenomicDeletionToken]:
-        """Return Genomic Deletion token."""
-        if self.parts["coordinate_type"] == "g":
+        """Return Genomic Deletion token if match
+
+        :param Dict params: Matched parameters for deletion
+        :return: `GenomicDeletionToken` if on c coordinate, else `None`
+        """
+        if params["coordinate_type"] == "g":
             return GenomicDeletionToken(**params)
