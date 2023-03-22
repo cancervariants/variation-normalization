@@ -84,7 +84,6 @@ class ProteinDeletion(Tokenizer):
             if one_letter_aa:
                 for i in range(len(parts["deleted_aa"])):
                     aa = parts["deleted_aa"][i:i + 1]
-                    assert len(aa) == 1
                     try:
                         deleted_aa += aa3_to_aa1_lut[aa1_to_aa3(aa.upper())]
                     except KeyError:
