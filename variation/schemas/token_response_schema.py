@@ -509,6 +509,7 @@ class ProteinDeletionToken(Deletion):
 
     start_aa_del: str
     end_aa_del: Optional[str]
+    deleted_aa: Optional[str]
     coordinate_type = CoordinateType.PROTEIN
     token_type = "ProteinDeletion"
     so_id = SequenceOntology.PROTEIN_DELETION
