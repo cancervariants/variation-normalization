@@ -1,34 +1,26 @@
 """A module for Deletion Tokenization Base Class."""
 from abc import abstractmethod
-from typing import Optional, Dict, List
+from typing import Optional, Dict
+import re
 
 from variation.schemas.token_response_schema import Deletion, TokenMatchType
 from .tokenizer import Tokenizer
-from .caches import NucleotideCache
-from .tokenize_base import TokenizeBase
 
 
 class DeletionBase(Tokenizer):
     """Class for tokenizing Deletions."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the Deletion Base Class.
-
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
-        self.parts = None
-        self.tokenize_base = TokenizeBase(nucleotide_cache)
+    pattern = r"^(?P<start_pos>\d+)" \
+              r"(_(?P<end_pos>\d+))?del(?P<deleted_seq>[actgn]+)?$"
+    splitter = re.compile(pattern)
 
     def match(self, input_string: str) -> Optional[Deletion]:
         """Return tokens that match the input string.
 
         :param str input_string: Input string
-        :return: Deletion token if a match is found
+        :return: Deletion token if a match is found, else `None`
         """
-        if input_string is None:
-            return None
-
-        self.parts = {
+        parts = {
             "token": input_string,
             "input_string": input_string,
             "match_type": TokenMatchType.UNSPECIFIED.value,
@@ -38,55 +30,34 @@ class DeletionBase(Tokenizer):
             "coordinate_type": None
         }
 
-        input_string = str(input_string).lower()
-        conditions = (
-            "del" in input_string,
-            "ins" not in input_string and "delins" not in input_string,
-            input_string.startswith("c.") or input_string.startswith("g.")
-        )
-        if not all(conditions):
+        input_str_l = str(input_string).lower()
+
+        if input_str_l.startswith("p."):
             return None
 
-        parts = input_string.split("del")
-        self._get_parts(parts)
-        return self.return_token(self.parts)
+        if input_str_l.startswith(("c.", "g.")):
+            parts["coordinate_type"] = input_str_l[:1]
+            input_str_l = input_str_l[2:]
 
-    def _get_parts(self, parts: List) -> None:
-        """Get parts for DelIns by updating `self.parts`
+        if input_str_l.startswith("(") and input_str_l.endswith(")"):
+            input_str_l = input_str_l[1:-1]
 
-        :param List parts: Parts of input string
-        """
-        if len(parts) != 2:
+        match = self.splitter.match(input_str_l)
+        if not match:
             return None
 
-        # Get reference sequence
-        coordinate_type = parts[0][:1]
-        parts[0] = parts[0][2:]
+        params = match.groupdict()
 
-        positions_deleted = self.tokenize_base.get_positions_deleted(parts)
-        if not positions_deleted:
-            return None
-
-        if parts[1]:
-            self.parts["deleted_sequence"] = \
-                self.tokenize_base.get_sequence(parts[1])
-
-        if positions_deleted[0]:
-            start_pos_del = int(positions_deleted[0])
-        else:
-            start_pos_del = None
-        if positions_deleted[1]:
-            end_pos_del = int(positions_deleted[1])
-        else:
-            end_pos_del = None
-
-        if start_pos_del and end_pos_del:
-            if start_pos_del > end_pos_del:
+        parts["start_pos_del"] = params["start_pos"]
+        parts["end_pos_del"] = params["end_pos"]
+        if parts["start_pos_del"] and parts["end_pos_del"]:
+            if parts["start_pos_del"] > parts["end_pos_del"]:
                 return None
 
-        self.parts["start_pos_del"] = start_pos_del
-        self.parts["end_pos_del"] = end_pos_del
-        self.parts["coordinate_type"] = coordinate_type
+        parts["deleted_sequence"] = \
+            params["deleted_seq"].upper() if params["deleted_seq"] else None
+
+        return self.return_token(parts)
 
     @abstractmethod
     def return_token(self, params: Dict[str, str]) -> Optional[Deletion]:
