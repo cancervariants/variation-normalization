@@ -1,9 +1,9 @@
 # A simple container for variant-service.
 # Runs service on port 80.
-# Healthchecks service up every 5m.  
+# Healthchecks service up every 5m.
 
 FROM python:3.7
-RUN apt update ; apt install -y rsync
+RUN apt update && apt install -y rsync python3-dev
 RUN pip install pipenv uvicorn[standard]
 COPY . /app
 WORKDIR /app
