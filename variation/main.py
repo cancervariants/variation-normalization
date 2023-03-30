@@ -49,9 +49,10 @@ app = FastAPI(
 
 @app.on_event("startup")
 def initialize_query_handler():
-    global query_handler
-    query_handler = QueryHandler()
-    setattr(query_handler, "lock", threading.Lock())
+    if "query_handler" not in globals():
+        global query_handler
+        query_handler = QueryHandler()
+        setattr(query_handler, "lock", threading.Lock())
 
 
 def custom_openapi() -> Dict:
