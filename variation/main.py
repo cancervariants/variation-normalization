@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Union
 from datetime import datetime
 from urllib.parse import unquote
+import threading
 
 import pkg_resources
 from fastapi import FastAPI, Query
@@ -44,7 +45,14 @@ app = FastAPI(
     openapi_url="/variation/openapi.json",
     swagger_ui_parameters={"tryItOutEnabled": True}
 )
-query_handler = QueryHandler()
+
+
+@app.on_event("startup")
+def initialize_query_handler():
+    global query_handler
+    if "query_handler" not in globals():
+        query_handler = QueryHandler()
+        setattr(query_handler, "lock", threading.Lock())
 
 
 def custom_openapi() -> Dict:
@@ -89,7 +97,7 @@ q_description = "Human readable variation description on GRCh37 or GRCh38 assemb
          response_model=ToVRSService,
          description=translate_description
          )
-async def to_vrs(
+def to_vrs(
     q: str = Query(..., description=q_description),
     untranslatable_returns_text: bool = Query(False,
                                               description=to_vrs_untranslatable_descr)
@@ -104,7 +112,8 @@ async def to_vrs(
         unable to translate or normalize query.
     :return: ToVRSService model for variation
     """
-    resp = await query_handler.to_vrs_handler.to_vrs(unquote(q),
+    with query_handler.lock:
+        resp =  query_handler.to_vrs_handler.to_vrs(unquote(q),
                                                      untranslatable_returns_text)
     return resp
 
@@ -133,7 +142,7 @@ hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative
          response_model=NormalizeService,
          description=normalize_description
          )
-async def normalize(
+def normalize(
     q: str = Query(..., description=q_description),
     hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
         HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
@@ -163,10 +172,11 @@ async def normalize(
         unable to translate or normalize query.
     :return: NormalizeService for variation
     """
-    normalize_resp = await query_handler.normalize_handler.normalize(
-        unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
-        baseline_copies=baseline_copies, relative_copy_class=relative_copy_class,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        normalize_resp =  query_handler.normalize_handler.normalize(
+            unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
+            baseline_copies=baseline_copies, relative_copy_class=relative_copy_class,
+            untranslatable_returns_text=untranslatable_returns_text)
     return normalize_resp
 
 
@@ -192,8 +202,9 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(
-            identifier, target_namespaces=target_namespaces)
+        with query_handler.lock:
+            aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(
+                identifier, target_namespaces=target_namespaces)
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
     except Exception as e:
@@ -240,7 +251,8 @@ def vrs_python_translate_from(
     warnings = list()
     vrs_variation = None
     try:
-        resp = query_handler._tlr.translate_from(variation_query, fmt)
+        with query_handler.lock:
+            resp = query_handler._tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
@@ -278,7 +290,7 @@ q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protei
          response_model=NormalizeService,
          tags=[Tags.TO_PROTEIN_VARIATION]
          )
-async def gnomad_vcf_to_protein(
+def gnomad_vcf_to_protein(
     q: str = Query(..., description=q_description),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> NormalizeService:
@@ -291,8 +303,9 @@ async def gnomad_vcf_to_protein(
     :return: NormalizeService for variation
     """
     q = unquote(q.strip())
-    resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
-        q, untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp =  query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
+            q, untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -315,7 +328,7 @@ baseline_copies_descr = "Baseline copies for duplication or deletion. Only used 
          description="Return VRSATILE Canonical Variation",
          response_model=ToCanonicalVariationService,
          tags=[Tags.TO_CANONICAL])
-async def to_canonical_variation(
+def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
         fmt: ToCanonicalVariationFmt = Query(...,
                                              description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
@@ -348,11 +361,12 @@ async def to_canonical_variation(
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
-    resp = await query_handler.to_canonical_handler.to_canonical_variation(
-        q, fmt, do_liftover=do_liftover,
-        hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-        relative_copy_class=relative_copy_class,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp =  query_handler.to_canonical_handler.to_canonical_variation(
+            q, fmt, do_liftover=do_liftover,
+            hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
+            relative_copy_class=relative_copy_class,
+            untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -386,7 +400,7 @@ def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],
                       " `spdi` or `hgvs`",
           response_model=TranslateToService,
           tags=[Tags.VRS_PYTHON])
-async def vrs_python_translate_to(
+def vrs_python_translate_to(
         request_body: TranslateToQuery) -> TranslateToService:
     """Given VRS Allele object as a dict, return variation expressed as queried
     format using vrs-python's translator class
@@ -405,7 +419,8 @@ async def vrs_python_translate_to(
     variations = list()
     if allele:
         try:
-            variations = query_handler._tlr.translate_to(allele, request_body["fmt"])
+            with query_handler.lock:
+                variations = query_handler._tlr.translate_to(allele, request_body["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
@@ -436,7 +451,7 @@ to_hgvs_descr = "Return variation as HGVS expressions. Request body must"\
           description=to_hgvs_descr,
           response_model=TranslateToService,
           tags=[Tags.VRS_PYTHON])
-async def vrs_python_to_hgvs(
+def vrs_python_to_hgvs(
         request_body: TranslateToHGVSQuery) -> TranslateToService:
     """Given VRS Allele object as a dict, return variation expressed as HGVS
         expression(s)
@@ -457,8 +472,9 @@ async def vrs_python_to_hgvs(
     variations = list()
     if allele:
         try:
-            variations = query_handler._tlr._to_hgvs(
-                allele, namespace=request_body.get("namespace") or "refseq")
+            with query_handler.lock:
+                variations = query_handler._tlr._to_hgvs(
+                    allele, namespace=request_body.get("namespace") or "refseq")
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
@@ -482,7 +498,7 @@ async def vrs_python_to_hgvs(
          description="Return VRS Absoluter Copy Number Variation",
          response_model=HgvsToAbsoluteCopyNumberService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-async def hgvs_to_absolute_copy_number(
+def hgvs_to_absolute_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for duplication"),
@@ -500,9 +516,10 @@ async def hgvs_to_absolute_copy_number(
         unable to translate or normalize query.
     :return: HgvsToAbsoluteCopyNumberService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(
-        unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp =  query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(
+            unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
+            untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -512,7 +529,7 @@ async def hgvs_to_absolute_copy_number(
          description="Return VRS Relative Copy Number Variation",
          response_model=HgvsToRelativeCopyNumberService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-async def hgvs_to_relative_copy_number(
+def hgvs_to_relative_copy_number(
     hgvs_expr: str = Query(..., description="Variation query"),
     relative_copy_class: RelativeCopyClass = Query(
         ..., description="The relative copy class"),
@@ -530,9 +547,10 @@ async def hgvs_to_relative_copy_number(
         unable to translate or normalize query.
     :return: HgvsToRelativeCopyNumberService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(
-        unquote(hgvs_expr.strip()), relative_copy_class, do_liftover,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp =  query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(
+            unquote(hgvs_expr.strip()), relative_copy_class, do_liftover,
+            untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -581,9 +599,10 @@ def parsed_to_abs_cnv(
         unable to translate or normalize query.
     :return: Tuple containing Absolute Copy Number variation and list of warnings
     """
-    resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
-        start, end, total_copies, assembly, chr, accession,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
+            start, end, total_copies, assembly, chr, accession,
+            untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
@@ -626,7 +645,8 @@ def amplification_to_rel_cnv(
     :return: AmplificationToRelCnvService containing Relative Copy Number and
         list of warnings
     """
-    resp = query_handler.to_copy_number_handler.amplification_to_rel_cnv(
-        gene=gene, sequence_id=sequence_id, start=start, end=end,
-        untranslatable_returns_text=untranslatable_returns_text)
+    with query_handler.lock:
+        resp = query_handler.to_copy_number_handler.amplification_to_rel_cnv(
+            gene=gene, sequence_id=sequence_id, start=start, end=end,
+            untranslatable_returns_text=untranslatable_returns_text)
     return resp
