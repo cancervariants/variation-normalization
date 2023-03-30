@@ -366,7 +366,6 @@ async def to_canonical_variation(
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
             relative_copy_class=relative_copy_class,
             untranslatable_returns_text=untranslatable_returns_text)
-        print("to_canonical_variation resp: " + str(resp))
     return resp
 
 
