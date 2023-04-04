@@ -7,7 +7,6 @@ from ga4gh.vrsatile.pydantic.vrs_models import Text, VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import CanonicalVariation
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from cool_seq_tool.schemas import Assembly
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
@@ -33,7 +32,7 @@ from variation.version import __version__
 class ToCanonicalVariation(ToVRS):
     """Class for translating to canonical variation"""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler,
@@ -41,7 +40,6 @@ class ToCanonicalVariation(ToVRS):
         """Initialize the to canonical variation class
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -51,7 +49,7 @@ class ToCanonicalVariation(ToVRS):
         :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param UTADatabase uta: Access to UTA queries
         """
-        super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.tlr = tlr
         self.uta = uta
@@ -172,7 +170,7 @@ class ToCanonicalVariation(ToVRS):
             if not newest_assembly_acs:
                 warnings.append(f"Unable to get newest assemblies for {ac}")
                 return variation, None
-            new_ac = newest_assembly_acs[0][0]
+            new_ac = newest_assembly_acs[0]
             if new_ac != ac:
                 ac = new_ac
                 chromosome, warning = self.seqrepo_access.ac_to_chromosome(ac)
@@ -202,8 +200,7 @@ class ToCanonicalVariation(ToVRS):
         else:
             # Validate SPDI
             try:
-                sequence = self.seqrepo_access.seqrepo_client.fetch(
-                    ac, start_pos, end=end_pos)
+                sequence = self.seqrepo_access.sr.fetch(ac, start_pos, end=end_pos)
             except ValueError as e:
                 warnings.append(str(e))
             else:
