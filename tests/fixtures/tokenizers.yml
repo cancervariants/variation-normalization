@@ -258,6 +258,8 @@ protein_deletion:
     - token: p.(Lys23_Val25del)
     - token: (Lys23_Val25del)
     - token: p.Phe76del
+    - token: L747_T751delLREAT
+    - token: p.L747_T751delLREAT
   should_not_match:
     - token: Val7deletion
     - token: (Val7deletion)
@@ -268,6 +270,8 @@ protein_deletion:
     - token: 7Valdel
     - token: Val7_Glydel
     - token: Val_Gly7del
+    - token: p.(V7del
+    - token: p.V7del)
 
 coding_dna_deletion:
   should_match:

@@ -114,6 +114,19 @@ class ProteinDeletion(Validator):
                             t, s.end_aa_del, s.end_pos_del, errors
                         )
 
+                    if not errors and s.deleted_aa:
+                        try:
+                            ref = self.seqrepo_access.sr.fetch(
+                                t, s.start_pos_del - 1, s.end_pos_del
+                            )
+                        except (KeyError, ValueError) as e:
+                            errors.append(str(e))
+                        else:
+                            if ref != s.deleted_aa:
+                                errors.append(
+                                    f"Needed to find {s.deleted_aa} but found {ref}"
+                                )
+
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = await self.mane_transcript.get_mane_transcript(
                         t, s.start_pos_del, s.coordinate_type, end_pos=s.end_pos_del,

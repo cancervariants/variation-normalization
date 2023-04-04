@@ -1,7 +1,6 @@
 """A module for testing Protein Deletion Tokenization."""
 import unittest
 
-from variation.tokenizers.caches import NucleotideCache
 from variation.tokenizers import ProteinDeletion
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +10,7 @@ class TestProteinDeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Protein Deletion instance."""
-        return ProteinDeletion(NucleotideCache())
+        return ProteinDeletion()
 
     def token_type(self):
         """Return protein deletion token type."""
