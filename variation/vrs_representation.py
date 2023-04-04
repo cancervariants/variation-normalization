@@ -1,7 +1,6 @@
 """Module for generating VRS objects"""
 from typing import List, Optional, Tuple, Union, Dict
 
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
@@ -11,14 +10,12 @@ from bioutils.accessions import coerce_namespace
 class VRSRepresentation:
     """Class for representing VRS objects"""
 
-    def __init__(self, dp: SeqRepoDataProxy, seqrepo_access: SeqRepoAccess) -> None:
+    def __init__(self, seqrepo_access: SeqRepoAccess) -> None:
         """Initialize the VRSRepresentation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         """
         self.seqrepo_access = seqrepo_access
-        self.dp = dp
 
     @staticmethod
     def get_ival_start_end(
@@ -127,7 +124,7 @@ class VRSRepresentation:
         if alt_type not in ["uncertain_deletion", "uncertain_duplication",
                             "duplication_range", "deletion_range"]:
             try:
-                allele = normalize(allele, self.dp)
+                allele = normalize(allele, self.seqrepo_access)
             except (KeyError, AttributeError) as e:
                 errors.append(f"vrs-python unable to normalize allele: {e}")
                 return None

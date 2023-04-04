@@ -3,12 +3,11 @@ from typing import Optional
 from os import environ
 
 from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
-from cool_seq_tool import SEQREPO_DATA_PATH, TRANSCRIPT_MAPPINGS_PATH, \
-    LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH, CoolSeqTool
+from cool_seq_tool import TRANSCRIPT_MAPPINGS_PATH, LRG_REFSEQGENE_PATH, \
+    MANE_SUMMARY_PATH, CoolSeqTool
 
-from variation import AMINO_ACID_PATH, UTA_DB_URL
+from variation import UTA_DB_URL
 from variation.tokenizers import GeneSymbol
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.to_vrs import VRSRepresentation, ToVRS
@@ -30,8 +29,6 @@ class QueryHandler:
     def __init__(self,
                  dynamodb_url: str = "",
                  dynamodb_region: str = "us-east-2",
-                 seqrepo_data_path: str = None,
-                 amino_acids_file_path: str = AMINO_ACID_PATH,
                  transcript_file_path: str = None,
                  refseq_file_path: str = None,
                  mane_data_path: str = None,
@@ -40,16 +37,12 @@ class QueryHandler:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene-normalizer database source.
         :param str dynamodb_region: AWS default region for gene-normalizer.
-        :param str seqrepo_data_path: Path to seqrepo data directory
-        :param str amino_acids_file_path: Path to amino acids file
         :param str transcript_file_path: Path to transcript mappings file
         :param str refseq_file_path: Path to refseq gene symbol file
         :param str mane_data_path: Path to refseq mane data file
         :param str uta_db_url: URL for UTA database
         :param Optional[str] uta_db_pwd: Password for UTA database user
         """
-        if not seqrepo_data_path:
-            seqrepo_data_path = environ.get("SEQREPO_DATA_PATH", SEQREPO_DATA_PATH)
         if not transcript_file_path:
             transcript_file_path = environ.get("TRANSCRIPT_MAPPINGS_PATH",
                                                TRANSCRIPT_MAPPINGS_PATH)
@@ -57,16 +50,13 @@ class QueryHandler:
             refseq_file_path = environ.get("LRG_REFSEQGENE_PATH", LRG_REFSEQGENE_PATH)
         if not mane_data_path:
             mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
-        cool_seq_tool = CoolSeqTool(seqrepo_data_path=seqrepo_data_path,
-                                    transcript_file_path=transcript_file_path,
+        cool_seq_tool = CoolSeqTool(transcript_file_path=transcript_file_path,
                                     lrg_refseqgene_path=refseq_file_path,
                                     mane_data_path=mane_data_path,
                                     db_url=uta_db_url, db_pwd=uta_db_pwd)
         self._seqrepo_access = cool_seq_tool.seqrepo_access
 
-        dp = SeqRepoDataProxy(self._seqrepo_access.seqrepo_client)
-
-        vrs_representation = VRSRepresentation(dp, self._seqrepo_access)
+        vrs_representation = VRSRepresentation(self._seqrepo_access)
 
         gene_normalizer = GeneQueryHandler(db_url=dynamodb_url,
                                            db_region=dynamodb_region)
@@ -77,15 +67,16 @@ class QueryHandler:
         self.alignment_mapper = cool_seq_tool.alignment_mapper
         mane_transcript = cool_seq_tool.mane_transcript
         transcript_mappings = cool_seq_tool.transcript_mappings
-        self._tlr = Translator(data_proxy=dp)
+        self._tlr = Translator(data_proxy=self._seqrepo_access)
         validator = Validate(
             self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
             uta_db, self._tlr, gene_normalizer, vrs_representation
         )
         translator = Translate()
         hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
-        to_vrs_params = [self._seqrepo_access, dp, tokenizer, classifier, validator,
-                         translator, hgvs_dup_del_mode, gene_normalizer]
+        to_vrs_params = [self._seqrepo_access, tokenizer,
+                         classifier, validator, translator, hgvs_dup_del_mode,
+                         gene_normalizer]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
         self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params)
         self.normalize_handler = Normalize(*to_vrs_params + [uta_db])

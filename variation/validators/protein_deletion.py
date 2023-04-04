@@ -116,7 +116,7 @@ class ProteinDeletion(Validator):
 
                     if not errors and s.deleted_aa:
                         try:
-                            ref = self.seqrepo_access.seqrepo_client.fetch(
+                            ref = self.seqrepo_access.sr.fetch(
                                 t, s.start_pos_del - 1, s.end_pos_del
                             )
                         except (KeyError, ValueError) as e:
