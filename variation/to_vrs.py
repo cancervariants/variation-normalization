@@ -9,7 +9,6 @@ from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.schemas import ResidueMode
 from cool_seq_tool.data_sources import SeqRepoAccess
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.normalize_response_schema\
@@ -32,14 +31,13 @@ from variation.version import __version__
 class ToVRS(VRSRepresentation):
     """The class for translating variation strings to VRS representations."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the ToVrsAndVrsatile class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -48,7 +46,7 @@ class ToVRS(VRSRepresentation):
             HGVS dup/del expressions
         :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         """
-        super().__init__(dp, seqrepo_access)
+        super().__init__(seqrepo_access)
         self.tokenizer = tokenizer
         self.classifier = classifier
         self.validator = validator

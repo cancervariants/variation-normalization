@@ -259,8 +259,8 @@ class ToCopyNumberVariation(ToVRS):
                         start, end, total_copies, warnings, assembly, chr, accession)
             else:
                 try:
-                    self.seqrepo_access.seqrepo_client[accession][start - 1]
-                    self.seqrepo_access.seqrepo_client[accession][end]
+                    self.seqrepo_access.sr[accession][start - 1]
+                    self.seqrepo_access.sr[accession][end]
                 except ValueError as e:
                     warnings.append(str(e).replace("start", "Position"))
                     if untranslatable_returns_text:
