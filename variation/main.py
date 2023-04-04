@@ -195,7 +195,7 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        aliases = query_handler._seqrepo_access.seqrepo_client.translate_identifier(
+        aliases = query_handler._seqrepo_access.sr.translate_identifier(
             identifier, target_namespaces=target_namespaces)
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]

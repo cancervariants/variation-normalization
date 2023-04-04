@@ -5,7 +5,6 @@ from datetime import datetime
 
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
 from variation.classifiers.classify import Classify
 from variation.to_vrsatile import ToVRSATILE
@@ -25,14 +24,13 @@ from variation.version import __version__
 class Normalize(ToVRSATILE):
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler, uta: UTADatabase) -> None:
         """Initialize Normalize class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -42,7 +40,7 @@ class Normalize(ToVRSATILE):
         :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         :param UTADatabase uta: Access to db containing alignment data
         """
-        super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.uta = uta
 
