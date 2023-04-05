@@ -829,6 +829,39 @@ protein_deletion:
           "type": "Allele"
         }
       ]
+    - query: EGFR L747_T751delLREAT
+      variations: [
+        {
+          "id": "ga4gh:VA.yk48GJcyRATR4tt7GIiFpa3vRXgB4aNx",
+          "location": {
+            "id": "ga4gh:SL.4utThcVn7rgC3ZhNudavmKw42cFnwVym",
+            "start": { "value": 746, "type": "Number" },
+            "end": { "value": 751, "type": "Number" },
+            "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "LiteralSequenceExpression"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.1iCYiSzCrfOlckcZuEiEN_GesO6hYJP_",
+          "location": {
+            "id": "ga4gh:SL.6_cNSfq9490DKXLPX3Q3D3-s0u8se9_t",
+            "start": { "value": 746, "type": "Number" },
+            "end": { "value": 751, "type": "Number" },
+            "sequence_id": "ga4gh:SQ.OWicZUhcw_9nRH2SQjawk7BAEkrUIe__",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "LiteralSequenceExpression"
+          },
+          "type": "Allele"
+        }
+      ]
 
 coding_dna_deletion:
   tests:
