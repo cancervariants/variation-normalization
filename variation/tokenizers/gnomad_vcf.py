@@ -12,11 +12,9 @@ from .tokenizer import Tokenizer
 class GnomadVCF(Tokenizer):
     """The gnomad VCF tokenizer class"""
 
-    def __init__(self) -> None:
-        """Initialize the gnomad VCF tokenizer class"""
-        self.splitter = re.compile(
-            r"^(?P<chromosome>(chr|chromosome)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
-            r"(?P<pos>[1-9]\d*)-(?P<ref>(?i)[actg]+)-(?P<alt>(?i)[actg]+)$")
+    splitter = re.compile(
+        r"^(?P<chromosome>(chr|chromosome)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
+        r"(?P<pos>[1-9]\d*)-(?P<ref>(?i)[actg]+)-(?P<alt>(?i)[actg]+)$")
 
     def match(self, input_string: str) -> Optional[List[Token]]:
         """Return a GnomadVCFToken if a match exists.

@@ -1,5 +1,4 @@
 """A module for Polypeptide Sequence Variation Tokenization Base Class."""
-import re
 from abc import abstractmethod
 from typing import List, Optional
 
@@ -16,7 +15,6 @@ class PolypeptideSequenceVariationBase(Tokenizer):
 
     def __init__(self) -> None:
         """Initialize the Polypeptide Sequence Variation Base Class."""
-        self.splitter = re.compile(r"(\d+)")
         self.psub = None
 
     def _set_psub(self, amino_acid: str, position: int, new_amino_acid: str) -> None:

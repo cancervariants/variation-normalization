@@ -1,5 +1,4 @@
 """A module for Single Nucleotide Variation Tokenization Base Class."""
-import re
 from abc import abstractmethod
 from typing import List, Optional, Dict
 
@@ -13,7 +12,6 @@ class SingleNucleotideVariationBase(Tokenizer):
 
     def __init__(self) -> None:
         """Initialize the Single Nucleotide Variation Base Class."""
-        self.splitter = re.compile(r"(\d+)")
         self.sub = None
 
     def match(self, input_string: str) -> Optional[SingleNucleotideVariation]:
@@ -37,7 +35,7 @@ class SingleNucleotideVariationBase(Tokenizer):
         if "c." not in input_string and "g." not in input_string:
             return None
 
-        sub_parts = self.splitter.split(input_string)
+        sub_parts = self.splitter_paren_digits.split(input_string)
         self._get_sub(sub_parts)
         if None not in self.sub.values():
             params = {

@@ -13,6 +13,7 @@ class Tokenizer(ABC):
 
     base_nucleotides = {"A", "C", "T", "G", "N"}
     splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
+    splitter_paren_digits = re.compile(r"(\d+)")
 
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
