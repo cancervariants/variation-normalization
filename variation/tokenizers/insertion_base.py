@@ -4,7 +4,6 @@ from typing import Optional, Dict, List
 
 from variation.schemas.token_response_schema import Insertion, TokenMatchType, Token
 from .tokenizer import Tokenizer
-from .tokenize_base import TokenizeBase
 
 
 class InsertionBase(Tokenizer):
@@ -13,7 +12,6 @@ class InsertionBase(Tokenizer):
     def __init__(self) -> None:
         """Initialize the Insertion Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase()
 
     def match(self, input_string: str) -> Optional[Insertion]:
         """Return tokens that match the input string."""
@@ -63,14 +61,13 @@ class InsertionBase(Tokenizer):
         coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
-        positions = self.tokenize_base.get_positions_deleted(parts)
+        positions = self.get_positions_deleted(parts)
         if not positions:
             return None
         start_pos = positions[0]
         end_pos = positions[1]
 
-        inserted_sequences = \
-            self.tokenize_base.get_transcript_genomic_inserted_sequence(parts)
+        inserted_sequences = self.get_transcript_genomic_inserted_sequence(parts)
         if not inserted_sequences or not inserted_sequences[0]:
             return None
 

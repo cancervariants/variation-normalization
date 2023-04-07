@@ -4,7 +4,6 @@ from typing import Optional, Dict, List
 
 from variation.schemas.token_response_schema import DelIns, TokenMatchType, Token
 from .tokenizer import Tokenizer
-from .tokenize_base import TokenizeBase
 
 
 class DelInsBase(Tokenizer):
@@ -13,7 +12,6 @@ class DelInsBase(Tokenizer):
     def __init__(self) -> None:
         """Initialize the DelIns Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase()
 
     def match(self, input_string: str) -> Optional[DelIns]:
         """Return tokens that match the input string."""
@@ -73,14 +71,13 @@ class DelInsBase(Tokenizer):
         coordinate_type = parts[0][:1]
         parts[0] = parts[0][2:]
 
-        positions_deleted = self.tokenize_base.get_positions_deleted(parts)
+        positions_deleted = self.get_positions_deleted(parts)
         if not positions_deleted:
             return
         start_pos_del = positions_deleted[0]
         end_pos_del = positions_deleted[1]
 
-        inserted_sequences = \
-            self.tokenize_base.get_transcript_genomic_inserted_sequence(parts)
+        inserted_sequences = self.get_transcript_genomic_inserted_sequence(parts)
         if not inserted_sequences:
             return
         inserted_sequence1 = inserted_sequences[0]

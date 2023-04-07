@@ -6,7 +6,6 @@ from pydantic.error_wrappers import ValidationError
 from variation.schemas.token_response_schema import ProteinInsertionToken, \
     TokenMatchType
 from .tokenizer import Tokenizer
-from .tokenize_base import TokenizeBase
 
 
 class ProteinInsertion(Tokenizer):
@@ -15,7 +14,6 @@ class ProteinInsertion(Tokenizer):
     def __init__(self) -> None:
         """Initialize the Protein Insertion Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase()
 
     def match(self, input_string: str) -> Optional[ProteinInsertionToken]:
         """Return token that match the input string."""
@@ -63,13 +61,13 @@ class ProteinInsertion(Tokenizer):
         if len(parts) != 2:
             return
 
-        range_aa_pos = self.tokenize_base.get_aa_pos_range(parts)
+        range_aa_pos = self.get_aa_pos_range(parts)
         if range_aa_pos:
             self.parts["start_aa_flank"] = range_aa_pos[0]
             self.parts["end_aa_flank"] = range_aa_pos[1]
             self.parts["start_pos_flank"] = range_aa_pos[2]
             self.parts["end_pos_flank"] = range_aa_pos[3]
             self.parts["used_one_letter"] = range_aa_pos[4]
-        self.parts["inserted_sequence"] = \
-            self.tokenize_base.get_protein_inserted_sequence(
-                parts, self.parts["used_one_letter"])
+        self.parts["inserted_sequence"] = self.get_protein_inserted_sequence(
+            parts, self.parts["used_one_letter"]
+        )
