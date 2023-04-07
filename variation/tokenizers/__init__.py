@@ -1,7 +1,6 @@
 """Module to load and init namespace at package level."""
 from .tokenizer import Tokenizer
 from .tokenize import Tokenize
-from .gene_pair import GenePair
 from .gene_symbol import GeneSymbol
 from .protein_alternate import ProteinAlternate
 from .protein_delins import ProteinDelIns
