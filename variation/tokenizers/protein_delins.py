@@ -5,7 +5,6 @@ from pydantic.error_wrappers import ValidationError
 
 from variation.schemas.token_response_schema import ProteinDelInsToken, \
     TokenMatchType
-from .caches import NucleotideCache
 from .tokenizer import Tokenizer
 from .tokenize_base import TokenizeBase
 
@@ -13,13 +12,10 @@ from .tokenize_base import TokenizeBase
 class ProteinDelIns(Tokenizer):
     """Class for tokenizing DelIns on the protein reference sequence."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the Protein DelIns Class.
-
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
+    def __init__(self) -> None:
+        """Initialize the Protein DelIns Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase(nucleotide_cache)
+        self.tokenize_base = TokenizeBase()
 
     def match(self, input_string: str) -> Optional[ProteinDelInsToken]:
         """Return token that match the input string."""

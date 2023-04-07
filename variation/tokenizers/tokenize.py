@@ -27,7 +27,6 @@ from .genomic_duplication import GenomicDuplication
 from .genomic_deletion_range import GenomicDeletionRange
 from .gnomad_vcf import GnomadVCF
 from .free_text_categorical import FreeTextCategorical
-from .caches import NucleotideCache
 
 
 class Tokenize:
@@ -35,7 +34,6 @@ class Tokenize:
 
     def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
-        nucleotide_cache = NucleotideCache()
         self.tokenizers = (
             HGVS(),
             ReferenceSequence(),
@@ -50,15 +48,15 @@ class Tokenize:
             GenomicSubstitution(),
             CodingDNASilentMutation(),
             GenomicSilentMutation(),
-            ProteinDelIns(nucleotide_cache),
-            CodingDNADelIns(nucleotide_cache),
-            GenomicDelIns(nucleotide_cache),
+            ProteinDelIns(),
+            CodingDNADelIns(),
+            GenomicDelIns(),
             ProteinDeletion(),
             CodingDNADeletion(),
             GenomicDeletion(),
-            ProteinInsertion(nucleotide_cache),
-            CodingDNAInsertion(nucleotide_cache),
-            GenomicInsertion(nucleotide_cache),
+            ProteinInsertion(),
+            CodingDNAInsertion(),
+            GenomicInsertion(),
             GenomicUncertainDeletion(),
             GenomicDuplication(),
             GenomicDeletionRange()

@@ -8,6 +8,8 @@ from variation.schemas.token_response_schema import Token
 class Tokenizer(ABC):
     """The tokenizer class."""
 
+    base_nucleotides = {"A", "C", "T", "G", "N"}
+
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
         """Return tokens that match the input string."""

@@ -4,20 +4,16 @@ from typing import Optional, Dict, List
 
 from variation.schemas.token_response_schema import DelIns, TokenMatchType, Token
 from .tokenizer import Tokenizer
-from .caches import NucleotideCache
 from .tokenize_base import TokenizeBase
 
 
 class DelInsBase(Tokenizer):
     """Class for tokenizing DelIns."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the DelIns Class.
-
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
+    def __init__(self) -> None:
+        """Initialize the DelIns Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase(nucleotide_cache)
+        self.tokenize_base = TokenizeBase()
 
     def match(self, input_string: str) -> Optional[DelIns]:
         """Return tokens that match the input string."""

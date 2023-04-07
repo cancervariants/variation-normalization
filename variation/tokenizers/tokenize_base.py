@@ -4,18 +4,14 @@ import re
 
 from bioutils.sequences import aa3_to_aa1_lut, aa3_to_aa1, aa1_to_aa3
 
-from variation.tokenizers.caches import NucleotideCache
-
 
 class TokenizeBase:
     """Class for Tokenize methods."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize Token Base class.
+    base_nucleotides = {"A", "C", "T", "G", "N"}
 
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
-        self.nucleotide_cache = nucleotide_cache
+    def __init__(self) -> None:
+        """Initialize Token Base class."""
         self.splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
 
     def get_amino_acid_and_pos(
@@ -196,7 +192,7 @@ class TokenizeBase:
         :return: Sequence of nucleotides
         """
         for char in part:
-            if char.upper() not in self.nucleotide_cache.base_nucleotides:
+            if char.upper() not in self.base_nucleotides:
                 return None
         return part.upper()
 

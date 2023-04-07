@@ -90,7 +90,6 @@ coding_dna_substitution:
     - token: c.292T>C
     - token: (c.233A>G)
     - token: c.509T>A
-    - token: c.54G>H
     - token: c.54G>N
   should_not_match:
     - token: (c.292T>C
@@ -102,6 +101,7 @@ coding_dna_substitution:
     - token: c.509T>
     - token: c.509>A
     - token: c.T>A
+    - token: c.54G>H
 
 genomic_substition:
   should_match:
