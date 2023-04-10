@@ -111,49 +111,6 @@ class GeneMatchToken(Token):
             }
 
 
-class GenePairMatchToken(Token):
-    """Define model for gene pair token."""
-
-    left_gene_token: GeneMatchToken
-    right_gene_token: GeneMatchToken
-    token_type = "GenePair"
-
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["GenePairMatchToken"]) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
-                "token": "BRAF-ABL1",
-                "token_type": "GenePair",
-                "match_type": 5,
-                "input_string": "braf-abl1",
-                "object_type": "Token",
-                "left_gene_token": {
-                    "token": "BRAF",
-                    "token_type": "GeneSymbol",
-                    "match_type": 2,
-                    "input_string": "BRAF",
-                    "object_type": "Token",
-                    "matched_value": "BRAF"
-                },
-                "right_gene_token": {
-                    "token": "ABL1",
-                    "token_type": "GeneSymbol",
-                    "match_type": 2,
-                    "input_string": "ABL1",
-                    "object_type": "Token",
-                    "matched_value": "ABL1"
-                }
-            }
-
-
 class CoordinateType(str, Enum):
     """Define constraints for coordinate types."""
 
@@ -275,9 +232,15 @@ class TokenResponseSchema(BaseModel):
     """Define model for token response."""
 
     search_term: str
-    tokens: List[Union[GeneMatchToken, GenePairMatchToken,
-                       ProteinSubstitutionToken, PolypeptideTruncationToken,
-                       SilentMutationToken, Token]]
+    tokens: List[
+        Union[
+            GeneMatchToken,
+            ProteinSubstitutionToken,
+            PolypeptideTruncationToken,
+            SilentMutationToken,
+            Token
+        ]
+    ]
 
     class Config:
         """Configure model."""
