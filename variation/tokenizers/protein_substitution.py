@@ -37,11 +37,11 @@ class ProteinSubstitution(PolypeptideSequenceVariationBase):
                 return None
             p_count = input_string.count("p.")
             if p_count == 1:
-                psub_parts = self.splitter.split(input_string)
+                psub_parts = self.splitter_paren_digits.split(input_string)
             elif p_count == 2:
                 psub_parts = input_string.split()
         else:
-            psub_parts = self.splitter.split(input_string)
+            psub_parts = self.splitter_paren_digits.split(input_string)
 
         self._get_psub(psub_parts)
 
