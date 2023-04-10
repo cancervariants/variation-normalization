@@ -57,7 +57,7 @@ coding_dna_substitution:
     - query: BRAF V600E c.23T>A
       confidence: ConfidenceRating.EXACT
     - query: LRG_199t1:c.54G>H
-      confidence: ConfidenceRating.EXACT
+      confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC

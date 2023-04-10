@@ -5,21 +5,15 @@ from pydantic.error_wrappers import ValidationError
 
 from variation.schemas.token_response_schema import ProteinDelInsToken, \
     TokenMatchType
-from .caches import NucleotideCache
 from .tokenizer import Tokenizer
-from .tokenize_base import TokenizeBase
 
 
 class ProteinDelIns(Tokenizer):
     """Class for tokenizing DelIns on the protein reference sequence."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the Protein DelIns Class.
-
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
+    def __init__(self) -> None:
+        """Initialize the Protein DelIns Class."""
         self.parts = None
-        self.tokenize_base = TokenizeBase(nucleotide_cache)
 
     def match(self, input_string: str) -> Optional[ProteinDelInsToken]:
         """Return token that match the input string."""
@@ -66,13 +60,12 @@ class ProteinDelIns(Tokenizer):
             return None
 
         # Get reference sequence
-        range_aa_pos = self.tokenize_base.get_aa_pos_range(parts)
+        range_aa_pos = self.get_aa_pos_range(parts)
         if range_aa_pos:
             self.parts["start_aa_del"] = range_aa_pos[0]
             self.parts["end_aa_del"] = range_aa_pos[1]
             self.parts["start_pos_del"] = range_aa_pos[2]
             self.parts["end_pos_del"] = range_aa_pos[3]
             self.parts["used_one_letter"] = range_aa_pos[4]
-        self.parts["inserted_sequence"] = \
-            self.tokenize_base.get_protein_inserted_sequence(
-                parts, self.parts["used_one_letter"])
+        self.parts["inserted_sequence"] = self.get_protein_inserted_sequence(
+            parts, self.parts["used_one_letter"])

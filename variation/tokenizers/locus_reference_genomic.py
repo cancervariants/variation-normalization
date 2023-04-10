@@ -10,10 +10,10 @@ from .tokenizer import Tokenizer
 class LocusReferenceGenomic(Tokenizer):
     """The LRG class for tokenization."""
 
+    regex = r"lrg_\d+((t|p)\d+)?"
+
     def __init__(self) -> None:
         """Initialize the LRG class."""
-        self.splitter = re.compile(r"(\d+)")
-        self.regex = r"lrg_\d+((t|p)\d+)?"
         self.parts = None
 
     def match(self, input_string: str) -> Optional[LocusReferenceGenomicToken]:

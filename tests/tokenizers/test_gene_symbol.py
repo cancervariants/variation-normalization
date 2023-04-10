@@ -7,7 +7,7 @@ from variation.tokenizers import GeneSymbol
 from .tokenizer_base import TokenizerBase
 
 
-class TestGenePairTokenizer(TokenizerBase, unittest.TestCase):
+class TestGeneSymbolTokenizer(TokenizerBase, unittest.TestCase):
     """The Gene Pair Tokenizer class."""
 
     def tokenizer_instance(self):

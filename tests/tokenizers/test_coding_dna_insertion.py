@@ -1,7 +1,6 @@
 """A module for testing Coding DNA Insertion Tokenization."""
 import unittest
 
-from variation.tokenizers.caches import NucleotideCache
 from variation.tokenizers import CodingDNAInsertion
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +10,7 @@ class TestCodingDNAInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Coding DNA Insertion instance."""
-        return CodingDNAInsertion(NucleotideCache())
+        return CodingDNAInsertion()
 
     def token_type(self):
         """Return Coding DNA insertion token type."""
