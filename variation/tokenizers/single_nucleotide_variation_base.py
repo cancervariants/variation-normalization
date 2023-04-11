@@ -1,11 +1,9 @@
 """A module for Single Nucleotide Variation Tokenization Base Class."""
-import re
 from abc import abstractmethod
 from typing import List, Optional, Dict
 
-from variation.schemas.token_response_schema import \
-    SingleNucleotideVariation, TokenMatchType
-from variation.tokenizers.caches import NucleotideCache
+from variation.schemas.token_response_schema import SingleNucleotideVariation, \
+    TokenMatchType
 from .tokenizer import Tokenizer
 
 
@@ -14,9 +12,7 @@ class SingleNucleotideVariationBase(Tokenizer):
 
     def __init__(self) -> None:
         """Initialize the Single Nucleotide Variation Base Class."""
-        self.splitter = re.compile(r"(\d+)")
         self.sub = None
-        self.nucleotide_cache = NucleotideCache()
 
     def match(self, input_string: str) -> Optional[SingleNucleotideVariation]:
         """Return a SingleNucleotideVariationToken match if one exists.
@@ -39,7 +35,7 @@ class SingleNucleotideVariationBase(Tokenizer):
         if "c." not in input_string and "g." not in input_string:
             return None
 
-        sub_parts = self.splitter.split(input_string)
+        sub_parts = self.splitter_paren_digits.split(input_string)
         self._get_sub(sub_parts)
         if None not in self.sub.values():
             params = {
@@ -80,9 +76,8 @@ class SingleNucleotideVariationBase(Tokenizer):
                 if ">" in sub_parts[2]:
                     # Substitution
                     ref_nuc, new_nuc = sub_parts[2].split(">")
-                    nucleotides = self.nucleotide_cache.nucleotides.keys()
-                    if ref_nuc.upper() in nucleotides \
-                            and new_nuc.upper() in nucleotides:  # noqa: E501
+                    if ref_nuc.upper() in self.base_nucleotides \
+                            and new_nuc.upper() in self.base_nucleotides:
                         self._set_sub(ref_nuc, sub_parts[1], new_nuc,
                                       sub_parts[0].split(".")[0])
                 elif sub_parts[2] == "=":
