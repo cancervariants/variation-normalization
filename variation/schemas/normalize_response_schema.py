@@ -15,8 +15,8 @@ class HGVSDupDelMode(str, Enum):
     """
 
     DEFAULT = "default"
-    ABSOLUTE_CNV = "absolute_cnv"
-    RELATIVE_CNV = "relative_cnv"
+    COPY_NUMBER_COUNT = "copy_number_count"
+    COPY_NUMBER_CHANGE = "copy_number_change"
     REPEATED_SEQ_EXPR = "repeated_seq_expr"  # VRS Allele
     LITERAL_SEQ_EXPR = "literal_seq_expr"  # VRS Allele
 

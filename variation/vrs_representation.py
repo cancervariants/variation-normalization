@@ -1,7 +1,7 @@
 """Module for generating VRS objects"""
 from typing import List, Optional, Tuple, Union, Dict
 
-from ga4gh.vrsatile.pydantic.vrs_models import CURIE, RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CURIE, CopyChange
 from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
@@ -257,22 +257,22 @@ class VRSRepresentation:
 
         return self.vrs_allele(ac, start, end, sstate, alt_type, errors)
 
-    def to_rel_cnv(
+    def to_cx_var(
         self,
         location: Union[models.SequenceLocation, models.ChromosomeLocation, CURIE],
-        relative_copy_class: RelativeCopyClass
+        copy_change: CopyChange
     ) -> Dict:
-        """Return VRS Relative Copy Number Variation
+        """Return VRS Copy Number Change Variation
 
-        :param location: Location for relative copy number
+        :param location: Location for copy number change
         :type location: models.SequenceLocation or models.ChromosomeLocation or CURIE
-        :param RelativeCopyClass relative_copy_class: Relative copy class value
-        :return: VRS Relative Copy Number Variation represented as a dictionary
+        :param CopyChange copy_change: copy change value
+        :return: VRS Copy Number Change Variation represented as a dictionary
         """
         location.id = ga4gh_identify(location)
-        rcn = models.RelativeCopyNumber(
-            location=location,
-            relative_copy_class=relative_copy_class.value
+        cx = models.CopyNumberChange(
+            subject=location,
+            copy_change=copy_change.value
         )
-        rcn.id = ga4gh_identify(rcn)
-        return rcn.as_dict()
+        cx.id = ga4gh_identify(cx)
+        return cx.as_dict()

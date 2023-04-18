@@ -27,16 +27,17 @@ class QueryHandler:
     """Class for initializing handlers that make app queries."""
 
     def __init__(
-        self, dynamodb_url: str = "", dynamodb_region: str = "us-east-2",
+        self,
+        dynamodb_url: str = "",
         gene_query_handler: Optional[GeneQueryHandler] = None,
-        transcript_file_path: str = None, refseq_file_path: str = None,
-        mane_data_path: str = None, uta_db_url: str = UTA_DB_URL,
+        transcript_file_path: str = None,
+        refseq_file_path: str = None,
+        mane_data_path: str = None,
+        uta_db_url: str = UTA_DB_URL,
         uta_db_pwd: Optional[str] = None
     ) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene normalizer dynamodb. Only used when
-            `gene_query_handler` is `None`.
-        :param str dynamodb_region: AWS region for gene normalizer db. Only used when
             `gene_query_handler` is `None`.
         :param Optional[GeneQueryHandler] gene_query_handler: Gene normalizer query
             handler instance. If this is provided, will use a current instance. If this
@@ -56,20 +57,17 @@ class QueryHandler:
         if not mane_data_path:
             mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
 
-        if not gene_query_handler:
-            gene_query_handler = GeneQueryHandler(
-                db_url=dynamodb_url, db_region=dynamodb_region
-            )
-
         cool_seq_tool = CoolSeqTool(
             transcript_file_path=transcript_file_path,
             lrg_refseqgene_path=refseq_file_path,
             mane_data_path=mane_data_path,
             db_url=uta_db_url,
             db_pwd=uta_db_pwd,
-            gene_query_handler=gene_query_handler
+            gene_query_handler=gene_query_handler,
+            gene_db_url=dynamodb_url
         )
         self._seqrepo_access = cool_seq_tool.seqrepo_access
+        gene_query_handler = cool_seq_tool.gene_query_handler
 
         vrs_representation = VRSRepresentation(self._seqrepo_access)
         gene_symbol = GeneSymbol(gene_query_handler)

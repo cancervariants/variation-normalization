@@ -1,5 +1,6 @@
 """A module for testing classifier classes."""
 import yaml
+from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.tokenizers import Tokenize
@@ -19,7 +20,7 @@ class ClassifierBase:
             {"should_match": [], "should_not_match": []}
         )
         self.classifier = self.classifier_instance()
-        self.tokenizer = Tokenize(GeneSymbol(GeneQueryHandler()))
+        self.tokenizer = Tokenize(GeneSymbol(GeneQueryHandler(DynamoDbDatabase())))
 
     def classifier_instance(self):
         """Check that the classifier_instance method is implemented."""

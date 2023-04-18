@@ -19,8 +19,8 @@ from variation.schemas.normalize_response_schema import ServiceMeta, \
     ToCanonicalVariationFmt, ToCanonicalVariationService
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS,\
-    RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_COPY_CHANGE,\
+    CopyChange
 from variation.to_vrs import ToVRS
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
@@ -59,7 +59,7 @@ class ToCanonicalVariation(ToVRS):
         fmt: ToCanonicalVariationFmt,
         do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         baseline_copies: Optional[int] = None,
         untranslatable_returns_text: bool = False
     ) -> ToCanonicalVariationService:
@@ -70,8 +70,9 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-        :param RelativeCopyClass relative_copy_class: The relative copy class
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
+        :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
@@ -90,7 +91,7 @@ class ToCanonicalVariation(ToVRS):
                 variation, warnings = await self.hgvs_to_canonical_variation(
                     q, warnings, do_liftover=do_liftover,
                     hgvs_dup_del_mode=hgvs_dup_del_mode,
-                    relative_copy_class=relative_copy_class,
+                    copy_change=copy_change,
                     baseline_copies=baseline_copies)
             else:
                 warnings = [f"fmt, {fmt}, is not supported. "
@@ -99,10 +100,14 @@ class ToCanonicalVariation(ToVRS):
             if variation and not warnings:
                 variation_type = variation["type"]
                 if variation_type in {VRSTypes.ALLELE.value,
-                                      VRSTypes.ABSOLUTE_COPY_NUMBER.value,
-                                      VRSTypes.RELATIVE_COPY_NUMBER.value}:
-                    variation["location"]["id"] = ga4gh_identify(
-                        models.Location(**variation["location"]))
+                                      VRSTypes.COPY_NUMBER_COUNT.value,
+                                      VRSTypes.COPY_NUMBER_CHANGE.value}:
+                    if variation_type == VRSTypes.ALLELE:
+                        variation["location"]["id"] = ga4gh_identify(
+                            models.Location(**variation["location"]))
+                    else:
+                        variation["subject"]["id"] = ga4gh_identify(
+                            models.Location(**variation["subject"]))
                 else:
                     warnings = [f"Variation type, {variation_type}, not supported"]
 
@@ -220,7 +225,7 @@ class ToCanonicalVariation(ToVRS):
     async def hgvs_to_canonical_variation(
         self, q: str, warnings: List, do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         baseline_copies: Optional[int] = None
     ) -> Tuple[Optional[Dict], List]:
         """Given HGVS representation, return canonical variation
@@ -230,8 +235,9 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-        :param RelativeCopyClass relative_copy_class: The relative copy class
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
+        :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :return: Canonical Variation and warnings
         """
@@ -251,12 +257,12 @@ class ToCanonicalVariation(ToVRS):
             warnings = [f"{q} is not a supported HGVS expression"]
             return variation, warnings
 
-        if hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
-            if relative_copy_class:
-                if relative_copy_class.upper() not in VALID_RELATIVE_COPY_CLASS:
-                    return None, [f"{relative_copy_class} is not a valid relative "
-                                  f"copy class: {VALID_RELATIVE_COPY_CLASS}"]
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+        if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+            if copy_change:
+                if copy_change.lower() not in VALID_COPY_CHANGE:
+                    return None, [f"{copy_change} is not a valid copy change value: "
+                                  f"{VALID_COPY_CHANGE}"]
+        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
             if not baseline_copies:
                 return None, [f"{hgvs_dup_del_mode} requires `baseline_copies`"]
         elif not hgvs_dup_del_mode:
@@ -265,7 +271,7 @@ class ToCanonicalVariation(ToVRS):
         validations = await self.validator.perform(
             classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, do_liftover=do_liftover,
-            relative_copy_class=relative_copy_class, baseline_copies=baseline_copies)
+            copy_change=copy_change, baseline_copies=baseline_copies)
         if not warnings:
             warnings = validations.warnings
 
