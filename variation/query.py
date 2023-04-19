@@ -27,17 +27,16 @@ class QueryHandler:
     """Class for initializing handlers that make app queries."""
 
     def __init__(
-        self,
-        dynamodb_url: str = "",
+        self, dynamodb_url: str = "", dynamodb_region: str = "us-east-2",
         gene_query_handler: Optional[GeneQueryHandler] = None,
-        transcript_file_path: str = None,
-        refseq_file_path: str = None,
-        mane_data_path: str = None,
-        uta_db_url: str = UTA_DB_URL,
+        transcript_file_path: str = None, refseq_file_path: str = None,
+        mane_data_path: str = None, uta_db_url: str = UTA_DB_URL,
         uta_db_pwd: Optional[str] = None
     ) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene normalizer dynamodb. Only used when
+            `gene_query_handler` is `None`.
+        :param str dynamodb_region: AWS region for gene normalizer db. Only used when
             `gene_query_handler` is `None`.
         :param Optional[GeneQueryHandler] gene_query_handler: Gene normalizer query
             handler instance. If this is provided, will use a current instance. If this
@@ -64,7 +63,8 @@ class QueryHandler:
             db_url=uta_db_url,
             db_pwd=uta_db_pwd,
             gene_query_handler=gene_query_handler,
-            gene_db_url=dynamodb_url
+            gene_db_url=dynamodb_url,
+            gene_db_region=dynamodb_region
         )
         self._seqrepo_access = cool_seq_tool.seqrepo_access
         gene_query_handler = cool_seq_tool.gene_query_handler

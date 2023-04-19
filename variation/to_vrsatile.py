@@ -38,11 +38,8 @@ class ToVRSATILE(ToVRS):
             if variation_type in {VRSTypes.ALLELE.value,
                                   VRSTypes.COPY_NUMBER_COUNT.value,
                                   VRSTypes.COPY_NUMBER_CHANGE.value}:
-                if variation_type == VRSTypes.ALLELE:
-                    loc = variation["location"]
-                else:
-                    loc = variation["subject"]
-                vrs_ref_allele_seq = self.get_ref_allele_seq(loc, identifier)
+                key = "location" if variation_type == VRSTypes.ALLELE else "subject"
+                vrs_ref_allele_seq = self.get_ref_allele_seq(variation[key], identifier)
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

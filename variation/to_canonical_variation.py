@@ -102,12 +102,10 @@ class ToCanonicalVariation(ToVRS):
                 if variation_type in {VRSTypes.ALLELE.value,
                                       VRSTypes.COPY_NUMBER_COUNT.value,
                                       VRSTypes.COPY_NUMBER_CHANGE.value}:
-                    if variation_type == VRSTypes.ALLELE:
-                        variation["location"]["id"] = ga4gh_identify(
-                            models.Location(**variation["location"]))
-                    else:
-                        variation["subject"]["id"] = ga4gh_identify(
-                            models.Location(**variation["subject"]))
+                    key = "location" if variation_type == VRSTypes.ALLELE else "subject"
+                    variation[key]["id"] = ga4gh_identify(
+                        models.Location(**variation[key])
+                    )
                 else:
                     warnings = [f"Variation type, {variation_type}, not supported"]
 

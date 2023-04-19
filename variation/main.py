@@ -564,7 +564,7 @@ def parsed_to_cn_var(
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCnVarService:
     """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number Count
-        Variation
+    Variation
 
     :param int start: Start position as residue coordinate
     :param int end: End position as residue coordinate

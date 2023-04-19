@@ -88,12 +88,12 @@ class HGVSDupDelMode:
 
     def copy_number_count_mode(self, del_or_dup: str, location: Dict,
                                baseline_copies: int) -> Optional[Dict]:
-        """Return a VRS Copy Number Variation.
+        """Return a VRS Copy Number Count Variation.
 
         :param str del_or_dup: Must be either `del` or `dup`
         :param Dict location: VRS SequenceLocation
         :param int baseline_copies: Baseline copies number
-        :return: VRS Copy Number object represented as a dict
+        :return: VRS Copy Number Count object represented as a dict
         """
         copies = models.Number(
             value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,
