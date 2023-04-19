@@ -14,7 +14,7 @@ class GnomadVCF(Tokenizer):
 
     splitter = re.compile(
         r"^(?P<chromosome>(chr|chromosome)?([1-9]|[1][0-9]|[2][0-2]|X|Y))-"
-        r"(?P<pos>[1-9]\d*)-(?P<ref>(?i)[actg]+)-(?P<alt>(?i)[actg]+)$")
+        r"(?P<pos>[1-9]\d*)-(?P<ref>[actg]+)-(?P<alt>[actg]+)$", re.IGNORECASE)
 
     def match(self, input_string: str) -> Optional[List[Token]]:
         """Return a GnomadVCFToken if a match exists.
