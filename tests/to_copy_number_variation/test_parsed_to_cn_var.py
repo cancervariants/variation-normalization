@@ -122,12 +122,12 @@ def test_parsed_copy_number_gain(test_cnv_handler, copy_number_gain1,
     """Test that parsed_to_cn_var works for parsed copy number gain queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
     resp = test_cnv_handler.parsed_to_cn_var(
-        143134063, 143284670, 3, assembly="GRCh37", chr="chr1")
+        143134063, 143284670, 3, assembly=ClinVarAssembly.GRCH37, chr="chr1")
     assert resp.copy_number_count.dict() == copy_number_gain1.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_var(
-        143134063, 143284670, 3, assembly="hg19", chr="chr1")
+        143134063, 143284670, 3, assembly=ClinVarAssembly.HG19, chr="chr1")
     assert resp.copy_number_count.dict() == copy_number_gain1.dict()
     assert resp.warnings == []
 
@@ -138,17 +138,17 @@ def test_parsed_copy_number_gain(test_cnv_handler, copy_number_gain1,
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     resp = test_cnv_handler.parsed_to_cn_var(
-        31738809, 32217725, 2, assembly="GRCh38", chr="chr15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.GRCH38, chr="chr15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_var(
-        31738809, 32217725, 2, assembly="GRCh38", chr="15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.GRCH38, chr="15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_var(
-        31738809, 32217725, 2, assembly="hg38", chr="chr15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.HG38, chr="chr15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 

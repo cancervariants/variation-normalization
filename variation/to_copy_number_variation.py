@@ -222,7 +222,7 @@ class ToCopyNumberVariation(ToVRS):
 
                 if assembly != ClinVarAssembly.NCBI36:
                     # Variation Normalizer does not support NCBI36 yet
-                    query = f"{assembly}:{chr}"
+                    query = f"{assembly.value}:{chr}"
                     aliases, w = self.seqrepo_access.translate_identifier(query)
                     if w:
                         warnings.append(w)
@@ -231,7 +231,7 @@ class ToCopyNumberVariation(ToVRS):
                         if not accession:
                             warnings.append(f"Unable to find RefSeq accession for {query}")  # noqa: E501
                 else:
-                    warnings.append(f"{assembly} assembly is not current supported")
+                    warnings.append(f"{assembly.value} assembly is not current supported")  # noqa: E501
             else:
                 warnings.append("Must provide either `accession` or both `assembly` "
                                 "and `chr`.")
