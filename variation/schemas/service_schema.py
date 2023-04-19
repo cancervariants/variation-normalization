@@ -3,8 +3,8 @@ from enum import Enum
 from typing import Optional, Union, Dict, Any, Type
 
 from pydantic import BaseModel, StrictStr
-from ga4gh.vrsatile.pydantic.vrs_models import AbsoluteCopyNumber, Text, \
-    SequenceLocation, RelativeCopyNumber
+from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
+    SequenceLocation, CopyNumberChange
 
 from variation.schemas.normalize_response_schema import ServiceResponse
 
@@ -20,8 +20,8 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-class ParsedToAbsCnvQuery(BaseModel):
-    """Define query for parsed to abs cnv endpoint"""
+class ParsedToCnVarQuery(BaseModel):
+    """Define query for parsed to copy number count variation endpoint"""
 
     assembly: Optional[ClinVarAssembly] = None
     chr: Optional[StrictStr] = None
@@ -31,18 +31,18 @@ class ParsedToAbsCnvQuery(BaseModel):
     total_copies: int
 
 
-class ParsedToAbsCnvService(ServiceResponse):
-    """A response for translating parsed components to Absolute Copy Number"""
+class ParsedToCnVarService(ServiceResponse):
+    """A response for translating parsed components to Copy Number Count"""
 
-    query: Optional[ParsedToAbsCnvQuery] = None
-    absolute_copy_number: Optional[Union[Text, AbsoluteCopyNumber]]
+    query: Optional[ParsedToCnVarQuery] = None
+    copy_number_count: Optional[Union[Text, CopyNumberCount]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["ParsedToAbsCnvService"]) -> None:
+                         model: Type["ParsedToCnVarService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -57,10 +57,10 @@ class ParsedToAbsCnvService(ServiceResponse):
                     "end": 143284670,
                     "total_copies": 3
                 },
-                "absolute_copy_number": {
-                    "id": "ga4gh:ACN.cbjEAj7SGM_RPXxs7foqsO0ZsNwz_kNM",
-                    "type": "AbsoluteCopyNumber",
-                    "location": {
+                "copy_number_count": {
+                    "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
+                    "type": "CopyNumberCount",
+                    "subject": {
                         "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -86,8 +86,8 @@ class ParsedToAbsCnvService(ServiceResponse):
             }
 
 
-class AmplificationToRelCnvQuery(BaseModel):
-    """Define query for amplification to relative copy number variation endpoint"""
+class AmplificationToCxVarQuery(BaseModel):
+    """Define query for amplification to copy number change variation endpoint"""
 
     gene: str
     sequence_id: Optional[str]
@@ -96,19 +96,19 @@ class AmplificationToRelCnvQuery(BaseModel):
     sequence_location: Optional[SequenceLocation]
 
 
-class AmplificationToRelCnvService(ServiceResponse):
-    """A response for translating Amplification queries to Relative Copy Number"""
+class AmplificationToCxVarService(ServiceResponse):
+    """A response for translating Amplification queries to Copy Number Change"""
 
-    query: Optional[AmplificationToRelCnvQuery] = None
+    query: Optional[AmplificationToCxVarQuery] = None
     amplification_label: Optional[str]
-    relative_copy_number: Optional[Union[Text, RelativeCopyNumber]]
+    copy_number_change: Optional[Union[Text, CopyNumberChange]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["AmplificationToRelCnvService"]) -> None:
+                         model: Type["AmplificationToCxVarService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -123,17 +123,17 @@ class AmplificationToRelCnvService(ServiceResponse):
                     "sequence_location": None
                 },
                 "amplification_label": "BRAF Amplification",
-                "relative_copy_number": {
-                    "id": "ga4gh:RCN.avsI73-9i6ykDIRB3eB89jeU1lhyBbYt",
-                    "type": "RelativeCopyNumber",
-                    "location": {
+                "copy_number_change": {
+                    "id": "ga4gh:CX.1RJp1zW60x2t4Exc4965_a3CvYFtsL4q",
+                    "type": "CopyNumberChange",
+                    "subject": {
                         "id": "ga4gh:SL.po-AExwyqkstDx3JWYn6plIlxn5eojv4",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
                         "start": {"type": "Number", "value": 140713327},
                         "end": {"type": "Number", "value": 140924929}
                     },
-                    "relative_copy_class": "EFO:0030072"
+                    "copy_change": "efo:0030072"
                 },
                 "service_meta_": {
                     "version": "0.7.dev0",

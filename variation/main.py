@@ -9,20 +9,20 @@ from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from pydantic import ValidationError
 import python_jsonschema_objects
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from hgvs.exceptions import HGVSError
 from bioutils.exceptions import BioutilsError
 from ga4gh.vrs import models
 
 from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import \
-    HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
     ToCanonicalVariationService, TranslateIdentifierService
-from variation.schemas.service_schema import AmplificationToRelCnvService, \
-    ClinVarAssembly, ParsedToAbsCnvService
+from variation.schemas.service_schema import AmplificationToCxVarService, \
+    ClinVarAssembly, ParsedToCnVarService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
@@ -121,10 +121,10 @@ normalize_description = ("Normalizes and translates a human readable variation "
                          " to GRCh38 and aligns to a priority transcript. Will make "
                          "inferences about the query.")
 q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
-hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `absolute_cnv`, `relative_cnv`, "
-                           "`repeated_seq_expr`, `literal_seq_expr`. This"
-                           " parameter determines how to interpret HGVS "
-                           "dup/del expressions in VRS.")
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
+                           "`copy_number_change`, `repeated_seq_expr`, "
+                           "`literal_seq_expr`. This parameter determines how to "
+                           "interpret HGVS dup/del expressions in VRS.")
 
 
 @app.get("/variation/normalize",
@@ -138,9 +138,9 @@ async def normalize(
     hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
         HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
     baseline_copies: Optional[int] = Query(
-        None, description="Baseline copies for HGVS duplications and deletions represented as Absolute Copy Number Variation"),  # noqa: E501
-    relative_copy_class: Optional[RelativeCopyClass] = Query(
-        None, description="The relative copy class for HGVS duplications and deletions represented as Relative Copy Number Variation."),  # noqa: E501
+        None, description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation"),  # noqa: E501
+    copy_change: Optional[CopyChange] = Query(
+        None, description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation."),  # noqa: E501
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> NormalizeService:
     """Normalize and translate a human readable variation description to a single
@@ -150,14 +150,14 @@ async def normalize(
 
     :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
-        Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
-        `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
-        expressions in VRS.
+        Must be: `default`, `copy_number_count`, `copy_number_change`,
+        `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
+        interpret HGVS dup/del expressions in VRS.
     :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
-        deletions. Required when `hgvs_dup_del_mode` is set to `absolute_cnv`.
-    :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
-        for HGVS duplications and deletions represented as Relative Copy Number
-        Variation. If not set, will use default `relative_copy_class` for query.
+        deletions. Required when `hgvs_dup_del_mode` is set to `copy_number_count`.
+    :param Optional[CopyChange] copy_change: The copy change
+        for HGVS duplications and deletions represented as Copy Number Change
+        Variation. If not set, will use default `copy_change` for query.
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
@@ -165,7 +165,7 @@ async def normalize(
     """
     normalize_resp = await query_handler.normalize_handler.normalize(
         unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
-        baseline_copies=baseline_copies, relative_copy_class=relative_copy_class,
+        baseline_copies=baseline_copies, copy_change=copy_change,
         untranslatable_returns_text=untranslatable_returns_text)
     return normalize_resp
 
@@ -301,12 +301,12 @@ complement_descr = "This field indicates that a categorical variation is defined
                    "the categorical variation."
 hgvs_dup_del_mode_decsr = "This parameter determines how to interpret HGVS dup/del "\
                           "expressions in VRS. Must be one of: `default`, " \
-                          "`absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, " \
-                          "`literal_seq_expr`."
-relative_copy_class_descr = "The relative copy class. Only used when `fmt`=`hgvs` "\
-                            "and Relative CNV."
+                          "`copy_number_count`, `copy_number_change`, " \
+                          "`repeated_seq_expr`, `literal_seq_expr`."
+copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Number "
+                     "Change Variation.")
 baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
-                        "`fmt`=`hgvs` and Absolute CNV.`"
+                        "`fmt`=`hgvs` and Copy Number Count Variation.`"
 
 
 @app.get("/variation/to_canonical_variation",
@@ -323,8 +323,8 @@ async def to_canonical_variation(
                                   "GRCh38 assembly."),
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
             HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
-        relative_copy_class: Optional[RelativeCopyClass] = Query(
-            None, description=relative_copy_class_descr),
+        copy_change: Optional[CopyChange] = Query(
+            None, description=copy_change_descr),
         baseline_copies: Optional[int] = Query(
             None, description=baseline_copies_descr),
         untranslatable_returns_text: bool = Query(
@@ -336,12 +336,12 @@ async def to_canonical_variation(
     :param ToCanonicalVariationFmt fmt: Format of the input variation. Must be
         `spdi` or `hgvs`.
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to interpret
-        HGVS dup/del expressions in VRS. Must be one of: `default`, `absolute_cnv`,
-        `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-    :param Optional[RelativeCopyClass] relative_copy_class: Relative copy class.
-        Only used when `fmt`=`hgvs` and Relative CNV.
+        HGVS dup/del expressions in VRS. Must be one of: `default`, `copy_number_count`,
+        `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`
+    :param Optional[CopyChange] copy_change: copy change.
+        Only used when `fmt`=`hgvs` and Copy Number Change Variation.
     :param Optional[int] baseline_copies: Baseline copies number
-        Only used when `fmt`=`hgvs` and Absolute CNV
+        Only used when `fmt`=`hgvs` and Copy Number Count Variation
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
@@ -351,7 +351,7 @@ async def to_canonical_variation(
     resp = await query_handler.to_canonical_handler.to_canonical_variation(
         q, fmt, do_liftover=do_liftover,
         hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-        relative_copy_class=relative_copy_class,
+        copy_change=copy_change,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
@@ -476,21 +476,21 @@ async def vrs_python_to_hgvs(
     )
 
 
-@app.get("/variation/hgvs_to_absolute_copy_number",
-         summary="Given HGVS expression, return VRS Absolute Copy Number Variation",
+@app.get("/variation/hgvs_to_copy_number_count",
+         summary="Given HGVS expression, return VRS Copy Number Count Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRS Absoluter Copy Number Variation",
-         response_model=HgvsToAbsoluteCopyNumberService,
+         description="Return VRS Copy Number Count Variation",
+         response_model=HgvsToCopyNumberCountService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-async def hgvs_to_absolute_copy_number(
+async def hgvs_to_copy_number_count(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for duplication"),
     do_liftover: bool = Query(False, description="Whether or not to liftover "
                               "to GRCh38 assembly."),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
-) -> HgvsToAbsoluteCopyNumberService:
-    """Given hgvs expression, return absolute copy number variation
+) -> HgvsToCopyNumberCountService:
+    """Given hgvs expression, return copy number count variation
 
     :param str hgvs_expr: HGVS expression
     :param Optional[int] baseline_copies: Baseline copies number
@@ -498,40 +498,40 @@ async def hgvs_to_absolute_copy_number(
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
-    :return: HgvsToAbsoluteCopyNumberService
+    :return: HgvsToCopyNumberCountService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_absolute_copy_number(
+    resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_count(
         unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
-@app.get("/variation/hgvs_to_relative_copy_number",
-         summary="Given HGVS expression, return VRS Relative Copy Number Variation",
+@app.get("/variation/hgvs_to_copy_number_change",
+         summary="Given HGVS expression, return VRS Copy Number Change Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRS Relative Copy Number Variation",
-         response_model=HgvsToRelativeCopyNumberService,
+         description="Return VRS Copy Number Change Variation",
+         response_model=HgvsToCopyNumberChangeService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-async def hgvs_to_relative_copy_number(
+async def hgvs_to_copy_number_change(
     hgvs_expr: str = Query(..., description="Variation query"),
-    relative_copy_class: RelativeCopyClass = Query(
-        ..., description="The relative copy class"),
+    copy_change: CopyChange = Query(
+        ..., description="The copy change"),
     do_liftover: bool = Query(False, description="Whether or not to liftover "
                               "to GRCh38 assembly."),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
-) -> HgvsToRelativeCopyNumberService:
-    """Given hgvs expression, return relative copy number variation
+) -> HgvsToCopyNumberChangeService:
+    """Given hgvs expression, return copy number change variation
 
     :param str hgvs_expr: HGVS expression
-    :param RelativeCopyClass relative_copy_class: Relative copy class
+    :param CopyChange copy_change: copy change
     :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
-    :return: HgvsToRelativeCopyNumberService
+    :return: HgvsToCopyNumberChangeService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_relative_copy_number(
-        unquote(hgvs_expr.strip()), relative_copy_class, do_liftover,
+    resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_change(
+        unquote(hgvs_expr.strip()), copy_change, do_liftover,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
@@ -543,18 +543,18 @@ accession_descr = "Accession. If `accession` is set, will ignore `assembly` and 
                   "`chr`. If `accession` not set, must provide both `assembly` and `chr`."  # noqa: E501
 start_descr = "Start position as residue coordinate"
 end_descr = "End position as residue coordinate"
-total_copies_descr = "Total copies for Absolute Copy Number variation object"
+total_copies_descr = "Total copies for Copy Number Count variation object"
 
 
-@app.get("/variation/parsed_to_abs_cnv",
+@app.get("/variation/parsed_to_cn_var",
          summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
-         "VRS Absolute Copy Number Variation",
+         "VRS Copy Number Count Variation",
          response_description="A response to a validly-formed query.",
-         description="Return VRS Absolute Copy Number Variation",
-         response_model=ParsedToAbsCnvService,
+         description="Return VRS Copy Number Count Variation",
+         response_model=ParsedToCnVarService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION]
          )
-def parsed_to_abs_cnv(
+def parsed_to_cn_var(
     assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
     chr: Optional[str] = Query(None, description=chr_descr),
     accession: Optional[str] = Query(None, description=accession_descr),
@@ -562,13 +562,13 @@ def parsed_to_abs_cnv(
     end: int = Query(..., description=end_descr),
     total_copies: int = Query(..., description=total_copies_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
-) -> ParsedToAbsCnvService:
-    """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
-    Copy Number Variation
+) -> ParsedToCnVarService:
+    """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number Count
+    Variation
 
     :param int start: Start position as residue coordinate
     :param int end: End position as residue coordinate
-    :param int total_copies: Total copies for Absolute Copy Number variation object
+    :param int total_copies: Total copies for Copy Number Count variation object
     :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
         will ignore `assembly` and `chr`. If `accession` not set, must provide
         both `assembly` and `chr`.
@@ -579,36 +579,36 @@ def parsed_to_abs_cnv(
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
-    :return: Tuple containing Absolute Copy Number variation and list of warnings
+    :return: Tuple containing Copy Number Count variation and list of warnings
     """
-    resp = query_handler.to_copy_number_handler.parsed_to_abs_cnv(
+    resp = query_handler.to_copy_number_handler.parsed_to_cn_var(
         start, end, total_copies, assembly, chr, accession,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
-amplification_to_rel_cnv_descr = ("Translate amplification to VRS Relative Copy Number "
-                                  "Variation. If `sequence_id`, `start`, and `end` are "
-                                  "all provided, will return a SequenceLocation with "
-                                  "those properties. Else, gene-normalizer will be "
-                                  "used to retrieve the SequenceLocation.")
+amplification_to_cx_var_descr = ("Translate amplification to VRS Copy Number Change "
+                                 "Variation. If `sequence_id`, `start`, and `end` are "
+                                 "all provided, will return a SequenceLocation with "
+                                 "those properties. Else, gene-normalizer will be "
+                                 "used to retrieve the SequenceLocation.")
 
 
-@app.get("/variation/amplification_to_rel_cnv",
-         summary="Given amplification query, return VRS Relative Copy Number Variation",
+@app.get("/variation/amplification_to_cx_var",
+         summary="Given amplification query, return VRS Copy Number Change Variation",
          response_description="A response to a validly-formed query.",
-         description=amplification_to_rel_cnv_descr,
-         response_model=AmplificationToRelCnvService,
+         description=amplification_to_cx_var_descr,
+         response_model=AmplificationToCxVarService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-def amplification_to_rel_cnv(
+def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
     sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
     start: Optional[int] = Query(None,
                                  description="Start position as residue coordinate"),
     end: Optional[int] = Query(None, description="End position as residue coordinate"),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
-) -> AmplificationToRelCnvService:
-    """Given amplification query, return Relative Copy Number Variation
+) -> AmplificationToCxVarService:
+    """Given amplification query, return Copy Number Change Variation
     Parameter priority:
         1. sequence_id, start, end (must provide ALL)
         2. use the gene-normalizer to get the SequenceLocation
@@ -623,10 +623,10 @@ def amplification_to_rel_cnv(
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` return `None` when
         unable to translate or normalize query.
-    :return: AmplificationToRelCnvService containing Relative Copy Number and
+    :return: AmplificationToCxVarService containing Copy Number Change and
         list of warnings
     """
-    resp = query_handler.to_copy_number_handler.amplification_to_rel_cnv(
+    resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
         gene=gene, sequence_id=sequence_id, start=start, end=end,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp

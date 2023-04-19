@@ -1,8 +1,8 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
 from typing import Optional, Type, Any, Dict, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass, AbsoluteCopyNumber, \
-    RelativeCopyNumber, Text
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberCount, \
+    CopyNumberChange, Text
 from pydantic import StrictStr
 
 from variation.schemas.classification_response_schema import ClassificationType
@@ -16,22 +16,21 @@ VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_UNCERTAIN_DELETION
 ]
 
-VALID_RELATIVE_COPY_CLASS = [rcc.value for
-                             rcc in RelativeCopyClass.__members__.values()]
+VALID_COPY_CHANGE = [rcc.value for rcc in CopyChange.__members__.values()]
 
 
-class HgvsToAbsoluteCopyNumberService(ServiceResponse):
-    """A response for translating HGVS to absolute copy number."""
+class HgvsToCopyNumberCountService(ServiceResponse):
+    """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    absolute_copy_number: Optional[Union[AbsoluteCopyNumber, Text]]
+    copy_number_count: Optional[Union[CopyNumberCount, Text]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["HgvsToAbsoluteCopyNumberService"]) -> None:
+                         model: Type["HgvsToCopyNumberCountService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -39,10 +38,10 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
                 prop.pop("title", None)
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
-                "absolute_copy_number": {
-                    "id": "ga4gh:ACN._C6yp4SRGVfuRmMiJShIKYCK3dSX0vNF",
-                    "type": "AbsoluteCopyNumber",
-                    "location": {
+                "copy_number_count": {
+                    "id": "ga4gh:CN._qniTzHEtNOc6CNjb5bhlV5bf527692Q",
+                    "type": "CopyNumberCount",
+                    "subject": {
                         "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
@@ -60,18 +59,18 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
             }
 
 
-class HgvsToRelativeCopyNumberService(ServiceResponse):
-    """A response for translating HGVS to relative copy number."""
+class HgvsToCopyNumberChangeService(ServiceResponse):
+    """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    relative_copy_number: Optional[Union[RelativeCopyNumber, Text]]
+    copy_number_change: Optional[Union[CopyNumberChange, Text]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["HgvsToRelativeCopyNumberService"]) -> None:
+                         model: Type["HgvsToCopyNumberChangeService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -79,17 +78,17 @@ class HgvsToRelativeCopyNumberService(ServiceResponse):
                 prop.pop("title", None)
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
-                "relative_copy_number": {
-                    "id": "ga4gh:RCN._1Nz0yj2g9Q6cRO8j6oRi5peUJYjTAga",
-                    "type": "RelativeCopyNumber",
-                    "location": {
+                "copy_number_change": {
+                    "id": "ga4gh:CX.ENQD2_J-4FE964fFrO9cjBDBee09ORWH",
+                    "type": "CopyNumberChange",
+                    "subject": {
                         "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                         "start": {"type": "Number", "value": 49531260},
                         "end": {"type": "Number", "value": 49531262}
                     },
-                    "relative_copy_class": "EFO:0030069"
+                    "copy_change": "efo:0030069"
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",

@@ -1,6 +1,7 @@
 """A module for testing the Gene Pair Tokenizer."""
 import unittest
 
+from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.tokenizers import GeneSymbol
@@ -12,7 +13,7 @@ class TestGeneSymbolTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return the Gene Pair tokenizer instance."""
-        return GeneSymbol(GeneQueryHandler())
+        return GeneSymbol(GeneQueryHandler(DynamoDbDatabase()))
 
     def token_type(self):
         """Return the Gene Pair token type."""

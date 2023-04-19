@@ -697,8 +697,8 @@ def genomic_uncertain_del_x():
         "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del",  # noqa: E501
         "type": "VariationDescriptor",
         "variation": {
-            "id": "ga4gh:ACN.gT8vZlUghIFxFv-ztGpOQirOGgwjyvjW",
-            "location": {
+            "id": "ga4gh:CN.GrUeefilHb49CXKX7Noidga41FQnR_qT",
+            "subject": {
                 "id": "ga4gh:SL.dRc1d9ymsXhbb439OQE830RBELZ4aMXi",
                 "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
                 "start": {
@@ -718,7 +718,7 @@ def genomic_uncertain_del_x():
                 "max": 1,
                 "type": "DefiniteRange"
             },
-            "type": "AbsoluteCopyNumber"
+            "type": "CopyNumberCount"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"

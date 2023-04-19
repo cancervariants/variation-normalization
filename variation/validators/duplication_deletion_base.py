@@ -2,7 +2,7 @@
 import logging
 from typing import Optional, List, Dict, Tuple, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrs import models
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
@@ -105,7 +105,7 @@ class DuplicationDeletionBase(Validator):
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
@@ -119,12 +119,13 @@ class DuplicationDeletionBase(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         raise NotImplementedError
@@ -186,7 +187,7 @@ class DuplicationDeletionBase(Validator):
             self, s: Token, t: str, start: int, end: int, gene: str,
             so_id: str, errors: List, hgvs_dup_del_mode: HGVSDupDelModeEnum,
             mane_data_found: Dict, baseline_copies: Optional[int] = None,
-            relative_copy_class: Optional[RelativeCopyClass] = None) -> None:
+            copy_change: Optional[CopyChange] = None) -> None:
         """Add normalized genomic dup or del to mane data
 
         :param Token s: Classification token
@@ -196,12 +197,13 @@ class DuplicationDeletionBase(Validator):
         :param str gene: Gene
         :param str so_id: Sequence ontology id
         :param List errors: List of errors
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Dict mane_data_found: MANE Transcript information found
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         """
         mane = await self.mane_transcript.get_mane_transcript(
             t, start, s.coordinate_type, end_pos=end, gene=gene,
@@ -220,7 +222,7 @@ class DuplicationDeletionBase(Validator):
             mane_variation = self.hgvs_dup_del_mode.interpret_variation(
                 s.alt_type, allele, errors, hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
-                relative_copy_class=relative_copy_class)
+                copy_change=copy_change)
 
             if mane_variation:
                 self._add_dict_to_mane_data(mane["refseq"], s, mane_variation,
@@ -284,7 +286,7 @@ class DuplicationDeletionBase(Validator):
         end: Optional[Union[models.Number, models.DefiniteRange, models.IndefiniteRange]] = None,  # noqa: E501
         use_vrs_allele_range: bool = True,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None
+        copy_change: Optional[CopyChange] = None
     ) -> None:
         """Add grch38 variation to mane data
 
@@ -293,9 +295,10 @@ class DuplicationDeletionBase(Validator):
         :param List errors: List of errors
         :param Dict grch38: GRCh38 data
         :param Dict mane_data_found: MANE data found for initial query
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param start: start pos
         :type start:
             models.Number or models.DefiniteRange or models.IndefiniteRange or None
@@ -306,7 +309,7 @@ class DuplicationDeletionBase(Validator):
             using `to_vrs_allele_ranges` method. `False` if allele should be
             computed using `to_vrs_allele` method.
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         """
         if errors:
             return
@@ -324,7 +327,7 @@ class DuplicationDeletionBase(Validator):
 
         grch38_variation = self.hgvs_dup_del_mode.interpret_variation(
             s.alt_type, allele, errors, hgvs_dup_del_mode,
-            baseline_copies=baseline_copies, relative_copy_class=relative_copy_class)
+            baseline_copies=baseline_copies, copy_change=copy_change)
 
         if grch38_variation:
             self._add_dict_to_mane_data(

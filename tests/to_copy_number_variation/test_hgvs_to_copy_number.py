@@ -1,17 +1,17 @@
-"""Module for testing the hgvs to absolute and relative copy number endpoints"""
+"""Module for testing the hgvs to copy number count and copy number change endpoints"""
 import copy
 
 import pytest
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_rel_38(genomic_dup1_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup1_cx_38(genomic_dup1_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.erAJfClNaRMtgJ6ZPzresRJaKdiSGhNr",
-        "location": genomic_dup1_seq_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.ENQD2_J-4FE964fFrO9cjBDBee09ORWH",
+        "subject": genomic_dup1_seq_loc,
+        "copy_change": "efo:0030069"
     }
 
 
@@ -28,35 +28,35 @@ def genomic_dup1_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_abs_37(genomic_dup1_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup1_cn_37(genomic_dup1_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.JWc1vKWUXuxG6l5CdftVGD6axJ91geGj",
-        "location": genomic_dup1_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.FmZdc1ZTOJoawPld_zSYtWDmJH_N0-5N",
+        "subject": genomic_dup1_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_rel_37(genomic_dup1_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup1_cx_37(genomic_dup1_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.wSv8wmG69FZKMK-PO3MoS1j-sUUfF6CH",
-        "location": genomic_dup1_37_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.hrzxucrCYF5kLU3_1WwmnN5F6erRDnQe",
+        "subject": genomic_dup1_37_loc,
+        "copy_change": "efo:0030069"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_rel_38(genomic_dup2_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup2_cx_38(genomic_dup2_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.fB4IGlSyBw6q70NwdCiHm2tQlSvM2fB6",
-        "location": genomic_dup2_seq_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.dCxABnpPBpZs05zbf4tBA6TmYaGReCF5",
+        "subject": genomic_dup2_seq_loc,
+        "copy_change": "efo:0030068"
     }
 
 
@@ -73,46 +73,46 @@ def genomic_dup2_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_abs_37(genomic_dup2_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup2_cn_37(genomic_dup2_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.ElLSWlxkk5iSfG0E3IONQRXJUzIcBhED",
-        "location": genomic_dup2_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.H1o0rrnS2XekKUvVyMWIHyenk4vvgFLv",
+        "subject": genomic_dup2_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_rel_37(genomic_dup2_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup2_cx_37(genomic_dup2_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.jzaEHj_5CYAd0wSrIygdhZViFH3lhcii",
-        "location": genomic_dup2_37_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.10_4sZHdFwDA9ekxHcPMpmNbJRgvUIEl",
+        "subject": genomic_dup2_37_loc,
+        "copy_change": "efo:0030068"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_abs_38(genomic_del3_dup3_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup3_cn_38(genomic_del3_dup3_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.2ZUQcccwvtoGZ5LZZRUoDZp6218Y6sQK",
-        "location": genomic_del3_dup3_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.a2-YlA01Q-y2zAOgn4r-cP9hiIEGaaqq",
+        "subject": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_rel_38(genomic_del3_dup3_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup3_cx_38(genomic_del3_dup3_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.zn-lzk4_0ijOoPr4cSIB7aX9XySZD91a",
-        "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "EFO:0030072"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.MGhVuAEVskM_cAhATCYT_tRcOsqDbHNd",
+        "subject": genomic_del3_dup3_loc,
+        "copy_change": "efo:0030072"
     }
 
 
@@ -129,46 +129,46 @@ def genomic_dup3_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_abs_37(genomic_dup3_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup3_cn_37(genomic_dup3_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.3ZeHMw-dKq2hTNEL9zzihfCPP2ZQV6zl",
-        "location": genomic_dup3_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.GOhhUsvbhFqaXgq3hNH3nuJldMIwVMpO",
+        "subject": genomic_dup3_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_rel_37(genomic_dup3_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup3_cx_37(genomic_dup3_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.aXMmX6vH8bdQpBi_YwlqIfXvpnZVCIzc",
-        "location": genomic_dup3_37_loc,
-        "relative_copy_class": "EFO:0030072"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.fpx5MzUfd0Lll7kOwHxQ_znt5k-KJBau",
+        "subject": genomic_dup3_37_loc,
+        "copy_change": "efo:0030072"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_abs_38(genoimc_dup4_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup4_cn_38(genomic_dup4_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.OBSQ6SY9waWJ7YOyYA_qK0te_mTfOT4A",
-        "location": genoimc_dup4_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.Fvt2VSCSLNROTjZd20vKZUzdMYxz-cfZ",
+        "subject": genomic_dup4_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_rel_38(genoimc_dup4_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup4_cx_38(genomic_dup4_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.R84TneS5Lo52LXV1QvBTC-VHCNbTmbuG",
-        "location": genoimc_dup4_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.WlcvrOPHx67R2Qyw8O_s3MyHTJLX8uJD",
+        "subject": genomic_dup4_loc,
+        "copy_change": "efo:0030069"
     }
 
 
@@ -185,46 +185,46 @@ def genomic_dup4_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_abs_37(genomic_dup4_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup4_cn_37(genomic_dup4_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.rloHun4f85F8QJ__SxoKMJFxA5IiNTMB",
-        "location": genomic_dup4_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN._KLpF-U9nyddrZvZott7sQpJmdMRAh9E",
+        "subject": genomic_dup4_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_rel_37(genomic_dup4_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup4_cx_37(genomic_dup4_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.PqgGxKRXyLsyTnuDFfjXdy6WOS92Xvhd",
-        "location": genomic_dup4_37_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.q0kxeY8Nm8I9hLkrlOldryNy8Qv7prje",
+        "subject": genomic_dup4_37_loc,
+        "copy_change": "efo:0030069"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_abs_38(genomic_dup5_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup5_cn_38(genomic_dup5_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.oW400VdyoT8TChxzOLVl4oQLonMStzkK",
-        "location": genomic_dup5_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.cegGbGJ5faMNTnlr6Oc4r93BOgklfftc",
+        "subject": genomic_dup5_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_rel_38(genomic_dup5_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup5_cx_38(genomic_dup5_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.1sQgwjUh4hWLa8AQ6kH4eXAurJnJSkZr",
-        "location": genomic_dup5_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.VWyaC_x9kGtwvzkNYL17Bf0lpf1RdHyg",
+        "subject": genomic_dup5_loc,
+        "copy_change": "efo:0030068"
     }
 
 
@@ -241,46 +241,46 @@ def genomic_dup5_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_abs_37(genomic_dup5_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup5_cn_37(genomic_dup5_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.1k68ebEgFbNe9-FonMK620m_wbBkFIyZ",
-        "location": genomic_dup5_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.wWg3b2U9qwdvS7ASQaG-6Gh6rhBIS5AA",
+        "subject": genomic_dup5_37_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_rel_37(genomic_dup5_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup5_cx_37(genomic_dup5_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.eDwyniE1UOiei4d5Wr92yMeAJRdx7iR8",
-        "location": genomic_dup5_37_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.ggLmm0rU4lgCL9_HjkYCOMu-mCsiWFBy",
+        "subject": genomic_dup5_37_loc,
+        "copy_change": "efo:0030068"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_abs_38(genoimc_dup6_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup6_cn_38(genomic_dup6_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.6q8D5d_ie9MO0HdNEJmRJmGMg8C5LdAM",
-        "location": genoimc_dup6_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.Tuvj2C1xYVUF0UL3CSB1GZjCRC6K_eSt",
+        "subject": genomic_dup6_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_rel_38(genoimc_dup6_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup6_cx_38(genomic_dup6_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.D3sNrwDztEGdbHArugYZOKz4XSBTEHYg",
-        "location": genoimc_dup6_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.RKJvR7nY_nCn0rb70DzTDPHAdcwq1gaG",
+        "subject": genomic_dup6_loc,
+        "copy_change": "efo:0030067"
     }
 
 
@@ -297,35 +297,35 @@ def genomic_dup6_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_abs_37(genomic_dup6_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_dup6_cn_37(genomic_dup6_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.3RqSmp3UqxFy_1V7M8bYWEVi3vmIvM_C",
-        "location": genomic_dup6_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.JvO8QAavKtd38hFB-wpzsm_9JCrFCM7i",
+        "subject": genomic_dup6_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_rel_37(genomic_dup6_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_dup6_cx_37(genomic_dup6_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.zixYHRqtbfeHVj5QLVhWmxFFVImrlvB-",
-        "location": genomic_dup6_37_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.d27oYKn13QK6oLQGcO_dM-KyFYgVD6Os",
+        "subject": genomic_dup6_37_loc,
+        "copy_change": "efo:0030067"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_rel_38(genomic_del1_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del1_cx_38(genomic_del1_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.89rlJ6oV422qg04Rhb25rhZJF46LUPqR",
-        "location": genomic_del1_seq_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.LIMo4t9dxh_lxtppith_0xULcbIoGYi0",
+        "subject": genomic_del1_seq_loc,
+        "copy_change": "efo:0030067"
     }
 
 
@@ -342,35 +342,35 @@ def genomic_del1_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_abs_37(genomic_del1_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del1_cn_37(genomic_del1_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.oZ1GlVH9riWL7autRckjfTdef7MqVHex",
-        "location": genomic_del1_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.rkgfXxRiPAPhf8b8M_7JZ_Sd_v--xTSp",
+        "subject": genomic_del1_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_rel_37(genomic_del1_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del1_cx_37(genomic_del1_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.K2fiI9tIcmUkB4QICqvxNQuWiueRLF2t",
-        "location": genomic_del1_37_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.TUVvFFsCWkRQW2wmkEFE6WguYBY8OVyb",
+        "subject": genomic_del1_37_loc,
+        "copy_change": "efo:0030067"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_rel_38(genomic_del2_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del2_cx_38(genomic_del2_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.4dy3yka2_hd_8S_TEnJ9BxQB3AvP3kkK",
-        "location": genomic_del2_seq_loc,
-        "relative_copy_class": "EFO:0030071"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.Y_94z-QmAZgbQfSRRFxBbaBe1GZ4TBCG",
+        "subject": genomic_del2_seq_loc,
+        "copy_change": "efo:0030071"
     }
 
 
@@ -387,46 +387,46 @@ def genomic_del2_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_abs_37(genomic_del2_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del2_cn_37(genomic_del2_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.doD8TUapoh2ekJQalFu2pqhU6RgMg2VI",
-        "location": genomic_del2_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.pn37YpWXjDcIPLhuTUtAb9-pwFKrnM4M",
+        "subject": genomic_del2_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_rel_37(genomic_del2_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del2_cx_37(genomic_del2_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.Yhu2MHBFqzBlgyw7nc84fgSfEez6DUQG",
-        "location": genomic_del2_37_loc,
-        "relative_copy_class": "EFO:0030071"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.pWZIXKKaRGj8LwUJBcdEPnJKtMzLAUJ_",
+        "subject": genomic_del2_37_loc,
+        "copy_change": "efo:0030071"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_abs_38(genomic_del3_dup3_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del3_cn_38(genomic_del3_dup3_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.2ZUQcccwvtoGZ5LZZRUoDZp6218Y6sQK",
-        "location": genomic_del3_dup3_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.a2-YlA01Q-y2zAOgn4r-cP9hiIEGaaqq",
+        "subject": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_rel_38(genomic_del3_dup3_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del3_cx_38(genomic_del3_dup3_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.l0fNhTdZcTwNkEan8gViP1dK2d3DQmTn",
-        "location": genomic_del3_dup3_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.Xffhy7i-ZkZtQSoMz6eytI6QQlShmfPo",
+        "subject": genomic_del3_dup3_loc,
+        "copy_change": "efo:0030069"
     }
 
 
@@ -443,46 +443,46 @@ def genomic_del3_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_abs_37(genomic_del3_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del3_cn_37(genomic_del3_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.3ZeHMw-dKq2hTNEL9zzihfCPP2ZQV6zl",
-        "location": genomic_del3_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.GOhhUsvbhFqaXgq3hNH3nuJldMIwVMpO",
+        "subject": genomic_del3_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_rel_37(genomic_del3_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del3_cx_37(genomic_del3_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.01hSqtbuhzMI2uSd7bdKN34vWI1gQpCc",
-        "location": genomic_del3_37_loc,
-        "relative_copy_class": "EFO:0030069"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.5xJqmmaJTg0gv_BVa5gFHW_krgAGXviI",
+        "subject": genomic_del3_37_loc,
+        "copy_change": "efo:0030069"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_abs_38(genomic_del4_seq_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del4_cn_38(genomic_del4_seq_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.RTb0O1AM8twFPfcArsuu_Hiffs98GcXm",
-        "location": genomic_del4_seq_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.R0U1Bg1lhPYRVyJx_4LVE3JmR_5V7e8e",
+        "subject": genomic_del4_seq_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_rel_38(genomic_del4_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del4_cx_38(genomic_del4_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.Tgjw-QKM3gbgXROH2OX4WqiSNVXr6zn-",
-        "location": genomic_del4_seq_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.bHHDJw8nQXVLnR8HM8t2jsCxY1exj-69",
+        "subject": genomic_del4_seq_loc,
+        "copy_change": "efo:0030068"
     }
 
 
@@ -499,46 +499,46 @@ def genomic_del4_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_abs_37(genomic_del4_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del4_cn_37(genomic_del4_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.4Lg4kT2VZ4yCjntMcVXy7wyrbAGflrTp",
-        "location": genomic_del4_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.lI6I5Tf7rRjN4P_T1euZgAn0YucxrMj4",
+        "subject": genomic_del4_37_loc,
         "copies": {"type": "Number", "value": 4}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_rel_37(genomic_del4_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del4_cx_37(genomic_del4_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.GLYkGWKznmABnCVcImNuwRNvxBt3Txrc",
-        "location": genomic_del4_37_loc,
-        "relative_copy_class": "EFO:0030068"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.9JHPpA1EUtPvK7ta6S5oSL7IIfu_Aun2",
+        "subject": genomic_del4_37_loc,
+        "copy_change": "efo:0030068"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_abs_38(genomic_del5_seq_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del5_cn_38(genomic_del5_seq_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.2su0y7vCqZmbTBU1cqKTOAR7m9vkNqBW",
-        "location": genomic_del5_seq_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.UhXP8ENfA3T-FhNvKSqu-9UwrL5GZFvF",
+        "subject": genomic_del5_seq_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_rel_38(genomic_del5_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del5_cx_38(genomic_del5_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.P0LWls1SeRF881B-uhomC8B4BHc6Fo2R",
-        "location": genomic_del5_seq_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.0TqknNhM5e5i-5tAKxGXv4yDJlaQgDRR",
+        "subject": genomic_del5_seq_loc,
+        "copy_change": "efo:0030067"
     }
 
 
@@ -555,46 +555,46 @@ def genomic_del5_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_abs_37(genomic_del5_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del5_cn_37(genomic_del5_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.GxN5Fwl4w9NpVZSOXdxOMvrpPLmGWEd_",
-        "location": genomic_del5_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.3Yu1OOpMjnzt6yrt0OLjKWnhD2YD9pkg",
+        "subject": genomic_del5_37_loc,
         "copies": {"type": "Number", "value": 2}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_rel_37(genomic_del5_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del5_cx_37(genomic_del5_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.G_CYcPca9J4V1w1C6T4mdShdgSsAPhyp",
-        "location": genomic_del5_37_loc,
-        "relative_copy_class": "EFO:0030067"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.njnotyulNBRZMFuJ-rjACLwZS1MH6Ft2",
+        "subject": genomic_del5_37_loc,
+        "copy_change": "efo:0030067"
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_abs_38(genomic_del6_seq_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del6_cn_38(genomic_del6_seq_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.ZnnJNutwCrHNzFQamAWXMbLC7PfILmqA",
-        "location": genomic_del6_seq_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.lfI0nj_cOjRwul_R_4tohZK_vqiZ-LSz",
+        "subject": genomic_del6_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_rel_38(genomic_del6_seq_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del6_cx_38(genomic_del6_seq_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.113rZRmZgUMR61kPvn0IaLrhQvd5K_ox",
-        "location": genomic_del6_seq_loc,
-        "relative_copy_class": "EFO:0030071"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.HbonS2GEi_jBQA_2gvaiwONy_KHqN_G0",
+        "subject": genomic_del6_seq_loc,
+        "copy_change": "efo:0030071"
     }
 
 
@@ -611,593 +611,593 @@ def genomic_del6_37_loc():
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_abs_37(genomic_del6_37_loc):
-    """Create test fixture absolute copy number variation"""
+def genomic_del6_cn_37(genomic_del6_37_loc):
+    """Create test fixture copy number count variation"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "id": "ga4gh:ACN.aOQqe7zijdBB8VKaMSW97V2YVPeBnYMv",
-        "location": genomic_del6_37_loc,
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.UclTlSHjepPFKjkBdZjTPquoStwlr24H",
+        "subject": genomic_del6_37_loc,
         "copies": {"type": "Number", "value": 1}
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_rel_37(genomic_del6_37_loc):
-    """Create test fixture relative copy number variation"""
+def genomic_del6_cx_37(genomic_del6_37_loc):
+    """Create test fixture copy number change variation"""
     return {
-        "type": "RelativeCopyNumber",
-        "id": "ga4gh:RCN.W-sFtBYitL5YSfGjqN5XnHjglqf9y91d",
-        "location": genomic_del6_37_loc,
-        "relative_copy_class": "EFO:0030071"
+        "type": "CopyNumberChange",
+        "id": "ga4gh:CX.j6BFcKCBMSfz3Vh-ekevUx8GqLCGJCU6",
+        "subject": genomic_del6_37_loc,
+        "copy_change": "efo:0030071"
     }
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup1_absolute_cnv(test_cnv_handler, genomic_dup1_38_vac,
-                                         genomic_dup1_abs_37):
+async def test_genomic_dup1_copy_number_count(test_cnv_handler, genomic_dup1_38_cn,
+                                              genomic_dup1_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False, )
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup1_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
 
     q = "NC_000003.11:g.49568695dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup1_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup1_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup1_38_vac)
+    expected = copy.deepcopy(genomic_dup1_38_cn)
     expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:ACN.1IRAq_PwqIELC3n5kjZsr5X-xLmzGxrL"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.XbKkhTdqvXkyIT8rJwotqYW0v2Ka1zOU"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup1_relative_cnv(test_cnv_handler, genomic_dup1_rel_38,
-                                         genomic_dup1_rel_37):
+async def test_genomic_dup1_copy_number_change(test_cnv_handler, genomic_dup1_cx_38,
+                                               genomic_dup1_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
 
     q = "NC_000003.11:g.49568695dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup1_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup2_absolute_cnv(test_cnv_handler, genomic_dup2_38_vac,
-                                         genomic_dup2_abs_37):
+async def test_genomic_dup2_copy_number_count(test_cnv_handler, genomic_dup2_38_cn,
+                                              genomic_dup2_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup2_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup2_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup2_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup2_38_vac)
+    expected = copy.deepcopy(genomic_dup2_38_cn)
     expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:ACN.rDCO3xAHcwYBhdNPP8qqzy6t62jrNFYs"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.Nt2omwS2KB2JfskoeX4v3eBBL2l7T-s-"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup2_relative_cnv(test_cnv_handler, genomic_dup2_rel_38,
-                                         genomic_dup2_rel_37):
+async def test_genomic_dup2_copy_number_change(test_cnv_handler, genomic_dup2_cx_38,
+                                               genomic_dup2_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
 
     q = "NC_000016.9:g.2137939_2137949dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup2_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup3_absolute_cnv(test_cnv_handler, genomic_dup3_abs_38,
-                                         genomic_dup3_abs_37):
+async def test_genomic_dup3_copy_number_count(test_cnv_handler, genomic_dup3_cn_38,
+                                              genomic_dup3_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup3_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup3_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup3_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup3_abs_38)
+    expected = copy.deepcopy(genomic_dup3_cn_38)
     expected["copies"] = {"value": 3, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.I1zTu1vvN_OIrSWh9mbPLFyZQnyl1jsu"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.-4AcyJ5imRkXzgeULrzWVTraqAe4YRYc"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup3_relative_cnv(test_cnv_handler, genomic_dup3_rel_38,
-                                         genomic_dup3_rel_37):
+async def test_genomic_dup3_copy_number_change(test_cnv_handler, genomic_dup3_cx_38,
+                                               genomic_dup3_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030072", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030072", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030072", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030072", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030072", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup3_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030072", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup4_absolute_cnv(test_cnv_handler, genomic_dup4_abs_38,
-                                         genomic_dup4_abs_37):
+async def test_genomic_dup4_copy_number_count(test_cnv_handler, genomic_dup4_cn_38,
+                                              genomic_dup4_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup4_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup4_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup4_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup4_abs_38)
+    expected = copy.deepcopy(genomic_dup4_cn_38)
     expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:ACN.jLffc6gpShAdrPSDMbn4r9-a3KOBIk0h"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.ObqoAUmFaGiMknzr8GurBYuoBNeE2HtV"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup4_relative_cnv(test_cnv_handler, genomic_dup4_rel_38,
-                                         genomic_dup4_rel_37):
+async def test_genomic_dup4_copy_number_change(test_cnv_handler, genomic_dup4_cx_38,
+                                               genomic_dup4_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup4_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup5_absolute_cnv(test_cnv_handler, genomic_dup5_abs_38,
-                                         genomic_dup5_abs_37):
+async def test_genomic_dup5_copy_number_count(test_cnv_handler, genomic_dup5_cn_38,
+                                              genomic_dup5_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup5_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup5_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup5_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup5_abs_38)
+    expected = copy.deepcopy(genomic_dup5_cn_38)
     expected["copies"] = {"value": 5, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.74oGYuYCD0rAx1tjbTCG6EeZkfH2hLx9"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.KxU8n8a8UXCQnnwHDX9daUXd0zdxtFtB"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup5_relative_cnv(test_cnv_handler, genomic_dup5_rel_38,
-                                         genomic_dup5_rel_37):
+async def test_genomic_dup5_copy_number_change(test_cnv_handler, genomic_dup5_cx_38,
+                                               genomic_dup5_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup5_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup6_absolute_cnv(test_cnv_handler, genomic_dup6_abs_38,
-                                         genomic_dup6_abs_37):
+async def test_genomic_dup6_copy_number_count(test_cnv_handler, genomic_dup6_cn_38,
+                                              genomic_dup6_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup6_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup6_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_dup6_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    expected = copy.deepcopy(genomic_dup6_abs_38)
+    expected = copy.deepcopy(genomic_dup6_cn_38)
     expected["copies"] = {"value": 3, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.uxA-iMw_FRIvuh9EBS8E-Loqr-Kzjd0c"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.TQ36aHJOnfKG3a8hpVMR1POBTOVBgYcS"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup6_relative_cnv(test_cnv_handler, genomic_dup6_rel_38,
-                                         genomic_dup6_rel_37):
+async def test_genomic_dup6_copy_number_change(test_cnv_handler, genomic_dup6_cx_38,
+                                               genomic_dup6_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_dup6_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del1_absolute_cnv(test_cnv_handler, genomic_del1_38_vac,
-                                         genomic_del1_abs_37):
+async def test_genomic_del1_copy_number_count(test_cnv_handler, genomic_del1_38_cn,
+                                              genomic_del1_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del1_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
 
     q = "NC_000003.11:g.10191495del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del1_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del1_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    expected = copy.deepcopy(genomic_del1_38_vac)
+    expected = copy.deepcopy(genomic_del1_38_cn)
     expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:ACN.6fvLDf6cBMYpIAu9xbjSWn8YL4ru0eM-"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.WwgB7O1Ztcn6QqN2hjfjHucKOaWXic8n"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del1_relative_cnv(test_cnv_handler, genomic_del1_rel_38,
-                                         genomic_del1_rel_37):
+async def test_genomic_del1_copy_number_change(test_cnv_handler, genomic_del1_cx_38,
+                                               genomic_del1_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
 
     q = "NC_000003.11:g.10191495del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del1_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del2_absolute_cnv(test_cnv_handler, genomic_del2_38_vac,
-                                         genomic_del2_abs_37):
+async def test_genomic_del2_copy_number_count(test_cnv_handler, genomic_del2_38_cn,
+                                              genomic_del2_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del2_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del2_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del2_38_vac
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True)
-    expected = copy.deepcopy(genomic_del2_38_vac)
+    expected = copy.deepcopy(genomic_del2_38_cn)
     expected["copies"]["value"] = 3
-    expected["id"] = "ga4gh:ACN.1mf7xNFTZu8JsC1twohPFCEF4IY_OPhq"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.GiZEIUkpM1Yl_O9v0Xz3X9Uza1BzdYwn"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del2_relative_cnv(test_cnv_handler, genomic_del2_rel_38,
-                                         genomic_del2_rel_37):
+async def test_genomic_del2_copy_number_change(test_cnv_handler, genomic_del2_cx_38,
+                                               genomic_del2_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del2_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del3_absolute_cnv(test_cnv_handler, genomic_del3_abs_38,
-                                         genomic_del3_abs_37):
+async def test_genomic_del3_copy_number_count(test_cnv_handler, genomic_del3_cn_38,
+                                              genomic_del3_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del3_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del3_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del3_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    expected = copy.deepcopy(genomic_del3_abs_38)
+    expected = copy.deepcopy(genomic_del3_cn_38)
     expected["copies"] = {"value": 1, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.Q41L3gg0DJBgQj4BSVIdCEt41Hkh0U_S"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.a7prdJg9CK7KAFug-0VMjZC7xDxiSByV"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del3_relative_cnv(test_cnv_handler, genomic_del3_rel_38,
-                                         genomic_del3_rel_37):
+async def test_genomic_del3_copy_number_change(test_cnv_handler, genomic_del3_cx_38,
+                                               genomic_del3_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030069", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del3_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030069", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del4_absolute_cnv(test_cnv_handler, genomic_del4_abs_38,
-                                         genomic_del4_abs_37):
+async def test_genomic_del4_copy_number_count(test_cnv_handler, genomic_del4_cn_38,
+                                              genomic_del4_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del4_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del4_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del4_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    expected = copy.deepcopy(genomic_del4_abs_38)
+    expected = copy.deepcopy(genomic_del4_cn_38)
     expected["copies"] = {"value": 2, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.YwVdXUJiRe_yLUbJT1WZ_4vKXOPhUk_-"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.PlqY0WzSBD2KV2mD0L9QkyOGf1z2zZLu"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del4_relative_cnv(test_cnv_handler, genomic_del4_rel_38,
-                                         genomic_del4_rel_37):
+async def test_genomic_del4_copy_number_change(test_cnv_handler, genomic_del4_cx_38,
+                                               genomic_del4_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030068", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del4_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030068", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del5_absolute_cnv(test_cnv_handler, genomic_del5_abs_38,
-                                         genomic_del5_abs_37):
+async def test_genomic_del5_copy_number_count(test_cnv_handler, genomic_del5_cn_38,
+                                              genomic_del5_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del5_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del5_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del5_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    expected = copy.deepcopy(genomic_del5_abs_38)
+    expected = copy.deepcopy(genomic_del5_cn_38)
     expected["copies"] = {"value": 1, "type": "Number"}
-    expected["id"] = "ga4gh:ACN.MPb2oPn0bAT-Cqz3UNjtf9EQ4JT2sIyR"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.HzpGrUmI6mfMtPGC0H8ElVcNc0-V1ldA"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del5_relative_cnv(test_cnv_handler, genomic_del5_rel_38,
-                                         genomic_del5_rel_37):
+async def test_genomic_del5_copy_number_change(test_cnv_handler, genomic_del5_cx_38,
+                                               genomic_del5_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030067", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del5_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030067", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
 
 
 @pytest.mark.asyncio
-async def test_genomic_del6_absolute_cnv(test_cnv_handler, genomic_del6_abs_38,
-                                         genomic_del6_abs_37):
+async def test_genomic_del6_copy_number_count(test_cnv_handler, genomic_del6_cn_38,
+                                              genomic_del6_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del6_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del6_abs_37
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_37
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True)
-    assert resp.absolute_copy_number.dict(by_alias=True) == genomic_del6_abs_38
+    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
 
-    resp = await test_cnv_handler.hgvs_to_absolute_copy_number(
+    resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True)
-    expected = copy.deepcopy(genomic_del6_abs_38)
+    expected = copy.deepcopy(genomic_del6_cn_38)
     expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:ACN.FIfMZ5asuZULdupfFV5FmUxLeeszG4Vl"
-    assert resp.absolute_copy_number.dict(by_alias=True) == expected
+    expected["id"] = "ga4gh:CN.NWXsPHBTkOaY0LgfZK6bWFoJ3lvf3fOH"
+    assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
-async def test_genomic_del6_relative_cnv(test_cnv_handler, genomic_del6_rel_38,
-                                         genomic_del6_rel_37):
+async def test_genomic_del6_copy_number_change(test_cnv_handler, genomic_del6_cx_38,
+                                               genomic_del6_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=False)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_37
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=False)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_37
 
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=True)
-    assert resp.relative_copy_number.dict(by_alias=True) == genomic_del6_rel_38
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=True)
+    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
 
 
 @pytest.mark.asyncio
 async def test_invalid_cnv_parameters(test_cnv_handler):
     """Check that invalid parameters return warnings"""
     q = "NC_000006.11:g.133783902_(133785996_?)del"
-    resp, w = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="low-level gains", do_liftover=True)
+    resp, w = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="low-level gains", do_liftover=True)
     assert resp is None
-    assert w == ["low-level gains is not a valid relative copy class: ['EFO:0030070', "
-                 "'EFO:0030072', 'EFO:0030071', 'EFO:0030067', 'EFO:0030069', "
-                 "'EFO:0030068']"]
+    assert w == ["low-level gains is not a valid copy change: ['efo:0030069', "
+                 "'efo:0020073', 'efo:0030068', 'efo:0030067', 'efo:0030064', "
+                 "'efo:0030070', 'efo:0030071', 'efo:0030072']"]
 
 
 @pytest.mark.asyncio
 async def test_invalid_cnv(test_cnv_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=True,
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=True,
         untranslatable_returns_text=True)
     assert set(resp.warnings) == {"Unable to translate DAG1 g.49568695dup to copy number variation",  # noqa: E501
                                   "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
-    assert resp.relative_copy_number.type == "Text"
+    assert resp.copy_number_change.type == "Text"
 
     q = "braf v600e"
-    resp = await test_cnv_handler.hgvs_to_relative_copy_number(
-        q, relative_copy_class="EFO:0030071", do_liftover=True)
+    resp = await test_cnv_handler.hgvs_to_copy_number_change(
+        q, copy_change="efo:0030071", do_liftover=True)
     assert set(resp.warnings) == {"Unable to translate braf v600e to copy number variation",  # noqa: E501
                                   "braf v600e is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
-    assert resp.relative_copy_number is None
+    assert resp.copy_number_change is None

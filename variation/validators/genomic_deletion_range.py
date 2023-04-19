@@ -2,7 +2,7 @@
 import logging
 from typing import List, Optional, Dict, Tuple, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrs.extras.translator import Translator
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
@@ -74,7 +74,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
@@ -88,12 +88,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
@@ -104,13 +105,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
 
                 variation = await self._get_variation(
                     s, t, errors, gene_tokens, hgvs_dup_del_mode,
-                    relative_copy_class=relative_copy_class,
+                    copy_change=copy_change,
                     baseline_copies=baseline_copies)
 
                 if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
                     await self._get_normalize_variation(
                         gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, relative_copy_class=relative_copy_class,
+                        mane_data_found, copy_change=copy_change,
                         baseline_copies=baseline_copies)
 
                 self.add_validation_result(
@@ -130,7 +131,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
     async def _get_variation(
             self, s: Token, t: str, errors: List, gene_tokens: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
-            relative_copy_class: Optional[RelativeCopyClass] = None,
+            copy_change: Optional[CopyChange] = None,
             baseline_copies: Optional[int] = None) -> Optional[Dict]:
         """Get variation data.
 
@@ -140,7 +141,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param List gene_tokens: List of GeneMatchTokens for a classification
         :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
             HGVS duplications and deletions
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :return: Dictionary containing start/end position changes and variation
         """
@@ -161,7 +162,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
 
             variation = self.hgvs_dup_del_mode.interpret_variation(
                 s.alt_type, allele, errors,
-                hgvs_dup_del_mode, pos=pos, relative_copy_class=relative_copy_class,
+                hgvs_dup_del_mode, pos=pos, copy_change=copy_change,
                 baseline_copies=baseline_copies)
         return variation
 
@@ -169,7 +170,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
             self, gene_tokens: List, s: Token, t: str, errors: List,
             hgvs_dup_del_mode: HGVSDupDelModeEnum,
             mane_data_found: Dict,
-            relative_copy_class: Optional[RelativeCopyClass] = None,
+            copy_change: Optional[CopyChange] = None,
             baseline_copies: Optional[int] = None) -> None:
         """Get variation that will be returned in normalize endpoint.
 
@@ -179,13 +180,13 @@ class GenomicDeletionRange(DuplicationDeletionBase):
         :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
             interpreting HGVS duplications and deletions
         :param Dict mane_data_found: MANE Transcript data found for given query
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         """
         ival, grch38 = await self._get_ival(t, s, errors, gene_tokens, is_norm=True)
         self.add_grch38_to_mane_data(
             t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-            start=ival[0], end=ival[1], relative_copy_class=relative_copy_class,
+            start=ival[0], end=ival[1], copy_change=copy_change,
             baseline_copies=baseline_copies)
 
     async def _get_ival(
