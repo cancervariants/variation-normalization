@@ -25,9 +25,9 @@ python-dotenv = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
-"ga4gh.vrs" = {version = "~=0.8.1.dev0", extras = ["extras"]}
-gene-normalizer = "~=0.1.31"
+"ga4gh.vrs" = {version = "==0.8.1.dev0", extras = ["extras"]}
+gene-normalizer = "==0.1.32"
 pyliftover = "*"
 boto3 = "*"
-"ga4gh.vrsatile.pydantic" = "~=0.0.11"
-cool-seq-tool = ">=0.1.6"
+"ga4gh.vrsatile.pydantic" = "==0.0.11"
+cool-seq-tool = "==0.1.6"
