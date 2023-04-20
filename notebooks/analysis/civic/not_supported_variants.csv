@@ -1,4 +1,5 @@
 variant_id	gene_name	variant_name	category	variant_accepted
+4417	ALK	 FBXO11::ALK	Fusion	False
 4188	VHL	10kb Deletion	Region Defined Variant	False
 785	CHEK2	1100DELC	Protein Consequence	True
 2438	VHL	235 (CAG-TAG)	Other	False
@@ -21,7 +22,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2577	PDGFRB	AGGF1::PDGFRB C843G	Fusion	False
 285	BRAF	AGK::BRAF	Fusion	True
 184	BRAF	AKAP9::BRAF	Fusion	True
-552	ALK	ALK Fusion G1269A	Fusion	True
 1307	TP53	ALTERATION	Region Defined Variant	True
 2211	BAP1	ALTERNATIVE TRANSCRIPT (ATI)	Other	True
 842	BRAF	APC	Other	False
@@ -65,15 +65,13 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1509	ABL1	BCR::ABL E453Q	Fusion	True
 2370	ABL1	BCR::ABL E459K	Fusion	True
 2901	ABL1	BCR::ABL E98G	Fusion	True
-1507	ABL1	BCR::ABL F311I	Fusion	True
 1528	ABL1	BCR::ABL F311L	Fusion	True
 2358	ABL1	BCR::ABL F311V	Fusion	False
 2359	ABL1	BCR::ABL F317C	Fusion	True
 1625	ABL1	BCR::ABL F317I	Fusion	True
-241	ABL1	BCR::ABL F317L	Fusion	True
+241	ABL1	BCR::ABL F317L	Fusion	False
 2888	ABL1	BCR::ABL F317R	Fusion	True
 2343	ABL1	BCR::ABL F317S	Fusion	True
-1525	ABL1	BCR::ABL F317V	Fusion	True
 1184	ABL1	BCR::ABL F359C	Fusion	True
 1523	ABL1	BCR::ABL F359I	Fusion	True
 892	ABL1	BCR::ABL F359V	Fusion	True
@@ -107,7 +105,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1613	ABL1	BCR::ABL S417Y	Fusion	True
 2953	ABL1	BCR::ABL S438C	Fusion	True
 2335	ABL1	BCR::ABL T315A	Fusion	True
-2	ABL1	BCR::ABL T315I	Fusion	True
 2885	ABL1	BCR::ABL T315V	Fusion	True
 2903	ABL1	BCR::ABL V186A	Fusion	False
 2952	ABL1	BCR::ABL V298I	Fusion	True
@@ -173,7 +170,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 522	BRAF	DEL 485-490	Region Defined Variant	True
 954	KIT	DEL 554-558	Region Defined Variant	False
 647	LRP1B	DELETION	Gene Function	True
-3023	PML	DELETION (p.K227_T233del)	Protein Consequence	False
 1663	BRAF	DELNVTAP	Other	False
 2685	DGKH	DGKH::ZFAND3	Fusion	False
 242	TP53	DNA Binding Domain Mutation	Region Defined Variant	True
@@ -203,7 +199,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 725	MLH1	E13fs	Protein Consequence	True
 2994	MAEA	E151INT	Other	False
 2591	DICER1	E1813 mutations	Protein Consequence	False
-572	MTOR	E2014K and E2419K	Protein Consequence	True
 2730	TP53	E204	Protein Consequence	False
 763	MSH2	E28FS	Protein Consequence	True
 2763	PIK3CA	E545	Protein Consequence	True
@@ -222,25 +217,21 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4283	EGFR	EGFR::PPARGC1A	Fusion	False
 4282	EGFR	EGFR::PURB	Fusion	False
 2203	EGFR	EGFR::RAD51	Fusion	True
-4241	EGFR	EGFR::SEPT14	Fusion	False
+4241	EGFR	EGFR::SEPT14	Fusion	True
 4343	EGFR	EGFR::VSTM2A	Fusion	False
 4344	EGFR	EGFR::WIF1	Fusion	False
+4418	EGFR	EGFR::YAP1	Fusion	False
+4286	EGFR	EGFR::ZNF713	Fusion	False
+4447	EGFR	EGFR::ZNF880	Fusion	False
+1516	EGFR	EGFRVIII	Gene Function	False
 5	ALK	EML4::ALK	Fusion	True
-528	ALK	EML4::ALK  V1180L	Fusion	True
-6	ALK	EML4::ALK C1156Y	Fusion	True
-2813	ALK	EML4::ALK G1202del	Fusion	False
-308	ALK	EML4::ALK G1269A	Fusion	True
-589	ALK	EML4::ALK I1171S	Fusion	True
-7	ALK	EML4::ALK L1196M	Fusion	True
-172	ALK	EML4::ALK S1206Y	Fusion	True
-173	ALK	EML4::ALK T1151INST	Fusion	True
 501	ALK	EML4::ALK e2-e20	Fusion	True
 500	ALK	EML4::ALK e20-e20	Fusion	True
-3204	ALK	EML4::ALK e6-e19 G1269A and Amplification	Fusion	False
+3204	ALK	EML4::ALK e6-e19	Fusion	False
 503	ALK	EML4::ALK e6-e20	Fusion	True
 4020	EML4	EML4::NTRK3	Fusion	False
 4299	NTRK3	EML4::NTRK3	Fusion	False
-2750	ALK	EML6::ALK e1-e20 and FBXO11::ALK e1-e20	Fusion	False
+2750	ALK	EML6::ALK	Fusion	False
 4075	EML6	EML6::NTRK3	Fusion	False
 2670	EPHB2	EPHB2	Protein Consequence	False
 4308	ALK	ERC1::ALK	Fusion	False
@@ -265,7 +256,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 86	NPM1	EXON 12 MUTATION	Region Defined Variant	True
 557	ASXL1	EXON 12 MUTATION	Region Defined Variant	True
 266	LRP1B	EXON 12-22 DELETION	Region Defined Variant	True
-464	MET	EXON 14 MUTATION and AMPLIFICATION	Region Defined Variant	True
 74	KRAS	EXON 2 Mutations	Region Defined Variant	False
 1940	VHL	EXON 2-3 DELETION	Region Defined Variant	True
 559	CALR	EXON 9 FRAMESHIFT	Other	True
@@ -400,6 +390,8 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3320	BLK	Expression	Expression	False
 3992	STAT1	Expression	Expression	False
 4336	FLT3LG	Expression	Expression	False
+4421	TBX2	Expression	Expression	False
+4422	TBXT	Expression	Expression	False
 2621	KIT	F506_F508DUP	Copy Number	True
 2158	VHL	F76fs (c.222_225dup)	Copy Number	False
 1912	VHL	F76fs (c.223_224insT)	Copy Number	True
@@ -418,6 +410,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 667	MEN1	FRAMESHIFT TRUNCATION	Protein Consequence	True
 722	DDIT3	FUS::DDIT3	Fusion	True
 3149	RELA	FUSION	Fusion	False
+575	ROS1	FUSIONS	Fusion	False
 428	MRE11	Frameshift	Protein Consequence	True
 2812	MBD4	Frameshift	Protein Consequence	False
 124	TSC1	Frameshift Truncation	Protein Consequence	True
@@ -466,12 +459,13 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2770	ROS1	GOPC::ROS1	Fusion	True
 4240	TYR	GRCh37/hg19 11q14.3(chr11:88960991-88961138)x160	Copy Number	False
 3305	TNFRSF17	Gain	Copy Number	False
+4424	TBXT	Gain	Copy Number	False
 2061	ACVR1	Gain-of-Function	Other	True
 2172	MTOR	Gain-of-Function	Other	False
 1765	EGFR	Gain-of-function	Other	True
 3766	PIK3CA	H1047L or H1047R	Protein Consequence	True
 2581	NCOA2	HEY1::NCOA2	Fusion	True
-588	ALK	HIP1::ALK I1171N	Fusion	True
+4405	ALK	HIP1::ALK	Fusion	True
 2969	HMGA2	HMGA2::LPP	Fusion	False
 3597	DDR2	High expression	Expression	False
 527	ALK	I1171	Protein Consequence	True
@@ -516,7 +510,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3273	MSH3	K383fs	Protein Consequence	False
 4177	PDGFRA	K385	Protein Consequence	False
 1166	ATM	K468FS	Protein Consequence	True
-1549	KIT	K558NP	Rearrangements	True
 2765	BRAF	K601	Protein Consequence	False
 508	PMS2	K706FS*19	Protein Consequence	True
 2964	RUNX1	K90fsX101	Protein Consequence	False
@@ -545,7 +538,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 541	PALB2	L531FS*30	Protein Consequence	True
 2766	BRAF	L597	Protein Consequence	False
 2997	EGFR	L718V and L718Q	Protein Consequence	False
-1006	EGFR	L747_A750>P	Rearrangements	False
 1011	EGFR	L747_P753>Q	Rearrangements	False
 4221	AKT2	L78_Q79ins	Rearrangements	False
 1866	EGFR	L861	Protein Consequence	True
@@ -644,7 +636,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3138	NPM1	MUTATION	Region Defined Variant	False
 2665	MYB	MYB::GATA1	Fusion	False
 4327	MYB	MYB::QKI	Fusion	False
-3586	MYC	MYC AND (BCL2 OR BCL6) TRANSLOCATION	Rearrangements	False
 29	CEBPA	Mutation	Region Defined Variant	True
 155	RUNX1	Mutation	Region Defined Variant	True
 157	TET2	Mutation	Region Defined Variant	True
@@ -709,9 +700,9 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2699	CBL	Mutation	Region Defined Variant	False
 2704	CDKN2A	Mutation	Region Defined Variant	True
 2749	NFE2L2	Mutation	Region Defined Variant	True
-2759	PALB2	Mutation	Region Defined Variant	False
+2759	PALB2	Mutation	Region Defined Variant	True
 2760	MPL	Mutation	Region Defined Variant	False
-2764	CDK12	Mutation	Region Defined Variant	False
+2764	CDK12	Mutation	Region Defined Variant	True
 2898	NT5C2	Mutation	Region Defined Variant	True
 2958	SDHB	Mutation	Region Defined Variant	False
 2983	ACVR1	Mutation	Region Defined Variant	True
@@ -720,6 +711,15 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3203	ATRX	Mutation	Region Defined Variant	True
 3274	PDGFRA	Mutation	Region Defined Variant	True
 4018	MS4A1	Mutation	Region Defined Variant	True
+4437	PPP2R2A	Mutation	Region Defined Variant	False
+4438	RAD54L	Mutation	Region Defined Variant	True
+4439	BRIP1	Mutation	Region Defined Variant	True
+4440	BARD1	Mutation	Region Defined Variant	True
+4441	CHEK1	Mutation	Region Defined Variant	True
+4442	FANCL	Mutation	Region Defined Variant	False
+4443	RAD51B	Mutation	Region Defined Variant	True
+4444	RAD51C	Mutation	Region Defined Variant	False
+4445	RAD51D	Mutation	Region Defined Variant	True
 3127	WT1	Mutations	Region Defined Variant	False
 28	CEBPA	N-TERMINAL FRAME SHIFT	Protein Consequence	True
 1581	EGFR	N771>GY	Rearrangements	False
@@ -778,7 +778,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2981	WDR12	OVEREXPRESSION	Expression	False
 2982	PLK1	OVEREXPRESSION	Expression	False
 3112	PALB2	Oncogenic Mutations (loss of function alterations)	Other	False
-3113	ATM	Oncogenic Mutations (loss of function alterations)	Other	False
 20	CCND1	Overexpression	Expression	True
 24	CCNE1	Overexpression	Expression	True
 152	BCL2	Overexpression	Expression	True
@@ -950,6 +949,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 127	U2AF1	Q157P/R	Protein Consequence	True
 507	GNAQ	Q209	Protein Consequence	True
 558	GNA11	Q209	Protein Consequence	True
+4435	BAP1	Q267fs	Protein Consequence	False
 744	MLH1	Q426FS	Protein Consequence	True
 3326	FLT3	Q575Δ	Other	False
 94	NRAS	Q61	Protein Consequence	True
@@ -1045,6 +1045,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2287	NTRK2	STRN::NTRK2	Fusion	True
 3108	VHL	Single Allele Deletion	Genotypes Compound	False
 3409	TEK	T1105N and T1106N	Protein Consequence	False
+4389	ALK	T1151dup	Copy Number	True
 810	RUNX1	T148HFSX9	Protein Consequence	True
 491	HSPH1	T17 DELETION	Region Defined Variant	True
 2733	TP53	T170	Protein Consequence	False
@@ -1074,8 +1075,12 @@ variant_id	gene_name	variant_name	category	variant_accepted
 590	BIRC3	TRUNCATING MUTATION	Protein Consequence	True
 708	BRCA2	TRUNCATING MUTATION	Protein Consequence	True
 3110	CREBBP	TRUNCATING MUTATIONS AND DELETERIOUS SUBSTITUTIONS	Protein Consequence	False
+4432	SNCAIP	Tandem duplication	Copy Number	False
 4026	FGFR2	Translocation	Rearrangements	False
 4027	FGFR3	Translocation	Rearrangements	False
+4428	MYC	Translocation	Rearrangements	False
+4429	BCL2	Translocation	Rearrangements	False
+4430	BCL6	Translocation	Rearrangements	False
 223	TP53	Truncating Mutation	Protein Consequence	True
 729	UGT1A1	UGT1A1*28	Genotypes Easy	True
 732	UGT1A1	UGT1A1*60	Genotypes Easy	True
@@ -1108,6 +1113,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2392	PTPN6	Underexpression	Expression	False
 2409	ERCC1	Underexpression	Expression	True
 2412	FGFR2	Underexpression	Expression	False
+2718	CCNE1	Underexpression	Expression	False
 3459	AR	V1 expression	Expression	False
 1167	ATM	V1268FS	Protein Consequence	False
 750	MLH1	V213FS	Protein Consequence	True
@@ -1147,7 +1153,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2720	TP53	Y205	Protein Consequence	False
 3327	FLT3	Y572Δ	Other	False
 165	EZH2	Y646	Protein Consequence	True
-3518	EZH2	Y646F, Y646N, Y646S, Y646H, Y646C, A682G, A692V	Protein Consequence	False
 3055	FLT3	Y693	Protein Consequence	False
 1672	EGFR	Y69FS*11	Protein Consequence	False
 414	ERBB2	Y772_A775DUP	Copy Number	True
@@ -1165,12 +1170,15 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3482	LGR5	delta5	Other	False
 2349	IL7R	exon 6 mutations	Region Defined Variant	False
 3752	SSTR5	expression	Expression	True
+4416	EZH2	expression	Expression	True
+4406	EGFR	fusion	Fusion	False
 2807	BRCA1	gBRCAm	Other	False
 2226	BRAF	intron 10 rearrangement	Rearrangements	True
 2225	BRAF	intron 9 rearrangement	Rearrangements	True
 2814	DRD5	low expression	Expression	False
 3323	VEGFA	low ratio of VEGF165b/VEGFtotal	Expression	False
 2845	HOXD8	mutation	Region Defined Variant	False
+4436	CHEK2	mutation	Region Defined Variant	True
 3322	VEGFA	overexpression of VEGF-Axxxa	Expression	False
 2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number	True
 3057	GATA1	p.Ser51Alafs*86	Protein Consequence	False
@@ -1195,5 +1203,3 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3478	ESR2	underexpression beta-1	Other	False
 3508	CD274	v242	Protein Consequence	False
 2422	NTRK3	~DEPRECATED-ETV6-NTRK3	Other	False
-2748	ETV6	~DEPRECATED-ETV6::NTRK3 FUSION	Other	False
-2718	CCNE1	ｍRNA expression low	Expression	False
