@@ -546,7 +546,7 @@ def coding_dna_deletion(erbb2_context):
     sequence.
     """
     params = {
-        "id": "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT",  # noqa: E501
+        "id": "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.NUCURWYivhjC4oyBtzgJZ27SaaMY08Q7",
         "variation": {
@@ -571,6 +571,40 @@ def coding_dna_deletion(erbb2_context):
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "TTGAGGGAAAACACAT",
         "gene_context": erbb2_context
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def genomic_deletion():
+    """Create test fixture for genomic deletion range with deleted sequence.
+    (CA915940709)
+    """
+    params = {
+        "id": "normalize.variation:NC_000003.12%3Ag.10146527_10146528del",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.hvwBZON5KzQGQazIMpeUu_dmyJ-xN8EV",
+        "variation": {
+            "_id": "ga4gh:VA.hvwBZON5KzQGQazIMpeUu_dmyJ-xN8EV",
+            "location": {
+                "_id": "ga4gh:VSL.Os_JtDBBPeryeCLpxOCwzvEBThWGmWtr",
+                "interval": {
+                    "end": {"value": 10146528, "type": "Number"},
+                    "start": {"value": 10146524, "type": "Number"},
+                    "type": "SequenceInterval"
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation"
+            },
+            "state": {
+                "sequence": "CT",
+                "type": "LiteralSequenceExpression"
+            },
+            "type": "Allele"
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "CTCT"
     }
     return VariationDescriptor(**params)
 
@@ -1188,14 +1222,30 @@ async def test_protein_deletion(test_handler, protein_deletion_np_range):
     assertion_checks(resp.variation_descriptor, protein_deletion_np_range,
                      "ERBB2 Leu755_Thr759del")
 
+    resp1 = await test_handler.normalize("EGFR L747_T751del")
+    resp2 = await test_handler.normalize("EGFR L747_T751delLREAT")
+    assert resp1.variation_descriptor.variation.id == \
+        resp2.variation_descriptor.variation.id
+
+    # incorrect deleted sequence
+    resp = await test_handler.normalize("EGFR L747_T751delLREA")
+    assert not resp.variation_descriptor
+
 
 @pytest.mark.asyncio
 async def test_coding_dna_deletion(test_handler, coding_dna_deletion):
     """Test that coding dna deletion normalizes correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_caid?caid=CA645372623  # noqa: E501
     q = "NM_004448.3:c.2264_2278delTGAGGGAAAACACAT"
-    resp = await test_handler.normalize(q)
-    assertion_checks(resp.variation_descriptor, coding_dna_deletion, q)
+    resp1 = await test_handler.normalize(q)
+    assertion_checks(resp1.variation_descriptor, coding_dna_deletion, q)
+
+    # incorrected deleted sequence
+    resp = await test_handler.normalize("NM_004448.3:c.2264_2278delTGAGGGAAAACACTA")
+    assert not resp.variation_descriptor
+
+    resp2 = await test_handler.normalize("NM_004448.3:c.2264_2278del")
+    assert resp1.variation_descriptor.variation.id == resp2.variation_descriptor.variation.id  # noqa: E501
 
     q = "ERBB2 c.2264_2278delTGAGGGAAAACACAT"
     resp = await test_handler.normalize(q)
@@ -1204,6 +1254,23 @@ async def test_coding_dna_deletion(test_handler, coding_dna_deletion):
     resp.variation_descriptor.id = \
         "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT"
     assertion_checks(resp.variation_descriptor, coding_dna_deletion, q)
+
+
+@pytest.mark.asyncio
+async def test_genomic_deletion(test_handler, genomic_deletion):
+    """Test that genomic deletion normalizes correctly"""
+    # CA915940709
+    q = "NC_000003.12:g.10146527_10146528del"
+    resp1 = await test_handler.normalize(q)
+    assertion_checks(resp1.variation_descriptor, genomic_deletion, q)
+
+    resp2 = await test_handler.normalize("NC_000003.12:g.10146527_10146528delCT")
+    assert resp1.variation_descriptor.variation.id == \
+        resp2.variation_descriptor.variation.id
+
+    # incorrect deleted sequence
+    resp = await test_handler.normalize("NC_000003.12:g.10146527_10146528delCC")
+    assert not resp.variation_descriptor
 
 
 @pytest.mark.asyncio
@@ -1314,6 +1381,21 @@ async def test_valid_queries(test_handler):
     assert resp.variation_descriptor.variation.state.sequence == "CTC"
     assert resp.variation_descriptor.variation.id == \
         "ga4gh:VA.7qNgfRjiDwephtGOuwtXm04YcXDSY47x"
+
+    resp = await test_handler.normalize("NG_008212.3:g.5426_5445del")
+    assert resp.variation_descriptor
+
+    # Test ambiguous IUPAC code N
+    for q in [
+        "NC_000017.10:g.7572948_7572949insTTTTTTTTTNNNNN",
+        "NC_000007.13:g.140453136A>N",
+        "NC_000007.13:g.140453135_140453136delinsATN",
+        "NM_007294.3:c.2902_2903insTCN",
+        "NM_004333.4:c.1799T>N",
+        "NM_001289937.1:c.2326_2327delinsCTN"
+    ]:
+        resp = await test_handler.normalize(q)
+        assert resp.variation_descriptor, q
 
 
 @pytest.mark.asyncio

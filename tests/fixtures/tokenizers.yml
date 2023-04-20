@@ -90,7 +90,7 @@ coding_dna_substitution:
     - token: c.292T>C
     - token: (c.233A>G)
     - token: c.509T>A
-    - token: c.54G>H
+    - token: c.54G>N
   should_not_match:
     - token: (c.292T>C
     - token: g.292T>C
@@ -101,14 +101,15 @@ coding_dna_substitution:
     - token: c.509T>
     - token: c.509>A
     - token: c.T>A
+    - token: c.54G>H
 
-genomic_substition:
+genomic_substitution:
   should_match:
     - token: (g.292T>C)
     - token: g.292T>C
     - token: (g.233A>G)
     - token: g.509T>A
-    - token: g.54G>H
+    - token: g.54G>N
   should_not_match:
     - token: (g.292T>C
     - token: c.292T>C
@@ -119,6 +120,7 @@ genomic_substition:
     - token: g.509T>
     - token: g.509>A
     - token: g.T>A
+    - token: g.54G>H
 
 coding_dna_silent_mutation:
   should_match:
@@ -197,7 +199,6 @@ coding_dna_delins:
     - token: c.delinsTGG
     - token: c.d_delinsTG
 
-
 genomic_delins:
   should_match:
     - token: g.32386323delinsGA
@@ -209,6 +210,7 @@ genomic_delins:
 #    - token: g.812_829delins908_925
     - token: (g.301_302delinsGG)
     - token: g.10149938delinsAA
+    - token: g.10149938delinsAAN
   should_not_match:
     - token: g.150_147delinsTGG
     - token: 32386323delinsGA
@@ -256,6 +258,8 @@ protein_deletion:
     - token: p.(Lys23_Val25del)
     - token: (Lys23_Val25del)
     - token: p.Phe76del
+    - token: L747_T751delLREAT
+    - token: p.L747_T751delLREAT
   should_not_match:
     - token: Val7deletion
     - token: (Val7deletion)
@@ -266,6 +270,8 @@ protein_deletion:
     - token: 7Valdel
     - token: Val7_Glydel
     - token: Val_Gly7del
+    - token: p.(V7del
+    - token: p.V7del)
 
 coding_dna_deletion:
   should_match:
@@ -334,6 +340,7 @@ genomic_insertion:
     - token: g.123_124insAGC
     - token: g.32867861_32867862insT
     - token: g.37881011_37881012insGGCTCCCCA
+    - token: g.7572948_7572949insN
   should_not_match:
     - token: g.123_124insAGCX
     - token: c.169_170insAla

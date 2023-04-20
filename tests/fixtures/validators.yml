@@ -36,12 +36,15 @@ coding_dna_substitution:
     - query: BRAF (c.1799T>A)
     - query: BRAF c.1799T>A
     - query: BRAF V600E c.1799T>A
-    - query: LRG_199t1:c.54G>H
-    - query: LRG_199p1:c.54G>H
-    - query: LRG_199:c.54G>H
+    - query: LRG_199t1:c.54G>N
+    - query: LRG_199p1:c.54G>N
+    - query: LRG_199:c.54G>N
   should_not_match:
     - query: BRAF c.18000000000000T>A
     - query: NM_004333.4:c.17699T>A
+    - query: LRG_199t1:c.54G>H
+    - query: LRG_199p1:c.54G>H
+    - query: LRG_199:c.54G>H
 
 genomic_substitution:
   should_match:
@@ -134,6 +137,8 @@ protein_deletion:
     - query: LRG_199p1:p.(Val7del)
     - query: LRG_199p1:p.Trp4del
     - query: LRG_232p1:p.(Pro458_Gly460del)
+    - query: EGFR L747_T751del
+    - query: EGFR L747_T751delLREAT
   should_not_match:
     - query: LRG_199p1:p.Ala7del
     - query: LRG_199p1:p.Val78848498879del

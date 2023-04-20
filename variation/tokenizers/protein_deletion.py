@@ -1,32 +1,29 @@
-"""A module for Protein Deletion Tokenization Class."""
-from typing import Optional, List
+"""A module for tokenizing Protein Deletions."""
+from typing import Optional
+import re
 
 from pydantic.error_wrappers import ValidationError
+from bioutils.sequences import aa3_to_aa1_lut, aa1_to_aa3
 
 from variation.schemas.token_response_schema import ProteinDeletionToken, \
     TokenMatchType
-from .caches import NucleotideCache
 from .tokenizer import Tokenizer
-from .tokenize_base import TokenizeBase
 
 
 class ProteinDeletion(Tokenizer):
     """Class for tokenizing Deletions on the protein reference sequence."""
 
-    def __init__(self, nucleotide_cache: NucleotideCache) -> None:
-        """Initialize the Protein Deletion Class.
-
-        :param NucleotideCache nucleotide_cache: Valid nucleotides
-        """
-        self.parts = None
-        self.tokenize_base = TokenizeBase(nucleotide_cache)
+    pattern = r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)" \
+              r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
+    splitter = re.compile(pattern)
 
     def match(self, input_string: str) -> Optional[ProteinDeletionToken]:
-        """Return token that match the input string."""
-        if input_string is None:
-            return None
+        """Return token that match the input string
 
-        self.parts = {
+        :param str input_str: Input string to tokenize
+        :return: `ProteinDeletionToken` if a match is found, else `None`
+        """
+        parts = {
             "used_one_letter": False,
             "token": input_string,
             "input_string": input_string,
@@ -34,43 +31,75 @@ class ProteinDeletion(Tokenizer):
             "start_aa_del": None,
             "start_pos_del": None,
             "end_aa_del": None,
-            "end_pos_del": None
+            "end_pos_del": None,
+            "deleted_aa": None
         }
 
-        input_string = str(input_string).lower()
+        input_str_l = str(input_string).lower()
 
-        if "c." in input_string or "g." in input_string:
+        if input_str_l.startswith(("c.", "g.")):
             return None
 
-        if input_string.startswith("p."):
-            input_string = input_string[2:]
+        if input_str_l.startswith("p."):
+            input_str_l = input_str_l[2:]
 
-        if input_string.startswith("(") and input_string.endswith(")"):
-            input_string = input_string[1:-1]
+        if input_str_l.startswith("(") and input_str_l.endswith(")"):
+            input_str_l = input_str_l[1:-1]
 
-        if not input_string.endswith("del"):
+        match = self.splitter.match(input_str_l)
+        if not match:
             return None
 
-        parts = input_string.split("del")
-        self._get_parts(parts)
+        params = match.groupdict()
+        one_letter_aa = False  # Whether or not 1 letter AA code was used
+
+        parts["start_aa_del"] = params["start_aa"]
+        parts["start_pos_del"] = params["start_pos"]
+        parts["end_aa_del"] = params["end_aa"]
+        parts["end_pos_del"] = params["end_pos"]
+        parts["deleted_aa"] = params["deleted_aa"]
+
+        # This ensures that start/end/deleted AA use consistent 1 or 3 AA codes
+        if len(parts["start_aa_del"]) == 1:
+            one_letter_aa = True
+
+        # Validate start and end deleted amino acids (if given)
+        for key in ["start_aa_del", "end_aa_del"]:
+            aa = parts[key]
+            if aa:
+                if one_letter_aa:
+                    try:
+                        parts[key] = aa1_to_aa3(aa.upper())
+                    except KeyError:
+                        return None
+                else:
+                    if aa.capitalize() not in aa3_to_aa1_lut:
+                        return None
+                    else:
+                        parts[key] = aa.capitalize()
+
+        # Validate deleted amino acid sequence
+        if parts["deleted_aa"]:
+            deleted_aa = ""
+            if one_letter_aa:
+                for i in range(len(parts["deleted_aa"])):
+                    aa = parts["deleted_aa"][i:i + 1]
+                    try:
+                        deleted_aa += aa3_to_aa1_lut[aa1_to_aa3(aa.upper())]
+                    except KeyError:
+                        return None
+            else:
+                for i in range(0, len(parts["deleted_aa"]), 3):
+                    aa = parts["deleted_aa"][i:i + 3]
+                    cap_aa = aa.capitalize()
+
+                    if len(cap_aa) != 3 or cap_aa not in aa3_to_aa1_lut:
+                        if cap_aa != "Ter":
+                            return None
+                    deleted_aa += cap_aa
+            parts["deleted_aa"] = deleted_aa
 
         try:
-            return ProteinDeletionToken(**self.parts)
+            return ProteinDeletionToken(**parts)
         except ValidationError:
             return None
-
-    def _get_parts(self, parts: List) -> None:
-        """Get parts for Protein Deletion.
-
-        :param List parts: Parts of input string
-        """
-        if len(parts) != 2:
-            return
-
-        range_aa_pos = self.tokenize_base.get_aa_pos_range(parts)
-        if range_aa_pos:
-            self.parts["start_aa_del"] = range_aa_pos[0]
-            self.parts["end_aa_del"] = range_aa_pos[1]
-            self.parts["start_pos_del"] = range_aa_pos[2]
-            self.parts["end_pos_del"] = range_aa_pos[3]
-            self.parts["used_one_letter"] = range_aa_pos[4]

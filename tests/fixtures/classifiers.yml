@@ -57,7 +57,7 @@ coding_dna_substitution:
     - query: BRAF V600E c.23T>A
       confidence: ConfidenceRating.EXACT
     - query: LRG_199t1:c.54G>H
-      confidence: ConfidenceRating.EXACT
+      confidence: ConfidenceRating.INTERSECTION
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
@@ -181,8 +181,10 @@ protein_deletion:
       confidence: ConfidenceRating.EXACT
     - query: NP_004439.2:c.Leu755_Thr759del
       confidence: ConfidenceRating.INTERSECTION
+    - query: EGFR L747_T751delLREAT
+      confidence: ConfidenceRating.EXACT
   should_not_match:
-    - query: fakegene Leu755_Thr759delLeu
+    - query: fakegene g.Leu755_Thr759delLeu
     - query: GENE c.L755del
 
 coding_dna_deletion:
