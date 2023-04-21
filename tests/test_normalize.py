@@ -808,7 +808,7 @@ def genomic_uncertain_del_x():
                 "max": 1,
                 "type": "DefiniteRange"
             },
-            "type": "AbsoluteCopyNumber"
+            "type": "CopyNumberCount"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"

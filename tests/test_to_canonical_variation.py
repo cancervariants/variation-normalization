@@ -56,15 +56,15 @@ def variation1_lse(variation1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation1_abs_cnv(variation1_seq_loc):
-    """Create test fixture for variation1 represented as absolute cnv"""
+def variation1_cn_cnv(variation1_seq_loc):
+    """Create test fixture for variation1 represented as copy number count"""
     params = {
         "_id": "ga4gh:VCC.SRZiwHEKF9qJ5hCd1hKPDpjBpK29PO_4",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
             "_id": "ga4gh:VAC.WkHL0pE5vn2yZfTlB4vo6Qr9gvFgnm2s",
-            "type": "AbsoluteCopyNumber",
+            "type": "CopyNumberCount",
             "subject": variation1_seq_loc,
             "copies": {"type": "Number", "value": 2}
         }
@@ -73,17 +73,17 @@ def variation1_abs_cnv(variation1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation1_rel_cnv(variation1_seq_loc):
-    """Create test fixture for variation1 represented as relative cnv"""
+def variation1_cx_cnv(variation1_seq_loc):
+    """Create test fixture for variation1 represented as copy number change"""
     params = {
         "_id": "ga4gh:VCC.hpdklR_18hDE3YwHTYYFJmbQd__pwBeH",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
             "_id": "ga4gh:VRC.d0tA1C6eSo-rkg1wVQ76Bh8XLSwz36se",
-            "type": "RelativeCopyNumber",
+            "type": "CopyNumberChange",
             "subject": variation1_seq_loc,
-            "relative_copy_class": "complete loss"
+            "copy_change": "complete loss"
         }
     }
     return CanonicalVariation(**params)
@@ -142,15 +142,15 @@ def variation3_lse(grch38_genomic_insertion_variation):
 
 
 @pytest.fixture(scope="module")
-def variation3_abs_cnv(grch38_genomic_insertion_seq_loc):
-    """Create test fixture for variation3 represented as absolute cnv"""
+def variation3_cn_cnv(grch38_genomic_insertion_seq_loc):
+    """Create test fixture for variation3 represented as copy number count"""
     params = {
         "_id": "ga4gh:VCC.DSncpwIaoyP94KOVf_45gcQGJ0_f41Pa",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
             "_id": "ga4gh:VAC.c1xp6z9seT4j8Ae4e0gePB7LiPzjykmO",
-            "type": "AbsoluteCopyNumber",
+            "type": "CopyNumberCount",
             "subject": grch38_genomic_insertion_seq_loc,
             "copies": {"type": "Number", "value": 2}
         }
@@ -159,17 +159,17 @@ def variation3_abs_cnv(grch38_genomic_insertion_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation3_rel_cnv(grch38_genomic_insertion_seq_loc):
-    """Create test fixture for variation3 represented as relative cnv"""
+def variation3_cx_cnv(grch38_genomic_insertion_seq_loc):
+    """Create test fixture for variation3 represented as copy number change"""
     params = {
         "_id": "ga4gh:VCC.fUeN_b2i0iBgad1rizfs1fXOnrZvptc9",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
             "_id": "ga4gh:VRC.TJSKDRpI2hW8JbqGsc9yag6KrP1YVhwU",
-            "type": "RelativeCopyNumber",
+            "type": "CopyNumberChange",
             "subject": grch38_genomic_insertion_seq_loc,
-            "relative_copy_class": "high-level gain"
+            "copy_change": "high-level gain"
         }
     }
     return CanonicalVariation(**params)
@@ -231,7 +231,7 @@ def variation4():
 
 @pytest.mark.asyncio
 async def test_to_canonical_variation_deletion(
-    test_handler, variation1_lse, variation1_abs_cnv, variation1_rel_cnv,
+    test_handler, variation1_lse, variation1_cn_cnv, variation1_cx_cnv,
     variation1_rse
 ):
     """Test that to_canonical_variation works correctly for deletions"""
@@ -265,15 +265,15 @@ async def test_to_canonical_variation_deletion(
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
-        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="absolute_cnv",
+        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_count",
         baseline_copies=3)
-    assert resp.canonical_variation == variation1_abs_cnv
+    assert resp.canonical_variation == variation1_cn_cnv
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
-        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
-        relative_copy_class="complete loss")
-    assert resp.canonical_variation == variation1_rel_cnv
+        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
+        copy_change="complete loss")
+    assert resp.canonical_variation == variation1_cx_cnv
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
@@ -342,7 +342,7 @@ async def test_to_canonical_variation_substitution(test_handler, variation2):
 
 @pytest.mark.asyncio
 async def test_to_canonical_variation_duplication(
-    test_handler, variation3_lse, variation3_abs_cnv, variation3_rel_cnv,
+    test_handler, variation3_lse, variation3_cn_cnv, variation3_cx_cnv,
     variation3_rse
 ):
     """Test that to_canonical_variation works correctly for duplications"""
@@ -382,15 +382,15 @@ async def test_to_canonical_variation_duplication(
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
-        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="absolute_cnv",
+        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_count",
         baseline_copies=1)
-    assert resp.canonical_variation == variation3_abs_cnv
+    assert resp.canonical_variation == variation3_cn_cnv
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
-        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="relative_cnv",
-        relative_copy_class="high-level gain")
-    assert resp.canonical_variation == variation3_rel_cnv
+        q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
+        copy_change="high-level gain")
+    assert resp.canonical_variation == variation3_cx_cnv
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
@@ -490,6 +490,6 @@ async def test_invalid(test_handler):
 
     q = " NC_000013.11:g.20189349del "  # 38
     resp = await test_handler.to_canonical_variation(
-        q, fmt="hgvs", hgvs_dup_del_mode="absolute_cnv")
+        q, fmt="hgvs", hgvs_dup_del_mode="copy_number_count")
     assert resp.canonical_variation is None
-    assert resp.warnings == ["absolute_cnv requires `baseline_copies`"]
+    assert resp.warnings == ["copy_number_count requires `baseline_copies`"]

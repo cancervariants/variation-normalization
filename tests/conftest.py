@@ -909,10 +909,10 @@ def genomic_dup1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup1_38_vac(genomic_dup1_seq_loc):
-    """Create test fixture for absolute copy number dup1 on GRCh38"""
+def genomic_dup1_38_cn(genomic_dup1_seq_loc):
+    """Create test fixture for copy number count dup1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": "ga4gh:VAC.nZodtrYoDtBJ1kdKCO6zLd7QR7ho4s9v",
         "subject": genomic_dup1_seq_loc,
         "copies": {"type": "Number", "value": 3}
@@ -935,10 +935,10 @@ def genomic_dup2_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup2_38_vac(genomic_dup2_seq_loc):
-    """Create test fixture for absolute copy number dup2 on GRCh38"""
+def genomic_dup2_38_cn(genomic_dup2_seq_loc):
+    """Create test fixture for copy number count dup2 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": "ga4gh:VAC.0ORNFtrjvEWHYxg3hzO50N16KBm1F2ev",
         "subject": genomic_dup2_seq_loc,
         "copies": {"type": "Number", "value": 3}
@@ -970,7 +970,7 @@ def genomic_del3_dup3_loc():
 
 @pytest.fixture(scope="session")
 def genoimc_dup4_loc():
-    """Create genoimc dup4 sequence location"""
+    """Create genomic dup4 sequence location"""
     return {
         "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
         "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
@@ -993,7 +993,7 @@ def genoimc_dup4_loc():
 
 @pytest.fixture(scope="session")
 def genomic_dup5_loc():
-    """Create genoimc dup5 sequence location"""
+    """Create genomic dup5 sequence location"""
     return {
         "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -1015,7 +1015,7 @@ def genomic_dup5_loc():
 
 @pytest.fixture(scope="session")
 def genoimc_dup6_loc():
-    """Create genoimc dup6 sequence location"""
+    """Create genomic dup6 sequence location"""
     return {
         "_id": "ga4gh:VSL.h0_xXu36uSnPEuLoxvVmTAFQCS1ZFuLN",
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -1051,10 +1051,10 @@ def genomic_del1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del1_38_vac(genomic_del1_seq_loc):
-    """Create test fixture for absolute copy number del1 on GRCh38"""
+def genomic_del1_38_cn(genomic_del1_seq_loc):
+    """Create test fixture for copy number count del1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": "ga4gh:VAC.bKH1_cS8JOdpvVK3x21RuwMKCo-ETfMK",
         "subject": genomic_del1_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -1077,10 +1077,10 @@ def genomic_del2_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del2_38_vac(genomic_del2_seq_loc):
-    """Create test fixture for absolute copy number del1 on GRCh38"""
+def genomic_del2_38_cn(genomic_del2_seq_loc):
+    """Create test fixture for copy number count del1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": "ga4gh:VAC.GqRBxR7bquLskRhgmcUiS3tdbwiJ4dDk",
         "subject": genomic_del2_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -1194,8 +1194,8 @@ def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
         "variation": {
             "_id": _id,
             "subject": braf_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
-            "type": "RelativeCopyNumber"
+            "copy_change": "high-level gain",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001880",
@@ -1215,8 +1215,8 @@ def prpf8_amplification(prpf8_ncbi_seq_loc, prpf8_gene_context):
         "variation": {
             "_id": _id,
             "subject": prpf8_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
-            "type": "RelativeCopyNumber"
+            "copy_change": "high-level gain",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001880",

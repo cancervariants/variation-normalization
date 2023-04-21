@@ -1342,7 +1342,7 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
@@ -1376,7 +1376,7 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
@@ -1409,7 +1409,7 @@ genomic_uncertain_deletion:
             "value": 1,
             "type": "Number"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
@@ -1442,7 +1442,7 @@ genomic_uncertain_deletion:
             "value": 0,
             "type": "Number"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
 
@@ -1494,7 +1494,7 @@ genomic_duplication:
       variations: [
         {
           "_id": "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh",
-          "type": "AbsoluteCopyNumber",
+          "type": "CopyNumberCount",
           "subject": {
               "location": {
                   "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
@@ -1528,7 +1528,7 @@ genomic_duplication:
       variations: [
         {
           "_id": "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1",
-          "type": "AbsoluteCopyNumber",
+          "type": "CopyNumberCount",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
@@ -1561,7 +1561,7 @@ genomic_duplication:
       variations: [
         {
           "_id": "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML",
-          "type": "AbsoluteCopyNumber",
+          "type": "CopyNumberCount",
           "subject": {
             "location": {
               "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",

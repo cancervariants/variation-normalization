@@ -85,7 +85,7 @@ class TranslatorBase:
                         variation["location"] = variation["location"]
                         if "id" in variation["location"].keys():
                             del variation["location"]["id"]
-                    elif variation["type"] == "AbsoluteCopyNumber":
+                    elif variation["type"] == "CopyNumberCount":
                         variation["subject"] = variation["subject"]
                         if "id" in variation["subject"]["location"].keys():
                             del variation["subject"]["location"]["id"]

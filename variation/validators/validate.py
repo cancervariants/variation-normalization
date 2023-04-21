@@ -1,7 +1,7 @@
 """Module for Validation."""
 from typing import List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
@@ -90,7 +90,7 @@ class Validate:
             endpoint_name: Optional[Endpoint] = None, warnings: List = None,
             hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
             baseline_copies: Optional[int] = None,
-            relative_copy_class: Optional[RelativeCopyClass] = None,
+            copy_change: Optional[CopyChange] = None,
             do_liftover: bool = False
     ) -> ValidationSummary:
         """Validate a list of classifications.
@@ -98,11 +98,11 @@ class Validate:
         :param List classifications: List of classifications
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param List warnings: List of warnings
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `copy_number_count`,
+            `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
             determines how to represent HGVS dup/del expressions as VRS objects.
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: ValidationSummary containing valid and invalid results
         """
@@ -120,7 +120,7 @@ class Validate:
                     results = await validator.validate(
                         classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
                         endpoint_name=endpoint_name, baseline_copies=baseline_copies,
-                        relative_copy_class=relative_copy_class,
+                        copy_change=copy_change,
                         do_liftover=do_liftover)
                     for res in results:
                         if res.is_valid:

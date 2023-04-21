@@ -333,21 +333,21 @@ def genomic_dup1_lse(genomic_dup1, genomic_dup1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_vac(genomic_dup1, genomic_dup1_38_vac):
-    """Create a test fixture for genomic dup absolute CNV."""
+def genomic_dup1_cn(genomic_dup1, genomic_dup1_38_vac):
+    """Create a test fixture for genomic dup copy number count."""
     genomic_dup1["variation"] = genomic_dup1_38_vac
     genomic_dup1["variation_id"] = genomic_dup1["variation"]["_id"]
     return VariationDescriptor(**genomic_dup1)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_vrc(genomic_dup1, genomic_dup1_seq_loc):
-    """Create a test fixture for genomic dup relative CNV."""
+def genomic_dup1_cx(genomic_dup1, genomic_dup1_seq_loc):
+    """Create a test fixture for genomic dup copy number change."""
     genomic_dup1["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": "ga4gh:VRC.dhn3PLeop46_QYTlYxiIW18nrTfYqJ8N",
         "subject": genomic_dup1_seq_loc,
-        "relative_copy_class": "high-level gain"
+        "copy_change": "high-level gain"
     }
     genomic_dup1["variation_id"] = genomic_dup1["variation"]["_id"]
     return VariationDescriptor(**genomic_dup1)
@@ -551,12 +551,12 @@ def genomic_dup1_free_text_lse(genomic_dup1_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_free_text_vac(genomic_dup1_free_text,
+def genomic_dup1_free_text_cn(genomic_dup1_free_text,
                                genomic_dup1_free_text_seq_loc):
-    """Create a test fixture for genomic dup absolute CNV."""
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.qeuDGWVaGZUOf7XmF2xO1k24LvFzGVE1"
     genomic_dup1_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup1_free_text_seq_loc,
         "copies": {"type": "Number", "value": 3}
@@ -624,21 +624,21 @@ def genomic_dup2_lse(genomic_dup2, genomic_dup2_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_vac(genomic_dup2, genomic_dup2_38_vac):
-    """Create a test fixture for genomic dup absolute CNV."""
+def genomic_dup2_cn(genomic_dup2, genomic_dup2_38_vac):
+    """Create a test fixture for genomic dup copy number count."""
     genomic_dup2["variation"] = genomic_dup2_38_vac
     genomic_dup2["variation_id"] = genomic_dup2["variation"]["_id"]
     return VariationDescriptor(**genomic_dup2)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_vrc(genomic_dup2, genomic_dup2_seq_loc):
-    """Create a test fixture for genomic dup relative CNV."""
+def genomic_dup2_cx(genomic_dup2, genomic_dup2_seq_loc):
+    """Create a test fixture for genomic dup copy number change."""
     genomic_dup2["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": "ga4gh:VRC.xuC326dmLBd33E4d-z9JItz0mt24JR-I",
         "subject": genomic_dup2_seq_loc,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     genomic_dup2["variation_id"] = genomic_dup2["variation"]["_id"]
     return VariationDescriptor(**genomic_dup2)
@@ -719,12 +719,12 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_free_text_vac(genomic_dup2_free_text,
+def genomic_dup2_free_text_cn(genomic_dup2_free_text,
                                genomic_dup2_free_text_seq_loc):
-    """Create a test fixture for genomic dup absolute CNV."""
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.p538XMNKHyZGEVb73xbA2DfSxSJOZG4B"
     genomic_dup2_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup2_free_text_seq_loc,
         "copies": {"type": "Number", "value": 3}
@@ -775,11 +775,11 @@ def genomic_dup3():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_vac(genomic_dup3, genomic_del3_dup3_loc):
-    """Create a test fixture for genomic dup absolute cnv."""
+def genomic_dup3_cn(genomic_dup3, genomic_del3_dup3_loc):
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul"
     genomic_dup3["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
@@ -789,14 +789,14 @@ def genomic_dup3_vac(genomic_dup3, genomic_del3_dup3_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_vrc(genomic_dup3, genomic_del3_dup3_loc):
-    """Create a test fixture for genomic dup relative cnv."""
+def genomic_dup3_cx(genomic_dup3, genomic_del3_dup3_loc):
+    """Create a test fixture for genomic dup copy number change."""
     _id = "ga4gh:VRC.APoRHUv3_v5FSbtfU5DuESzF9iuDLdYx"
     genomic_dup3["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del3_dup3_loc,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     genomic_dup3["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3)
@@ -857,25 +857,25 @@ def genomic_dup3_free_text_subject():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_free_text_vrc(genomic_dup3_free_text, genomic_dup3_free_text_subject):
-    """Create a test fixture for genomic dup relative cnv."""
+def genomic_dup3_free_text_cx(genomic_dup3_free_text, genomic_dup3_free_text_subject):
+    """Create a test fixture for genomic dup copy number change."""
     _id = "ga4gh:VRC.0-oCLK0W3ND8-EzZsRJUJlF5MTe3VgSD"
     genomic_dup3_free_text["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup3_free_text_subject,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_free_text_vac(genomic_dup3_free_text, genomic_dup3_free_text_subject):
-    """Create a test fixture for genomic dup absolute cnv."""
+def genomic_dup3_free_text_cn(genomic_dup3_free_text, genomic_dup3_free_text_subject):
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.WwO4IBA5qODo__32hAMeV8cb1q5uZyqd"
     genomic_dup3_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup3_free_text_subject,
         "copies": {"type": "Number", "value": 4}
@@ -915,25 +915,25 @@ def genomic_dup4():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_vrc(genomic_dup4, genoimc_dup4_loc):
-    """Create a test fixture for genomic dup relative cnv."""
+def genomic_dup4_cx(genomic_dup4, genoimc_dup4_loc):
+    """Create a test fixture for genomic dup copy number change."""
     _id = "ga4gh:VRC.9N_ih-YzkKM91k6adSGQuGce5t4nJspV"
     genomic_dup4["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genoimc_dup4_loc,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_vac(genomic_dup4, genoimc_dup4_loc):
-    """Create a test fixture for genomic dup absolute cnv."""
+def genomic_dup4_cn(genomic_dup4, genoimc_dup4_loc):
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.h594XLS8a4VA6j-ghLaghqXmof8hmF5z"
     genomic_dup4["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genoimc_dup4_loc,
         "copies": {"type": "Number", "value": 3}
@@ -997,25 +997,25 @@ def genomic_dup4_free_text_subject():
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_free_text_vrc(genomic_dup4_free_text, genomic_dup4_free_text_subject):
-    """Create a test fixture for genomic dup relative cnv."""
+def genomic_dup4_free_text_cx(genomic_dup4_free_text, genomic_dup4_free_text_subject):
+    """Create a test fixture for genomic dup copy number change."""
     _id = "ga4gh:VRC.JmhvBvSI2l_MPRhokZcjO8EPlqvU5V_g"
     genomic_dup4_free_text["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup4_free_text_subject,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     genomic_dup4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup4_free_text_vac(genomic_dup4_free_text, genomic_dup4_free_text_subject):
-    """Create a test fixture for genomic dup absolute cnv."""
+def genomic_dup4_free_text_cn(genomic_dup4_free_text, genomic_dup4_free_text_subject):
+    """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.G0SbODtFctpFS9aufQGvRuGNRTR_D37E"
     genomic_dup4_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup4_free_text_subject,
         "copies": {
@@ -1057,11 +1057,11 @@ def genomic_dup5():
     return params
 
 
-def genomic_dup5_abs_cnv(params, genomic_dup5_loc):
+def genomic_dup5_cn_cnv(params, genomic_dup5_loc):
     """Create genomic dup5 aboluste cnv"""
     _id = "ga4gh:VAC.bAqgh0Ecs_NxhtrBUhhE8_GN6QCCN9Td"
     params["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup5_loc,
         "copies": {"type": "Number", "value": 3}
@@ -1069,29 +1069,29 @@ def genomic_dup5_abs_cnv(params, genomic_dup5_loc):
     params["variation_id"] = _id
 
 
-def genomic_dup5_rel_cnv(params, genomic_dup5_loc):
-    """Create genomic dup4 relative cnv"""
+def genomic_dup5_cx_cnv(params, genomic_dup5_loc):
+    """Create genomic dup4 copy number change"""
     _id = "ga4gh:VRC.vWvFd5fM7Xa-unq_IO8OZUhYfHfOtSQ8"
     params["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup5_loc,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_vrc(genomic_dup5, genomic_dup5_loc):
-    """Create a test fixture for genomic dup5 relative cnv."""
-    genomic_dup5_rel_cnv(genomic_dup5, genomic_dup5_loc)
+def genomic_dup5_cx(genomic_dup5, genomic_dup5_loc):
+    """Create a test fixture for genomic dup5 copy number change."""
+    genomic_dup5_cx_cnv(genomic_dup5, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_vac(genomic_dup5, genomic_dup5_loc):
-    """Create a test fixture for genomic dup5 absolute cnv."""
-    genomic_dup5_abs_cnv(genomic_dup5, genomic_dup5_loc)
+def genomic_dup5_cn(genomic_dup5, genomic_dup5_loc):
+    """Create a test fixture for genomic dup5 copy number count."""
+    genomic_dup5_cn_cnv(genomic_dup5, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
@@ -1127,16 +1127,16 @@ def genomic_dup5_free_text(mecp2_gene_context):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_free_text_vrc(genomic_dup5_free_text, genomic_dup5_loc):
-    """Create a test fixture for genomic dup relative cnv."""
-    genomic_dup5_rel_cnv(genomic_dup5_free_text, genomic_dup5_loc)
+def genomic_dup5_free_text_cx(genomic_dup5_free_text, genomic_dup5_loc):
+    """Create a test fixture for genomic dup copy number change."""
+    genomic_dup5_cx_cnv(genomic_dup5_free_text, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup5_free_text_vac(genomic_dup5_free_text, genomic_dup5_loc):
-    """Create a test fixture for genomic dup absolute cnv."""
-    genomic_dup5_abs_cnv(genomic_dup5_free_text, genomic_dup5_loc)
+def genomic_dup5_free_text_cn(genomic_dup5_free_text, genomic_dup5_loc):
+    """Create a test fixture for genomic dup copy number count."""
+    genomic_dup5_cn_cnv(genomic_dup5_free_text, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
@@ -1170,23 +1170,23 @@ def genomic_dup6():
     return params
 
 
-def genomic_dup6_rel_cnv(params, genoimc_dup6_loc):
-    """Create genomic dup6 relative cnv"""
+def genomic_dup6_cx_cnv(params, genoimc_dup6_loc):
+    """Create genomic dup6 copy number change"""
     _id = "ga4gh:VRC.YPZLS_Cld8CEkEveTafSmWfH_QyB3okT"
     params["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genoimc_dup6_loc,
-        "relative_copy_class": "low-level gain"
+        "copy_change": "low-level gain"
     }
     params["variation_id"] = _id
 
 
-def genomic_dup6_abs_cnv(params, genoimc_dup6_loc):
-    """Create genomic dup6 absolute cnv"""
+def genomic_dup6_cn_cnv(params, genoimc_dup6_loc):
+    """Create genomic dup6 copy number count"""
     _id = "ga4gh:VAC.ZkgR6TD7VypzVrLAYFnSb-D7DXp62Yfn"
     params["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genoimc_dup6_loc,
         "copies": {"type": "Number", "value": 2}
@@ -1195,16 +1195,16 @@ def genomic_dup6_abs_cnv(params, genoimc_dup6_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_vrc(genomic_dup6, genoimc_dup6_loc):
-    """Create a test fixture for genomic dup relative cnv."""
-    genomic_dup6_rel_cnv(genomic_dup6, genoimc_dup6_loc)
+def genomic_dup6_cx(genomic_dup6, genoimc_dup6_loc):
+    """Create a test fixture for genomic dup copy number change."""
+    genomic_dup6_cx_cnv(genomic_dup6, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_vac(genomic_dup6, genoimc_dup6_loc):
-    """Create a test fixture for genomic dup absolute cnv."""
-    genomic_dup6_abs_cnv(genomic_dup6, genoimc_dup6_loc)
+def genomic_dup6_cn(genomic_dup6, genoimc_dup6_loc):
+    """Create a test fixture for genomic dup copy number count."""
+    genomic_dup6_cn_cnv(genomic_dup6, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
@@ -1240,16 +1240,16 @@ def genomic_dup6_free_text(mecp2_gene_context):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_free_text_vrc(genomic_dup6_free_text, genoimc_dup6_loc):
-    """Create a test fixture for genomic dup relative cnv."""
-    genomic_dup6_rel_cnv(genomic_dup6_free_text, genoimc_dup6_loc)
+def genomic_dup6_free_text_cx(genomic_dup6_free_text, genoimc_dup6_loc):
+    """Create a test fixture for genomic dup copy number change."""
+    genomic_dup6_cx_cnv(genomic_dup6_free_text, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup6_free_text_vac(genomic_dup6_free_text, genoimc_dup6_loc):
-    """Create a test fixture for genomic dup absolute cnv."""
-    genomic_dup6_abs_cnv(genomic_dup6_free_text, genoimc_dup6_loc)
+def genomic_dup6_free_text_cn(genomic_dup6_free_text, genoimc_dup6_loc):
+    """Create a test fixture for genomic dup copy number count."""
+    genomic_dup6_cn_cnv(genomic_dup6_free_text, genoimc_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
@@ -1301,21 +1301,21 @@ def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_vac(genomic_del1, genomic_del1_38_vac):
-    """Create a test fixture for genomic del absolute CNV."""
+def genomic_del1_cn(genomic_del1, genomic_del1_38_vac):
+    """Create a test fixture for genomic del copy number count."""
     genomic_del1["variation"] = genomic_del1_38_vac
     genomic_del1["variation_id"] = genomic_del1["variation"]["_id"]
     return VariationDescriptor(**genomic_del1)
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_vrc(genomic_del1, genomic_del1_seq_loc):
-    """Create a test fixture for genomic del relative CNV."""
+def genomic_del1_cx(genomic_del1, genomic_del1_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
     genomic_del1["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": "ga4gh:VRC.FHImCphKfSBeobf9HO6qpu_Bm5U9VfHz",
         "subject": genomic_del1_seq_loc,
-        "relative_copy_class": "copy neutral"
+        "copy_change": "copy neutral"
     }
     genomic_del1["variation_id"] = genomic_del1["variation"]["_id"]
     return VariationDescriptor(**genomic_del1)
@@ -1396,12 +1396,12 @@ def genomic_del1_free_text_lse(genomic_del1_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_free_text_vac(genomic_del1_free_text,
+def genomic_del1_free_text_cn(genomic_del1_free_text,
                                genomic_del1_free_text_seq_loc):
-    """Create a test fixture for genomic del absolute CNV."""
+    """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.Wgvw8a4LXRY4d1jopC5tZjUlaEKci5Ai"
     genomic_del1_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del1_free_text_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -1469,21 +1469,21 @@ def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_vac(genomic_del2, genomic_del2_38_vac):
-    """Create a test fixture for genomic del absolute CNV."""
+def genomic_del2_cn(genomic_del2, genomic_del2_38_vac):
+    """Create a test fixture for genomic del copy number count."""
     genomic_del2["variation"] = genomic_del2_38_vac
     genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
     return VariationDescriptor(**genomic_del2)
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_vrc(genomic_del2, genomic_del2_seq_loc):
-    """Create a test fixture for genomic del relative CNV."""
+def genomic_del2_cx(genomic_del2, genomic_del2_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
     genomic_del2["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": "ga4gh:VRC.WtEs7KGUIjxWaV9Wx0lCCgDyyWVl-ykM",
         "subject": genomic_del2_seq_loc,
-        "relative_copy_class": "complete loss"
+        "copy_change": "complete loss"
     }
     genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
     return VariationDescriptor(**genomic_del2)
@@ -1569,7 +1569,7 @@ def genomic_del2_free_text_cnv(genomic_del2_free_text,
     """Create a test fixture for genomic del CNV."""
     _id = "ga4gh:VAC.UKlDhLtC7JSqSCJA0cuusgWhVcFd0hSS"
     genomic_del2_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del2_free_text_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -1620,25 +1620,25 @@ def genomic_del3():
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_vrc(genomic_del3, genomic_del3_dup3_loc):
-    """Create a test fixture for genomic del relative cnv."""
+def genomic_del3_cx(genomic_del3, genomic_del3_dup3_loc):
+    """Create a test fixture for genomic del copy number change."""
     _id = "ga4gh:VRC.7uGeBoQVduNHyz3dDmnTDaVsDhCMAaZe"
     genomic_del3["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del3_dup3_loc,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_vac(genomic_del3, genomic_del3_dup3_loc):
-    """Create a test fixture for genomic del absolute cnv."""
+def genomic_del3_cn(genomic_del3, genomic_del3_dup3_loc):
+    """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.cQATJ6a1uGwXOHu-advv8lRsMgjNLKul"
     genomic_del3["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_dup3_loc,
         "copies": {"type": "Number", "value": 2}
@@ -1832,25 +1832,25 @@ def genomic_del3_free_text_subject():
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_free_text_vrc(genomic_del3_free_text, genomic_del3_free_text_subject):
-    """Create a test fixture for genomic del relative cnv."""
+def genomic_del3_free_text_cx(genomic_del3_free_text, genomic_del3_free_text_subject):
+    """Create a test fixture for genomic del copy number change."""
     _id = "ga4gh:VRC.hHXnhBGUcR870shryKPt8qibKpaRjDE4"
     genomic_del3_free_text["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del3_free_text_subject,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_free_text_vac(genomic_del3_free_text, genomic_del3_free_text_subject):
-    """Create a test fixture for genomic del absolute cnv."""
+def genomic_del3_free_text_cn(genomic_del3_free_text, genomic_del3_free_text_subject):
+    """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.14iSDwh4eU37jPuiBVZ_tdtRdQAqbjqG"
     genomic_del3_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_free_text_subject,
         "copies": {"type": "Number", "value": 2}
@@ -1890,25 +1890,25 @@ def genomic_del4():
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_vrc(genomic_del4, genomic_del4_seq_loc):
-    """Create a test fixture for genomic del relative cnv."""
+def genomic_del4_cx(genomic_del4, genomic_del4_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
     _id = "ga4gh:VRC.dtwRjvChZ6LuyDXyWTnVGQJidyfJsQfe"
     genomic_del4["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del4_seq_loc,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_vac(genomic_del4, genomic_del4_seq_loc):
-    """Create a test fixture for genomic del absolute cnv."""
+def genomic_del4_cn(genomic_del4, genomic_del4_seq_loc):
+    """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.9AmYiW27hEz5V2fCisXqbFJpYeyGaZBv"
     genomic_del4["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del4_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -2087,25 +2087,25 @@ def genomic_del4_free_text_subject():
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_free_text_vrc(genomic_del4_free_text, genomic_del4_free_text_subject):
-    """Create a test fixture for genomic del relative cnv."""
+def genomic_del4_free_text_cx(genomic_del4_free_text, genomic_del4_free_text_subject):
+    """Create a test fixture for genomic del copy number change."""
     _id = "ga4gh:VRC.xNHxMmWtqOkKQS7hpJlCN4jjGgBsdk7b"
     genomic_del4_free_text["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del4_free_text_subject,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del4_free_text_vac(genomic_del4_free_text, genomic_del4_free_text_subject):
-    """Create a test fixture for genomic del absolute cnv."""
+def genomic_del4_free_text_cn(genomic_del4_free_text, genomic_del4_free_text_subject):
+    """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.DrUaDS4OCFqKSvvXhJse2PCduwnZMwkU"
     genomic_del4_free_text["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del4_free_text_subject,
         "copies": {"type": "Number", "value": 1}
@@ -2156,8 +2156,8 @@ def genomic_uncertain_del_2():
                 },
                 "type": "SequenceLocation"
             },
-            "relative_copy_class": "partial loss",
-            "type": "RelativeCopyNumber"
+            "copy_change": "partial loss",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2192,8 +2192,8 @@ def genomic_uncertain_del_y():
                 },
                 "type": "SequenceLocation"
             },
-            "relative_copy_class": "partial loss",
-            "type": "RelativeCopyNumber"
+            "copy_change": "partial loss",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001743"
@@ -2216,11 +2216,11 @@ def genomic_del5():
     return params
 
 
-def genomic_del5_abs_cnv(params, genomic_del5_seq_loc):
-    """Create genomic del5 absolute cnv"""
+def genomic_del5_cn_cnv(params, genomic_del5_seq_loc):
+    """Create genomic del5 copy number count"""
     _id = "ga4gh:VAC.foWmgooK2J3amtQE6xSGSAnlGzzBsIjy"
     params["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del5_seq_loc,
         "copies": {"type": "Number", "value": 3}
@@ -2228,29 +2228,29 @@ def genomic_del5_abs_cnv(params, genomic_del5_seq_loc):
     params["variation_id"] = _id
 
 
-def genomic_del5_rel_cnv(params, genomic_del5_seq_loc):
-    """Create genomic del5 relative cnv"""
+def genomic_del5_cx_cnv(params, genomic_del5_seq_loc):
+    """Create genomic del5 copy number change"""
     _id = "ga4gh:VRC.fxZ8m34viXiB5fjxuw2xXYItk5Xi5cve"
     params["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del5_seq_loc,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     params["variation_id"] = _id
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_vrc(genomic_del5, genomic_del5_seq_loc):
-    """Create a test fixture for genomic del relative cnv."""
-    genomic_del5_rel_cnv(genomic_del5, genomic_del5_seq_loc)
+def genomic_del5_cx(genomic_del5, genomic_del5_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
+    genomic_del5_cx_cnv(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_vac(genomic_del5, genomic_del5_seq_loc):
-    """Create a test fixture for genomic del absolute cnv."""
-    genomic_del5_abs_cnv(genomic_del5, genomic_del5_seq_loc)
+def genomic_del5_cn(genomic_del5, genomic_del5_seq_loc):
+    """Create a test fixture for genomic del copy number count."""
+    genomic_del5_cn_cnv(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
@@ -2414,16 +2414,16 @@ def genomic_del5_free_text():
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_free_text_vrc(genomic_del5_free_text, genomic_del5_seq_loc):
-    """Create a test fixture for genomic del relative cnv."""
-    genomic_del5_rel_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
+def genomic_del5_free_text_cx(genomic_del5_free_text, genomic_del5_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
+    genomic_del5_cx_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del5_free_text_vac(genomic_del5_free_text, genomic_del5_seq_loc):
-    """Create a test fixture for genomic del absolute cnv."""
-    genomic_del5_abs_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
+def genomic_del5_free_text_cn(genomic_del5_free_text, genomic_del5_seq_loc):
+    """Create a test fixture for genomic del copy number count."""
+    genomic_del5_cn_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
@@ -2457,23 +2457,23 @@ def genomic_del6():
     return params
 
 
-def genomic_del6_rel_cnv(params, genomic_del6_seq_loc):
-    """Create genomic del6 relative cnv"""
+def genomic_del6_cx_cnv(params, genomic_del6_seq_loc):
+    """Create genomic del6 copy number change"""
     _id = "ga4gh:VRC.mO5A42JUswyNIbJPLuE-2fhquQEZpXxn"
     params["variation"] = {
-        "type": "RelativeCopyNumber",
+        "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del6_seq_loc,
-        "relative_copy_class": "partial loss"
+        "copy_change": "partial loss"
     }
     params["variation_id"] = _id
 
 
-def genomic_del6_abs_cnv(params, genomic_del6_seq_loc):
-    """Create genomic del6 absolute cnv"""
+def genomic_del6_cn_cnv(params, genomic_del6_seq_loc):
+    """Create genomic del6 copy number count"""
     _id = "ga4gh:VAC.6RkHgDOiRMZKMKgI6rmG9C3T6WuMhcex"
     params["variation"] = {
-        "type": "AbsoluteCopyNumber",
+        "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del6_seq_loc,
         "copies": {"type": "Number", "value": 1}
@@ -2482,16 +2482,16 @@ def genomic_del6_abs_cnv(params, genomic_del6_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_vrc(genomic_del6, genomic_del6_seq_loc):
-    """Create a test fixture for genomic del relative cnv."""
-    genomic_del6_rel_cnv(genomic_del6, genomic_del6_seq_loc)
+def genomic_del6_cx(genomic_del6, genomic_del6_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
+    genomic_del6_cx_cnv(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_vac(genomic_del6, genomic_del6_seq_loc):
-    """Create a test fixture for genomic del absolute cnv."""
-    genomic_del6_abs_cnv(genomic_del6, genomic_del6_seq_loc)
+def genomic_del6_cn(genomic_del6, genomic_del6_seq_loc):
+    """Create a test fixture for genomic del copy number count."""
+    genomic_del6_cn_cnv(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
@@ -2655,16 +2655,16 @@ def genomic_del6_free_text():
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_free_text_vrc(genomic_del6_free_text, genomic_del6_seq_loc):
-    """Create a test fixture for genomic del relative cnv."""
-    genomic_del6_rel_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
+def genomic_del6_free_text_cx(genomic_del6_free_text, genomic_del6_seq_loc):
+    """Create a test fixture for genomic del copy number change."""
+    genomic_del6_cx_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del6_free_text_vac(genomic_del6_free_text, genomic_del6_seq_loc):
-    """Create a test fixture for genomic del absolute cnv."""
-    genomic_del6_abs_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
+def genomic_del6_free_text_cn(genomic_del6_free_text, genomic_del6_seq_loc):
+    """Create a test fixture for genomic del copy number count."""
+    genomic_del6_cn_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
@@ -2706,11 +2706,11 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup1_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="high-level gain")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="high-level gain")
     assertion_checks(resp.variation_descriptor, genomic_dup1_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2726,11 +2726,11 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup1_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="high-level gain")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="high-level gain")
     assertion_checks(resp.variation_descriptor, genomic_dup1_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2752,7 +2752,7 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_vac, q,
                          ignore_id=True)
 
@@ -2783,10 +2783,10 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup2_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup2_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2799,10 +2799,10 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup2_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup2_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -2820,7 +2820,7 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_vac,
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_default, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_vac, q,
                          ignore_id=True)
 
@@ -2851,11 +2851,11 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=1)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
     assertion_checks(resp.variation_descriptor, genomic_dup3_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="low-level gain")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="low-level gain")
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -2870,10 +2870,10 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=1)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
     assertion_checks(resp.variation_descriptor, genomic_dup3_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup3_vrc, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
@@ -2895,7 +2895,7 @@ async def test_genomic_dup3(test_handler, genomic_dup3_vrc, genomic_dup3_vac,
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=3)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_vac, q,
                          ignore_id=True)
 
@@ -2929,10 +2929,10 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup4_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -2947,10 +2947,10 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup4_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup4_vrc, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
@@ -2971,7 +2971,7 @@ async def test_genomic_dup4(test_handler, genomic_dup4_vac, genomic_dup4_vrc,
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_vac, q,
                          ignore_id=True)
 
@@ -3006,10 +3006,10 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup5_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3024,10 +3024,10 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_dup5_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup5_vrc, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
@@ -3048,7 +3048,7 @@ async def test_genomic_dup5(test_handler, genomic_dup5_vac, genomic_dup5_vrc,
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_vac, q,
                          ignore_id=True)
 
@@ -3085,10 +3085,10 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=1)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
     assertion_checks(resp.variation_descriptor, genomic_dup6_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3103,10 +3103,10 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=1)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
     assertion_checks(resp.variation_descriptor, genomic_dup6_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_dup6_vrc, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
@@ -3127,7 +3127,7 @@ async def test_genomic_dup6(test_handler, genomic_dup6_vac, genomic_dup6_vrc,
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=1)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_vac, q,
                          ignore_id=True)
 
@@ -3164,11 +3164,11 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del1_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="copy neutral")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="copy neutral")
     assertion_checks(resp.variation_descriptor, genomic_del1_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3181,11 +3181,11 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del1_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="copy neutral")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="copy neutral")
     assertion_checks(resp.variation_descriptor, genomic_del1_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3203,7 +3203,7 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_vac, q,
                          ignore_id=True)
 
@@ -3220,7 +3220,7 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_vac,
     resp = await test_handler.normalize(q)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv")
+    resp = await test_handler.normalize(q, "copy_number_count")
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
     q = "3-10191494-CT-C"  # 37
@@ -3249,11 +3249,11 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del2_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="complete loss")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="complete loss")
     assertion_checks(resp.variation_descriptor, genomic_del2_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3266,11 +3266,11 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_vac,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del2_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv",
-                                        relative_copy_class="complete loss")
+    resp = await test_handler.normalize(q, "copy_number_change",
+                                        copy_change="complete loss")
     assertion_checks(resp.variation_descriptor, genomic_del2_vrc, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr")
@@ -3288,7 +3288,7 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_vac,
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_default, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_cnv, q,
                          ignore_id=True)
 
@@ -3328,10 +3328,10 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=3)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
     assertion_checks(resp.variation_descriptor, genomic_del3_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3346,10 +3346,10 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=3)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
     assertion_checks(resp.variation_descriptor, genomic_del3_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del3_vrc, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
@@ -3370,7 +3370,7 @@ async def test_genomic_del3(test_handler, genomic_del3_vac, genomic_del3_vrc,
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=3)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_vac, q,
                          ignore_id=True)
 
@@ -3405,10 +3405,10 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del4_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3423,10 +3423,10 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del4_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del4_vrc, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
@@ -3456,7 +3456,7 @@ async def test_genomic_del4(test_handler, genomic_del4_vac, genomic_del4_vrc,
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_vac, q,
                          ignore_id=True)
 
@@ -3490,10 +3490,10 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=4)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
     assertion_checks(resp.variation_descriptor, genomic_del5_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3508,10 +3508,10 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=4)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
     assertion_checks(resp.variation_descriptor, genomic_del5_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del5_vrc, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
@@ -3533,7 +3533,7 @@ async def test_genomic_del5(test_handler, genomic_del5_vac, genomic_del5_vrc,
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=4)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_vac, q,
                          ignore_id=True)
 
@@ -3569,10 +3569,10 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del6_vac, q)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q)
 
     resp = await test_handler.normalize(q, "repeated_seq_expr",
@@ -3587,10 +3587,10 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
     resp = await test_handler.normalize(q, "default")
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
     assertion_checks(resp.variation_descriptor, genomic_del6_vac, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "relative_cnv")
+    resp = await test_handler.normalize(q, "copy_number_change")
     assertion_checks(resp.variation_descriptor, genomic_del6_vrc, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
@@ -3612,7 +3612,7 @@ async def test_genomic_del6(test_handler, genomic_del6_vac, genomic_del6_vrc,
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_vrc, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "absolute_cnv", baseline_copies=2)
+        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_vac, q,
                          ignore_id=True)
 
@@ -3655,14 +3655,14 @@ async def test_parameters(test_handler):
     assert resp.variation_descriptor
     assert resp.warnings == []
 
-    resp = await test_handler.normalize(q, " absolute_CnV ", baseline_copies=2)
+    resp = await test_handler.normalize(q, " copy_Number_Count ", baseline_copies=2)
     assert resp.variation_descriptor
     assert resp.warnings == []
 
-    resp = await test_handler.normalize(q, " absolute_CnV ")
+    resp = await test_handler.normalize(q, " copy_Number_Count ")
     assert resp.variation_descriptor is None
-    assert resp.warnings == ["absolute_cnv mode requires `baseline_copies`"]
+    assert resp.warnings == ["copy_number_count mode requires `baseline_copies`"]
 
-    resp = await test_handler.normalize(q, " relative_CnV ")
+    resp = await test_handler.normalize(q, " copy_Number_Change ")
     assert resp.variation_descriptor
     assert resp.warnings == []
