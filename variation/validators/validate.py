@@ -98,9 +98,10 @@ class Validate:
         :param List classifications: List of classifications
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param List warnings: List of warnings
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `copy_number_count`,
-            `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly

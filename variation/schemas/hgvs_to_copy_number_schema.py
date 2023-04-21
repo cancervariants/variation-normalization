@@ -16,8 +16,7 @@ VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_UNCERTAIN_DELETION
 ]
 
-VALID_COPY_CHANGE = [rcc.value for
-                             rcc in CopyChange.__members__.values()]
+VALID_COPY_CHANGE = [rcc.value for rcc in CopyChange.__members__.values()]
 
 
 class HgvsToCopyNumberCountService(ServiceResponse):

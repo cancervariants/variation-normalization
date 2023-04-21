@@ -730,7 +730,7 @@ def genomic_del6_cx_37(genomic_del6_37_loc):
 
 @pytest.mark.asyncio
 async def test_genomic_dup1_copy_number_count(test_cnv_handler, genomic_dup1_38_vac,
-                                         genomic_dup1_cn_37):
+                                              genomic_dup1_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -756,7 +756,7 @@ async def test_genomic_dup1_copy_number_count(test_cnv_handler, genomic_dup1_38_
 
 @pytest.mark.asyncio
 async def test_genomic_dup1_copy_number_change(test_cnv_handler, genomic_dup1_cx_38,
-                                         genomic_dup1_cx_37):
+                                               genomic_dup1_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -775,7 +775,7 @@ async def test_genomic_dup1_copy_number_change(test_cnv_handler, genomic_dup1_cx
 
 @pytest.mark.asyncio
 async def test_genomic_dup2_copy_number_count(test_cnv_handler, genomic_dup2_38_vac,
-                                         genomic_dup2_cn_37):
+                                              genomic_dup2_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -801,7 +801,7 @@ async def test_genomic_dup2_copy_number_count(test_cnv_handler, genomic_dup2_38_
 
 @pytest.mark.asyncio
 async def test_genomic_dup2_copy_number_change(test_cnv_handler, genomic_dup2_cx_38,
-                                         genomic_dup2_cx_37):
+                                               genomic_dup2_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000016.10:g.2087938_2087948dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -820,7 +820,7 @@ async def test_genomic_dup2_copy_number_change(test_cnv_handler, genomic_dup2_cx
 
 @pytest.mark.asyncio
 async def test_genomic_dup3_copy_number_count(test_cnv_handler, genomic_dup3_cn_38,
-                                         genomic_dup3_cn_37):
+                                              genomic_dup3_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -846,7 +846,7 @@ async def test_genomic_dup3_copy_number_count(test_cnv_handler, genomic_dup3_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_dup3_copy_number_change(test_cnv_handler, genomic_dup3_cx_38,
-                                         genomic_dup3_cx_37):
+                                               genomic_dup3_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -865,7 +865,7 @@ async def test_genomic_dup3_copy_number_change(test_cnv_handler, genomic_dup3_cx
 
 @pytest.mark.asyncio
 async def test_genomic_dup4_copy_number_count(test_cnv_handler, genomic_dup4_cn_38,
-                                         genomic_dup4_cn_37):
+                                              genomic_dup4_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -891,7 +891,7 @@ async def test_genomic_dup4_copy_number_count(test_cnv_handler, genomic_dup4_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_dup4_copy_number_change(test_cnv_handler, genomic_dup4_cx_38,
-                                         genomic_dup4_cx_37):
+                                               genomic_dup4_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -910,7 +910,7 @@ async def test_genomic_dup4_copy_number_change(test_cnv_handler, genomic_dup4_cx
 
 @pytest.mark.asyncio
 async def test_genomic_dup5_copy_number_count(test_cnv_handler, genomic_dup5_cn_38,
-                                         genomic_dup5_cn_37):
+                                              genomic_dup5_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -936,7 +936,7 @@ async def test_genomic_dup5_copy_number_count(test_cnv_handler, genomic_dup5_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_dup5_copy_number_change(test_cnv_handler, genomic_dup5_cx_38,
-                                         genomic_dup5_cx_37):
+                                               genomic_dup5_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -955,7 +955,7 @@ async def test_genomic_dup5_copy_number_change(test_cnv_handler, genomic_dup5_cx
 
 @pytest.mark.asyncio
 async def test_genomic_dup6_copy_number_count(test_cnv_handler, genomic_dup6_cn_38,
-                                         genomic_dup6_cn_37):
+                                              genomic_dup6_cn_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -981,7 +981,7 @@ async def test_genomic_dup6_copy_number_count(test_cnv_handler, genomic_dup6_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_dup6_copy_number_change(test_cnv_handler, genomic_dup6_cx_38,
-                                         genomic_dup6_cx_37):
+                                               genomic_dup6_cx_37):
     """Test that genomic duplication works correctly"""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1000,7 +1000,7 @@ async def test_genomic_dup6_copy_number_change(test_cnv_handler, genomic_dup6_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del1_copy_number_count(test_cnv_handler, genomic_del1_38_vac,
-                                         genomic_del1_cn_37):
+                                              genomic_del1_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1026,7 +1026,7 @@ async def test_genomic_del1_copy_number_count(test_cnv_handler, genomic_del1_38_
 
 @pytest.mark.asyncio
 async def test_genomic_del1_copy_number_change(test_cnv_handler, genomic_del1_cx_38,
-                                         genomic_del1_cx_37):
+                                               genomic_del1_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1045,7 +1045,7 @@ async def test_genomic_del1_copy_number_change(test_cnv_handler, genomic_del1_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del2_copy_number_count(test_cnv_handler, genomic_del2_38_vac,
-                                         genomic_del2_cn_37):
+                                              genomic_del2_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1071,7 +1071,7 @@ async def test_genomic_del2_copy_number_count(test_cnv_handler, genomic_del2_38_
 
 @pytest.mark.asyncio
 async def test_genomic_del2_copy_number_change(test_cnv_handler, genomic_del2_cx_38,
-                                         genomic_del2_cx_37):
+                                               genomic_del2_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1090,7 +1090,7 @@ async def test_genomic_del2_copy_number_change(test_cnv_handler, genomic_del2_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del3_copy_number_count(test_cnv_handler, genomic_del3_cn_38,
-                                         genomic_del3_cn_37):
+                                              genomic_del3_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1116,7 +1116,7 @@ async def test_genomic_del3_copy_number_count(test_cnv_handler, genomic_del3_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_del3_copy_number_change(test_cnv_handler, genomic_del3_cx_38,
-                                         genomic_del3_cx_37):
+                                               genomic_del3_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1135,7 +1135,7 @@ async def test_genomic_del3_copy_number_change(test_cnv_handler, genomic_del3_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del4_copy_number_count(test_cnv_handler, genomic_del4_cn_38,
-                                         genomic_del4_cn_37):
+                                              genomic_del4_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1161,7 +1161,7 @@ async def test_genomic_del4_copy_number_count(test_cnv_handler, genomic_del4_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_del4_copy_number_change(test_cnv_handler, genomic_del4_cx_38,
-                                         genomic_del4_cx_37):
+                                               genomic_del4_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1180,7 +1180,7 @@ async def test_genomic_del4_copy_number_change(test_cnv_handler, genomic_del4_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del5_copy_number_count(test_cnv_handler, genomic_del5_cn_38,
-                                         genomic_del5_cn_37):
+                                              genomic_del5_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1206,7 +1206,7 @@ async def test_genomic_del5_copy_number_count(test_cnv_handler, genomic_del5_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_del5_copy_number_change(test_cnv_handler, genomic_del5_cx_38,
-                                         genomic_del5_cx_37):
+                                               genomic_del5_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -1225,7 +1225,7 @@ async def test_genomic_del5_copy_number_change(test_cnv_handler, genomic_del5_cx
 
 @pytest.mark.asyncio
 async def test_genomic_del6_copy_number_count(test_cnv_handler, genomic_del6_cn_38,
-                                         genomic_del6_cn_37):
+                                              genomic_del6_cn_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -1251,7 +1251,7 @@ async def test_genomic_del6_copy_number_count(test_cnv_handler, genomic_del6_cn_
 
 @pytest.mark.asyncio
 async def test_genomic_del6_copy_number_change(test_cnv_handler, genomic_del6_cx_38,
-                                         genomic_del6_cx_37):
+                                               genomic_del6_cx_37):
     """Test that genomic deletion works correctly"""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_change(

@@ -551,8 +551,7 @@ def genomic_dup1_free_text_lse(genomic_dup1_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_free_text_cn(genomic_dup1_free_text,
-                               genomic_dup1_free_text_seq_loc):
+def genomic_dup1_free_text_cn(genomic_dup1_free_text, genomic_dup1_free_text_seq_loc):
     """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.qeuDGWVaGZUOf7XmF2xO1k24LvFzGVE1"
     genomic_dup1_free_text["variation"] = {
@@ -719,8 +718,7 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_free_text_cn(genomic_dup2_free_text,
-                               genomic_dup2_free_text_seq_loc):
+def genomic_dup2_free_text_cn(genomic_dup2_free_text, genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup copy number count."""
     _id = "ga4gh:VAC.p538XMNKHyZGEVb73xbA2DfSxSJOZG4B"
     genomic_dup2_free_text["variation"] = {
@@ -1396,8 +1394,7 @@ def genomic_del1_free_text_lse(genomic_del1_free_text,
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_free_text_cn(genomic_del1_free_text,
-                               genomic_del1_free_text_seq_loc):
+def genomic_del1_free_text_cn(genomic_del1_free_text, genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del copy number count."""
     _id = "ga4gh:VAC.Wgvw8a4LXRY4d1jopC5tZjUlaEKci5Ai"
     genomic_del1_free_text["variation"] = {

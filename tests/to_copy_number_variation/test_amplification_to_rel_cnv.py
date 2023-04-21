@@ -26,7 +26,7 @@ def kit_amplification():
 
 
 def test_amplification_to_cx_cnv(test_cnv_handler, braf_amplification,
-                                  prpf8_amplification, kit_amplification):
+                                 prpf8_amplification, kit_amplification):
     """Test that amplification_to_cx_cnv method works correctly"""
     # Using gene normalizer
     resp = test_cnv_handler.amplification_to_cx_cnv(gene="braf")

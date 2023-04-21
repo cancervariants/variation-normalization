@@ -56,9 +56,9 @@ class Normalize(ToVRSATILE):
         :param str q: The variation to normalize
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
             Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
-            expressions in VRS.
+            Must be: `default`, `copy_number_count`, `copy_number_change`,
+            `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
+            interpret HGVS dup/del expressions in VRS.
         :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
             deletions
         :param Optional[CopyChange] copy_change: The copy change

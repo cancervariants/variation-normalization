@@ -77,7 +77,8 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
         :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
@@ -239,7 +240,8 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
         :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :return: Canonical Variation and warnings

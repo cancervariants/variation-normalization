@@ -78,11 +78,10 @@ class HGVSDupDelMode:
         """
         variation = None
         if not baseline_copies and ("uncertain" in alt_type or "range" in alt_type):
-            variation = self.copy_number_change_mode(del_or_dup, location,
-                                                       copy_change)
+            variation = self.copy_number_change_mode(del_or_dup, location, copy_change)
         elif baseline_copies:
             variation = self.copy_number_count_mode(del_or_dup, location,
-                                                       baseline_copies)
+                                                    baseline_copies)
         elif pos and (pos[1] - pos[0] > 100):
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
@@ -111,7 +110,7 @@ class HGVSDupDelMode:
         return variation
 
     def copy_number_count_mode(self, del_or_dup: str, location: Dict,
-                                  baseline_copies: int) -> Optional[Dict]:
+                               baseline_copies: int) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
 
         :param str del_or_dup: Must be either `del` or `dup`

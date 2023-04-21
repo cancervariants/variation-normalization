@@ -124,10 +124,10 @@ normalize_description = ("Normalizes and translates a human readable variation "
                          " to GRCh38 and aligns to a priority transcript. Will make "
                          "inferences about the query.")
 q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
-hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, `copy_number_change`, "
-                           "`repeated_seq_expr`, `literal_seq_expr`. This"
-                           " parameter determines how to interpret HGVS "
-                           "dup/del expressions in VRS.")
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
+                           "`copy_number_change`, `repeated_seq_expr`, "
+                           "`literal_seq_expr`. This parameter determines how to "
+                           "interpret HGVS dup/del expressions in VRS.")
 
 
 @app.get("/variation/normalize",
@@ -152,8 +152,8 @@ async def normalize(
         inferences about the query.
 
     :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
-    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
-        Must be: `default`, `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Must be: `default`,
+        `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
         `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
         expressions in VRS.
     :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
@@ -302,12 +302,12 @@ async def gnomad_vcf_to_protein(
 complement_descr = "This field indicates that a categorical variation is defined to " \
                    "include (false) or exclude (true) variation concepts matching " \
                    "the categorical variation."
-hgvs_dup_del_mode_decsr = "This parameter determines how to interpret HGVS dup/del "\
-                          "expressions in VRS. Must be one of: `default`, " \
-                          "`copy_number_count`, `copy_number_change`, `repeated_seq_expr`, " \
-                          "`literal_seq_expr`."
-copy_change_descr = "The copy change. Only used when `fmt`=`hgvs` "\
-                            "and Copy Number Change Variation."
+hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
+                           "`copy_number_change`, `repeated_seq_expr`, "
+                           "`literal_seq_expr`. This parameter determines how to "
+                           "interpret HGVS dup/del expressions in VRS.")
+copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Number "
+                     "Change Variation.")
 baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
                         "`fmt`=`hgvs` and Copy Number Count Variation.`"
 
@@ -596,10 +596,10 @@ def parsed_to_cn_cnv(
 
 
 amplification_to_cx_cnv_descr = ("Translate amplification to VRS Copy Number Change "
-                                  "Variation. If `sequence_id`, `start`, and `end` are "
-                                  "all provided, will return a SequenceLocation with "
-                                  "those properties. Else, gene-normalizer will be "
-                                  "used to retrieve the SequenceLocation.")
+                                 "Variation. If `sequence_id`, `start`, and `end` are "
+                                 "all provided, will return a SequenceLocation with "
+                                 "those properties. Else, gene-normalizer will be "
+                                 "used to retrieve the SequenceLocation.")
 
 
 @app.get("/variation/amplification_to_cx_cnv",

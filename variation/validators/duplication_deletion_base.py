@@ -118,9 +118,10 @@ class DuplicationDeletionBase(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `copy_number_count`,
-            `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[CopyChange] copy_change: The copy change
@@ -195,9 +196,10 @@ class DuplicationDeletionBase(Validator):
         :param str gene: Gene
         :param str so_id: Sequence ontology id
         :param List errors: List of errors
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `copy_number_count`,
-            `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Dict mane_data_found: MANE Transcript information found
         :param Optional[int] baseline_copies: Baseline copies number
         :param Optional[CopyChange] copy_change: The copy change
@@ -290,9 +292,10 @@ class DuplicationDeletionBase(Validator):
         :param List errors: List of errors
         :param Dict grch38: GRCh38 data
         :param Dict mane_data_found: MANE data found for initial query
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `copy_number_count`,
-            `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optionals[Tuple] ival: Interval
         :param bool use_vrs_allele_range: `True` if allele should be computed
             using `to_vrs_allele_ranges` method. `False` if allele should be
