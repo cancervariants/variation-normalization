@@ -59,7 +59,7 @@ class ParsedToCnVarService(ServiceResponse):
                     "total_copies": 3
                 },
                 "copy_number_count": {
-                    "_id": "ga4gh:VAC.accZJeJtNj0Zqv7KVqkT87ClTlg-4nwa",
+                    "_id": "ga4gh:CN.N6C9rWBjrNuiIhJkPxdPlRKvSGKoFynr",
                     "type": "CopyNumberCount",
                     "subject": {
                         "_id": "ga4gh:VSL.JTsxd9PiPZaIPL9Tl3ss78GYYnDeogvf",
@@ -128,7 +128,7 @@ class AmplificationToCxVarService(ServiceResponse):
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "_id": "ga4gh:VRC.xen6aWxQhI6dPTFqBWOx1z9MPJ41gzn2",
+                    "_id": "ga4gh:CX.TZBOQe5xFojvFJ1XjQQD0633rStHtGUs",
                     "type": "CopyNumberChange",
                     "subject": {
                         "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
@@ -140,7 +140,7 @@ class AmplificationToCxVarService(ServiceResponse):
                             "end": {"type": "Number", "value": 140924929}
                         }
                     },
-                    "copy_change": "high-level gain"
+                    "copy_change": "efo:0030072"
                 },
                 "service_meta_": {
                     "version": "0.7.dev0",

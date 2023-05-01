@@ -59,11 +59,11 @@ def variation1_lse(variation1_seq_loc):
 def variation1_cn_cnv(variation1_seq_loc):
     """Create test fixture for variation1 represented as copy number count"""
     params = {
-        "_id": "ga4gh:VCC.SRZiwHEKF9qJ5hCd1hKPDpjBpK29PO_4",
+        "_id": "ga4gh:VCC.-fBNRPQpfH_YMFsr9JmMJV9PznrKyiZA",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
-            "_id": "ga4gh:VAC.WkHL0pE5vn2yZfTlB4vo6Qr9gvFgnm2s",
+            "_id": "ga4gh:CN.KANNlTIsrCGJvsvbjO7sbzfRB6wHz8E3",
             "type": "CopyNumberCount",
             "subject": variation1_seq_loc,
             "copies": {"type": "Number", "value": 2}
@@ -76,14 +76,14 @@ def variation1_cn_cnv(variation1_seq_loc):
 def variation1_cx_cnv(variation1_seq_loc):
     """Create test fixture for variation1 represented as copy number change"""
     params = {
-        "_id": "ga4gh:VCC.hpdklR_18hDE3YwHTYYFJmbQd__pwBeH",
+        "_id": "ga4gh:VCC.f6srhFxf5GDi_KPoPkNEGbXEPUDjdU4Q",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
-            "_id": "ga4gh:VRC.d0tA1C6eSo-rkg1wVQ76Bh8XLSwz36se",
+            "_id": "ga4gh:CX.kvOs0AS9rQxdkwwqCwBMSEHLrXondzYM",
             "type": "CopyNumberChange",
             "subject": variation1_seq_loc,
-            "copy_change": "complete loss"
+            "copy_change": "efo:0030069"
         }
     }
     return CanonicalVariation(**params)
@@ -145,11 +145,11 @@ def variation3_lse(grch38_genomic_insertion_variation):
 def variation3_cn_cnv(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as copy number count"""
     params = {
-        "_id": "ga4gh:VCC.DSncpwIaoyP94KOVf_45gcQGJ0_f41Pa",
+        "_id": "ga4gh:VCC.4eFeJOQrWvjQ0Nz5PLwc7uCsTBox5-MK",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
-            "_id": "ga4gh:VAC.c1xp6z9seT4j8Ae4e0gePB7LiPzjykmO",
+            "_id": "ga4gh:CN.xKKu5sT_yOfMCcLWa31r-Q1GYfd_XJOM",
             "type": "CopyNumberCount",
             "subject": grch38_genomic_insertion_seq_loc,
             "copies": {"type": "Number", "value": 2}
@@ -162,14 +162,14 @@ def variation3_cn_cnv(grch38_genomic_insertion_seq_loc):
 def variation3_cx_cnv(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as copy number change"""
     params = {
-        "_id": "ga4gh:VCC.fUeN_b2i0iBgad1rizfs1fXOnrZvptc9",
+        "_id": "ga4gh:VCC.KjeYCZR6_fQHhVFjzJ-oY219tmIBHaVq",
         "complement": False,
         "type": "CanonicalVariation",
         "variation": {
-            "_id": "ga4gh:VRC.TJSKDRpI2hW8JbqGsc9yag6KrP1YVhwU",
+            "_id": "ga4gh:CX.0hChe1AuW6SRQBaW8qJkPrH4k5ef4up8",
             "type": "CopyNumberChange",
             "subject": grch38_genomic_insertion_seq_loc,
-            "copy_change": "high-level gain"
+            "copy_change": "efo:0030072"
         }
     }
     return CanonicalVariation(**params)
@@ -272,7 +272,7 @@ async def test_to_canonical_variation_deletion(
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
-        copy_change="complete loss")
+        copy_change="efo:0030069")
     assert resp.canonical_variation == variation1_cx_cnv
     assert resp.warnings == []
 
@@ -389,7 +389,7 @@ async def test_to_canonical_variation_duplication(
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
-        copy_change="high-level gain")
+        copy_change="efo:0030072")
     assert resp.canonical_variation == variation3_cx_cnv
     assert resp.warnings == []
 

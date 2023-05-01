@@ -39,21 +39,17 @@ class HgvsToCopyNumberCountService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
+                    "_id": "ga4gh:CN.wIUwSQ9MQdv-2dsoDo-RjI97iK3Mn5m6",
                     "type": "CopyNumberCount",
                     "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 49531260},
+                            "end": {"type": "Number", "value": 49531262}
+                        }
                     },
                     "copies": {"type": "Number", "value": 3}
                 },
@@ -86,23 +82,19 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "_id": "ga4gh:VRC.XiXamTGYJ43rc8xheleMKcjxEBOFp82l",
+                    "_id": "ga4gh:CX.hGuvyiJmDtx4-MRjsLja0fb_DqOE2chN",
                     "type": "CopyNumberChange",
                     "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 49531260},
+                            "end": {"type": "Number", "value": 49531262}
+                        }
                     },
-                    "copy_change": "complete loss"
+                    "copy_change": "efo:0030069"
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",

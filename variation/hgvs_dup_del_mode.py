@@ -1,11 +1,9 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 import logging
 from typing import Optional, Dict, Tuple, List
-import copy
-import json
 
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.hgvs_to_copy_number_schema import CopyChange
@@ -55,12 +53,12 @@ class HGVSDupDelMode:
         copy_change: Optional[CopyChange] = None
     ) -> Optional[Dict]:
         """Use default characteristics to return a variation.
-        If baseline_copies not provided and endpoints are ambiguous: copy_number_change
+        If baseline_copies not provided and endpoints are ambiguous - copy_number_change
             if copy_change not provided:
-                copy_change = `partial loss` if del, `low-level gain` if dup
+                copy_change - `efo:0030067` (loss) if del, `efo:0030070` (gain) if dup
         elif baseline_copies provided: copy_number_count
             copies are baseline + 1 for dup, baseline - 1 for del
-        elif len del or dup > 100bp (use outermost coordinates):
+        elif len del or dup > 100bp (use outermost coordinates)
             repeated_seq_expr with a derived_seq_expr subject (Allele)
         else:
             literal_seq_expr (normalized LiteralSequenceExpression Allele)
@@ -88,27 +86,6 @@ class HGVSDupDelMode:
             variation = self.literal_seq_expr_mode(allele, alt_type)
         return variation
 
-    def _ga4gh_identify_cnv(self, variation: Dict, is_cn: bool = True) -> Dict:
-        """Add ga4gh digest to variation
-
-        :param Dict variation: VRS Copy Number Variation
-        :param bool is_cn: `True` if Copy Number Count.
-            `False` if Copy Number Change.
-        :return: Variation with ga4gh digest identifiers
-        """
-        copy_variation = copy.deepcopy(variation)
-        location_id = variation["subject"]["_id"].split(".")[-1]
-        copy_variation["subject"] = location_id
-        serialized = json.dumps(
-            copy_variation, sort_keys=True, separators=(",", ":"), indent=None
-        ).encode("utf-8")
-        digest = sha512t24u(serialized)
-        if is_cn:
-            variation["_id"] = f"ga4gh:VAC.{digest}"
-        else:
-            variation["_id"] = f"ga4gh:VRC.{digest}"
-        return variation
-
     def copy_number_count_mode(self, del_or_dup: str, location: Dict,
                                baseline_copies: int) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
@@ -127,7 +104,8 @@ class HGVSDupDelMode:
             "subject": location,
             "copies": copies.as_dict()
         }
-        return self._ga4gh_identify_cnv(variation, is_cn=True)
+        variation["_id"] = ga4gh_identify(models.CopyNumberCount(**variation))
+        return variation
 
     def copy_number_change_mode(
         self, del_or_dup: str, location: Dict,
@@ -142,15 +120,16 @@ class HGVSDupDelMode:
         """
         if not copy_change:
             if del_or_dup == "del":
-                copy_change = CopyChange.PARTIAL_LOSS.value
+                copy_change = CopyChange.LOSS.value
             else:
-                copy_change = CopyChange.LOW_LEVEL_GAIN.value
+                copy_change = CopyChange.GAIN.value
         variation = {
             "type": "CopyNumberChange",
             "subject": location,
             "copy_change": copy_change
         }
-        return self._ga4gh_identify_cnv(variation, is_cn=False)
+        variation["_id"] = ga4gh_identify(models.CopyNumberChange(**variation))
+        return variation
 
     def repeated_seq_expr_mode(self, alt_type: str,
                                location: Dict) -> Optional[Dict]:

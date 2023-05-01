@@ -1,11 +1,9 @@
 """Module for Amplification validation"""
 from typing import List, Dict, Optional
-import copy
-import json
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberChange
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 
 from variation.schemas.token_response_schema import GeneMatchToken, TokenType
 from variation.schemas.classification_response_schema import Classification,\
@@ -65,7 +63,6 @@ class Amplification(Validator):
                 seq_loc = get_priority_sequence_location(
                     gene_descriptor, self.seqrepo_access)
                 if seq_loc:
-                    # TODO: FIX THIS
                     seq_loc_vo = models.SequenceLocation(**seq_loc)
                     seq_loc_vo._id = ga4gh_identify((seq_loc_vo))
                     variation = {
@@ -73,16 +70,9 @@ class Amplification(Validator):
                         "subject": seq_loc_vo.as_dict(),
                         "copy_change": CopyChange.HIGH_LEVEL_GAIN.value
                     }
-
-                    copy_variation = copy.deepcopy(variation)
-                    location_id = variation["subject"]["_id"].split(".")[-1]
-                    copy_variation["subject"] = location_id
-                    serialized = json.dumps(
-                        copy_variation, sort_keys=True, separators=(",", ":"),
-                        indent=None
-                    ).encode("utf-8")
-                    digest = sha512t24u(serialized)
-                    variation["_id"] = f"ga4gh:VRC.{digest}"
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberChange(**variation)
+                    )
                     cx = CopyNumberChange(**variation).dict(by_alias=True)
                 else:
                     errors.append(f"No SequenceLocation found for gene: {gene}")

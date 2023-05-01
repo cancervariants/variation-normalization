@@ -12,7 +12,7 @@ def copy_number_gain1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:VAC.accZJeJtNj0Zqv7KVqkT87ClTlg-4nwa",
+        "id": "ga4gh:CN.N6C9rWBjrNuiIhJkPxdPlRKvSGKoFynr",
         "subject": {
             "type": "SequenceLocation",
             "_id": "ga4gh:VSL.JTsxd9PiPZaIPL9Tl3ss78GYYnDeogvf",
@@ -43,7 +43,7 @@ def copy_number_gain2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:VAC.oTO2JUsQdoJ2fudae5uO5uVNvIu7oA8m",
+        "id": "ga4gh:CN.xOEIBXGfoM8TUA2RKNWINRze_hWT1lPP",
         "subject": {
             "type": "SequenceLocation",
             "_id": "ga4gh:VSL.9moblqAMqfEryr9pRUxqZMiOkqbsy5Ml",
@@ -74,7 +74,7 @@ def copy_number_loss1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:VAC.5QpagPqyrE4vUigmRi58NrPmPhQsI7kM",
+        "id": "ga4gh:CN.IhWQwwhYFtjQAG7BejsVYy-KiM4RMyed",
         "subject": {
             "type": "SequenceLocation",
             "_id": "ga4gh:VSL.Szlw1t4YMuaO7lLwFJ-T7fGTcXuhNNKB",
@@ -105,7 +105,7 @@ def copy_number_loss2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:VAC.ZWN8WnEksqBj4bKFIB60Wag6hGeeobB5",
+        "id": "ga4gh:CN.sxRwv8l26F1PdcovpJR5HEpgFOY8J95Q",
         "subject": {
             "type": "SequenceLocation",
             "_id": "ga4gh:VSL.Bp-86GeYti1DBmrj_Dtz7qNIMF5ygx5y",
@@ -134,12 +134,12 @@ def test_parsed_copy_number_gain(test_cnv_handler, copy_number_gain1,
     """Test that parsed_to_cn_cnv works for parsed copy number gain queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        143134063, 143284670, 3, assembly="GRCh37", chr="chr1")
+        143134063, 143284670, 3, assembly=ClinVarAssembly.GRCH37, chr="chr1")
     assert resp.copy_number_count.dict() == copy_number_gain1.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        143134063, 143284670, 3, assembly="hg19", chr="chr1")
+        143134063, 143284670, 3, assembly=ClinVarAssembly.HG19, chr="chr1")
     assert resp.copy_number_count.dict() == copy_number_gain1.dict()
     assert resp.warnings == []
 
@@ -150,17 +150,17 @@ def test_parsed_copy_number_gain(test_cnv_handler, copy_number_gain1,
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        31738809, 32217725, 2, assembly="GRCh38", chr="chr15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.GRCH38, chr="chr15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        31738809, 32217725, 2, assembly="GRCh38", chr="15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.GRCH38, chr="15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        31738809, 32217725, 2, assembly="hg38", chr="chr15")
+        31738809, 32217725, 2, assembly=ClinVarAssembly.HG38, chr="chr15")
     assert resp.copy_number_count.dict() == copy_number_gain2.dict()
     assert resp.warnings == []
 
@@ -215,7 +215,7 @@ def test_invalid(test_cnv_handler):
     """Test invalid queries returns Text variation and warnings"""
     # NCBI36/hg18 assembly
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/443961/?new_evidence=true
-    expected_w = ["NCBI36 assembly is not current supported"]
+    expected_w = ["NCBI36 assembly is not currently supported"]
     resp = test_cnv_handler.parsed_to_cn_cnv(
         2623228, 3150942, 3, assembly=ClinVarAssembly.NCBI36, chr="chr1",
         untranslatable_returns_text=True)
@@ -231,7 +231,9 @@ def test_invalid(test_cnv_handler):
     # Must give both assembly + chr or accession
     expected_w = ["Must provide either `accession` or both `assembly` and `chr`."]
     resp = test_cnv_handler.parsed_to_cn_cnv(
-        31738809, 32217725, 2, assembly="hg38", untranslatable_returns_text=True)
+        31738809, 32217725, 2, assembly=ClinVarAssembly.HG38,
+        untranslatable_returns_text=True
+    )
     assert resp.copy_number_count.type == "Text"
     assert resp.warnings == expected_w
 

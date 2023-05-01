@@ -161,21 +161,19 @@ class ToVRS(VRSRepresentation):
                 warnings.append("Unable to validate variation")
         return translations, warnings
 
-    def get_ref_allele_seq(self, allele: Dict,
+    def get_ref_allele_seq(self, location: Dict,
                            identifier: str) -> Optional[str]:
         """Return ref allele seq for transcript.
 
-        :param Dict allele: VRS Allele object
+        :param Dict location: VRS Location object
         :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
         start = None
         end = None
-        if allele["type"] in {"CopyNumberChange", "CopyNumberCount"}:
-            interval = allele["subject"]["interval"]
-        else:
-            interval = allele["location"]["interval"]
+        interval = location["interval"]
         ival_type = interval["type"]
+
         if ival_type == "SequenceInterval":
             if interval["start"]["type"] == "Number":
                 start = interval["start"]["value"]

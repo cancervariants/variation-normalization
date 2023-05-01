@@ -222,7 +222,7 @@ class ToCopyNumberVariation(ToVRS):
 
                 if assembly != ClinVarAssembly.NCBI36:
                     # Variation Normalizer does not support NCBI36 yet
-                    query = f"{assembly}:{chr}"
+                    query = f"{assembly.value}:{chr}"
                     aliases, w = self.seqrepo_access.translate_identifier(query)
                     if w:
                         warnings.append(w)
@@ -231,7 +231,9 @@ class ToCopyNumberVariation(ToVRS):
                         if not accession:
                             warnings.append(f"Unable to find RefSeq accession for {query}")  # noqa: E501
                 else:
-                    warnings.append(f"{assembly} assembly is not current supported")
+                    warnings.append(
+                        f"{assembly.value} assembly is not currently supported"
+                    )
             else:
                 warnings.append("Must provide either `accession` or both `assembly` "
                                 "and `chr`.")
@@ -289,8 +291,9 @@ class ToCopyNumberVariation(ToVRS):
                         "subject": location.as_dict(),
                         "copies": {"value": total_copies, "type": "Number"}
                     }
-                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
-                        variation, is_cn=True)
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberCount(**variation)
+                    )
                     variation = CopyNumberCount(**variation)
 
         return ParsedToCnVarService(
@@ -380,8 +383,9 @@ class ToCopyNumberVariation(ToVRS):
                         "subject": vrs_location.as_dict(),
                         "copy_change": CopyChange.HIGH_LEVEL_GAIN.value
                     }
-                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
-                        variation, is_cn=False)
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberChange(**variation)
+                    )
                     variation = CopyNumberChange(**variation)
             else:
                 warnings.append(f"gene-normalizer returned no match for gene: {gene}")

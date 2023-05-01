@@ -8,8 +8,8 @@ def kit_amplification():
     """Create test fixture for KIT amplification"""
     params = {
         "type": "CopyNumberChange",
-        "_id": "ga4gh:VRC.szk9e_m7ImLnzmcGfgqBoRxmt53pIfeC",
-        "copy_change": "high-level gain",
+        "_id": "ga4gh:CX.lMc3ItCK6GqTa1ijgmKiF7OA3i5kkw3N",
+        "copy_change": "efo:0030072",
         "subject": {
             "type": "SequenceLocation",
             "_id": "ga4gh:VSL.MHuTsdf9mtx0OCn4mcv6KwJily8vIS2q",

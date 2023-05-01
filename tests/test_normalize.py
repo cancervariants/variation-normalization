@@ -773,50 +773,6 @@ def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
 
 
 @pytest.fixture(scope="module")
-def genomic_uncertain_del_x():
-    """Create a genomic uncertain deletion on chr X test fixture."""
-    params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_31120496%29_%2833339477_%3F%29del",  # noqa: E501
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
-        "variation": {
-            "_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
-            "subject": {
-                "location": {
-                    "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
-                    "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                    "interval": {
-                        "start": {
-                            "value": 31120495,
-                            "comparator": "<=",
-                            "type": "IndefiniteRange"
-                        },
-                        "end": {
-                            "value": 33339477,
-                            "comparator": ">=",
-                            "type": "IndefiniteRange"
-                        },
-                        "type": "SequenceInterval"
-                    },
-                    "type": "SequenceLocation"
-                },
-                "reverse_complement": False,
-                "type": "DerivedSequenceExpression"
-            },
-            "copies": {
-                "min": 0,
-                "max": 1,
-                "type": "DefiniteRange"
-            },
-            "type": "CopyNumberCount"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0001743"
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope="module")
 def grch38_braf_genom_sub(braf_v600e_genomic_sub):
     """Create a genomic substitution GRCh38 test fixture for BRAF."""
     params = {
