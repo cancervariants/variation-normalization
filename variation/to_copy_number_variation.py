@@ -231,7 +231,7 @@ class ToCopyNumberVariation(ToVRS):
                         if not accession:
                             warnings.append(f"Unable to find RefSeq accession for {query}")  # noqa: E501
                 else:
-                    warnings.append(f"{assembly.value} assembly is not current supported")  # noqa: E501
+                    warnings.append(f"{assembly.value} assembly is not currently supported")  # noqa: E501
             else:
                 warnings.append("Must provide either `accession` or both `assembly` "
                                 "and `chr`.")
