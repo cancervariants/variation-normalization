@@ -14,11 +14,10 @@ pip install variation-normalizer
 
 The variation-normalization repo depends on VRS and VRSATILE models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS and VRSATILE. The correspondences between packages may be summarized as:
 
-| variation-normalization branch | variation-normalizer version | gene-normalization branch | gene-normalizer version | ga4gh.vrsatile.pydantic branch | ga4gh.vrsatile.pydantic version | VRS version | VRSATILE version |
-| ---- | --- | ---- | --- | --- | --- | ---- | --- |
-| [vrs-1.2](https://github.com/cancervariants/variation-normalization/tree/vrs-1.2) | 0.5.X | [vrs-1.2](https://github.com/cancervariants/gene-normalization/tree/vrs-1.2) | 0.1.X | vrs-1.2 *(no longer being updated)* | 0.0.X | [1.2.X](https://github.com/ga4gh/vrs/tree/1.2) | [main](https://github.com/ga4gh/vrsatile/tree/main) |
-| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.7.X | [staging](https://github.com/cancervariants/gene-normalization/tree/staging) | 0.2.X | metaschema-update | 0.1.X | [metaschema-update](https://github.com/ga4gh/vrs/tree/metaschema-update) | [metaschema-update](https://github.com/ga4gh/vrsatile/tree/metaschema-update)
-| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.8.X | [main](https://github.com/cancervariants/gene-normalization/tree/main) | 0.3.X | main | 0.2.X | [1.3.X](https://github.com/ga4gh/vrs/tree/1.3) | [main](https://github.com/ga4gh/vrsatile/tree/main)
+| variation-normalization branch | variation-normalizer version | gene-normalizer version | ga4gh.vrsatile.pydantic version | VRS version | VRSATILE version |
+| ---- | --- | ---- | --- | --- | --- |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.8.X | 0.3.X | 0.0.X | [1.X.X](https://github.com/ga4gh/vrs) | [main](https://github.com/ga4gh/vrsatile/tree/main)
+| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.7.X | 0.1.X | 0.1.X | [metaschema-update](https://github.com/ga4gh/vrs/tree/metaschema-update) | [metaschema-update](https://github.com/ga4gh/vrsatile/tree/metaschema-update)
 
 ## About
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
