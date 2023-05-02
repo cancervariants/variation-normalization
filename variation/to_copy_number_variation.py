@@ -31,7 +31,7 @@ class ToCopyNumberVariation(ToVRS):
     def _parsed_to_text(start: int, end: int, total_copies: int, warnings: List[str],
                         assembly: Optional[str] = None, chr: Optional[str] = None,
                         accession: Optional[str] = None) -> Tuple[Text, List[str]]:
-        """Return response for invalid query for parsed_to_cn_cnv
+        """Return response for invalid query for parsed_to_cn_var
 
         :param int start: Start position as residue coordinate
         :param int end: End position as residue coordinate
@@ -176,7 +176,7 @@ class ToCopyNumberVariation(ToVRS):
             copy_number_change=cx_var
         )
 
-    def parsed_to_cn_cnv(
+    def parsed_to_cn_var(
         self, start: int, end: int, total_copies: int,
         assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
         accession: Optional[str] = None, untranslatable_returns_text: bool = False
@@ -306,7 +306,7 @@ class ToCopyNumberVariation(ToVRS):
             )
         )
 
-    def amplification_to_cx_cnv(
+    def amplification_to_cx_var(
         self, gene: str, sequence_id: Optional[str] = None, start: Optional[int] = None,
         end: Optional[int] = None, untranslatable_returns_text: bool = False
     ) -> AmplificationToCxVarService:

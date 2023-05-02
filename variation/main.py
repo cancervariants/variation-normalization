@@ -554,7 +554,7 @@ end_descr = "End position as residue coordinate"
 total_copies_descr = "Total copies for Copy Number Count variation object"
 
 
-@app.get("/variation/parsed_to_cn_cnv",
+@app.get("/variation/parsed_to_cn_var",
          summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
          "VRS Copy Number Count Variation",
          response_description="A response to a validly-formed query.",
@@ -562,7 +562,7 @@ total_copies_descr = "Total copies for Copy Number Count variation object"
          response_model=ParsedToCnVarService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION]
          )
-def parsed_to_cn_cnv(
+def parsed_to_cn_var(
     assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
     chr: Optional[str] = Query(None, description=chr_descr),
     accession: Optional[str] = Query(None, description=accession_descr),
@@ -589,26 +589,26 @@ def parsed_to_cn_cnv(
         unable to translate or normalize query.
     :return: Tuple containing Copy Number Count variation and list of warnings
     """
-    resp = query_handler.to_copy_number_handler.parsed_to_cn_cnv(
+    resp = query_handler.to_copy_number_handler.parsed_to_cn_var(
         start, end, total_copies, assembly, chr, accession,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
 
 
-amplification_to_cx_cnv_descr = ("Translate amplification to VRS Copy Number Change "
+amplification_to_cx_var_descr = ("Translate amplification to VRS Copy Number Change "
                                  "Variation. If `sequence_id`, `start`, and `end` are "
                                  "all provided, will return a SequenceLocation with "
                                  "those properties. Else, gene-normalizer will be "
                                  "used to retrieve the SequenceLocation.")
 
 
-@app.get("/variation/amplification_to_cx_cnv",
+@app.get("/variation/amplification_to_cx_var",
          summary="Given amplification query, return VRS Copy Number Change Variation",
          response_description="A response to a validly-formed query.",
-         description=amplification_to_cx_cnv_descr,
+         description=amplification_to_cx_var_descr,
          response_model=AmplificationToCxVarService,
          tags=[Tags.TO_COPY_NUMBER_VARIATION])
-def amplification_to_cx_cnv(
+def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
     sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
     start: Optional[int] = Query(None,
@@ -634,7 +634,7 @@ def amplification_to_cx_cnv(
     :return: AmplificationToCxVarService containing Copy Number Change and
         list of warnings
     """
-    resp = query_handler.to_copy_number_handler.amplification_to_cx_cnv(
+    resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
         gene=gene, sequence_id=sequence_id, start=start, end=end,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp

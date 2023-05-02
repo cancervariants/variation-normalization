@@ -56,7 +56,7 @@ def variation1_lse(variation1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation1_cn_cnv(variation1_seq_loc):
+def variation1_cn_var(variation1_seq_loc):
     """Create test fixture for variation1 represented as copy number count"""
     params = {
         "_id": "ga4gh:VCC.-fBNRPQpfH_YMFsr9JmMJV9PznrKyiZA",
@@ -73,7 +73,7 @@ def variation1_cn_cnv(variation1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation1_cx_cnv(variation1_seq_loc):
+def variation1_cx_var(variation1_seq_loc):
     """Create test fixture for variation1 represented as copy number change"""
     params = {
         "_id": "ga4gh:VCC.f6srhFxf5GDi_KPoPkNEGbXEPUDjdU4Q",
@@ -142,7 +142,7 @@ def variation3_lse(grch38_genomic_insertion_variation):
 
 
 @pytest.fixture(scope="module")
-def variation3_cn_cnv(grch38_genomic_insertion_seq_loc):
+def variation3_cn_var(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as copy number count"""
     params = {
         "_id": "ga4gh:VCC.4eFeJOQrWvjQ0Nz5PLwc7uCsTBox5-MK",
@@ -159,7 +159,7 @@ def variation3_cn_cnv(grch38_genomic_insertion_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def variation3_cx_cnv(grch38_genomic_insertion_seq_loc):
+def variation3_cx_var(grch38_genomic_insertion_seq_loc):
     """Create test fixture for variation3 represented as copy number change"""
     params = {
         "_id": "ga4gh:VCC.KjeYCZR6_fQHhVFjzJ-oY219tmIBHaVq",
@@ -231,7 +231,7 @@ def variation4():
 
 @pytest.mark.asyncio
 async def test_to_canonical_variation_deletion(
-    test_handler, variation1_lse, variation1_cn_cnv, variation1_cx_cnv,
+    test_handler, variation1_lse, variation1_cn_var, variation1_cx_var,
     variation1_rse
 ):
     """Test that to_canonical_variation works correctly for deletions"""
@@ -267,13 +267,13 @@ async def test_to_canonical_variation_deletion(
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_count",
         baseline_copies=3)
-    assert resp.canonical_variation == variation1_cn_cnv
+    assert resp.canonical_variation == variation1_cn_var
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
         copy_change="efo:0030069")
-    assert resp.canonical_variation == variation1_cx_cnv
+    assert resp.canonical_variation == variation1_cx_var
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
@@ -342,7 +342,7 @@ async def test_to_canonical_variation_substitution(test_handler, variation2):
 
 @pytest.mark.asyncio
 async def test_to_canonical_variation_duplication(
-    test_handler, variation3_lse, variation3_cn_cnv, variation3_cx_cnv,
+    test_handler, variation3_lse, variation3_cn_var, variation3_cx_var,
     variation3_rse
 ):
     """Test that to_canonical_variation works correctly for duplications"""
@@ -384,13 +384,13 @@ async def test_to_canonical_variation_duplication(
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_count",
         baseline_copies=1)
-    assert resp.canonical_variation == variation3_cn_cnv
+    assert resp.canonical_variation == variation3_cn_var
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(
         q, fmt="hgvs", do_liftover=True, hgvs_dup_del_mode="copy_number_change",
         copy_change="efo:0030072")
-    assert resp.canonical_variation == variation3_cx_cnv
+    assert resp.canonical_variation == variation3_cx_var
     assert resp.warnings == []
 
     resp = await test_handler.to_canonical_variation(

@@ -1052,8 +1052,8 @@ def genomic_dup5():
     return params
 
 
-def genomic_dup5_cn_cnv(params, genomic_dup5_loc):
-    """Create genomic dup5 aboluste cnv"""
+def genomic_dup5_cn_var(params, genomic_dup5_loc):
+    """Create genomic dup5 copy number count"""
     _id = "ga4gh:CN.bbk9VRAad9sWcEHIRYt-nZjnT342gAyd"
     params["variation"] = {
         "type": "CopyNumberCount",
@@ -1064,7 +1064,7 @@ def genomic_dup5_cn_cnv(params, genomic_dup5_loc):
     params["variation_id"] = _id
 
 
-def genomic_dup5_cx_cnv(params, genomic_dup5_loc):
+def genomic_dup5_cx_var(params, genomic_dup5_loc):
     """Create genomic dup4 copy number change"""
     _id = "ga4gh:CX.-Z7Yy8iVAAOjxPiOsOcctd5AdXF_iDFV"
     params["variation"] = {
@@ -1079,14 +1079,14 @@ def genomic_dup5_cx_cnv(params, genomic_dup5_loc):
 @pytest.fixture(scope="module")
 def genomic_dup5_cx(genomic_dup5, genomic_dup5_loc):
     """Create a test fixture for genomic dup5 copy number change."""
-    genomic_dup5_cx_cnv(genomic_dup5, genomic_dup5_loc)
+    genomic_dup5_cx_var(genomic_dup5, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_cn(genomic_dup5, genomic_dup5_loc):
     """Create a test fixture for genomic dup5 copy number count."""
-    genomic_dup5_cn_cnv(genomic_dup5, genomic_dup5_loc)
+    genomic_dup5_cn_var(genomic_dup5, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5)
 
 
@@ -1124,14 +1124,14 @@ def genomic_dup5_free_text(mecp2_gene_context):
 @pytest.fixture(scope="module")
 def genomic_dup5_free_text_cx(genomic_dup5_free_text, genomic_dup5_loc):
     """Create a test fixture for genomic dup copy number change."""
-    genomic_dup5_cx_cnv(genomic_dup5_free_text, genomic_dup5_loc)
+    genomic_dup5_cx_var(genomic_dup5_free_text, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_free_text_cn(genomic_dup5_free_text, genomic_dup5_loc):
     """Create a test fixture for genomic dup copy number count."""
-    genomic_dup5_cn_cnv(genomic_dup5_free_text, genomic_dup5_loc)
+    genomic_dup5_cn_var(genomic_dup5_free_text, genomic_dup5_loc)
     return VariationDescriptor(**genomic_dup5_free_text)
 
 
@@ -1165,7 +1165,7 @@ def genomic_dup6():
     return params
 
 
-def genomic_dup6_cx_cnv(params, genomic_dup6_loc):
+def genomic_dup6_cx_var(params, genomic_dup6_loc):
     """Create genomic dup6 copy number change"""
     _id = "ga4gh:CX.YolY8YJo1sdQ_ZaP7Kgz9pgkwgwuO-RO"
     params["variation"] = {
@@ -1177,7 +1177,7 @@ def genomic_dup6_cx_cnv(params, genomic_dup6_loc):
     params["variation_id"] = _id
 
 
-def genomic_dup6_cn_cnv(params, genomic_dup6_loc):
+def genomic_dup6_cn_var(params, genomic_dup6_loc):
     """Create genomic dup6 copy number count"""
     _id = "ga4gh:CN.tNxea8UWRp9ORzCDE2vtmJIqXEsUqp0j"
     params["variation"] = {
@@ -1192,14 +1192,14 @@ def genomic_dup6_cn_cnv(params, genomic_dup6_loc):
 @pytest.fixture(scope="module")
 def genomic_dup6_cx(genomic_dup6, genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number change."""
-    genomic_dup6_cx_cnv(genomic_dup6, genomic_dup6_loc)
+    genomic_dup6_cx_var(genomic_dup6, genomic_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_cn(genomic_dup6, genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number count."""
-    genomic_dup6_cn_cnv(genomic_dup6, genomic_dup6_loc)
+    genomic_dup6_cn_var(genomic_dup6, genomic_dup6_loc)
     return VariationDescriptor(**genomic_dup6)
 
 
@@ -1237,14 +1237,14 @@ def genomic_dup6_free_text(mecp2_gene_context):
 @pytest.fixture(scope="module")
 def genomic_dup6_free_text_cx(genomic_dup6_free_text, genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number change."""
-    genomic_dup6_cx_cnv(genomic_dup6_free_text, genomic_dup6_loc)
+    genomic_dup6_cx_var(genomic_dup6_free_text, genomic_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_free_text_cn(genomic_dup6_free_text, genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number count."""
-    genomic_dup6_cn_cnv(genomic_dup6_free_text, genomic_dup6_loc)
+    genomic_dup6_cn_var(genomic_dup6_free_text, genomic_dup6_loc)
     return VariationDescriptor(**genomic_dup6_free_text)
 
 
@@ -2210,7 +2210,7 @@ def genomic_del5():
     return params
 
 
-def genomic_del5_cn_cnv(params, genomic_del5_seq_loc):
+def genomic_del5_cn_var(params, genomic_del5_seq_loc):
     """Create genomic del5 copy number count"""
     _id = "ga4gh:CN.nPBKBH2OBqgE3LVbdjSwsrQL_W2sCUPw"
     params["variation"] = {
@@ -2222,7 +2222,7 @@ def genomic_del5_cn_cnv(params, genomic_del5_seq_loc):
     params["variation_id"] = _id
 
 
-def genomic_del5_cx_cnv(params, genomic_del5_seq_loc):
+def genomic_del5_cx_var(params, genomic_del5_seq_loc):
     """Create genomic del5 copy number change"""
     _id = "ga4gh:CX.goFRTgyKhbvt0JRRYO-g9R-oqF_9jcnJ"
     params["variation"] = {
@@ -2237,14 +2237,14 @@ def genomic_del5_cx_cnv(params, genomic_del5_seq_loc):
 @pytest.fixture(scope="module")
 def genomic_del5_cx(genomic_del5, genomic_del5_seq_loc):
     """Create a test fixture for genomic del copy number change."""
-    genomic_del5_cx_cnv(genomic_del5, genomic_del5_seq_loc)
+    genomic_del5_cx_var(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_cn(genomic_del5, genomic_del5_seq_loc):
     """Create a test fixture for genomic del copy number count."""
-    genomic_del5_cn_cnv(genomic_del5, genomic_del5_seq_loc)
+    genomic_del5_cn_var(genomic_del5, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5)
 
 
@@ -2410,14 +2410,14 @@ def genomic_del5_free_text():
 @pytest.fixture(scope="module")
 def genomic_del5_free_text_cx(genomic_del5_free_text, genomic_del5_seq_loc):
     """Create a test fixture for genomic del copy number change."""
-    genomic_del5_cx_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
+    genomic_del5_cx_var(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_free_text_cn(genomic_del5_free_text, genomic_del5_seq_loc):
     """Create a test fixture for genomic del copy number count."""
-    genomic_del5_cn_cnv(genomic_del5_free_text, genomic_del5_seq_loc)
+    genomic_del5_cn_var(genomic_del5_free_text, genomic_del5_seq_loc)
     return VariationDescriptor(**genomic_del5_free_text)
 
 
@@ -2451,7 +2451,7 @@ def genomic_del6():
     return params
 
 
-def genomic_del6_cx_cnv(params, genomic_del6_seq_loc):
+def genomic_del6_cx_var(params, genomic_del6_seq_loc):
     """Create genomic del6 copy number change"""
     _id = "ga4gh:CX.ho6sISvGxtMM6hPi_tA0cUkvVsC8mS35"
     params["variation"] = {
@@ -2463,7 +2463,7 @@ def genomic_del6_cx_cnv(params, genomic_del6_seq_loc):
     params["variation_id"] = _id
 
 
-def genomic_del6_cn_cnv(params, genomic_del6_seq_loc):
+def genomic_del6_cn_var(params, genomic_del6_seq_loc):
     """Create genomic del6 copy number count"""
     _id = "ga4gh:CN.x-SGeFBpSWWI5qeMe7CIi5lTZxhnKvKJ"
     params["variation"] = {
@@ -2478,14 +2478,14 @@ def genomic_del6_cn_cnv(params, genomic_del6_seq_loc):
 @pytest.fixture(scope="module")
 def genomic_del6_cx(genomic_del6, genomic_del6_seq_loc):
     """Create a test fixture for genomic del copy number change."""
-    genomic_del6_cx_cnv(genomic_del6, genomic_del6_seq_loc)
+    genomic_del6_cx_var(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_cn(genomic_del6, genomic_del6_seq_loc):
     """Create a test fixture for genomic del copy number count."""
-    genomic_del6_cn_cnv(genomic_del6, genomic_del6_seq_loc)
+    genomic_del6_cn_var(genomic_del6, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6)
 
 
@@ -2651,14 +2651,14 @@ def genomic_del6_free_text():
 @pytest.fixture(scope="module")
 def genomic_del6_free_text_cx(genomic_del6_free_text, genomic_del6_seq_loc):
     """Create a test fixture for genomic del copy number change."""
-    genomic_del6_cx_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
+    genomic_del6_cx_var(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_free_text_cn(genomic_del6_free_text, genomic_del6_seq_loc):
     """Create a test fixture for genomic del copy number count."""
-    genomic_del6_cn_cnv(genomic_del6_free_text, genomic_del6_seq_loc)
+    genomic_del6_cn_var(genomic_del6_free_text, genomic_del6_seq_loc)
     return VariationDescriptor(**genomic_del6_free_text)
 
 
