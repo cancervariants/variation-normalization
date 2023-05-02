@@ -5,7 +5,6 @@ from datetime import datetime
 
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
 from variation.classifiers.classify import Classify
 from variation.to_vrsatile import ToVRSATILE
@@ -18,21 +17,20 @@ from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.version import __version__
 
 
 class Normalize(ToVRSATILE):
     """The Normalize class used to normalize a given variation."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler, uta: UTADatabase) -> None:
         """Initialize Normalize class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -42,7 +40,7 @@ class Normalize(ToVRSATILE):
         :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         :param UTADatabase uta: Access to db containing alignment data
         """
-        super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.uta = uta
 
@@ -50,7 +48,7 @@ class Normalize(ToVRSATILE):
         self, q: str,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False
     ) -> NormalizeService:
         """Normalize a given variation.
@@ -58,13 +56,13 @@ class Normalize(ToVRSATILE):
         :param str q: The variation to normalize
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
             Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
-            expressions in VRS.
+            Must be: `default`, `copy_number_count`, `copy_number_change`,
+            `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
+            interpret HGVS dup/del expressions in VRS.
         :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
             deletions
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
-            for HGVS duplications and deletions represented as Relative Copy Number
+        :param Optional[CopyChange] copy_change: The copy change
+            for HGVS duplications and deletions represented as Copy Number Change
             Variation.
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
@@ -80,7 +78,7 @@ class Normalize(ToVRSATILE):
                 q, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
-                relative_copy_class=relative_copy_class)
+                copy_change=copy_change)
 
             if validations:
                 label = q.strip()

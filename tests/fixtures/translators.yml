@@ -829,6 +829,39 @@ protein_deletion:
           "type": "Allele"
         }
       ]
+    - query: EGFR L747_T751delLREAT
+      variations: [
+        {
+          "id": "ga4gh:VA.yk48GJcyRATR4tt7GIiFpa3vRXgB4aNx",
+          "location": {
+            "id": "ga4gh:SL.4utThcVn7rgC3ZhNudavmKw42cFnwVym",
+            "start": { "value": 746, "type": "Number" },
+            "end": { "value": 751, "type": "Number" },
+            "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "LiteralSequenceExpression"
+          },
+          "type": "Allele"
+        },
+        {
+          "id": "ga4gh:VA.1iCYiSzCrfOlckcZuEiEN_GesO6hYJP_",
+          "location": {
+            "id": "ga4gh:SL.6_cNSfq9490DKXLPX3Q3D3-s0u8se9_t",
+            "start": { "value": 746, "type": "Number" },
+            "end": { "value": 751, "type": "Number" },
+            "sequence_id": "ga4gh:SQ.OWicZUhcw_9nRH2SQjawk7BAEkrUIe__",
+            "type": "SequenceLocation"
+          },
+          "state": {
+            "sequence": "",
+            "type": "LiteralSequenceExpression"
+          },
+          "type": "Allele"
+        }
+      ]
 
 coding_dna_deletion:
   tests:
@@ -1092,8 +1125,8 @@ genomic_uncertain_deletion:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
       variations: [
         {
-          "id": "ga4gh:ACN.gT8vZlUghIFxFv-ztGpOQirOGgwjyvjW",
-          "location": {
+          "id": "ga4gh:CN.GrUeefilHb49CXKX7Noidga41FQnR_qT",
+          "subject": {
             "id": "ga4gh:SL.dRc1d9ymsXhbb439OQE830RBELZ4aMXi",
             "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
             "start": {
@@ -1113,14 +1146,14 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
       variations: [
         {
-          "id": "ga4gh:ACN.IeGrhDnraM_pNXVH_Rk1qMxXKCvYmQhD",
-          "location": {
+          "id": "ga4gh:CN.O58LkG0IzGdmRmxp_jXMNCB6COj9ixYQ",
+          "subject": {
             "id": "ga4gh:SL.ghgq_DzgZ93L1gVXbnHKEQwBzwnNdfSJ",
             "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
             "start": {
@@ -1140,14 +1173,14 @@ genomic_uncertain_deletion:
             "max": 1,
             "type": "DefiniteRange"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
       variations: [
         {
-          "id": "ga4gh:ACN.oGSB4Heeg5B0jv4SSBwllA_H8cJj61Hdh",
-          "location": {
+          "id": "ga4gh:CN.PQcs1OVzg_zOO2Az_2CLe3a3sdfzfjVg",
+          "subject": {
             "id": "ga4gh:SL.gUeB872FGVaphqoSAfI0gz4KXJvpZKL_",
             "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
             "start": {
@@ -1166,14 +1199,14 @@ genomic_uncertain_deletion:
             "value": 1,
             "type": "Number"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
       variations: [
         {
-          "id": "ga4gh:ACN.IvDsO9oUpV8jWf1IP9UPqKH71QLyWlMj",
-          "location": {
+          "id": "ga4gh:CN.N8ioTKO2dQWnp-6Sj_sCtGR_Yjk5rBMx",
+          "subject": {
             "id": "ga4gh:SL.ykRzA8IFueiCG7oznnN4teL2nXXBshHV",
             "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
             "start": {
@@ -1192,7 +1225,7 @@ genomic_uncertain_deletion:
             "value": 0,
             "type": "Number"
           },
-          "type": "AbsoluteCopyNumber"
+          "type": "CopyNumberCount"
         }
       ]
 
@@ -1237,9 +1270,9 @@ genomic_duplication:
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
       variations: [
         {
-          "id": "ga4gh:ACN.5CAt2AJgC-khy9njb7XwUD-8EkHU2cIR",
-          "type": "AbsoluteCopyNumber",
-          "location": {
+          "id": "ga4gh:CN.f0qsZZA8f_mMBa1wtJhxcGCHXfnuoFD7",
+          "type": "CopyNumberCount",
+          "subject": {
               "id": "ga4gh:SL.RANaZSqxDM1hoJeXZAfSXErh6XqPrijo",
               "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
               "start": {
@@ -1264,9 +1297,9 @@ genomic_duplication:
     - query: NC_000023.11:g.(?_154021812)_154092209dup
       variations: [
         {
-          "id": "ga4gh:ACN.cCK2juIomWSCTVElMML7S4k3nGHgSoGv",
-          "type": "AbsoluteCopyNumber",
-          "location": {
+          "id": "ga4gh:CN.pFwFb-dKx6n0RzfEPFqs5uJ6wksz0ZT4",
+          "type": "CopyNumberCount",
+          "subject": {
             "id": "ga4gh:SL.GzmuP1MBA9qILR8fVFhp4BdUEcaLwKaR",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -1290,9 +1323,9 @@ genomic_duplication:
     - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
       variations: [
         {
-          "id": "ga4gh:ACN.OBSQ6SY9waWJ7YOyYA_qK0te_mTfOT4A",
-          "type": "AbsoluteCopyNumber",
-          "location": {
+          "id": "ga4gh:CN.Fvt2VSCSLNROTjZd20vKZUzdMYxz-cfZ",
+          "type": "CopyNumberCount",
+          "subject": {
             "id": "ga4gh:SL.uD8efGXIXdiMNyHX4MogVF0jA28jIWb4",
             "type": "SequenceLocation",
             "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",

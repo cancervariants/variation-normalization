@@ -7,7 +7,6 @@ from ga4gh.vrsatile.pydantic.vrs_models import Text, VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import CanonicalVariation
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from ga4gh.vrs.extras.translator import Translator
 from cool_seq_tool.schemas import Assembly
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
@@ -20,8 +19,8 @@ from variation.schemas.normalize_response_schema import ServiceMeta, \
     ToCanonicalVariationFmt, ToCanonicalVariationService
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.schemas.hgvs_to_copy_number_schema import VALID_RELATIVE_COPY_CLASS,\
-    RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import VALID_COPY_CHANGE,\
+    CopyChange
 from variation.to_vrs import ToVRS
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
@@ -33,7 +32,7 @@ from variation.version import __version__
 class ToCanonicalVariation(ToVRS):
     """Class for translating to canonical variation"""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler,
@@ -41,7 +40,6 @@ class ToCanonicalVariation(ToVRS):
         """Initialize the to canonical variation class
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -51,7 +49,7 @@ class ToCanonicalVariation(ToVRS):
         :param Translator tlr: Class for translating nomenclatures to and from VRS
         :param UTADatabase uta: Access to UTA queries
         """
-        super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.tlr = tlr
         self.uta = uta
@@ -61,7 +59,7 @@ class ToCanonicalVariation(ToVRS):
         fmt: ToCanonicalVariationFmt,
         do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         baseline_copies: Optional[int] = None,
         untranslatable_returns_text: bool = False
     ) -> ToCanonicalVariationService:
@@ -72,8 +70,9 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly.
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-        :param RelativeCopyClass relative_copy_class: The relative copy class
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
+        :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
@@ -92,7 +91,7 @@ class ToCanonicalVariation(ToVRS):
                 variation, warnings = await self.hgvs_to_canonical_variation(
                     q, warnings, do_liftover=do_liftover,
                     hgvs_dup_del_mode=hgvs_dup_del_mode,
-                    relative_copy_class=relative_copy_class,
+                    copy_change=copy_change,
                     baseline_copies=baseline_copies)
             else:
                 warnings = [f"fmt, {fmt}, is not supported. "
@@ -101,10 +100,12 @@ class ToCanonicalVariation(ToVRS):
             if variation and not warnings:
                 variation_type = variation["type"]
                 if variation_type in {VRSTypes.ALLELE.value,
-                                      VRSTypes.ABSOLUTE_COPY_NUMBER.value,
-                                      VRSTypes.RELATIVE_COPY_NUMBER.value}:
-                    variation["location"]["id"] = ga4gh_identify(
-                        models.Location(**variation["location"]))
+                                      VRSTypes.COPY_NUMBER_COUNT.value,
+                                      VRSTypes.COPY_NUMBER_CHANGE.value}:
+                    key = "location" if variation_type == VRSTypes.ALLELE else "subject"
+                    variation[key]["id"] = ga4gh_identify(
+                        models.Location(**variation[key])
+                    )
                 else:
                     warnings = [f"Variation type, {variation_type}, not supported"]
 
@@ -172,7 +173,7 @@ class ToCanonicalVariation(ToVRS):
             if not newest_assembly_acs:
                 warnings.append(f"Unable to get newest assemblies for {ac}")
                 return variation, None
-            new_ac = newest_assembly_acs[0][0]
+            new_ac = newest_assembly_acs[0]
             if new_ac != ac:
                 ac = new_ac
                 chromosome, warning = self.seqrepo_access.ac_to_chromosome(ac)
@@ -202,8 +203,7 @@ class ToCanonicalVariation(ToVRS):
         else:
             # Validate SPDI
             try:
-                sequence = self.seqrepo_access.seqrepo_client.fetch(
-                    ac, start_pos, end=end_pos)
+                sequence = self.seqrepo_access.sr.fetch(ac, start_pos, end=end_pos)
             except ValueError as e:
                 warnings.append(str(e))
             else:
@@ -223,7 +223,7 @@ class ToCanonicalVariation(ToVRS):
     async def hgvs_to_canonical_variation(
         self, q: str, warnings: List, do_liftover: bool = False,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         baseline_copies: Optional[int] = None
     ) -> Tuple[Optional[Dict], List]:
         """Given HGVS representation, return canonical variation
@@ -233,8 +233,9 @@ class ToCanonicalVariation(ToVRS):
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to
             interpret HGVS dup/del expressions in VRS. Must be one of: `default`,
-            `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`
-        :param RelativeCopyClass relative_copy_class: The relative copy class
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`
+        :param CopyChange copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         :return: Canonical Variation and warnings
         """
@@ -254,12 +255,12 @@ class ToCanonicalVariation(ToVRS):
             warnings = [f"{q} is not a supported HGVS expression"]
             return variation, warnings
 
-        if hgvs_dup_del_mode == HGVSDupDelModeEnum.RELATIVE_CNV:
-            if relative_copy_class:
-                if relative_copy_class.upper() not in VALID_RELATIVE_COPY_CLASS:
-                    return None, [f"{relative_copy_class} is not a valid relative "
-                                  f"copy class: {VALID_RELATIVE_COPY_CLASS}"]
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+        if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+            if copy_change:
+                if copy_change.lower() not in VALID_COPY_CHANGE:
+                    return None, [f"{copy_change} is not a valid copy change value: "
+                                  f"{VALID_COPY_CHANGE}"]
+        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
             if not baseline_copies:
                 return None, [f"{hgvs_dup_del_mode} requires `baseline_copies`"]
         elif not hgvs_dup_del_mode:
@@ -268,7 +269,7 @@ class ToCanonicalVariation(ToVRS):
         validations = await self.validator.perform(
             classifications, endpoint_name=Endpoint.TO_CANONICAL, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, do_liftover=do_liftover,
-            relative_copy_class=relative_copy_class, baseline_copies=baseline_copies)
+            copy_change=copy_change, baseline_copies=baseline_copies)
         if not warnings:
             warnings = validations.warnings
 

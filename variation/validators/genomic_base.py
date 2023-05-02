@@ -17,7 +17,7 @@ class GenomicBase:
     def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTADatabase) -> None:
         """Initialize the Genomic base class.
 
-        :param SeqRepoDataProxy dp: Access to seqrepo data
+        :param SeqRepoAccess seqrepo_access: Access to seqrepo
         :param UTADatabase uta: Access to UTA queries
         """
         self.seqrepo_access = seqrepo_access

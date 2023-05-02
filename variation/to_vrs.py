@@ -3,13 +3,12 @@ from typing import Tuple, Optional, List, Union, Dict
 from urllib.parse import unquote
 from datetime import datetime
 
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, AbsoluteCopyNumber,\
+from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumberCount,\
     VariationSet, Text
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.schemas import ResidueMode
 from cool_seq_tool.data_sources import SeqRepoAccess
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.normalize_response_schema\
@@ -17,7 +16,7 @@ from variation.schemas.normalize_response_schema\
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
-    RelativeCopyClass
+    CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.token_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -32,14 +31,13 @@ from variation.version import __version__
 class ToVRS(VRSRepresentation):
     """The class for translating variation strings to VRS representations."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler) -> None:
         """Initialize the ToVrsAndVrsatile class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -48,7 +46,7 @@ class ToVRS(VRSRepresentation):
             HGVS dup/del expressions
         :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         """
-        super().__init__(dp, seqrepo_access)
+        super().__init__(seqrepo_access)
         self.tokenizer = tokenizer
         self.classifier = classifier
         self.validator = validator
@@ -60,7 +58,7 @@ class ToVRS(VRSRepresentation):
             self, q: str, endpoint_name: Optional[Endpoint] = None,
             hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,  # noqa: E501
             baseline_copies: Optional[int] = None,
-            relative_copy_class: Optional[RelativeCopyClass] = None,
+            copy_change: Optional[CopyChange] = None,
             do_liftover: bool = False
     ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
         """Return validation results for a given variation.
@@ -70,7 +68,7 @@ class ToVRS(VRSRepresentation):
         :param Optional HGVSDupDelModeEnum hgvs_dup_del_mode: This parameter determines
             how to interpret HGVS dup/del expressions in VRS.
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :return: ValidationSummary for the variation and list of warnings
         """
@@ -84,8 +82,8 @@ class ToVRS(VRSRepresentation):
         if Nomenclature.GNOMAD_VCF in nomenclature:
             hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
         else:
-            if endpoint_name in [Endpoint.NORMALIZE, Endpoint.HGVS_TO_ABSOLUTE_CN,
-                                 Endpoint.HGVS_TO_RELATIVE_CN]:
+            if endpoint_name in [Endpoint.NORMALIZE, Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
+                                 Endpoint.HGVS_TO_COPY_NUMBER_CHANGE]:
                 if hgvs_dup_del_mode:
                     hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
                     if endpoint_name == Endpoint.NORMALIZE:
@@ -99,7 +97,7 @@ class ToVRS(VRSRepresentation):
                             warnings.append(f"hgvs_dup_del_mode must be one of "
                                             f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")  # noqa: E501
                             return None, warnings
-                    if hgvs_dup_del_mode == HGVSDupDelModeEnum.ABSOLUTE_CNV:
+                    if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
                         if not baseline_copies:
                             warnings.append(f"{hgvs_dup_del_mode} mode "
                                             f"requires `baseline_copies`")
@@ -108,16 +106,16 @@ class ToVRS(VRSRepresentation):
                     hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
                 else:
                     warnings.append(f"hgvs_dup_del_mode must be either "
-                                    f"{HGVSDupDelModeEnum.ABSOLUTE_CNV.value} or "
-                                    f"{HGVSDupDelModeEnum.RELATIVE_CNV.value}")
+                                    f"{HGVSDupDelModeEnum.COPY_NUMBER_COUNT.value} or "
+                                    f"{HGVSDupDelModeEnum.COPY_NUMBER_CHANGE.value}")
                     return None, warnings
             else:
                 hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
 
         classifications = self.classifier.perform(tokens)
 
-        if endpoint_name in [Endpoint.HGVS_TO_ABSOLUTE_CN,
-                             Endpoint.HGVS_TO_RELATIVE_CN]:
+        if endpoint_name in [Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
+                             Endpoint.HGVS_TO_COPY_NUMBER_CHANGE]:
             tmp_classifications = []
             for c in classifications:
                 conditions = (
@@ -135,7 +133,7 @@ class ToVRS(VRSRepresentation):
         validations = await self.validator.perform(
             classifications, endpoint_name=endpoint_name, warnings=warnings,
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-            relative_copy_class=relative_copy_class, do_liftover=do_liftover
+            copy_change=copy_change, do_liftover=do_liftover
         )
         if not warnings:
             warnings = validations.warnings
@@ -143,7 +141,7 @@ class ToVRS(VRSRepresentation):
 
     def get_translations(self, validations: ValidationSummary,
                          warnings: List)\
-            -> Tuple[Optional[Union[List[Allele], List[AbsoluteCopyNumber],
+            -> Tuple[Optional[Union[List[Allele], List[CopyNumberCount],
                                     List[Text], List[Haplotype],
                                     List[VariationSet]]],
                      Optional[List[str]]]:
@@ -163,17 +161,16 @@ class ToVRS(VRSRepresentation):
                 warnings.append("Unable to validate variation")
         return translations, warnings
 
-    def get_ref_allele_seq(self, allele: Dict,
+    def get_ref_allele_seq(self, location: Dict,
                            identifier: str) -> Optional[str]:
         """Return ref allele seq for transcript.
 
-        :param Dict allele: VRS Allele object
+        :param Dict location: VRS Location object
         :param str identifier: Identifier for allele
         :return: Ref seq allele
         """
         start = None
         end = None
-        location = allele["location"]
         if location["start"]["type"] == "Number":
             start = location["start"]["value"]
             end = location["end"]["value"]

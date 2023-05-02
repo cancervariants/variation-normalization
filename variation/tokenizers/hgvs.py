@@ -15,10 +15,8 @@ from .locus_reference_genomic import LocusReferenceGenomic
 class HGVS(Tokenizer):
     """The HGVS tokenizer class."""
 
-    def __init__(self) -> None:
-        """Initialize the HGVS tokenizer class."""
-        self.parser = Parser()
-        self.validator = IntrinsicValidator()
+    parser = Parser()
+    validator = IntrinsicValidator()
 
     def match(self, input_string: str) -> Optional[Token]:
         """Return token matches from input string."""

@@ -40,11 +40,11 @@ class PolypeptideTruncation(PolypeptideSequenceVariationBase):
             else:
                 p_count = input_string.count("p.")
                 if p_count == 1:
-                    psub_parts = self.splitter.split(input_string)
+                    psub_parts = self.splitter_paren_digits.split(input_string)
             if len(split_whitespace) == 2:
                 psub_parts = split_whitespace
         else:
-            psub_parts = self.splitter.split(input_string)
+            psub_parts = self.splitter_paren_digits.split(input_string)
 
         self._get_psub(psub_parts)
 
@@ -92,5 +92,5 @@ class PolypeptideTruncation(PolypeptideSequenceVariationBase):
                 check_nonsense = f"({psub_parts[0].replace('ter', '*')})"
                 if check_nonsense == psub_parts[1]:
                     psub_parts = \
-                        self.splitter.split(psub_parts[0].split("p.")[-1])
+                        self.splitter_paren_digits.split(psub_parts[0].split("p.")[-1])
                     self._get_psub(psub_parts)

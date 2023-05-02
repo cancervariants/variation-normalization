@@ -2,7 +2,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.extras.translator import Translator
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
@@ -72,7 +72,7 @@ class ProteinDeletion(Validator):
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
@@ -86,12 +86,13 @@ class ProteinDeletion(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_alleles = list()
@@ -113,6 +114,19 @@ class ProteinDeletion(Validator):
                         self.protein_base.check_ref_aa(
                             t, s.end_aa_del, s.end_pos_del, errors
                         )
+
+                    if not errors and s.deleted_aa:
+                        try:
+                            ref = self.seqrepo_access.sr.fetch(
+                                t, s.start_pos_del - 1, s.end_pos_del
+                            )
+                        except (KeyError, ValueError) as e:
+                            errors.append(str(e))
+                        else:
+                            if ref != s.deleted_aa:
+                                errors.append(
+                                    f"Needed to find {s.deleted_aa} but found {ref}"
+                                )
 
                 if not errors and endpoint_name == Endpoint.NORMALIZE:
                     mane = await self.mane_transcript.get_mane_transcript(

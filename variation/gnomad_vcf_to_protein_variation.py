@@ -7,7 +7,6 @@ from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscrip
     MANETranscriptMappings
 from cool_seq_tool.schemas import ResidueMode
 from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
 
 from variation.classifiers.classify import Classify
 from variation.data_sources.codon_table import CodonTable
@@ -29,7 +28,7 @@ from variation.version import __version__
 class GnomadVcfToProteinVariation(ToVRSATILE):
     """Class for translating gnomAD VCF representation to protein representation"""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, dp: SeqRepoDataProxy,
+    def __init__(self, seqrepo_access: SeqRepoAccess,
                  tokenizer: Tokenize, classifier: Classify, validator: Validate,
                  translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
                  gene_normalizer: GeneQueryHandler,
@@ -38,8 +37,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                  codon_table: CodonTable) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param SeqRepoDataProxy dp: Access to SeqRepo via VRS Python
+        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
@@ -54,7 +52,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             MANE Transcript data
         :param CodonTable codon_table: Codon table data
         """
-        super().__init__(seqrepo_access, dp, tokenizer, classifier, validator,
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.uta = uta
         self.mane_transcript = mane_transcript
@@ -93,7 +91,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         """
         # genomic ac should always be in 38
         alt_ac = variation["location"]["sequence_id"]
-        aliases = self.seqrepo_access.seqrepo_client.translate_identifier(
+        aliases = self.seqrepo_access.sr.translate_identifier(
             alt_ac, target_namespaces="refseq")
         return aliases[0].split("refseq:")[-1]
 
@@ -296,9 +294,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         )
                         continue
 
-                    chromosome = q.split("-")[:-1][0]
                     mane_data = self.mane_transcript_mappings.get_mane_data_from_chr_pos(  # noqa: E501
-                        chromosome, g_start_pos, g_end_pos)
+                        alt_ac, g_start_pos, g_end_pos)
                     mane_data_len = len(mane_data)
                     g_start_pos -= 1
                     g_end_pos -= 1

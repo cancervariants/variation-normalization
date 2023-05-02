@@ -39,30 +39,5 @@ if "VARIATION_NORM_EB_PROD" in environ:
     logger.addHandler(ch)
 
 
-def data_download(path: Path, domain: str, dir: str, fn: str) -> None:
-    """Download files using FTP.
-
-    :param Path path: The path to the file
-    :param str domain: The domain of the FTP site
-    :param str dir: The directory that the file is located in
-    :param str fn: The file name to download
-    """
-    if "VARIATION_NORM_EB_PROD" not in environ and not Path(path).exists():
-        with FTP(domain) as ftp:
-            ftp.login()
-            ftp.cwd(dir)
-            if fn.endswith(".gz") and not path.endswith(".gz"):
-                path += ".gz"
-            with open(f"{path}", "wb") as fp:
-                ftp.retrbinary(f"RETR {fn}", fp.write)
-            if fn.endswith(".gz"):
-                with gzip.open(f"{path}", "rb") as f_in:
-                    dest = path[:-3]
-                    with open(dest, "wb") as f_out:
-                        shutil.copyfileobj(f_in, f_out)
-                remove(f"{path}")
-
-
-AMINO_ACID_PATH = environ.get("AMINO_ACID_PATH", f"{APP_ROOT}/data/amino_acids.csv")
 UTA_DB_URL = environ.get("UTA_DB_URL",
                          "postgresql://uta_admin@localhost:5433/uta/uta_20210129")

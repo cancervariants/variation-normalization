@@ -1,8 +1,10 @@
 """A module for testing translator classes."""
 import yaml
-from ga4gh.vrs.dataproxy import SeqRepoDataProxy
+from biocommons.seqrepo import SeqRepo
 from ga4gh.vrs.extras.translator import Translator
+from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
+from cool_seq_tool import SEQREPO_ROOT_DIR
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTADatabase, MANETranscript
 
@@ -20,19 +22,19 @@ class TranslatorBase:
         """Set up the test cases."""
         with open(f"{PROJECT_ROOT}/tests/fixtures/translators.yml") as stream:
             cls.all_fixtures = yaml.safe_load(stream)
-        gene_normalizer = GeneQueryHandler()
+        gene_normalizer = GeneQueryHandler(DynamoDbDatabase())
         gene_symbol = GeneSymbol(gene_normalizer)
         cls.tokenizer = Tokenize(gene_symbol)
 
-        seqrepo_access = SeqRepoAccess()
+        sr = SeqRepo(root_dir=SEQREPO_ROOT_DIR)
+        seqrepo_access = SeqRepoAccess(sr)
         transcript_mappings = TranscriptMappings()
         uta = UTADatabase()
-        dp = SeqRepoDataProxy(seqrepo_access.seqrepo_client)
-        tlr = Translator(data_proxy=dp)
+        tlr = Translator(data_proxy=seqrepo_access)
         mane_transcript = MANETranscript(
             seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
             gene_normalizer)
-        vrs = VRSRepresentation(dp, seqrepo_access)
+        vrs = VRSRepresentation(seqrepo_access)
 
         cls.aa_params = [
             seqrepo_access, transcript_mappings, gene_symbol,
@@ -84,7 +86,7 @@ class TranslatorBase:
                         variation["location"] = variation["location"]
                         if "id" in variation["location"].keys():
                             del variation["location"]["id"]
-                    elif variation["type"] == "AbsoluteCopyNumber":
+                    elif variation["type"] == "CopyNumberCount":
                         variation["location"] = variation["location"]
                         if "id" in variation["location"]["location"].keys():
                             del variation["location"]["location"]["id"]

@@ -4,7 +4,7 @@ from typing import List, Dict, Type, Any, Optional, Union
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Text, Haplotype, \
-    AbsoluteCopyNumber, VariationSet, RelativeCopyNumber
+    CopyNumberCount, VariationSet, CopyNumberChange
 
 from variation.schemas.normalize_response_schema import ServiceMeta
 
@@ -15,7 +15,7 @@ class ToVRSService(BaseModel):
     search_term: StrictStr
     warnings: Optional[List[StrictStr]]
     variations: Optional[Union[List[Allele], List[Text], List[Haplotype],
-                               List[AbsoluteCopyNumber], List[RelativeCopyNumber],
+                               List[CopyNumberCount], List[CopyNumberChange],
                                List[VariationSet]]]
     service_meta_: ServiceMeta
 
