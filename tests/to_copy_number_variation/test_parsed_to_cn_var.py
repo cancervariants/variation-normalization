@@ -203,7 +203,7 @@ def test_invalid(test_cnv_handler):
     """Test invalid queries returns Text variation and warnings"""
     # NCBI36/hg18 assembly
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/443961/?new_evidence=true
-    expected_w = ["NCBI36 assembly is not current supported"]
+    expected_w = ["NCBI36 assembly is not currently supported"]
     resp = test_cnv_handler.parsed_to_cn_var(
         2623228, 3150942, 3, assembly=ClinVarAssembly.NCBI36, chr="chr1",
         untranslatable_returns_text=True)
