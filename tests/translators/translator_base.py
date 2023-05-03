@@ -2,6 +2,7 @@
 import yaml
 from biocommons.seqrepo import SeqRepo
 from ga4gh.vrs.extras.translator import Translator
+from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool import SEQREPO_ROOT_DIR
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, \
@@ -21,7 +22,7 @@ class TranslatorBase:
         """Set up the test cases."""
         with open(f"{PROJECT_ROOT}/tests/fixtures/translators.yml") as stream:
             cls.all_fixtures = yaml.safe_load(stream)
-        gene_normalizer = GeneQueryHandler()
+        gene_normalizer = GeneQueryHandler(DynamoDbDatabase())
         gene_symbol = GeneSymbol(gene_normalizer)
         cls.tokenizer = Tokenize(gene_symbol)
 
@@ -85,7 +86,7 @@ class TranslatorBase:
                         variation["location"] = variation["location"]
                         if "id" in variation["location"].keys():
                             del variation["location"]["id"]
-                    elif variation["type"] == "AbsoluteCopyNumber":
+                    elif variation["type"] == "CopyNumberCount":
                         variation["subject"] = variation["subject"]
                         if "id" in variation["subject"]["location"].keys():
                             del variation["subject"]["location"]["id"]

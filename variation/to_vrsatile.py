@@ -35,18 +35,12 @@ class ToVRSATILE(ToVRS):
         if "uncertain" in token_type_l:
             warnings = ["Ambiguous regions cannot be normalized"]
         elif "range" not in token_type_l and token_type != TokenType.AMPLIFICATION:
-            if variation["type"] in {VRSTypes.ALLELE.value,
-                                     VRSTypes.ABSOLUTE_COPY_NUMBER.value,
-                                     VRSTypes.RELATIVE_COPY_NUMBER.value}:
-                vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    variation, identifier
-                )
-            elif variation["type"] in [VRSTypes.ABSOLUTE_COPY_NUMBER.value,
-                                       VRSTypes.RELATIVE_COPY_NUMBER.value]:
-                loc = {
-                    "location": variation["subject"]
-                }
-                vrs_ref_allele_seq = self.get_ref_allele_seq(loc, identifier)
+            variation_type = variation["type"]
+            if variation_type in {VRSTypes.ALLELE.value,
+                                  VRSTypes.COPY_NUMBER_COUNT.value,
+                                  VRSTypes.COPY_NUMBER_CHANGE.value}:
+                key = "location" if variation_type == VRSTypes.ALLELE else "subject"
+                vrs_ref_allele_seq = self.get_ref_allele_seq(variation[key], identifier)
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

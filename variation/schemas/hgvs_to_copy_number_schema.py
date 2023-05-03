@@ -1,8 +1,8 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
 from typing import Optional, Type, Any, Dict, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass, AbsoluteCopyNumber, \
-    RelativeCopyNumber, Text
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberCount, \
+    CopyNumberChange, Text
 from pydantic import StrictStr
 
 from variation.schemas.classification_response_schema import ClassificationType
@@ -16,22 +16,21 @@ VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_UNCERTAIN_DELETION
 ]
 
-VALID_RELATIVE_COPY_CLASS = [rcc.value for
-                             rcc in RelativeCopyClass.__members__.values()]
+VALID_COPY_CHANGE = [rcc.value for rcc in CopyChange.__members__.values()]
 
 
-class HgvsToAbsoluteCopyNumberService(ServiceResponse):
-    """A response for translating HGVS to absolute copy number."""
+class HgvsToCopyNumberCountService(ServiceResponse):
+    """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    absolute_copy_number: Optional[Union[AbsoluteCopyNumber, Text]]
+    copy_number_count: Optional[Union[CopyNumberCount, Text]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["HgvsToAbsoluteCopyNumberService"]) -> None:
+                         model: Type["HgvsToCopyNumberCountService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -39,22 +38,18 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
                 prop.pop("title", None)
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
-                "absolute_copy_number": {
-                    "_id": "ga4gh:VAC.2zTRgNWai56-CSvxw_UerY2ggUz3kJwe",
-                    "type": "AbsoluteCopyNumber",
+                "copy_number_count": {
+                    "_id": "ga4gh:CN.wIUwSQ9MQdv-2dsoDo-RjI97iK3Mn5m6",
+                    "type": "CopyNumberCount",
                     "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 49531260},
+                            "end": {"type": "Number", "value": 49531262}
+                        }
                     },
                     "copies": {"type": "Number", "value": 3}
                 },
@@ -67,18 +62,18 @@ class HgvsToAbsoluteCopyNumberService(ServiceResponse):
             }
 
 
-class HgvsToRelativeCopyNumberService(ServiceResponse):
-    """A response for translating HGVS to relative copy number."""
+class HgvsToCopyNumberChangeService(ServiceResponse):
+    """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    relative_copy_number: Optional[Union[RelativeCopyNumber, Text]]
+    copy_number_change: Optional[Union[CopyNumberChange, Text]]
 
     class Config:
         """Configure model."""
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["HgvsToRelativeCopyNumberService"]) -> None:
+                         model: Type["HgvsToCopyNumberChangeService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -86,24 +81,20 @@ class HgvsToRelativeCopyNumberService(ServiceResponse):
                 prop.pop("title", None)
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
-                "relative_copy_number": {
-                    "_id": "ga4gh:VRC.XiXamTGYJ43rc8xheleMKcjxEBOFp82l",
-                    "type": "RelativeCopyNumber",
+                "copy_number_change": {
+                    "_id": "ga4gh:CX.hGuvyiJmDtx4-MRjsLja0fb_DqOE2chN",
+                    "type": "CopyNumberChange",
                     "subject": {
-                        "type": "DerivedSequenceExpression",
-                        "location": {
-                            "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {"type": "Number", "value": 49531260},
-                                "end": {"type": "Number", "value": 49531262}
-                            }
-                        },
-                        "reverse_complement": False
+                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        "interval": {
+                            "type": "SequenceInterval",
+                            "start": {"type": "Number", "value": 49531260},
+                            "end": {"type": "Number", "value": 49531262}
+                        }
                     },
-                    "relative_copy_class": "complete loss"
+                    "copy_change": "efo:0030069"
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
