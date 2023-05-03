@@ -17,7 +17,7 @@ from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
-from variation.schemas.hgvs_to_copy_number_schema import RelativeCopyClass
+from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.version import __version__
 
 
@@ -48,7 +48,7 @@ class Normalize(ToVRSATILE):
         self, q: str,
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False
     ) -> NormalizeService:
         """Normalize a given variation.
@@ -56,13 +56,13 @@ class Normalize(ToVRSATILE):
         :param str q: The variation to normalize
         :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
             Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
-            expressions in VRS.
+            Must be: `default`, `copy_number_count`, `copy_number_change`,
+            `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
+            interpret HGVS dup/del expressions in VRS.
         :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
             deletions
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
-            for HGVS duplications and deletions represented as Relative Copy Number
+        :param Optional[CopyChange] copy_change: The copy change
+            for HGVS duplications and deletions represented as Copy Number Change
             Variation.
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
@@ -78,7 +78,7 @@ class Normalize(ToVRSATILE):
                 q, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
                 baseline_copies=baseline_copies,
-                relative_copy_class=relative_copy_class)
+                copy_change=copy_change)
 
             if validations:
                 label = q.strip()

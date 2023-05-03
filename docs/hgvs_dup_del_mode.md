@@ -1,17 +1,17 @@
 # HGVS Dup Del Mode
 
 This mode helps us interpret deletions and duplications that are represented as HGVS expressions.\
-The mode can be set to `default`, `absolute_cnv`, `relative_cnv`, `repeated_seq_expr`, or `literal_seq_expr`.
+The mode can be set to `default`, `copy_number_count`, `copy_number_change`, `repeated_seq_expr`, or `literal_seq_expr`.
 
 
 ## Default Characteristics
 
 - if baseline_copies is not set and endpoints are ambiguous:
-    - relative_cnv
-    - if relative_copy_class not provided:
-        - relative_copy_class = `partial loss` if del, `low-level gain` if dup
+    - copy_number_change
+    - if copy_change not provided:
+        - copy_change = `efo:0030067` (loss) if del, `efo:0030070` (gain) if dup
 - elif baseline_copies is provided:
-    - absolute_cnv
+    - copy_number_count
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del
 - elif len del or dup > 100bp: (use outermost coordinates)
     - repeated_seq_expr with a derived_seq_expr subject (Allele)

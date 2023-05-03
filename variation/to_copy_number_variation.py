@@ -2,8 +2,8 @@
 from typing import Tuple, Optional, List, Union
 from datetime import datetime
 
-from ga4gh.vrsatile.pydantic.vrs_models import AbsoluteCopyNumber, RelativeCopyNumber, \
-    Text, RelativeCopyClass
+from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
+    Text, CopyChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
@@ -12,11 +12,11 @@ from gene.schemas import MatchType as GeneMatchType
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import \
-    HgvsToAbsoluteCopyNumberService, HgvsToRelativeCopyNumberService, \
-    VALID_RELATIVE_COPY_CLASS
-from variation.schemas.service_schema import AmplificationToRelCnvQuery, \
-    AmplificationToRelCnvService, ClinVarAssembly, ParsedToAbsCnvQuery, \
-    ParsedToAbsCnvService
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, \
+    VALID_COPY_CHANGE
+from variation.schemas.service_schema import AmplificationToCxVarQuery, \
+    AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
+    ParsedToCnVarService
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
@@ -31,11 +31,11 @@ class ToCopyNumberVariation(ToVRS):
     def _parsed_to_text(start: int, end: int, total_copies: int, warnings: List[str],
                         assembly: Optional[str] = None, chr: Optional[str] = None,
                         accession: Optional[str] = None) -> Tuple[Text, List[str]]:
-        """Return response for invalid query for parsed_to_abs_cnv
+        """Return response for invalid query for parsed_to_cn_var
 
         :param int start: Start position as residue coordinate
         :param int end: End position as residue coordinate
-        :param int total_copies: Total copies for Absolute Copy Number variation object
+        :param int total_copies: Total copies for Copy Number Count variation object
         :param List[str] warnings: List of warnings
         :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
             will ignore `assembly` and `chr`. If `accession` not set, must provide
@@ -63,11 +63,11 @@ class ToCopyNumberVariation(ToVRS):
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
         warnings: List[str], untranslatable_returns_text: bool = False
-    ) -> Tuple[Optional[Union[AbsoluteCopyNumber, RelativeCopyNumber, Text]], List[str]]:  # noqa: E501
+    ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:  # noqa: E501
         """Return copy number variation and warnings response
 
         :param HGVSDupDelModeEnum copy_number_type: The type of copy number variation.
-            Must be either `absolute_cnv` or `relative_cnv`
+            Must be either `copy_number_count` or `copy_number_change`
         :param str hgvs_expr: HGVS expression
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
@@ -97,16 +97,16 @@ class ToCopyNumberVariation(ToVRS):
                 text._id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
         else:
-            if copy_number_type == HGVSDupDelModeEnum.ABSOLUTE_CNV:
-                variation = AbsoluteCopyNumber(**variation)
+            if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+                variation = CopyNumberCount(**variation)
             else:
-                variation = RelativeCopyNumber(**variation)
+                variation = CopyNumberChange(**variation)
         return variation, warnings
 
-    async def hgvs_to_absolute_copy_number(
+    async def hgvs_to_copy_number_count(
         self, hgvs_expr: str, baseline_copies: int,
         do_liftover: bool = False, untranslatable_returns_text: bool = False
-    ) -> HgvsToAbsoluteCopyNumberService:
+    ) -> HgvsToCopyNumberCountService:
         """Given hgvs, return abolute copy number variation
 
         :param str hgvs_expr: HGVS expression
@@ -115,78 +115,78 @@ class ToCopyNumberVariation(ToVRS):
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
             unable to translate or normalize query.
-        :return: HgvsToAbsoluteCopyNumberService containing Absolute Copy Number
+        :return: HgvsToCopyNumberCountService containing Copy Number Count
             Variation and warnings
         """
         validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_ABSOLUTE_CN,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.ABSOLUTE_CNV,
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_COUNT,
             baseline_copies=baseline_copies, do_liftover=do_liftover
         )
-        abs_cnv, warnings = self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.ABSOLUTE_CNV, hgvs_expr, do_liftover, validations,
+        cn_var, warnings = self._hgvs_to_cnv_resp(
+            HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover, validations,
             warnings, untranslatable_returns_text)
 
-        return HgvsToAbsoluteCopyNumberService(
+        return HgvsToCopyNumberCountService(
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
                 response_datetime=datetime.now()
             ),
-            absolute_copy_number=abs_cnv
+            copy_number_count=cn_var
         )
 
-    async def hgvs_to_relative_copy_number(
-        self, hgvs_expr: str, relative_copy_class: Optional[RelativeCopyClass],
+    async def hgvs_to_copy_number_change(
+        self, hgvs_expr: str, copy_change: Optional[CopyChange],
         do_liftover: bool = False, untranslatable_returns_text: bool = False
-    ) -> HgvsToRelativeCopyNumberService:
-        """Given hgvs, return relative copy number variation
+    ) -> HgvsToCopyNumberChangeService:
+        """Given hgvs, return copy number change variation
 
         :param str hgvs_expr: HGVS expression
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
             unable to translate or normalize query.
-        :return: HgvsToRelativeCopyNumberService containing Relative Copy Number
+        :return: HgvsToCopyNumberChangeService containing Copy Number Change
             Variation and warnings
         """
-        if relative_copy_class and relative_copy_class.lower() not in VALID_RELATIVE_COPY_CLASS:  # noqa: E501
-            return None, [f"{relative_copy_class} is not a valid relative copy class: "
-                          f"{VALID_RELATIVE_COPY_CLASS}"]
+        if copy_change and copy_change.lower() not in VALID_COPY_CHANGE:  # noqa: E501
+            return None, [f"{copy_change} is not a valid copy change: "
+                          f"{VALID_COPY_CHANGE}"]
 
         validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_RELATIVE_CN,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.RELATIVE_CNV,
-            relative_copy_class=relative_copy_class, do_liftover=do_liftover
+            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_CHANGE,
+            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
+            copy_change=copy_change, do_liftover=do_liftover
         )
 
-        rel_cnv, warnings = self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.RELATIVE_CNV, hgvs_expr, do_liftover, validations,
+        cx_var, warnings = self._hgvs_to_cnv_resp(
+            HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover, validations,
             warnings, untranslatable_returns_text)
 
-        return HgvsToRelativeCopyNumberService(
+        return HgvsToCopyNumberChangeService(
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
                 response_datetime=datetime.now()
             ),
-            relative_copy_number=rel_cnv
+            copy_number_change=cx_var
         )
 
-    def parsed_to_abs_cnv(
+    def parsed_to_cn_var(
         self, start: int, end: int, total_copies: int,
         assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
         accession: Optional[str] = None, untranslatable_returns_text: bool = False
-    ) -> ParsedToAbsCnvService:
-        """Given parsed ClinVar Copy Number Gain/Loss components, return Absolute
-        Copy Number Variation
+    ) -> ParsedToCnVarService:
+        """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number
+        Count Variation
 
         :param int start: Start position as residue coordinate
         :param int end: End position as residue coordinate
-        :param int total_copies: Total copies for Absolute Copy Number variation object
+        :param int total_copies: Total copies for Copy Number Count variation object
         :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
             will ignore `assembly` and `chr`. If `accession` not set, must provide
             both `assembly` and `chr`.
@@ -197,13 +197,13 @@ class ToCopyNumberVariation(ToVRS):
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
             unable to translate or normalize query.
-        :return: ParsedToAbsCnvService containing Absolute Copy Number variation
+        :return: ParsedToCnVarService containing Copy Number Count variation
             and list of warnings
         """
         variation = None
         warnings = list()
         try:
-            og_query = ParsedToAbsCnvQuery(
+            og_query = ParsedToCnVarQuery(
                 assembly=assembly, chr=chr, accession=accession, start=start, end=end,
                 total_copies=total_copies)
         except ValidationError as e:
@@ -222,7 +222,7 @@ class ToCopyNumberVariation(ToVRS):
 
                 if assembly != ClinVarAssembly.NCBI36:
                     # Variation Normalizer does not support NCBI36 yet
-                    query = f"{assembly}:{chr}"
+                    query = f"{assembly.value}:{chr}"
                     aliases, w = self.seqrepo_access.translate_identifier(query)
                     if w:
                         warnings.append(w)
@@ -231,7 +231,9 @@ class ToCopyNumberVariation(ToVRS):
                         if not accession:
                             warnings.append(f"Unable to find RefSeq accession for {query}")  # noqa: E501
                 else:
-                    warnings.append(f"{assembly} assembly is not current supported")
+                    warnings.append(
+                        f"{assembly.value} assembly is not currently supported"
+                    )
             else:
                 warnings.append("Must provide either `accession` or both `assembly` "
                                 "and `chr`.")
@@ -285,17 +287,18 @@ class ToCopyNumberVariation(ToVRS):
                     )
                     location._id = ga4gh_identify(location)
                     variation = {
-                        "type": "AbsoluteCopyNumber",
+                        "type": "CopyNumberCount",
                         "subject": location.as_dict(),
                         "copies": {"value": total_copies, "type": "Number"}
                     }
-                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
-                        variation, is_abs=True)
-                    variation = AbsoluteCopyNumber(**variation)
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberCount(**variation)
+                    )
+                    variation = CopyNumberCount(**variation)
 
-        return ParsedToAbsCnvService(
+        return ParsedToCnVarService(
             query=og_query,
-            absolute_copy_number=variation,
+            copy_number_count=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
@@ -303,11 +306,11 @@ class ToCopyNumberVariation(ToVRS):
             )
         )
 
-    def amplification_to_rel_cnv(
+    def amplification_to_cx_var(
         self, gene: str, sequence_id: Optional[str] = None, start: Optional[int] = None,
         end: Optional[int] = None, untranslatable_returns_text: bool = False
-    ) -> AmplificationToRelCnvService:
-        """Return Relative Copy Number Variation for Amplification query
+    ) -> AmplificationToCxVarService:
+        """Return Copy Number Change Variation for Amplification query
         Parameter priority:
             1. sequence_id, start, end (must provide ALL)
             2. use the gene-normalizer to get the SequenceLocation
@@ -322,14 +325,14 @@ class ToCopyNumberVariation(ToVRS):
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` return `None` when
             unable to translate or normalize query.
-        :return: AmplificationToRelCnvService containing Relative Copy Number and
+        :return: AmplificationToCxVarService containing Copy Number Change and
             list of warnings
         """
         warnings = list()
         amplification_label = None
         variation = None
         try:
-            og_query = AmplificationToRelCnvQuery(
+            og_query = AmplificationToCxVarQuery(
                 gene=gene, sequence_id=sequence_id, start=start, end=end)
         except ValidationError as e:
             warnings.append(str(e))
@@ -376,13 +379,14 @@ class ToCopyNumberVariation(ToVRS):
                 if vrs_location:
                     vrs_location._id = ga4gh_identify(vrs_location)
                     variation = {
-                        "type": "RelativeCopyNumber",
+                        "type": "CopyNumberChange",
                         "subject": vrs_location.as_dict(),
-                        "relative_copy_class": RelativeCopyClass.HIGH_LEVEL_GAIN.value
+                        "copy_change": CopyChange.HIGH_LEVEL_GAIN.value
                     }
-                    variation = self.hgvs_dup_del_mode._ga4gh_identify_cnv(
-                        variation, is_abs=False)
-                    variation = RelativeCopyNumber(**variation)
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberChange(**variation)
+                    )
+                    variation = CopyNumberChange(**variation)
             else:
                 warnings.append(f"gene-normalizer returned no match for gene: {gene}")
 
@@ -391,10 +395,10 @@ class ToCopyNumberVariation(ToVRS):
             text_variation.id = ga4gh_identify(text_variation)
             variation = Text(**text_variation.as_dict())
 
-        return AmplificationToRelCnvService(
+        return AmplificationToCxVarService(
             query=og_query,
             amplification_label=amplification_label,
-            relative_copy_number=variation,
+            copy_number_change=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
