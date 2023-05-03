@@ -43,6 +43,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 461	PML	B2 DOMAIN MUTATION	Region Defined Variant	True
 3312	FGFR1	BAG4::FGFR1	Fusion	False
 3251	BCOR	BCOR::CCNB3	Fusion	False
+3804	ABL1	BCR-ABL	Fusion	False
 1	ABL1	BCR::ABL	Fusion	True
 1607	ABL1	BCR::ABL A365V	Fusion	False
 1608	ABL1	BCR::ABL A366G	Fusion	False
@@ -711,7 +712,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3203	ATRX	Mutation	Region Defined Variant	True
 3274	PDGFRA	Mutation	Region Defined Variant	True
 4018	MS4A1	Mutation	Region Defined Variant	True
-4437	PPP2R2A	Mutation	Region Defined Variant	False
+4437	PPP2R2A	Mutation	Region Defined Variant	True
 4438	RAD54L	Mutation	Region Defined Variant	True
 4439	BRIP1	Mutation	Region Defined Variant	True
 4440	BARD1	Mutation	Region Defined Variant	True

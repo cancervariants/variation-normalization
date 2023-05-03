@@ -2,6 +2,7 @@ variant_id	query	query_type	variant_accepted	exception_raised	message	warnings
 748	MLH1 *757L	protein	True	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3718	AR A748V	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3725	AR A765T	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+4448	ABL1 BCR-ABL T315I	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 248	TERT C228T	protein	True	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 4004	TERT C250T	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3706	AR D221H	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"

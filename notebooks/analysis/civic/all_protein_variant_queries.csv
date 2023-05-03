@@ -118,6 +118,8 @@ variant_id	gene_name	variant_name	variant_accepted
 3687	KMT2A	Amplification	False
 4301	ALK	Amplification	True
 4423	TBXT	Amplification	False
+3804	ABL1	BCR-ABL	False
+4448	ABL1	BCR-ABL T315I	False
 4331	ALK	C1156Y	True
 627	MAP2K1	C121S	True
 4113	TP53	C124R	True
@@ -731,6 +733,7 @@ variant_id	gene_name	variant_name	variant_accepted
 1032	NOTCH1	L1574P	False
 1145	NOTCH1	L1574Q	False
 1142	NOTCH1	L1585R	False
+4449	ERBB2	L15F	False
 1031	NOTCH1	L1600P	False
 1140	NOTCH1	L1600Q	False
 1034	NOTCH1	L1678P	False
