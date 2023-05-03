@@ -909,11 +909,11 @@ def genomic_dup1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup1_38_vac(genomic_dup1_seq_loc):
-    """Create test fixture for absolute copy number dup1 on GRCh38"""
+def genomic_dup1_38_cn(genomic_dup1_seq_loc):
+    """Create test fixture for copy number count dup1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.nZodtrYoDtBJ1kdKCO6zLd7QR7ho4s9v",
+        "type": "CopyNumberCount",
+        "_id": "ga4gh:CN.wIUwSQ9MQdv-2dsoDo-RjI97iK3Mn5m6",
         "subject": genomic_dup1_seq_loc,
         "copies": {"type": "Number", "value": 3}
     }
@@ -935,11 +935,11 @@ def genomic_dup2_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup2_38_vac(genomic_dup2_seq_loc):
-    """Create test fixture for absolute copy number dup2 on GRCh38"""
+def genomic_dup2_38_cn(genomic_dup2_seq_loc):
+    """Create test fixture for copy number count dup2 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.0ORNFtrjvEWHYxg3hzO50N16KBm1F2ev",
+        "type": "CopyNumberCount",
+        "_id": "ga4gh:CN.2ByO6IxnL3qVjpFfMBUzPHa45NW1JNJy",
         "subject": genomic_dup2_seq_loc,
         "copies": {"type": "Number", "value": 3}
     }
@@ -969,8 +969,8 @@ def genomic_del3_dup3_loc():
 
 
 @pytest.fixture(scope="session")
-def genoimc_dup4_loc():
-    """Create genoimc dup4 sequence location"""
+def genomic_dup4_loc():
+    """Create genomic dup4 sequence location"""
     return {
         "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
         "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
@@ -993,7 +993,7 @@ def genoimc_dup4_loc():
 
 @pytest.fixture(scope="session")
 def genomic_dup5_loc():
-    """Create genoimc dup5 sequence location"""
+    """Create genomic dup5 sequence location"""
     return {
         "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -1014,8 +1014,8 @@ def genomic_dup5_loc():
 
 
 @pytest.fixture(scope="session")
-def genoimc_dup6_loc():
-    """Create genoimc dup6 sequence location"""
+def genomic_dup6_loc():
+    """Create genomic dup6 sequence location"""
     return {
         "_id": "ga4gh:VSL.h0_xXu36uSnPEuLoxvVmTAFQCS1ZFuLN",
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -1051,11 +1051,11 @@ def genomic_del1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del1_38_vac(genomic_del1_seq_loc):
-    """Create test fixture for absolute copy number del1 on GRCh38"""
+def genomic_del1_38_cn(genomic_del1_seq_loc):
+    """Create test fixture for copy number count del1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.bKH1_cS8JOdpvVK3x21RuwMKCo-ETfMK",
+        "type": "CopyNumberCount",
+        "_id": "ga4gh:CN.ms5s89_fFM9tcIzgPhs_Bvj-2m8TRZFh",
         "subject": genomic_del1_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
@@ -1077,11 +1077,11 @@ def genomic_del2_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del2_38_vac(genomic_del2_seq_loc):
-    """Create test fixture for absolute copy number del1 on GRCh38"""
+def genomic_del2_38_cn(genomic_del2_seq_loc):
+    """Create test fixture for copy number count del1 on GRCh38"""
     return {
-        "type": "AbsoluteCopyNumber",
-        "_id": "ga4gh:VAC.GqRBxR7bquLskRhgmcUiS3tdbwiJ4dDk",
+        "type": "CopyNumberCount",
+        "_id": "ga4gh:CN.sO2So0Kj3-Op_1XTRrs2vW9JQ7lcYL30",
         "subject": genomic_del2_seq_loc,
         "copies": {"type": "Number", "value": 1}
     }
@@ -1186,7 +1186,7 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 @pytest.fixture(scope="session")
 def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
     """Create test fixture for BRAF Amplification"""
-    _id = "ga4gh:VRC.xen6aWxQhI6dPTFqBWOx1z9MPJ41gzn2"
+    _id = "ga4gh:CX.TZBOQe5xFojvFJ1XjQQD0633rStHtGUs"
     params = {
         "id": "normalize.variation:BRAF%20Amplification",
         "type": "VariationDescriptor",
@@ -1194,8 +1194,8 @@ def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
         "variation": {
             "_id": _id,
             "subject": braf_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
-            "type": "RelativeCopyNumber"
+            "copy_change": "efo:0030072",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001880",
@@ -1207,7 +1207,7 @@ def braf_amplification(braf_ncbi_seq_loc, braf_gene_context):
 @pytest.fixture(scope="session")
 def prpf8_amplification(prpf8_ncbi_seq_loc, prpf8_gene_context):
     """Create test fixture for PRPF8 Amplification"""
-    _id = "ga4gh:VRC.7t6n9UAxMmw4UCE1EEytBKJxQtslWlen"
+    _id = "ga4gh:CX.UD9c0niZWqC5vDSkFUGkMAdwWcZOHV32"
     params = {
         "id": "normalize.variation:PRPF8%20AMPLIFICATION",
         "type": "VariationDescriptor",
@@ -1215,8 +1215,8 @@ def prpf8_amplification(prpf8_ncbi_seq_loc, prpf8_gene_context):
         "variation": {
             "_id": _id,
             "subject": prpf8_ncbi_seq_loc,
-            "relative_copy_class": "high-level gain",
-            "type": "RelativeCopyNumber"
+            "copy_change": "efo:0030072",
+            "type": "CopyNumberChange"
         },
         "molecule_context": "genomic",
         "structural_type": "SO:0001880",

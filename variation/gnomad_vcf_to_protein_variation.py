@@ -294,9 +294,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         )
                         continue
 
-                    chromosome = q.split("-")[:-1][0]
                     mane_data = self.mane_transcript_mappings.get_mane_data_from_chr_pos(  # noqa: E501
-                        chromosome, g_start_pos, g_end_pos)
+                        alt_ac, g_start_pos, g_end_pos)
                     mane_data_len = len(mane_data)
                     g_start_pos -= 1
                     g_end_pos -= 1

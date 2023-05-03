@@ -56,20 +56,18 @@ class QueryHandler:
         if not mane_data_path:
             mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
 
-        if not gene_query_handler:
-            gene_query_handler = GeneQueryHandler(
-                db_url=dynamodb_url, db_region=dynamodb_region
-            )
-
         cool_seq_tool = CoolSeqTool(
             transcript_file_path=transcript_file_path,
             lrg_refseqgene_path=refseq_file_path,
             mane_data_path=mane_data_path,
             db_url=uta_db_url,
             db_pwd=uta_db_pwd,
-            gene_query_handler=gene_query_handler
+            gene_query_handler=gene_query_handler,
+            gene_db_url=dynamodb_url,
+            gene_db_region=dynamodb_region
         )
         self._seqrepo_access = cool_seq_tool.seqrepo_access
+        gene_query_handler = cool_seq_tool.gene_query_handler
 
         vrs_representation = VRSRepresentation(self._seqrepo_access)
         gene_symbol = GeneSymbol(gene_query_handler)
