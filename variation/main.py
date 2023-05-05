@@ -3,7 +3,9 @@ from enum import Enum
 from typing import Dict, List, Optional, Union
 from datetime import datetime
 from urllib.parse import unquote
-import threading
+import queue
+import os
+from contextlib import contextmanager
 
 import pkg_resources
 from fastapi import FastAPI, Query
@@ -47,12 +49,25 @@ app = FastAPI(
 )
 
 
-@app.on_event("startup")
-def initialize_query_handler():
-    if "query_handler" not in globals():
-        global query_handler
-        query_handler = QueryHandler()
-        setattr(query_handler, "lock", threading.Lock())
+# QueryHandler has a reference to a seqrepo object that cannot be shared
+# by concurrent threads. ASGI executors like Uvicorn, etc, can
+# schedule multiple userspace threads to a single real thread if one thread
+# blocks for I/O, freeing up the CPU thread and for another python userspace thread.
+# This pool lets a number of userspace threads be in QueryHandler code concurrently.
+# This is only helpful if waiting for I/O is a nontrivial amount of the time a
+# thread spends in QueryHandler.
+if "query_handlers" not in globals():
+    query_handlers = queue.Queue()
+    for i in range(int(os.environ.get("VARIATION_QUERYHANDLER_POOL_SIZE", 4))):
+        query_handlers.put(QueryHandler())
+
+@contextmanager
+def pooled_query_handler():
+    qh = query_handlers.get()
+    try:
+        yield qh
+    finally:
+        query_handlers.put(qh)
 
 
 def custom_openapi() -> Dict:
@@ -112,7 +127,7 @@ async def to_vrs(
         unable to translate or normalize query.
     :return: ToVRSService model for variation
     """
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = await query_handler.to_vrs_handler.to_vrs(unquote(q),
                                                      untranslatable_returns_text)
     return resp
@@ -172,8 +187,7 @@ async def normalize(
         unable to translate or normalize query.
     :return: NormalizeService for variation
     """
-
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         normalize_resp = await query_handler.normalize_handler.normalize(
             unquote(q), hgvs_dup_del_mode=hgvs_dup_del_mode,
             baseline_copies=baseline_copies, copy_change=copy_change,
@@ -203,7 +217,7 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        with query_handler.lock:
+        with pooled_query_handler() as query_handler:
             aliases = query_handler._seqrepo_access.sr.translate_identifier(
                 identifier, target_namespaces=target_namespaces)
     except KeyError:
@@ -252,7 +266,7 @@ def vrs_python_translate_from(
     warnings = list()
     vrs_variation = None
     try:
-        with query_handler.lock:
+        with pooled_query_handler() as query_handler:
             resp = query_handler._tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
@@ -304,7 +318,7 @@ async def gnomad_vcf_to_protein(
     :return: NormalizeService for variation
     """
     q = unquote(q.strip())
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
             q, untranslatable_returns_text=untranslatable_returns_text)
     return resp
@@ -362,7 +376,7 @@ async def to_canonical_variation(
     :return: ToCanonicalVariationService for variation query
     """
     q = unquote(q)
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = await query_handler.to_canonical_handler.to_canonical_variation(
             q, fmt, do_liftover=do_liftover,
             hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
@@ -420,7 +434,7 @@ async def vrs_python_translate_to(
     variations = list()
     if allele:
         try:
-            with query_handler.lock:
+            with pooled_query_handler() as query_handler:
                 variations = await query_handler._tlr.translate_to(allele, request_body["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
@@ -473,7 +487,7 @@ async def vrs_python_to_hgvs(
     variations = list()
     if allele:
         try:
-            with query_handler.lock:
+            with pooled_query_handler() as query_handler:
                 variations = await query_handler._tlr._to_hgvs(
                     allele, namespace=request_body.get("namespace") or "refseq")
         except ValueError as e:
@@ -517,7 +531,7 @@ async def hgvs_to_copy_number_count(
         unable to translate or normalize query.
     :return: HgvsToCopyNumberCountService
     """
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_count(
             unquote(hgvs_expr.strip()), baseline_copies, do_liftover,
             untranslatable_returns_text=untranslatable_returns_text)
@@ -548,7 +562,7 @@ async def hgvs_to_copy_number_change(
         unable to translate or normalize query.
     :return: HgvsToCopyNumberChangeService
     """
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_change(
             unquote(hgvs_expr.strip()), copy_change, do_liftover,
             untranslatable_returns_text=untranslatable_returns_text)
@@ -600,7 +614,7 @@ def parsed_to_cn_var(
         unable to translate or normalize query.
     :return: Tuple containing Copy Number Count variation and list of warnings
     """
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = query_handler.to_copy_number_handler.parsed_to_cn_var(
             start, end, total_copies, assembly, chr, accession,
             untranslatable_returns_text=untranslatable_returns_text)
@@ -646,7 +660,7 @@ def amplification_to_cx_var(
     :return: AmplificationToCxVarService containing Copy Number Change and
         list of warnings
     """
-    with query_handler.lock:
+    with pooled_query_handler() as query_handler:
         resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
             gene=gene, sequence_id=sequence_id, start=start, end=end,
             untranslatable_returns_text=untranslatable_returns_text)
