@@ -352,6 +352,7 @@ variant_id	query	query_type	variant_accepted
 1162	ATM E2187*	protein	True
 3780	TP53 E224K	protein	True
 4427	MTOR E2419K	protein	True
+3	ABL1 E255K	protein	True
 1601	ABL1 E258D	protein	False
 3772	TP53 E258K	protein	True
 1552	MAPK1 E278E	protein	False

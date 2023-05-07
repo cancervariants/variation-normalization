@@ -118,8 +118,6 @@ variant_id	gene_name	variant_name	variant_accepted
 3687	KMT2A	Amplification	False
 4301	ALK	Amplification	True
 4423	TBXT	Amplification	False
-3804	ABL1	BCR-ABL	False
-4448	ABL1	BCR-ABL T315I	False
 4331	ALK	C1156Y	True
 627	MAP2K1	C121S	True
 4113	TP53	C124R	True
@@ -314,6 +312,7 @@ variant_id	gene_name	variant_name	variant_accepted
 1162	ATM	E2187*	True
 3780	TP53	E224K	True
 4427	MTOR	E2419K	True
+3	ABL1	E255K	True
 1601	ABL1	E258D	False
 3772	TP53	E258K	True
 1552	MAPK1	E278E	False
@@ -1259,7 +1258,6 @@ variant_id	gene_name	variant_name	variant_accepted
 262	ABCB1	S893T	True
 3652	KDR	S925F	False
 3645	PIM1	S97N	True
-4425	SMARCB1	Single nucleotide variant	False
 4330	ALK	T1151K	False
 1493	ALK	T1151M	False
 743	MLH1	T117M	True

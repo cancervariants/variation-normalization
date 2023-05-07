@@ -43,7 +43,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 461	PML	B2 DOMAIN MUTATION	Region Defined Variant	True
 3312	FGFR1	BAG4::FGFR1	Fusion	False
 3251	BCOR	BCOR::CCNB3	Fusion	False
-3804	ABL1	BCR-ABL	Fusion	False
 1	ABL1	BCR::ABL	Fusion	True
 1607	ABL1	BCR::ABL A365V	Fusion	False
 1608	ABL1	BCR::ABL A366G	Fusion	False
@@ -51,7 +50,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1027	ABL1	BCR::ABL D276G	Fusion	True
 2900	ABL1	BCR::ABL D363G	Fusion	True
 1532	ABL1	BCR::ABL D421G	Fusion	True
-3	ABL1	BCR::ABL E255K	Fusion	True
 2890	ABL1	BCR::ABL E255K V299L	Fusion	True
 1173	ABL1	BCR::ABL E255V	Fusion	True
 1526	ABL1	BCR::ABL E279K	Fusion	True
@@ -70,7 +68,6 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2358	ABL1	BCR::ABL F311V	Fusion	False
 2359	ABL1	BCR::ABL F317C	Fusion	True
 1625	ABL1	BCR::ABL F317I	Fusion	True
-241	ABL1	BCR::ABL F317L	Fusion	False
 2888	ABL1	BCR::ABL F317R	Fusion	True
 2343	ABL1	BCR::ABL F317S	Fusion	True
 1184	ABL1	BCR::ABL F359C	Fusion	True
@@ -581,6 +578,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2754	PRKN	Loss	Gene Function	False
 3202	SMARCB1	Loss	Gene Function	True
 4310	KDM6A	Loss	Gene Function	False
+4452	TP53	Loss	Gene Function	True
 125	TSC1	Loss-of-function	Gene Function	True
 131	BRCA1	Loss-of-function	Gene Function	True
 132	BRCA2	Loss-of-function	Gene Function	True
@@ -1045,6 +1043,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2218	ALK	STRN::ALK	Fusion	True
 2287	NTRK2	STRN::NTRK2	Fusion	True
 3108	VHL	Single Allele Deletion	Genotypes Compound	False
+4425	SMARCB1	Single nucleotide variant	Region Defined Variant	False
 3409	TEK	T1105N and T1106N	Protein Consequence	False
 4389	ALK	T1151dup	Copy Number	True
 810	RUNX1	T148HFSX9	Protein Consequence	True
@@ -1149,6 +1148,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2174	EGFR	Wildtype	Genotypes Easy	True
 2590	PIK3CA	Wildtype	Genotypes Easy	True
 3200	KRAS	Wildtype	Genotypes Easy	True
+4465	NRAS	Wildtype	Genotypes Easy	False
 390	EGFR	Y1092 PHOSPHORYLATION	Epigenetic Modification	True
 245	NF2	Y177fs	Protein Consequence	True
 2720	TP53	Y205	Protein Consequence	False
@@ -1180,6 +1180,8 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3323	VEGFA	low ratio of VEGF165b/VEGFtotal	Expression	False
 2845	HOXD8	mutation	Region Defined Variant	False
 4436	CHEK2	mutation	Region Defined Variant	True
+4463	TSC1	mutation	Region Defined Variant	False
+4464	TSC2	mutation	Region Defined Variant	False
 3322	VEGFA	overexpression of VEGF-Axxxa	Expression	False
 2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number	True
 3057	GATA1	p.Ser51Alafs*86	Protein Consequence	False
