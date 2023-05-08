@@ -312,6 +312,7 @@ variant_id	gene_name	variant_name	variant_accepted
 1162	ATM	E2187*	True
 3780	TP53	E224K	True
 4427	MTOR	E2419K	True
+3	ABL1	E255K	True
 1601	ABL1	E258D	False
 3772	TP53	E258K	True
 1552	MAPK1	E278E	False
@@ -731,6 +732,7 @@ variant_id	gene_name	variant_name	variant_accepted
 1032	NOTCH1	L1574P	False
 1145	NOTCH1	L1574Q	False
 1142	NOTCH1	L1585R	False
+4449	ERBB2	L15F	False
 1031	NOTCH1	L1600P	False
 1140	NOTCH1	L1600Q	False
 1034	NOTCH1	L1678P	False
@@ -1256,7 +1258,6 @@ variant_id	gene_name	variant_name	variant_accepted
 262	ABCB1	S893T	True
 3652	KDR	S925F	False
 3645	PIM1	S97N	True
-4425	SMARCB1	Single nucleotide variant	False
 4330	ALK	T1151K	False
 1493	ALK	T1151M	False
 743	MLH1	T117M	True

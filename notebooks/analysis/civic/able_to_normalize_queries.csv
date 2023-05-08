@@ -352,6 +352,7 @@ variant_id	query	query_type	variant_accepted
 1162	ATM E2187*	protein	True
 3780	TP53 E224K	protein	True
 4427	MTOR E2419K	protein	True
+3	ABL1 E255K	protein	True
 1601	ABL1 E258D	protein	False
 3772	TP53 E258K	protein	True
 1552	MAPK1 E278E	protein	False
@@ -841,6 +842,7 @@ variant_id	query	query_type	variant_accepted
 1738	NC_000003.11:g.10191480T>C	genomic	True
 2467	NC_000003.11:g.10191480T>A	genomic	False
 1803	NC_000003.11:g.10191479C>G	genomic	True
+4449	ERBB2 L15F	protein	False
 1031	NOTCH1 L1600P	protein	False
 1140	NOTCH1 L1600Q	protein	False
 2505	NC_000003.11:g.10191494C>T	genomic	False
@@ -1526,6 +1528,7 @@ variant_id	query	query_type	variant_accepted
 2146	NC_000003.11:g.10188323A>T	genomic	False
 2292	NC_000003.11:g.10188328C>T	genomic	True
 1681	NC_000009.11:g.5070054T>G	genomic	True
+4374	NC_000007.14:g.116771990G>T	genomic	False
 4386	NC_000007.14:g.116771989G>A	genomic	True
 2114	NC_000003.11:g.10183872G>A	genomic	True
 2074	NC_000003.11:g.10183872G>T	genomic	False

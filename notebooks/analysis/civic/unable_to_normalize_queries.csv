@@ -50,7 +50,6 @@ variant_id	query	query_type	variant_accepted	exception_raised	message	warnings
 3677	NOTCH1 S2514P	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3709	AR S296R	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3723	AR S759P	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
-4425	SMARCB1 Single nucleotide variant	protein	False	False	unable to normalize	['Unable to tokenize Single', 'Unable to tokenize nucleotide', 'Unable to tokenize variant']
 3675	NOTCH1 T2512A	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 1546	KIT T417_D419DELTYDINSI	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein deletion'}""]"
 3445	BRAF T598I	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"

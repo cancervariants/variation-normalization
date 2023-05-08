@@ -1,11 +1,9 @@
 """Module for Amplification validation"""
 from typing import List, Dict, Optional
-import copy
-import json
 
-from ga4gh.vrsatile.pydantic.vrs_models import RelativeCopyClass, RelativeCopyNumber
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberChange
 from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify, sha512t24u
+from ga4gh.core import ga4gh_identify
 
 from variation.schemas.token_response_schema import GeneMatchToken, TokenType
 from variation.schemas.classification_response_schema import Classification,\
@@ -28,7 +26,7 @@ class Amplification(Validator):
         hgvs_dup_del_mode: HGVSDupDelModeEnum,
         endpoint_name: Optional[Endpoint] = None,
         baseline_copies: Optional[int] = None,
-        relative_copy_class: Optional[RelativeCopyClass] = None,
+        copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> None:
         """Add validation result objects to a list of results.
@@ -42,12 +40,13 @@ class Amplification(Validator):
         :param Dict mane_data_found: MANE Transcript information found
         :param bool is_identifier: `True` if identifier is given for exact
             location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`, `absolute_cnv`,
-            `relative_cnv`, `repeated_seq_expr`, `literal_seq_expr`. This parameter
-            determines how to represent HGVS dup/del expressions as VRS objects.
+        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
+            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
+            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
+            expressions as VRS objects.
         :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
         :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[RelativeCopyClass] relative_copy_class: The relative copy class
+        :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
         valid_variations = list()
@@ -55,7 +54,7 @@ class Amplification(Validator):
                              if token.token_type == "GeneSymbol"]
         for s in classification_tokens:
             errors = list()
-            rcn = None
+            cx = None
 
             if gene_match_tokens:
                 gene_match_token = gene_match_tokens[0]
@@ -64,31 +63,23 @@ class Amplification(Validator):
                 seq_loc = get_priority_sequence_location(
                     gene_descriptor, self.seqrepo_access)
                 if seq_loc:
-                    # This will be simplified once RCN gets added to VRS officially
                     seq_loc_vo = models.SequenceLocation(**seq_loc)
                     seq_loc_vo._id = ga4gh_identify((seq_loc_vo))
                     variation = {
-                        "type": "RelativeCopyNumber",
+                        "type": "CopyNumberChange",
                         "subject": seq_loc_vo.as_dict(),
-                        "relative_copy_class": RelativeCopyClass.HIGH_LEVEL_GAIN.value
+                        "copy_change": CopyChange.HIGH_LEVEL_GAIN.value
                     }
-
-                    copy_variation = copy.deepcopy(variation)
-                    location_id = variation["subject"]["_id"].split(".")[-1]
-                    copy_variation["subject"] = location_id
-                    serialized = json.dumps(
-                        copy_variation, sort_keys=True, separators=(",", ":"),
-                        indent=None
-                    ).encode("utf-8")
-                    digest = sha512t24u(serialized)
-                    variation["_id"] = f"ga4gh:VRC.{digest}"
-                    rcn = RelativeCopyNumber(**variation).dict(by_alias=True)
+                    variation["_id"] = ga4gh_identify(
+                        models.CopyNumberChange(**variation)
+                    )
+                    cx = CopyNumberChange(**variation).dict(by_alias=True)
                 else:
                     errors.append(f"No SequenceLocation found for gene: {gene}")
             else:
                 errors.append("No gene_tokens found")
 
-            self.add_validation_result(rcn, valid_variations, results, classification,
+            self.add_validation_result(cx, valid_variations, results, classification,
                                        s, None, gene_tokens, errors)
 
     def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:

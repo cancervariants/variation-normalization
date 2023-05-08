@@ -1314,135 +1314,105 @@ genomic_uncertain_deletion:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
       variations: [
         {
-          "_id": "ga4gh:VAC.oCrOJZcSJ-knvR1l6u-wpPNNMCLDCB0L",
+          "_id": "ga4gh:CX.uHRB-mwjqAZlyOBE6Zi-T7QcKJVimIj-",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
-              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-              "interval": {
-                "start": {
-                  "value": 31120495,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 33339477,
-                  "comparator": ">=",
-                  "type": "IndefiniteRange"
-                },
-                "type": "SequenceInterval"
+            "_id": "ga4gh:VSL.7OJ5EFgu_2C4zPFDUBgn-ziE6BZwsRcv",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 31120495,
+                "comparator": "<="
               },
-              "type": "SequenceLocation"
-            },
-            "reverse_complement": false,
-            "type": "DerivedSequenceExpression"
+              "end": {
+                "type": "IndefiniteRange",
+                "value": 33339477,
+                "comparator": ">="
+              }
+            }
           },
-          "copies": {
-            "min": 0,
-            "max": 1,
-            "type": "DefiniteRange"
-          },
-          "type": "AbsoluteCopyNumber"
+          "copy_change": "efo:0030067"
         }
       ]
     - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
       variations: [
         {
-          "_id": "ga4gh:VAC.sBsyUfIqJcBr2Sl7rsscPcjlId-wX9_V",
+          "_id": "ga4gh:CX.-RbBxVNVr1CpSRj2YT9ZNt8s4HnZ1Ntj",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.7Chaj1X9NH2G9sSK1diUKgBEZO4pHqr8",
-              "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-              "interval": {
-                "start": {
-                  "value": 31138612,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 33357594,
-                  "comparator": ">=",
-                  "type": "IndefiniteRange"
-                },
-                "type": "SequenceInterval"
+            "_id": "ga4gh:VSL.7Chaj1X9NH2G9sSK1diUKgBEZO4pHqr8",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 31138612,
+                "comparator": "<="
               },
-              "type": "SequenceLocation"
-            },
-            "reverse_complement": false,
-            "type": "DerivedSequenceExpression"
+              "end": {
+                "type": "IndefiniteRange",
+                "value": 33357594,
+                "comparator": ">="
+              }
+            }
           },
-          "copies": {
-            "min": 0,
-            "max": 1,
-            "type": "DefiniteRange"
-          },
-          "type": "AbsoluteCopyNumber"
+          "copy_change": "efo:0030067"
         }
       ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
       variations: [
         {
-          "_id": "ga4gh:VAC.YbFydbdyDgV2Fx98lpEMxe2OVHVmHajh",
+          "_id": "ga4gh:CX.-tpZfYtOs2UbIsA6hWhhxczsGKxXjb4L",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
-              "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
-              "interval": {
-                "start": {
-                  "value": 110104899,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 110207160,
-                  "comparator": ">=",
-                  "type": "IndefiniteRange"
-                },
-                "type": "SequenceInterval"
+            "_id": "ga4gh:VSL.75GQmJvq7dyP9-wom8Jffjk0Q9Le7Q9O",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 110104899,
+                "comparator": "<="
               },
-              "type": "SequenceLocation"
-            },
-            "reverse_complement": false,
-            "type": "DerivedSequenceExpression"
+              "end": {
+                "type": "IndefiniteRange",
+                "value": 110207160,
+                "comparator": ">="
+              }
+            }
           },
-          "copies": {
-            "value": 1,
-            "type": "Number"
-          },
-          "type": "AbsoluteCopyNumber"
+          "copy_change": "efo:0030067"
         }
       ]
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
       variations: [
         {
-          "_id": "ga4gh:VAC.4fWz-8U8KVIx-PpeQPHncHyh_o7dpDiD",
+          "_id": "ga4gh:CX.WjmRj-I2AvGDjMEY-SNPNdYEhgFBAGJl",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
-              "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-              "interval": {
-                "start": {
-                  "value": 14076801,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 57165209,
-                  "comparator": ">=",
-                  "type": "IndefiniteRange"
-                },
-                "type": "SequenceInterval"
+            "_id": "ga4gh:VSL.1xIN_RumlXTIsdTWvyJznzuzxJlwUfiD",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 14076801,
+                "comparator": "<="
               },
-              "type": "SequenceLocation"
-            },
-            "reverse_complement": false,
-            "type": "DerivedSequenceExpression"
+              "end": {
+                "type": "IndefiniteRange",
+                "value": 57165209,
+                "comparator": ">="
+              }
+            }
           },
-          "copies": {
-            "value": 0,
-            "type": "Number"
-          },
-          "type": "AbsoluteCopyNumber"
+          "copy_change": "efo:0030067"
         }
       ]
 
@@ -1493,100 +1463,77 @@ genomic_duplication:
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
       variations: [
         {
-          "_id": "ga4gh:VAC.LT_jOeYNJg6UblsnItIhX0tppRff4fCh",
-          "type": "AbsoluteCopyNumber",
+          "_id": "ga4gh:CX.4VtgQTAnp-X0IRWweZ9x2CqQfRtONWAm",
+          "type": "CopyNumberChange",
           "subject": {
-              "location": {
-                  "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
-                  "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-                  "interval": {
-                      "type": "SequenceInterval",
-                      "start": {
-                          "min": 31060226,
-                          "max": 31100350,
-                          "type": "DefiniteRange"
-                      },
-                      "end": {
-                          "min": 33274279,
-                          "max": 33417152,
-                          "type": "DefiniteRange"
-                      }
-                  },
-                  "type": "SequenceLocation",
+            "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "DefiniteRange",
+                "min": 31060226,
+                "max": 31100350
               },
-              "reverse_complement": False,
-              "type": "DerivedSequenceExpression"
+              "end": {
+                "type": "DefiniteRange",
+                "min": 33274279,
+                "max": 33417152
+              }
+            }
           },
-          "copies": {
-              "type": "DefiniteRange",
-              "min": 2,
-              "max": 3
-          }
+          "copy_change": "efo:0030070"
         }
       ]
     - query: NC_000023.11:g.(?_154021812)_154092209dup
       variations: [
         {
-          "_id": "ga4gh:VAC.aaz7BxN1V9TzvG934_kSQbbPNCT6vHU1",
-          "type": "AbsoluteCopyNumber",
+          "_id": "ga4gh:CX.-Z7Yy8iVAAOjxPiOsOcctd5AdXF_iDFV",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
-              "type": "SequenceLocation",
-              "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
-              "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                  "value": 154021811,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 154092209,
-                  "type": "Number"
-                }
+            "_id": "ga4gh:VSL.k2FXLyqyS8pbtZxEHCpNd2SHD6iCtH9C",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 154021811,
+                "comparator": "<="
+              },
+              "end": {
+                "type": "Number",
+                "value": 154092209
               }
-            },
-            "reverse_complement": false,
-            "type": "DerivedSequenceExpression"
+            }
           },
-          "copies": {
-            "min": 2,
-            "max": 3,
-            "type": "DefiniteRange"
-          }
+          "copy_change": "efo:0030070"
         }
       ]
     - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
       variations: [
         {
-          "_id": "ga4gh:VAC.aHxuxlXZTVm-HroDd34Jh9BNPrgVHtML",
-          "type": "AbsoluteCopyNumber",
+          "_id": "ga4gh:CX.DunEHdThzQHM-5KtNy4V925x6zJFiWsi",
+          "type": "CopyNumberChange",
           "subject": {
-            "location": {
-              "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
-              "type": "SequenceLocation",
-              "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
-              "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                  "value": 30417575,
-                  "comparator": "<=",
-                  "type": "IndefiniteRange"
-                },
-                "end": {
-                  "value": 31394018,
-                  "comparator": ">=",
-                  "type": "IndefiniteRange"
-                }
+            "_id": "ga4gh:VSL.us51izImAQQWr-Hu6Q7HQm-vYvmb-jJo",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "IndefiniteRange",
+                "value": 30417575,
+                "comparator": "<="
+              },
+              "end": {
+                "type": "IndefiniteRange",
+                "value": 31394018,
+                "comparator": ">="
               }
-            },
-          "reverse_complement": false,
-          "type": "DerivedSequenceExpression"
-        },
-        "copies": {
-          "value": 3,
-          "type": "Number"
+            }
+          },
+          "copy_change": "efo:0030070"
         }
-      }
-    ]
+      ]
