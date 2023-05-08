@@ -194,7 +194,8 @@ class ToVRS(VRSRepresentation):
                      untranslatable_returns_text: bool = False) -> ToVRSService:
         """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
 
-        :param str q: The variation to translate (HGVS, gnomAD VCF, or free text)
+        :param str q: The variation to translate (HGVS, gnomAD VCF, or free text) on
+            GRCh37 or GRCh38 assembly
         :param bool untranslatable_returns_text: `True` return VRS Text Object when
             unable to translate or normalize query. `False` returns empty list when
             unable to translate or normalize query.
