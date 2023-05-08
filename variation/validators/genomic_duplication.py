@@ -258,6 +258,8 @@ class GenomicDuplication(DuplicationDeletionBase):
                 if not errors:
                     ival = self.vrs.get_ival_certain_range(
                         start1, start2, end1, end2)
+            else:
+                errors.append("Not yet supported")
         else:
             if s.start_pos1_dup == "?" and s.end_pos2_dup == "?":
                 # format: (?_#)_(#_?)
