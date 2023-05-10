@@ -11,7 +11,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.validation_response_schema import ValidationSummary, \
     ValidationResult
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 
 
 def no_variation_entered() -> Tuple[None, List[str]]:
@@ -78,11 +78,11 @@ def no_variation_resp(
     return resp, warnings
 
 
-def is_token_type(valid_result_tokens: List, token_type: str) -> bool:
+def is_token_type(valid_result_tokens: List, token_type: TokenType) -> bool:
     """Return whether or not token_type is in valid_result_tokens.
 
     :param List valid_result_tokens: Valid token matches
-    :param str token_type: The token's type
+    :param TokenType token_type: The token's type
     :return: Whether or not token_type is in valid_result_tokens
     """
     for t in valid_result_tokens:
