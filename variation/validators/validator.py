@@ -14,7 +14,7 @@ from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import (
-    Token, TokenType, GeneToken, GenomicSubstitutionToken
+    Token, TokenType, GeneToken, GenomicSubstitutionToken, AltType
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
@@ -549,14 +549,15 @@ class Validator(ABC):
         return None
 
     def add_mane_data(
-            self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: str,
-            s: Token, alt: str = None, mane_variation: Dict = None) -> None:
+        self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: AltType,
+        s: Token, alt: Optional[AltType] = None, mane_variation: Optional[Dict] = None
+    ) -> None:
         """Add mane transcript information to mane_data.
 
         :param Dict mane: MANE data
         :param Dict mane_data: All MANE data found for given query
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param str alt_type: Type of alteration
+        :param AltType alt_type: Type of alteration
         :param Token s: Classification token
         :param str alt: Alteration
         :param Dict mane_variation: VRS Variation for mane data

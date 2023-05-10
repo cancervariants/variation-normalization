@@ -1,7 +1,7 @@
 """A module for Genomic Duplication Tokenization."""
 from typing import Optional, Union, List
 
-from variation.schemas.token_response_schema import DuplicationAltType, \
+from variation.schemas.token_response_schema import AltType, \
     GenomicDuplicationToken, GenomicDuplicationRangeToken
 from variation.tokenizers.duplication_base import DuplicationBase
 
@@ -28,7 +28,7 @@ class GenomicDuplication(DuplicationBase):
                         self.parts["start_pos2_dup"] = pos[1]
                         self.parts["coordinate_type"] = "g"
             else:
-                self.parts["alt_type"] = DuplicationAltType.DUPLICATION_RANGE
+                self.parts["alt_type"] = AltType.DUPLICATION_RANGE
                 parts = parts[0].split("_")
                 len_parts = len(parts)
                 if len_parts == 4:
@@ -91,7 +91,7 @@ class GenomicDuplication(DuplicationBase):
         except ValueError:
             if part == "?":
                 self.parts["alt_type"] = \
-                    DuplicationAltType.UNCERTAIN_DUPLICATION
+                    AltType.UNCERTAIN_DUPLICATION
                 return part
         return None
 
@@ -106,7 +106,7 @@ class GenomicDuplication(DuplicationBase):
                 if self.parts["start_pos2_dup"] and self.parts["start_pos1_dup"] > self.parts["start_pos2_dup"]:  # noqa: E501
                     return
 
-                self.parts["alt_type"] = DuplicationAltType.DUPLICATION
+                self.parts["alt_type"] = AltType.DUPLICATION
                 return GenomicDuplicationToken(**self.parts)
             else:
                 prev_val = None

@@ -11,7 +11,7 @@ from variation.validators.duplication_deletion_base import\
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
-    Token, TokenType, GeneToken, DuplicationAltType, SequenceOntology
+    Token, TokenType, GeneToken, AltType, SequenceOntology
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -237,7 +237,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         """
         ival, start, end, grch38 = None, None, None, None
         gene = gene_tokens[0].token if gene_tokens else None
-        if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+        if s.alt_type != AltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
             if is_norm:
                 t, start1, start2, end1, end2, grch38 = await self.get_grch38_pos_ac(

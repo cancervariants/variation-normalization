@@ -41,12 +41,26 @@ class TokenType(str, Enum):
 class AltType(str, Enum):
     """Define alteration types."""
 
-    NONSENSE = "nonsense"
-    SUBSTITUTION = "substitution"
-    SILENT_MUTATION = "silent_mutation"
-    DELINS = "delins"
-    INSERTION = "insertion"
     AMPLIFICATION = "amplification"
+    DELETION = "deletion"
+    DELETION_RANGE = "deletion_range"
+    UNCERTAIN_DELETION = "uncertain_deletion"
+    DELINS = "delins"
+    DUPLICATION = "duplication"
+    DUPLICATION_RANGE = "duplication_range"
+    INSERTION = "insertion"
+    NONSENSE = "nonsense"
+    SILENT_MUTATION = "silent_mutation"
+    SUBSTITUTION = "substitution"
+    UNCERTAIN_DUPLICATION = "uncertain_duplication"
+
+
+AMBIGUOUS_REGIONS = {
+    AltType.UNCERTAIN_DELETION,
+    AltType.UNCERTAIN_DUPLICATION,
+    AltType.DELETION_RANGE,
+    AltType.DUPLICATION_RANGE
+}
 
 
 class Nomenclature(str, Enum):
@@ -150,7 +164,7 @@ class PolypeptideSequenceVariation(Token):
     coordinate_type = CoordinateType.PROTEIN
     so_id: SequenceOntology
     molecule_context = "protein"
-    alt_type: str
+    alt_type: AltType
 
 
 class PolypeptideTruncationToken(PolypeptideSequenceVariation):
@@ -306,7 +320,7 @@ class SingleNucleotideVariation(Token):
     coordinate_type: CoordinateType
     so_id: SequenceOntology
     molecule_context: str
-    alt_type: str
+    alt_type: AltType
 
 
 class CodingDNASubstitutionToken(SingleNucleotideVariation):
@@ -458,14 +472,6 @@ class GenomicInsertionToken(Insertion):
     molecule_context = "genomic"
 
 
-class DeletionAltType(str, Enum):
-    """Define alt types for deletions."""
-
-    DELETION = "deletion"
-    DELETION_RANGE = "deletion_range"
-    UNCERTAIN_DELETION = "uncertain_deletion"
-
-
 class Deletion(Token):
     """The point at which one or more contiguous nucleotides were excised.
     - Sequence Ontology
@@ -477,7 +483,7 @@ class Deletion(Token):
     token_type: str
     so_id: SequenceOntology
     molecule_context: str
-    alt_type: DeletionAltType.DELETION = DeletionAltType.DELETION
+    alt_type: AltType.DELETION = AltType.DELETION
 
 
 class ProteinDeletionToken(Deletion):
@@ -529,7 +535,7 @@ class DeletionRange(Token):
     token_type: str
     so_id = SequenceOntology.COPY_NUMBER_LOSS
     molecule_context: str
-    alt_type: Union[Literal[DeletionAltType.DELETION_RANGE], Literal[DeletionAltType.UNCERTAIN_DELETION]] = DeletionAltType.DELETION_RANGE  # noqa: E501
+    alt_type: Union[Literal[AltType.DELETION_RANGE], Literal[AltType.UNCERTAIN_DELETION]] = AltType.DELETION_RANGE  # noqa: E501
 
 
 class GenomicDeletionRangeToken(DeletionRange):
@@ -549,7 +555,7 @@ class UncertainDeletion(DeletionRange):
     end_pos2_del: Optional[Union[Literal["?"], int]]
     token_type: str
     molecule_context: str
-    alt_type: Literal[DeletionAltType.UNCERTAIN_DELETION] = DeletionAltType.UNCERTAIN_DELETION  # noqa: E501
+    alt_type: Literal[AltType.UNCERTAIN_DELETION] = AltType.UNCERTAIN_DELETION
 
 
 class GenomicUncertainDeletionToken(UncertainDeletion):
@@ -560,14 +566,6 @@ class GenomicUncertainDeletionToken(UncertainDeletion):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class DuplicationAltType(str, Enum):
-    """Define alt types for duplications."""
-
-    DUPLICATION = "duplication"
-    DUPLICATION_RANGE = "duplication_range"
-    UNCERTAIN_DUPLICATION = "uncertain_duplication"
-
-
 class Duplication(Token):
     """Duplications."""
 
@@ -576,7 +574,11 @@ class Duplication(Token):
     token_type: TokenType
     so_id = SequenceOntology.DUPLICATION
     molecule_context: str
-    alt_type: DuplicationAltType
+    alt_type: Union[
+        Literal[AltType.DUPLICATION],
+        Literal[AltType.DUPLICATION_RANGE],
+        Literal[AltType.UNCERTAIN_DUPLICATION]
+    ]
 
 
 class GenomicDuplicationToken(Duplication):
@@ -585,7 +587,7 @@ class GenomicDuplicationToken(Duplication):
     token_type = TokenType.GENOMIC_DUPLICATION
     molecule_context = "genomic"
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    alt_type: Literal[DuplicationAltType.DUPLICATION] = DuplicationAltType.DUPLICATION  # noqa: E501
+    alt_type: Literal[AltType.DUPLICATION] = AltType.DUPLICATION
 
 
 class DuplicationRange(Duplication):
