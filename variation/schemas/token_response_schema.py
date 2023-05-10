@@ -160,7 +160,7 @@ class PolypeptideSequenceVariation(Token):
     ref_protein: str
     alt_protein: str
     position: int
-    token_type: str
+    token_type: TokenType
     coordinate_type = CoordinateType.PROTEIN
     so_id: SequenceOntology
     molecule_context = "protein"
@@ -316,7 +316,7 @@ class SingleNucleotideVariation(Token):
     position: int
     ref_nucleotide: Optional[str]
     new_nucleotide: str
-    token_type: str
+    token_type: TokenType
     coordinate_type: CoordinateType
     so_id: SequenceOntology
     molecule_context: str
@@ -374,7 +374,7 @@ class DelIns(Token):
     end_pos_del: Optional[str]
     inserted_sequence1: str
     inserted_sequence2: Optional[str]
-    token_type: str
+    token_type: TokenType
     coordinate_type: CoordinateType
     so_id = SequenceOntology.DELINS
     molecule_context: str
@@ -435,7 +435,7 @@ class Insertion(Token):
     end_pos_flank: int
     inserted_sequence: str
     coordinate_type: CoordinateType
-    token_type: str
+    token_type: TokenType
     so_id: SequenceOntology
     molecule_context: str
     alt_type = AltType.INSERTION
@@ -480,7 +480,7 @@ class Deletion(Token):
     start_pos_del: int
     end_pos_del: Optional[int]
     coordinate_type: CoordinateType
-    token_type: str
+    token_type: TokenType
     so_id: SequenceOntology
     molecule_context: str
     alt_type: AltType.DELETION = AltType.DELETION
@@ -532,7 +532,7 @@ class DeletionRange(Token):
     start_pos2_del: int
     end_pos1_del: int
     end_pos2_del: Union[int, str]
-    token_type: str
+    token_type: TokenType
     so_id = SequenceOntology.COPY_NUMBER_LOSS
     molecule_context: str
     alt_type: Union[Literal[AltType.DELETION_RANGE], Literal[AltType.UNCERTAIN_DELETION]] = AltType.DELETION_RANGE  # noqa: E501
@@ -553,7 +553,7 @@ class UncertainDeletion(DeletionRange):
     start_pos2_del: Optional[int]
     end_pos1_del: int
     end_pos2_del: Optional[Union[Literal["?"], int]]
-    token_type: str
+    token_type: TokenType
     molecule_context: str
     alt_type: Literal[AltType.UNCERTAIN_DELETION] = AltType.UNCERTAIN_DELETION
 
