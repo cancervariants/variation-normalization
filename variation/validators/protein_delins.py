@@ -11,7 +11,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADat
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.validators.validator import Validator
 from variation.tokenizers import GeneSymbol
 from variation.schemas.normalize_response_schema\
@@ -129,7 +129,7 @@ class ProteinDelIns(Validator):
             self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
                                                 classification, gene_tokens)
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens

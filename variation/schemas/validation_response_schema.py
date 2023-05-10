@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from pydantic.types import StrictBool
 
 from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import GeneMatchToken, Token
+from variation.schemas.token_response_schema import GeneToken, Token
 
 
 class LookupType(IntEnum):
@@ -24,7 +24,7 @@ class ValidationResult(BaseModel):
     confidence_score: float
     variation: Optional[dict] = None
     errors: List[str]
-    gene_tokens: Optional[List[GeneMatchToken]]
+    gene_tokens: Optional[List[GeneToken]]
     is_mane_transcript: Optional[StrictBool]
     identifier: Optional[str]
 

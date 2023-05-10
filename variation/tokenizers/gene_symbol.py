@@ -3,7 +3,7 @@ from typing import Optional
 
 from gene.query import QueryHandler as GeneQueryHandler
 
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import GeneToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -19,7 +19,7 @@ class GeneSymbol(Tokenizer):
         self.gene_normalizer = gene_normalizer
         self._gene_cache = dict()
 
-    def match(self, input_string: str) -> Optional[GeneMatchToken]:
+    def match(self, input_string: str) -> Optional[GeneToken]:
         """Return token matches from input string."""
         upper_input = input_string.upper()
         if upper_input in self._gene_cache:
@@ -31,7 +31,7 @@ class GeneSymbol(Tokenizer):
         if norm_match_type != 0:
             gene_descriptor = norm_resp.gene_descriptor
             label = gene_descriptor.label
-            gene_match_token = GeneMatchToken(
+            gene_match_token = GeneToken(
                 token=label,
                 input_string=input_string,
                 matched_value=label,
