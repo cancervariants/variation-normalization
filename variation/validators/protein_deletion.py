@@ -13,7 +13,7 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.validators.validator import Validator
 from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
@@ -144,7 +144,7 @@ class ProteinDeletion(Validator):
             self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
                                                 classification, gene_tokens)
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens

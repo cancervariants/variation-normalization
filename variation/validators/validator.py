@@ -14,7 +14,7 @@ from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import (
-    Token, TokenType, GeneMatchToken, GenomicSubstitutionToken
+    Token, TokenType, GeneToken, GenomicSubstitutionToken
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
@@ -79,7 +79,7 @@ class Validator(ABC):
 
     @abstractmethod
     def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
+            self, classification: Classification) -> List[GeneToken]:
         """Return a list of gene tokens for a classification.
 
         :param Classification classification: Classification for a list of
@@ -306,7 +306,7 @@ class Validator(ABC):
 
     @staticmethod
     def get_gene_symbol_tokens(
-            classification: Classification) -> List[Optional[GeneMatchToken]]:
+            classification: Classification) -> List[Optional[GeneToken]]:
         """Return tokens with GeneSymbol token type from a classification.
 
         :param Classification classification: Classification of input string
@@ -329,7 +329,7 @@ class Validator(ABC):
                 gene_symbol))
 
     def _get_gene_tokens(self, classification: Classification,
-                         mappings: List) -> List[Optional[GeneMatchToken]]:
+                         mappings: List) -> List[Optional[GeneToken]]:
         """Get gene symbol tokens for protein or transcript reference
         sequences.
 
@@ -364,7 +364,7 @@ class Validator(ABC):
 
     def get_protein_gene_symbol_tokens(
             self, classification: Classification
-    ) -> List[Optional[GeneMatchToken]]:
+    ) -> List[Optional[GeneToken]]:
         """Return gene tokens for a classification with protein reference
         sequence.
 
@@ -381,7 +381,7 @@ class Validator(ABC):
 
     def get_coding_dna_gene_symbol_tokens(
             self, classification: Classification
-    ) -> List[Optional[GeneMatchToken]]:
+    ) -> List[Optional[GeneToken]]:
         """Return gene symbol tokens for classifications with coding dna
         reference sequence.
 

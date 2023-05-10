@@ -5,7 +5,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 
-from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.schemas.classification_response_schema import Classification,\
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
@@ -81,7 +81,7 @@ class Amplification(Validator):
             self.add_validation_result(cx, valid_variations, results, classification,
                                        s, None, gene_tokens, errors)
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens

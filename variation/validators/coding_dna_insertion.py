@@ -5,7 +5,7 @@ import logging
 from variation.validators.insertion_base import InsertionBase
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
-from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -26,7 +26,7 @@ class CodingDNAInsertion(InsertionBase):
         """
         return self.get_coding_dna_transcripts(gene_tokens, errors)
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens

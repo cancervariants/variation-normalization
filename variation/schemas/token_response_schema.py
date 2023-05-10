@@ -38,6 +38,17 @@ class TokenType(str, Enum):
     UNKNOWN = "Unknown"
 
 
+class AltType(str, Enum):
+    """Define alteration types."""
+
+    NONSENSE = "nonsense"
+    SUBSTITUTION = "substitution"
+    SILENT_MUTATION = "silent_mutation"
+    DELINS = "delins"
+    INSERTION = "insertion"
+    AMPLIFICATION = "amplification"
+
+
 class Nomenclature(str, Enum):
     """Define nomenclatures that are supported"""
 
@@ -94,7 +105,7 @@ class Token(BaseModel):
             }
 
 
-class GeneMatchToken(Token):
+class GeneToken(Token):
     """Define model for gene symbol token."""
 
     matched_value: str
@@ -106,7 +117,7 @@ class GeneMatchToken(Token):
 
         @staticmethod
         def schema_extra(schema: Dict[str, Any],
-                         model: Type["GeneMatchToken"]) -> None:
+                         model: Type["GeneToken"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -150,7 +161,7 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
     alt_protein = "*"
     token_type = TokenType.POLYPEPTIDE_TRUNCATION
     so_id = SequenceOntology.POLYPEPTIDE_TRUNCATION
-    alt_type = "nonsense"
+    alt_type = AltType.NONSENSE
 
     class Config:
         """Configure model."""
@@ -181,7 +192,7 @@ class ProteinSubstitutionToken(PolypeptideSequenceVariation):
 
     token_type = TokenType.PROTEIN_SUBSTITUTION
     so_id = SequenceOntology.PROTEIN_SUBSTITUTION
-    alt_type = "substitution"
+    alt_type = AltType.SUBSTITUTION
 
     class Config:
         """Configure model."""
@@ -211,7 +222,7 @@ class SilentMutationToken(PolypeptideSequenceVariation):
     alt_protein = "="
     token_type = TokenType.SILENT_MUTATION
     so_id = SequenceOntology.SILENT_MUTATION
-    alt_type = "silent_mutation"
+    alt_type = AltType.SILENT_MUTATION
 
     class Config:
         """Configure model."""
@@ -241,7 +252,7 @@ class TokenResponseSchema(BaseModel):
     search_term: str
     tokens: List[
         Union[
-            GeneMatchToken,
+            GeneToken,
             ProteinSubstitutionToken,
             PolypeptideTruncationToken,
             SilentMutationToken,
@@ -305,7 +316,7 @@ class CodingDNASubstitutionToken(SingleNucleotideVariation):
     token_type = TokenType.CODING_DNA_SUBSTITUTION
     so_id = SequenceOntology.SNV
     molecule_context = "transcript"
-    alt_type = "substitution"
+    alt_type = AltType.SUBSTITUTION
 
 
 class CodingDNASilentMutationToken(SingleNucleotideVariation):
@@ -316,7 +327,7 @@ class CodingDNASilentMutationToken(SingleNucleotideVariation):
     token_type = TokenType.CODING_DNA_SILENT_MUTATION
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = "transcript"
-    alt_type = "silent_mutation"
+    alt_type = AltType.SILENT_MUTATION
 
 
 class GenomicSubstitutionToken(SingleNucleotideVariation):
@@ -326,7 +337,7 @@ class GenomicSubstitutionToken(SingleNucleotideVariation):
     token_type = TokenType.GENOMIC_SUBSTITUTION
     so_id = SequenceOntology.SNV
     molecule_context = "genomic"
-    alt_type = "substitution"
+    alt_type = AltType.SUBSTITUTION
 
 
 class GenomicSilentMutationToken(SingleNucleotideVariation):
@@ -337,7 +348,7 @@ class GenomicSilentMutationToken(SingleNucleotideVariation):
     token_type = TokenType.GENOMIC_SILENT_MUTATION
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = "genomic"
-    alt_type = "silent_mutation"
+    alt_type = AltType.SILENT_MUTATION
 
 
 class DelIns(Token):
@@ -353,7 +364,7 @@ class DelIns(Token):
     coordinate_type: CoordinateType
     so_id = SequenceOntology.DELINS
     molecule_context: str
-    alt_type = "delins"
+    alt_type = AltType.DELINS
 
 
 class ProteinDelInsToken(Token):
@@ -368,7 +379,7 @@ class ProteinDelInsToken(Token):
     so_id = SequenceOntology.DELINS
     molecule_context = "protein"
     token_type = TokenType.PROTEIN_DELINS
-    alt_type = "delins"
+    alt_type = AltType.DELINS
 
 
 class CodingDNADelInsToken(DelIns):
@@ -413,7 +424,7 @@ class Insertion(Token):
     token_type: str
     so_id: SequenceOntology
     molecule_context: str
-    alt_type = "insertion"
+    alt_type = AltType.INSERTION
 
 
 class ProteinInsertionToken(Insertion):
@@ -606,4 +617,4 @@ class AmplificationToken(Token):
     token_type = TokenType.AMPLIFICATION
     molecule_context = "genomic"
     so_id = SequenceOntology.FEATURE_AMPLIFICATION
-    alt_type = "amplification"
+    alt_type = AltType.AMPLIFICATION
