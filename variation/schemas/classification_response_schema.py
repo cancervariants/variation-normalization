@@ -17,7 +17,6 @@ class ClassificationType(str, Enum):
     PROTEIN_FRAMESHIFT = "protein frameshift"
     PROTEIN_ALTERNATE = "protein alternate"
     PROTEIN_DELINS = "protein delins"
-    PROTEIN_TERMINATION = "protein termination"
     PROTEIN_DUPLICATION = "protein duplication"
     ONCOGENIC = "oncogenic"
     EXPRESSION = "expression"

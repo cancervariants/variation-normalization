@@ -1,6 +1,6 @@
 """The module for Polypeptide Truncation Validation."""
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase
 
 
@@ -13,7 +13,7 @@ class PolypeptideTruncation(PolypeptideSequenceVariationBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Polypeptide Truncation"""
-        return t.token_type == "PolypeptideTruncation"
+        return t.token_type == TokenType.POLYPEPTIDE_TRUNCATION
 
     def validates_classification_type(
         self, classification_type: ClassificationType

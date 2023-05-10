@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from bioutils.sequences import aa3_to_aa1, aa3_to_aa1_lut
 
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 from ..schemas.token_response_schema import Token
 
 

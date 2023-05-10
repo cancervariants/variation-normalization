@@ -13,9 +13,8 @@ from variation.schemas.classification_response_schema import \
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.validators.validator import Validator
-from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
 from .protein_base import ProteinBase
@@ -159,7 +158,7 @@ class ProteinDeletion(Validator):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Protein DelIns."""
-        return t.token_type == "ProteinDeletion"
+        return t.token_type == TokenType.PROTEIN_DELETION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

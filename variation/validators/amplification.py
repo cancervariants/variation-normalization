@@ -5,11 +5,10 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 
-from variation.schemas.token_response_schema import GeneMatchToken, TokenType
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.schemas.classification_response_schema import Classification,\
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token
 from variation.validators.validator import Validator
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -51,7 +50,7 @@ class Amplification(Validator):
         """
         valid_variations = list()
         gene_match_tokens = [token for token in classification.all_tokens
-                             if token.token_type == "GeneSymbol"]
+                             if token.token_type == TokenType.GENE]
         for s in classification_tokens:
             errors = list()
             cx = None

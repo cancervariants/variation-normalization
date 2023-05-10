@@ -5,8 +5,7 @@ import logging
 from variation.validators.insertion_base import InsertionBase
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
-from variation.schemas.token_response_schema import Token
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -41,7 +40,7 @@ class CodingDNAInsertion(InsertionBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA Insertion."""
-        return t.token_type == "CodingDNAInsertion"
+        return t.token_type == TokenType.CODING_DNA_INSERTION
 
     def validates_classification_type(
         self, classification_type: ClassificationType

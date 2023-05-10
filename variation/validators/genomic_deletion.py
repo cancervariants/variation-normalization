@@ -9,8 +9,8 @@ from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import Token, SequenceOntology
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken, \
+    SequenceOntology
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -175,7 +175,7 @@ class GenomicDeletion(DuplicationDeletionBase):
 
         :param Token t: Classification token
         """
-        return t.token_type == "GenomicDeletion"
+        return t.token_type == TokenType.GENOMIC_DELETION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

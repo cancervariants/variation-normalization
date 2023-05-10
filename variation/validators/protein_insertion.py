@@ -10,10 +10,9 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADat
 
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.schemas.app_schemas import Endpoint
 from variation.validators.validator import Validator
-from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -149,7 +148,7 @@ class ProteinInsertion(Validator):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Protein Insertion."""
-        return t.token_type == "ProteinInsertion"
+        return t.token_type == TokenType.PROTEIN_INSERTION
 
     def validates_classification_type(
         self, classification_type: ClassificationType

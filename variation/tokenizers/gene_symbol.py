@@ -6,7 +6,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.token_response_schema import GeneMatchToken, \
     TokenMatchType
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GeneSymbol(Tokenizer):

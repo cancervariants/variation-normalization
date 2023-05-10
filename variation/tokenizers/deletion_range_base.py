@@ -4,7 +4,7 @@ from abc import abstractmethod
 
 from variation.schemas.token_response_schema import TokenMatchType, \
     DeletionRange
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DeletionRangeBase(Tokenizer):

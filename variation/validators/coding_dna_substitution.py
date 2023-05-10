@@ -6,8 +6,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import Token
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -124,7 +123,7 @@ class CodingDNASubstitution(SingleNucleotideVariationBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA Substitution."""
-        return t.token_type == "CodingDNASubstitution"
+        return t.token_type == TokenType.CODING_DNA_SUBSTITUTION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

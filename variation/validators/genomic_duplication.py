@@ -11,8 +11,7 @@ from variation.validators.duplication_deletion_base import\
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
-    TokenType, DuplicationAltType, Token, SequenceOntology
-from variation.schemas.token_response_schema import GeneMatchToken
+    Token, TokenType, GeneMatchToken, DuplicationAltType, SequenceOntology
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -345,8 +344,8 @@ class GenomicDuplication(DuplicationDeletionBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is an instance of Genomic Duplication."""
-        return t.token_type in ["GenomicDuplication",
-                                "GenomicDuplicationRange"]
+        return t.token_type in [TokenType.GENOMIC_DUPLICATION,
+                                TokenType.GENOMIC_DUPLICATION_RANGE]
 
     def validates_classification_type(
         self, classification_type: ClassificationType

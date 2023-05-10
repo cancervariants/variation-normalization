@@ -7,7 +7,7 @@ from bioutils.sequences import aa3_to_aa1_lut, aa1_to_aa3
 
 from variation.schemas.token_response_schema import ProteinDeletionToken, \
     TokenMatchType
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class ProteinDeletion(Tokenizer):

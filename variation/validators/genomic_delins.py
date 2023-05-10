@@ -8,8 +8,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import Token
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -111,7 +110,7 @@ class GenomicDelIns(DelInsBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic DelIns."""
-        return t.token_type == "GenomicDelIns"
+        return t.token_type == TokenType.GENOMIC_DELINS
 
     def validates_classification_type(
         self, classification_type: ClassificationType
