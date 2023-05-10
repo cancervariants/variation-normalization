@@ -5,8 +5,7 @@ import re
 from pydantic.error_wrappers import ValidationError
 from bioutils.sequences import aa3_to_aa1_lut, aa1_to_aa3
 
-from variation.schemas.token_response_schema import ProteinDeletionToken, \
-    TokenMatchType
+from variation.schemas.token_response_schema import ProteinDeletionToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -27,7 +26,6 @@ class ProteinDeletion(Tokenizer):
             "used_one_letter": False,
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_aa_del": None,
             "start_pos_del": None,
             "end_aa_del": None,

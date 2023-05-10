@@ -1,8 +1,7 @@
 """A module for free text categorical variation tokenization"""
 from typing import Optional
 
-from variation.schemas.token_response_schema import TokenMatchType, AmplificationToken,\
-    Nomenclature
+from variation.schemas.token_response_schema import AmplificationToken, Nomenclature
 from variation.tokenizers import Tokenizer
 
 
@@ -20,7 +19,6 @@ class FreeTextCategorical(Tokenizer):
             return AmplificationToken(
                 token=input_string,
                 input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED.value,
                 nomenclature=Nomenclature.FREE_TEXT.value
             )
         return None
