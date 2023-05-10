@@ -3,7 +3,7 @@ import pytest
 
 from variation.schemas.token_response_schema import ChromosomeToken, \
     GenomicDeletionToken, CoordinateType, GenomicSubstitutionToken, \
-    GenomicInsertionToken, GenomicSilentMutationToken
+    GenomicInsertionToken, GenomicSilentMutationToken, TokenType
 from variation.tokenizers import GnomadVCF
 
 
@@ -36,7 +36,7 @@ def test_matches(tokenizer):
     assert token.ref_nucleotide == "A"
     assert token.new_nucleotide == "T"
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicSubstitution"
+    assert token.token_type == TokenType.GENOMIC_SUBSTITUTION
     assert token.alt_type == "substitution"
     assert token.so_id == "SO:0001483"
     assert token.molecule_context == "genomic"
@@ -55,7 +55,7 @@ def test_matches(tokenizer):
     assert token.inserted_sequence == "CTAG"
     assert token.inserted_sequence2 is None
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicInsertion"
+    assert token.token_type == TokenType.GENOMIC_INSERTION
     assert token.alt_type == "insertion"
     assert token.so_id == "SO:0000667"
     assert token.molecule_context == "genomic"
@@ -73,7 +73,7 @@ def test_matches(tokenizer):
     assert token.end_pos_del == 1235
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.deleted_sequence == "C"
-    assert token.token_type == "GenomicDeletion"
+    assert token.token_type == TokenType.GENOMIC_DELETION
     assert token.alt_type == "deletion"
     assert token.so_id == "SO:0000159"
     assert token.molecule_context == "genomic"
@@ -91,7 +91,7 @@ def test_matches(tokenizer):
     assert token.ref_nucleotide == "C"
     assert token.new_nucleotide == "="
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicSilentMutation"
+    assert token.token_type == TokenType.GENOMIC_SILENT_MUTATION
     assert token.alt_type == "silent_mutation"
     assert token.so_id == "SO:0002073"
     assert token.molecule_context == "genomic"

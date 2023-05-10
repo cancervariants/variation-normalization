@@ -4,17 +4,17 @@ from typing import List, Callable
 from variation.schemas.classification_response_schema import Classification, \
     ConfidenceRating
 from variation.schemas.token_response_schema import Token
-from variation.classifiers import ProteinTerminationClassifier, \
-    ProteinSubstitutionClassifier, PolypeptideTruncationClassifier, \
-    SilentMutationClassifier, CodingDNASubstitutionClassifier,\
-    GenomicSubstitutionClassifier, CodingDNASilentMutationClassifier, \
-    GenomicSilentMutationClassifier, ProteinDelInsClassifier, \
-    CodingDNADelInsClassifier, GenomicDelInsClassifier, \
-    ProteinDeletionClassifier, CodingDNADeletionClassifier, \
-    GenomicDeletionClassifier, ProteinInsertionClassifier, \
-    CodingDNAInsertionClassifier, GenomicInsertionClassifier, \
-    GenomicUncertainDeletionClassifier, GenomicDuplicationClassifier, \
-    GenomicDeletionRangeClassifier, AmplificationClassifier, Classifier
+from variation.classifiers import (
+    ProteinSubstitutionClassifier, PolypeptideTruncationClassifier,
+    SilentMutationClassifier, CodingDNASubstitutionClassifier,
+    GenomicSubstitutionClassifier, CodingDNASilentMutationClassifier,
+    GenomicSilentMutationClassifier, ProteinDelInsClassifier, CodingDNADelInsClassifier,
+    GenomicDelInsClassifier, ProteinDeletionClassifier, CodingDNADeletionClassifier,
+    GenomicDeletionClassifier, ProteinInsertionClassifier, CodingDNAInsertionClassifier,
+    GenomicInsertionClassifier, GenomicUncertainDeletionClassifier,
+    GenomicDuplicationClassifier, GenomicDeletionRangeClassifier,
+    AmplificationClassifier, Classifier
+)
 
 
 class Classify:
@@ -27,7 +27,6 @@ class Classify:
             ProteinSubstitutionClassifier(),
             PolypeptideTruncationClassifier(),
             SilentMutationClassifier(),
-            ProteinTerminationClassifier(),
             CodingDNASubstitutionClassifier(),
             GenomicSubstitutionClassifier(),
             CodingDNASilentMutationClassifier(),

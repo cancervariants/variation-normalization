@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import Optional, Dict, List
 
 from variation.schemas.token_response_schema import DelIns, TokenMatchType, Token
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DelInsBase(Tokenizer):

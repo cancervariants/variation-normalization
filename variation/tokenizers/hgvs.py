@@ -6,7 +6,7 @@ from hgvs.exceptions import HGVSParseError, HGVSInvalidVariantError
 from hgvs.validator import IntrinsicValidator
 
 from variation.tokenizers.reference_sequence import REFSEQ_PREFIXES
-from variation.schemas.token_response_schema import Token, TokenMatchType, \
+from variation.schemas.token_response_schema import Token, TokenType, TokenMatchType, \
     Nomenclature
 from .tokenizer import Tokenizer
 from .locus_reference_genomic import LocusReferenceGenomic
@@ -41,7 +41,7 @@ class HGVS(Tokenizer):
             else:
                 return Token(
                     token=input_string,
-                    token_type="HGVS",
+                    token_type=TokenType.HGVS,
                     input_string=input_string,
                     match_type=TokenMatchType.UNSPECIFIED,
                     nomenclature=Nomenclature.HGVS

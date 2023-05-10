@@ -4,7 +4,7 @@ from typing import List, Optional, Dict
 
 from variation.schemas.token_response_schema import SingleNucleotideVariation, \
     TokenMatchType
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class SingleNucleotideVariationBase(Tokenizer):

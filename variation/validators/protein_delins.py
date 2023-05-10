@@ -11,9 +11,8 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADat
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.validators.validator import Validator
-from variation.schemas.token_response_schema import GeneMatchToken
 from variation.tokenizers import GeneSymbol
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -144,7 +143,7 @@ class ProteinDelIns(Validator):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Protein DelIns."""
-        return t.token_type == "ProteinDelIns"
+        return t.token_type == TokenType.PROTEIN_DELINS
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

@@ -4,7 +4,7 @@ from typing import Optional
 
 from variation.schemas.token_response_schema import TokenMatchType, \
     LocusReferenceGenomicToken
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class LocusReferenceGenomic(Tokenizer):

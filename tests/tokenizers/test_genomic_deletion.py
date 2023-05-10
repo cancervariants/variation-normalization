@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import GenomicDeletion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestGenomicDeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic deletion token type."""
-        return "GenomicDeletion"
+        return TokenType.GENOMIC_DELETION
 
     def fixture_name(self):
         """Return the fixture name for Genomic Deletion."""

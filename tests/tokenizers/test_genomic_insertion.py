@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import GenomicInsertion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestGenomicInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic insertion token type."""
-        return "GenomicInsertion"
+        return TokenType.GENOMIC_INSERTION
 
     def fixture_name(self):
         """Return the fixture name for Genomic Insertion."""

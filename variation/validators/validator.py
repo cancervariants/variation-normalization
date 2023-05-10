@@ -13,8 +13,9 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import GeneMatchToken, Token, \
-    GenomicSubstitutionToken
+from variation.schemas.token_response_schema import (
+    Token, TokenType, GeneMatchToken, GenomicSubstitutionToken
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
@@ -202,7 +203,7 @@ class Validator(ABC):
         }
 
         # If is_identifier, should only run once
-        if "HGVS" in classification.matching_tokens:
+        if TokenType.HGVS in classification.matching_tokens:
             is_identifier = True
         else:
             is_identifier = False
@@ -312,7 +313,7 @@ class Validator(ABC):
         :return: List of Gene Match Tokens
         """
         return [t for t in classification.all_tokens
-                if t.token_type == "GeneSymbol"]
+                if t.token_type == TokenType.GENE]
 
     def _add_gene_symbol_to_tokens(self, gene_symbol: str, gene_symbols: List,
                                    gene_tokens: List) -> None:
@@ -342,8 +343,8 @@ class Validator(ABC):
         if not gene_tokens:
             refseq = \
                 ([t.token for t in classification.all_tokens if
-                  t.token_type in ["HGVS", "ReferenceSequence",
-                                   "LocusReferenceGenomic"]] or [None])[0]
+                  t.token_type in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE,
+                                   TokenType.LOCUS_REFERENCE_GENOMIC]] or [None])[0]
 
             if not refseq:
                 return []
@@ -402,11 +403,11 @@ class Validator(ABC):
         :param Classification classification: Classification for token
         :return: Accession
         """
-        if "HGVS" in classification.matching_tokens or \
-                "ReferenceSequence" in classification.matching_tokens:
+        if TokenType.HGVS in classification.matching_tokens or \
+                TokenType.REFERENCE_SEQUENCE in classification.matching_tokens:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type
-                          in ["HGVS", "ReferenceSequence"]][0]
+                          in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]][0]
             hgvs_expr = hgvs_token.input_string
             t = hgvs_expr.split(":")[0]
         return t

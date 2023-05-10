@@ -5,7 +5,7 @@ from pydantic.error_wrappers import ValidationError
 
 from variation.schemas.token_response_schema import ProteinInsertionToken, \
     TokenMatchType
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class ProteinInsertion(Tokenizer):

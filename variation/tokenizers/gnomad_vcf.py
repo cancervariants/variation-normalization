@@ -6,7 +6,7 @@ from variation.schemas.token_response_schema import TokenMatchType, \
     Token, ChromosomeToken, GenomicSubstitutionToken, \
     GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken, \
     Nomenclature
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GnomadVCF(Tokenizer):

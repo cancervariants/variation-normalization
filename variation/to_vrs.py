@@ -18,7 +18,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
     CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
-from variation.schemas.token_response_schema import Nomenclature
+from variation.schemas.token_response_schema import Nomenclature, TokenType
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
@@ -120,7 +120,7 @@ class ToVRS(VRSRepresentation):
             for c in classifications:
                 conditions = (
                     c.classification_type in VALID_CLASSIFICATION_TYPES,
-                    ("HGVS" in c.matching_tokens or "ReferenceSequence" in c.matching_tokens)  # noqa: E501
+                    (TokenType.HGVS in c.matching_tokens or TokenType.REFERENCE_SEQUENCE in c.matching_tokens)  # noqa: E501
                 )
                 if all(conditions):
                     tmp_classifications.append(c)

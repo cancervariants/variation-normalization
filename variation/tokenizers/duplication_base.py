@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from variation.schemas.token_response_schema import Duplication, \
     TokenMatchType, DuplicationAltType, Token
-from .tokenizer import Tokenizer
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DuplicationBase(Tokenizer):

@@ -12,8 +12,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADat
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneMatchToken
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
 from variation.schemas.normalize_response_schema\
@@ -246,7 +245,7 @@ class GenomicDeletionRange(DuplicationDeletionBase):
 
         :param Token t: Classification token
         """
-        return t.token_type == "GenomicDeletionRange"
+        return t.token_type == TokenType.GENOMIC_DELETION_RANGE
 
     def validates_classification_type(
             self,

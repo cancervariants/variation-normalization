@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class CodingDNASilentMutationClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class CodingDNASilentMutationClassifier(SetBasedClassifier):
         """Return the Coding DNA Silent Mutation classification type."""
         return ClassificationType.CODING_DNA_SILENT_MUTATION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["CodingDNASilentMutation"],
-            ["GeneSymbol", "ProteinSubstitution", "CodingDNASilentMutation"],
-            ["CodingDNASilentMutation", "GeneSymbol"],
-            ["GeneSymbol", "CodingDNASilentMutation"],
-            ["HGVS", "CodingDNASilentMutation"],
-            ["ReferenceSequence", "CodingDNASilentMutation"],
-            ["LocusReferenceGenomic", "CodingDNASilentMutation"]
+            [TokenType.CODING_DNA_SILENT_MUTATION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_SILENT_MUTATION],  # noqa: E501
+            [TokenType.CODING_DNA_SILENT_MUTATION, TokenType.GENE],
+            [TokenType.GENE, TokenType.CODING_DNA_SILENT_MUTATION],
+            [TokenType.HGVS, TokenType.CODING_DNA_SILENT_MUTATION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.CODING_DNA_SILENT_MUTATION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.CODING_DNA_SILENT_MUTATION]
         ]

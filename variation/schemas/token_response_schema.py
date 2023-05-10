@@ -19,10 +19,32 @@ class TokenMatchType(IntEnum):
 class TokenType(str, Enum):
     """Define token types."""
 
-    # TODO: Add other token types (issue 162)
+    AMPLIFICATION = "Amplification"
+    CHROMOSOME = "Chromosome"
+    CODING_DNA_DELETION = "CodingDNADeletion"
+    CODING_DNA_DELINS = "CodingDNADelIns"
+    CODING_DNA_INSERTION = "CodingDNAInsertion"
+    CODING_DNA_SILENT_MUTATION = "CodingDNASilentMutation"
+    CODING_DNA_SUBSTITUTION = "CodingDNASubstitution"
+    GENE = "Gene"
+    GENOMIC_DELETION = "GenomicDeletion"
+    GENOMIC_DELETION_RANGE = "GenomicDeletionRange"
+    GENOMIC_DELINS = "GenomicDelIns"
     GENOMIC_DUPLICATION = "GenomicDuplication"
     GENOMIC_DUPLICATION_RANGE = "GenomicDuplicationRange"
-    AMPLIFICATION = "Amplification"
+    GENOMIC_INSERTION = "GenomicInsertion"
+    GENOMIC_SILENT_MUTATION = "GenomicSilentMutation"
+    GENOMIC_SUBSTITUTION = "GenomicSubstitution"
+    GENOMIC_UNCERTAIN_DELETION = "GenomicUncertainDeletion"
+    HGVS = "HGVS"
+    LOCUS_REFERENCE_GENOMIC = "LocusReferenceGenomic"
+    POLYPEPTIDE_TRUNCATION = "PolypeptideTruncation"
+    PROTEIN_DELETION = "ProteinDeletion"
+    PROTEIN_DELINS = "ProteinDelIns"
+    PROTEIN_INSERTION = "ProteinInsertion"
+    PROTEIN_SUBSTITUTION = "ProteinSubstitution"
+    REFERENCE_SEQUENCE = "ReferenceSequence"
+    SILENT_MUTATION = "SilentMutation"
 
 
 class Nomenclature(str, Enum):
@@ -87,7 +109,7 @@ class GeneMatchToken(Token):
     """Define model for gene symbol token."""
 
     matched_value: str
-    token_type = "GeneSymbol"
+    token_type = TokenType.GENE
     gene_descriptor: Optional[GeneDescriptor]
 
     class Config:
@@ -138,7 +160,7 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
     """
 
     alt_protein = "*"
-    token_type = "PolypeptideTruncation"
+    token_type = TokenType.POLYPEPTIDE_TRUNCATION
     so_id = SequenceOntology.POLYPEPTIDE_TRUNCATION
     alt_type = "nonsense"
 
@@ -170,7 +192,7 @@ class ProteinSubstitutionToken(PolypeptideSequenceVariation):
     amino acid for another in the resulting polypeptide. (missense)
     """
 
-    token_type = "ProteinSubstitution"
+    token_type = TokenType.PROTEIN_SUBSTITUTION
     so_id = SequenceOntology.PROTEIN_SUBSTITUTION
     alt_type = "substitution"
 
@@ -201,7 +223,7 @@ class SilentMutationToken(PolypeptideSequenceVariation):
     """A sequence variation that does not affect protein functions."""
 
     alt_protein = "="
-    token_type = "SilentMutation"
+    token_type = TokenType.SILENT_MUTATION
     so_id = SequenceOntology.SILENT_MUTATION
     alt_type = "silent_mutation"
 
@@ -297,7 +319,7 @@ class CodingDNASubstitutionToken(SingleNucleotideVariation):
     """SNV substitution at the coding DNA reference sequence."""
 
     coordinate_type = CoordinateType.CODING_DNA
-    token_type = "CodingDNASubstitution"
+    token_type = TokenType.CODING_DNA_SUBSTITUTION
     so_id = SequenceOntology.SNV
     molecule_context = "transcript"
     alt_type = "substitution"
@@ -308,7 +330,7 @@ class CodingDNASilentMutationToken(SingleNucleotideVariation):
 
     coordinate_type = CoordinateType.CODING_DNA
     new_nucleotide = "="
-    token_type = "CodingDNASilentMutation"
+    token_type = TokenType.CODING_DNA_SILENT_MUTATION
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = "transcript"
     alt_type = "silent_mutation"
@@ -318,7 +340,7 @@ class GenomicSubstitutionToken(SingleNucleotideVariation):
     """SNV substitution at the linear genomic reference sequence."""
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    token_type = "GenomicSubstitution"
+    token_type = TokenType.GENOMIC_SUBSTITUTION
     so_id = SequenceOntology.SNV
     molecule_context = "genomic"
     alt_type = "substitution"
@@ -329,7 +351,7 @@ class GenomicSilentMutationToken(SingleNucleotideVariation):
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
     new_nucleotide = "="
-    token_type = "GenomicSilentMutation"
+    token_type = TokenType.GENOMIC_SILENT_MUTATION
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
     molecule_context = "genomic"
     alt_type = "silent_mutation"
@@ -362,7 +384,7 @@ class ProteinDelInsToken(Token):
     coordinate_type = CoordinateType.PROTEIN
     so_id = SequenceOntology.DELINS
     molecule_context = "protein"
-    token_type = "ProteinDelIns"
+    token_type = TokenType.PROTEIN_DELINS
     alt_type = "delins"
 
 
@@ -370,7 +392,7 @@ class CodingDNADelInsToken(DelIns):
     """DelIns at the coding DNA reference sequence."""
 
     coordinate_type = CoordinateType.CODING_DNA
-    token_type = "CodingDNADelIns"
+    token_type = TokenType.CODING_DNA_DELINS
     molecule_context = "transcript"
 
 
@@ -378,7 +400,7 @@ class GenomicDelInsToken(DelIns):
     """DelIns at the linear genomic reference sequence."""
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    token_type = "GenomicDelIns"
+    token_type = TokenType.GENOMIC_DELINS
     molecule_context = "genomic"
 
 
@@ -390,7 +412,7 @@ class LocusReferenceGenomicToken(Token):
     id: int
     t: Optional[int]
     p: Optional[int]
-    token_type = "LocusReferenceGenomic"
+    token_type = TokenType.LOCUS_REFERENCE_GENOMIC
 
 
 class Insertion(Token):
@@ -417,7 +439,7 @@ class ProteinInsertionToken(Insertion):
     start_aa_flank: str
     end_aa_flank: str
     coordinate_type = CoordinateType.PROTEIN
-    token_type = "ProteinInsertion"
+    token_type = TokenType.PROTEIN_INSERTION
     so_id = SequenceOntology.PROTEIN_INSERTION
     molecule_context = "protein"
 
@@ -427,7 +449,7 @@ class CodingDNAInsertionToken(Insertion):
 
     coordinate_type = CoordinateType.CODING_DNA
     inserted_sequence2: Optional[str]
-    token_type = "CodingDNAInsertion"
+    token_type = TokenType.CODING_DNA_INSERTION
     so_id = SequenceOntology.INSERTION
     molecule_context = "transcript"
 
@@ -437,7 +459,7 @@ class GenomicInsertionToken(Insertion):
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
     inserted_sequence2: Optional[str]
-    token_type = "GenomicInsertion"
+    token_type = TokenType.GENOMIC_INSERTION
     so_id = SequenceOntology.INSERTION
     molecule_context = "genomic"
 
@@ -474,7 +496,7 @@ class ProteinDeletionToken(Deletion):
     end_aa_del: Optional[str]
     deleted_aa: Optional[str]
     coordinate_type = CoordinateType.PROTEIN
-    token_type = "ProteinDeletion"
+    token_type = TokenType.PROTEIN_DELETION
     so_id = SequenceOntology.PROTEIN_DELETION
     molecule_context = "protein"
 
@@ -486,7 +508,7 @@ class CodingDNADeletionToken(Deletion):
 
     coordinate_type = CoordinateType.CODING_DNA
     deleted_sequence: Optional[str]
-    token_type = "CodingDNADeletion"
+    token_type = TokenType.CODING_DNA_DELETION
     so_id = SequenceOntology.DELETION
     molecule_context = "transcript"
 
@@ -498,7 +520,7 @@ class GenomicDeletionToken(Deletion):
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
     deleted_sequence: Optional[str]
-    token_type = "GenomicDeletion"
+    token_type = TokenType.GENOMIC_DELETION
     so_id = SequenceOntology.DELETION
     molecule_context = "genomic"
 
@@ -519,7 +541,7 @@ class DeletionRange(Token):
 class GenomicDeletionRangeToken(DeletionRange):
     """Genomic deletion range token."""
 
-    token_type = "GenomicDeletionRange"
+    token_type = TokenType.GENOMIC_DELETION_RANGE
     molecule_context = "genomic"
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
@@ -539,7 +561,7 @@ class UncertainDeletion(DeletionRange):
 class GenomicUncertainDeletionToken(UncertainDeletion):
     """Genomic uncertain deletion."""
 
-    token_type = "GenomicUncertainDeletion"
+    token_type = TokenType.GENOMIC_UNCERTAIN_DELETION
     molecule_context = "genomic"
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
@@ -592,7 +614,7 @@ class ChromosomeToken(Token):
     """Chromosome token"""
 
     chromosome: str
-    token_type = "Chromosome"
+    token_type = TokenType.CHROMOSOME
 
 
 class AmplificationToken(Token):
