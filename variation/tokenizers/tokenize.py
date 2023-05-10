@@ -116,7 +116,7 @@ class Tokenize:
             if not matched:
                 warnings.append(f"Unable to tokenize {term}")
                 tokens.append(Token(
-                    token="",
-                    token_type="Unknown",
+                    token=term,
+                    token_type=TokenType.UNKNOWN,
                     input_string=term
                 ))
