@@ -87,7 +87,6 @@ class Token(BaseModel):
             schema["example"] = {
                 "token": "",
                 "token_type": "Unknown",
-                "match_type": 5,
                 "input_string": "foo",
                 "object_type": "Token",
                 "nomenclature": None
@@ -115,7 +114,6 @@ class GeneMatchToken(Token):
             schema["example"] = {
                 "token": "BRAF",
                 "token_type": "GeneSymbol",
-                "match_type": 2,
                 "input_string": "BRAF",
                 "object_type": "Token",
                 "matched_value": "BRAF"
@@ -167,7 +165,6 @@ class PolypeptideTruncationToken(PolypeptideSequenceVariation):
             schema["example"] = {
                 "token": "Tyr365Ter",
                 "token_type": "PolypeptideTruncation",
-                "match_type": 5,
                 "input_string": "Tyr365Ter",
                 "object_type": "Token",
                 "ref_protein": "Tyr",
@@ -199,7 +196,6 @@ class ProteinSubstitutionToken(PolypeptideSequenceVariation):
             schema["example"] = {
                 "token": "V600E",
                 "token_type": "ProteinSubstitution",
-                "match_type": 5,
                 "input_string": "V600E",
                 "object_type": "Token",
                 "ref_protein": "V",
@@ -230,7 +226,6 @@ class SilentMutationToken(PolypeptideSequenceVariation):
             schema["example"] = {
                 "token": "p.Cys188=",
                 "token_type": "SilentMutation",
-                "match_type": 5,
                 "input_string": "p.Cys188=",
                 "object_type": "Token",
                 "ref_protein": "Cys",
@@ -270,7 +265,6 @@ class TokenResponseSchema(BaseModel):
                     {
                         "token": "BRAF",
                         "token_type": "GeneSymbol",
-                        "match_type": 2,
                         "input_string": "BRAF",
                         "object_type": "Token",
                         "matched_value": "BRAF"
@@ -278,7 +272,6 @@ class TokenResponseSchema(BaseModel):
                     {
                         "token": "V600E",
                         "token_type": "ProteinSubstitution",
-                        "match_type": 5,
                         "input_string": "V600E",
                         "object_type": "Token",
                         "ref_protein": "V",
