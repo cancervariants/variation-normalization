@@ -35,6 +35,7 @@ class TokenType(str, Enum):
     PROTEIN_SUBSTITUTION = "ProteinSubstitution"
     REFERENCE_SEQUENCE = "ReferenceSequence"
     SILENT_MUTATION = "SilentMutation"
+    UNKNOWN = "Unknown"
 
 
 class Nomenclature(str, Enum):
@@ -68,7 +69,7 @@ class Token(BaseModel):
     """A string from a given query."""
 
     token: str
-    token_type: str
+    token_type: TokenType
     input_string: str
     object_type = "Token"
     nomenclature: Optional[Nomenclature]
