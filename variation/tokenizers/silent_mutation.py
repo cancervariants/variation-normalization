@@ -1,8 +1,7 @@
 """A module for Protein Substitution Tokenization."""
 from typing import List, Optional
 
-from variation.schemas.token_response_schema import SilentMutationToken,\
-    TokenMatchType
+from variation.schemas.token_response_schema import SilentMutationToken
 from .polypeptide_sequence_variation_base import \
     PolypeptideSequenceVariationBase
 
@@ -47,7 +46,6 @@ class SilentMutation(PolypeptideSequenceVariationBase):
                 return SilentMutationToken(
                     token=input_string,
                     input_string=input_string,
-                    match_type=TokenMatchType.UNSPECIFIED.value,
                     ref_protein=self.psub["amino_acid"],
                     position=self.psub["position"]
                 )

@@ -1,7 +1,7 @@
 """A module for tokenizing."""
 from typing import Iterable, List
 
-from variation.schemas.token_response_schema import Token, TokenType, TokenMatchType
+from variation.schemas.token_response_schema import Token, TokenType
 from .gene_symbol import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
@@ -118,6 +118,5 @@ class Tokenize:
                 tokens.append(Token(
                     token="",
                     token_type="Unknown",
-                    input_string=term,
-                    match_type=TokenMatchType.UNSPECIFIED
+                    input_string=term
                 ))

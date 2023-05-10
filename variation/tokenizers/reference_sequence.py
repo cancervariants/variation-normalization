@@ -1,7 +1,7 @@
 """A module for Reference Sequence Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import Token, TokenType, TokenMatchType
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.tokenizers.tokenizer import Tokenizer
 
 REFSEQ_PREFIXES = ["NC_", "NT_", "NW_", "NG_", "NM_", "NR_", "NP_",
@@ -21,7 +21,6 @@ class ReferenceSequence(Tokenizer):
             return Token(
                 token=input_string,
                 token_type=TokenType.REFERENCE_SEQUENCE,
-                input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED
+                input_string=input_string
             )
         return None

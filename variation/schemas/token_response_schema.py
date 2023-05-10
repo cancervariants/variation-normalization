@@ -1,19 +1,9 @@
 """Module for Token Schema."""
 from typing import List, Union, Dict, Any, Type, Optional, Literal
-from enum import IntEnum, Enum
+from enum import Enum
 
 from pydantic import BaseModel
 from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
-
-
-class TokenMatchType(IntEnum):
-    """Gene Token match types."""
-
-    ID = 1
-    SYMBOL = 2
-    PREVIOUS = 3
-    ALIAS = 4
-    UNSPECIFIED = 5
 
 
 class TokenType(str, Enum):
@@ -79,7 +69,6 @@ class Token(BaseModel):
 
     token: str
     token_type: str
-    match_type: TokenMatchType
     input_string: str
     object_type = "Token"
     nomenclature: Optional[Nomenclature]
