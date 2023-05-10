@@ -1,18 +1,11 @@
 """Module for Validation Response Schema."""
 from typing import List, Optional
-from enum import IntEnum
 
 from pydantic import BaseModel
 from pydantic.types import StrictBool
 
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import GeneToken, Token
-
-
-class LookupType(IntEnum):
-    """IntEnum for Lookup Type."""
-
-    GENE_SYMBOL = 1
 
 
 class ValidationResult(BaseModel):
