@@ -5,6 +5,7 @@ from typing import List, Optional
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
 
 from variation.schemas.classification_response_schema import Classification
+from variation.schemas.token_response_schema import TokenType
 
 
 logger = logging.getLogger("variation")
@@ -27,13 +28,13 @@ class GenomicBase:
     async def get_nc_accessions(self, classification: Classification) -> List[str]:
         """Get NC accession for a given classification."""
         hgvs = [t.token for t in classification.all_tokens if
-                t.token_type in ["HGVS", "ReferenceSequence"]]
+                t.token_type in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]]
         nc_accessions = []
         if hgvs:
             nc_accessions = [hgvs[0].split(":")[0]]
         else:
             chromosome = [t.token for t in classification.all_tokens if
-                          t.token_type in ["Chromosome"]]
+                          t.token_type in [TokenType.CHROMOSOME]]
             if chromosome:
                 chromosome = chromosome[0]
                 for assesmbly in ["GRCh37", "GRCh38"]:
@@ -42,7 +43,7 @@ class GenomicBase:
                         nc_accessions.append(ac)
             else:
                 gene_tokens = [t.token for t in classification.all_tokens
-                               if t.token_type == "GeneSymbol"]
+                               if t.token_type == TokenType.GENE]
                 if gene_tokens and len(gene_tokens) == 1:
                     nc_accessions = await self.uta.get_ac_from_gene(gene_tokens[0])
         return nc_accessions

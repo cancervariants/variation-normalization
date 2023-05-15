@@ -6,6 +6,8 @@ from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
 from bioutils.accessions import coerce_namespace
 
+from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
+
 
 class VRSRepresentation:
     """Class for representing VRS objects"""
@@ -101,7 +103,7 @@ class VRSRepresentation:
                    sstate: Union[models.LiteralSequenceExpression,
                                  models.DerivedSequenceExpression,
                                  models.RepeatedSequenceExpression],
-                   alt_type: str, errors: List) -> Optional[Dict]:
+                   alt_type: AltType, errors: List) -> Optional[Dict]:
         """Create a VRS Allele object.
 
         :param str ac: Accession
@@ -110,7 +112,7 @@ class VRSRepresentation:
         :type sstate: models.LiteralSequenceExpression or
             models.DerivedSequenceExpression or
             models.RepeatedSequenceExpression
-        :param str alt_type: Type of alteration
+        :param AltType alt_type: Type of alteration
         :param List errors: List of errors
         :return: VRS Allele object represented as a Dict
         """
@@ -121,8 +123,7 @@ class VRSRepresentation:
             return None
         allele = models.Allele(location=location, state=sstate, type="Allele")
         # Ambiguous regions do not get normalized
-        if alt_type not in ["uncertain_deletion", "uncertain_duplication",
-                            "duplication_range", "deletion_range"]:
+        if alt_type not in AMBIGUOUS_REGIONS:
             try:
                 allele = normalize(allele, self.seqrepo_access)
             except (KeyError, AttributeError) as e:
@@ -147,7 +148,7 @@ class VRSRepresentation:
 
     def to_vrs_allele(
             self, ac: str, start: int, end: int, coordinate: str,
-            alt_type: str, errors: List, cds_start: int = None,
+            alt_type: AltType, errors: List, cds_start: int = None,
             alt: str = None) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
@@ -155,7 +156,7 @@ class VRSRepresentation:
         :param int start: Start position change
         :param int end: End position change
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param str alt_type: Type of alteration
+        :param AltType alt_type: Type of alteration
         :param List errors: List of errors
         :param int cds_start: Coding start site
         :param str alt: Alteration
@@ -172,12 +173,12 @@ class VRSRepresentation:
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
-        if alt_type == "insertion":
+        if alt_type == AltType.INSERTION:
             state = alt
             ival_end = ival_start
-        elif alt_type in ["substitution", "deletion", "delins",
-                          "silent_mutation", "nonsense"]:
-            if alt_type == "silent_mutation":
+        elif alt_type in {AltType.SUBSTITUTION, AltType.DELETION, AltType.DELINS,
+                          AltType.SILENT_MUTATION, AltType.NONSENSE}:
+            if alt_type == AltType.SILENT_MUTATION:
                 state, _ = self.seqrepo_access.get_reference_sequence(ac, ival_start)
                 if state is None:
                     errors.append(f"Unable to get sequence on {ac} from "
@@ -186,7 +187,7 @@ class VRSRepresentation:
             else:
                 state = alt or ""
             ival_start -= 1
-        elif alt_type == "duplication":
+        elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
                 ac, ival_start, ival_end + 1)
             if ref is not None:
@@ -209,13 +210,13 @@ class VRSRepresentation:
         return self.vrs_allele(ac, interval, sstate, alt_type, errors)
 
     def to_vrs_allele_ranges(
-            self, ac: str, coordinate: str, alt_type: str, errors: List,
+            self, ac: str, coordinate: str, alt_type: AltType, errors: List,
             ival: models.SequenceInterval) -> Optional[Dict]:
         """Translate variation ranges to VRS Allele Object.
 
         :param str ac: Accession
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param str alt_type: Type of alteration
+        :param AltType alt_type: Type of alteration
         :param List errors: List of errors
         :param models.SequenceInterval ival: Sequence Interval
         :return: VRS Allele object
@@ -223,8 +224,8 @@ class VRSRepresentation:
         if coordinate == "c":
             # TODO: Once we add support for ranges on c. coord
             return None
-        if alt_type in ["uncertain_deletion", "uncertain_duplication",
-                        "duplication_range", "deletion_range"]:
+        if alt_type in {AltType.UNCERTAIN_DELETION, AltType.UNCERTAIN_DUPLICATION,
+                        AltType.DELETION_RANGE, AltType.DUPLICATION_RANGE}:
             sstate = models.LiteralSequenceExpression(
                 sequence="", type="LiteralSequenceExpression"
             )

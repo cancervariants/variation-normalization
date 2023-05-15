@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class ProteinDeletionClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class ProteinDeletionClassifier(SetBasedClassifier):
         """Return the Protein Deletion classification type."""
         return ClassificationType.PROTEIN_DELETION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["ProteinDeletion"],
-            ["GeneSymbol", "ProteinSubstitution", "ProteinDeletion"],
-            ["ProteinDeletion", "GeneSymbol"],
-            ["GeneSymbol", "ProteinDeletion"],
-            ["HGVS", "ProteinDeletion"],
-            ["ReferenceSequence", "ProteinDeletion"],
-            ["LocusReferenceGenomic", "ProteinDeletion"]
+            [TokenType.PROTEIN_DELETION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_DELETION],  # noqa: E501
+            [TokenType.PROTEIN_DELETION, TokenType.GENE],
+            [TokenType.GENE, TokenType.PROTEIN_DELETION],
+            [TokenType.HGVS, TokenType.PROTEIN_DELETION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_DELETION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_DELETION]
         ]

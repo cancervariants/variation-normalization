@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class CodingDNADelInsClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class CodingDNADelInsClassifier(SetBasedClassifier):
         """Return the Coding DNA DelIns classification type."""
         return ClassificationType.CODING_DNA_DELINS
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["CodingDNADelIns"],
-            ["GeneSymbol", "ProteinSubstitution", "CodingDNADelIns"],
-            ["CodingDNADelIns", "GeneSymbol"],
-            ["GeneSymbol", "CodingDNADelIns"],
-            ["HGVS", "CodingDNADelIns"],
-            ["ReferenceSequence", "CodingDNADelIns"],
-            ["LocusReferenceGenomic", "CodingDNADelIns"]
+            [TokenType.CODING_DNA_DELINS],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_DELINS],  # noqa: E501
+            [TokenType.CODING_DNA_DELINS, TokenType.GENE],
+            [TokenType.GENE, TokenType.CODING_DNA_DELINS],
+            [TokenType.HGVS, TokenType.CODING_DNA_DELINS],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.CODING_DNA_DELINS],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.CODING_DNA_DELINS]
         ]

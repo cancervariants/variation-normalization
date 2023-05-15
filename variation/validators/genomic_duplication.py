@@ -11,8 +11,7 @@ from variation.validators.duplication_deletion_base import\
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
-    TokenType, DuplicationAltType, Token, SequenceOntology
-from variation.schemas.token_response_schema import GeneMatchToken
+    Token, TokenType, GeneToken, AltType, SequenceOntology
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -238,7 +237,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         """
         ival, start, end, grch38 = None, None, None, None
         gene = gene_tokens[0].token if gene_tokens else None
-        if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
+        if s.alt_type != AltType.UNCERTAIN_DUPLICATION:
             # (#_#)_(#_#)
             if is_norm:
                 t, start1, start2, end1, end2, grch38 = await self.get_grch38_pos_ac(
@@ -331,7 +330,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         return ival, grch38
 
     def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
+            self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -345,8 +344,8 @@ class GenomicDuplication(DuplicationDeletionBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is an instance of Genomic Duplication."""
-        return t.token_type in ["GenomicDuplication",
-                                "GenomicDuplicationRange"]
+        return t.token_type in [TokenType.GENOMIC_DUPLICATION,
+                                TokenType.GENOMIC_DUPLICATION_RANGE]
 
     def validates_classification_type(
         self, classification_type: ClassificationType

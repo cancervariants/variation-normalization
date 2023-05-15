@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import GenomicSubstitution
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestGenomicSubstitutionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic substitution token type."""
-        return "GenomicSubstitution"
+        return TokenType.GENOMIC_SUBSTITUTION
 
     def fixture_name(self):
         """Return the fixture name for genomic substitution."""

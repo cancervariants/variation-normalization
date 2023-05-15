@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import CodingDNAInsertion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestCodingDNAInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Coding DNA insertion token type."""
-        return "CodingDNAInsertion"
+        return TokenType.CODING_DNA_INSERTION
 
     def fixture_name(self):
         """Return the fixture name for Coding DNA Insertion."""

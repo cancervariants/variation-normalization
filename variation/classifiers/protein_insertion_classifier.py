@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class ProteinInsertionClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class ProteinInsertionClassifier(SetBasedClassifier):
         """Return the Protein Insertion classification type."""
         return ClassificationType.PROTEIN_INSERTION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["ProteinInsertion"],
-            ["GeneSymbol", "ProteinSubstitution", "ProteinInsertion"],
-            ["ProteinInsertion", "GeneSymbol"],
-            ["GeneSymbol", "ProteinInsertion"],
-            ["HGVS", "ProteinInsertion"],
-            ["ReferenceSequence", "ProteinInsertion"],
-            ["LocusReferenceGenomic", "ProteinInsertion"]
+            [TokenType.PROTEIN_INSERTION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_INSERTION],  # noqa: E501
+            [TokenType.PROTEIN_INSERTION, TokenType.GENE],
+            [TokenType.GENE, TokenType.PROTEIN_INSERTION],
+            [TokenType.HGVS, TokenType.PROTEIN_INSERTION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_INSERTION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_INSERTION]
         ]

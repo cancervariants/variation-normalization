@@ -1,9 +1,10 @@
 """A module for testing gnomad VCF tokenization."""
 import pytest
 
-from variation.schemas.token_response_schema import ChromosomeToken, \
-    GenomicDeletionToken, CoordinateType, GenomicSubstitutionToken, \
-    GenomicInsertionToken, GenomicSilentMutationToken
+from variation.schemas.token_response_schema import (
+    ChromosomeToken, GenomicDeletionToken, CoordinateType, GenomicSubstitutionToken,
+    GenomicInsertionToken, GenomicSilentMutationToken, TokenType, AltType
+)
 from variation.tokenizers import GnomadVCF
 
 
@@ -36,8 +37,8 @@ def test_matches(tokenizer):
     assert token.ref_nucleotide == "A"
     assert token.new_nucleotide == "T"
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicSubstitution"
-    assert token.alt_type == "substitution"
+    assert token.token_type == TokenType.GENOMIC_SUBSTITUTION
+    assert token.alt_type == AltType.SUBSTITUTION
     assert token.so_id == "SO:0001483"
     assert token.molecule_context == "genomic"
     assert token.nomenclature == "gnomad_vcf"
@@ -55,8 +56,8 @@ def test_matches(tokenizer):
     assert token.inserted_sequence == "CTAG"
     assert token.inserted_sequence2 is None
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicInsertion"
-    assert token.alt_type == "insertion"
+    assert token.token_type == TokenType.GENOMIC_INSERTION
+    assert token.alt_type == AltType.INSERTION
     assert token.so_id == "SO:0000667"
     assert token.molecule_context == "genomic"
     assert token.nomenclature == "gnomad_vcf"
@@ -73,8 +74,8 @@ def test_matches(tokenizer):
     assert token.end_pos_del == 1235
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
     assert token.deleted_sequence == "C"
-    assert token.token_type == "GenomicDeletion"
-    assert token.alt_type == "deletion"
+    assert token.token_type == TokenType.GENOMIC_DELETION
+    assert token.alt_type == AltType.DELETION
     assert token.so_id == "SO:0000159"
     assert token.molecule_context == "genomic"
     assert token.nomenclature == "gnomad_vcf"
@@ -91,8 +92,8 @@ def test_matches(tokenizer):
     assert token.ref_nucleotide == "C"
     assert token.new_nucleotide == "="
     assert token.coordinate_type == CoordinateType.LINEAR_GENOMIC
-    assert token.token_type == "GenomicSilentMutation"
-    assert token.alt_type == "silent_mutation"
+    assert token.token_type == TokenType.GENOMIC_SILENT_MUTATION
+    assert token.alt_type == AltType.SILENT_MUTATION
     assert token.so_id == "SO:0002073"
     assert token.molecule_context == "genomic"
     assert token.nomenclature == "gnomad_vcf"

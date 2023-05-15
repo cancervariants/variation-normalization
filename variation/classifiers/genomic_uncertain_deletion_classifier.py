@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class GenomicUncertainDeletionClassifier(SetBasedClassifier):
@@ -12,13 +13,13 @@ class GenomicUncertainDeletionClassifier(SetBasedClassifier):
         """Return the Genomic Uncertain Deletion classification type."""
         return ClassificationType.GENOMIC_UNCERTAIN_DELETION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["Chromosome", "GenomicUncertainDeletion"],
-            ["GeneSymbol", "GenomicUncertainDeletion"],
-            ["GenomicUncertainDeletion", "GeneSymbol"],
-            ["HGVS", "GenomicUncertainDeletion"],
-            ["ReferenceSequence", "GenomicUncertainDeletion"],
-            ["LocusReferenceGenomic", "GenomicUncertainDeletion"]
+            [TokenType.CHROMOSOME, TokenType.GENOMIC_UNCERTAIN_DELETION],
+            [TokenType.GENE, TokenType.GENOMIC_UNCERTAIN_DELETION],
+            [TokenType.GENOMIC_UNCERTAIN_DELETION, TokenType.GENE],
+            [TokenType.HGVS, TokenType.GENOMIC_UNCERTAIN_DELETION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.GENOMIC_UNCERTAIN_DELETION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.GENOMIC_UNCERTAIN_DELETION]
         ]

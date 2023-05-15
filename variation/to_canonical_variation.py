@@ -23,6 +23,7 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.hgvs_to_copy_number_schema import VALID_COPY_CHANGE,\
     CopyChange
+from variation.schemas.token_response_schema import TokenType
 from variation.to_vrs import ToVRS
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
@@ -256,7 +257,7 @@ class ToCanonicalVariation(ToVRS):
         classifications = self.classifier.perform(tokens)
         hgvs_classifications = list()
         for c in classifications:
-            if "HGVS" in c.matching_tokens or "ReferenceSequence" in c.matching_tokens:
+            if TokenType.HGVS in c.matching_tokens or TokenType.REFERENCE_SEQUENCE in c.matching_tokens:  # noqa: E501
                 hgvs_classifications.append(c)
         if not hgvs_classifications:
             warnings = [f"{q} is not a supported HGVS expression"]

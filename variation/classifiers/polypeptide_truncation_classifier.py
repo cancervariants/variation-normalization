@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class PolypeptideTruncationClassifier(SetBasedClassifier):
@@ -12,11 +13,11 @@ class PolypeptideTruncationClassifier(SetBasedClassifier):
         """Return the Polypeptide Truncation classification type."""
         return ClassificationType.POLYPEPTIDE_TRUNCATION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["PolypeptideTruncation"],
-            ["GeneSymbol", "PolypeptideTruncation"],
-            ["HGVS", "PolypeptideTruncation"],
-            ["ReferenceSequence", "PolypeptideTruncation"]
+            [TokenType.POLYPEPTIDE_TRUNCATION],
+            [TokenType.GENE, TokenType.POLYPEPTIDE_TRUNCATION],
+            [TokenType.HGVS, TokenType.POLYPEPTIDE_TRUNCATION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.POLYPEPTIDE_TRUNCATION]
         ]

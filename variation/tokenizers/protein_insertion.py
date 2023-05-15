@@ -3,9 +3,8 @@ from typing import List, Optional
 
 from pydantic.error_wrappers import ValidationError
 
-from variation.schemas.token_response_schema import ProteinInsertionToken, \
-    TokenMatchType
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import ProteinInsertionToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class ProteinInsertion(Tokenizer):
@@ -24,7 +23,6 @@ class ProteinInsertion(Tokenizer):
             "used_one_letter": False,
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_aa_flank": None,
             "start_pos_flank": None,
             "end_aa_flank": None,

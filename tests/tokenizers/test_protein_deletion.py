@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import ProteinDeletion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestProteinDeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return protein deletion token type."""
-        return "ProteinDeletion"
+        return TokenType.PROTEIN_DELETION
 
     def fixture_name(self):
         """Return the fixture name for protein deletion."""

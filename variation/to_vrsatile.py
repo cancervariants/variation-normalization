@@ -5,7 +5,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 
 from variation.to_vrs import ToVRS
-from variation.schemas.token_response_schema import GeneMatchToken, TokenType
+from variation.schemas.token_response_schema import GeneToken, TokenType
 from variation.schemas.validation_response_schema import ValidationResult
 
 
@@ -63,11 +63,11 @@ class ToVRSATILE(ToVRS):
         ), warnings
 
     def get_gene_descriptor(
-            self, gene_token: Optional[GeneMatchToken] = None,
+            self, gene_token: Optional[GeneToken] = None,
             gene: Optional[str] = None) -> Optional[GeneDescriptor]:
         """Return a GA4GH Gene Descriptor using Gene Normalization.
 
-        :param Optional[GeneMatchToken] gene_token: A gene token
+        :param Optional[GeneToken] gene_token: A gene token
         :param Optional[str] gene: Gene query
         :return: A gene descriptor for a given gene if a record exists in
             gene-normalizer.
