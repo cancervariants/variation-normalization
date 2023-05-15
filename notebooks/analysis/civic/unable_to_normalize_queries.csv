@@ -61,3 +61,4 @@ variant_id	query	query_type	variant_accepted	exception_raised	message	warnings
 3721	AR V757A	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3722	AR V757I	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
 3724	AR Y763C	protein	False	False	unable to normalize	"[""Unable to find valid result for classifications: {'protein substitution'}""]"
+4474	BRAF p.N486_P490	protein	False	False	unable to normalize	['Unable to tokenize p.N486_P490']

@@ -416,6 +416,7 @@ variant_id	query	query_type	variant_accepted
 1004	EGFR E746_T751delinsA	protein	False
 1214	EGFR E746_T751delinsVA	protein	False
 3754	BACH2 E788K	protein	False
+4476	TET2 E796K	protein	False
 3504	ERCC2 E79D	protein	False
 4320	NFE2L2 E79K	protein	False
 3960	NFE2L2 E79Q	protein	False
@@ -637,6 +638,7 @@ variant_id	query	query_type	variant_accepted
 3346	SPOP G75R	protein	False
 144	DDR2 G774V	protein	True
 816	ERBB2 G776L	protein	True
+4470	ERBB2 G776V	protein	False
 3649	KDR G800D	protein	False
 3650	KDR G800R	protein	False
 3226	RET G810C	protein	False
@@ -935,6 +937,7 @@ variant_id	query	query_type	variant_accepted
 40	ERBB2 L755W	protein	True
 37	ERBB2 L755_T759del	protein	True
 1308	ERBB2 L768S	protein	False
+4477	BAX L76R	protein	False
 3004	EGFR L792H	protein	False
 1457	EGFR L838P	protein	True
 1018	EGFR L838V	protein	True
@@ -1088,6 +1091,7 @@ variant_id	query	query_type	variant_accepted
 2064	NC_000003.11:g.10191581C>T	genomic	False
 1864	NC_000003.11:g.10191582del	genomic	False
 813	ETV6 P214L	protein	False
+4473	ARAF P216A	protein	False
 3778	TP53 P219H	protein	True
 284	MTOR P2213S	protein	True
 3318	TP53 P250L	protein	True
@@ -1109,6 +1113,7 @@ variant_id	query	query_type	variant_accepted
 3603	ATXN7 P42_P43insP	protein	False
 1616	ABL1 P441L	protein	False
 3458	PIK3CA P447_L455del	protein	False
+4478	AXIN2 P455K	protein	False
 294	PIK3CA P471L	protein	True
 504	TP53 P47S	protein	True
 1623	ABL1 P480L	protein	False
@@ -1455,6 +1460,7 @@ variant_id	query	query_type	variant_accepted
 4410	ARAF S214F	protein	True
 2715	MTOR S2215F	protein	False
 542	MTOR S2215Y	protein	True
+4472	ARAF S225V	protein	False
 4143	TP53 S227C	protein	False
 243	ATM S2289*	protein	True
 1065	TP53 S241C	protein	False
@@ -1686,6 +1692,7 @@ variant_id	query	query_type	variant_accepted
 563	BRAF V600K	protein	True
 1404	BRAF V600L	protein	False
 1405	BRAF V600M	protein	True
+16	BRAF V600R	protein	False
 991	BRAF V600R	protein	False
 1658	BRAF V600_K601DELINSD	protein	False
 3241	BRAF V600_S605delinsDV	protein	False
@@ -1859,4 +1866,5 @@ variant_id	query	query_type	variant_accepted
 877	NC_000020.11:g.58903752C>T	genomic	True
 731	NC_000003.11:g.37056036G>A	genomic	True
 3045	VHL p.F76del	protein	False
+4475	MAP2K1 p.K57_G61del	protein	False
 3310	HDAC9 p.L33R	protein	False

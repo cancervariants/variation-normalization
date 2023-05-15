@@ -1,12 +1,21 @@
 variant_id	gene_name	variant_name	category	variant_accepted
+4170	VHL		Transcript Variant	False
 4417	ALK	 FBXO11::ALK	Fusion	False
+4214	VHL		Transcript Variant	False
+4216	VHL		Transcript Variant	False
+4278	VHL		Transcript Variant	False
+4232	BRCA1		Transcript Variant	False
+3196	VHL		Transcript Variant	False
+2930	VHL		Transcript Variant	True
 4188	VHL	10kb Deletion	Region Defined Variant	False
 785	CHEK2	1100DELC	Protein Consequence	True
+3083	VHL		Transcript Variant	False
 2438	VHL	235 (CAG-TAG)	Other	False
 4186	VHL	2kb Deletion	Region Defined Variant	False
 823	EPCAM	3' Exon Deletion	Region Defined Variant	True
 253	EGFR	3' UTR MUTATION	Region Defined Variant	False
 433	HIF1A	3' UTR Polymorphism	Region Defined Variant	True
+3102	VHL		Transcript Variant	False
 2367	VHL	3p26.3-25.3 11Mb del	Region Defined Variant	True
 265	TYMS	5' TANDEM REPEAT	Other	True
 2390	MAP2K1	56_61QKQKVG>R	Rearrangements	False
@@ -15,6 +24,11 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2729	TP53	A129	Protein Consequence	False
 2979	KRAS	A146	Protein Consequence	True
 3195	VHL	A149fs (c.444dup)	Copy Number	False
+2482	VHL		Transcript Variant	False
+2023	VHL		Transcript Variant	True
+2962	RUNX1		Transcript Variant	False
+2442	VHL		Transcript Variant	False
+2265	VHL		Transcript Variant	True
 2144	VHL	A56fs (c.166dup)	Copy Number	True
 1579	EGFR	A767_V769dupASV	Copy Number	True
 780	GLI1	ACTB::GLI1	Fusion	True
@@ -111,6 +125,8 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1026	ABL1	BCR::ABL Y253F	Fusion	True
 2909	ABL1	BCR::ABL Y253F	Fusion	True
 1025	ABL1	BCR::ABL Y253H	Fusion	True
+4467	ABL1	BCR::ABL mutations	Fusion	False
+4497	FGFR1	BCR::FGFR1	Fusion	False
 2860	JAK2	BCR::JAK2	Fusion	True
 2971	PDGFRA	BCR::PDGFRA	Fusion	True
 594	CEBPA	BIALLELIC INACTIVATION	Other	True
@@ -118,7 +134,11 @@ variant_id	gene_name	variant_name	category	variant_accepted
 719	BRD4	BRD4::NUTM1	Fusion	True
 532	PALB2	Biallelic Inactivation	Other	True
 2391	MAP2K1	C121S and G128D	Protein Consequence	False
+3170	VHL		Transcript Variant	False
+4181	VHL		Transcript Variant	False
+4108	VHL		Transcript Variant	False
 2132	VHL	C77fs (c.228dup)	Copy Number	True
+3245	VHL		Transcript Variant	True
 2769	ALK	CAD::ALK	Fusion	True
 2630	CBFA2T3	CBFA2T3::GLIS2	Fusion	False
 431	CBFB	CBFB::MYH11	Fusion	True
@@ -156,13 +176,27 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2800	BRAF	Class 2 Mutations	Other	False
 2801	BRAF	Class 3 Mutations	Other	False
 191	EGFR	Copy Number Variation	Copy Number	True
+3567	VHL		Transcript Variant	False
+2553	VHL		Transcript Variant	True
+3156	VHL		Transcript Variant	False
+1918	VHL		Transcript Variant	True
+3179	VHL		Transcript Variant	False
+4207	VHL		Transcript Variant	False
+4153	VHL		Transcript Variant	False
+1844	VHL		Transcript Variant	True
 2734	TP53	D184	Protein Consequence	False
+2479	VHL		Transcript Variant	False
+3260	VHL		Transcript Variant	False
 2767	BRAF	D594	Protein Consequence	False
 746	MLH1	D667FS	Protein Consequence	True
+2673	EPHB2		Transcript Variant	False
 437	FLT3	D835	Protein Consequence	True
 3231	FLT3	D835 & I836	Protein Consequence	False
 613	FLT3	D835H/Y	Protein Consequence	True
 943	PDGFRA	D842_H845DELDIMH	Rearrangements	True
+3360	VHL		Transcript Variant	False
+2963	RUNX1		Transcript Variant	False
+4495	ALK	DCTN1::ALK	Fusion	False
 2394	NTRK1	DDR2::NTRK1	Fusion	True
 2706	DEK	DEK::AFF2	Fusion	False
 522	BRAF	DEL 485-490	Region Defined Variant	True
@@ -192,25 +226,47 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4314	CDKN2B	Deletion	Gene Function	False
 4316	PAX5	Deletion	Gene Function	False
 4317	ERG	Deletion	Gene Function	False
+4479	BRCA2	Deletion	Gene Function	False
+4480	TP53	Deletion	Gene Function	False
+4192	VHL		Transcript Variant	False
+4193	VHL		Transcript Variant	False
+4194	VHL		Transcript Variant	False
 526	BCL2L11	Deletion Polymorphism	Region Defined Variant	True
 3009	ABL1	Double Ph	Rearrangements	True
 725	MLH1	E13fs	Protein Consequence	True
 2994	MAEA	E151INT	Other	False
+4155	VHL		Transcript Variant	False
 2591	DICER1	E1813 mutations	Protein Consequence	False
+2529	VHL		Transcript Variant	False
 2730	TP53	E204	Protein Consequence	False
+4234	VHL		Transcript Variant	False
 763	MSH2	E28FS	Protein Consequence	True
+4275	VHL		Transcript Variant	False
+3383	VHL		Transcript Variant	False
+1735	VHL		Transcript Variant	False
 2763	PIK3CA	E545	Protein Consequence	True
+3635	VHL		Transcript Variant	False
+4077	VHL		Transcript Variant	False
+2301	VHL		Transcript Variant	False
+3744	VHL		Transcript Variant	False
+3654	VHL		Transcript Variant	False
 3328	FLT3	E573Δ	Other	False
 1544	FLT3	E611_F612INS25	Protein Consequence	False
 2258	EGFR	E709A and G719C	Protein Consequence	False
 2256	EGFR	E709K and G719A	Protein Consequence	False
 1577	EGFR	E709_T710>D	Rearrangements	False
+3036	VHL		Transcript Variant	False
+2538	VHL		Transcript Variant	False
+2304	VHL		Transcript Variant	False
+4161	VHL		Transcript Variant	False
 1635	EGFR	E746_A750>IP	Rearrangements	False
 1433	EGFR	E746_S752>A	Rearrangements	False
 1003	EGFR	E746_T751>I	Rearrangements	True
+2310	VHL		Transcript Variant	False
 2847	JAK2	EBF1::JAK2	Fusion	True
 535	PDGFRB	EBF1::PDGFRB	Fusion	True
 3484	FN1	EDB	Other	False
+4270	EGFR	EGFR ITD	Rearrangements	False
 4294	EGFR	EGFR::BRAF	Fusion	False
 4283	EGFR	EGFR::PPARGC1A	Fusion	False
 4282	EGFR	EGFR::PURB	Fusion	False
@@ -239,7 +295,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2396	NTRK2	ETV6::NTRK2	Fusion	True
 801	NTRK3	ETV6::NTRK3	Fusion	True
 805	NTRK3	ETV6::NTRK3 G623R	Fusion	True
-3140	ETV6	ETV6::RUNX1	Fusion	False
+3140	ETV6	ETV6::RUNX1	Fusion	True
 4005	EWSR1	EWSR1-ERG	Fusion	False
 3054	EWSR1	EWSR1::ATF1	Fusion	False
 717	DDIT3	EWSR1::DDIT3	Fusion	True
@@ -334,6 +390,8 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2465	VHL	Exon 1 del (151nt)	Region Defined Variant	False
 845	VHL	Exon 1-2 Deletion	Region Defined Variant	True
 843	VHL	Exon 1-3 Deletion	Region Defined Variant	True
+4168	VHL		Transcript Variant	False
+4169	VHL		Transcript Variant	False
 106	PIK3CA	Exon 10 Mutation	Region Defined Variant	True
 1991	PIK3CA	Exon 10 and Exon 21 Mutation	Region Defined Variant	True
 3311	PIK3CA	Exon 10 or Exon 21 Mutation	Region Defined Variant	True
@@ -343,13 +401,22 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2778	MET	Exon 14 Mutation	Region Defined Variant	False
 324	MET	Exon 14 Skipping Mutation	Region Defined Variant	True
 2650	BRAF	Exon 15 Mutation	Region Defined Variant	True
+4491	ERBB2	Exon 17 V659E	Region Defined Variant	False
 2623	PDGFRA	Exon 18 Mutation	Region Defined Variant	True
 375	EGFR	Exon 18 Overexpression	Other	True
 2257	EGFR	Exon 18 deletion	Region Defined Variant	False
 133	EGFR	Exon 19 Deletion	Region Defined Variant	True
+4490	ERBB2	Exon 19 L755P	Region Defined Variant	False
 1938	VHL	Exon 2 Deletion	Region Defined Variant	True
 75	KRAS	Exon 2 Mutation	Region Defined Variant	True
 1971	VHL	Exon 2-3 Deletion	Region Defined Variant	False
+4485	ERBB2	Exon 20 A775_G776ins YVMA	Region Defined Variant	False
+4484	ERBB2	Exon 20 A775_G776insIVMA	Region Defined Variant	False
+4483	ERBB2	Exon 20 A775_G776insYVMA	Region Defined Variant	False
+4488	ERBB2	Exon 20 G776_V777>VCV	Region Defined Variant	False
+4489	ERBB2	Exon 20 G776delinsVC	Region Defined Variant	False
+4487	ERBB2	Exon 20 G778-779 insCPG	Region Defined Variant	False
+4486	ERBB2	Exon 20 G778_P780dup	Other	False
 726	EGFR	Exon 20 Insertion	Other	True
 2854	ERBB2	Exon 20 Insertion	Other	True
 105	PIK3CA	Exon 21 Mutation	Region Defined Variant	True
@@ -358,10 +425,14 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2047	CTNNB1	Exon 3 Deletion	Region Defined Variant	False
 2892	CTNNB1	Exon 3 Mutation	Region Defined Variant	True
 3749	VHL	Exon 3 Variant	Region Defined Variant	False
+4250	VHL		Transcript Variant	False
+4245	VHL		Transcript Variant	False
 252	EGFR	Exon 4 Deletion	Region Defined Variant	True
 350	SETBP1	Exon 4 Mutation	Region Defined Variant	True
 550	ALK	Exon 4-11 Deletion	Region Defined Variant	True
 129	WT1	Exon 7 Mutation	Region Defined Variant	True
+4492	ERBB2	Exon 8 S310F	Region Defined Variant	False
+4493	ERBB2	Exon 8 S335C	Region Defined Variant	False
 130	WT1	Exon 9 Mutation	Region Defined Variant	True
 509	KIT	Exon 9 Mutation	Region Defined Variant	True
 3100	VHL	Exon Deletion	Region Defined Variant	False
@@ -390,12 +461,34 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4336	FLT3LG	Expression	Expression	False
 4421	TBX2	Expression	Expression	False
 4422	TBXT	Expression	Expression	False
+4206	VHL		Transcript Variant	False
+3984	VHL		Transcript Variant	False
+3363	VHL		Transcript Variant	False
+3295	VHL		Transcript Variant	False
+2423	VHL		Transcript Variant	False
+2558	VHL		Transcript Variant	False
+3143	VHL		Transcript Variant	False
+3129	VHL		Transcript Variant	False
+2096	VHL		Transcript Variant	False
+2542	VHL		Transcript Variant	False
 2621	KIT	F506_F508DUP	Copy Number	True
+4083	VHL		Transcript Variant	False
+4082	VHL		Transcript Variant	False
+2271	VHL		Transcript Variant	False
+3494	VHL		Transcript Variant	False
+4081	VHL		Transcript Variant	False
+3577	VHL		Transcript Variant	False
+3157	VHL		Transcript Variant	True
+2018	VHL		Transcript Variant	False
 2158	VHL	F76fs (c.222_225dup)	Copy Number	False
 1912	VHL	F76fs (c.223_224insT)	Copy Number	True
+3632	VHL		Transcript Variant	False
+1893	VHL		Transcript Variant	True
+3105	VHL		Transcript Variant	False
 2656	BRAF	FAM131B::BRAF	Fusion	False
 2987	BRAF	FAM73A::BRAF	Fusion	False
 2743	FGFR1	FGFR1OP2::FGFR1	Fusion	True
+4498	FGFR1	FGFR1OP::FGFR1	Fusion	False
 783	FGFR2	FGFR2::AHCYL1	Fusion	True
 782	FGFR2	FGFR2::BICC1	Fusion	True
 52	FGFR2	FGFR2::MGEA5	Fusion	True
@@ -404,6 +497,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 830	FGFR3	FGFR3::TACC3	Fusion	True
 574	PDGFRA	FIP1L1::PDGFRA	Fusion	True
 577	PDGFRA	FIP1L1::PDGFRA T674I	Fusion	True
+4468	ALK	FN1::ALK	Fusion	False
 2682	ABL1	FOXP1::ABL1	Fusion	True
 667	MEN1	FRAMESHIFT TRUNCATION	Protein Consequence	True
 722	DDIT3	FUS::DDIT3	Fusion	True
@@ -435,14 +529,35 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3081	RAF1	Fusion	Fusion	False
 3315	TP53	Fusion	Fusion	False
 3957	RASGRF1	Fusion	Fusion	False
+3637	VHL		Transcript Variant	False
+2252	VHL		Transcript Variant	False
+2266	VHL		Transcript Variant	False
+2551	VHL		Transcript Variant	False
+3085	VHL		Transcript Variant	False
+4084	VHL		Transcript Variant	False
+2073	VHL		Transcript Variant	False
+4174	VHL		Transcript Variant	False
+2455	VHL		Transcript Variant	True
+2129	VHL		Transcript Variant	True
+2153	VHL		Transcript Variant	False
 76	KRAS	G12	Protein Consequence	True
 92	NRAS	G12	Protein Consequence	True
 77	KRAS	G12/G13	Protein Consequence	True
 596	NRAS	G12/G13	Protein Consequence	True
+2135	VHL		Transcript Variant	True
+3099	VHL		Transcript Variant	False
 80	KRAS	G13	Protein Consequence	True
+4172	VHL		Transcript Variant	False
+4211	VHL		Transcript Variant	False
+2319	VHL		Transcript Variant	False
+2320	VHL		Transcript Variant	False
+1949	VHL		Transcript Variant	True
 2721	TP53	G245	Protein Consequence	False
 2724	TP53	G266	Protein Consequence	False
+3736	VHL		Transcript Variant	False
+2961	RUNX1		Transcript Variant	False
 3587	H3-3A	G34	Protein Consequence	False
+3046	VHL		Transcript Variant	False
 3742	KIT	G3BP2::KIT	Fusion	False
 2822	BRAF	G469	Protein Consequence	True
 3469	NTRK1	G595R and G667S	Protein Consequence	True
@@ -452,6 +567,9 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1557	ERBB2	G776INSV_G/C	Protein Consequence	False
 817	ERBB2	G778_P780DUP	Copy Number	True
 3033	RET	G810	Protein Consequence	False
+3263	VHL		Transcript Variant	False
+2097	VHL		Transcript Variant	True
+1812	VHL		Transcript Variant	False
 3214	JAK2	GOLGA5::JAK2	Fusion	True
 2395	NTRK1	GON4L::NTRK1	Fusion	True
 2770	ROS1	GOPC::ROS1	Fusion	True
@@ -461,12 +579,23 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2061	ACVR1	Gain-of-Function	Other	True
 2172	MTOR	Gain-of-Function	Other	False
 1765	EGFR	Gain-of-function	Other	True
+2346	MLH1		Transcript Variant	False
 3766	PIK3CA	H1047L or H1047R	Protein Consequence	True
+4185	VHL		Transcript Variant	False
+2540	VHL		Transcript Variant	False
+2136	VHL		Transcript Variant	True
+4093	VHL		Transcript Variant	False
+2328	VHL		Transcript Variant	False
 2581	NCOA2	HEY1::NCOA2	Fusion	True
 4405	ALK	HIP1::ALK	Fusion	True
 2969	HMGA2	HMGA2::LPP	Fusion	False
 3597	DDR2	High expression	Expression	False
+1965	VHL		Transcript Variant	False
 527	ALK	I1171	Protein Consequence	True
+2095	VHL		Transcript Variant	False
+3136	VHL		Transcript Variant	False
+3154	VHL		Transcript Variant	False
+2487	VHL		Transcript Variant	False
 271	ATR	I774FS	Protein Consequence	True
 3232	FLT3	I836	Protein Consequence	False
 765	MSH6	I891FS	Protein Consequence	True
@@ -499,10 +628,20 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4150	BCOR	Internal tandem duplication	Copy Number	False
 4229	BCOR	Internal tandem duplication (ITD)	Other	False
 257	EZH2	Intron 6 Mutation	Region Defined Variant	True
+2134	VHL		Transcript Variant	True
+2311	VHL		Transcript Variant	False
 2722	TP53	K132	Protein Consequence	False
+3354	VHL		Transcript Variant	False
+4088	VHL		Transcript Variant	False
+4089	VHL		Transcript Variant	False
 279	NF2	K159fs	Protein Consequence	True
+4100	VHL		Transcript Variant	False
 1872	VHL	K159fs (c.473dup)	Copy Number	True
+2040	VHL		Transcript Variant	True
 2988	PCNA	K164R LOSS-OF-MODIFICATION	Other	False
+2327	VHL		Transcript Variant	False
+2140	VHL		Transcript Variant	True
+2499	VHL		Transcript Variant	False
 3476	H3-3A	K27	Protein Consequence	False
 3010	ABL1	K356dup	Copy Number	False
 3273	MSH3	K383fs	Protein Consequence	False
@@ -528,17 +667,49 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3472	KRAS	KRAS4A	Other	False
 3471	KRAS	KRAS4A underexpression	Other	False
 413	ERBB2	Kinase Domain Mutation	Region Defined Variant	True
+3294	VHL		Transcript Variant	False
 2731	TP53	L114	Protein Consequence	False
+2312	VHL		Transcript Variant	False
+2381	VHL		Transcript Variant	False
+2313	VHL		Transcript Variant	False
+1768	VHL		Transcript Variant	True
+3172	VHL		Transcript Variant	False
+1996	VHL		Transcript Variant	True
+2557	VHL		Transcript Variant	False
+3119	VHL		Transcript Variant	False
+4087	VHL		Transcript Variant	False
+3753	VHL		Transcript Variant	False
+1960	VHL		Transcript Variant	True
+3513	VHL		Transcript Variant	False
+4236	VHL		Transcript Variant	False
+1802	VHL		Transcript Variant	True
+2324	VHL		Transcript Variant	False
+4160	VHL		Transcript Variant	False
 1783	VHL	L158fs (c.471dupT)	Copy Number	True
+3278	VHL		Transcript Variant	False
+2459	VHL		Transcript Variant	True
+3091	VHL		Transcript Variant	False
+4092	VHL		Transcript Variant	False
+4238	VHL		Transcript Variant	False
+4199	VHL		Transcript Variant	False
+4156	VHL		Transcript Variant	False
+3480	VHL		Transcript Variant	False
+4225	VHL		Transcript Variant	False
 2735	TP53	L206	Protein Consequence	False
 1318	TP53	L3 Domain Mutation	Region Defined Variant	False
 1677	FBXW7	L403FS*34	Protein Consequence	False
 541	PALB2	L531FS*30	Protein Consequence	True
 2766	BRAF	L597	Protein Consequence	False
+2262	VHL		Transcript Variant	False
+2087	VHL		Transcript Variant	False
 2997	EGFR	L718V and L718Q	Protein Consequence	False
 1011	EGFR	L747_P753>Q	Rearrangements	False
 4221	AKT2	L78_Q79ins	Rearrangements	False
+2506	VHL		Transcript Variant	False
+1925	VHL		Transcript Variant	False
+2305	VHL		Transcript Variant	False
 1866	EGFR	L861	Protein Consequence	True
+3164	VHL		Transcript Variant	False
 3483	LGR5	LGR5FL	Expression	False
 1278	NTRK1	LMNA::NTRK1	Fusion	True
 1282	NTRK1	LMNA::NTRK1 G595R and G667C	Fusion	True
@@ -604,6 +775,11 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3316	MEN1	Loss-of-function	Gene Function	False
 4269	ATRX	Loss-of-function	Gene Function	False
 1247	BRCA2	M1R	Other	True
+3720	VHL		Transcript Variant	False
+2497	VHL		Transcript Variant	False
+2269	VHL		Transcript Variant	False
+2545	VHL		Transcript Variant	False
+2473	VHL		Transcript Variant	False
 1889	VHL	M54fs (c.161dup)	Copy Number	True
 638	RB1	M695FS*26	Protein Consequence	True
 2227	BRAF	MACF1::BRAF	Fusion	True
@@ -719,9 +895,34 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4443	RAD51B	Mutation	Region Defined Variant	True
 4444	RAD51C	Mutation	Region Defined Variant	False
 4445	RAD51D	Mutation	Region Defined Variant	True
+4471	ARAF	Mutation	Region Defined Variant	False
+4503	RAF1	Mutation	Region Defined Variant	False
+4504	MAP2K1	Mutation	Region Defined Variant	False
+4505	MAP2K2	Mutation	Region Defined Variant	False
+4506	GATA3	Mutation	Region Defined Variant	False
+4507	GNAS	Mutation	Region Defined Variant	False
 3127	WT1	Mutations	Region Defined Variant	False
 28	CEBPA	N-TERMINAL FRAME SHIFT	Protein Consequence	True
+1981	VHL		Transcript Variant	False
+4271	VHL		Transcript Variant	False
+2315	VHL		Transcript Variant	False
+2272	VHL		Transcript Variant	False
+1823	VHL		Transcript Variant	False
+3186	VHL		Transcript Variant	False
+2029	VHL		Transcript Variant	True
+3493	VHL		Transcript Variant	False
+3743	VHL		Transcript Variant	False
+3759	VHL		Transcript Variant	False
+3317	VHL		Transcript Variant	False
+2253	VHL		Transcript Variant	False
+4230	VHL		Transcript Variant	False
+3655	VHL		Transcript Variant	False
+4078	VHL		Transcript Variant	False
+4159	VHL		Transcript Variant	False
+2547	VHL		Transcript Variant	False
 1581	EGFR	N771>GY	Rearrangements	False
+4201	VHL		Transcript Variant	False
+2309	VHL		Transcript Variant	False
 1320	ERBB2	NON-AMPLIFICATION	Copy Number	False
 513	ALK	NPM::ALK	Fusion	True
 2883	BRAF	NRF1::BRAF	Fusion	True
@@ -751,6 +952,9 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2083	VHL	Null (Partial deletion of Exons 1 & 2)	Other	False
 2036	VHL	Null (Partial deletion of Exons 2 & 3)	Other	True
 2103	VHL	Null (Partial deletion)	Gene Function	False
+1978	VHL		Transcript Variant	False
+1979	VHL		Transcript Variant	False
+4264	VHL		Transcript Variant	False
 3361	VHL	Null (del one VHL allele)	Gene Function	False
 3180	VHL	Null (deletion)	Gene Function	False
 3188	VHL	Null (large 3' deletion)	Gene Function	False
@@ -888,16 +1092,50 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3324	VEGFA	Overexpression of VEGF121	Expression	False
 3325	VEGFA	Overexpression of VEGF121 and VEGF110	Expression	False
 2375	ABL1	P-Loop Mutation	Region Defined Variant	True
+3248	VHL		Transcript Variant	False
 1682	ARID1A	P1175FS*5	Protein Consequence	True
+4265	VHL		Transcript Variant	False
 2495	VHL	P138fs (c.410dup)	Copy Number	False
+2526	VHL		Transcript Variant	False
 2732	TP53	P153	Protein Consequence	False
+3162	VHL		Transcript Variant	False
+4262	VHL		Transcript Variant	False
+2879	VHL		Transcript Variant	False
+2274	VHL		Transcript Variant	False
+4263	VHL		Transcript Variant	False
+3353	VHL		Transcript Variant	False
 207	NOTCH1	P2514FS	Protein Consequence	True
+4165	VHL		Transcript Variant	False
+3087	VHL		Transcript Variant	False
 2726	TP53	P278	Protein Consequence	False
+3491	VHL		Transcript Variant	False
+4176	VHL		Transcript Variant	False
 2350	CRLF2	P2RY8::CRLF2	Fusion	False
+2090	VHL		Transcript Variant	True
+4233	VHL		Transcript Variant	False
 756	MLH1	P536FS	Protein Consequence	True
+4202	VHL		Transcript Variant	False
+2474	VHL		Transcript Variant	False
+3076	VHL		Transcript Variant	False
+2303	VHL		Transcript Variant	False
+2263	VHL		Transcript Variant	False
+2121	VHL		Transcript Variant	False
+2014	VHL		Transcript Variant	True
+2546	VHL		Transcript Variant	False
 4224	AKT1	P68-C77dup	Copy Number	False
+4080	VHL		Transcript Variant	False
+1955	VHL		Transcript Variant	True
+4097	VHL		Transcript Variant	False
 41	ERBB2	P780INS	Rearrangements	True
+3298	VHL		Transcript Variant	False
+3185	VHL		Transcript Variant	False
+2496	VHL		Transcript Variant	False
+1942	VHL		Transcript Variant	False
+2306	VHL		Transcript Variant	False
+3190	VHL		Transcript Variant	False
 477	BRCA1	P968FS	Protein Consequence	True
+2515	VHL		Transcript Variant	False
+3199	VHL		Transcript Variant	False
 3525	ABL2	PAG1::ABL2	Fusion	False
 286	BRAF	PAPSS1::BRAF	Fusion	True
 2582	FOXO1	PAX3::FOXO1	Fusion	True
@@ -923,6 +1161,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2916	PRPS1	PRPS1 MUTATION	Region Defined Variant	True
 2683	PTK2B	PTK2B::KDM6A	Fusion	False
 2684	PTK2B	PTK2B::STAG2	Fusion	False
+4189	VHL		Transcript Variant	False
 2184	VHL	Partial deletion of 0.7 Kb	Region Defined Variant	False
 4200	VHL	Partial deletion of 0.8 kb	Region Defined Variant	False
 2185	VHL	Partial deletion of 1 Kb	Region Defined Variant	False
@@ -945,7 +1184,16 @@ variant_id	gene_name	variant_name	category	variant_accepted
 374	NAPRT	Promoter Hypermethylation	Epigenetic Modification	True
 85	MGMT	Promoter Methylation	Epigenetic Modification	True
 220	TERT	Promoter Mutation	Region Defined Variant	True
+2443	VHL		Transcript Variant	False
+2267	VHL		Transcript Variant	False
+2321	VHL		Transcript Variant	False
+2155	VHL		Transcript Variant	False
+2525	VHL		Transcript Variant	False
 127	U2AF1	Q157P/R	Protein Consequence	True
+4212	VHL		Transcript Variant	False
+4094	VHL		Transcript Variant	False
+2383	VHL		Transcript Variant	False
+3657	VHL		Transcript Variant	False
 507	GNAQ	Q209	Protein Consequence	True
 558	GNA11	Q209	Protein Consequence	True
 4435	BAP1	Q267fs	Protein Consequence	False
@@ -955,20 +1203,68 @@ variant_id	gene_name	variant_name	category	variant_accepted
 203	KRAS	Q61	Protein Consequence	True
 2570	HRAS	Q61	Protein Consequence	True
 1105	KRAS	Q61FS	Protein Consequence	False
+2002	VHL		Transcript Variant	False
+2444	VHL		Transcript Variant	False
+2131	VHL		Transcript Variant	True
+3145	VHL		Transcript Variant	False
+4110	VHL		Transcript Variant	False
+2251	VHL		Transcript Variant	False
 4000	RAF1	QKI-RAF1	Fusion	True
+3176	VHL		Transcript Variant	False
+4227	VHL		Transcript Variant	False
 3029	BCL2	R107_R110dup	Copy Number	False
+3132	VHL		Transcript Variant	False
+4085	VHL		Transcript Variant	False
 2021	VHL	R108dup (c.322_324dup)	Copy Number	True
+3633	VHL		Transcript Variant	False
+3656	VHL		Transcript Variant	False
+2537	VHL		Transcript Variant	False
+2552	VHL		Transcript Variant	False
+2996	ARID2		Transcript Variant	False
 58	IDH1	R132	Protein Consequence	True
 804	RUNX1	R135FSX177	Protein Consequence	True
 62	IDH2	R140	Protein Consequence	True
+4096	VHL		Transcript Variant	False
+2273	VHL		Transcript Variant	False
+3103	VHL		Transcript Variant	False
+4167	VHL		Transcript Variant	False
+4166	VHL		Transcript Variant	False
+3121	VHL		Transcript Variant	False
+4180	VHL		Transcript Variant	False
+4210	VHL		Transcript Variant	False
+4239	VHL		Transcript Variant	False
+2486	VHL		Transcript Variant	False
+1779	VHL		Transcript Variant	False
 199	IDH2	R172	Protein Consequence	True
+3187	VHL		Transcript Variant	False
+3355	VHL		Transcript Variant	False
+4266	VHL		Transcript Variant	False
+3191	VHL		Transcript Variant	False
+2181	VHL		Transcript Variant	True
+3044	VHL		Transcript Variant	False
+3192	VHL		Transcript Variant	False
+4190	VHL		Transcript Variant	False
+4208	VHL		Transcript Variant	False
 876	GNAS	R201	Protein Consequence	True
+4095	VHL		Transcript Variant	False
+3658	VHL		Transcript Variant	False
 2723	TP53	R248	Protein Consequence	False
 119	TP53	R249	Protein Consequence	True
 2725	TP53	R273	Protein Consequence	False
+2965	RUNX1		Transcript Variant	False
+3134	SDHA		Transcript Variant	False
 2597	DICER1	R392fs and E1813D	Protein Consequence	False
+2959	CHEK2		Transcript Variant	True
+1964	VHL		Transcript Variant	True
 735	MLH1	R687FS	Protein Consequence	True
+2510	VHL		Transcript Variant	False
+4079	VHL		Transcript Variant	False
+1948	VHL		Transcript Variant	True
 1165	ATM	R777FS	Protein Consequence	False
+4204	VHL		Transcript Variant	False
+2448	VHL		Transcript Variant	True
+3013	VHL		Transcript Variant	False
+2264	VHL		Transcript Variant	True
 3411	TEK	R849W and R1108*	Protein Consequence	False
 32	DNMT3A	R882	Protein Consequence	True
 3268	ABL1	RANBP2::ABL1	Fusion	True
@@ -1005,17 +1301,30 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3141	KMT2A	Rearrangement	Rearrangements	False
 4003	PDGFB	Rearrangement 	Rearrangements	False
 4338	CRLF2	Rearrangement 	Rearrangements	False
+3747	VHL		Transcript Variant	False
+4171	VHL		Transcript Variant	False
 3080	VHL	S139fs	Protein Consequence	False
+2316	VHL		Transcript Variant	False
 616	B2M	S14FS	Protein Consequence	True
+4154	VHL		Transcript Variant	False
 2856	ROS1	S1986Y/F	Protein Consequence	False
 138	NOTCH1	S2275FS	Protein Consequence	True
 497	ERBB2	S310F/Y	Protein Consequence	True
 128	U2AF1	S34Y/F	Protein Consequence	True
+4076	VHL		Transcript Variant	False
+4231	VHL		Transcript Variant	False
 3257	AKT1	S473 Phosphorylation	Epigenetic Modification	True
 3329	FLT3	S574Δ	Other	False
+4099	VHL		Transcript Variant	False
+2535	VHL		Transcript Variant	False
 1676	FBXW7	S668FS*39	Protein Consequence	False
 720	EGFR	S720	Protein Consequence	True
+3015	VHL		Transcript Variant	False
+3704	VHL		Transcript Variant	False
+2462	VHL		Transcript Variant	False
 1511	EGFR	S768_D770dup	Copy Number	True
+4109	VHL		Transcript Variant	False
+4184	VHL		Transcript Variant	False
 451	ABCB1	S893A/T	Protein Consequence	True
 4253	NTRK1	SCP2::NTRK1	Fusion	False
 2179	NRG1	SDC4::NRG1	Fusion	True
@@ -1044,12 +1353,40 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2287	NTRK2	STRN::NTRK2	Fusion	True
 3108	VHL	Single Allele Deletion	Genotypes Compound	False
 4425	SMARCB1	Single nucleotide variant	Region Defined Variant	False
+2518	VHL		Transcript Variant	False
+4162	VHL		Transcript Variant	False
+4226	VHL		Transcript Variant	False
+3107	VHL		Transcript Variant	False
+4086	VHL		Transcript Variant	False
+4254	VHL		Transcript Variant	False
+4255	VHL		Transcript Variant	False
+4256	VHL		Transcript Variant	False
+4257	VHL		Transcript Variant	False
+4258	VHL		Transcript Variant	False
+4259	VHL		Transcript Variant	False
+4243	VHL		Transcript Variant	False
+3436	VHL		Transcript Variant	False
+2457	VHL		Transcript Variant	False
+3370	VHL		Transcript Variant	False
+3150	VHL		Transcript Variant	False
+2471	VHL		Transcript Variant	False
+4235	VHL		Transcript Variant	False
+1954	VHL		Transcript Variant	False
 3409	TEK	T1105N and T1106N	Protein Consequence	False
 4389	ALK	T1151dup	Copy Number	True
+4205	VHL		Transcript Variant	False
+3479	VHL		Transcript Variant	False
+2314	VHL		Transcript Variant	False
+3738	VHL		Transcript Variant	False
+2556	VHL		Transcript Variant	False
 810	RUNX1	T148HFSX9	Protein Consequence	True
+2091	VHL		Transcript Variant	True
+2092	VHL		Transcript Variant	True
+2094	VHL		Transcript Variant	False
 491	HSPH1	T17 DELETION	Region Defined Variant	True
 2733	TP53	T170	Protein Consequence	False
 385	PRKAA2	T172 PHOSPHORYLATION	Epigenetic Modification	True
+2142	VHL		Transcript Variant	True
 1298	BRAF	T599dup	Copy Number	False
 3517	ZNF384	TAF15::ZNF384	Fusion	False
 3359	CSF1R	TBL1XR1::CSF1R	Fusion	True
@@ -1067,9 +1404,11 @@ variant_id	gene_name	variant_name	category	variant_accepted
 774	PDGFRA	TNKS2::PDGFRA	Fusion	True
 3486	TOP2A	TOP2A/90	Other	False
 2992	NTRK1	TPM3::NTRK1	Fusion	True
+4469	ALK	TPM4::ALK	Fusion	False
 2850	JAK2	TPR::JAK2	Fusion	True
 3465	NTRK1	TPR::NTRK1	Fusion	False
 287	BRAF	TRIM24::BRAF	Fusion	True
+4499	FGFR1	TRIM24::FGFR1	Fusion	False
 2393	NTRK1	TRIM63::NTRK1	Fusion	True
 739	FOS	TRUNCATING FUSION	Fusion	True
 590	BIRC3	TRUNCATING MUTATION	Protein Consequence	True
@@ -1081,6 +1420,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4428	MYC	Translocation	Rearrangements	False
 4429	BCL2	Translocation	Rearrangements	False
 4430	BCL6	Translocation	Rearrangements	False
+4500	FGFR1	Translocation	Rearrangements	False
 223	TP53	Truncating Mutation	Protein Consequence	True
 729	UGT1A1	UGT1A1*28	Genotypes Easy	True
 732	UGT1A1	UGT1A1*60	Genotypes Easy	True
@@ -1115,7 +1455,23 @@ variant_id	gene_name	variant_name	category	variant_accepted
 2412	FGFR2	Underexpression	Expression	False
 2718	CCNE1	Underexpression	Expression	False
 3459	AR	V1 expression	Expression	False
+2539	VHL		Transcript Variant	False
 1167	ATM	V1268FS	Protein Consequence	False
+2086	VHL		Transcript Variant	False
+4246	VHL		Transcript Variant	False
+3366	VHL		Transcript Variant	False
+4198	VHL		Transcript Variant	False
+2046	VHL		Transcript Variant	True
+3985	VHL		Transcript Variant	False
+2477	VHL		Transcript Variant	False
+3748	VHL		Transcript Variant	False
+4091	VHL		Transcript Variant	False
+4279	VHL		Transcript Variant	False
+3089	VHL		Transcript Variant	False
+3362	VHL		Transcript Variant	False
+2325	VHL		Transcript Variant	False
+3086	VHL		Transcript Variant	False
+1977	VHL		Transcript Variant	True
 750	MLH1	V213FS	Protein Consequence	True
 137	NOTCH1	V2444FS	Protein Consequence	True
 762	MSH2	V273FS	Protein Consequence	True
@@ -1125,8 +1481,19 @@ variant_id	gene_name	variant_name	category	variant_accepted
 17	BRAF	V600	Protein Consequence	True
 2820	BRAF	V600_K601>E	Rearrangements	True
 2821	BRAF	V600_S602>DT	Rearrangements	False
+3184	VHL		Transcript Variant	True
+2509	VHL		Transcript Variant	False
+3189	VHL		Transcript Variant	False
+3261	VHL		Transcript Variant	False
+2447	VHL		Transcript Variant	True
+2099	VHL		Transcript Variant	True
 362	AR	V7 EXPRESSION	Expression	True
+2445	VHL		Transcript Variant	False
+4281	VHL		Transcript Variant	False
 1310	ERBB2	V773	Protein Consequence	False
+2548	VHL		Transcript Variant	False
+4179	VHL		Transcript Variant	False
+3741	VHL		Transcript Variant	False
 2159	AR	V9 EXPRESSION	Expression	False
 3729	TFE3	VCF::TFE3	Fusion	False
 3701	NTRK2	VCL::NTRK2	Fusion	True
@@ -1134,7 +1501,11 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3321	VEGFA	VEGF165b Overexpression	Expression	False
 312	EGFR	VIII	Gene Function	True
 4242	EGFR	VOPP1::EGFR	Fusion	False
+2470	VHL		Transcript Variant	False
+3142	VHL		Transcript Variant	False
+3715	VHL		Transcript Variant	False
 2027	VHL	W117fs (c.349dup)	Copy Number	True
+3634	VHL		Transcript Variant	False
 2728	TP53	W146	Protein Consequence	False
 87	NPM1	W288FS	Protein Consequence	True
 176	AR	W742	Protein Consequence	True
@@ -1150,6 +1521,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 3200	KRAS	Wildtype	Genotypes Easy	True
 4465	NRAS	Wildtype	Genotypes Easy	False
 390	EGFR	Y1092 PHOSPHORYLATION	Epigenetic Modification	True
+3739	VHL		Transcript Variant	False
 245	NF2	Y177fs	Protein Consequence	True
 2720	TP53	Y205	Protein Consequence	False
 3327	FLT3	Y572Δ	Other	False
@@ -1158,14 +1530,55 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1672	EGFR	Y69FS*11	Protein Consequence	False
 414	ERBB2	Y772_A775DUP	Copy Number	True
 3410	TEK	Y897C and R915C	Protein Consequence	False
+3352	VHL		Transcript Variant	False
+2450	VHL		Transcript Variant	False
 3578	ABL2	ZC3HAV1::ABL2	Fusion	False
 657	BRAF	ZKSCAN1::BRAF	Fusion	True
 3269	ABL1	ZMIZ1::ABL1	Fusion	True
+4496	FGFR1	ZMYM2::FGFR1	Fusion	False
 466	FGFR1	ZNF198::FGFR1	Fusion	True
 2864	JAK2	ZNF274::JAK2	Fusion	True
 2977	JAK2	ZNF430::JAK2	Fusion	True
 3481	ESR2	alternative transcripts	Other	False
 3477	ESR2	beta-2 and beta-5	Other	False
+4466	TERT		Transcript Variant	False
+3021	VHL		Transcript Variant	False
+3034	VHL		Transcript Variant	False
+2634	VHL		Transcript Variant	False
+3174	VHL		Transcript Variant	False
+2633	VHL		Transcript Variant	False
+3035	VHL		Transcript Variant	False
+2373	VHL		Transcript Variant	True
+3727	FLCN		Transcript Variant	True
+3002	NF2		Transcript Variant	True
+3267	CBL		Transcript Variant	False
+2884	CDKN2A		Transcript Variant	True
+3404	PTEN		Transcript Variant	False
+2374	VHL		Transcript Variant	False
+4151	VHL		Transcript Variant	False
+4228	VHL		Transcript Variant	False
+4213	VHL		Transcript Variant	False
+4209	VHL		Transcript Variant	False
+3041	VHL		Transcript Variant	False
+4178	VHL		Transcript Variant	False
+2435	VHL		Transcript Variant	True
+4197	VHL		Transcript Variant	False
+4152	VHL		Transcript Variant	False
+3088	VHL		Transcript Variant	False
+3365	VHL		Transcript Variant	False
+3159	VHL		Transcript Variant	False
+4173	VHL		Transcript Variant	False
+2507	VHL		Transcript Variant	False
+4157	VHL		Transcript Variant	False
+3047	VHL		Transcript Variant	False
+3039	VHL		Transcript Variant	False
+3050	ATM		Transcript Variant	True
+3051	ATM		Transcript Variant	True
+2433	VHL		Transcript Variant	False
+3049	ATM		Transcript Variant	True
+3101	VHL		Transcript Variant	False
+4191	VHL		Transcript Variant	False
+2431	VHL		Transcript Variant	True
 3511	CD19	delta-ex2, delta-ex5-6	Other	False
 3487	BRCA1	delta11q	Other	False
 3482	LGR5	delta5	Other	False
@@ -1184,6 +1597,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 4464	TSC2	mutation	Region Defined Variant	False
 3322	VEGFA	overexpression of VEGF-Axxxa	Expression	False
 2411	SDHB	p.193_196dupSTSC (c.577_588dupAGCACCAGCTGC)	Copy Number	True
+4247	VHL		Transcript Variant	False
 3057	GATA1	p.Ser51Alafs*86	Protein Consequence	False
 272	CDKN2A	p16 Expression	Expression	True
 3512	BRAF	p61BRAF(V600E)	Genotypes Easy	False

@@ -368,6 +368,7 @@ variant_id	gene_name	variant_name	variant_accepted
 1004	EGFR	E746_T751delinsA	False
 1214	EGFR	E746_T751delinsVA	False
 3754	BACH2	E788K	False
+4476	TET2	E796K	False
 3504	ERCC2	E79D	False
 4320	NFE2L2	E79K	False
 3960	NFE2L2	E79Q	False
@@ -568,6 +569,7 @@ variant_id	gene_name	variant_name	variant_accepted
 3346	SPOP	G75R	False
 144	DDR2	G774V	True
 816	ERBB2	G776L	True
+4470	ERBB2	G776V	False
 3649	KDR	G800D	False
 3650	KDR	G800R	False
 4298	FGFR3	G802_X807del	False
@@ -804,6 +806,7 @@ variant_id	gene_name	variant_name	variant_accepted
 40	ERBB2	L755W	True
 37	ERBB2	L755_T759del	True
 1308	ERBB2	L768S	False
+4477	BAX	L76R	False
 3004	EGFR	L792H	False
 1457	EGFR	L838P	True
 1018	EGFR	L838V	True
@@ -913,6 +916,7 @@ variant_id	gene_name	variant_name	variant_accepted
 4141	TP53	P190H	False
 1080	TP53	P190L	False
 813	ETV6	P214L	False
+4473	ARAF	P216A	False
 3778	TP53	P219H	True
 284	MTOR	P2213S	True
 3318	TP53	P250L	True
@@ -933,6 +937,7 @@ variant_id	gene_name	variant_name	variant_accepted
 3603	ATXN7	P42_P43insP	False
 1616	ABL1	P441L	False
 3458	PIK3CA	P447_L455del	False
+4478	AXIN2	P455K	False
 294	PIK3CA	P471L	True
 504	TP53	P47S	True
 1623	ABL1	P480L	False
@@ -1207,6 +1212,7 @@ variant_id	gene_name	variant_name	variant_accepted
 4410	ARAF	S214F	True
 2715	MTOR	S2215F	False
 542	MTOR	S2215Y	True
+4472	ARAF	S225V	False
 4143	TP53	S227C	False
 243	ATM	S2289*	True
 1065	TP53	S241C	False
@@ -1381,6 +1387,7 @@ variant_id	gene_name	variant_name	variant_accepted
 563	BRAF	V600K	True
 1404	BRAF	V600L	False
 1405	BRAF	V600M	True
+16	BRAF	V600R	False
 991	BRAF	V600R	False
 1658	BRAF	V600_K601DELINSD	False
 3241	BRAF	V600_S605delinsDV	False
@@ -1502,4 +1509,6 @@ variant_id	gene_name	variant_name	variant_accepted
 3535	PTEN	Y88C	False
 1642	POLD1	Y956N	False
 3045	VHL	p.F76del	False
+4475	MAP2K1	p.K57_G61del	False
 3310	HDAC9	p.L33R	False
+4474	BRAF	p.N486_P490	False
