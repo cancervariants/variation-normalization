@@ -22,7 +22,7 @@ polpeptide_truncation:
   should_not_match:
     - query: NP_060842.3:p.Tyr3650000000000Ter
 
-silent_mutation:
+reference_agree:
   should_match:
     - query: NP_000542.1:p.Pro61=
     - query: NP_000918.2:p.Ile1145=
@@ -57,7 +57,7 @@ genomic_substitution:
     - query: NC_000007.13:g.4T>A
     - query: 7-140453136-G-T
 
-coding_dna_silent_mutation:
+coding_dna_reference_agree:
   should_match:
     - query: NM_004006.2:c.123=
     - query: NM_004333.4:c.1799=
@@ -68,7 +68,7 @@ coding_dna_silent_mutation:
     - query: NM_004006.2:c.13994=
     - query: BRAF c.18000000000000=
 
-genomic_silent_mutation:
+genomic_reference_agree:
   should_match:
     - query: NC_000007.13:g.140453136=
     - query: NC_000007.13:g.55259515=

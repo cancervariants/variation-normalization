@@ -1,121 +1,91 @@
 """A module for Genomic Duplication Tokenization."""
-from typing import Optional, Union, List
+from typing import Optional
 
-from variation.schemas.token_response_schema import AltType, \
-    GenomicDuplicationToken, GenomicDuplicationRangeToken
-from variation.tokenizers.duplication_base import DuplicationBase
+from variation.schemas.token_response_schema import (
+    GenomicDuplicationToken, GenomicDuplicationAmbiguousToken, CoordinateType
+)
+from variation.tokenizers.tokenizer import Tokenizer
+from variation.regex import (
+    GENOMIC_DUPLICATION, GENOMIC_DUPLICATION_AMBIGUOUS_1,
+    GENOMIC_DUPLICATION_AMBIGUOUS_2, GENOMIC_DUPLICATION_AMBIGUOUS_3
+)
 
 
-class GenomicDuplication(DuplicationBase):
+class GenomicDuplication(Tokenizer):
     """Class for tokenizing duplications on the genomic coordinate."""
 
-    def _get_parts(self, parts: List) -> None:
-        if len(parts) != 1 or not parts[0].startswith("g."):
+    def match(self, input_string: str) -> Optional[GenomicDuplicationToken]:
+        """Return a GenomicDelInsToken match if one exists.
+
+        :param input_string: The input string to match
+        :return: A GenomicDelInsToken if a match exists.
+            Otherwise, None.
+        """
+        og_input_string = input_string
+        _, input_string = self.strip_coord_prefix(
+            input_string, match_coord_type=CoordinateType.LINEAR_GENOMIC
+        )
+        if not input_string:
             return None
 
-        parts[0] = parts[0][2:]
-        if "_" in parts[0]:
-            if parts[0].count("_") == 1:
-                pos = parts[0].split("_")
-                try:
-                    pos[0] = int(pos[0])
-                    pos[1] = int(pos[1])
-                except ValueError:
-                    pass
-                else:
-                    if pos[0] < pos[1]:
-                        self.parts["start_pos1_dup"] = pos[0]
-                        self.parts["start_pos2_dup"] = pos[1]
-                        self.parts["coordinate_type"] = "g"
-            else:
-                self.parts["alt_type"] = AltType.DUPLICATION_RANGE
-                parts = parts[0].split("_")
-                len_parts = len(parts)
-                if len_parts == 4:
-                    for part_ix, parts_field in [
-                        (0, "start_pos1_dup"),
-                        (1, "start_pos2_dup"),
-                        (2, "end_pos1_dup"),
-                        (3, "end_pos2_dup")
-                    ]:
-                        part_val = self._check_uncertain_or_int(parts[part_ix])
-                        if part_val is None:
-                            return None
-                        else:
-                            self.parts[parts_field] = part_val
-                    self.parts["coordinate_type"] = "g"
+        # First try matching on simple genomic duplications
+        match = GENOMIC_DUPLICATION.match(input_string)
 
-                elif len_parts == 3:
-                    if "(" in parts[0] and ")" in parts[1]:
-                        # Format is: (?_#)_#dup
-                        for part_ix, parts_field in [
-                            (0, "start_pos1_dup"),
-                            (1, "start_pos2_dup"),
-                            (2, "end_pos1_dup")
-                        ]:
-                            part_val = self._check_uncertain_or_int(
-                                parts[part_ix])
-                            if part_val is None:
-                                return None
-                            else:
-                                self.parts[parts_field] = part_val
-                    else:
-                        # Format is #_(#_?)dup
-                        for part_ix, parts_field in [
-                            (0, "start_pos1_dup"),
-                            (1, "end_pos1_dup"),
-                            (2, "end_pos2_dup")
-                        ]:
-                            part_val = self._check_uncertain_or_int(
-                                parts[part_ix])
-                            if part_val is None:
-                                return None
-                            else:
-                                self.parts[parts_field] = part_val
-                    self.parts["coordinate_type"] = "g"
+        if match:
+            match_dict = match.groupdict()
+
+            return GenomicDuplicationToken(
+                input_string=og_input_string,
+                token=input_string,
+                pos0=int(match_dict["pos0"]),
+                pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
+            )
         else:
-            try:
-                pos = int(parts[0])
-            except ValueError:
-                pass
+            # Going to try ambiguous genomic duplications
+            match = GENOMIC_DUPLICATION_AMBIGUOUS_1.match(input_string)
+            if match:
+                match_dict = match.groupdict()
+                pos0 = match_dict["pos0"]
+                pos1 = match_dict["pos1"]
+                pos2 = match_dict["pos2"]
+                pos3 = match_dict["pos3"]
+
+                # (?_?)_(#_#), (#_#)_(?, ?), (?_?)_(?_?) are not supported
+                if not any(
+                    ((pos0 == "?" and pos1 == "?"),
+                     (pos2 == "?" and pos3 == "?"))
+                ):
+                    return GenomicDuplicationAmbiguousToken(
+                        input_string=og_input_string,
+                        token=input_string,
+                        pos0=int(pos0) if pos0 != "?" else pos0,
+                        pos1=int(pos1) if pos1 != "?" else pos1,
+                        pos2=int(pos2) if pos2 != "?" else pos2,
+                        pos3=int(pos3) if pos3 != "?" else pos3,
+                    )
+
             else:
-                self.parts["start_pos1_dup"] = pos
-                self.parts["coordinate_type"] = "g"
-        return None
+                for pattern_re in [
+                    GENOMIC_DUPLICATION_AMBIGUOUS_2,
+                    GENOMIC_DUPLICATION_AMBIGUOUS_3
+                ]:
+                    match = pattern_re.match(input_string)
 
-    def _check_uncertain_or_int(self, part: str) -> Optional[Union[int, str]]:
-        part = part.replace("(", "")
-        part = part.replace(")", "")
-        try:
-            return int(part)
-        except ValueError:
-            if part == "?":
-                self.parts["alt_type"] = \
-                    AltType.UNCERTAIN_DUPLICATION
-                return part
-        return None
+                    if match:
+                        matched_pos = dict()
+                        match_dict = match.groupdict()
+                        for k in match_dict:
+                            v = match_dict[k]
+                            if v:
+                                v = int(v) if v != "?" else v
 
-    def return_token(self) -> Optional[Union[GenomicDuplicationRangeToken,
-                                             GenomicDuplicationToken]]:
-        """Return token instance if a match is found."""
-        # we only set this field if it"s valid
-        if self.parts["coordinate_type"] == "g":
-            if self.parts["end_pos1_dup"] is None and \
-                    self.parts["end_pos2_dup"] is None:
+                            matched_pos[k] = v
 
-                if self.parts["start_pos2_dup"] and self.parts["start_pos1_dup"] > self.parts["start_pos2_dup"]:  # noqa: E501
-                    return
-
-                self.parts["alt_type"] = AltType.DUPLICATION
-                return GenomicDuplicationToken(**self.parts)
-            else:
-                prev_val = None
-                for field in ["start_pos1_dup", "start_pos2_dup",
-                              "end_pos1_dup", "end_pos2_dup"]:
-                    val = self.parts[field]
-                    if val not in ["?", None]:
-                        if prev_val is not None:
-                            if prev_val > val:
-                                return
-                        prev_val = val
-                return GenomicDuplicationRangeToken(**self.parts)
+                        return GenomicDuplicationAmbiguousToken(
+                            input_string=og_input_string,
+                            token=input_string,
+                            pos0=matched_pos["pos0"],
+                            pos1=matched_pos.get("pos1"),
+                            pos2=matched_pos.get("pos2"),
+                            pos3=matched_pos["pos3"]
+                        )

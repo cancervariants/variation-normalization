@@ -1,48 +1,35 @@
 """Module for HGVS tokenization."""
+import re
 from typing import Optional
 
-from hgvs.parser import Parser
-from hgvs.exceptions import HGVSParseError, HGVSInvalidVariantError
-from hgvs.validator import IntrinsicValidator
-
-from variation.tokenizers.reference_sequence import REFSEQ_PREFIXES
-from variation.schemas.token_response_schema import Token, TokenType, Nomenclature
+from variation.schemas.token_response_schema import HgvsToken, CoordinateType
 from .tokenizer import Tokenizer
-from .locus_reference_genomic import LocusReferenceGenomic
 
 
 class HGVS(Tokenizer):
     """The HGVS tokenizer class."""
 
-    parser = Parser()
-    validator = IntrinsicValidator()
+    splitter = re.compile(
+        r"^(?P<accession>(NC_|NT_|NW_|NG_|NM_|NR_|NP_|ENSP|ENST|ENSG|LRG_)[^:\s]+):"
+        r"(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"
+    )
 
-    def match(self, input_string: str) -> Optional[Token]:
-        """Return token matches from input string."""
-        valid_prefix = False
-        for prefix in REFSEQ_PREFIXES:
-            if input_string.upper().startswith(prefix):
-                valid_prefix = True
-                break
+    def match(self, input_string: str) -> Optional[HgvsToken]:
+        """Return HGVS token matches from input string.
 
-        if not valid_prefix:
-            return None
+        :param input_string: The input string to match
+        :return: `HgvsToken` if HGVS match was found, else `None`
+        """
+        match = self.splitter.match(input_string)
+        if match:
+            match_dict = match.groupdict()
 
-        try:
-            variation = self.parser.parse_hgvs_variant(input_string)
-            self.validator.validate(variation)
-            if input_string[:3].upper().startswith("LRG"):
-                lrg_token = LocusReferenceGenomic().match(
-                    input_string.split(":")[0]
-                )
-                lrg_token.input_string = input_string
-                return lrg_token
-            else:
-                return Token(
-                    token=input_string,
-                    token_type=TokenType.HGVS,
-                    input_string=input_string,
-                    nomenclature=Nomenclature.HGVS
-                )
-        except (HGVSParseError, HGVSInvalidVariantError, AttributeError):
+            return HgvsToken(
+                token=input_string,
+                input_string=input_string,
+                accession=match_dict["accession"],
+                coordinate_type=CoordinateType(match_dict["coordinate"]),
+                change=match_dict["change"]
+            )
+        else:
             return None

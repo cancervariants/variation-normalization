@@ -35,7 +35,7 @@ polypeptide_truncation:
   should_not_match:
     - query: ENS00000343204.4:c.Trp690Ter
 
-silent_mutation:
+reference_agree:
   should_match:
     - query: NP_000213.1:p.Leu862=
       confidence: EXACT
@@ -84,7 +84,7 @@ genomic_substitution:
     - query: V170 (g.509F>A)
     - query: RX_:c.292TC
 
-coding_dna_silent_mutation:
+coding_dna_reference_agree:
   should_match:
     - query: NM_004006.2:c.123=
       confidence: EXACT
@@ -94,7 +94,7 @@ coding_dna_silent_mutation:
     - query: CODING_DNA_:c.123=
     - query: g.123=
 
-genomic_silent_mutation:
+genomic_reference_agree:
   should_match:
     - query: NC_000017.10:g.123=
       confidence: EXACT
@@ -245,8 +245,6 @@ protein_insertion:
 
 coding_dna_insertion:
   should_match:
-    - query: NM_004006.2:c.849_850ins858_895
-      confidence: EXACT
     - query: NM_000551.3:c.230_231insTCT
       confidence: EXACT
     - query: NM_000551.3:c.358_359insAC
@@ -256,6 +254,7 @@ coding_dna_insertion:
   should_not_match:
     - query: GENE 358_359insAC
     - query: accession:c.358_359insAC
+    - query: NM_004006.2:c.849_850ins858_895
 
 genomic_insertion:
   should_match:

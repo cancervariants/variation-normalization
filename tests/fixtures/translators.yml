@@ -261,7 +261,7 @@ polypeptide_truncation:
       ]
 
 
-silent_mutation:
+reference_agree:
   tests:
     - query: NP_000542.1:p.Pro154=
       variations: [
@@ -440,7 +440,7 @@ genomic_substitution:
         }
       ]
 
-coding_dna_silent_mutation:
+coding_dna_reference_agree:
   tests:
     - query:  NM_004333.4:c.1799=
       variations: [
@@ -464,7 +464,7 @@ coding_dna_silent_mutation:
         }
       ]
 
-genomic_silent_mutation:
+genomic_reference_agree:
   tests:
     - query: NC_000007.13:g.140453136=
       variations: [

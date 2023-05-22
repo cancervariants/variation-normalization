@@ -1,71 +1,69 @@
 """A module for Protein Insertion Tokenization Class."""
-from typing import List, Optional
+from typing import Optional
 
-from pydantic.error_wrappers import ValidationError
+from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
 
 from variation.schemas.token_response_schema import ProteinInsertionToken
 from variation.tokenizers.tokenizer import Tokenizer
+from variation.regex import PROTEIN_INSERTION
 
 
 class ProteinInsertion(Tokenizer):
     """Class for tokenizing Insertions on the protein reference sequence."""
 
-    def __init__(self) -> None:
-        """Initialize the Protein Insertion Class."""
-        self.parts = None
-
     def match(self, input_string: str) -> Optional[ProteinInsertionToken]:
         """Return token that match the input string."""
-        if input_string is None:
-            return None
+        og_input_string = input_string
 
-        self.parts = {
-            "used_one_letter": False,
-            "token": input_string,
-            "input_string": input_string,
-            "start_aa_flank": None,
-            "start_pos_flank": None,
-            "end_aa_flank": None,
-            "end_pos_flank": None
-        }
-
-        input_string = str(input_string).lower()
-
-        if "c." in input_string or "g." in input_string:
-            return None
-
-        if input_string.startswith("p."):
+        if input_string.startswith(("(p.", "p.(")) and input_string.endswith(")"):
+            input_string = input_string[3:-1]
+        elif input_string.startswith("p."):
             input_string = input_string[2:]
-
-        if input_string.startswith("(") and input_string.endswith(")"):
+        elif input_string[0] == "(" and input_string[-1] == ")":
             input_string = input_string[1:-1]
 
-        if "ins" not in input_string:
-            return None
+        match = PROTEIN_INSERTION.match(input_string)
 
-        parts = input_string.split("ins")
-        self._get_parts(parts)
+        if match:
+            match_dict = match.groupdict()
 
-        try:
-            return ProteinInsertionToken(**self.parts)
-        except ValidationError:
-            return None
+            aa0 = match_dict["aa0"]
+            pos0 = int(match_dict["pos0"])
+            aa1 = match_dict["aa1"]
+            pos1 = int(match_dict["pos1"])
+            inserted_sequence = match_dict["inserted_sequence"]
 
-    def _get_parts(self, parts: List) -> None:
-        """Get parts for Protein Insertion.
+            # One letter codes for aa0, aa1, and inserted sequence
+            one_letter_aa0 = None
+            one_letter_aa1 = None
+            one_letter_ins_seq = None
 
-        :param List parts: Parts of input string
-        """
-        if len(parts) != 2:
-            return
+            # Should use the same 1 or 3 letter AA codes
+            try:
+                # see if it's 1 AA already
+                aa1_to_aa3(aa0)
+                aa1_to_aa3(aa1)
+                aa1_to_aa3(inserted_sequence)
+            except KeyError:
+                # maybe 3 letter AA code was used
+                try:
+                    one_letter_aa0 = aa3_to_aa1(aa0)
+                    one_letter_aa1 = aa3_to_aa1(aa1)
+                    one_letter_ins_seq = aa3_to_aa1(inserted_sequence)
+                except KeyError:
+                    pass
+            else:
+                one_letter_aa0 = aa0
+                one_letter_aa1 = aa1
+                one_letter_ins_seq = inserted_sequence
 
-        range_aa_pos = self.get_aa_pos_range(parts)
-        if range_aa_pos:
-            self.parts["start_aa_flank"] = range_aa_pos[0]
-            self.parts["end_aa_flank"] = range_aa_pos[1]
-            self.parts["start_pos_flank"] = range_aa_pos[2]
-            self.parts["end_pos_flank"] = range_aa_pos[3]
-            self.parts["used_one_letter"] = range_aa_pos[4]
-        self.parts["inserted_sequence"] = self.get_protein_inserted_sequence(
-            parts, self.parts["used_one_letter"]
-        )
+            if all((one_letter_aa0, one_letter_aa0, one_letter_ins_seq)):
+                return ProteinInsertionToken(
+                    input_string=og_input_string,
+                    token=og_input_string,
+                    aa0=one_letter_aa0,
+                    pos0=pos0,
+                    aa1=one_letter_aa1,
+                    pos1=pos1,
+                    inserted_sequence=one_letter_ins_seq
+                )

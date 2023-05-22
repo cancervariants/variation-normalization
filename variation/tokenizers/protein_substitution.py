@@ -1,81 +1,75 @@
 """A module for Protein Substitution Tokenization."""
-from typing import List, Optional
+from typing import Optional, Union
 
-from variation.schemas.token_response_schema import ProteinSubstitutionToken
-from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase
+from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
+
+from variation.schemas.token_response_schema import (
+    ProteinSubstitutionToken, ProteinStopGainToken
+)
+from variation.tokenizers.tokenizer import Tokenizer
+from variation.regex import PROTEIN_SUBSTITUTION
 
 
-class ProteinSubstitution(PolypeptideSequenceVariationBase):
+class ProteinSubstitution(Tokenizer):
     """Class for tokenizing Protein Substitution."""
 
-    def match(self, input_string: str) -> Optional[ProteinSubstitutionToken]:
-        """Return a ProteinSubstitutionToken match if one exists.
+    def match(self, input_string: str) -> Optional[
+        Union[ProteinSubstitutionToken, ProteinStopGainToken]
+    ]:
+        """Return a ProteinSubstitutionToken or ProteinStopGainToken match if one
+        exists.
 
-        :param str input_string: The input string to match
-        :return: A ProteinSubstitutionToken if a match exists.
+        :param input_string: The input string to match
+        :return: A ProteinSubstitutionToken or ProteinStopGainToken if a match exists.
             Otherwise, None.
         """
-        if input_string is None:
-            return None
+        og_input_string = input_string
 
-        input_string = str(input_string).lower()
+        if input_string.startswith(("(p.", "p.(")) and input_string.endswith(")"):
+            input_string = input_string[3:-1]
+        elif input_string.startswith("p."):
+            input_string = input_string[2:]
+        elif input_string[0] == "(" and input_string[-1] == ")":
+            input_string = input_string[1:-1]
 
-        if input_string.endswith(("*", "ter")):
-            # Handled in polypeptide truncation
-            return None
+        match = PROTEIN_SUBSTITUTION.match(input_string)
+        if match:
+            match_dict = match.groupdict()
 
-        psub_parts = None
-        self.psub = {
-            "amino_acid": None,
-            "position": None,
-            "new_amino_acid": None
-        }
+            ref = match_dict["ref"]
+            pos = int(match_dict["pos"])
+            alt = match_dict["alt"]
 
-        if "." in input_string:
-            if not input_string.startswith("p."):
-                return None
-            p_count = input_string.count("p.")
-            if p_count == 1:
-                psub_parts = self.splitter_paren_digits.split(input_string)
-            elif p_count == 2:
-                psub_parts = input_string.split()
-        else:
-            psub_parts = self.splitter_paren_digits.split(input_string)
+            # One letter codes for ref and alt
+            aa1_ref = None
+            aa1_alt = None
 
-        self._get_psub(psub_parts)
-
-        if None not in self.psub.values():
-            amino_acids = {self.psub["amino_acid"],
-                           self.psub["new_amino_acid"]}
-
-            if not self._is_valid_amino_acid(amino_acids):
-                return None
-
-            return ProteinSubstitutionToken(
-                token=input_string,
-                input_string=input_string,
-                ref_protein=self.psub["amino_acid"],
-                alt_protein=self.psub["new_amino_acid"],
-                position=self.psub["position"]
-            )
-
-        return None
-
-    def _get_psub(self, psub_parts: List) -> None:
-        """Get amino acid substitution tokens.
-
-        :param List psub_parts: The split input string
-        """
-        psub_parts_len = len(psub_parts)
-        if psub_parts_len == 3:
-            if "p." in psub_parts[0]:
-                psub_parts[0] = psub_parts[0].split("p.")[-1]
+            # Ref and Alt should use the same 1 or 3 letter AA codes
+            try:
+                # see if it's 1 AA already
+                aa1_to_aa3(ref)
+                aa1_to_aa3(alt)
+            except KeyError:
+                # maybe 3 letter AA code was used
+                try:
+                    aa1_ref = aa3_to_aa1(ref)
+                    aa1_alt = "*" if alt == "*" else aa3_to_aa1(alt)
+                except KeyError:
+                    pass
             else:
-                if not psub_parts[0] and psub_parts[1] and not psub_parts[2]:
-                    return
+                aa1_ref = ref
+                aa1_alt = alt
 
-            if "(" in psub_parts[0] and ")" in psub_parts[2]:
-                psub_parts[0] = psub_parts[0].split("(")[-1]
-                psub_parts[2] = psub_parts[2].split(")")[0]
+            if aa1_alt and aa1_ref:
+                params = {
+                    "input_string": og_input_string,
+                    "token": f"{aa1_ref}{pos}{aa1_alt}",
+                    "pos": pos,
+                    "ref": aa1_ref,
+                    "alt": aa1_alt
+                }
 
-            self._set_psub(psub_parts[0], psub_parts[1], psub_parts[2])
+                if aa1_alt == "*":
+                    return ProteinStopGainToken(**params)
+                else:
+                    return ProteinSubstitutionToken(**params)
