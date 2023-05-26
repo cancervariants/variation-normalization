@@ -2,24 +2,21 @@
 from typing import List, Optional
 
 from pydantic import BaseModel
-from pydantic.types import StrictBool
+from pydantic.types import StrictBool, StrictStr, StrictInt
 
 from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import GeneToken, Token
+from variation.schemas.token_response_schema import GeneToken
 
 
 class ValidationResult(BaseModel):
     """Validation Results for a given variation."""
 
+    accession: Optional[StrictStr]
+    cds_start: Optional[StrictInt]  # This is only for cDNA
     classification: Classification
-    classification_token: Optional[Token]
+    gene_tokens: List[GeneToken] = []
     is_valid: StrictBool
-    confidence_score: float
-    variation: Optional[dict] = None
-    errors: List[str]
-    gene_tokens: Optional[List[GeneToken]]
-    is_mane_transcript: Optional[StrictBool]
-    identifier: Optional[str]
+    errors: List[StrictStr] = []
 
 
 class ValidationSummary(BaseModel):
@@ -27,7 +24,7 @@ class ValidationSummary(BaseModel):
 
     valid_results: List[ValidationResult]
     invalid_results: List[ValidationResult]
-    warnings: Optional[List[str]]
+    warnings: List[str]
 
 
 class ValidationResponseSchema(BaseModel):

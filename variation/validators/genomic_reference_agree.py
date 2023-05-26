@@ -1,15 +1,14 @@
-"""The module for Coding DNA Substitution Validation."""
+"""The module for Genomic Reference Agree Validation."""
 import logging
-from typing import List, Optional, Dict
+from typing import Optional, List, Dict
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType, \
     Classification
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
-from variation.schemas.app_schemas import Endpoint
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.schemas.normalize_response_schema import HGVSDupDelMode as HGVSDupDelModeEnum   # noqa: E501
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 
 
@@ -17,8 +16,8 @@ logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 
 
-class CodingDNASilentMutation(SingleNucleotideVariationBase):
-    """The Coding DNA Silent Mutation Validator class."""
+class GenomicReferenceAgree(SingleNucleotideVariationBase):
+    """The Genomic Reference Agree Validator class."""
 
     async def get_transcripts(self, gene_tokens: List, classification: Classification,
                               errors: List) -> Optional[List[str]]:
@@ -30,7 +29,8 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_coding_dna_transcripts(gene_tokens, errors)
+        transcripts = await self.get_genomic_transcripts(classification, errors)
+        return transcripts
 
     async def get_valid_invalid_results(
         self, classification_tokens: List, transcripts: List,
@@ -62,31 +62,29 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
         :param Optional[CopyChange] copy_change: The copy change
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
         """
-        await self.silent_mutation_valid_invalid_results(
+        await self.reference_agree_valid_invalid_results(
             classification_tokens, transcripts, classification, results,
             gene_tokens, endpoint_name, mane_data_found, is_identifier,
             do_liftover=do_liftover
         )
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
+    def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
-        return self.get_coding_dna_gene_symbol_tokens(classification)
+        return self.get_gene_symbol_tokens(classification)
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return "coding dna silent mutation"
+        return "genomic reference agree"
 
     def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Coding DNA Silent Mutation."""
-        return t.token_type == TokenType.CODING_DNA_SILENT_MUTATION
+        """Check that token is Genomic Reference Agree."""
+        return t.token_type == TokenType.GENOMIC_REFERENCE_AGREE
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is coding dna silent
-        mutation.
-        """
-        return classification_type == ClassificationType.CODING_DNA_SILENT_MUTATION
+        """Return whether or not the classification type is genomic substitution."""
+        return classification_type == ClassificationType.GENOMIC_REFERENCE_AGREE

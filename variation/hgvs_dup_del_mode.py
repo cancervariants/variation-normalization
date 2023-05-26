@@ -1,5 +1,4 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-import logging
 from typing import Optional, Dict, Tuple, List
 
 from ga4gh.vrs import models
@@ -10,10 +9,6 @@ from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
-
-
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
 
 
 class HGVSDupDelMode:

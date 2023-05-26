@@ -71,20 +71,61 @@ GENOMIC_DUPLICATION_AMBIGUOUS_3 = re.compile(
     r"^(?P<pos0>\d+)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)dup$"
 )
 
+PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+    (
+        PROTEIN_SUBSTITUTION,
+        TokenType.PROTEIN_SUBSTITUTION,
+        ClassificationType.PROTEIN_SUBSTITUTION
+    ),
+    (
+        PROTEIN_REFERENCE_AGREE,
+        TokenType.PROTEIN_REFERENCE_AGREE,
+        ClassificationType.PROTEIN_REFERENCE_AGREE
+    ),
+    (
+        PROTEIN_DELINS,
+        TokenType.PROTEIN_DELINS,
+        ClassificationType.PROTEIN_DELINS
+    ),
+    (
+        PROTEIN_DELETION,
+        TokenType.PROTEIN_DELETION,
+        ClassificationType.PROTEIN_DELETION
+    ),
+    (
+        PROTEIN_INSERTION,
+        TokenType.PROTEIN_INSERTION,
+        ClassificationType.PROTEIN_INSERTION
+    )
+]
+
+CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+    (
+        CDNA_GENOMIC_SUBSTITUTION,
+        TokenType.CODING_DNA_SUBSTITUTION,
+        ClassificationType.CODING_DNA_SUBSTITUTION
+    ),
+    (
+        CNDA_GENOMIC_DELETION,
+        TokenType.CODING_DNA_DELETION,
+        ClassificationType.CODING_DNA_DELETION
+    )
+]
+
 GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         CDNA_GENOMIC_SUBSTITUTION,
         TokenType.GENOMIC_SUBSTITUTION,
-        ClassificationType.HGVS_GENOMIC_SUBSTITUTION
+        ClassificationType.GENOMIC_SUBSTITUTION
     ),
     (
         CDNA_GENOMIC_DELINS,
         TokenType.GENOMIC_DELINS,
-        ClassificationType.HGVS_GENOMIC_DELINS
+        ClassificationType.GENOMIC_DELINS
     ),
     (
         CDNA_GENOMIC_INSERTION,
         TokenType.GENOMIC_INSERTION,
-        ClassificationType.HGVS_GENOMIC_INSERTION
+        ClassificationType.GENOMIC_INSERTION
     )
 ]

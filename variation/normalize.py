@@ -11,8 +11,7 @@ from variation.to_vrsatile import ToVRSATILE
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
-from variation.utils import get_mane_valid_result, no_variation_entered, \
-    no_variation_resp
+from variation.utils import no_variation_entered, no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
@@ -75,19 +74,28 @@ class Normalize(ToVRSATILE):
         if not q:
             vd, warnings = no_variation_entered()
         else:
-            validations, warnings = await self.get_validations(
+            validation_summary, warnings = await self.get_validations(
                 q, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
-                baseline_copies=baseline_copies,
-                copy_change=copy_change)
+                baseline_copies=baseline_copies
+            )
 
-            if validations:
+            if validation_summary:
                 label = q.strip()
                 _id = f"normalize.variation:{quote(' '.join(label.split()))}"
-                if len(validations.valid_results) > 0:
-                    valid_result = get_mane_valid_result(q, validations, warnings)
-                    vd, warnings = self.get_variation_descriptor(
-                        label, valid_result.variation, valid_result, _id, warnings)
+                if len(validation_summary.valid_results) > 0:
+                    translations, warnings = await self.get_translations(
+                        validation_summary, warnings, endpoint_name=Endpoint.NORMALIZE,
+                        hgvs_dup_del_mode=hgvs_dup_del_mode,
+                        baseline_copies=baseline_copies, copy_change=copy_change,
+                        do_liftover=True
+                    )
+                    if translations:
+                        variation = translations[0]
+                        valid_result = validation_summary.valid_results[0]
+                        vd, warnings = self.get_variation_descriptor(
+                            label, variation, valid_result, _id, warnings
+                        )
                 else:
                     if not label:
                         vd, warnings = no_variation_entered()

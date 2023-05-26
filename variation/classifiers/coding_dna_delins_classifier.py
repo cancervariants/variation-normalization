@@ -3,10 +3,10 @@ from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.classifiers import Classifier
 
 
-class CodingDNADelInsClassifier(SetBasedClassifier):
+class CodingDNADelInsClassifier(Classifier):
     """The Coding DNA DelIns Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -20,7 +20,5 @@ class CodingDNADelInsClassifier(SetBasedClassifier):
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_DELINS],  # noqa: E501
             [TokenType.CODING_DNA_DELINS, TokenType.GENE],
             [TokenType.GENE, TokenType.CODING_DNA_DELINS],
-            [TokenType.HGVS, TokenType.CODING_DNA_DELINS],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.CODING_DNA_DELINS],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.CODING_DNA_DELINS]
+            [TokenType.HGVS, TokenType.CODING_DNA_DELINS]
         ]

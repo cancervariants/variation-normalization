@@ -2,7 +2,7 @@
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.token_response_schema import\
-    GenomicUncertainDeletionToken, Token
+    GenomicDeletionAmbiguousToken, Token
 
 
 class GenomicUncertainDeletion(Translator):
@@ -16,4 +16,4 @@ class GenomicUncertainDeletion(Translator):
         """Return if the token is an Genomic Uncertain Deletion token
         instance.
         """
-        return isinstance(token, GenomicUncertainDeletionToken)
+        return isinstance(token, GenomicDeletionAmbiguousToken)

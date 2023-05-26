@@ -18,8 +18,9 @@ from variation.utils import no_variation_entered, no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.token_response_schema import (
-    Nomenclature, Token, CoordinateType, SequenceOntology, AltType
+    Token, CoordinateType, AltType
 )
+from variation.schemas.classification_response_schema import Nomenclature
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
@@ -146,19 +147,20 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         :param int g_end_pos: Genomic end position
         :return: Amino acid alteration (using 1-letter codes)
         """
+        return
         alt = None
         residue_mode = ResidueMode.INTER_RESIDUE
         classification_token.coordinate_type = CoordinateType.PROTEIN
         classification_token.molecule_context = "protein"
         if classification_token.alt_type in {AltType.SUBSTITUTION,
-                                             AltType.SILENT_MUTATION}:
+                                             AltType.REFERENCE_AGREE}:
             if classification_token.alt_type == AltType.SUBSTITUTION:
                 alt_nuc = classification_token.new_nucleotide
                 classification_token.so_id = \
                     SequenceOntology.PROTEIN_SUBSTITUTION
             else:
                 alt_nuc = classification_token.ref_nucleotide
-                classification_token.so_id = SequenceOntology.SILENT_MUTATION
+                classification_token.so_id = SequenceOntology.REFERENCE_AGREE
 
             ref = None
             if reading_frame == 1:
@@ -273,7 +275,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     elif classification_token.alt_type == AltType.INSERTION:
                         g_start_pos = classification_token.start_pos_flank
                         g_end_pos = classification_token.end_pos_flank
-                    elif classification_token.alt_type in {AltType.SILENT_MUTATION,
+                    elif classification_token.alt_type in {AltType.REFERENCE_AGREE,
                                                            AltType.SUBSTITUTION}:
                         g_start_pos = classification_token.position
                         g_end_pos = classification_token.position
@@ -320,7 +322,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         # We use 1-based
                         reading_frame = self.mane_transcript._get_reading_frame(
                             mane_c_pos_change[0] + 1)
-                        if classification_token.alt_type in {AltType.SILENT_MUTATION,
+                        if classification_token.alt_type in {AltType.REFERENCE_AGREE,
                                                              AltType.SUBSTITUTION}:
                             mane_c_pos_change = self._update_gnomad_vcf_mane_c_pos(
                                 reading_frame, mane_c_ac, mane_c_pos_change,

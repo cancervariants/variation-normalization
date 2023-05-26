@@ -1,9 +1,10 @@
 """A module for testing classifier classes."""
+from abc import abstractmethod
+
 import yaml
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
-from variation.schemas.classification_response_schema import ConfidenceRating
 from variation.tokenizers import Tokenize
 from variation.tokenizers import GeneSymbol
 from tests import PROJECT_ROOT
@@ -23,13 +24,13 @@ class ClassifierBase:
         self.classifier = self.classifier_instance()
         self.tokenizer = Tokenize(GeneSymbol(GeneQueryHandler(DynamoDbDatabase())))
 
+    @abstractmethod
     def classifier_instance(self):
         """Check that the classifier_instance method is implemented."""
-        raise NotImplementedError()
 
+    @abstractmethod
     def fixture_name(self):
         """Check that the fixture_name method is implemented."""
-        raise NotImplementedError()
 
     def test_matches(self):
         """Test that classifier matches correctly."""
@@ -37,9 +38,6 @@ class ClassifierBase:
             tokens = self.tokenizer.perform(x["query"], [])
             classification = self.classifier.match(tokens)
             self.assertIsNotNone(classification, msg=x)
-            self.assertEqual(getattr(ConfidenceRating, x["confidence"]),
-                             classification.confidence,
-                             msg=x)
 
     def test_not_matches(self):
         """Test that classifier matches correctly."""

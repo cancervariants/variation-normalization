@@ -773,7 +773,7 @@ def braf_v600l(braf_gene_context, braf_600loc):
 
 
 @pytest.fixture(scope="session")
-def braf_600_silent_mutation(braf_gene_context, braf_600loc):
+def braf_600_reference_agree(braf_gene_context, braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
         "id": "normalize.variation:7-140753335-C-A",
@@ -827,7 +827,7 @@ def kras_g12d():
 
 @pytest.mark.asyncio
 async def test_substitution(test_handler, braf_v600e, braf_v600l,
-                            braf_600_silent_mutation, mmel1_l30m, atad3a_i7v,
+                            braf_600_reference_agree, mmel1_l30m, atad3a_i7v,
                             atad3a_i7t, atad3a_i7m, kras_g12d):
     """Test that substitution queries return correct response"""
     # Reading Frame 1, Negative Strand
@@ -844,7 +844,7 @@ async def test_substitution(test_handler, braf_v600e, braf_v600l,
 
     # Reading Frame 3, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753335-C-A")
-    assertion_checks(resp.variation_descriptor, braf_600_silent_mutation,
+    assertion_checks(resp.variation_descriptor, braf_600_reference_agree,
                      "7-140753335-C-A", ignore_id=True)
     assert resp.warnings == []
 
@@ -876,11 +876,11 @@ async def test_substitution(test_handler, braf_v600e, braf_v600l,
 
 
 @pytest.mark.asyncio
-async def test_silent_mutation(test_handler, vhl_silent):
-    """Test that silent queries return correct response"""
+async def test_reference_agree(test_handler, vhl_reference_agree):
+    """Test that reference agree queries return correct response"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
     resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-C")
-    assertion_checks(resp.variation_descriptor, vhl_silent, "3-10142030-C-C",
+    assertion_checks(resp.variation_descriptor, vhl_reference_agree, "3-10142030-C-C",
                      ignore_id=True)
     assert resp.warnings == []
 

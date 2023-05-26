@@ -1,27 +1,27 @@
-"""Module for testing Coding DNA Silent Mutation Translator."""
+"""Module for testing Coding DNA Reference Agree Translator."""
 import unittest
 
-from variation.classifiers import CodingDNASilentMutationClassifier
-from variation.translators import CodingDNASilentMutation
-from variation.validators import CodingDNASilentMutation as CDNASM_V
+from variation.classifiers import CodingDNAReferenceAgreeClassifier
+from variation.translators import CodingDNAReferenceAgree
+from variation.validators import CodingDNAReferenceAgree as CDNASM_V
 from .translator_base import TranslatorBase
 
 
-class TestCodingDNASilentMutationTranslator(TranslatorBase, unittest.TestCase):
-    """A class to test the Coding DNA Silent Mutation Translator."""
+class TestCodingDNAReferenceAgreeTranslator(TranslatorBase, unittest.TestCase):
+    """A class to test the Coding DNA Reference Agree Translator."""
 
     def classifier_instance(self):
-        """Return coding DNA silent mutation instance."""
-        return CodingDNASilentMutationClassifier()
+        """Return coding DNA reference agree instance."""
+        return CodingDNAReferenceAgreeClassifier()
 
     def validator_instance(self):
-        """Return coding DNA silent mutation instance."""
+        """Return coding DNA reference agree instance."""
         return CDNASM_V(*self.params)
 
     def translator_instance(self):
-        """Return coding DNA silent mutation instance."""
-        return CodingDNASilentMutation()
+        """Return coding DNA reference agree instance."""
+        return CodingDNAReferenceAgree()
 
     def fixture_name(self):
-        """Return the fixture name for coding DNA silent mutation."""
-        return "coding_dna_silent_mutation"
+        """Return the fixture name for coding DNA reference agree."""
+        return "coding_dna_reference_agree"

@@ -11,7 +11,7 @@ from variation.validators.duplication_deletion_base import\
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
 from variation.schemas.token_response_schema import \
-    Token, TokenType, GeneToken, AltType, SequenceOntology
+    Token, TokenType, GeneToken, AltType
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -183,6 +183,7 @@ class GenomicDuplication(DuplicationDeletionBase):
         :param Optional[CopyChange] copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         """
+        return 
         if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
             # (#_#)_(#_#)
             ival, grch38 = await self._get_ival(t, s, gene_tokens, errors, is_norm=True)

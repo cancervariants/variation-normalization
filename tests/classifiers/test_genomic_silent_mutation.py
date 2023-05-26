@@ -1,17 +1,17 @@
-"""Module for testing Genomic Silent Mutation Classifier."""
+"""Module for testing Genomic Reference Agree Classifier."""
 import unittest
 
-from variation.classifiers import GenomicSilentMutationClassifier
+from variation.classifiers import GenomicReferenceAgreeClassifier
 from .classifier_base import ClassifierBase
 
 
-class TestGenomicSilentMutationClassifier(ClassifierBase, unittest.TestCase):
-    """A class to test the Genomic Silent Mutation Classifier."""
+class TestGenomicReferenceAgreeClassifier(ClassifierBase, unittest.TestCase):
+    """A class to test the Genomic Reference Agree Classifier."""
 
     def classifier_instance(self):
-        """Return GenomicSilentMutationClassifier instance."""
-        return GenomicSilentMutationClassifier()
+        """Return GenomicReferenceAgreeClassifier instance."""
+        return GenomicReferenceAgreeClassifier()
 
     def fixture_name(self):
-        """Return GenomicSilentMutationClassifier fixture name."""
-        return "genomic_silent_mutation"
+        """Return GenomicReferenceAgreeClassifier fixture name."""
+        return "genomic_reference_agree"

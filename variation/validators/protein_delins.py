@@ -1,59 +1,125 @@
 """The module for Protein DelIns Validation."""
-from typing import List, Optional, Dict
-import logging
+from typing import Dict, List, Optional
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrs.extras.translator import Translator
-from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
-    MANETranscript
 
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
+from variation.schemas.classification_response_schema import (
+    Classification, ClassificationType, Nomenclature, ProteinDelInsClassification
+)
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum
+)
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
+from variation.schemas.token_response_schema import GeneToken
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
-from variation.tokenizers import GeneSymbol
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-from variation.vrs_representation import VRSRepresentation
-from .protein_base import ProteinBase
-
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
+from variation.utils import get_aa1_codes
 
 
 class ProteinDelIns(Validator):
     """The Protein DelIns Validator class."""
 
-    def __init__(self, seq_repo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTADatabase, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
-        """Initialize the validator.
+    async def get_valid_invalid_results(
+        self, classification: ProteinDelInsClassification,
+        transcripts: List[str], gene_tokens: List[GeneToken]
+    ) -> List[ValidationResult]:
+        errors = []
+        if classification.pos1:
+            if classification.pos0 >= classification.pos1:
+                errors.append(
+                    "Positions deleted should contain two different positions and "
+                    "should be listed from 5' to 3'"
+                )
 
-        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
-        :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings
-        :param GeneSymbol gene_symbol: Gene symbol tokenizer
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param UTADatabase uta: Access to UTA queries
-        :param Translator tlr: Class for translating nomenclatures to and from VRS
-        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRSRepresentation vrs: Class for creating VRS objects
-        """
-        super().__init__(
-            seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, tlr, gene_normalizer, vrs
-        )
-        self.protein_base = ProteinBase(seq_repo_access)
-        self.mane_transcript = mane_transcript
+        # Only HGVS Expressions are validated
+        # Free text is validated during tokenization
+        if classification.nomenclature == Nomenclature.HGVS:
+            # 1 letter AA codes for aa0
+            aa0_codes = get_aa1_codes(classification.aa0)
+            if aa0_codes:
+                classification.aa0 = aa0_codes
+            else:
+                errors.append(f"`aa0` not valid amino acid(s): {classification.aa0}")
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
+            if classification.aa1:
+                # 1 letter AA codes for aa1
+                aa1_codes = get_aa1_codes(classification.aa1)
+                if aa1_codes:
+                    classification.aa1 = aa1_codes
+                else:
+                    errors.append(
+                        f"`aa1` not valid amino acid(s): {classification.aa1}"
+                    )
+
+            if classification.inserted_sequence:
+                # 1 letter AA codes for inserted sequence
+                ins_codes = get_aa1_codes(classification.inserted_sequence)
+                if ins_codes:
+                    classification.inserted_sequence = ins_codes
+                else:
+                    errors.append(
+                        f"`inserted_sequence` not valid amino acid(s): {classification.inserted_sequence}"
+                    )
+
+        if errors:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=errors,
+                    gene_tokens=gene_tokens
+                )
+            ]
+
+        validation_results = []
+
+        for p_ac in transcripts:
+            errors = []
+
+            # Validate aa0 exists at pos0 on given
+            invalid_aa0_seq_msg = self.validate_reference_sequence(
+                p_ac, classification.pos0, classification.pos0, classification.aa0
+            )
+            if invalid_aa0_seq_msg:
+                errors.append(invalid_aa0_seq_msg)
+
+            # Validate aa1 exists at pos1
+            if classification.aa1:
+                # TODO: There shouldn't be a case where aa1 exists and pos1 doesn't
+                # but we should double check this
+                invalid_aa1_seq_msg = self.validate_reference_sequence(
+                    p_ac, classification.pos1, classification.pos1, classification.aa1
+                )
+
+                if invalid_aa1_seq_msg:
+                    errors.append(invalid_aa1_seq_msg)
+
+            validation_results.append(
+                ValidationResult(
+                    accession=p_ac,
+                    classification=classification,
+                    is_valid=not errors,
+                    errors=errors,
+                    gene_tokens=gene_tokens
+                )
+            )
+
+        return validation_results
+
+    def variation_name(self) -> str:
+        """Return the variation name."""
+        return "protein delins"
+
+    def validates_classification_type(
+        self, classification_type: ClassificationType
+    ) -> bool:
+        """Return whether or not the classification type is protein delins."""
+        return classification_type == ClassificationType.PROTEIN_DELINS
+
+    async def get_transcripts(
+        self, gene_tokens: List, classification: Classification, errors: List
+    ) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -62,92 +128,16 @@ class ProteinDelIns(Validator):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_protein_transcripts(gene_tokens, errors)
+        if classification.nomenclature == Nomenclature.HGVS:
+            transcripts = [classification.ac]
+        else:
+            transcripts = self.get_protein_transcripts(gene_tokens, errors)
+        return transcripts
 
-    async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
-    ) -> None:
-        """Add validation result objects to a list of results.
-
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        """
-        valid_alleles = list()
-        for s in classification_tokens:
-            for t in transcripts:
-                errors = list()
-                t = self.get_accession(t, classification)
-                allele = self.vrs.to_vrs_allele(
-                    t, s.start_pos_del, s.end_pos_del, s.coordinate_type,
-                    s.alt_type, errors, alt=s.inserted_sequence)
-
-                if not errors:
-                    # Check ref start/end protein matches expected
-                    self.protein_base.check_ref_aa(
-                        t, s.start_aa_del, s.start_pos_del, errors)
-
-                    if not errors and s.end_aa_del:
-                        self.protein_base.check_ref_aa(
-                            t, s.end_aa_del, s.end_pos_del, errors)
-
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, s.start_pos_del, s.coordinate_type, end_pos=s.end_pos_del,
-                        try_longest_compatible=True)
-                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
-                                       s.alt_type, s, alt=s.inserted_sequence)
-
-                self.add_validation_result(allele, valid_alleles, results,
-                                           classification, s, t, gene_tokens, errors)
-
-                if is_identifier:
-                    break
-
-        if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
-                                                classification, gene_tokens)
-
-    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
+    def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
         return self.get_protein_gene_symbol_tokens(classification)
-
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "protein delins"
-
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Protein DelIns."""
-        return t.token_type == TokenType.PROTEIN_DELINS
-
-    def validates_classification_type(
-            self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is
-        Protein DelIns.
-        """
-        return classification_type == ClassificationType.PROTEIN_DELINS

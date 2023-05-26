@@ -1,17 +1,17 @@
-"""Module for testing Coding DNA Silent Mutation Classifier."""
+"""Module for testing Coding DNA Reference Agree Classifier."""
 import unittest
 
-from variation.classifiers import CodingDNASilentMutationClassifier
+from variation.classifiers import CodingDNAReferenceAgreeClassifier
 from .classifier_base import ClassifierBase
 
 
-class TestCodingDNASilentMutationClassifier(ClassifierBase, unittest.TestCase):
-    """A class to test the Coding DNA Silent Mutation Classifier."""
+class TestCodingDNAReferenceAgreeClassifier(ClassifierBase, unittest.TestCase):
+    """A class to test the Coding DNA Reference Agree Classifier."""
 
     def classifier_instance(self):
-        """Return CodingDNASilentMutationClassifier instance."""
-        return CodingDNASilentMutationClassifier()
+        """Return CodingDNAReferenceAgreeClassifier instance."""
+        return CodingDNAReferenceAgreeClassifier()
 
     def fixture_name(self):
-        """Return CodingDNASilentMutationClassifier fixture name."""
-        return "coding_dna_silent_mutation"
+        """Return CodingDNAReferenceAgreeClassifier fixture name."""
+        return "coding_dna_reference_agree"

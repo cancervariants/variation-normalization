@@ -1,8 +1,7 @@
 """Module for Genomic Deletion Range Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import \
-    GenomicDeletionRangeToken, Token
+from variation.schemas.token_response_schema import GenomicDeletionAmbiguousToken, Token
 
 
 class GenomicDeletionRange(Translator):
@@ -14,4 +13,4 @@ class GenomicDeletionRange(Translator):
 
     def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Genomic Deletion Range token instance."""
-        return isinstance(token, GenomicDeletionRangeToken)
+        return isinstance(token, GenomicDeletionAmbiguousToken)

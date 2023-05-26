@@ -257,7 +257,7 @@ class ToCanonicalVariation(ToVRS):
         classifications = self.classifier.perform(tokens)
         hgvs_classifications = list()
         for c in classifications:
-            if TokenType.HGVS in c.matching_tokens or TokenType.REFERENCE_SEQUENCE in c.matching_tokens:  # noqa: E501
+            if TokenType.HGVS in c.matching_tokens:
                 hgvs_classifications.append(c)
         if not hgvs_classifications:
             warnings = [f"{q} is not a supported HGVS expression"]
@@ -287,7 +287,7 @@ class ToCanonicalVariation(ToVRS):
                 if valid_result:
                     variation = valid_result.variation
         else:
-            translations, warnings = self.get_translations(
+            translations, warnings = await self.get_translations(
                 validations, warnings)
             if translations:
                 variation = translations[0]

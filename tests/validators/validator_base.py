@@ -1,7 +1,6 @@
 """A module for testing validator classes."""
 import yaml
 from biocommons.seqrepo import SeqRepo
-from ga4gh.vrs.extras.translator import Translator
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool import SEQREPO_ROOT_DIR
@@ -30,7 +29,6 @@ class ValidatorBase:
         seqrepo_access = SeqRepoAccess(sr)
         transcript_mappings = TranscriptMappings()
         uta = UTADatabase()
-        tlr = Translator(data_proxy=seqrepo_access)
         mane_transcript = MANETranscript(
             seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
             gene_normalizer)
@@ -38,7 +36,7 @@ class ValidatorBase:
 
         cls.aa_params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, tlr, gene_normalizer, vrs
+            mane_transcript, uta, gene_normalizer, vrs
         ]
         cls.params = cls.aa_params[:-1]
 

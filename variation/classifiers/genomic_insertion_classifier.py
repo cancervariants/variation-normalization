@@ -2,11 +2,11 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class GenomicInsertionClassifier(SetBasedClassifier):
+class GenomicInsertionClassifier(Classifier):
     """The Genomic Insertion Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -16,11 +16,8 @@ class GenomicInsertionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.CHROMOSOME, TokenType.GENOMIC_INSERTION],
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_INSERTION],  # noqa: E501
             [TokenType.GENOMIC_INSERTION, TokenType.GENE],
             [TokenType.GENE, TokenType.GENOMIC_INSERTION],
-            [TokenType.HGVS, TokenType.GENOMIC_INSERTION],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.GENOMIC_INSERTION],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.GENOMIC_INSERTION]
+            [TokenType.HGVS, TokenType.GENOMIC_INSERTION]
         ]

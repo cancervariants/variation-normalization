@@ -1,12 +1,14 @@
 """A module for the Amplification Classifier"""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.classification_response_schema import (
+    ClassificationType, AmplificationClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class AmplificationClassifier(SetBasedClassifier):
+class AmplificationClassifier(Classifier):
     """The Amplification Classifier class"""
 
     def classification_type(self) -> ClassificationType:
@@ -18,3 +20,10 @@ class AmplificationClassifier(SetBasedClassifier):
         return [
             [TokenType.GENE, TokenType.AMPLIFICATION]
         ]
+
+    def match(self, tokens: List[Token]):
+        return AmplificationClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=tokens[0]
+        )

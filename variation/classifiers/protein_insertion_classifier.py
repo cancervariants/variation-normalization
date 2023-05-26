@@ -1,12 +1,14 @@
 """A module for the Protein Insertion Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.classification_response_schema import (
+    ClassificationType, ProteinInsertionClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class ProteinInsertionClassifier(SetBasedClassifier):
+class ProteinInsertionClassifier(Classifier):
     """The Protein Insertion Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -16,11 +18,19 @@ class ProteinInsertionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.PROTEIN_INSERTION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_INSERTION],  # noqa: E501
-            [TokenType.PROTEIN_INSERTION, TokenType.GENE],
-            [TokenType.GENE, TokenType.PROTEIN_INSERTION],
-            [TokenType.HGVS, TokenType.PROTEIN_INSERTION],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_INSERTION],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_INSERTION]
+            [TokenType.GENE, TokenType.PROTEIN_INSERTION]
         ]
+
+    def match(self, tokens: List[Token]):
+        gene_token, protein_ins_token = tokens
+
+        return ProteinInsertionClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            aa0=protein_ins_token.aa0,
+            pos0=protein_ins_token.pos0,
+            aa1=protein_ins_token.aa1,
+            pos1=protein_ins_token.pos1,
+            inserted_sequence=protein_ins_token.inserted_sequence
+        )

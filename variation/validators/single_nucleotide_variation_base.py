@@ -98,13 +98,13 @@ class SingleNucleotideVariationBase(Validator):
         """
         raise NotImplementedError
 
-    async def silent_mutation_valid_invalid_results(
+    async def reference_agree_valid_invalid_results(
             self, classification_tokens: List, transcripts: List,
             classification: Classification, results: List, gene_tokens: List,
             endpoint_name: Optional[Endpoint], mane_data_found: Dict,
             is_identifier: bool, do_liftover: bool = False) -> None:
         """Add validation result objects to a list of results for
-        Silent Mutations.
+        Reference Agrees.
 
         :param List classification_tokens: A list of classification Tokens
         :param List transcripts: A list of transcript accessions
@@ -205,10 +205,3 @@ class SingleNucleotideVariationBase(Validator):
             await self.add_genomic_liftover_to_results(
                 grch38, errors, s.new_nucleotide, valid_alleles, results,
                 classification, s, t, gene_tokens)
-
-    def check_ref_nucleotide(self, actual_ref_nuc: str, expected_ref_nuc: str,
-                             position: int, t: str, errors: List) -> None:
-        """Assert that ref_nuc matches s.ref_nucleotide."""
-        if actual_ref_nuc != expected_ref_nuc:
-            errors.append(f"Needed to find {expected_ref_nuc} at position {position} "
-                          f"on {t} but found {actual_ref_nuc}")

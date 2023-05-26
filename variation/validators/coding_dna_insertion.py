@@ -1,17 +1,14 @@
 """The module for Coding DNA Insertion Validation."""
 from typing import List, Optional
-import logging
 
-from variation.validators.insertion_base import InsertionBase
+
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
 from variation.schemas.token_response_schema import Token, TokenType, GeneToken
-
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
+from variation.validators.validator import Validator
 
 
-class CodingDNAInsertion(InsertionBase):
+class CodingDNAInsertion(Validator):
     """The Coding DNA Insertion Validator class."""
 
     async def get_transcripts(self, gene_tokens: List, classification: Classification,

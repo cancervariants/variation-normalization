@@ -1,4 +1,4 @@
-"""Module for Protein Deletion Translation."""
+"""Module for Protein Reference Agree Translation."""
 from typing import Dict, Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
@@ -12,15 +12,16 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinDeletionClassification
+    ClassificationType, ProteinReferenceAgreeClassification
 )
 
-class ProteinDeletion(Translator):
-    """The Protein Deletion Translator class."""
+
+class ProteinReferenceAgree(Translator):
+    """The Protein Reference Agree Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
-        """Return if classification type is Protein Deletion."""
-        return type == ClassificationType.PROTEIN_DELETION
+        """Return if classification type is Protein Reference Agree."""
+        return type == ClassificationType.PROTEIN_REFERENCE_AGREE
 
     async def translate(
         self,
@@ -34,27 +35,28 @@ class ProteinDeletion(Translator):
     ) -> Optional[Dict]:
         """Translate to VRS Variation representation."""
         # First will translate valid result to VRS Allele
-        classification: ProteinDeletionClassification = validation_result.classification
+        classification: ProteinReferenceAgreeClassification = validation_result.classification  # noqa: E501
+
         vrs_allele = None
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos0,
-                CoordinateType.PROTEIN, end_pos=classification.pos1,
+                validation_result.accession, classification.pos,
+                CoordinateType.PROTEIN, end_pos=classification.pos,
                 try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
             )
 
             vrs_allele = self.vrs.to_vrs_allele(
                 mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
-                CoordinateType.PROTEIN, AltType.DELETION, warnings
+                CoordinateType.PROTEIN, AltType.REFERENCE_AGREE, warnings
             )
         elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
             # TODO:
             pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
-                validation_result.accession, classification.pos0, classification.pos1,
-                CoordinateType.PROTEIN, AltType.DELETION, warnings
+                validation_result.accession, classification.pos, classification.pos,
+                CoordinateType.PROTEIN, AltType.REFERENCE_AGREE, warnings
             )
 
         return vrs_allele

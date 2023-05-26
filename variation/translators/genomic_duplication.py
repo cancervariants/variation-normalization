@@ -1,8 +1,9 @@
 """Module for Genomic Duplication Translation."""
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import \
-    GenomicDuplicationRangeToken, GenomicDuplicationToken, Token
+from variation.schemas.token_response_schema import (
+    GenomicDuplicationToken, GenomicDuplicationAmbiguousToken, Token
+)
 
 
 class GenomicDuplication(Translator):
@@ -15,4 +16,4 @@ class GenomicDuplication(Translator):
     def is_token_instance(self, token: Token) -> bool:
         """Return if the token is an Genomic Duplication token instance."""
         return isinstance(token, (GenomicDuplicationToken,
-                                  GenomicDuplicationRangeToken))
+                                  GenomicDuplicationAmbiguousToken))

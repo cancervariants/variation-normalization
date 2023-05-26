@@ -59,7 +59,7 @@ class ToCopyNumberVariation(ToVRS):
         variation = Text(definition=definition, id=_id)
         return variation, warnings
 
-    def _hgvs_to_cnv_resp(
+    async def _hgvs_to_cnv_resp(
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
         warnings: List[str], untranslatable_returns_text: bool = False
@@ -87,7 +87,7 @@ class ToCopyNumberVariation(ToVRS):
                 warnings.append(f"Unable to translate {hgvs_expr} to "
                                 f"copy number variation")
         else:
-            translations, warnings = self.get_translations(validations, warnings)
+            translations, warnings = await self.get_translations(validations, warnings)
             if translations:
                 variation = translations[0]
 
@@ -123,7 +123,7 @@ class ToCopyNumberVariation(ToVRS):
             hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_COUNT,
             baseline_copies=baseline_copies, do_liftover=do_liftover
         )
-        cn_var, warnings = self._hgvs_to_cnv_resp(
+        cn_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover, validations,
             warnings, untranslatable_returns_text)
 
@@ -162,7 +162,7 @@ class ToCopyNumberVariation(ToVRS):
             copy_change=copy_change, do_liftover=do_liftover
         )
 
-        cx_var, warnings = self._hgvs_to_cnv_resp(
+        cx_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover, validations,
             warnings, untranslatable_returns_text)
 

@@ -1,12 +1,14 @@
 """A module for the Protein DelIns Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.classification_response_schema import (
+    ClassificationType, ProteinDelInsClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class ProteinDelInsClassifier(SetBasedClassifier):
+class ProteinDelInsClassifier(Classifier):
     """The Protein DelIns Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -16,11 +18,19 @@ class ProteinDelInsClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.PROTEIN_DELINS],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_DELINS],
-            [TokenType.PROTEIN_DELINS, TokenType.GENE],
-            [TokenType.GENE, TokenType.PROTEIN_DELINS],
-            [TokenType.HGVS, TokenType.PROTEIN_DELINS],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_DELINS],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_DELINS]
+            [TokenType.GENE, TokenType.PROTEIN_DELINS]
         ]
+
+    def match(self, tokens: List[Token]):
+        gene_token, protein_delins_token = tokens
+
+        return ProteinDelInsClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            aa0=protein_delins_token.aa0,
+            pos0=protein_delins_token.pos0,
+            aa1=protein_delins_token.aa1,
+            pos1=protein_delins_token.pos1,
+            inserted_sequence=protein_delins_token.inserted_sequence
+        )

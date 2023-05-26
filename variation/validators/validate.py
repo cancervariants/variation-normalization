@@ -2,7 +2,6 @@
 from typing import List, Optional
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
     MANETranscript
@@ -15,17 +14,16 @@ from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.tokenizers import GeneSymbol
 from .protein_substitution import ProteinSubstitution
-from .polypeptide_truncation import PolypeptideTruncation
-from .silent_mutation import SilentMutation
-from .coding_dna_substitution import CodingDNASubstitution
-from .coding_dna_silent_mutation import CodingDNASilentMutation
-from .genomic_silent_mutation import GenomicSilentMutation
+from .protein_reference_agree import ProteinReferenceAgree
+from .coding_dna_substitution import CdnaSubstitution
+from .coding_dna_reference_agree import CodingDNAReferenceAgree
+from .genomic_reference_agree import GenomicReferenceAgree
 from .genomic_substitution import GenomicSubstitution
 from .protein_delins import ProteinDelIns
 from .coding_dna_delins import CodingDNADelIns
 from .genomic_delins import GenomicDelIns
 from .protein_deletion import ProteinDeletion
-from .coding_dna_deletion import CodingDNADeletion
+from .coding_dna_deletion import CdnaDeletion
 from .genomic_deletion import GenomicDeletion
 from .protein_insertion import ProteinInsertion
 from .coding_dna_insertion import CodingDNAInsertion
@@ -39,98 +37,78 @@ from .amplification import Amplification
 class Validate:
     """The validation class."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTADatabase, tlr: Translator,
-                 gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
+    def __init__(
+        self,
+        seqrepo_access: SeqRepoAccess,
+        transcript_mappings: TranscriptMappings,
+        gene_symbol: GeneSymbol,
+        mane_transcript: MANETranscript,
+        uta: UTADatabase,
+        gene_normalizer: GeneQueryHandler,
+        vrs: VRSRepresentation
+    ) -> None:
         """Initialize the validate class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo data
-        :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings
-        :param GeneSymbol gene_symbol: Gene symbol tokenizer
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param UTADatabase uta: Access to UTA queries
-        :param Translator tlr: Class for translating nomenclatures to and from VRS
-        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRSRepresentation vrs: Class for representing VRS objects
+        :param seqrepo_access: Access to SeqRepo data
+        :param transcript_mappings: Access to transcript mappings
+        :param gene_symbol: Gene symbol tokenizer
+        :param mane_transcript: Access MANE Transcript information
+        :param uta: Access to UTA queries
+        :param tlr: Class for translating nomenclatures to and from VRS
+        :param gene_normalizer: Access to gene-normalizer
+        :param vrs: Class for representing VRS objects
         """
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, tlr, gene_normalizer, vrs
+            mane_transcript, uta, gene_normalizer, vrs
         ]
         self.validators = [
             ProteinSubstitution(*params),
-            PolypeptideTruncation(*params),
-            SilentMutation(*params),
-            CodingDNASubstitution(*params),
+            CdnaSubstitution(*params),
             GenomicSubstitution(*params),
-            CodingDNASilentMutation(*params),
-            GenomicSilentMutation(*params),
+            ProteinReferenceAgree(*params),
+            # CodingDNAReferenceAgree(*params),
+            # GenomicReferenceAgree(*params),
             ProteinDelIns(*params),
-            CodingDNADelIns(*params),
-            GenomicDelIns(*params),
+            # CodingDNADelIns(*params),
+            # GenomicDelIns(*params),
             ProteinDeletion(*params),
-            CodingDNADeletion(*params),
-            GenomicDeletion(*params),
+            CdnaDeletion(*params),
+            # GenomicDeletion(*params),
             ProteinInsertion(*params),
-            CodingDNAInsertion(*params),
+            # CodingDNAInsertion(*params),
             GenomicInsertion(*params),
-            GenomicDeletionRange(*params),
-            GenomicUncertainDeletion(*params),
-            GenomicDuplication(*params),
+            # GenomicDeletionRange(*params),
+            # GenomicUncertainDeletion(*params),
+            # GenomicDuplication(*params),
             Amplification(*params)
         ]
 
     async def perform(
-            self, classifications: List[Classification],
-            endpoint_name: Optional[Endpoint] = None, warnings: List = None,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
-            baseline_copies: Optional[int] = None,
-            copy_change: Optional[CopyChange] = None,
-            do_liftover: bool = False
+        self, classifications: List[Classification], warnings: List = None
     ) -> ValidationSummary:
-        """Validate a list of classifications.
-
-        :param List classifications: List of classifications
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param List warnings: List of warnings
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        :return: ValidationSummary containing valid and invalid results
-        """
-        valid_possibilities = list()
-        invalid_possibilities = list()
+        valid_possibilities = []
+        invalid_possibilities = []
         if not warnings:
-            warnings = list()
+            warnings = []
 
         found_valid_result = False
         invalid_classifications = set()
         for classification in classifications:
             for validator in self.validators:
                 if validator.validates_classification_type(
-                        classification.classification_type):
-                    results = await validator.validate(
-                        classification, hgvs_dup_del_mode=hgvs_dup_del_mode,
-                        endpoint_name=endpoint_name, baseline_copies=baseline_copies,
-                        copy_change=copy_change,
-                        do_liftover=do_liftover)
-                    for res in results:
-                        if res.is_valid:
+                    classification.classification_type
+                ):
+                    validation_results = await validator.validate(classification)
+                    for validation_result in validation_results:
+                        if validation_result.is_valid:
                             found_valid_result = True
-                            valid_possibilities.append(res)
+                            valid_possibilities.append(validation_result)
                         else:
-                            invalid_possibilities.append(res)
+                            invalid_possibilities.append(validation_result)
                             invalid_classifications.add(
-                                classification.classification_type.value)
+                                classification.classification_type.value
+                            )
 
                 if found_valid_result:
                     break

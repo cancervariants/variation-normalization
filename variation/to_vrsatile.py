@@ -27,14 +27,15 @@ class ToVRSATILE(ToVRS):
         :return: Variation descriptor, warnings
         """
         variation_id = variation["_id"]
-        identifier = valid_result.identifier
-        token_type = valid_result.classification_token.token_type
-        token_type_l = token_type.lower()
+        identifier = valid_result.accession
+        token_types = {
+            t.token_type for t in valid_result.classification.matching_tokens
+        }
 
         vrs_ref_allele_seq = None
-        if "uncertain" in token_type_l:
+        if "uncertain" in token_types:
             warnings = ["Ambiguous regions cannot be normalized"]
-        elif "range" not in token_type_l and token_type != TokenType.AMPLIFICATION:
+        elif "range" not in token_types and TokenType.AMPLIFICATION not in token_types:
             variation_type = variation["type"]
             if variation_type in {VRSTypes.ALLELE.value,
                                   VRSTypes.COPY_NUMBER_COUNT.value,
@@ -56,15 +57,15 @@ class ToVRSATILE(ToVRS):
             label=label,
             variation_id=variation_id,
             variation=variation,
-            molecule_context=valid_result.classification_token.molecule_context,
-            structural_type=valid_result.classification_token.so_id,
+            molecule_context=valid_result.classification.molecule_context,
+            structural_type=valid_result.classification.so_id,
             vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,
             gene_context=gene_context
         ), warnings
 
     def get_gene_descriptor(
-            self, gene_token: Optional[GeneToken] = None,
-            gene: Optional[str] = None) -> Optional[GeneDescriptor]:
+        self, gene_token: Optional[GeneToken] = None, gene: Optional[str] = None
+    ) -> Optional[GeneDescriptor]:
         """Return a GA4GH Gene Descriptor using Gene Normalization.
 
         :param Optional[GeneToken] gene_token: A gene token

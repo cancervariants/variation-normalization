@@ -1,12 +1,14 @@
 """A module for the Coding DNA Deletion Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.classification_response_schema import (
+    ClassificationType, CdnaDeletionClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class CodingDNADeletionClassifier(SetBasedClassifier):
+class CdnaDeletionClassifier(Classifier):
     """The Coding DNA Deletion Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -16,11 +18,17 @@ class CodingDNADeletionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.CODING_DNA_DELETION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_DELETION],  # noqa: E501
-            [TokenType.CODING_DNA_DELETION, TokenType.GENE],
-            [TokenType.GENE, TokenType.CODING_DNA_DELETION],
-            [TokenType.HGVS, TokenType.CODING_DNA_DELETION],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.CODING_DNA_DELETION],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.CODING_DNA_DELETION]
+            [TokenType.GENE, TokenType.CODING_DNA_DELETION]
         ]
+
+    def match(self, tokens: List[Token]):
+        gene_token, cdna_deletion_token = tokens
+
+        return CdnaDeletionClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            pos0=cdna_deletion_token.pos0,
+            pos1=cdna_deletion_token.pos1,
+            deleted_sequence=cdna_deletion_token.deleted_sequence
+        )

@@ -1,22 +1,22 @@
-"""Module for testing Silent Mutation Validator."""
+"""Module for testing Reference Agree Validator."""
 import unittest
 
-from variation.validators import SilentMutation
-from variation.classifiers import SilentMutationClassifier
+from variation.validators import ProteinReferenceAgree
+from variation.classifiers import ProteinReferenceAgreeClassifier
 from .validator_base import ValidatorBase
 
 
-class TestSilentMutationValidator(ValidatorBase, unittest.TestCase):
-    """A class to test the Silent Mutation Validator."""
+class TestReferenceAgreeValidator(ValidatorBase, unittest.TestCase):
+    """A class to test the Reference Agree Validator."""
 
     def validator_instance(self):
-        """Return Silent Mutation instance."""
-        return SilentMutation(*self.aa_params)
+        """Return Reference Agree instance."""
+        return ProteinReferenceAgree(*self.aa_params)
 
     def classifier_instance(self):
-        """Return the Silent Mutation classifier instance."""
-        return SilentMutationClassifier()
+        """Return the Reference Agree classifier instance."""
+        return ProteinReferenceAgreeClassifier()
 
     def fixture_name(self):
-        """Return the fixture name for Silent Mutation."""
-        return "silent_mutation"
+        """Return the fixture name for Reference Agree."""
+        return "protein_reference_agree"

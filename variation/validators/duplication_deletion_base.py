@@ -3,7 +3,6 @@ import logging
 from typing import Optional, List, Dict, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrs.extras.translator import Translator
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
     MANETranscript
@@ -30,24 +29,11 @@ class DuplicationDeletionBase(Validator):
                  transcript_mappings: TranscriptMappings,
                  gene_symbol: GeneSymbol,
                  mane_transcript: MANETranscript,
-                 uta: UTADatabase, tlr: Translator,
+                 uta: UTADatabase,
                  gene_normalizer: GeneQueryHandler, vrs: VRSRepresentation) -> None:
-        """Initialize the Deletion Base validator.
-
-        :param SeqRepoAccess seq_repo_access: Access to SeqRepo data
-        :param TranscriptMappings transcript_mappings: Access to transcript
-            mappings
-        :param GeneSymbol gene_symbol: Gene symbol tokenizer
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param UTADatabase uta: Access to UTA queries
-        :param Translator tlr: Class for translating nomenclatures to and from VRS
-        :param GeneQueryHandler gene_normalizer: Access to gene-normalizer
-        :param VRSRepresentation vrs: Class for creating VRS objects
-        """
         super().__init__(
             seq_repo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta, tlr, gene_normalizer, vrs
+            uta, gene_normalizer, vrs
         )
         self.hgvs_dup_del_mode = HGVSDupDelMode(seq_repo_access)
 

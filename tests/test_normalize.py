@@ -470,7 +470,7 @@ def braf_nuc_value():
 
 
 @pytest.fixture(scope="module")
-def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
+def coding_dna_reference_agree(braf_gene_context, braf_nuc_value):
     """Create test fixture for NM_004333.4:c.1799=."""
     value = copy.deepcopy(braf_nuc_value)
     value["state"]["sequence"] = "T"
@@ -489,7 +489,7 @@ def coding_dna_silent_mutation(braf_gene_context, braf_nuc_value):
 
 
 @pytest.fixture(scope="module")
-def nc_000007_silent_mutation(braf_gene_context, braf_nuc_value):
+def nc_000007_reference_agree(braf_gene_context, braf_nuc_value):
     """Create test fixture for NC_000007.13:g.140453136=."""
     value = copy.deepcopy(braf_nuc_value)
     value["state"]["sequence"] = "T"
@@ -788,8 +788,8 @@ def grch38_braf_genom_sub(braf_v600e_genomic_sub):
 
 
 @pytest.fixture(scope="module")
-def grch38_braf_genom_silent_mutation():
-    """Create a genomic silent mutation GRCh38 test fixture for BRAF."""
+def grch38_braf_genom_reference_agree():
+    """Create a genomic reference agree GRCh38 test fixture for BRAF."""
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.140453136%3D",
         "type": "VariationDescriptor",
@@ -937,10 +937,11 @@ async def test_polypeptide_truncation(test_handler, vhl):
 
 
 @pytest.mark.asyncio
-async def test_silent_mutation(test_handler, vhl_silent):
-    """Test that silent mutations normalize correctly."""
+async def test_reference_agree(test_handler, vhl_reference_agree):
+    """Test that reference agrees normalize correctly."""
     resp = await test_handler.normalize("NP_000542.1:p.Pro61=")
-    assertion_checks(resp.variation_descriptor, vhl_silent, "NP_000542.1:p.Pro61=")
+    assertion_checks(resp.variation_descriptor, vhl_reference_agree,
+                     "NP_000542.1:p.Pro61=")
 
 
 @pytest.mark.asyncio
@@ -1024,12 +1025,12 @@ async def test_coding_dna_and_genomic_substitution(
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_silent_mutation(test_handler,
-                                          coding_dna_silent_mutation,
+async def test_coding_dna_reference_agree(test_handler,
+                                          coding_dna_reference_agree,
                                           braf_gene_context):
-    """Test that Coding DNA Silent Mutation normalizes correctly."""
+    """Test that Coding DNA Reference Agree normalizes correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799= ")
-    assertion_checks(resp.variation_descriptor, coding_dna_silent_mutation,
+    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
                      "NM_004333.4:c.1799=")
 
     fixture_id = "normalize.variation:NM_004333.4%3Ac.1799%3D"
@@ -1038,13 +1039,13 @@ async def test_coding_dna_silent_mutation(test_handler,
     assert resp.variation_descriptor.id == \
         "normalize.variation:ENST00000288602.11%3Ac.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_silent_mutation,
+    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
                      "ENST00000288602.11:c.1799=")
 
     # TODO: What to do for older Ensembl transcripts that aren"t found
     #  in seqrepo or UTA
     # resp = await test_handler.normalize("ENST00000288602.6:c.1799=")
-    # assert_coding_dna_genomic_silent_mutation(resp, braf_gene_context,
+    # assert_coding_dna_genomic_reference_agree(resp, braf_gene_context,
     #                                           1798, 1799)
     # assert resp.variation_descriptor.id == "normalize.variation:ENST00000288602.6%3Ac.1799%3D"  # noqa: E501
     # assert resp.variation_descriptor.label == "ENST00000288602.6:c.1799="
@@ -1053,43 +1054,43 @@ async def test_coding_dna_silent_mutation(test_handler,
     resp = await test_handler.normalize("BRAF    c.1799=")
     assert resp.variation_descriptor.id == "normalize.variation:BRAF%20c.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_silent_mutation,
+    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
                      "BRAF    c.1799=")
 
     resp = await test_handler.normalize("  BRAF  V600E  c.1799=  ")
     assert resp.variation_descriptor.id == \
         "normalize.variation:BRAF%20V600E%20c.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_silent_mutation,
+    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
                      "BRAF  V600E  c.1799=")
 
 
 @pytest.mark.asyncio
-async def test_genomic_silent_mutation(test_handler, nc_000007_silent_mutation,
+async def test_genomic_reference_agree(test_handler, nc_000007_reference_agree,
                                        braf_gene_context,
-                                       grch38_braf_genom_silent_mutation):
-    """Test that genomic silent mutation normalizes correctly."""
+                                       grch38_braf_genom_reference_agree):
+    """Test that genomic reference agree normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453136=")
-    assertion_checks(resp.variation_descriptor, grch38_braf_genom_silent_mutation,
+    assertion_checks(resp.variation_descriptor, grch38_braf_genom_reference_agree,
                      "NC_000007.13:g.140453136=")
 
     fixture_id = "normalize.variation:NC_000007.13%3Ag.140453136%3D"
     resp = await test_handler.normalize("7-140453136-A-A")
     assert resp.variation_descriptor.id == "normalize.variation:7-140453136-A-A"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, grch38_braf_genom_silent_mutation,
+    assertion_checks(resp.variation_descriptor, grch38_braf_genom_reference_agree,
                      "7-140453136-A-A")
 
     resp = await test_handler.normalize("7-140753336-A-A")
     assert resp.variation_descriptor.id == "normalize.variation:7-140753336-A-A"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, grch38_braf_genom_silent_mutation,
+    assertion_checks(resp.variation_descriptor, grch38_braf_genom_reference_agree,
                      "7-140753336-A-A")
 
     resp = await test_handler.normalize("BRAF g.140453136=")
     assert resp.variation_descriptor.id == "normalize.variation:BRAF%20g.140453136%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, nc_000007_silent_mutation,
+    assertion_checks(resp.variation_descriptor, nc_000007_reference_agree,
                      "BRAF g.140453136=")
 
 

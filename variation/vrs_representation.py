@@ -177,8 +177,8 @@ class VRSRepresentation:
             state = alt
             ival_end = ival_start
         elif alt_type in {AltType.SUBSTITUTION, AltType.DELETION, AltType.DELINS,
-                          AltType.SILENT_MUTATION, AltType.NONSENSE}:
-            if alt_type == AltType.SILENT_MUTATION:
+                          AltType.REFERENCE_AGREE, AltType.NONSENSE}:
+            if alt_type == AltType.REFERENCE_AGREE:
                 state, _ = self.seqrepo_access.get_reference_sequence(ac, ival_start)
                 if state is None:
                     errors.append(f"Unable to get sequence on {ac} from "

@@ -771,7 +771,7 @@ def braf_v600e(braf_gene_context, braf_600loc):
 
 
 @pytest.fixture(scope="session")
-def vhl_silent(vhl_gene_context):
+def vhl_reference_agree(vhl_gene_context):
     """Create NP_000542.1:p.Pro61 fixture."""
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",

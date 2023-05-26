@@ -1,12 +1,14 @@
 """A module for the Protein Deletion Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
-from variation.classifiers import SetBasedClassifier
+from variation.schemas.classification_response_schema import (
+    ClassificationType, ProteinDeletionClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
+from variation.classifiers import Classifier
 
 
-class ProteinDeletionClassifier(SetBasedClassifier):
+class ProteinDeletionClassifier(Classifier):
     """The Protein Deletion Classifier class."""
 
     def classification_type(self) -> ClassificationType:
@@ -16,11 +18,19 @@ class ProteinDeletionClassifier(SetBasedClassifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.PROTEIN_DELETION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_DELETION],  # noqa: E501
-            [TokenType.PROTEIN_DELETION, TokenType.GENE],
-            [TokenType.GENE, TokenType.PROTEIN_DELETION],
-            [TokenType.HGVS, TokenType.PROTEIN_DELETION],
-            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_DELETION],
-            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_DELETION]
+            [TokenType.GENE, TokenType.PROTEIN_DELETION]
         ]
+
+    def match(self, tokens: List[Token]):
+        gene_token, protein_del_token = tokens
+
+        return ProteinDeletionClassification(
+            matching_tokens=tokens,
+            Nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            aa0=protein_del_token.aa0,
+            pos0=protein_del_token.pos0,
+            aa1=protein_del_token.aa1,
+            pos1=protein_del_token.pos1,
+            deleted_sequence=protein_del_token.deleted_sequence
+        )

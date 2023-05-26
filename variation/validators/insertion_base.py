@@ -148,9 +148,8 @@ class InsertionBase(Validator):
 
             hgvs_expr = f"{prefix}{position}ins{inserted_sequence}"
         else:
-            hgvs_token = [t for t in classification.all_tokens if
-                          isinstance(t, Token) and t.token_type
-                          in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]][0]
+            hgvs_token = [t for t in classification.matching_tokens if
+                          isinstance(t, Token) and t.token_type == TokenType.HGVS][0]
             hgvs_expr = hgvs_token.input_string
         return hgvs_expr
 

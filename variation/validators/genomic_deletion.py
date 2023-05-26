@@ -9,8 +9,7 @@ from variation.validators.duplication_deletion_base import\
     DuplicationDeletionBase
 from variation.schemas.classification_response_schema import \
     ClassificationType, Classification
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken, \
-    SequenceOntology
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 
@@ -136,6 +135,7 @@ class GenomicDeletion(DuplicationDeletionBase):
         :param Optional[CopyChange] copy_change: The copy change
         :param Optional[int] baseline_copies: Baseline copies number
         """
+        return
         if gene_tokens:
             await self.add_normalized_genomic_dup_del(
                 s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,

@@ -5,6 +5,11 @@ from enum import Enum
 from pydantic import BaseModel, StrictInt, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 
+from variation.schemas.variation_schema import (
+    DelIns, Deletion, ProteinDelIns, ProteinInsertion, Substitution, Insertion,
+    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree
+)
+
 
 class TokenType(str, Enum):
     """Define token types."""
@@ -99,101 +104,75 @@ class GnomadVcfToken(Token):
     alt: StrictStr
 
 
-class GenomicSubstitutionToken(Token):
+class GenomicSubstitutionToken(Token, Substitution):
     """Genomic substitution token"""
 
     token_type = TokenType.GENOMIC_SUBSTITUTION
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos: StrictInt
-    ref: StrictStr
-    alt: StrictStr
 
 
-class CodingDNASubstitutionToken(Token):
+class CodingDNASubstitutionToken(Token, Substitution):
     """Token for substitution on coding DNA reference sequence"""
 
     token_type = TokenType.CODING_DNA_SUBSTITUTION
     coordinate_type = CoordinateType.CODING_DNA
-    pos: StrictInt
-    ref: StrictStr
-    alt: StrictStr
 
 
-class ProteinSubstitutionToken(Token):
+class ProteinSubstitutionToken(Token, Substitution):
     """Token for substitution on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_SUBSTITUTION
     coordinate_type = CoordinateType.PROTEIN
-    pos: StrictInt
-    ref: StrictStr
-    alt: StrictStr
 
 
-class ProteinStopGainToken(Token):
+class ProteinStopGainToken(Token, Substitution):
     """Token for stop gain on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_STOP_GAIN
     coordinate_type = CoordinateType.PROTEIN
-    pos: StrictInt
-    ref: StrictStr
-    alt = "*"
+    alt: Literal["*"] = "*"
 
 
-class ProteinReferenceAgreeToken(Token):
+class ProteinReferenceAgreeToken(Token, ProteinReferenceAgree):
     """Token for reference agree on protein reference sequence"""
 
     coordinate_type = CoordinateType.PROTEIN
     token_type = TokenType.PROTEIN_REFERENCE_AGREE
-    pos: StrictInt
-    ref: StrictStr
 
 
-class CodingDNAReferenceAgreeToken(Token):
+class CodingDNAReferenceAgreeToken(Token, ReferenceAgree):
     """Token for reference agree on coding DNA reference sequence"""
 
     coordinate_type = CoordinateType.CODING_DNA
     token_type = TokenType.CODING_DNA_REFERENCE_AGREE
-    pos: StrictInt
 
 
-class GenomicReferenceAgreeToken(Token):
+class GenomicReferenceAgreeToken(Token, ReferenceAgree):
     """Token for reference agree on genomic reference sequence"""
 
     coordinate_type = CoordinateType.LINEAR_GENOMIC
     token_type = TokenType.GENOMIC_REFERENCE_AGREE
-    pos: StrictInt
 
 
-class ProteinDeletionToken(Token):
+class ProteinDeletionToken(Token, ProteinDeletion):
     """Token for deletion on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_DELETION
     coordinate_type = CoordinateType.PROTEIN
-    aa0: StrictStr
-    pos0: StrictInt
-    aa1: Optional[StrictStr]
-    pos1: Optional[StrictInt]
-    deleted_sequence: Optional[StrictStr]
 
 
-class CodingDNADeletionToken(Token):
+class CodingDNADeletionToken(Token, Deletion):
     """Token for deletion on coding dna reference sequence"""
 
     token_type = TokenType.CODING_DNA_DELETION
     coordinate_type = CoordinateType.CODING_DNA
-    pos0: StrictInt
-    pos1: Optional[StrictInt]
-    deleted_sequence: Optional[StrictStr]
 
 
-class GenomicDeletionToken(Token):
+class GenomicDeletionToken(Token, Deletion):
     """Token for deletion on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DELETION
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: StrictInt
-    pos1: Optional[StrictInt]
-    deleted_sequence: Optional[StrictStr]
 
 
 class GenomicDeletionAmbiguousToken(Token):
@@ -207,68 +186,47 @@ class GenomicDeletionAmbiguousToken(Token):
     pos4: Optional[Union[StrictInt, Literal["?"]]]
 
 
-class ProteinDelInsToken(Token):
+class ProteinDelInsToken(Token, ProteinDelIns):
     """Token for delins on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_DELINS
     coordinate_type = CoordinateType.PROTEIN
-    aa0: StrictStr
-    pos0: StrictInt
-    aa1: Optional[StrictStr]
-    pos1: Optional[StrictInt]
-    inserted_sequence: StrictStr
 
 
-class CodingDNADelInsToken(Token):
+class CodingDNADelInsToken(Token, DelIns):
     """Token for delins on coding dna reference sequence"""
 
     token_type = TokenType.CODING_DNA_DELINS
     coordinate_type = CoordinateType.CODING_DNA
-    pos0: StrictInt
-    pos1: Optional[StrictInt]
-    inserted_sequence: StrictStr
 
 
-class GenomicDelInsToken(Token):
+class GenomicDelInsToken(Token, DelIns):
     """Token for delins on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DELINS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: StrictInt
-    pos1: Optional[StrictInt]
-    inserted_sequence: StrictStr
 
 
-class CodingDNAInsertionToken(Token):
+
+class CodingDNAInsertionToken(Token, Insertion):
     """Token for insertion on coding dna reference sequence"""
 
     token_type = TokenType.CODING_DNA_INSERTION
     coordinate_type = CoordinateType.CODING_DNA
-    pos0: StrictInt
-    pos1: StrictInt
-    inserted_sequence: StrictStr
 
 
-class GenomicInsertionToken(Token):
+class GenomicInsertionToken(Token, Insertion):
     """Token for insertion on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_INSERTION
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: StrictInt
-    pos1: StrictInt
-    inserted_sequence: StrictStr
 
 
-class ProteinInsertionToken(Token):
+class ProteinInsertionToken(Token, ProteinInsertion):
     """Token for insertion on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_INSERTION
     coordinate_type = CoordinateType.PROTEIN
-    aa0: StrictStr
-    pos0: StrictInt
-    aa1: StrictStr
-    pos1: StrictInt
-    inserted_sequence: StrictStr
 
 
 class GenomicDuplicationToken(Token):

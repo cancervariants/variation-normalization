@@ -1,17 +1,17 @@
-"""Module for testing Silent Mutation Classifier."""
+"""Module for testing Reference Agree Classifier."""
 import unittest
 
-from variation.classifiers import SilentMutationClassifier
+from variation.classifiers import ProteinReferenceAgreeClassifier
 from .classifier_base import ClassifierBase
 
 
-class TestSilentMutationClassifier(ClassifierBase, unittest.TestCase):
-    """A class to test the Silent Mutation Classifier."""
+class TestReferenceAgreeClassifier(ClassifierBase, unittest.TestCase):
+    """A class to test the Reference Agree Classifier."""
 
     def classifier_instance(self):
-        """Return SilentMutationClassifier instance."""
-        return SilentMutationClassifier()
+        """Return ProteinReferenceAgreeClassifier instance."""
+        return ProteinReferenceAgreeClassifier()
 
     def fixture_name(self):
-        """Return SilentMutationClassifier fixture name."""
-        return "silent_mutation"
+        """Return ProteinReferenceAgreeClassifier fixture name."""
+        return "reference_agree"

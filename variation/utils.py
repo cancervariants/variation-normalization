@@ -2,6 +2,7 @@
 from typing import List, Tuple, Optional, Dict
 import re
 
+from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3, aa3_to_aa1 as _aa3_to_aa1
 from ga4gh.vrsatile.pydantic.vrs_models import Text
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 from ga4gh.core import ga4gh_identify
@@ -11,7 +12,6 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.validation_response_schema import ValidationSummary, \
     ValidationResult
-from variation.schemas.token_response_schema import Token, TokenType
 
 
 def no_variation_entered() -> Tuple[None, List[str]]:
@@ -23,6 +23,7 @@ def no_variation_entered() -> Tuple[None, List[str]]:
     return None, warnings
 
 
+# TODO: This should be removed
 def get_mane_valid_result(q: str, validations: ValidationSummary,
                           warnings: List) -> ValidationResult:
     """Get valid result from ValidationSummary
@@ -76,34 +77,6 @@ def no_variation_resp(
     if not warnings:
         warnings.append(warning)
     return resp, warnings
-
-
-def is_token_type(valid_result_tokens: List, token_type: TokenType) -> bool:
-    """Return whether or not token_type is in valid_result_tokens.
-
-    :param List valid_result_tokens: Valid token matches
-    :param TokenType token_type: The token's type
-    :return: Whether or not token_type is in valid_result_tokens
-    """
-    for t in valid_result_tokens:
-        if t.token_type == token_type:
-            return True
-    return False
-
-
-def get_instance_type_token(valid_result_tokens: List,
-                            instance_type: Token) -> Optional[Token]:
-    """Return the tokens for a given instance type.
-
-    :param List valid_result_tokens: A list of valid tokens for the input
-        string
-    :param Token instance_type: The instance type to check
-    :return: Token for a given instance type
-    """
-    for t in valid_result_tokens:
-        if isinstance(t, instance_type):
-            return t
-    return None
 
 
 def _get_priority_sequence_location(locations: List[Dict],
@@ -165,3 +138,30 @@ def get_priority_sequence_location(gene_descriptor: GeneDescriptor,
         elif ext.name == "ensembl_locations":
             ensembl_loc = _get_priority_sequence_location(ext.value, seqrepo_access)
     return ncbi_loc or ensembl_loc
+
+
+def get_aa1_codes(aa: str) -> Optional[str]:
+    """Get single AA codes given possible AA string (either single or three letter).
+    Will also validate the input AA string
+
+    :param aa: Input amino acid string
+    :return: Amino acid string represented using single AA codes if valid. If invalid,
+        will return None
+    """
+    aa1 = None
+    if aa == "*":
+        aa1 = aa
+    else:
+        try:
+            # see if it's already 1 AA
+            _aa1_to_aa3(aa)
+        except KeyError:
+            # see if it's 3 AA
+            try:
+                aa1 = _aa3_to_aa1(aa)
+            except KeyError:
+                pass
+        else:
+            aa1 = aa
+
+    return aa1
