@@ -117,6 +117,7 @@ variant_id	gene_name	variant_name	category	variant_accepted
 1613	ABL1	BCR::ABL S417Y	Fusion	True
 2953	ABL1	BCR::ABL S438C	Fusion	True
 2335	ABL1	BCR::ABL T315A	Fusion	True
+4508	ABL1	BCR::ABL T315I	Fusion	False
 2885	ABL1	BCR::ABL T315V	Fusion	True
 2903	ABL1	BCR::ABL V186A	Fusion	False
 2952	ABL1	BCR::ABL V298I	Fusion	True
