@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class GenomicDeletionClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class GenomicDeletionClassifier(SetBasedClassifier):
         """Return the Genomic Deletion classification type."""
         return ClassificationType.GENOMIC_DELETION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["Chromosome", "GenomicDeletion"],
-            ["GeneSymbol", "ProteinSubstitution", "GenomicDeletion"],
-            ["GenomicDeletion", "GeneSymbol"],
-            ["GeneSymbol", "GenomicDeletion"],
-            ["HGVS", "GenomicDeletion"],
-            ["ReferenceSequence", "GenomicDeletion"],
-            ["LocusReferenceGenomic", "GenomicDeletion"]
+            [TokenType.CHROMOSOME, TokenType.GENOMIC_DELETION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_DELETION],  # noqa: E501
+            [TokenType.GENOMIC_DELETION, TokenType.GENE],
+            [TokenType.GENE, TokenType.GENOMIC_DELETION],
+            [TokenType.HGVS, TokenType.GENOMIC_DELETION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.GENOMIC_DELETION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.GENOMIC_DELETION]
         ]

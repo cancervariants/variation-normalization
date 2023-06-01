@@ -6,7 +6,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.validators.validator import Validator
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -150,7 +150,7 @@ class InsertionBase(Validator):
         else:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type
-                          in ["HGVS", "ReferenceSequence"]][0]
+                          in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]][0]
             hgvs_expr = hgvs_token.input_string
         return hgvs_expr
 

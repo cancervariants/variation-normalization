@@ -75,7 +75,7 @@ app.openapi = custom_openapi
 to_vrs_untranslatable_descr = ("`True` returns VRS Text object when unable to translate"
                                " or normalize query. `False` returns an empty list "
                                "when unable to translate or normalize query.")
-translate_summary = ("Translate a human readable variation description to VRS"
+translate_summary = ("Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS"
                      " variation(s).")
 translate_description = ("Translate a human readable variation description to "
                          "VRS variation(s)."
@@ -83,7 +83,7 @@ translate_description = ("Translate a human readable variation description to "
                          " Does not do any liftover operations or make any inferences "
                          "about the query.")
 translate_response_description = "A  response to a validly-formed query."
-q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
+q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly"
 
 
 @app.get("/variation/to_vrs",
@@ -97,11 +97,11 @@ async def to_vrs(
     untranslatable_returns_text: bool = Query(False,
                                               description=to_vrs_untranslatable_descr)
 ) -> ToVRSService:
-    """Translate a human readable variation description to VRS variation(s).
-        Performs fully-justified allele normalization. Does not do any liftover
-        operations or make any inferences about the query.
+    """Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s).
+    Performs fully-justified allele normalization. Does not do any liftover operations
+    or make any inferences about the query.
 
-    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
+    :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
     :param bool untranslatable_returns_text: `True` return VRS Text Object when
         unable to translate or normalize query. `False` returns empty list when
         unable to translate or normalize query.
@@ -115,15 +115,16 @@ untranslatable_descr = ("`True` returns VRS Text object when unable to translate
                         "normalize query. `False` returns `None` when unable to "
                         "translate or normalize query.")
 
-normalize_summary = ("Normalizes and translates a human readable variation description "
-                     "to a single VRSATILE Variation Descriptor.")
+normalize_summary = ("Normalizes and translates a HGVS, gnomAD VCF or Free Text "
+                     "description on GRCh37 or GRCh38 assembly to a single VRSATILE "
+                     "Variation Descriptor.")
 normalize_response_description = "A response to a validly-formed query."
 normalize_description = ("Normalizes and translates a human readable variation "
                          "description to a single VRSATILE Variation Descriptor. "
                          "Performs fully-justified allele normalization. Will liftover"
                          " to GRCh38 and aligns to a priority transcript. Will make "
                          "inferences about the query.")
-q_description = "Human readable variation description on GRCh37 or GRCh38 assembly"
+q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly"
 hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
                            "`copy_number_change`, `repeated_seq_expr`, "
                            "`literal_seq_expr`. This parameter determines how to "
@@ -146,12 +147,12 @@ async def normalize(
         None, description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation."),  # noqa: E501
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> NormalizeService:
-    """Normalize and translate a human readable variation description to a single
-        VRSATILE Variation Descriptor. Performs fully-justified allele normalization.
-        Will liftover to GRCh38 and aligns to a priority transcript. Will make
-        inferences about the query.
+    """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
+    or GRCh38 assembly to a single VRSATILE Variation Descriptor. Performs
+    fully-justified allele normalization. Will liftover to GRCh38 and aligns to a
+    priority transcript. Will make inferences about the query.
 
-    :param str q: Human readable variation description on GRCh37 or GRCh38 assembly
+    :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
     :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Must be: `default`,
         `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
         `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del

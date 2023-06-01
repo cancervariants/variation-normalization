@@ -1,8 +1,7 @@
 """A module for Protein Substitution Tokenization."""
 from typing import List, Optional
 
-from variation.schemas.token_response_schema import ProteinSubstitutionToken,\
-    TokenMatchType
+from variation.schemas.token_response_schema import ProteinSubstitutionToken
 from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase
 
 
@@ -55,7 +54,6 @@ class ProteinSubstitution(PolypeptideSequenceVariationBase):
             return ProteinSubstitutionToken(
                 token=input_string,
                 input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED.value,
                 ref_protein=self.psub["amino_acid"],
                 alt_protein=self.psub["new_amino_acid"],
                 position=self.psub["position"]

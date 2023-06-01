@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class GenomicDeletionRangeClassifier(SetBasedClassifier):
@@ -12,13 +13,13 @@ class GenomicDeletionRangeClassifier(SetBasedClassifier):
         """Return the Genomic Deletion Range classification type."""
         return ClassificationType.GENOMIC_DELETION_RANGE
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["Chromosome", "GenomicDeletionRange"],
-            ["GeneSymbol", "GenomicDeletionRange"],
-            ["GenomicDeletionRange", "GeneSymbol"],
-            ["HGVS", "GenomicDeletionRange"],
-            ["ReferenceSequence", "GenomicDeletionRange"],
-            ["LocusReferenceGenomic", "GenomicDeletionRange"]
+            [TokenType.CHROMOSOME, TokenType.GENOMIC_DELETION_RANGE],
+            [TokenType.GENE, TokenType.GENOMIC_DELETION_RANGE],
+            [TokenType.GENOMIC_DELETION_RANGE, TokenType.GENE],
+            [TokenType.HGVS, TokenType.GENOMIC_DELETION_RANGE],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.GENOMIC_DELETION_RANGE],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.GENOMIC_DELETION_RANGE]
         ]

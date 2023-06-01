@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 
 
 class Translator(ABC):
@@ -30,7 +30,7 @@ class Translator(ABC):
         if len_instance_tokens > 1:
             if len_instance_tokens == 2:
                 if {t.token_type for t in instance_tokens} \
-                        == {"PolypeptideTruncation"}:
+                        == {TokenType.POLYPEPTIDE_TRUNCATION}:
                     tokens = sorted([t.token.lower() for t in instance_tokens],
                                     key=len)
                     if len(tokens[1]) > len(tokens[0]):

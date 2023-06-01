@@ -13,8 +13,9 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, \
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import GeneMatchToken, Token, \
-    GenomicSubstitutionToken
+from variation.schemas.token_response_schema import (
+    Token, TokenType, GeneToken, GenomicSubstitutionToken, AltType
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
@@ -78,7 +79,7 @@ class Validator(ABC):
 
     @abstractmethod
     def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
+            self, classification: Classification) -> List[GeneToken]:
         """Return a list of gene tokens for a classification.
 
         :param Classification classification: Classification for a list of
@@ -202,7 +203,7 @@ class Validator(ABC):
         }
 
         # If is_identifier, should only run once
-        if "HGVS" in classification.matching_tokens:
+        if TokenType.HGVS in classification.matching_tokens:
             is_identifier = True
         else:
             is_identifier = False
@@ -305,14 +306,14 @@ class Validator(ABC):
 
     @staticmethod
     def get_gene_symbol_tokens(
-            classification: Classification) -> List[Optional[GeneMatchToken]]:
+            classification: Classification) -> List[Optional[GeneToken]]:
         """Return tokens with GeneSymbol token type from a classification.
 
         :param Classification classification: Classification of input string
         :return: List of Gene Match Tokens
         """
         return [t for t in classification.all_tokens
-                if t.token_type == "GeneSymbol"]
+                if t.token_type == TokenType.GENE]
 
     def _add_gene_symbol_to_tokens(self, gene_symbol: str, gene_symbols: List,
                                    gene_tokens: List) -> None:
@@ -328,7 +329,7 @@ class Validator(ABC):
                 gene_symbol))
 
     def _get_gene_tokens(self, classification: Classification,
-                         mappings: List) -> List[Optional[GeneMatchToken]]:
+                         mappings: List) -> List[Optional[GeneToken]]:
         """Get gene symbol tokens for protein or transcript reference
         sequences.
 
@@ -342,8 +343,8 @@ class Validator(ABC):
         if not gene_tokens:
             refseq = \
                 ([t.token for t in classification.all_tokens if
-                  t.token_type in ["HGVS", "ReferenceSequence",
-                                   "LocusReferenceGenomic"]] or [None])[0]
+                  t.token_type in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE,
+                                   TokenType.LOCUS_REFERENCE_GENOMIC]] or [None])[0]
 
             if not refseq:
                 return []
@@ -363,7 +364,7 @@ class Validator(ABC):
 
     def get_protein_gene_symbol_tokens(
             self, classification: Classification
-    ) -> List[Optional[GeneMatchToken]]:
+    ) -> List[Optional[GeneToken]]:
         """Return gene tokens for a classification with protein reference
         sequence.
 
@@ -380,7 +381,7 @@ class Validator(ABC):
 
     def get_coding_dna_gene_symbol_tokens(
             self, classification: Classification
-    ) -> List[Optional[GeneMatchToken]]:
+    ) -> List[Optional[GeneToken]]:
         """Return gene symbol tokens for classifications with coding dna
         reference sequence.
 
@@ -402,11 +403,11 @@ class Validator(ABC):
         :param Classification classification: Classification for token
         :return: Accession
         """
-        if "HGVS" in classification.matching_tokens or \
-                "ReferenceSequence" in classification.matching_tokens:
+        if TokenType.HGVS in classification.matching_tokens or \
+                TokenType.REFERENCE_SEQUENCE in classification.matching_tokens:
             hgvs_token = [t for t in classification.all_tokens if
                           isinstance(t, Token) and t.token_type
-                          in ["HGVS", "ReferenceSequence"]][0]
+                          in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]][0]
             hgvs_expr = hgvs_token.input_string
             t = hgvs_expr.split(":")[0]
         return t
@@ -548,14 +549,15 @@ class Validator(ABC):
         return None
 
     def add_mane_data(
-            self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: str,
-            s: Token, alt: str = None, mane_variation: Dict = None) -> None:
+        self, mane: Dict, mane_data: Dict, coordinate: str, alt_type: AltType,
+        s: Token, alt: Optional[AltType] = None, mane_variation: Optional[Dict] = None
+    ) -> None:
         """Add mane transcript information to mane_data.
 
         :param Dict mane: MANE data
         :param Dict mane_data: All MANE data found for given query
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param str alt_type: Type of alteration
+        :param AltType alt_type: Type of alteration
         :param Token s: Classification token
         :param str alt: Alteration
         :param Dict mane_variation: VRS Variation for mane data

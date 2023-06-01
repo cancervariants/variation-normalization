@@ -2,9 +2,8 @@
 import re
 from typing import Optional
 
-from variation.schemas.token_response_schema import TokenMatchType, \
-    LocusReferenceGenomicToken
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import LocusReferenceGenomicToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class LocusReferenceGenomic(Tokenizer):
@@ -36,7 +35,6 @@ class LocusReferenceGenomic(Tokenizer):
             return LocusReferenceGenomicToken(
                 token=input_string,
                 input_string=input_string,
-                match_type=TokenMatchType.UNSPECIFIED.value,
                 id=input_str
             )
 
@@ -45,8 +43,7 @@ class LocusReferenceGenomic(Tokenizer):
             "t": None,
             "p": None,
             "token": input_string,
-            "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value
+            "input_string": input_string
         }
 
         valid = False

@@ -7,7 +7,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
-from variation.schemas.token_response_schema import Token, GeneMatchToken
+from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
 from .validator import Validator
@@ -35,7 +35,7 @@ class SingleNucleotideVariationBase(Validator):
         raise NotImplementedError
 
     def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
+            self, classification: Classification) -> List[GeneToken]:
         """Return a list of gene tokens for a classification.
 
         :param Classification classification: Classification for a list of

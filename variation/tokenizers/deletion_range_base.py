@@ -2,9 +2,8 @@
 from typing import Dict, Optional, List
 from abc import abstractmethod
 
-from variation.schemas.token_response_schema import TokenMatchType, \
-    DeletionRange
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import DeletionRange
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DeletionRangeBase(Tokenizer):
@@ -26,7 +25,6 @@ class DeletionRangeBase(Tokenizer):
         self.parts = {
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_pos1_del": None,
             "start_pos2_del": None,
             "end_pos1_del": None,

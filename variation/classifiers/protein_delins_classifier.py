@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class ProteinDelInsClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class ProteinDelInsClassifier(SetBasedClassifier):
         """Return the Protein DelIns classification type."""
         return ClassificationType.PROTEIN_DELINS
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["ProteinDelIns"],
-            ["GeneSymbol", "ProteinSubstitution", "ProteinDelIns"],
-            ["ProteinDelIns", "GeneSymbol"],
-            ["GeneSymbol", "ProteinDelIns"],
-            ["HGVS", "ProteinDelIns"],
-            ["ReferenceSequence", "ProteinDelIns"],
-            ["LocusReferenceGenomic", "ProteinDelIns"]
+            [TokenType.PROTEIN_DELINS],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.PROTEIN_DELINS],
+            [TokenType.PROTEIN_DELINS, TokenType.GENE],
+            [TokenType.GENE, TokenType.PROTEIN_DELINS],
+            [TokenType.HGVS, TokenType.PROTEIN_DELINS],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.PROTEIN_DELINS],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.PROTEIN_DELINS]
         ]

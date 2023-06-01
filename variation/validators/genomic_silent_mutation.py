@@ -7,7 +7,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType, \
     Classification
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.schemas.normalize_response_schema import HGVSDupDelMode as HGVSDupDelModeEnum   # noqa: E501
 from .single_nucleotide_variation_base import SingleNucleotideVariationBase
 
@@ -82,7 +82,7 @@ class GenomicSilentMutation(SingleNucleotideVariationBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic Silent Mutation."""
-        return t.token_type == "GenomicSilentMutation"
+        return t.token_type == TokenType.GENOMIC_SILENT_MUTATION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

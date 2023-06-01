@@ -3,7 +3,7 @@ from typing import List, Optional, Set
 
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType, ConfidenceRating
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 from .classifier import Classifier
 
 
@@ -78,7 +78,7 @@ class SetBasedClassifier(Classifier):
         """Return the classification type."""
         pass
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for a given classification.
 
         :return: List of tokens, where order matters, that make up a given

@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import CodingDNASilentMutation
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestCodingDNASilentMutationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return coding DNA silent mutation token type."""
-        return "CodingDNASilentMutation"
+        return TokenType.CODING_DNA_SILENT_MUTATION
 
     def fixture_name(self):
         """Return the fixture name for coding DNA silent mutation."""

@@ -11,7 +11,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADat
 from variation.schemas.classification_response_schema import Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token, GeneMatchToken
+from variation.schemas.token_response_schema import Token, GeneToken
 from variation.validators.validator import Validator
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers import GeneSymbol
@@ -66,7 +66,7 @@ class DuplicationDeletionBase(Validator):
         """
         raise NotImplementedError
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return a list of gene tokens for a classification.
 
         :param Classification classification: Classification for a list of
