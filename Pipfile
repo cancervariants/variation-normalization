@@ -17,6 +17,8 @@ variation-normalizer = {editable = true, path = "."}
 jupyter = "*"
 ipykernel = "*"
 psycopg2-binary = "*"
+civicpy = ">=3.0.0"
+python-dotenv = "*"
 
 [packages]
 "biocommons.seqrepo" = "*"
