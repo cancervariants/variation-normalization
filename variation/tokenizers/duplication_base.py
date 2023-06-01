@@ -2,9 +2,10 @@
 from abc import abstractmethod
 from typing import Optional, List
 
-from variation.schemas.token_response_schema import Duplication, \
-    TokenMatchType, DuplicationAltType, Token
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import (
+    Duplication, AltType, Token
+)
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DuplicationBase(Tokenizer):
@@ -22,13 +23,12 @@ class DuplicationBase(Tokenizer):
         self.parts = {
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_pos1_dup": None,
             "start_pos2_dup": None,
             "end_pos1_dup": None,
             "end_pos2_dup": None,
             "coordinate_type": None,
-            "alt_type": DuplicationAltType.DUPLICATION
+            "alt_type": AltType.DUPLICATION
         }
 
         input_string = str(input_string).lower()

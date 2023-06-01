@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import GenomicDuplication
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestGenomicDuplicationRangeTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return genomic duplication token type."""
-        return "GenomicDuplicationRange"
+        return TokenType.GENOMIC_DUPLICATION_RANGE
 
     def fixture_name(self):
         """Return the fixture name for Genomic Duplication."""

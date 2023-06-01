@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import SilentMutation
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestSilentMutationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Silent Mutation token type."""
-        return "SilentMutation"
+        return TokenType.SILENT_MUTATION
 
     def fixture_name(self):
         """Return the fixture name for Silent Mutation."""

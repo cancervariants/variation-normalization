@@ -5,7 +5,7 @@ import logging
 from variation.validators.insertion_base import InsertionBase
 from variation.schemas.classification_response_schema import \
     Classification, ClassificationType
-from variation.schemas.token_response_schema import GeneMatchToken, Token
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 
 
 logger = logging.getLogger("variation")
@@ -28,7 +28,7 @@ class GenomicInsertion(InsertionBase):
         transcripts = await self.get_genomic_transcripts(classification, errors)
         return transcripts
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -42,7 +42,7 @@ class GenomicInsertion(InsertionBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Genomic Insertion."""
-        return t.token_type == "GenomicInsertion"
+        return t.token_type == TokenType.GENOMIC_INSERTION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

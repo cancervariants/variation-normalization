@@ -2,7 +2,6 @@
 from .classifier import Classifier
 from .set_based_classifier import SetBasedClassifier
 from .protein_delins_classifier import ProteinDelInsClassifier
-from .protein_termination_classifier import ProteinTerminationClassifier
 from .protein_classifier import ProteinSubstitutionClassifier
 from .polypeptide_truncation_classifier import PolypeptideTruncationClassifier
 from .silent_mutation import SilentMutationClassifier

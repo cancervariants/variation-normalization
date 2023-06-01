@@ -3,8 +3,8 @@ from abc import abstractmethod
 from typing import Optional, Dict
 import re
 
-from variation.schemas.token_response_schema import Deletion, TokenMatchType
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import Deletion
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class DeletionBase(Tokenizer):
@@ -23,7 +23,6 @@ class DeletionBase(Tokenizer):
         parts = {
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_pos_del": None,
             "end_pos_del": None,
             "deleted_sequence": None,

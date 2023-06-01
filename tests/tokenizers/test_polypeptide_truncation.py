@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import PolypeptideTruncation
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestPolypeptideTruncationTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Polypeptide Truncation token type."""
-        return "PolypeptideTruncation"
+        return TokenType.POLYPEPTIDE_TRUNCATION
 
     def fixture_name(self):
         """Return the fixture name for Polypeptide Truncation."""

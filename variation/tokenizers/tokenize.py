@@ -1,7 +1,7 @@
 """A module for tokenizing."""
 from typing import Iterable, List
 
-from variation.schemas.token_response_schema import Token, TokenMatchType
+from variation.schemas.token_response_schema import Token, TokenType
 from .gene_symbol import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .polypeptide_truncation import PolypeptideTruncation
@@ -101,9 +101,9 @@ class Tokenize:
                     else:
                         tokens.append(res)
                         token = list(map(lambda t: t.token_type, tokens))[0]
-                        if token == "HGVS" or \
-                                token == "LocusReferenceGenomic" \
-                                or token == "ReferenceSequence":
+                        if token == TokenType.HGVS or \
+                                token == TokenType.LOCUS_REFERENCE_GENOMIC \
+                                or token == TokenType.REFERENCE_SEQUENCE:
                             # Give specific type of HGVS (i.e. protein sub)
                             if len(tokens) == 1:
                                 self._add_tokens(tokens,
@@ -116,8 +116,7 @@ class Tokenize:
             if not matched:
                 warnings.append(f"Unable to tokenize {term}")
                 tokens.append(Token(
-                    token="",
-                    token_type="Unknown",
-                    input_string=term,
-                    match_type=TokenMatchType.UNSPECIFIED
+                    token=term,
+                    token_type=TokenType.UNKNOWN,
+                    input_string=term
                 ))

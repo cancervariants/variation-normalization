@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import ProteinInsertion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestProteinInsertionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return protein insertion token type."""
-        return "ProteinInsertion"
+        return TokenType.PROTEIN_INSERTION
 
     def fixture_name(self):
         """Return the fixture name for protein insertion."""

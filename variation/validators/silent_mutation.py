@@ -1,7 +1,7 @@
 """The module for Silent Mutation Validation."""
 from variation.schemas.classification_response_schema import \
     ClassificationType
-from variation.schemas.token_response_schema import Token
+from variation.schemas.token_response_schema import Token, TokenType
 from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase
 
 
@@ -14,7 +14,7 @@ class SilentMutation(PolypeptideSequenceVariationBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Silent Mutation."""
-        return t.token_type == "SilentMutation"
+        return t.token_type == TokenType.SILENT_MUTATION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import CodingDNADeletion
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestCodingDNADeletionTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return Coding DNA deletion token type."""
-        return "CodingDNADeletion"
+        return TokenType.CODING_DNA_DELETION
 
     def fixture_name(self):
         """Return the fixture name for Coding DNA Deletion."""

@@ -2,8 +2,8 @@
 from abc import abstractmethod
 from typing import Optional, Dict, List
 
-from variation.schemas.token_response_schema import Insertion, TokenMatchType, Token
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import Insertion, Token
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class InsertionBase(Tokenizer):
@@ -21,7 +21,6 @@ class InsertionBase(Tokenizer):
         self.parts = {
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_pos_flank": None,
             "end_pos_flank": None,
             "inserted_sequence": None,

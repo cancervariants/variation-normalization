@@ -1,8 +1,7 @@
 """A module for Polypeptide Truncation Tokenization."""
 from typing import List, Optional
 
-from variation.schemas.token_response_schema import PolypeptideTruncationToken,\
-    TokenMatchType
+from variation.schemas.token_response_schema import PolypeptideTruncationToken
 from .polypeptide_sequence_variation_base import PolypeptideSequenceVariationBase
 
 
@@ -59,7 +58,6 @@ class PolypeptideTruncation(PolypeptideSequenceVariationBase):
                 return PolypeptideTruncationToken(
                     token=input_string,
                     input_string=input_string,
-                    match_type=TokenMatchType.UNSPECIFIED.value,
                     ref_protein=self.psub["amino_acid"],
                     position=self.psub["position"]
                 )

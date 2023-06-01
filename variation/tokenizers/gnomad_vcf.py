@@ -2,11 +2,11 @@
 from typing import Optional, List, Dict
 import re
 
-from variation.schemas.token_response_schema import TokenMatchType, \
-    Token, ChromosomeToken, GenomicSubstitutionToken, \
-    GenomicSilentMutationToken, GenomicDeletionToken, GenomicInsertionToken, \
-    Nomenclature
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import (
+    Token, ChromosomeToken, GenomicSubstitutionToken, GenomicSilentMutationToken,
+    GenomicDeletionToken, GenomicInsertionToken, Nomenclature
+)
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GnomadVCF(Tokenizer):
@@ -43,7 +43,6 @@ class GnomadVCF(Tokenizer):
         tokens.append(ChromosomeToken(
             token=chromosome,
             input_string=input_string,
-            match_type=TokenMatchType.UNSPECIFIED.value,
             chromosome=params["chromosome"],
             nomenclature=Nomenclature.GNOMAD_VCF)
         )
@@ -57,7 +56,6 @@ class GnomadVCF(Tokenizer):
                     tokens.append(GenomicSilentMutationToken(
                         token=input_string,
                         input_string=input_string,
-                        match_type=TokenMatchType.UNSPECIFIED.value,
                         position=params["pos"],
                         ref_nucleotide=params["ref"],
                         nomenclature=Nomenclature.GNOMAD_VCF
@@ -66,7 +64,6 @@ class GnomadVCF(Tokenizer):
                     tokens.append(GenomicSubstitutionToken(
                         token=input_string,
                         input_string=input_string,
-                        match_type=TokenMatchType.UNSPECIFIED.value,
                         position=params["pos"],
                         ref_nucleotide=params["ref"],
                         new_nucleotide=params["alt"],
@@ -79,7 +76,6 @@ class GnomadVCF(Tokenizer):
                     tokens.append(GenomicInsertionToken(
                         token=input_string,
                         input_string=input_string,
-                        match_type=TokenMatchType.UNSPECIFIED.value,
                         start_pos_flank=params["pos"],
                         end_pos_flank=params["pos"] + 1,
                         inserted_sequence=params["alt"][1:],
@@ -93,7 +89,6 @@ class GnomadVCF(Tokenizer):
                     tokens.append(GenomicDeletionToken(
                         token=input_string,
                         input_string=input_string,
-                        match_type=TokenMatchType.UNSPECIFIED.value,
                         start_pos_del=params["pos"] + 1,
                         end_pos_del=params["pos"] + len(del_seq),
                         deleted_sequence=del_seq,

@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class CodingDNAInsertionClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class CodingDNAInsertionClassifier(SetBasedClassifier):
         """Return the Coding DNA insertion classification type."""
         return ClassificationType.CODING_DNA_INSERTION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["CodingDNAInsertion"],
-            ["GeneSymbol", "ProteinSubstitution", "CodingDNAInsertion"],
-            ["CodingDNAInsertion", "GeneSymbol"],
-            ["GeneSymbol", "CodingDNAInsertion"],
-            ["HGVS", "CodingDNAInsertion"],
-            ["ReferenceSequence", "CodingDNAInsertion"],
-            ["LocusReferenceGenomic", "CodingDNAInsertion"]
+            [TokenType.CODING_DNA_INSERTION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_INSERTION],  # noqa: E501
+            [TokenType.CODING_DNA_INSERTION, TokenType.GENE],
+            [TokenType.GENE, TokenType.CODING_DNA_INSERTION],
+            [TokenType.HGVS, TokenType.CODING_DNA_INSERTION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.CODING_DNA_INSERTION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.CODING_DNA_INSERTION]
         ]

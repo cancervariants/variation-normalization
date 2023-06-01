@@ -2,6 +2,7 @@
 import unittest
 
 from variation.tokenizers import LocusReferenceGenomic
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -14,7 +15,7 @@ class TestLocusReferenceGenomicTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return LRG token type."""
-        return "LocusReferenceGenomic"
+        return TokenType.LOCUS_REFERENCE_GENOMIC
 
     def fixture_name(self):
         """Return fixture name for LRG."""

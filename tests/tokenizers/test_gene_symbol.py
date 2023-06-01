@@ -5,6 +5,7 @@ from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.tokenizers import GeneSymbol
+from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
 
@@ -17,7 +18,7 @@ class TestGeneSymbolTokenizer(TokenizerBase, unittest.TestCase):
 
     def token_type(self):
         """Return the Gene Symbol token type."""
-        return "GeneSymbol"
+        return TokenType.GENE
 
     def fixture_name(self):
         """Return the fixture name for Gene Symbol."""
