@@ -57,7 +57,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 1646	POLE4 A59E	protein	False	ga4gh:VA.ZZtu6dgorD1zRPmdCdaw2ymccNV3Soew
 760	MLH1 A681V	protein	True	ga4gh:VA.pzxB4VRFsjgHoroll87cpAyeIH5UIlzz
 4415	EZH2 A682G	protein	True	ga4gh:VA.BMvnGn1upgP_4DhUZzqq7nTrBZeGwlgM
-4414	EZH2 A692V	protein	True	ga4gh:VA.tHiuDXC6Tt9d5I2QSfMA3oPqwFojDoBp
+4414	EZH2 A692V	protein	True	ga4gh:VA.Qq2lhXzzh2dgOuFIxSmG3N7gqd2JMPjI
 2255	EGFR A702S	protein	False	ga4gh:VA.d-cxRxmdXwWFYitodJv5pUwCSXJjg4l4
 1198	BRAF A728V	protein	True	ga4gh:VA.SuO70FPDKaaDpBCZDB6XjqTsIKosRn6v
 2332	EGFR A750T	protein	False	ga4gh:VA.e_HKuW34L3NzrQ2wGpLxxf-ZGLiM_nk3
@@ -170,7 +170,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 4017	BTK C481R	protein	False	ga4gh:VA.HVeVL0gXoK1bwpsD3fhgm5EJuG3JKi-z
 168	BTK C481S	protein	True	ga4gh:VA.AHcxwFro_b-8WCWUUJ-LnjwEwAS_qFRR
 4016	BTK C481Y	protein	False	ga4gh:VA.Mj5zOGDBZ8riV2cgdsVbD1dabcq872du
-3605	EZH2 C576W	protein	False	ga4gh:VA.ru6_QhR25pefoy2jgrPJys0B01xlAK3_
+3605	EZH2 C576W	protein	False	ga4gh:VA.QjlqvpDrlLQRVUU-b_yD_qq6XoKLgkji
 3337	PIK3CA C604R	protein	False	ga4gh:VA.GaHsDbJOwze7E7JZG0D-JXD3oZoLhzJQ
 1260	RET C609Y	protein	True	ga4gh:VA.JllMYd8UWGZJ0X0IH3Hx5qG8xWD6zsoU
 1700	RET C634R	protein	False	ga4gh:VA.VX1C3S5rPE65odB9qQ040Q_Ze99a4BdY
@@ -560,8 +560,8 @@ variant_id	query	query_type	variant_accepted	vrs_id
 141	DDR2 G253C	protein	True	ga4gh:VA.OusOOi6elBACqbc0H_9zV8N1Wol0Zpj-
 3615	BRCA2 G2585R	protein	False	ga4gh:VA.O4gGtmqtQkKaun-g-cUblSIWt_untotZ
 3628	BRCA2 G2609D	protein	False	ga4gh:VA.g-9jhkiLCa-zv5els-2k50qNOW7G-wOk
-4144	TP53 G262C	protein	False	ga4gh:VA.M_aggPZhA47fKQbmDhajHujncmFjMtB7
-3773	TP53 G262D	protein	True	ga4gh:VA.G29TF_UXi4zxNDIN6y2xZqyBF34hb1Ok
+4144	TP53 G262C	protein	False	ga4gh:VA.Feef9HFRqbxNNpj6HyakHv21K1jxmuLd
+3773	TP53 G262D	protein	True	ga4gh:VA.MTM9ZeLnZjPiOO0iWI80gQPDsnWGI4Q3
 3774	TP53 G266E	protein	True	ga4gh:VA.AzVF_w9EgkKTIFN7BA8WSWxAHMegmyfd
 1055	TP53 G266R	protein	True	ga4gh:VA.y4V5fepSgvf9DZRKIIRvyN-q47KtKVs1
 4122	TP53 G266V	protein	True	ga4gh:VA.jWtRcCUlI90M6ovnogZDUIO0YrmAtDXW
@@ -569,7 +569,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 3613	BRCA2 G2793E	protein	False	ga4gh:VA.Vg9aO5ZXEmVd6ypL-udFDDD6xcUVB12V
 3616	BRCA2 G2793R	protein	False	ga4gh:VA.d0yS6G_XplF7gLjOZpNQ8W9WTv06MPg9
 3791	TP53 G279E	protein	True	ga4gh:VA.IlH5tkywvF_eyTz-CTb9VmIKjomsm_wk
-703	ERBB3 G284R	protein	True	ga4gh:VA.kFfQXIdIKgBufQIG5OG7uOiixsx-XNza
+703	ERBB3 G284R	protein	True	ga4gh:VA.-lWawk-cmTAFyQcWAQXOL5DoPTYW3zN0
 3623	BRCA2 G3076E	protein	False	ga4gh:VA.ocsmBQddvDzwgfI327-4yfFPWwucBSRp
 3620	BRCA2 G3076V	protein	False	ga4gh:VA.20eT6-i-INgGEoDrxVd6F56IU4Ur1UXt
 38	ERBB2 G309A	protein	True	ga4gh:VA.DgMOPcxdzFkO30hewV1GmHNfvRGqil0G
@@ -611,7 +611,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 1584	SMO G497W	protein	False	ga4gh:VA.pihiFP40De2donFasz4KTtXrMIZgvgQT
 142	DDR2 G505S	protein	True	ga4gh:VA.OcDKvUr5tJ4MLsu_LztFSc5nUpwysZft
 1624	ABL1 G514S	protein	False	ga4gh:VA.2uUCbBz96ZX6HwTOcNPvqFNe5XY-I9cz
-4007	DDX41 G530D	protein	False	ga4gh:VA.qtzrjojO3N8-hskMPg8-DKY2dVT0piLK
+4007	DDX41 G530D	protein	False	ga4gh:VA.Be1pwbUAMP0NMYyib8IqdegR_zuS43tV
 1678	FBXW7 G579W	protein	False	ga4gh:VA.t-x2aNw8HXuadDP3dbuO3AzrTpJfSW2r
 2823	BRAF G593D	protein	False	ga4gh:VA.rEU2kbgm2LwW-z_t90fIS4wRx5h8CvfN
 2690	NTRK1 G595R	protein	False	ga4gh:VA.L3RWSyyM-N9-lserSa4r9XaNOCm5ZZeM
@@ -772,8 +772,8 @@ variant_id	query	query_type	variant_accepted	vrs_id
 2622	KIT K484_G487DEL	protein	True	ga4gh:VA.eZUe50hjuCvY34PWm45cg2bYWEEBQmQI
 2607	EGFR K489E	protein	False	ga4gh:VA.bJanWJHfARqjpquwADQlSHvU536YPCa6
 2606	EGFR K489Q	protein	False	ga4gh:VA.AAaQg1XBybewXD2x2x9tvYKMw9qcwKuF
-949	KIT K550_K558del	protein	True	ga4gh:VA.kzOUyMi_ArHUeO_-yKL9HE9-pYh5YiPG
-948	KIT K550_W557del	protein	True	ga4gh:VA.UfOCeBzaPcpLMQy04coI64Sqnmh8LBEl
+949	KIT K550_K558del	protein	True	ga4gh:VA.o8JWKKOJ1HefCBgM5r6WbOzIH02PKRV7
+948	KIT K550_W557del	protein	True	ga4gh:VA.8wQagLQ2eG0pZq4euEZJkmFJG8m3PEcF
 963	KIT K558Q	protein	False	ga4gh:VA.4GEWxmBfjNVR82bCWxOT6swXFgQU-mZ9
 965	KIT K558R	protein	False	ga4gh:VA.6JqpTBRNeRDGjVe6tYWEh91z7xDLdS8n
 964	KIT K558_V559del	protein	True	ga4gh:VA.w8t9IO71QG5bHkf81lvLHMfzyfhdCMA5
@@ -1064,7 +1064,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 2866	3-10188271-A-G	genomic	False	ga4gh:VA.coOoxepuUAaPpv0tiIb3lTzWXFXW0RU0
 2120	NC_000003.11:g.10188270C>T	genomic	False	ga4gh:VA.OLO-neEQR3b3dfV-UY5Y5yCjx1__U_yT
 2440	NC_000003.11:g.10188270C>G	genomic	True	ga4gh:VA.XDEiovPy0OUCecNv3gaKeIR9R-fpk_Os
-734	MLH1 P138T	protein	True	ga4gh:VA.h9A93TfWa2-oUYASDyUqDkLr7bfnx3tS
+734	MLH1 P138T	protein	True	ga4gh:VA.rtbFD9-5F9M2j35NMenHtdLLqZ0XnMRP
 761	MSH6 P138T	protein	True	ga4gh:VA.no0DvftgxBmpCLi8sFJz_QaJk-Jz0ae4
 1928	NC_000003.11:g.10188269C>A	genomic	True	ga4gh:VA.-Vc2fGlhLrMrDAGYMc60wGhDwuJwhret
 1644	PXDNL P1460T	protein	False	ga4gh:VA.L-G9rIJKOwJ2yN22Nq5KzEEyDDaMOKmS
@@ -1097,7 +1097,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 3318	TP53 P250L	protein	True	ga4gh:VA.zSm2a8_u2Y3gxIkBRakp-JjBCeMzSihd
 2905	FGFR2 P253R	protein	True	ga4gh:VA.58HjJl4MyXc7t4vDn1wh9a1YfrHkMa0H
 850	NC_000003.11:g.10183605C>T	genomic	True	ga4gh:VA.I9Tch3k3hmCiJR2DCiQ4IYMzskIe3dXO
-1218	ERBB3 P262H	protein	False	ga4gh:VA.pzN-2gGQq-6kj3oLf7ErFw-hIvWpjqGe
+1218	ERBB3 P262H	protein	False	ga4gh:VA.gJhly3f4cFd_4kmenJ9dRvb2gIUXIHHA
 3005	TP53 P278A	protein	False	ga4gh:VA.OGJipfrrY58b-r_ziLWGB4Kz8PtoEnPd
 1049	TP53 P278S	protein	True	ga4gh:VA.fTCRV1NOmPDHd7cHg5NZs7BfWO5fR61L
 4315	POLE P286H	protein	False	ga4gh:VA.QeaJ-ncTVJ_Lu1efqBDx58DxKv-t08tj
@@ -1280,7 +1280,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 1915	NC_000003.11:g.10191488C>G	genomic	True	ga4gh:VA.EO3GK9IkiXWbH07hQWNxDcKaUu6fVoz7
 1855	NC_000003.11:g.10191489G>C	genomic	True	ga4gh:VA.Br4shs9Bzm7LJTBEkDw9l7LzAvZi8ZKR
 1746	NC_000003.11:g.10191489G>A	genomic	True	ga4gh:VA.17D2LbK70vqbCtqPAtV-WgdMsHo32YT0
-1628	NF1 R163X	protein	False	ga4gh:VA.UTYN10mJRzzgq9IpJNG-FfIayBE0HOr2
+1628	NF1 R163X	protein	False	ga4gh:VA.11mAAxSS0WaTJHw_owd1NVJqv9ARgGKU
 1207	KRAS R164Q	protein	True	ga4gh:VA.tB6I_7VCKZqLceE9SIm3pvP8fjh38LO_
 814	DDX41 R164W	protein	True	ga4gh:VA.fzz9qQ3rCdpbVwQeSSIOlVsUzrsdjfmF
 3470	EGFR R165Q	protein	False	ga4gh:VA.D5gNpSOZHd3AV5qIwYL4-D50iATDnLtX
@@ -1676,9 +1676,9 @@ variant_id	query	query_type	variant_accepted	vrs_id
 966	KIT V559DEL	protein	False	ga4gh:VA.MrQAtOTEAvu5UTpm3GJ7nV3NbZiBhS3F
 970	KIT V559G	protein	False	ga4gh:VA.rdmWjmfv5r1vV2x97NdpqzKodyj5DMPp
 967	KIT V559_V560DEL	protein	False	ga4gh:VA.-KZMu4Df1DtLjej_qbYqU6T-o8pGFb8f
-971	KIT V560D	protein	True	ga4gh:VA.9_q4YYFXHMgrXll20pwJJTH96bJkVfRp
+971	KIT V560D	protein	True	ga4gh:VA.mJyvi68_kx2tyhXEqoU2UAcockZUkgUl
 202	KIT V560DEL	protein	True	ga4gh:VA.MrQAtOTEAvu5UTpm3GJ7nV3NbZiBhS3F
-972	KIT V560G	protein	True	ga4gh:VA.rdmWjmfv5r1vV2x97NdpqzKodyj5DMPp
+972	KIT V560G	protein	True	ga4gh:VA.pAcv9K9YrZo6SFWjTnOAqiTaUoz43sjB
 1550	KIT V560_L576DEL	protein	True	ga4gh:VA.kFypumQf7CgTQDq-b-4KBxa8gQfXLWhT
 247	PDGFRA V561A	protein	True	ga4gh:VA.Pz0u748g3gbhMfO0A3gUsMy0y1XHOckA
 941	PDGFRA V561D	protein	True	ga4gh:VA.0qqy0dI_wNO9Gc4B08RYh7tKvdBDA_9l
@@ -1808,7 +1808,7 @@ variant_id	query	query_type	variant_accepted	vrs_id
 3770	TP53 Y236S	protein	True	ga4gh:VA.Yvw7zmfBflXQvP1cyTXVskDC9qykijtb
 3501	ERCC2 Y24C	protein	False	ga4gh:VA.tcWp9CHHjirCWvbS5NvJdazzJMURTFix
 803	RUNX1 Y260*	protein	True	ga4gh:VA.sToP2iPM8vJzsxy_JIlLvnCcISMo4-2N
-3614	BRCA2 Y2660D	protein	False	ga4gh:VA.LYqvWR1PGfccJ31aFzq8OTfXbXRjsgUK
+3614	BRCA2 Y2660D	protein	False	ga4gh:VA.rRUDp7dsrf1dm-tU-F9RZzZSPmBvBNE4
 3609	BRCA2 Y2726C	protein	False	ga4gh:VA.ThRCnLcQHnvf8bwOwE61qSkUIuImxHUK
 3690	PTPRB Y309C	protein	False	ga4gh:VA.L0AgTfqNK2_3_mD7gIRLa5ykKfCEnwLb
 2934	PRPS1 Y311C	protein	False	ga4gh:VA.lNfM1kowexITIrWA1ZnekuY2_u-tIbex
