@@ -44,3 +44,6 @@ dynamodb_local_latest/
 
 # pickle files
 *.pkl
+
+# html files
+*.html

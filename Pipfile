@@ -19,6 +19,8 @@ ipykernel = "*"
 psycopg2-binary = "*"
 civicpy = ">=3.0.0"
 python-dotenv = "*"
+plotly = "*"
+nbformat = "*"
 
 [packages]
 "biocommons.seqrepo" = "*"
