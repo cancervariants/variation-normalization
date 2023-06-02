@@ -2,9 +2,8 @@
 from abc import abstractmethod
 from typing import List, Optional, Dict
 
-from variation.schemas.token_response_schema import SingleNucleotideVariation, \
-    TokenMatchType
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import SingleNucleotideVariation
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class SingleNucleotideVariationBase(Tokenizer):
@@ -41,7 +40,6 @@ class SingleNucleotideVariationBase(Tokenizer):
             params = {
                 "token": input_string,
                 "input_string": input_string,
-                "match_type": TokenMatchType.UNSPECIFIED.value,
                 "position": self.sub["position"],
                 "ref_nucleotide": self.sub["ref_nucleotide"],
                 "new_nucleotide": self.sub["new_nucleotide"]
@@ -54,7 +52,6 @@ class SingleNucleotideVariationBase(Tokenizer):
                 params = {
                     "token": input_string,
                     "input_string": input_string,
-                    "match_type": TokenMatchType.UNSPECIFIED.value,
                     "position": self.sub["position"],
                     "new_nucleotide": self.sub["new_nucleotide"]
                 }

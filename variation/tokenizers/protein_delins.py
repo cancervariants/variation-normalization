@@ -3,9 +3,8 @@ from typing import List, Optional
 
 from pydantic.error_wrappers import ValidationError
 
-from variation.schemas.token_response_schema import ProteinDelInsToken, \
-    TokenMatchType
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import ProteinDelInsToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class ProteinDelIns(Tokenizer):
@@ -35,7 +34,6 @@ class ProteinDelIns(Tokenizer):
             "used_one_letter": False,
             "token": input_string,
             "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
             "start_aa_del": None,
             "start_pos_del": None,
             "end_aa_del": None,

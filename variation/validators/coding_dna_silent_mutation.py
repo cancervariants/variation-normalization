@@ -6,8 +6,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.classification_response_schema import ClassificationType, \
     Classification
-from variation.schemas.token_response_schema import Token
-from variation.schemas.token_response_schema import GeneMatchToken
+from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum
@@ -69,7 +68,7 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
             do_liftover=do_liftover
         )
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneMatchToken]:
+    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
@@ -83,7 +82,7 @@ class CodingDNASilentMutation(SingleNucleotideVariationBase):
 
     def is_token_instance(self, t: Token) -> bool:
         """Check that token is Coding DNA Silent Mutation."""
-        return t.token_type == "CodingDNASilentMutation"
+        return t.token_type == TokenType.CODING_DNA_SILENT_MUTATION
 
     def validates_classification_type(
             self, classification_type: ClassificationType) -> bool:

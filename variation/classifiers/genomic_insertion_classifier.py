@@ -2,7 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
-from .set_based_classifier import SetBasedClassifier
+from variation.schemas.token_response_schema import TokenType
+from variation.classifiers import SetBasedClassifier
 
 
 class GenomicInsertionClassifier(SetBasedClassifier):
@@ -12,14 +13,14 @@ class GenomicInsertionClassifier(SetBasedClassifier):
         """Return the Genomic Insertion classification type."""
         return ClassificationType.GENOMIC_INSERTION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["Chromosome", "GenomicInsertion"],
-            ["GeneSymbol", "ProteinSubstitution", "GenomicInsertion"],
-            ["GenomicInsertion", "GeneSymbol"],
-            ["GeneSymbol", "GenomicInsertion"],
-            ["HGVS", "GenomicInsertion"],
-            ["ReferenceSequence", "GenomicInsertion"],
-            ["LocusReferenceGenomic", "GenomicInsertion"]
+            [TokenType.CHROMOSOME, TokenType.GENOMIC_INSERTION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_INSERTION],  # noqa: E501
+            [TokenType.GENOMIC_INSERTION, TokenType.GENE],
+            [TokenType.GENE, TokenType.GENOMIC_INSERTION],
+            [TokenType.HGVS, TokenType.GENOMIC_INSERTION],
+            [TokenType.REFERENCE_SEQUENCE, TokenType.GENOMIC_INSERTION],
+            [TokenType.LOCUS_REFERENCE_GENOMIC, TokenType.GENOMIC_INSERTION]
         ]

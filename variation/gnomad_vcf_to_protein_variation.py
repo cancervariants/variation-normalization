@@ -17,8 +17,9 @@ from variation.translators.translate import Translate
 from variation.utils import no_variation_entered, no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.validation_response_schema import ValidationSummary
-from variation.schemas.token_response_schema import Nomenclature, Token, \
-    CoordinateType, SequenceOntology
+from variation.schemas.token_response_schema import (
+    Nomenclature, Token, CoordinateType, SequenceOntology, AltType
+)
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
@@ -149,9 +150,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         residue_mode = ResidueMode.INTER_RESIDUE
         classification_token.coordinate_type = CoordinateType.PROTEIN
         classification_token.molecule_context = "protein"
-        if classification_token.alt_type in ["substitution",
-                                             "silent_mutation"]:
-            if classification_token.alt_type == "substitution":
+        if classification_token.alt_type in {AltType.SUBSTITUTION,
+                                             AltType.SILENT_MUTATION}:
+            if classification_token.alt_type == AltType.SUBSTITUTION:
                 alt_nuc = classification_token.new_nucleotide
                 classification_token.so_id = \
                     SequenceOntology.PROTEIN_SUBSTITUTION
@@ -198,10 +199,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 alt = self.codon_table.dna_to_rna(alt)
             else:
                 alt = alt.replace("T", "U")
-        elif classification_token.alt_type == "deletion":
+        elif classification_token.alt_type == AltType.DELETION:
             # There is no alt for a deletion
             classification_token.so_id = SequenceOntology.PROTEIN_DELETION
-        elif classification_token.alt_type == "insertion":
+        elif classification_token.alt_type == AltType.INSERTION:
             classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
@@ -266,14 +267,14 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     # 0-based
                     g_start_pos = None
                     g_end_pos = None
-                    if classification_token.alt_type == "deletion":
+                    if classification_token.alt_type == AltType.DELETION:
                         g_start_pos = classification_token.start_pos_del
                         g_end_pos = classification_token.end_pos_del
-                    elif classification_token.alt_type == "insertion":
+                    elif classification_token.alt_type == AltType.INSERTION:
                         g_start_pos = classification_token.start_pos_flank
                         g_end_pos = classification_token.end_pos_flank
-                    elif classification_token.alt_type in ["silent_mutation",
-                                                           "substitution"]:
+                    elif classification_token.alt_type in {AltType.SILENT_MUTATION,
+                                                           AltType.SUBSTITUTION}:
                         g_start_pos = classification_token.position
                         g_end_pos = classification_token.position
                         ref_seq, w = self.seqrepo_access.get_reference_sequence(
@@ -319,8 +320,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         # We use 1-based
                         reading_frame = self.mane_transcript._get_reading_frame(
                             mane_c_pos_change[0] + 1)
-                        if classification_token.alt_type in ["substitution",
-                                                             "silent_mutation"]:
+                        if classification_token.alt_type in {AltType.SILENT_MUTATION,
+                                                             AltType.SUBSTITUTION}:
                             mane_c_pos_change = self._update_gnomad_vcf_mane_c_pos(
                                 reading_frame, mane_c_ac, mane_c_pos_change,
                                 coding_start_site, warnings)
@@ -341,7 +342,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                             classification_token, reading_frame,
                             mane_tx_genomic_data["strand"], alt_ac,
                             g_start_pos, g_end_pos)
-                        if aa_alt or classification_token.alt_type == "deletion":
+                        if aa_alt or classification_token.alt_type == AltType.DELETION:
                             variation = self.to_vrs_allele(
                                 p_ac, mane_p["pos"][0], mane_p["pos"][1], "p",
                                 classification_token.alt_type, [], alt=aa_alt

@@ -2,6 +2,7 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.token_response_schema import TokenType
 from variation.classifiers import SetBasedClassifier
 
 
@@ -12,8 +13,8 @@ class AmplificationClassifier(SetBasedClassifier):
         """Return the Amplification classification type"""
         return ClassificationType.AMPLIFICATION
 
-    def exact_match_candidates(self) -> List[List[str]]:
+    def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            ["GeneSymbol", "Amplification"]
+            [TokenType.GENE, TokenType.AMPLIFICATION]
         ]
