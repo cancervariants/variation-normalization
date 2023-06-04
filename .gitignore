@@ -38,9 +38,3 @@ pyproject.toml
 
 build/
 dynamodb_local_latest/
-
-# Env files
-.env
-
-# pickle files
-*.pkl
