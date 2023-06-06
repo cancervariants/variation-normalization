@@ -2,7 +2,7 @@
 from typing import Optional, List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, GenomicSubstitutionClassification
+    ClassificationType, Classification, GenomicSubstitutionClassification, Nomenclature
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
@@ -62,9 +62,12 @@ class GenomicSubstitution(Validator):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        transcripts = await self.get_genomic_transcripts(
-            classification, gene_tokens, errors
-        )
+        if classification.nomenclature == Nomenclature.HGVS:
+            transcripts = [classification.ac]
+        else:
+            transcripts = await self.get_genomic_transcripts(
+                classification, gene_tokens, errors
+            )
         return transcripts
 
     def get_gene_tokens(self, classification: Classification) -> List:

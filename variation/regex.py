@@ -28,7 +28,7 @@ GENOMIC_DELETION_AMBIGUOUS_3 = re.compile(
 )
 
 CDNA_GENOMIC_DELINS = re.compile(
-    r"^(?P<pos0>\d+)(_(?P<pos1>)\d+)?delins(?P<inserted_sequence>[ACTGN]+)$"
+    r"^(?P<pos0>\d+)(_(?P<pos1>\d+))?delins(?P<inserted_sequence>[ACTGN]+)$"
 )
 
 CDNA_GENOMIC_INSERTION = re.compile(
@@ -104,6 +104,11 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         CDNA_GENOMIC_SUBSTITUTION,
         TokenType.CODING_DNA_SUBSTITUTION,
         ClassificationType.CODING_DNA_SUBSTITUTION
+    ),
+    (
+        CDNA_GENOMIC_DELINS,
+        TokenType.CODING_DNA_DELINS,
+        ClassificationType.CODING_DNA_DELINS
     ),
     (
         CNDA_GENOMIC_DELETION,

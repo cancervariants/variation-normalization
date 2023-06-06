@@ -2,13 +2,13 @@
 from typing import List, Optional, Union, Literal
 from enum import Enum
 
-from pydantic import BaseModel, StrictInt, StrictStr
+from pydantic import BaseModel, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 
 from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
     ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
-    ReferenceAgree, ProteinReferenceAgree
+    ReferenceAgree, ProteinReferenceAgree, DelIns
 )
 
 
@@ -147,6 +147,19 @@ class ProteinDelInsClassification(Classification, ProteinDelIns):
     molecule_context = MoleculeContext.PROTEIN
     so_id = SequenceOntology.DELINS
 
+
+class CdnaDelInsClassification(Classification, DelIns):
+
+    classification_type = ClassificationType.CODING_DNA_DELINS
+    molecule_context = MoleculeContext.TRANSCRIPT
+    so_id = SequenceOntology.DELINS
+
+
+class GenomicDelInsClassification(Classification, DelIns):
+
+    classification_type = ClassificationType.GENOMIC_DELINS
+    molecule_context = MoleculeContext.GENOMIC
+    so_id = SequenceOntology.DELINS
 
 
 class AmplificationClassification(Classification):

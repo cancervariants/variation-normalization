@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, GenomicInsertionClassification
+    Classification, ClassificationType, GenomicInsertionClassification, Nomenclature
 )
 from variation.schemas.token_response_schema import Token, TokenType, GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
@@ -16,22 +16,25 @@ class GenomicInsertion(Validator):
         self, classification: GenomicInsertionClassification,
         transcripts: List[str], gene_tokens: List[GeneToken]
     ) -> List[ValidationResult]:
+        if classification.pos1 and classification.pos0 >= classification.pos1:
+            return [ValidationResult(
+                accession=None,
+                classification=classification,
+                is_valid=False,
+                errors=[(
+                    "Positions deleted should contain two different positions and "
+                    "should be listed from 5' to 3'")]
+            )]
+
         validation_results = []
 
         for t in transcripts:
-            errors = []
-
-            if (classification.pos0 >= classification.pos1):
-                errors.append(
-                    "Start position cannot be greater or equal than end position"
-                )
-
             validation_results.append(
                 ValidationResult(
                     accession=t,
                     classification=classification,
-                    is_valid=not errors,
-                    errors=errors,
+                    is_valid=True,
+                    errors=[],
                     gene_tokens=gene_tokens
                 )
             )
@@ -59,9 +62,12 @@ class GenomicInsertion(Validator):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        transcripts = await self.get_genomic_transcripts(
-            classification, gene_tokens, errors
-        )
+        if classification.nomenclature == Nomenclature.HGVS:
+            transcripts = [classification.ac]
+        else:
+            transcripts = await self.get_genomic_transcripts(
+                classification, gene_tokens, errors
+            )
         return transcripts
 
     def get_gene_tokens(self, classification: Classification) -> List:

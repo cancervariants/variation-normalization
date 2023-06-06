@@ -7,6 +7,7 @@ from variation.schemas.classification_response_schema import (
     CdnaSubstitutionClassification, CdnaDeletionClassification,
     ProteinDeletionClassification, ProteinDelInsClassification,
     ProteinInsertionClassification, ProteinReferenceAgreeClassification,
+    CdnaDelInsClassification, GenomicDelInsClassification,
     Nomenclature, SequenceOntology
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
@@ -89,6 +90,10 @@ class HgvsClassifier(Classifier):
                     params["pos"] = int(params["pos"])
 
                     return CdnaSubstitutionClassification(**params)
+                elif classification_type == ClassificationType.CODING_DNA_DELINS:
+                    params["pos0"] = int(params["pos0"])
+                    params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
+                    return CdnaDelInsClassification(**params)
                 elif classification_type == ClassificationType.CODING_DNA_DELETION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
@@ -114,6 +119,10 @@ class HgvsClassifier(Classifier):
                     params["pos"] = int(params["pos"])
 
                     return GenomicSubstitutionClassification(**params)
+                elif classification_type == ClassificationType.GENOMIC_DELINS:
+                    params["pos0"] = int(params["pos0"])
+                    params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
+                    return GenomicDelInsClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_INSERTION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
