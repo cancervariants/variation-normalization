@@ -114,6 +114,11 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         CNDA_GENOMIC_DELETION,
         TokenType.CODING_DNA_DELETION,
         ClassificationType.CODING_DNA_DELETION
+    ),
+    (
+        CDNA_GENOMIC_INSERTION,
+        TokenType.CODING_DNA_INSERTION,
+        ClassificationType.CODING_DNA_INSERTION
     )
 ]
 

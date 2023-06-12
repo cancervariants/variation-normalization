@@ -15,7 +15,7 @@ from .coding_dna_deletion import CdnaDeletion
 from .genomic_deletion import GenomicDeletion
 from .genomic_base import GenomicBase
 from .protein_insertion import ProteinInsertion
-from .coding_dna_insertion import CodingDNAInsertion
+from .coding_dna_insertion import CdnaInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication

@@ -34,8 +34,6 @@ class GenomicInsertion(Translator):
         do_liftover: bool = False
     ) -> Optional[Dict]:
         """Translate to VRS Variation representation."""
-        errors = []
-
         # First will translate valid result to VRS Allele
         classification: GenomicInsertionClassification = validation_result.classification  # noqa: E501
 
@@ -49,7 +47,7 @@ class GenomicInsertion(Translator):
             )
             vrs_allele = self.vrs.to_vrs_allele(
                 mane["alt_ac"], mane["pos"][0] + 1, mane["pos"][1] + 1,
-                CoordinateType.LINEAR_GENOMIC, AltType.INSERTION, errors,
+                CoordinateType.LINEAR_GENOMIC, AltType.INSERTION, warnings,
                 alt=classification.inserted_sequence
             )
         elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
@@ -58,7 +56,7 @@ class GenomicInsertion(Translator):
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos, classification.pos,
-                CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, errors,
+                CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, warnings,
                 alt=classification.alt
             )
 

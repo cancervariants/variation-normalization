@@ -1,8 +1,10 @@
 """A module for the Coding DNA insertion Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
+from variation.schemas.classification_response_schema import (
+    ClassificationType, CdnaInsertionClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
 
 
@@ -16,9 +18,17 @@ class CodingDNAInsertionClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.CODING_DNA_INSERTION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_INSERTION],  # noqa: E501
-            [TokenType.CODING_DNA_INSERTION, TokenType.GENE],
-            [TokenType.GENE, TokenType.CODING_DNA_INSERTION],
-            [TokenType.HGVS, TokenType.CODING_DNA_INSERTION]
+            [TokenType.GENE, TokenType.CODING_DNA_INSERTION]
         ]
+
+    def match(self, tokens: List[Token]) -> CdnaInsertionClassification:
+        gene_token, cdna_ins_token = tokens
+
+        return CdnaInsertionClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            pos0=cdna_ins_token.pos0,
+            pos1=cdna_ins_token.pos1,
+            inserted_sequence=cdna_ins_token.inserted_sequence
+        )

@@ -106,18 +106,25 @@ class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree)
     so_id = SequenceOntology.REFERENCE_AGREE
 
 
-class GenomicInsertionClassification(Classification, Insertion):
-
-    classification_type = ClassificationType.GENOMIC_INSERTION
-    molecule_context = MoleculeContext.GENOMIC
-    so_id = SequenceOntology.INSERTION
-
-
 class ProteinInsertionClassification(Classification, ProteinInsertion):
 
     classification_type = ClassificationType.PROTEIN_INSERTION
     molecule_context = MoleculeContext.PROTEIN
     so_id = SequenceOntology.PROTEIN_INSERTION
+
+
+class CdnaInsertionClassification(Classification, Insertion):
+
+    classification_type = ClassificationType.CODING_DNA_INSERTION
+    molecule_context = MoleculeContext.TRANSCRIPT
+    so_id = SequenceOntology.INSERTION
+
+
+class GenomicInsertionClassification(Classification, Insertion):
+
+    classification_type = ClassificationType.GENOMIC_INSERTION
+    molecule_context = MoleculeContext.GENOMIC
+    so_id = SequenceOntology.INSERTION
 
 
 class ProteinDeletionClassification(Classification, ProteinDeletion):
