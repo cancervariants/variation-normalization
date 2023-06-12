@@ -1,8 +1,10 @@
 """A module for the DNA Coding Reference Agree Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
+from variation.schemas.classification_response_schema import (
+    ClassificationType, CdnaReferenceAgreeClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
 
 
@@ -16,9 +18,15 @@ class CodingDNAReferenceAgreeClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.CODING_DNA_REFERENCE_AGREE],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_REFERENCE_AGREE],  # noqa: E501
-            [TokenType.CODING_DNA_REFERENCE_AGREE, TokenType.GENE],
-            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE],
-            [TokenType.HGVS, TokenType.CODING_DNA_REFERENCE_AGREE]
+            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE]
         ]
+
+    def match(self, tokens: List[Token]) -> CdnaReferenceAgreeClassification:
+        gene_token, cdna_ref_agree_token = tokens
+
+        return CdnaReferenceAgreeClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            pos=cdna_ref_agree_token.pos
+        )

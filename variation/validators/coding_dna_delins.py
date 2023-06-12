@@ -1,19 +1,15 @@
 """The module for Coding DNA DelIns Validation."""
-from typing import List, Optional, Dict
-import logging
+from typing import List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-
-from variation.schemas.app_schemas import Endpoint
-from variation.validators.delins_base import DelInsBase
 from variation.schemas.classification_response_schema import (
     ClassificationType, Classification, Nomenclature, CdnaDelInsClassification
 )
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
+from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-class CodingDNADelIns(DelInsBase):
+class CodingDNADelIns(Validator):
     """The Coding DNA DelIns Validator class."""
 
     async def get_valid_invalid_results(

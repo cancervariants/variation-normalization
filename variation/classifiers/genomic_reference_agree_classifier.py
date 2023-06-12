@@ -1,8 +1,10 @@
 """A module for the Genomic Reference Agree Classifier."""
 from typing import List
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import TokenType
+from variation.schemas.classification_response_schema import (
+    ClassificationType, GenomicReferenceAgreeClassification, Nomenclature
+)
+from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
 
 
@@ -16,8 +18,15 @@ class GenomicReferenceAgreeClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_REFERENCE_AGREE],  # noqa: E501
-            [TokenType.GENOMIC_REFERENCE_AGREE, TokenType.GENE],
-            [TokenType.GENE, TokenType.GENOMIC_REFERENCE_AGREE],
-            [TokenType.HGVS, TokenType.GENOMIC_REFERENCE_AGREE]
+            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE]
         ]
+
+    def match(self, tokens: List[Token]) -> GenomicReferenceAgreeClassification:
+        gene_token, genomic_ref_agree_token = tokens
+
+        return GenomicReferenceAgreeClassification(
+            matching_tokens=tokens,
+            nomenclature=Nomenclature.FREE_TEXT,
+            gene=gene_token,
+            pos=genomic_ref_agree_token.pos
+        )

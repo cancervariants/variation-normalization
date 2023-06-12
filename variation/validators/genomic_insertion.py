@@ -6,7 +6,7 @@ from variation.schemas.classification_response_schema import (
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
-from .validator import Validator
+from variation.validators.validator import Validator
 
 
 class GenomicInsertion(Validator):

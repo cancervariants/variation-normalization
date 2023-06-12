@@ -8,7 +8,7 @@ from variation.schemas.classification_response_schema import (
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
-from .validator import Validator
+from variation.validators.validator import Validator
 
 
 class ProteinReferenceAgree(Validator):

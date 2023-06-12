@@ -16,7 +16,7 @@ from variation.tokenizers import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .protein_reference_agree import ProteinReferenceAgree
 from .coding_dna_substitution import CdnaSubstitution
-from .coding_dna_reference_agree import CodingDNAReferenceAgree
+from .coding_dna_reference_agree import CdnaReferenceAgree
 from .genomic_reference_agree import GenomicReferenceAgree
 from .genomic_substitution import GenomicSubstitution
 from .protein_delins import ProteinDelIns
@@ -67,8 +67,8 @@ class Validate:
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
             ProteinReferenceAgree(*params),
-            # CodingDNAReferenceAgree(*params),
-            # GenomicReferenceAgree(*params),
+            CdnaReferenceAgree(*params),
+            GenomicReferenceAgree(*params),
             ProteinDelIns(*params),
             CodingDNADelIns(*params),
             GenomicDelIns(*params),

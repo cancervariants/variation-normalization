@@ -1,27 +1,58 @@
 """The module for Coding DNA Substitution Validation."""
-import logging
-from typing import List, Optional, Dict
+from typing import List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-
-from variation.schemas.classification_response_schema import ClassificationType, \
-    Classification
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
-from variation.schemas.app_schemas import Endpoint
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-from .single_nucleotide_variation_base import SingleNucleotideVariationBase
+from variation.schemas.classification_response_schema import (
+    ClassificationType, Classification, Nomenclature, CdnaReferenceAgreeClassification
+)
+from variation.schemas.token_response_schema import GeneToken
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
-
-
-class CodingDNAReferenceAgree(SingleNucleotideVariationBase):
+class CdnaReferenceAgree(Validator):
     """The Coding DNA Reference Agree Validator class."""
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
+    async def get_valid_invalid_results(
+        self, classification: CdnaReferenceAgreeClassification,
+        transcripts: List[str], gene_tokens: List[GeneToken]
+    ) -> List[ValidationResult]:
+        validation_results = []
+
+        for t in transcripts:
+            errors = []
+            cds_start, cds_start_err_msg = await self.get_cds_start(t)
+
+            if cds_start_err_msg:
+                errors.append(cds_start_err_msg)
+
+            # TODO: Validate pos exists on given accession
+
+            validation_results.append(
+                ValidationResult(
+                    accession=t,
+                    classification=classification,
+                    cds_start=cds_start,
+                    is_valid=not errors,
+                    errors=errors,
+                    gene_tokens=gene_tokens
+                )
+            )
+
+        return validation_results
+
+    def variation_name(self) -> str:
+        """Return the variation name."""
+        return "cdna reference agree"
+
+    def validates_classification_type(
+        self, classification_type: ClassificationType
+    ) -> bool:
+        """Return whether or not the classification type is cdna reference agree."""
+        return classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE
+
+    async def get_transcripts(
+        self, gene_tokens: List, classification: Classification, errors: List
+    ) -> Optional[List[str]]:
         """Get transcript accessions for a given classification.
 
         :param List gene_tokens: A list of gene tokens
@@ -30,63 +61,18 @@ class CodingDNAReferenceAgree(SingleNucleotideVariationBase):
         :param List errors: List of errors
         :return: List of transcript accessions
         """
-        return self.get_coding_dna_transcripts(gene_tokens, errors)
+        if classification.nomenclature == Nomenclature.HGVS:
+            transcripts = [classification.ac]
+        else:
+            transcripts = self.get_coding_dna_transcripts(
+                gene_tokens, errors
+            )
+        return transcripts
 
-    async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
-    ) -> None:
-        """Add validation result objects to a list of results.
-
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        """
-        await self.reference_agree_valid_invalid_results(
-            classification_tokens, transcripts, classification, results,
-            gene_tokens, endpoint_name, mane_data_found, is_identifier,
-            do_liftover=do_liftover
-        )
-
-    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
+    def get_gene_tokens(self, classification: Classification) -> List:
         """Return gene tokens for a classification.
 
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
         return self.get_coding_dna_gene_symbol_tokens(classification)
-
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "coding dna reference agree"
-
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Coding DNA Reference Agree."""
-        return t.token_type == TokenType.CODING_DNA_REFERENCE_AGREE
-
-    def validates_classification_type(
-            self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is coding dna reference
-        agree.
-        """
-        return classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE

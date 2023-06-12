@@ -106,6 +106,11 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         ClassificationType.CODING_DNA_SUBSTITUTION
     ),
     (
+        CDNA_GENOMIC_REFERENCE_AGREE,
+        TokenType.CODING_DNA_REFERENCE_AGREE,
+        ClassificationType.CODING_DNA_REFERENCE_AGREE
+    ),
+    (
         CDNA_GENOMIC_DELINS,
         TokenType.CODING_DNA_DELINS,
         ClassificationType.CODING_DNA_DELINS
@@ -127,6 +132,11 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         CDNA_GENOMIC_SUBSTITUTION,
         TokenType.GENOMIC_SUBSTITUTION,
         ClassificationType.GENOMIC_SUBSTITUTION
+    ),
+    (
+        CDNA_GENOMIC_REFERENCE_AGREE,
+        TokenType.GENOMIC_REFERENCE_AGREE,
+        ClassificationType.GENOMIC_REFERENCE_AGREE
     ),
     (
         CDNA_GENOMIC_DELINS,

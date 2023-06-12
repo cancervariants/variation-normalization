@@ -1,7 +1,19 @@
 """Module for Genomic Reference Agree Translation."""
+from typing import Dict, Optional, List
+
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from cool_seq_tool.schemas import ResidueMode
+
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum
+)
 from variation.translators.translator import Translator
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import GenomicReferenceAgreeToken, Token
+from variation.schemas.classification_response_schema import (
+    ClassificationType, GenomicReferenceAgreeClassification
+)
 
 
 class GenomicReferenceAgree(Translator):
@@ -11,8 +23,38 @@ class GenomicReferenceAgree(Translator):
         """Return if classification type is Genomic Reference Agree."""
         return type == ClassificationType.GENOMIC_REFERENCE_AGREE
 
-    def is_token_instance(self, token: Token) -> bool:
-        """Return if the token is an Genomic Reference Agree token
-        instance.
-        """
-        return isinstance(token, GenomicReferenceAgreeToken)
+    async def translate(
+        self,
+        validation_result: ValidationResult,
+        warnings: List[str],
+        endpoint_name: Optional[Endpoint] = None,
+        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        baseline_copies: Optional[int] = None,
+        copy_change: Optional[CopyChange] = None,
+        do_liftover: bool = False
+    ) -> Optional[Dict]:
+        """Translate to VRS Variation representation."""
+        classification: GenomicReferenceAgreeClassification = validation_result.classification
+        vrs_allele = None
+
+        if endpoint_name == Endpoint.NORMALIZE:
+            mane = await self.mane_transcript.get_mane_transcript(
+                validation_result.accession, classification.pos,
+                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos,
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
+            )
+
+            vrs_allele = self.vrs.to_vrs_allele(
+                mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
+                CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
+            )
+        elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
+            # TODO:
+            pass
+        else:
+            vrs_allele = self.vrs.to_vrs_allele(
+                validation_result.accession, classification.pos, classification.pos,
+                CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
+            )
+
+        return vrs_allele
