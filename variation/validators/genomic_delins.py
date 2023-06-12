@@ -4,7 +4,7 @@ from typing import List, Optional
 from variation.schemas.classification_response_schema import (
     Classification, ClassificationType, GenomicDelInsClassification, Nomenclature
 )
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
+from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
 

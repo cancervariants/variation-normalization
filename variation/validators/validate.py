@@ -1,15 +1,11 @@
 """Module for Validation."""
-from typing import List, Optional
+from typing import List
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
     MANETranscript
 
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
 from variation.vrs_representation import VRSRepresentation
-from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.tokenizers import GeneSymbol

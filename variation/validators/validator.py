@@ -3,21 +3,23 @@ from typing import List, Optional, Dict, Tuple
 from abc import ABC, abstractmethod
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, \
-    MANETranscript, UTADatabase
+from cool_seq_tool.data_sources import (
+    SeqRepoAccess, TranscriptMappings, MANETranscript, UTADatabase
+)
 from cool_seq_tool.schemas import ResidueMode
 
-from variation.schemas.classification_response_schema import Classification, \
-    ClassificationType, Nomenclature
+from variation.schemas.classification_response_schema import (
+    Classification, ClassificationType, Nomenclature
+)
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import TokenType, GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum
+)
 from variation.vrs_representation import VRSRepresentation
 
 
