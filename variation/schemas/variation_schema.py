@@ -1,5 +1,5 @@
 """Define supported variation types"""
-from typing import Optional, Literal
+from typing import Optional, Literal, Union
 
 from pydantic import BaseModel, StrictInt, StrictStr
 
@@ -63,3 +63,17 @@ class ProteinDelIns(DelIns):
 
     aa0: StrictStr
     aa1: Optional[StrictStr]
+
+
+class Duplication(BaseModel):
+
+    pos0: StrictInt
+    pos1: Optional[StrictInt]
+
+
+class DuplicationAmbiguous(BaseModel):
+
+    pos0: Union[StrictInt, Literal["?"]]
+    pos1: Optional[Union[StrictInt, Literal["?"]]]
+    pos3: Union[StrictInt, Literal["?"]]
+    pos4: Optional[Union[StrictInt, Literal["?"]]]

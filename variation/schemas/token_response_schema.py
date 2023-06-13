@@ -7,7 +7,8 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 
 from variation.schemas.variation_schema import (
     DelIns, Deletion, ProteinDelIns, ProteinInsertion, Substitution, Insertion,
-    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain
+    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain, Duplication,
+    DuplicationAmbiguous
 )
 
 
@@ -228,24 +229,18 @@ class ProteinInsertionToken(Token, ProteinInsertion):
     coordinate_type = CoordinateType.PROTEIN
 
 
-class GenomicDuplicationToken(Token):
+class GenomicDuplicationToken(Token, Duplication):
     """Duplication on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DUPLICATION
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: StrictInt
-    pos1: Optional[StrictInt]
 
 
-class GenomicDuplicationAmbiguousToken(Token):
+class GenomicDuplicationAmbiguousToken(Token, DuplicationAmbiguous):
     """Ambiguous duplication on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DUPLICATION_AMBIGUOUS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: Union[StrictInt, Literal["?"]]
-    pos1: Optional[Union[StrictInt, Literal["?"]]]
-    pos3: Union[StrictInt, Literal["?"]]
-    pos4: Optional[Union[StrictInt, Literal["?"]]]
 
 
 class AmplificationToken(Token):

@@ -55,9 +55,9 @@ class GenomicInsertion(Translator):
             pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
-                validation_result.accession, classification.pos, classification.pos,
+                validation_result.accession, classification.pos0, classification.pos1,
                 CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, warnings,
-                alt=classification.alt
+                alt=classification.inserted_sequence
             )
 
         return vrs_allele

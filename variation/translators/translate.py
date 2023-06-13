@@ -75,7 +75,7 @@ class Translate:
             GenomicInsertion(*params),
             # GenomicDeletionRange(),
             # GenomicUncertainDeletion(),
-            # GenomicDuplication(),
+            GenomicDuplication(*params),
             Amplification(*params)
         ]
 

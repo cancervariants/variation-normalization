@@ -2,13 +2,13 @@
 from typing import List, Optional, Union, Literal
 from enum import Enum
 
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, StrictStr, StrictBool
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 
 from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
     ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
-    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain
+    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain, Duplication
 )
 
 
@@ -62,6 +62,7 @@ class ClassificationType(str, Enum):
     GENOMIC_INSERTION = "genomic insertion"
     GENOMIC_UNCERTAIN_DELETION = "genomic uncertain deletion"
     GENOMIC_DUPLICATION = "genomic duplication"
+    GENOMIC_DUPLICATION_AMBIGUOUS = "genomic duplication ambiguous"
     GENOMIC_DELETION_RANGE = "genomic deletion range"
     AMPLIFICATION = "amplification"
 
@@ -188,6 +189,20 @@ class GenomicDelInsClassification(Classification, DelIns):
     classification_type = ClassificationType.GENOMIC_DELINS
     molecule_context = MoleculeContext.GENOMIC
     so_id = SequenceOntology.DELINS
+
+
+class GenomicDuplicationClassification(Classification, Duplication):
+
+    classification_type = ClassificationType.GENOMIC_DUPLICATION
+    molecule_context = MoleculeContext.GENOMIC
+    so_id = SequenceOntology.DUPLICATION
+
+
+class GenomicDuplicationAmbiguousClassification(Classification, Duplication):
+
+    classification_type = ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
+    molecule_context = MoleculeContext.GENOMIC
+    so_id = SequenceOntology.DUPLICATION
 
 
 class AmplificationClassification(Classification):

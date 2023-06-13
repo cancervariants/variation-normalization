@@ -78,7 +78,7 @@ class Validate:
             GenomicInsertion(*params),
             # GenomicDeletionRange(*params),
             # GenomicUncertainDeletion(*params),
-            # GenomicDuplication(*params),
+            GenomicDuplication(*params),
             Amplification(*params)
         ]
 
