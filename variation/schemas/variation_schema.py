@@ -1,5 +1,5 @@
 """Define supported variation types"""
-from typing import Optional
+from typing import Optional, Literal
 
 from pydantic import BaseModel, StrictInt, StrictStr
 
@@ -9,6 +9,11 @@ class Substitution(BaseModel):
     pos: StrictInt
     ref: StrictStr
     alt: StrictStr
+
+
+class StopGain(Substitution):
+
+    alt: Literal["*"] = "*"
 
 
 class Deletion(BaseModel):

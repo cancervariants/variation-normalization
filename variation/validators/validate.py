@@ -10,6 +10,7 @@ from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
 from variation.tokenizers import GeneSymbol
 from .protein_substitution import ProteinSubstitution
+from .protein_stop_gain import ProteinStopGain
 from .protein_reference_agree import ProteinReferenceAgree
 from .coding_dna_substitution import CdnaSubstitution
 from .coding_dna_reference_agree import CdnaReferenceAgree
@@ -62,6 +63,7 @@ class Validate:
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
+            ProteinStopGain(*params),
             ProteinReferenceAgree(*params),
             CdnaReferenceAgree(*params),
             GenomicReferenceAgree(*params),

@@ -7,7 +7,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 
 from variation.schemas.variation_schema import (
     DelIns, Deletion, ProteinDelIns, ProteinInsertion, Substitution, Insertion,
-    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree
+    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain
 )
 
 
@@ -57,6 +57,7 @@ class AltType(str, Enum):
     REFERENCE_AGREE = "reference_agree"
     SUBSTITUTION = "substitution"
     UNCERTAIN_DUPLICATION = "uncertain_duplication"
+    STOP_GAIN = "stop_gain"
 
 
 # Ambiguous region alt types
@@ -125,12 +126,11 @@ class ProteinSubstitutionToken(Token, Substitution):
     coordinate_type = CoordinateType.PROTEIN
 
 
-class ProteinStopGainToken(Token, Substitution):
+class ProteinStopGainToken(Token, StopGain):
     """Token for stop gain on protein reference sequence"""
 
     token_type = TokenType.PROTEIN_STOP_GAIN
     coordinate_type = CoordinateType.PROTEIN
-    alt: Literal["*"] = "*"
 
 
 class ProteinReferenceAgreeToken(Token, ProteinReferenceAgree):
@@ -205,7 +205,6 @@ class GenomicDelInsToken(Token, DelIns):
 
     token_type = TokenType.GENOMIC_DELINS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-
 
 
 class CodingDNAInsertionToken(Token, Insertion):

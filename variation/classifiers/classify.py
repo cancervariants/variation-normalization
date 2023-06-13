@@ -12,6 +12,7 @@ from variation.classifiers import (
     GenomicDeletionClassifier, ProteinInsertionClassifier, CodingDNAInsertionClassifier,
     GenomicInsertionClassifier, GenomicUncertainDeletionClassifier,
     GenomicDuplicationClassifier, GenomicDeletionRangeClassifier,
+    ProteinStopGainClassifier,
     AmplificationClassifier, HgvsClassifier, Classifier
 )
 
@@ -26,6 +27,7 @@ class Classify:
         self.classifiers: List[Classifier] = [
             # ProteinDelInsClassifier(),
             # ProteinSubstitutionClassifier(),
+            # ProteinStopGainClassifier(),
             # ProteinReferenceAgreeClassifier(),
             CodingDNASubstitutionClassifier(),
             # GenomicSubstitutionClassifier(),

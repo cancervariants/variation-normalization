@@ -2,6 +2,7 @@
 from .classifier import Classifier
 from .protein_delins_classifier import ProteinDelInsClassifier
 from .protein_substitution_classifier import ProteinSubstitutionClassifier
+from .protein_stop_gain_classifier import ProteinStopGainClassifier
 from .protein_reference_agree import ProteinReferenceAgreeClassifier
 from .coding_dna_substitution_classifier import CodingDNASubstitutionClassifier
 from .genomic_substitution_classifier import GenomicSubstitutionClassifier

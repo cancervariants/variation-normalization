@@ -176,8 +176,8 @@ class VRSRepresentation:
         if alt_type == AltType.INSERTION:
             state = alt
             ival_end = ival_start
-        elif alt_type in {AltType.SUBSTITUTION, AltType.DELETION, AltType.DELINS,
-                          AltType.REFERENCE_AGREE, AltType.NONSENSE}:
+        elif alt_type in {AltType.SUBSTITUTION, AltType.STOP_GAIN, AltType.DELETION,
+                          AltType.DELINS, AltType.REFERENCE_AGREE, AltType.NONSENSE}:
             if alt_type == AltType.REFERENCE_AGREE:
                 state, _ = self.seqrepo_access.get_reference_sequence(ac, ival_start)
                 if state is None:

@@ -8,7 +8,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
     ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
-    ReferenceAgree, ProteinReferenceAgree, DelIns
+    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain
 )
 
 
@@ -97,6 +97,13 @@ class CdnaSubstitutionClassification(Classification, Substitution):
     classification_type = ClassificationType.CODING_DNA_SUBSTITUTION
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id: Union[Literal[SequenceOntology.SNV], Literal[SequenceOntology.MNV]]
+
+
+class ProteinStopGainClassification(Classification, StopGain):
+
+    classification_type = ClassificationType.PROTEIN_STOP_GAIN
+    molecule_context = MoleculeContext.PROTEIN
+    so_id = SequenceOntology.STOP_GAIN
 
 
 class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree):

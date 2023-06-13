@@ -16,6 +16,7 @@ from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
 from .translator import Translator
 from .protein_substitution import ProteinSubstitution
+from .protein_stop_gain import ProteinStopGain
 from .protein_reference_agree import ProteinReferenceAgree
 from .coding_dna_substitution import CdnaSubstitution
 from .genomic_substitution import GenomicSubstitution
@@ -59,6 +60,7 @@ class Translate:
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
+            ProteinStopGain(*params),
             ProteinReferenceAgree(*params),
             CdnaReferenceAgree(*params),
             GenomicReferenceAgree(*params),

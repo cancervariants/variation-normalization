@@ -9,6 +9,7 @@ from variation.schemas.classification_response_schema import (
     ProteinInsertionClassification, ProteinReferenceAgreeClassification,
     CdnaDelInsClassification, GenomicDelInsClassification, CdnaInsertionClassification,
     CdnaReferenceAgreeClassification, GenomicReferenceAgreeClassification,
+    ProteinStopGainClassification,
     Nomenclature, SequenceOntology
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
@@ -52,7 +53,11 @@ class HgvsClassifier(Classifier):
 
                 if classification_type == ClassificationType.PROTEIN_SUBSTITUTION:
                     params["pos"] = int(params["pos"])
-                    return ProteinSubstitutionClassification(**params)
+                    if params["alt"] in {"Ter", "*"}:
+                        params["alt"] = "*"
+                        return ProteinStopGainClassification(**params)
+                    else:
+                        return ProteinSubstitutionClassification(**params)
                 elif classification_type == ClassificationType.PROTEIN_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
                     return ProteinReferenceAgreeClassification(**params)
