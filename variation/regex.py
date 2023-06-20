@@ -156,6 +156,11 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         ClassificationType.GENOMIC_INSERTION
     ),
     (
+        CNDA_GENOMIC_DELETION,
+        TokenType.GENOMIC_DELETION,
+        ClassificationType.GENOMIC_DELETION
+    ),
+    (
         GENOMIC_DUPLICATION,
         TokenType.GENOMIC_DUPLICATION,
         ClassificationType.GENOMIC_DUPLICATION

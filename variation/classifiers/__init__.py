@@ -16,9 +16,7 @@ from .genomic_deletion_classifier import GenomicDeletionClassifier
 from .protein_insertion_classifier import ProteinInsertionClassifier
 from .coding_dna_insertion_classifier import CodingDNAInsertionClassifier
 from .genomic_insertion_classifier import GenomicInsertionClassifier
-from .genomic_uncertain_deletion_classifier import GenomicUncertainDeletionClassifier
 from .genomic_duplication_classifier import GenomicDuplicationClassifier
-from .genomic_deletion_range_classifier import GenomicDeletionRangeClassifier
 from .amplification_classifier import AmplificationClassifier
 from .hgvs_classifier import HgvsClassifier
 from .classify import Classify

@@ -3,10 +3,9 @@ from typing import Dict, Optional, List
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
@@ -39,6 +38,7 @@ class GenomicDuplicationAmbiguous(Translator):
         classification: GenomicDuplicationAmbiguousClassification = validation_result.classification  # noqa: E501
 
         vrs_variation = None
+        outer_coords = None
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
@@ -52,24 +52,28 @@ class GenomicDuplicationAmbiguous(Translator):
                     grch38_data["pos0"], grch38_data["pos1"], grch38_data["pos2"],
                     grch38_data["pos3"]
                 )
+                outer_coords = (grch38_data["pos0"], grch38_data["pos3"])
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
                 ival = models.SequenceInterval(
                     start=self.vrs.get_start_indef_range(grch38_data["pos1"]),
                     end=self.vrs.get_end_indef_range(grch38_data["pos2"]),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (grch38_data["pos1"], grch38_data["pos2"])
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
                 ival = models.SequenceInterval(
                     start=self.vrs.get_start_indef_range(grch38_data["pos1"]),
                     end=models.Number(value=grch38_data["pos2"], type="Number"),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (grch38_data["pos1"], grch38_data["pos2"])
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
                 ival = models.SequenceInterval(
                     start=models.Number(value=grch38_data["pos0"] - 1, type="Number"),
                     end=self.vrs.get_end_indef_range(grch38_data["pos2"]),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (grch38_data["pos0"], grch38_data["pos2"])
 
             ac = grch38_data["ac"]
         else:
@@ -80,24 +84,28 @@ class GenomicDuplicationAmbiguous(Translator):
                     classification.pos0, classification.pos1, classification.pos2,
                     classification.pos3
                 )
+                outer_coords = (classification.pos0, classification.pos3)
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
                 ival = models.SequenceInterval(
                     start=self.vrs.get_start_indef_range(classification.pos1),
                     end=self.vrs.get_end_indef_range(classification.pos2),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (classification.pos1, classification.pos2)
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
                 ival = models.SequenceInterval(
                     start=self.vrs.get_start_indef_range(classification.pos1),
                     end=models.Number(value=classification.pos2, type="Number"),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (classification.pos1, classification.pos2)
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
                 ival = models.SequenceInterval(
                     start=models.Number(value=classification.pos0 - 1, type="Number"),
                     end=self.vrs.get_end_indef_range(classification.pos2),
                     type="SequenceInterval"
                 ).as_dict()
+                outer_coords = (classification.pos0, classification.pos2)
 
         seq_id = self.translate_sequence_identifier(ac, errors)
         if not seq_id:
@@ -105,32 +113,23 @@ class GenomicDuplicationAmbiguous(Translator):
 
         seq_loc = self.vrs.get_sequence_loc(seq_id, ival).as_dict()
 
-        if endpoint_name == Endpoint.NORMALIZE:
+        if endpoint_name in {Endpoint.NORMALIZE, Endpoint.TO_CANONICAL}:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
                 AltType.DUPLICATION_AMBIGUOUS, seq_loc, warnings, hgvs_dup_del_mode,
                 baseline_copies=baseline_copies, copy_change=copy_change
             )
-        elif endpoint_name == Endpoint.TO_CANONICAL:
-            # TODO:
-            if do_liftover:
-                pass
-            else:
-                pass
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
-            if do_liftover:
-                pass
-            else:
-                pass
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
+                "dup", seq_loc, baseline_copies
+            )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_CHANGE:
-            if do_liftover:
-                pass
-            else:
-                pass
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_change_mode(
+                "dup", seq_loc, copy_change
+            )
         else:
-            # TODO: Fix this
-            vrs_variation = self.vrs.to_vrs_allele(
-                validation_result.accession, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.DUPLICATION_AMBIGUOUS, warnings
+            vrs_variation = self.hgvs_dup_del_mode.default_mode(
+                AltType.DUPLICATION_AMBIGUOUS, outer_coords, "dup", seq_loc,
+                baseline_copies=baseline_copies, copy_change=copy_change
             )
 
         return vrs_variation

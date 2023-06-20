@@ -30,7 +30,6 @@ class TokenType(str, Enum):
     GENOMIC_INSERTION = "GenomicInsertion"
     GENOMIC_REFERENCE_AGREE = "GenomicReferenceAgree"
     GENOMIC_SUBSTITUTION = "GenomicSubstitution"
-    GENOMIC_UNCERTAIN_DELETION = "GenomicUncertainDeletion"
     GNOMAD_VCF = "GnomadVcf"
     HGVS = "Hgvs"
     HGVS_SUBSTITUTION = "HgvsSubstitution"

@@ -22,13 +22,13 @@ class GenomicDeletionClassifier(Classifier):
         ]
 
     def match(self, tokens: List[Token]):
-        gene_token, cdna_deletion_token = tokens
+        gene_token, genomic_deletion_token = tokens
 
         return GenomicDeletionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
             gene=gene_token,
-            pos0=cdna_deletion_token.pos0,
-            pos1=cdna_deletion_token.pos1,
-            deleted_sequence=cdna_deletion_token.deleted_sequence
+            pos0=genomic_deletion_token.pos0,
+            pos1=genomic_deletion_token.pos1,
+            deleted_sequence=genomic_deletion_token.deleted_sequence
         )

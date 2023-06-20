@@ -10,7 +10,7 @@ from variation.schemas.classification_response_schema import (
     CdnaDelInsClassification, GenomicDelInsClassification, CdnaInsertionClassification,
     CdnaReferenceAgreeClassification, GenomicReferenceAgreeClassification,
     ProteinStopGainClassification, GenomicDuplicationClassification,
-    GenomicDuplicationAmbiguousClassification,
+    GenomicDuplicationAmbiguousClassification, GenomicDeletionClassification,
     Nomenclature, SequenceOntology, AmbiguousType
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
@@ -150,6 +150,10 @@ class HgvsClassifier(Classifier):
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return GenomicInsertionClassification(**params)
+                elif classification_type == ClassificationType.GENOMIC_DELETION:
+                    params["pos0"] = int(params["pos0"])
+                    params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
+                    return GenomicDeletionClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_DUPLICATION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
