@@ -14,6 +14,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from .translator import Translator
 from .protein_substitution import ProteinSubstitution
 from .protein_stop_gain import ProteinStopGain
@@ -33,6 +34,7 @@ from .coding_dna_insertion import CdnaInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_uncertain_deletion import GenomicUncertainDeletion
 from .genomic_duplication import GenomicDuplication
+from .genomic_duplication_ambiguous import GenomicDuplicationAmbiguous
 from .genomic_deletion_range import GenomicDeletionRange
 from .amplification import Amplification
 
@@ -48,12 +50,13 @@ class Translate:
         mane_transcript: MANETranscript,
         uta: UTADatabase,
         gene_normalizer: GeneQueryHandler,
-        vrs: VRSRepresentation
+        vrs: VRSRepresentation,
+        hgvs_dup_del_mode: HGVSDupDelMode
     ) -> None:
         """Initialize the translation class."""
         params = [
             seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, gene_normalizer, vrs
+            mane_transcript, uta, gene_normalizer, vrs, hgvs_dup_del_mode
         ]
 
         self.all_translators: List[Translator] = [
@@ -76,6 +79,7 @@ class Translate:
             # GenomicDeletionRange(),
             # GenomicUncertainDeletion(),
             GenomicDuplication(*params),
+            GenomicDuplicationAmbiguous(*params),
             Amplification(*params)
         ]
 

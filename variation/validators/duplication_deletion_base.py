@@ -7,7 +7,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase, \
     MANETranscript
 
-from variation.schemas.classification_response_schema import Classification, \
+from variation.schemas.classification_response_schema import AmbiguousType, Classification, \
     ClassificationType
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Token, GeneToken

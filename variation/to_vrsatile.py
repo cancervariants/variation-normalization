@@ -1,7 +1,7 @@
 """Module for representing VRSATILE objects"""
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
+from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes, Allele, CopyNumberCount, CopyNumberChange
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 
 from variation.to_vrs import ToVRS

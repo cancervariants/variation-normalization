@@ -75,5 +75,5 @@ class DuplicationAmbiguous(BaseModel):
 
     pos0: Union[StrictInt, Literal["?"]]
     pos1: Optional[Union[StrictInt, Literal["?"]]]
-    pos3: Union[StrictInt, Literal["?"]]
-    pos4: Optional[Union[StrictInt, Literal["?"]]]
+    pos2: Union[StrictInt, Literal["?"]]
+    pos3: Optional[Union[StrictInt, Literal["?"]]]

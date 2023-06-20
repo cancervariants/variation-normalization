@@ -99,6 +99,7 @@ class VRSRepresentation:
             sequence_id=coerce_namespace(ac),
             interval=interval, type="SequenceLocation")
 
+
     def vrs_allele(self, ac: str, interval: models.SequenceInterval,
                    sstate: Union[models.LiteralSequenceExpression,
                                  models.DerivedSequenceExpression,
@@ -145,6 +146,7 @@ class VRSRepresentation:
         else:
             errors.append(w)
             return None
+
 
     def to_vrs_allele(
             self, ac: str, start: int, end: int, coordinate: str,
@@ -225,7 +227,7 @@ class VRSRepresentation:
             # TODO: Once we add support for ranges on c. coord
             return None
         if alt_type in {AltType.UNCERTAIN_DELETION, AltType.UNCERTAIN_DUPLICATION,
-                        AltType.DELETION_RANGE, AltType.DUPLICATION_RANGE}:
+                        AltType.DELETION_RANGE, AltType.DUPLICATION_AMBIGUOUS}:
             sstate = models.LiteralSequenceExpression(
                 sequence="", type="LiteralSequenceExpression"
             )
@@ -234,3 +236,5 @@ class VRSRepresentation:
             return None
 
         return self.vrs_allele(ac, ival, sstate, alt_type, errors)
+
+    # def to_copy_number()

@@ -52,7 +52,7 @@ class AltType(str, Enum):
     UNCERTAIN_DELETION = "uncertain_deletion"
     DELINS = "delins"
     DUPLICATION = "duplication"
-    DUPLICATION_RANGE = "duplication_range"
+    DUPLICATION_AMBIGUOUS = "duplication_ambiguous"
     INSERTION = "insertion"
     NONSENSE = "nonsense"
     REFERENCE_AGREE = "reference_agree"
@@ -66,7 +66,7 @@ AMBIGUOUS_REGIONS = {
     AltType.UNCERTAIN_DELETION,
     AltType.UNCERTAIN_DUPLICATION,
     AltType.DELETION_RANGE,
-    AltType.DUPLICATION_RANGE
+    AltType.DUPLICATION_AMBIGUOUS
 }
 
 
@@ -176,15 +176,11 @@ class GenomicDeletionToken(Token, Deletion):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class GenomicDeletionAmbiguousToken(Token):
+class GenomicDeletionAmbiguousToken(Token, DuplicationAmbiguous):
     """Token for ambiguous deletion on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DELETION_AMBIGUOUS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
-    pos0: Union[StrictInt, Literal["?"]]
-    pos1: Optional[Union[StrictInt, Literal["?"]]]
-    pos3: Union[StrictInt, Literal["?"]]
-    pos4: Optional[Union[StrictInt, Literal["?"]]]
 
 
 class ProteinDelInsToken(Token, ProteinDelIns):

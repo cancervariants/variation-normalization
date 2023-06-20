@@ -10,10 +10,14 @@ from variation.schemas.classification_response_schema import (
     CdnaDelInsClassification, GenomicDelInsClassification, CdnaInsertionClassification,
     CdnaReferenceAgreeClassification, GenomicReferenceAgreeClassification,
     ProteinStopGainClassification, GenomicDuplicationClassification,
-    Nomenclature, SequenceOntology
+    GenomicDuplicationAmbiguousClassification,
+    Nomenclature, SequenceOntology, AmbiguousType
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
-from variation.regex import GENOMIC_REGEXPRS, PROTEIN_REGEXPRS, CDNA_REGEXPRS
+from variation.regex import (
+    GENOMIC_REGEXPRS, GENOMIC_AMBIGUOUS_REGEXPRS, PROTEIN_REGEXPRS, CDNA_REGEXPRS,
+    AmbiguousRegexType
+)
 from variation.classifiers import Classifier
 
 
@@ -36,6 +40,9 @@ class HgvsClassifier(Classifier):
 
         if token.coordinate_type == CoordinateType.LINEAR_GENOMIC:
             classification = self._genomic_classification(token, params)
+            if not classification:
+                # Try ambiguous
+                classification = self._genomic_ambiguous_classification(token, params)
         elif token.coordinate_type == CoordinateType.CODING_DNA:
             classification = self._cdna_classification(token, params)
         elif token.coordinate_type == CoordinateType.PROTEIN:
@@ -148,4 +155,60 @@ class HgvsClassifier(Classifier):
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return GenomicDuplicationClassification(**params)
 
+    def _genomic_ambiguous_classification(
+        self, token, params
+    ) -> Optional[Classification]:
+        for regex, _, classification_type, regex_type in GENOMIC_AMBIGUOUS_REGEXPRS:
+            match = regex.match(token.change)
+
+            if match:
+                match_dict = match.groupdict()
+                params.update(match_dict)
+
+                if classification_type == ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS:  # noqa: E501
+                    params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
+
+                    pos1_in_params = "pos1" in params
+                    if pos1_in_params:
+                        params["pos1"] = int(params["pos1"]) if params["pos1"] != "?" else params["pos1"]  # noqa: E501
+
+                    params["pos2"] = int(params["pos2"]) if params["pos2"] != "?" else params["pos2"]  # noqa: E501
+
+                    pos3_in_params = "pos3" in params
+                    if pos3_in_params:
+                        params["pos3"] = int(params["pos3"]) if params["pos3"] != "?" else params["pos3"]  # noqa: E501
+
+                    if regex_type == AmbiguousRegexType.REGEX_1:
+                        if all((
+                            isinstance(params["pos0"], int),
+                            isinstance(params["pos1"], int),
+                            isinstance(params["pos2"], int),
+                            isinstance(params["pos3"], int)
+                        )):
+                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_1
+                        elif all((
+                            params["pos0"] == "?",
+                            isinstance(params["pos1"], int),
+                            isinstance(params["pos2"], int),
+                            params["pos3"] == "?"
+                        )):
+                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_2
+                    elif regex_type == AmbiguousRegexType.REGEX_2:
+                        if all((
+                            params["pos0"] == "?",
+                            isinstance(params["pos1"], int),
+                            isinstance(params["pos2"], int),
+                            not pos3_in_params
+                        )):
+                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_5
+                    elif regex_type == AmbiguousRegexType.REGEX_3:
+                        if all((
+                            isinstance(params["pos0"], int),
+                            not pos1_in_params,
+                            isinstance(params["pos2"], int),
+                            params["pos3"] == "?"
+                        )):
+                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_7
+
+                    return GenomicDuplicationAmbiguousClassification(**params)
         return None

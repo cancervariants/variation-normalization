@@ -82,11 +82,11 @@ class QueryHandler:
             self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
             uta_db, gene_query_handler, vrs_representation
         )
+        hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
         translator = Translate(
             self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta_db, gene_query_handler, vrs_representation
+            uta_db, gene_query_handler, vrs_representation, hgvs_dup_del_mode
         )
-        hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
         to_vrs_params = [self._seqrepo_access, tokenizer,
                          classifier, validator, translator, hgvs_dup_del_mode,
                          gene_query_handler]

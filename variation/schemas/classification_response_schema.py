@@ -8,7 +8,8 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
     ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
-    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain, Duplication
+    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain, Duplication,
+    DuplicationAmbiguous
 )
 
 
@@ -198,11 +199,24 @@ class GenomicDuplicationClassification(Classification, Duplication):
     so_id = SequenceOntology.DUPLICATION
 
 
-class GenomicDuplicationAmbiguousClassification(Classification, Duplication):
+class AmbiguousType(str, Enum):
+    """Helps determine the kind of ambiguous variant"""
+
+    AMBIGUOUS_1 = "(#_#)_(#_#)"
+    AMBIGUOUS_2 = "(?_#)_(#_?)"
+    AMBIGUOUS_3 = "(#_?)_(?_#)"  # Not yet supported
+    AMBIGUOUS_4 = "(#_#)_#"  # Not yet supported
+    AMBIGUOUS_5 = "(?_#)_#"
+    AMBIGUOUS_6 = "#_(#_#)"  # Not yet supported
+    AMBIGUOUS_7 = "#_(#_?)"
+
+
+class GenomicDuplicationAmbiguousClassification(Classification, DuplicationAmbiguous):
 
     classification_type = ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
     molecule_context = MoleculeContext.GENOMIC
     so_id = SequenceOntology.DUPLICATION
+    ambiguous_type: AmbiguousType
 
 
 class AmplificationClassification(Classification):
