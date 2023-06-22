@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Optional, Union, Dict, Any, Type, Literal
 
-from pydantic import BaseModel, StrictStr, root_validator
+from pydantic import BaseModel, StrictStr, root_validator, StrictInt
 from pydantic.main import ModelMetaclass
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
     SequenceLocation, CopyNumberChange, CopyChange, VRSTypes
@@ -28,23 +28,29 @@ class ParsedToCopyNumberQuery(BaseModel):
     assembly: Optional[ClinVarAssembly] = None
     chr: Optional[StrictStr] = None
     accession: Optional[StrictStr] = None
-    start0: int
-    end0: int
+    start0: StrictInt
+    end0: StrictInt
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
     ]
     end_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
     ]
-    start1: Optional[int]
-    end1: Optional[int]
+    start1: Optional[StrictInt]
+    end1: Optional[StrictInt]
 
     @root_validator(pre=False, skip_on_failure=True)
-    def validate_pos(cls: ModelMetaclass, v: Dict) -> Dict:
-        """Validate positions. `start1` is required when `start_pos_type` is a definite
-        range. `end1` is required when `end_pos_type` is a definite range. End positions
-        must be greater than start positions
+    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+        """Validate fields.
+        - `accession` or both `assembly` and `chr` must be provided
+        - `start1` is required when `start_pos_type` is a definite
+        range.
+        - `end1` is required when `end_pos_type` is a definite range.
+        - End positions must be greater than start positions
         """
+        ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chr`"  # noqa: E501
+        assert v.get("accession") or (v.get("assembly") and v.get("chr")), ac_assembly_chr_msg  # noqa: E501
+
         start0 = v["start0"]
         start1 = v.get("start1")
         if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
@@ -69,7 +75,7 @@ class ParsedToCopyNumberQuery(BaseModel):
 class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
     """Define query for parsed to copy number count variation endpoint"""
 
-    total_copies: int
+    total_copies: StrictInt
 
 
 class ParsedToCnVarService(ServiceResponse):

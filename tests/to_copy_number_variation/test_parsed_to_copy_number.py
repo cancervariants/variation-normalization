@@ -120,6 +120,33 @@ def cn_loss2():
 
 
 @pytest.fixture(scope="module")
+def cn_definite_number():
+    """Create test fixture for copy number count using definite range for start and
+    number for end
+    """
+    variation = {
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.uzKJQTAw2pYuAGaeHclKATjgPJQHjwmk",
+        "subject": {
+            "type": "SequenceLocation",
+            "id": "ga4gh:SL.wfI7pH2g6czJN8dWwgF1gH9BD4pnJCFG",
+            "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            "start": {
+                "type": "DefiniteRange",
+                "min": 143134062,
+                "max": 143134064
+            },
+            "end": {
+                "type": "Number",
+                "value": 143284670
+            }
+        },
+        "copies": {"type": "Number", "value": 3}
+    }
+    return CopyNumberCount(**variation)
+
+
+@pytest.fixture(scope="module")
 def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
     variation = {
@@ -349,6 +376,20 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     assert resp.warnings == []
 
 
+def test_to_parsed_cn_var(
+    test_cnv_handler, cn_definite_number
+):
+    """Test that parsed_to_copy_number works correctly for copy number count"""
+    # start uses definite and end uses number
+    resp = test_cnv_handler.parsed_to_copy_number(
+        143134063, 143284670, VRSTypes.COPY_NUMBER_COUNT, total_copies=3,
+        assembly=ClinVarAssembly.GRCH37, chr="chr1",
+        start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
+    )
+    assert resp.copy_number_count.dict() == cn_definite_number.dict()
+    assert resp.warnings == []
+
+
 def test_parsed_to_cx_var(
     test_cnv_handler, cx_numbers, cx_definite_ranges, cx_indefinite_ranges,
     cx_number_indefinite
@@ -423,27 +464,29 @@ def test_invalid(test_cnv_handler):
     assert resp.warnings == expected_w
 
     # Must give both assembly + chr or accession
-    expected_w = ["Must provide either `accession` or both `assembly` and `chr`."]
+    ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chr`"
     resp = test_cnv_handler.parsed_to_copy_number(
         31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
         assembly="hg38", untranslatable_returns_text=True
     )
     assert resp.copy_number_change.type == "Text"
-    assert resp.warnings == expected_w
+    assert ac_assembly_chr_msg in resp.warnings[0]
 
+    # Must give both assembly + chr or accession
     resp = test_cnv_handler.parsed_to_copy_number(
         31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
         chr="chr15", untranslatable_returns_text=True
     )
     assert resp.copy_number_change.type == "Text"
-    assert resp.warnings == expected_w
+    assert ac_assembly_chr_msg in resp.warnings[0]
 
+    # Must give both assembly + chr or accession
     resp = test_cnv_handler.parsed_to_copy_number(
         31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
         untranslatable_returns_text=True
     )
     assert resp.copy_number_change.type == "Text"
-    assert resp.warnings == expected_w
+    assert ac_assembly_chr_msg in resp.warnings[0]
 
     # invalid chr
     resp = test_cnv_handler.parsed_to_copy_number(
@@ -488,3 +531,12 @@ def test_invalid(test_cnv_handler):
     )
     assert resp.copy_number_change is None
     assert "end positions must be greater than start" in resp.warnings[0]
+
+    # start1 not provided
+    resp = test_cnv_handler.parsed_to_copy_number(
+        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
+        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
+        chr="chrY", start_pos_type=VRSTypes.DEFINITE_RANGE
+    )
+    assert resp.copy_number_change is None
+    assert "`start1` is required for definite ranges" in resp.warnings[0]

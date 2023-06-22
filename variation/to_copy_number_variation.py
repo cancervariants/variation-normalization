@@ -165,41 +165,34 @@ class ToCopyNumberVariation(ToVRS):
         )
 
     def _get_parsed_ac(
-        self, accession: str, assembly: Optional[ClinVarAssembly] = None,
-        chr: Optional[str] = None
+        self, assembly: ClinVarAssembly, chr: str
     ) -> Tuple[Optional[str], Optional[str]]:
         """Get accession for parsed components
 
-        :param accession: Accession. If `accession` is set, will ignore `assembly` and
-            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
-        :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
-            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
-        :param chr: Chromosome. Must set when `assembly` is set.
+        :param assembly: Assembly
+        :param chr: Chromosome
         :return: Tuple containing accession (if successful) and warnings (if error)
         """
+        accession = None
         warning = None
-        if accession:
-            pass
-        elif assembly and chr:
-            if assembly == ClinVarAssembly.HG38:
-                assembly = ClinVarAssembly.GRCH38
-            elif assembly == ClinVarAssembly.HG19:
-                assembly = ClinVarAssembly.GRCH37
-            elif assembly == ClinVarAssembly.HG18:
-                assembly = ClinVarAssembly.NCBI36
 
-            if assembly != ClinVarAssembly.NCBI36:
-                # Variation Normalizer does not support NCBI36 yet
-                query = f"{assembly.value}:{chr}"
-                aliases, warning = self.seqrepo_access.translate_identifier(query)
-                if not warning:
-                    accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
-                    if not accession:
-                        warning = f"Unable to find RefSeq accession for {query}"
-            else:
-                warning = f"{assembly.value} assembly is not currently supported"
+        if assembly == ClinVarAssembly.HG38:
+            assembly = ClinVarAssembly.GRCH38
+        elif assembly == ClinVarAssembly.HG19:
+            assembly = ClinVarAssembly.GRCH37
+        elif assembly == ClinVarAssembly.HG18:
+            assembly = ClinVarAssembly.NCBI36
+
+        if assembly != ClinVarAssembly.NCBI36:
+            # Variation Normalizer does not support NCBI36 yet
+            query = f"{assembly.value}:{chr}"
+            aliases, warning = self.seqrepo_access.translate_identifier(query)
+            if not warning:
+                accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
+                if not accession:
+                    warning = f"Unable to find RefSeq accession for {query}"
         else:
-            warning = "Must provide either `accession` or both `assembly` and `chr`."
+            warning = f"{assembly.value} assembly is not currently supported"
 
         return accession, warning
 
@@ -415,7 +408,11 @@ class ToCopyNumberVariation(ToVRS):
             warnings.append(str(e))
             og_query = None
         else:
-            accession, warning = self._get_parsed_ac(accession, assembly, chr)
+            if not accession:
+                accession, warning = self._get_parsed_ac(assembly, chr)
+            else:
+                warning = None
+
             if warning:
                 warnings.append(warning)
             else:
