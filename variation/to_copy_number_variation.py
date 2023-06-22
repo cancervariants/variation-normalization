@@ -231,11 +231,13 @@ class ToCopyNumberVariation(ToVRS):
         """Get VRS Sequence Location start and end values
 
         :param accession: Accession for sequence
-        :param pos0: First position
-        :param pos_type: The type of VRS start or end
+        :param pos0: Position (residue coords). If `pos_type` is a definite range,
+            this will be the min start position
+        :param pos_type: Type of the pos value in VRS Sequence Location
         :param is_start: `True` if position(s) describing VRS start value. `False` if
             position(s) describing VRS end value
-        :param pos1: Second position (only required when `pos_type` is definite range)
+        :param pos1: Only set when end is a definite range, this will be the max end
+            position
         :return: Tuple containing VRS start or end value for sequence location
             (if valid) and warning (if invalid)
         """

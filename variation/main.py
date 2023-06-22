@@ -644,7 +644,8 @@ def parsed_to_cx_var(
     :param untranslatable_returns_text: `True` return VRS Text Object when unable to
         translate or normalize query. `False` return `None` when unable to translate or
         normalize query.
-    :return: Tuple containing Copy Number Change variation and list of warnings
+    :return: ParsedToCxVarService containing Copy Number Change variation and list of
+        warnings
     """
     resp = query_handler.to_copy_number_handler.parsed_to_cx_var(
         start0=start0, end0=end0, assembly=assembly, chr=chr, accession=accession,
