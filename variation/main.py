@@ -551,17 +551,18 @@ end1_descr = ("Only set when end is a definite range, this will be the max end "
               "position")
 start_pos_type = "Type of the start value in VRS Sequence Location"
 end_pos_type = "Type of the end value in VRS Sequence Location"
-assembly_descr = ("Assembly. If `accession` is set, will ignore `assembly` and `chr`. "
-                  "If `accession` not set, must provide both `assembly` and `chr`.")
+assembly_descr = ("Assembly. Ignored, along with `chr`, if `accession` is set. If "
+                  "`accession` is not set, must provide both `assembly` and `chr`.")
 chr_descr = "Chromosome. Must set when `assembly` is set."
-accession_descr = ("Accession. If `accession` is set, will ignore `assembly` and `chr`."
-                   " If `accession` not set, must provide both `assembly` and `chr`.")
+accession_descr = ("Genomic accession. If `accession` is set, will ignore `assembly` "
+                   "and `chr`. If `accession` not set, must provide both `assembly` "
+                   "and `chr`.")
 total_copies_descr = "Total copies for Copy Number Count variation object"
 
 
 @app.get("/variation/parsed_to_cn_var",
-         summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
-         "VRS Copy Number Count Variation",
+         summary="Given parsed genomic components, return VRS Copy Number Count "
+         "Variation",
          response_description="A response to a validly-formed query.",
          description="Return VRS Copy Number Count Variation",
          response_model=ParsedToCnVarService,
@@ -584,18 +585,18 @@ def parsed_to_cn_var(
     end1: Optional[int] = Query(None, description=end1_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCnVarService:
-    """Given parsed components, return Copy Number Count Variation
+    """Given parsed genomic components, return Copy Number Count Variation.
 
     :param start0: Start position (residue coords). If start is a definite range,
         this will be the min start position
     :param end0: End position (residue coords). If end is a definite range, this
         will be the min end position
     :param total_copies: Total copies for Copy Number Count variation object
-    :param assembly: Assembly. If `accession` is set, will ignore `assembly` and `chr`.
+    :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
         If `accession` not set, must provide both `assembly` and `chr`.
     :param chr: Chromosome. Must set when `assembly` is set.
-    :param accession: Accession. If `accession` is set, will ignore `assembly` and
-        `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+    :param accession: Genomic accession. If `accession` is set, will ignore `assembly`
+        and `chr`. If `accession` not set, must provide both `assembly` and `chr`.
     :param start_pos_type: Type of the start value in VRS Sequence Location
     :param end_pos_type: Type of the end value in VRS Sequence Location
     :param start1: Only set when start is a definite range, this will be the max
@@ -646,7 +647,8 @@ def parsed_to_cn_var(
 
 
 @app.get("/variation/parsed_to_cx_var",
-         summary="Given parsed components, return VRS Copy Number Change Variation",
+         summary="Given parsed genomic components, return VRS Copy Number Change "
+         "Variation",
          response_description="A response to a validly-formed query.",
          description="Return VRS Copy Number Change Variation",
          response_model=ParsedToCxVarService,
@@ -669,7 +671,7 @@ def parsed_to_cx_var(
     end1: Optional[int] = Query(None, description=end1_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCxVarService:
-    """Given parsed components, return Copy Number Change Variation
+    """Given parsed genomic components, return Copy Number Change Variation
 
     :param start0: Start position (residue coords). If start is a definite range,
         this will be the min start position

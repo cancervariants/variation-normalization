@@ -199,7 +199,7 @@ class ToCopyNumberVariation(ToVRS):
     def _validate_pos(self, accession: str, pos: int) -> Optional[str]:
         """Validate position for parsed components
 
-        :param accession: Accession
+        :param accession: Genomic accession
         :param pos: Position on accession
         :return: Warning if invalid position or sequence
         """
@@ -223,7 +223,7 @@ class ToCopyNumberVariation(ToVRS):
     ]:
         """Get VRS Sequence Location start and end values
 
-        :param accession: Accession for sequence
+        :param accession: Genomic accession for sequence
         :param pos0: Position (residue coords). If `pos_type` is a definite range,
             this will be the min start position
         :param pos_type: Type of the pos value in VRS Sequence Location
@@ -274,7 +274,7 @@ class ToCopyNumberVariation(ToVRS):
     ) -> Tuple[Optional[Dict], Optional[str]]:
         """Get sequence location for parsed components
 
-        :param accession: Accession for sequence
+        :param accession: Genomic accession for sequence
         :param start0: Start position (residue coords). If start is a definite range,
             this will be the min start position
         :param start_pos_type: Type of the start value in VRS Sequence Location
@@ -351,8 +351,8 @@ class ToCopyNumberVariation(ToVRS):
         accession: Optional[str] = None,
         untranslatable_returns_text: bool = False
     ) -> Union[ParsedToCnVarService, ParsedToCxVarService]:
-        """Given parsed components, return Copy Number Count or Copy Number Change
-        Variation
+        """Given parsed genomic components, return Copy Number Count or Copy Number
+        Change Variation
 
         :param start0: Start position (residue coords). If start is a definite range,
             this will be the min start position
@@ -363,11 +363,12 @@ class ToCopyNumberVariation(ToVRS):
             Only used when `copy_number_type` is Copy Number Count.
         :param copy_change: Copy Change.
             Only used when `copy_number_type` is Copy Number Change.
-        :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
-            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
+            If `accession` not set, must provide both `assembly` and `chr`.
         :param chr: Chromosome. Must set when `assembly` is set.
-        :param accession: Accession. If `accession` is set, will ignore `assembly` and
-            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param accession: Genomic accession. If `accession` is set, will ignore
+            `assembly` and `chr`. If `accession` not set, must provide both `assembly`
+            and `chr`.
         :param start_pos_type: Type of the start value in VRS Sequence Location
         :param end_pos_type: Type of the end value in VRS Sequence Location
         :param start1: Only set when start is a definite range, this will be the max
