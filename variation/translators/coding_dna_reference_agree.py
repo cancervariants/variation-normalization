@@ -50,9 +50,6 @@ class CdnaReferenceAgree(Translator):
                 CoordinateType.CODING_DNA, AltType.REFERENCE_AGREE, warnings,
                 cds_start=mane.get("coding_start_site", None)
             )
-        elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
-            # TODO:
-            pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos, classification.pos,

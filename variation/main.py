@@ -20,9 +20,9 @@ from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService
 from variation.query import QueryHandler
-from variation.schemas.normalize_response_schema \
-    import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
-    ToCanonicalVariationService, TranslateIdentifierService
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
+)
 from variation.schemas.service_schema import AmplificationToCxVarService, \
     ClinVarAssembly, ParsedToCnVarService, ToGenomicService, ToCdnaService
 from .version import __version__
@@ -36,7 +36,6 @@ class Tags(Enum):
 
     SEQREPO = "SeqRepo"
     TO_PROTEIN_VARIATION = "To Protein Variation"
-    TO_CANONICAL = "To Canonical Variation"
     VRS_PYTHON = "VRS-Python"
     TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
     ALIGNMENT_MAPPER = "Alignment Mapper"
@@ -311,58 +310,6 @@ copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Numb
                      "Change Variation.")
 baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
                         "`fmt`=`hgvs` and Copy Number Count Variation.`"
-
-
-@app.get("/variation/to_canonical_variation",
-         summary="Given SPDI or HGVS, return VRSATILE Canonical Variation",
-         response_description="A response to a validly-formed query.",
-         description="Return VRSATILE Canonical Variation",
-         response_model=ToCanonicalVariationService,
-         tags=[Tags.TO_CANONICAL])
-async def to_canonical_variation(
-        q: str = Query(..., description="HGVS or SPDI query"),
-        fmt: ToCanonicalVariationFmt = Query(...,
-                                             description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
-        complement: bool = Query(False, description=complement_descr),
-        do_liftover: bool = Query(False, description="Whether or not to liftover to "
-                                  "GRCh38 assembly."),
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-            HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
-        copy_change: Optional[CopyChange] = Query(
-            None, description=copy_change_descr),
-        baseline_copies: Optional[int] = Query(
-            None, description=baseline_copies_descr),
-        untranslatable_returns_text: bool = Query(
-            False, description=untranslatable_descr)
-) -> ToCanonicalVariationService:
-    """Return categorical variation for canonical SPDI
-
-    :param str q: HGVS or SPDI query
-    :param ToCanonicalVariationFmt fmt: Format of the input variation. Must be
-        `spdi` or `hgvs`.
-    :param bool complement: This field indicates that a categorical variation
-        is defined to include (false) or exclude (true) variation concepts matching the
-        categorical variation. This is equivalent to a logical NOT operation on the
-        categorical variation properties.
-    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Determines how to interpret
-        HGVS dup/del expressions in VRS. Must be one of: `default`, `copy_number_count`,
-        `copy_number_change`, `repeated_seq_expr`, `literal_seq_expr`
-    :param Optional[CopyChange] copy_change: copy change.
-        Only used when `fmt`=`hgvs` and Copy Number Change Variation.
-    :param Optional[int] baseline_copies: Baseline copies number
-        Only used when `fmt`=`hgvs` and Copy Number Count Variation
-    :param bool untranslatable_returns_text: `True` return VRS Text Object when
-        unable to translate or normalize query. `False` return `None` when
-        unable to translate or normalize query.
-    :return: ToCanonicalVariationService for variation query
-    """
-    q = unquote(q)
-    resp = await query_handler.to_canonical_handler.to_canonical_variation(
-        q, fmt, complement, do_liftover=do_liftover,
-        hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-        copy_change=copy_change,
-        untranslatable_returns_text=untranslatable_returns_text)
-    return resp
 
 
 def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],

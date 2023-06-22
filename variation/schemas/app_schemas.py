@@ -12,4 +12,3 @@ class Endpoint(str, Enum):
     TRANSLATE_FROM = "translate_from"
     HGVS_TO_COPY_NUMBER_COUNT = "hgvs_to_copy_number_count"
     HGVS_TO_COPY_NUMBER_CHANGE = "hgvs_to_copy_number_change"
-    TO_CANONICAL = "to_canonical"

@@ -49,9 +49,6 @@ class GenomicDuplication(Translator):
                 mane["alt_ac"], mane["pos"][0] + 1, mane["pos"][1] + 1,
                 CoordinateType.LINEAR_GENOMIC, AltType.DUPLICATION, warnings
             )
-        elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
-            # TODO:
-            pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos0, classification.pos1,

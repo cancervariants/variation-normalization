@@ -49,9 +49,6 @@ class ProteinInsertion(Translator):
                 CoordinateType.PROTEIN, AltType.INSERTION, warnings,
                 alt=classification.inserted_sequence
             )
-        elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
-            # TODO:
-            pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos0, classification.pos1,

@@ -48,9 +48,6 @@ class ProteinDeletion(Translator):
                 mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
                 CoordinateType.PROTEIN, AltType.DELETION, warnings
             )
-        elif endpoint_name == Endpoint.TO_CANONICAL and do_liftover:
-            # TODO:
-            pass
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos0, classification.pos1,

@@ -5,8 +5,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 from pydantic.types import StrictStr
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, \
-    CanonicalVariation
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 
 class HGVSDupDelMode(str, Enum):
@@ -273,71 +272,5 @@ class TranslateIdentifierService(ServiceResponse):
                     "version": "0.2.14",
                     "response_datetime": "2021-11-18T14:10:53.909158",
                     "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
-                }
-            }
-
-
-class ToCanonicalVariationFmt(str, Enum):
-    """Define formats for to_canonical endpoint"""
-
-    HGVS = "hgvs"
-    SPDI = "spdi"
-
-
-class ToCanonicalVariationService(ServiceResponse):
-    """A response model for the to canonical variation service"""
-
-    query: str
-    canonical_variation: Optional[CanonicalVariation]
-
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-                schema: Dict[str, Any],
-                model: Type["ToCanonicalVariationService"]) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
-                "query": "NC_000007.14:140753335:A:T",
-                "warnings": [],
-                "canonical_variation": {
-                    "_id": "ga4gh:VCC.W0r_NF_ecKXjgvTwcMNkyVS1pB_CXMj9",
-                    "type": "CanonicalVariation",
-                    "complement": False,
-                    "variation": {
-                        "_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
-                        "type": "Allele",
-                        "location": {
-                            "_id": "ga4gh:VSL.zga82-TpYiNmBESCfvDvAz9DyvJF98I-",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
-                            "interval": {
-                                "type": "SequenceInterval",
-                                "start": {
-                                    "type": "Number",
-                                    "value": 140753335
-                                },
-                                "end": {
-                                    "type": "Number",
-                                    "value": 140753336
-                                }
-                            }
-                        },
-                        "state": {
-                            "type": "LiteralSequenceExpression",
-                            "sequence": "T"
-                        }
-                    }
-                },
-                "service_meta_": {
-                    "version": "0.2.20",
-                    "response_datetime": "2022-02-20T17:16:19.415675",
-                    "name": "variation-normalizer",
-                    "url": "https://github.com/cancervariants/variation-normalization"
                 }
             }

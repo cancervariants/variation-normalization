@@ -19,7 +19,6 @@ from variation.data_sources import CodonTable
 from variation.to_vrsatile import ToVRSATILE
 from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
 from variation.normalize import Normalize
-from variation.to_canonical_variation import ToCanonicalVariation
 from variation.to_copy_number_variation import ToCopyNumberVariation
 
 
@@ -100,6 +99,4 @@ class QueryHandler:
                                              mane_transcript_mappings, codon_table]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
             *to_protein_params)
-        self.to_canonical_handler = ToCanonicalVariation(
-            *to_vrs_params + [self._tlr, uta_db])
         self.to_copy_number_handler = ToCopyNumberVariation(*to_vrs_params)

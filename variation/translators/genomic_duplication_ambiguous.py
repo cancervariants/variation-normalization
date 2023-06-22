@@ -113,7 +113,7 @@ class GenomicDuplicationAmbiguous(Translator):
 
         seq_loc = self.vrs.get_sequence_loc(seq_id, ival).as_dict()
 
-        if endpoint_name in {Endpoint.NORMALIZE, Endpoint.TO_CANONICAL}:
+        if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
                 AltType.DUPLICATION_AMBIGUOUS, seq_loc, warnings, hgvs_dup_del_mode,
                 baseline_copies=baseline_copies, copy_change=copy_change
