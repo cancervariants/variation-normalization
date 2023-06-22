@@ -3,6 +3,8 @@ from enum import Enum
 from typing import Dict, List, Optional, Union, Literal
 from datetime import datetime
 from urllib.parse import unquote
+import traceback
+import logging
 
 import pkg_resources
 from fastapi import FastAPI, Query
@@ -27,6 +29,9 @@ from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
     TranslateToService, VrsPythonMeta
+
+
+logger = logging.getLogger(__name__)
 
 
 class Tags(Enum):
@@ -647,13 +652,40 @@ def parsed_to_cx_var(
     :return: ParsedToCxVarService containing Copy Number Change variation and list of
         warnings
     """
-    resp = query_handler.to_copy_number_handler.parsed_to_cx_var(
-        start0=start0, end0=end0, assembly=assembly, chr=chr, accession=accession,
-        copy_change=copy_change, start_pos_type=start_pos_type,
-        end_pos_type=end_pos_type, start1=start1, end1=end1,
-        untranslatable_returns_text=untranslatable_returns_text
-    )
-    return resp
+    try:
+        resp = query_handler.to_copy_number_handler.parsed_to_cx_var(
+            start0=start0, end0=end0, assembly=assembly, chr=chr, accession=accession,
+            copy_change=copy_change, start_pos_type=start_pos_type,
+            end_pos_type=end_pos_type, start1=start1, end1=end1,
+            untranslatable_returns_text=untranslatable_returns_text
+        )
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        og_query = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "copy_change": copy_change,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+        return ParsedToCxVarService(
+            query=og_query,
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+    else:
+        return resp
 
 
 amplification_to_cx_var_descr = ("Translate amplification to VRS Copy Number Change "
