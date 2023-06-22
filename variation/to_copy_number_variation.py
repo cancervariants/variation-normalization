@@ -1,9 +1,9 @@
 """Module for to copy number variation translation"""
-from typing import Tuple, Optional, List, Union
+from typing import Tuple, Optional, List, Union, Dict, Literal
 from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
-    Text, CopyChange
+    Text, CopyChange, VRSTypes
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
@@ -16,7 +16,7 @@ from variation.schemas.hgvs_to_copy_number_schema import \
     VALID_COPY_CHANGE
 from variation.schemas.service_schema import AmplificationToCxVarQuery, \
     AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
-    ParsedToCnVarService
+    ParsedToCnVarService, ParsedToCxVarQuery, ParsedToCxVarService
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
@@ -28,28 +28,16 @@ class ToCopyNumberVariation(ToVRS):
     """Class for representing copy number variation"""
 
     @staticmethod
-    def _parsed_to_text(start: int, end: int, total_copies: int, warnings: List[str],
-                        assembly: Optional[str] = None, chr: Optional[str] = None,
-                        accession: Optional[str] = None) -> Tuple[Text, List[str]]:
+    def _parsed_to_text(
+        params: Dict
+    ) -> Text:
         """Return response for invalid query for parsed_to_cn_var
 
-        :param int start: Start position as residue coordinate
-        :param int end: End position as residue coordinate
-        :param int total_copies: Total copies for Copy Number Count variation object
-        :param List[str] warnings: List of warnings
-        :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
-            will ignore `assembly` and `chr`. If `accession` not set, must provide
-            both `assembly` and `chr`.
-        :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
-        :param Optional[str] accession: Accession. If `accession` is set,
-            will ignore `assembly` and `chr`. If `accession` not set, must provide
-            both `assembly` and `chr`.
-        :return: Tuple containing text variation and warnings
+        :param params: Parameters for initial query
+        :return: Variation represented as VRS Text object
         """
         text_label = ""
-        for val, name in [(assembly, "assembly"), (chr, "chr"),
-                          (accession, "accession"), (start, "start"),
-                          (end, "end"), (total_copies, "total_copies")]:
+        for name, val in params.items():
             val = val if val else "None"
             text_label += f"{name}={val}&"
 
@@ -57,7 +45,7 @@ class ToCopyNumberVariation(ToVRS):
         variation = models.Text(definition=definition, type="Text")
         _id = ga4gh_identify(variation)
         variation = Text(definition=definition, id=_id)
-        return variation, warnings
+        return variation
 
     def _hgvs_to_cnv_resp(
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
@@ -176,6 +164,178 @@ class ToCopyNumberVariation(ToVRS):
             copy_number_change=cx_var
         )
 
+    def _get_parsed_ac(
+        self, accession: str, assembly: Optional[ClinVarAssembly] = None,
+        chr: Optional[str] = None
+    ) -> Tuple[Optional[str], Optional[str]]:
+        """Get accession for parsed components
+
+        :param accession: Accession. If `accession` is set, will ignore `assembly` and
+            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
+            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param chr: Chromosome. Must set when `assembly` is set.
+        :return: Tuple containing accession (if successful) and warnings (if error)
+        """
+        warning = None
+        if accession:
+            pass
+        elif assembly and chr:
+            if assembly == ClinVarAssembly.HG38:
+                assembly = ClinVarAssembly.GRCH38
+            elif assembly == ClinVarAssembly.HG19:
+                assembly = ClinVarAssembly.GRCH37
+            elif assembly == ClinVarAssembly.HG18:
+                assembly = ClinVarAssembly.NCBI36
+
+            if assembly != ClinVarAssembly.NCBI36:
+                # Variation Normalizer does not support NCBI36 yet
+                query = f"{assembly.value}:{chr}"
+                aliases, warning = self.seqrepo_access.translate_identifier(query)
+                if not warning:
+                    accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
+                    if not accession:
+                        warning = f"Unable to find RefSeq accession for {query}"
+            else:
+                warning = f"{assembly.value} assembly is not currently supported"
+        else:
+            warning = "Must provide either `accession` or both `assembly` and `chr`."
+
+        return accession, warning
+
+    def _validate_pos(self, accession: str, pos: int) -> Optional[str]:
+        """Validate position for parsed components
+
+        :param accession: Accession
+        :param pos: Position on accession
+        :return: Warning if invalid position or sequence
+        """
+        try:
+            self.seqrepo_access.sr[accession][pos - 1]
+        except ValueError as e:
+            warning = f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
+        else:
+            warning = None
+        return warning
+
+    def _get_vrs_loc_start_or_end(
+        self, accession: str, pos0: int,
+        pos_type: Literal[
+            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+        ],
+        is_start: bool = True, pos1: Optional[int] = None
+    ) -> Tuple[
+        Optional[Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],
+        Optional[str]
+    ]:
+        """Get VRS Sequence Location start and end values
+
+        :param accession: Accession for sequence
+        :param pos0: Position (residue coords). If `pos_type` is a definite range,
+            this will be the min start position
+        :param pos_type: Type of the pos value in VRS Sequence Location
+        :param is_start: `True` if position(s) describing VRS start value. `False` if
+            position(s) describing VRS end value
+        :param pos1: Only set when end is a definite range, this will be the max end
+            position
+        :return: Tuple containing VRS start or end value for sequence location
+            (if valid) and warning (if invalid)
+        """
+        vrs_val = None
+        warning = None
+
+        if pos_type == VRSTypes.DEFINITE_RANGE:
+            warning = self._validate_pos(accession, pos1)
+            if warning:
+                return vrs_val, warning
+
+            vrs_val = models.DefiniteRange(
+                min=pos0 - 1 if is_start else pos0 + 1,
+                max=pos1 - 1 if is_start else pos1 + 1,
+                type="DefiniteRange"
+            )
+        elif pos_type == VRSTypes.NUMBER:
+            vrs_val = models.Number(
+                value=pos0 - 1 if is_start else pos0,
+                type="Number"
+            )
+        else:
+            vrs_val = models.IndefiniteRange(
+                comparator="<=" if is_start else ">=",
+                value=pos0 - 1 if is_start else pos0,
+                type="IndefiniteRange"
+            )
+
+        return vrs_val, warning
+
+    def _get_parsed_seq_loc(
+        self, accession: str, start0: int,
+        start_pos_type: Union[
+            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+        ],
+        end0: int,
+        end_pos_type: Union[
+            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+        ],
+        start1: Optional[int] = None, end1: Optional[int] = None
+    ) -> Tuple[Optional[Dict], Optional[str]]:
+        """Get sequence location for parsed components
+
+        :param accession: Accession for sequence
+        :param start0: Start position (residue coords). If start is a definite range,
+            this will be the min start position
+        :param start_pos_type: Type of the start value in VRS Sequence Location
+        :param end0: End position (residue coords). If end is a definite range, this
+            will be the min end position
+        :param end_pos_type: Type of the end value in VRS Sequence Location
+        :param start1: Only set when start is a definite range, this will be the max
+            start position
+        :param end1: Only set when end is a definite range, this will be the max end
+            position
+        :return: Tuple containing VRS sequence location represented as dict (if valid)
+            and warning (if invalid)
+        """
+        seq_loc = None
+        warning = None
+
+        try:
+            sequence_id, warning = self.seqrepo_access.translate_identifier(
+                accession, "ga4gh"
+            )
+        except (IndexError, TypeError):
+            warning = f"{accession} does not have an associated ga4gh identifier"
+        else:
+            if not warning:
+                sequence_id = sequence_id[0]
+
+                for pos in [start0, end0]:
+                    # validate start0 and end0 since they're always required
+                    warning = self._validate_pos(accession, pos)
+                    if warning:
+                        return seq_loc, warning
+
+                start_vrs, warning = self._get_vrs_loc_start_or_end(
+                    accession, start0, start_pos_type, is_start=True, pos1=start1
+                )
+                if warning:
+                    return seq_loc, warning
+
+                end_vrs, warning = self._get_vrs_loc_start_or_end(
+                    accession, end0, end_pos_type, is_start=False, pos1=end1
+                )
+                if warning:
+                    return seq_loc, warning
+
+                seq_loc = models.SequenceLocation(
+                    type="SequenceLocation",
+                    sequence_id=sequence_id,
+                    start=start_vrs,
+                    end=end_vrs
+                )
+                seq_loc.id = ga4gh_identify(seq_loc)
+
+        return seq_loc.as_dict() if seq_loc else seq_loc, warning
+
     def parsed_to_cn_var(
         self, start: int, end: int, total_copies: int,
         assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
@@ -201,98 +361,138 @@ class ToCopyNumberVariation(ToVRS):
             and list of warnings
         """
         variation = None
-        warnings = list()
+        warnings = []
+        params = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start": start,
+            "end": end,
+            "total_copies": total_copies
+        }
+
         try:
-            og_query = ParsedToCnVarQuery(
-                assembly=assembly, chr=chr, accession=accession, start=start, end=end,
-                total_copies=total_copies)
+            og_query = ParsedToCnVarQuery(**params)
         except ValidationError as e:
             warnings.append(str(e))
             og_query = None
         else:
-            if accession:
-                pass
-            elif assembly and chr:
-                if assembly == ClinVarAssembly.HG38:
-                    assembly = ClinVarAssembly.GRCH38
-                elif assembly == ClinVarAssembly.HG19:
-                    assembly = ClinVarAssembly.GRCH37
-                elif assembly == ClinVarAssembly.HG18:
-                    assembly = ClinVarAssembly.NCBI36
-
-                if assembly != ClinVarAssembly.NCBI36:
-                    # Variation Normalizer does not support NCBI36 yet
-                    query = f"{assembly.value}:{chr}"
-                    aliases, w = self.seqrepo_access.translate_identifier(query)
-                    if w:
-                        warnings.append(w)
-                    else:
-                        accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
-                        if not accession:
-                            warnings.append(f"Unable to find RefSeq accession for {query}")  # noqa: E501
-                else:
-                    warnings.append(f"{assembly.value} assembly is not currently supported")  # noqa: E501
+            accession, warning = self._get_parsed_ac(accession, assembly, chr)
+            if warning:
+                warnings.append(warning)
             else:
-                warnings.append("Must provide either `accession` or both `assembly` "
-                                "and `chr`.")
+                seq_loc, warning = self._get_parsed_seq_loc(
+                    accession, start, VRSTypes.INDEFINITE_RANGE, end,
+                    VRSTypes.INDEFINITE_RANGE
+                )
+                if warning:
+                    warnings.append(warning)
 
         if warnings:
             if untranslatable_returns_text:
-                variation, warnings = self._parsed_to_text(
-                    start, end, total_copies, warnings, assembly, chr, accession)
+                variation = self._parsed_to_text(params)
         else:
-            try:
-                sequence_id, w = self.seqrepo_access.translate_identifier(accession,
-                                                                          "ga4gh")
-            except (IndexError, TypeError):
-                warnings.append(f"{accession} does not have an associated "
-                                f"ga4gh identifier")
-            else:
-                if w:
-                    warnings.append(w)
-                else:
-                    sequence_id = sequence_id[0]
-
-            if warnings:
-                if untranslatable_returns_text:
-                    variation, warnings = self._parsed_to_text(
-                        start, end, total_copies, warnings, assembly, chr, accession)
-            else:
-                try:
-                    self.seqrepo_access.sr[accession][start - 1]
-                    self.seqrepo_access.sr[accession][end]
-                except ValueError as e:
-                    warnings.append(str(e).replace("start", "Position"))
-                    if untranslatable_returns_text:
-                        variation, warnings = self._parsed_to_text(
-                            start, end, total_copies, warnings, assembly, chr,
-                            accession)
-                else:
-                    subject = models.SequenceLocation(
-                        type="SequenceLocation",
-                        sequence_id=sequence_id,
-                        start=models.IndefiniteRange(
-                            comparator="<=",
-                            value=start - 1,
-                            type="IndefiniteRange"),
-                        end=models.IndefiniteRange(
-                            comparator=">=",
-                            value=end,
-                            type="IndefiniteRange")
-                    )
-                    subject.id = ga4gh_identify(subject)
-                    variation = {
-                        "type": "CopyNumberCount",
-                        "subject": subject.as_dict(),
-                        "copies": {"value": total_copies, "type": "Number"}
-                    }
-                    variation["id"] = ga4gh_identify(
-                        models.CopyNumberCount(**variation))
-                    variation = CopyNumberCount(**variation)
+            variation = {
+                "type": "CopyNumberCount",
+                "subject": seq_loc,
+                "copies": {"value": total_copies, "type": "Number"}
+            }
+            variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
+            variation = CopyNumberCount(**variation)
 
         return ParsedToCnVarService(
             query=og_query,
             copy_number_count=variation,
+            warnings=warnings,
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+
+    def parsed_to_cx_var(
+        self, start0: int, end0: int, copy_change: CopyChange,
+        start_pos_type: Literal[
+            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+        ] = VRSTypes.NUMBER,
+        end_pos_type: Literal[
+            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+        ] = VRSTypes.NUMBER,
+        start1: Optional[int] = None, end1: Optional[int] = None,
+        assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
+        accession: Optional[str] = None, untranslatable_returns_text: bool = False
+    ) -> ParsedToCxVarService:
+        """Given parsed components, return Copy Number Change Variation
+
+        :param start0: Start position (residue coords). If start is a definite range,
+            this will be the min start position
+        :param end0: End position (residue coords). If end is a definite range, this
+            will be the min end position
+        :param copy_change: Copy Change
+        :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
+            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param chr: Chromosome. Must set when `assembly` is set.
+        :param accession: Accession. If `accession` is set, will ignore `assembly` and
+            `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param start_pos_type: Type of the start value in VRS Sequence Location
+        :param end_pos_type: Type of the end value in VRS Sequence Location
+        :param start1: Only set when start is a definite range, this will be the max
+            start position
+        :param end1: Only set when end is a definite range, this will be the max end
+            position
+        :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+            translate or normalize query. `False` return `None` when unable to translate
+            or normalize query.
+        :return: ParsedToCxVarService containing Copy Number Change variation and list
+            of warnings
+        """
+        variation = None
+        warnings = []
+        params = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "copy_change": copy_change,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+
+        try:
+            og_query = ParsedToCxVarQuery(**params)
+        except ValidationError as e:
+            warnings.append(str(e))
+            og_query = None
+        else:
+            accession, warning = self._get_parsed_ac(accession, assembly, chr)
+            if warning:
+                warnings.append(warning)
+            else:
+                seq_loc, warning = self._get_parsed_seq_loc(
+                    accession, start0, start_pos_type, end0, end_pos_type,
+                    start1=start1, end1=end1
+                )
+                if warning:
+                    warnings.append(warning)
+
+        if warnings:
+            if untranslatable_returns_text:
+                variation = self._parsed_to_text(params)
+        else:
+            variation = {
+                "type": "CopyNumberChange",
+                "subject": seq_loc,
+                "copy_change": copy_change
+            }
+            variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
+            variation = CopyNumberChange(**variation)
+
+        return ParsedToCxVarService(
+            query=og_query,
+            copy_number_change=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,

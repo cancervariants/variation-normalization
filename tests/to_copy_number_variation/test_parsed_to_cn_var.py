@@ -257,4 +257,4 @@ def test_invalid(test_cnv_handler):
     resp = test_cnv_handler.parsed_to_cn_var(
         31738809, 2302991250, 2, accession="NC_000015.10")
     assert resp.copy_number_count is None
-    assert resp.warnings == ["Position out of range (2302991250)"]
+    assert resp.warnings == ["SeqRepo ValueError: Position out of range (2302991249)"]

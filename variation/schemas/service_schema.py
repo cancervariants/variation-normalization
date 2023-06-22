@@ -1,11 +1,13 @@
 """Module containing schemas for services"""
 from enum import Enum
-from typing import Optional, Union, Dict, Any, Type
+from typing import Optional, Union, Dict, Any, Type, Literal
 
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, StrictStr, root_validator
+from pydantic.main import ModelMetaclass
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
-    SequenceLocation, CopyNumberChange
+    SequenceLocation, CopyNumberChange, CopyChange, VRSTypes
 
+from variation.version import __version__
 from variation.schemas.normalize_response_schema import ServiceResponse
 
 
@@ -80,6 +82,108 @@ class ParsedToCnVarService(ServiceResponse):
                 "service_meta_": {
                     "name": "variation-normalizer",
                     "version": "0.2.17",
+                    "response_datetime": "2022-01-26T22:23:41.821673",
+                    "url": "https://github.com/cancervariants/variation-normalization"
+                }
+            }
+
+
+class ParsedToCxVarQuery(BaseModel):
+    """Define query for parsed to copy number change variation endpoint"""
+
+    assembly: Optional[ClinVarAssembly] = None
+    chr: Optional[StrictStr] = None
+    accession: Optional[StrictStr] = None
+    start0: int
+    end0: int
+    copy_change: CopyChange
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ]
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ]
+    start1: Optional[int]
+    end1: Optional[int]
+
+    @root_validator(pre=False, skip_on_failure=True)
+    def validate_pos(cls: ModelMetaclass, v: Dict) -> Dict:
+        """Validate positions. `start1` is required when `start_pos_type` is a definite
+        range. `end1` is required when `end_pos_type` is a definite range. End positions
+        must be greater than start positions
+        """
+        start0 = v["start0"]
+        start1 = v.get("start1")
+        if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
+            assert start1 is not None, "`start1` is required for definite ranges"
+            assert start1 > start0, "`start0` must be less than `start1`"
+
+        end0 = v["end0"]
+        end1 = v.get("end1")
+        if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
+            assert end1 is not None, "`end1` is required for definite ranges"
+            assert end1 > end0, "`end0` must be less than `end1`"
+
+        err_msg = "end positions must be greater than start"
+        if start1 is None:
+            assert end0 > start0, err_msg
+        else:
+            assert end0 > start1, err_msg
+
+        return v
+
+
+class ParsedToCxVarService(ServiceResponse):
+    """A response for translating parsed components to Copy Number Change"""
+
+    query: Optional[ParsedToCxVarQuery] = None
+    copy_number_change: Optional[Union[Text, CopyNumberChange]]
+
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["ParsedToCxVarService"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "query": {
+                    "assembly": "GRCh38",
+                    "chr": "chrY",
+                    "accession": None,
+                    "start0": 10001,
+                    "end0": 1223133,
+                    "copy_change": "efo:0030069",
+                    "start_pos_type": "Number",
+                    "end_pos_type": "Number",
+                    "start1": None,
+                    "end1": None
+                },
+                "copy_number_change": {
+                    "type": "CopyNumberChange",
+                    "id": "ga4gh:CX.UirzxujWnAIklYHh4VxSnFglfDROHYv6",
+                    "subject": {
+                        "type": "SequenceLocation",
+                        "id": "ga4gh:SL.x075Sp6tCfGZcpHHmJ1e5oUdAW0CvN0X",
+                        "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                        "start": {
+                            "type": "Number",
+                            "value": 10000
+                        },
+                        "end": {
+                            "type": "Number",
+                            "value": 1223133
+                        }
+                    },
+                    "copy_change": "efo:0030069"
+                },
+                "service_meta_": {
+                    "name": "variation-normalizer",
+                    "version": __version__,
                     "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization"
                 }

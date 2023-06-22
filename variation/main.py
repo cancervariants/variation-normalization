@@ -1,15 +1,17 @@
 """Main application for FastAPI."""
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Literal
 from datetime import datetime
 from urllib.parse import unquote
+import traceback
+import logging
 
 import pkg_resources
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
 from pydantic import ValidationError
 import python_jsonschema_objects
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, VRSTypes
 from hgvs.exceptions import HGVSError
 from bioutils.exceptions import BioutilsError
 from ga4gh.vrs import models
@@ -22,11 +24,14 @@ from variation.schemas.normalize_response_schema \
     import HGVSDupDelMode as HGVSDupDelModeEnum, ToCanonicalVariationFmt, \
     ToCanonicalVariationService, TranslateIdentifierService
 from variation.schemas.service_schema import AmplificationToCxVarService, \
-    ClinVarAssembly, ParsedToCnVarService
+    ClinVarAssembly, ParsedToCnVarService, ParsedToCxVarService
 from .version import __version__
 from .schemas.vrs_python_translator_schema import TranslateFromFormat, \
     TranslateFromService, TranslateFromQuery, TranslateToHGVSQuery, TranslateToQuery,\
     TranslateToService, VrsPythonMeta
+
+
+logger = logging.getLogger(__name__)
 
 
 class Tags(Enum):
@@ -585,6 +590,102 @@ def parsed_to_cn_var(
         start, end, total_copies, assembly, chr, accession,
         untranslatable_returns_text=untranslatable_returns_text)
     return resp
+
+
+start0_descr = ("Start position (residue coords). If start is a definite range, this "
+                "will be the min start position")
+start1_descr = ("Only set when start is a definite range, this will be the max start "
+                "position")
+end0_descr = ("End position (residue coords). If end is a definite range, this will be "
+              "the min end position")
+end1_descr = ("Only set when end is a definite range, this will be the max end "
+              "position")
+start_pos_type = "Type of the start value in VRS Sequence Location"
+end_pos_type = "Type of the end value in VRS Sequence Location"
+
+
+@app.get("/variation/parsed_to_cx_var",
+         summary="Given parsed components, return VRS Copy Number Change Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Change Variation",
+         response_model=ParsedToCxVarService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION]
+         )
+def parsed_to_cx_var(
+    start0: int = Query(..., description=start0_descr),
+    end0: int = Query(..., description=end0_descr),
+    copy_change: CopyChange = Query(..., description="The copy change"),
+    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
+    chr: Optional[str] = Query(None, description=chr_descr),
+    accession: Optional[str] = Query(None, description=accession_descr),
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=start_pos_type),
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=end_pos_type),
+    start1: Optional[int] = Query(None, description=start1_descr),
+    end1: Optional[int] = Query(None, description=end1_descr),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> ParsedToCxVarService:
+    """Given parsed components, return Copy Number Change Variation
+
+    :param start0: Start position (residue coords). If start is a definite range,
+        this will be the min start position
+    :param end0: End position (residue coords). If end is a definite range, this
+        will be the min end position
+    :param copy_change: Copy Change
+    :param assembly: Assembly. If `accession` is set, will ignore `assembly` and `chr`.
+        If `accession` not set, must provide both `assembly` and `chr`.
+    :param chr: Chromosome. Must set when `assembly` is set.
+    :param accession: Accession. If `accession` is set, will ignore `assembly` and
+        `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+    :param start_pos_type: Type of the start value in VRS Sequence Location
+    :param end_pos_type: Type of the end value in VRS Sequence Location
+    :param start1: Only set when start is a definite range, this will be the max
+        start position
+    :param end1: Only set when end is a definite range, this will be the max end
+        position
+    :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+        translate or normalize query. `False` return `None` when unable to translate or
+        normalize query.
+    :return: ParsedToCxVarService containing Copy Number Change variation and list of
+        warnings
+    """
+    try:
+        resp = query_handler.to_copy_number_handler.parsed_to_cx_var(
+            start0=start0, end0=end0, assembly=assembly, chr=chr, accession=accession,
+            copy_change=copy_change, start_pos_type=start_pos_type,
+            end_pos_type=end_pos_type, start1=start1, end1=end1,
+            untranslatable_returns_text=untranslatable_returns_text
+        )
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        og_query = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "copy_change": copy_change,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+        return ParsedToCxVarService(
+            query=og_query,
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+    else:
+        return resp
 
 
 amplification_to_cx_var_descr = ("Translate amplification to VRS Copy Number Change "
