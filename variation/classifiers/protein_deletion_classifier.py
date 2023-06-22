@@ -26,7 +26,7 @@ class ProteinDeletionClassifier(Classifier):
 
         return ProteinDeletionClassification(
             matching_tokens=tokens,
-            Nomenclature=Nomenclature.FREE_TEXT,
+            nomenclature=Nomenclature.FREE_TEXT,
             gene=gene_token,
             aa0=protein_del_token.aa0,
             pos0=protein_del_token.pos0,

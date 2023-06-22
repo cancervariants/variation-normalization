@@ -13,12 +13,12 @@ class ProteinReferenceAgreeClassifier(Classifier):
 
     def classification_type(self) -> ClassificationType:
         """Return the Reference Agree classification type."""
-        return ClassificationType.REFERENCE_AGREE
+        return ClassificationType.PROTEIN_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.REFERENCE_AGREE]
+            [TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]
         ]
 
     def match(self, tokens: List[Token]):
