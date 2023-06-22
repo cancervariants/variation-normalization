@@ -22,81 +22,14 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-class ParsedToCnVarQuery(BaseModel):
-    """Define query for parsed to copy number count variation endpoint"""
-
-    assembly: Optional[ClinVarAssembly] = None
-    chr: Optional[StrictStr] = None
-    accession: Optional[StrictStr] = None
-    start: int
-    end: int
-    total_copies: int
-
-
-class ParsedToCnVarService(ServiceResponse):
-    """A response for translating parsed components to Copy Number Count"""
-
-    query: Optional[ParsedToCnVarQuery] = None
-    copy_number_count: Optional[Union[Text, CopyNumberCount]]
-
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["ParsedToCnVarService"]) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
-                "query": {
-                    "assembly": "GRCh37",
-                    "chr": "1",
-                    "accession": None,
-                    "start": 143134063,
-                    "end": 143284670,
-                    "total_copies": 3
-                },
-                "copy_number_count": {
-                    "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
-                    "type": "CopyNumberCount",
-                    "subject": {
-                        "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-                        "start": {
-                            "type": "IndefiniteRange",
-                            "value": 143134062,
-                            "comparator": "<="
-                        },
-                        "end": {
-                            "type": "IndefiniteRange",
-                            "value": 143284670,
-                            "comparator": ">="
-                        }
-                    },
-                    "copies": {"type": "Number", "value": 3}
-                },
-                "service_meta_": {
-                    "name": "variation-normalizer",
-                    "version": "0.2.17",
-                    "response_datetime": "2022-01-26T22:23:41.821673",
-                    "url": "https://github.com/cancervariants/variation-normalization"
-                }
-            }
-
-
-class ParsedToCxVarQuery(BaseModel):
-    """Define query for parsed to copy number change variation endpoint"""
+class ParsedToCopyNumberQuery(BaseModel):
+    """Define base model for parsed to copy number queries"""
 
     assembly: Optional[ClinVarAssembly] = None
     chr: Optional[StrictStr] = None
     accession: Optional[StrictStr] = None
     start0: int
     end0: int
-    copy_change: CopyChange
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
     ]
@@ -131,6 +64,77 @@ class ParsedToCxVarQuery(BaseModel):
             assert end0 > start1, err_msg
 
         return v
+
+
+class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
+    """Define query for parsed to copy number count variation endpoint"""
+
+    total_copies: int
+
+
+class ParsedToCnVarService(ServiceResponse):
+    """A response for translating parsed components to Copy Number Count"""
+
+    query: Optional[ParsedToCnVarQuery] = None
+    copy_number_count: Optional[Union[Text, CopyNumberCount]]
+
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["ParsedToCnVarService"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "query": {
+                    "assembly": "GRCh37",
+                    "chr": "1",
+                    "accession": None,
+                    "start0": 143134063,
+                    "end0": 143284670,
+                    "total_copies": 3,
+                    "start_pos_type": "IndefiniteRange",
+                    "end_pos_type": "IndefiniteRange",
+                    "start1": None,
+                    "end1": None
+                },
+                "copy_number_count": {
+                    "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
+                    "type": "CopyNumberCount",
+                    "subject": {
+                        "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
+                        "type": "SequenceLocation",
+                        "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+                        "start": {
+                            "type": "IndefiniteRange",
+                            "value": 143134062,
+                            "comparator": "<="
+                        },
+                        "end": {
+                            "type": "IndefiniteRange",
+                            "value": 143284670,
+                            "comparator": ">="
+                        }
+                    },
+                    "copies": {"type": "Number", "value": 3}
+                },
+                "service_meta_": {
+                    "name": "variation-normalizer",
+                    "version": "0.2.17",
+                    "response_datetime": "2022-01-26T22:23:41.821673",
+                    "url": "https://github.com/cancervariants/variation-normalization"
+                }
+            }
+
+
+class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
+    """Define query for parsed to copy number change variation endpoint"""
+
+    copy_change: CopyChange
 
 
 class ParsedToCxVarService(ServiceResponse):

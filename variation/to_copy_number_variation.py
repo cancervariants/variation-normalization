@@ -336,99 +336,40 @@ class ToCopyNumberVariation(ToVRS):
 
         return seq_loc.as_dict() if seq_loc else seq_loc, warning
 
-    def parsed_to_cn_var(
-        self, start: int, end: int, total_copies: int,
-        assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
-        accession: Optional[str] = None, untranslatable_returns_text: bool = False
-    ) -> ParsedToCnVarService:
-        """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number
-        Count Variation
-
-        :param int start: Start position as residue coordinate
-        :param int end: End position as residue coordinate
-        :param int total_copies: Total copies for Copy Number Count variation object
-        :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
-            will ignore `assembly` and `chr`. If `accession` not set, must provide
-            both `assembly` and `chr`.
-        :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
-        :param Optional[str] accession: Accession. If `accession` is set,
-            will ignore `assembly` and `chr`. If `accession` not set, must provide
-            both `assembly` and `chr`.
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
-        :return: ParsedToCnVarService containing Copy Number Count variation
-            and list of warnings
-        """
-        variation = None
-        warnings = []
-        params = {
-            "assembly": assembly,
-            "chr": chr,
-            "accession": accession,
-            "start": start,
-            "end": end,
-            "total_copies": total_copies
-        }
-
-        try:
-            og_query = ParsedToCnVarQuery(**params)
-        except ValidationError as e:
-            warnings.append(str(e))
-            og_query = None
-        else:
-            accession, warning = self._get_parsed_ac(accession, assembly, chr)
-            if warning:
-                warnings.append(warning)
-            else:
-                seq_loc, warning = self._get_parsed_seq_loc(
-                    accession, start, VRSTypes.INDEFINITE_RANGE, end,
-                    VRSTypes.INDEFINITE_RANGE
-                )
-                if warning:
-                    warnings.append(warning)
-
-        if warnings:
-            if untranslatable_returns_text:
-                variation = self._parsed_to_text(params)
-        else:
-            variation = {
-                "type": "CopyNumberCount",
-                "subject": seq_loc,
-                "copies": {"value": total_copies, "type": "Number"}
-            }
-            variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
-            variation = CopyNumberCount(**variation)
-
-        return ParsedToCnVarService(
-            query=og_query,
-            copy_number_count=variation,
-            warnings=warnings,
-            service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
-            )
-        )
-
-    def parsed_to_cx_var(
-        self, start0: int, end0: int, copy_change: CopyChange,
+    def parsed_to_copy_number(
+        self,
+        start0: int,
+        end0: int,
+        copy_number_type: Literal[
+            VRSTypes.COPY_NUMBER_CHANGE, VRSTypes.COPY_NUMBER_COUNT
+        ],
+        total_copies: Optional[int] = None,
+        copy_change: Optional[CopyChange] = None,
         start_pos_type: Literal[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ] = VRSTypes.NUMBER,
         end_pos_type: Literal[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ] = VRSTypes.NUMBER,
-        start1: Optional[int] = None, end1: Optional[int] = None,
-        assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
-        accession: Optional[str] = None, untranslatable_returns_text: bool = False
-    ) -> ParsedToCxVarService:
-        """Given parsed components, return Copy Number Change Variation
+        start1: Optional[int] = None,
+        end1: Optional[int] = None,
+        assembly: Optional[ClinVarAssembly] = None,
+        chr: Optional[str] = None,
+        accession: Optional[str] = None,
+        untranslatable_returns_text: bool = False
+    ) -> Union[ParsedToCnVarService, ParsedToCxVarService]:
+        """Given parsed components, return Copy Number Count or Copy Number Change
+        Variation
 
         :param start0: Start position (residue coords). If start is a definite range,
             this will be the min start position
         :param end0: End position (residue coords). If end is a definite range, this
             will be the min end position
-        :param copy_change: Copy Change
+        :param copy_number_type: The kind of Copy Number you wish to represent
+        :param total_copies: Total copies for Copy Number Count variation object.
+            Only used when `copy_number_type` is Copy Number Count.
+        :param copy_change: Copy Change.
+            Only used when `copy_number_type` is Copy Number Change.
         :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
             `chr`. If `accession` not set, must provide both `assembly` and `chr`.
         :param chr: Chromosome. Must set when `assembly` is set.
@@ -443,8 +384,10 @@ class ToCopyNumberVariation(ToVRS):
         :param untranslatable_returns_text: `True` return VRS Text Object when unable to
             translate or normalize query. `False` return `None` when unable to translate
             or normalize query.
-        :return: ParsedToCxVarService containing Copy Number Change variation and list
-            of warnings
+        :return: If `copy_number_type` is Copy Number Count, return ParsedToCnVarService
+            containing Copy Number Count variation and list of warnings. Else, return
+            ParsedToCxVarService containing Copy Number Change variation and list of
+            warnings
         """
         variation = None
         warnings = []
@@ -454,15 +397,20 @@ class ToCopyNumberVariation(ToVRS):
             "accession": accession,
             "start0": start0,
             "end0": end0,
-            "copy_change": copy_change,
             "start_pos_type": start_pos_type,
             "end_pos_type": end_pos_type,
             "start1": start1,
             "end1": end1
         }
 
+        is_cx = copy_number_type == VRSTypes.COPY_NUMBER_CHANGE
+        if is_cx:
+            params["copy_change"] = copy_change
+        else:
+            params["total_copies"] = total_copies
+
         try:
-            og_query = ParsedToCxVarQuery(**params)
+            og_query = ParsedToCxVarQuery(**params) if is_cx else ParsedToCnVarQuery(**params)  # noqa: E501
         except ValidationError as e:
             warnings.append(str(e))
             og_query = None
@@ -482,23 +430,38 @@ class ToCopyNumberVariation(ToVRS):
             if untranslatable_returns_text:
                 variation = self._parsed_to_text(params)
         else:
-            variation = {
-                "type": "CopyNumberChange",
-                "subject": seq_loc,
-                "copy_change": copy_change
-            }
-            variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
-            variation = CopyNumberChange(**variation)
+            if is_cx:
+                variation = {
+                    "type": "CopyNumberChange",
+                    "subject": seq_loc,
+                    "copy_change": copy_change
+                }
+                variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
+                variation = CopyNumberChange(**variation)
+            else:
+                variation = {
+                    "type": "CopyNumberCount",
+                    "subject": seq_loc,
+                    "copies": {"value": total_copies, "type": "Number"}
+                }
+                variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
+                variation = CopyNumberCount(**variation)
 
-        return ParsedToCxVarService(
-            query=og_query,
-            copy_number_change=variation,
-            warnings=warnings,
-            service_meta_=ServiceMeta(
+        service_params = {
+            "og_query": og_query,
+            "warnings": warnings,
+            "service_meta_": ServiceMeta(
                 version=__version__,
                 response_datetime=datetime.now()
             )
-        )
+        }
+
+        if is_cx:
+            service_params["copy_number_change"] = variation
+        else:
+            service_params["copy_number_count"] = variation
+
+        return ParsedToCxVarService(**service_params) if is_cx else ParsedToCnVarService(**service_params)  # noqa: E501
 
     def amplification_to_cx_var(
         self, gene: str, sequence_id: Optional[str] = None, start: Optional[int] = None,
