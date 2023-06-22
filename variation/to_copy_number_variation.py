@@ -423,14 +423,22 @@ class ToCopyNumberVariation(ToVRS):
         """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number
         Count Variation
 
-        :param start: Start position as residue coordinate
-        :param end: End position as residue coordinate
-        :param total_copies: Total copies for Copy Number Count variation object
+        :param start0: Start position (residue coords). If start is a definite range,
+            this will be the min start position
+        :param end0: End position (residue coords). If end is a definite range, this
+            will be the min end position
+        :param copy_change: Copy Change
         :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
             `chr`. If `accession` not set, must provide both `assembly` and `chr`.
         :param chr: Chromosome. Must set when `assembly` is set.
         :param accession: Accession. If `accession` is set, will ignore `assembly` and
             `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        :param start_pos_type: Type of the start value in VRS Sequence Location
+        :param end_pos_type: Type of the end value in VRS Sequence Location
+        :param start1: Only set when start is a definite range, this will be the max
+            start position
+        :param end1: Only set when end is a definite range, this will be the max end
+            position
         :param untranslatable_returns_text: `True` return VRS Text Object when unable to
             translate or normalize query. `False` return `None` when unable to translate
             or normalize query.
