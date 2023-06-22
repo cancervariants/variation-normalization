@@ -422,8 +422,7 @@ class ToCopyNumberVariation(ToVRS):
         assembly: Optional[ClinVarAssembly] = None, chr: Optional[str] = None,
         accession: Optional[str] = None, untranslatable_returns_text: bool = False
     ) -> ParsedToCxVarService:
-        """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number
-        Count Variation
+        """Given parsed components, return Copy Number Change Variation
 
         :param start0: Start position (residue coords). If start is a definite range,
             this will be the min start position
