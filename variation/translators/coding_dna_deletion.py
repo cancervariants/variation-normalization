@@ -47,11 +47,12 @@ class CdnaDeletion(Translator):
                 try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
             )
 
-            vrs_allele = self.vrs.to_vrs_allele(
-                mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
-                CoordinateType.CODING_DNA, AltType.DELETION, errors,
-                cds_start=mane.get("coding_start_site", None)
-            )
+            if mane:
+                vrs_allele = self.vrs.to_vrs_allele(
+                    mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
+                    CoordinateType.CODING_DNA, AltType.DELETION, errors,
+                    cds_start=mane.get("coding_start_site", None)
+                )
         else:
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos0, classification.pos1,
