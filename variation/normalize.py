@@ -79,10 +79,10 @@ class Normalize(ToVRSATILE):
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
                 baseline_copies=baseline_copies
             )
+            label = q.strip()
+            _id = f"normalize.variation:{quote(' '.join(label.split()))}"
 
             if validation_summary:
-                label = q.strip()
-                _id = f"normalize.variation:{quote(' '.join(label.split()))}"
                 if len(validation_summary.valid_results) > 0:
                     translations, warnings = await self.get_translations(
                         validation_summary, warnings, endpoint_name=Endpoint.NORMALIZE,
@@ -91,17 +91,28 @@ class Normalize(ToVRSATILE):
                         do_liftover=True
                     )
                     if translations:
-                        variation = translations[0]
+                        translation_result = translations[0]
                         valid_result = validation_summary.valid_results[0]
                         vd, warnings = self.get_variation_descriptor(
-                            label, variation, valid_result, _id, warnings
+                            label, translation_result, valid_result, _id, warnings
                         )
+
+                        if not vd:
+                            vd, warnings = no_variation_resp(
+                                label, _id, warnings, untranslatable_returns_text
+                            )
+
                 else:
                     if not label:
                         vd, warnings = no_variation_entered()
                     else:
-                        vd, warnings = no_variation_resp(label, _id, warnings,
-                                                         untranslatable_returns_text)
+                        vd, warnings = no_variation_resp(
+                            label, _id, warnings, untranslatable_returns_text
+                        )
+            else:
+                vd, warnings = no_variation_resp(
+                    label, _id, warnings, untranslatable_returns_text
+                )
 
         return NormalizeService(
             variation_query=q,

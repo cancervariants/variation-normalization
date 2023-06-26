@@ -5,6 +5,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 from .gene_symbol import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .protein_reference_agree import ProteinReferenceAgree
+from .coding_dna_and_genomic_reference_agree import CdnaGenomicReferenceAgree
 from .coding_dna_substitution import CodingDNASubstitution
 from .genomic_substitution import GenomicSubstitution
 from .protein_delins import ProteinDelIns
@@ -40,6 +41,7 @@ class Tokenize:
             CodingDNASubstitution(),
             # Reference Agree
             ProteinReferenceAgree(),
+            CdnaGenomicReferenceAgree(),
             # Delins
             ProteinDelIns(),
             CodingDNADelIns(),

@@ -1,5 +1,5 @@
 """Module for Amplification Translation."""
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
@@ -12,6 +12,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.translation_response_schema import TranslationResult
 from variation.utils import get_priority_sequence_location
 
 
@@ -31,7 +32,7 @@ class Amplification(Translator):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
         gene_descriptor = validation_result.gene_tokens[0].gene_descriptor
         priority_seq_loc = get_priority_sequence_location(
@@ -51,4 +52,7 @@ class Amplification(Translator):
                 f"No VRS SequenceLocation found for gene: {gene_descriptor.gene}"
             )
 
-        return vrs_cx
+        if vrs_cx:
+            return TranslationResult(vrs_variation=vrs_cx)
+        else:
+            return None

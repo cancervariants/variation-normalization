@@ -92,8 +92,8 @@ class HgvsClassifier(Classifier):
                 params.update(match_dict)
 
                 if classification_type == ClassificationType.CODING_DNA_SUBSTITUTION:
-                    len_ref = params["ref"]
-                    len_alt = params["alt"]
+                    len_ref = len(params["ref"])
+                    len_alt = len(params["alt"])
 
                     if len_ref == 1 and len_alt == 1:
                         params["so_id"] = SequenceOntology.SNV
@@ -128,8 +128,8 @@ class HgvsClassifier(Classifier):
                 params.update(match_dict)
 
                 if classification_type == ClassificationType.GENOMIC_SUBSTITUTION:
-                    len_ref = params["ref"]
-                    len_alt = params["alt"]
+                    len_ref = len(params["ref"])
+                    len_alt = len(params["alt"])
 
                     if len_ref == 1 and len_alt == 1:
                         params["so_id"] = SequenceOntology.SNV

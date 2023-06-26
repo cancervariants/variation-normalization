@@ -1,5 +1,5 @@
 """Module for Genomic Reference Agree Translation."""
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from cool_seq_tool.schemas import ResidueMode
@@ -14,6 +14,7 @@ from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     ClassificationType, GenomicReferenceAgreeClassification
 )
+from variation.schemas.translation_response_schema import TranslationResult
 
 
 class GenomicReferenceAgree(Translator):
@@ -32,10 +33,11 @@ class GenomicReferenceAgree(Translator):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
         classification: GenomicReferenceAgreeClassification = validation_result.classification
         vrs_allele = None
+        vrs_seq_loc_ac = None
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
@@ -45,14 +47,21 @@ class GenomicReferenceAgree(Translator):
             )
 
             if mane:
+                vrs_seq_loc_ac = mane["refseq"]
                 vrs_allele = self.vrs.to_vrs_allele(
-                    mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
                     CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
                 )
         else:
+            vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
-                validation_result.accession, classification.pos, classification.pos,
+                vrs_seq_loc_ac, classification.pos, classification.pos,
                 CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
             )
 
-        return vrs_allele
+        if vrs_allele and vrs_seq_loc_ac:
+            return TranslationResult(
+                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+            )
+        else:
+            return None

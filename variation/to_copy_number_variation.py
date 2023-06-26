@@ -89,7 +89,7 @@ class ToCopyNumberVariation(ToVRS):
         else:
             translations, warnings = await self.get_translations(validations, warnings)
             if translations:
-                variation = translations[0]
+                variation = translations[0].vrs_variation
 
         if not variation:
             if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:

@@ -8,6 +8,7 @@ from cool_seq_tool.data_sources import (
 )
 
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
@@ -88,13 +89,13 @@ class Translate:
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """Translate a valid variation query."""
         for translator in self.all_translators:
             if translator.can_translate(
                 validation_result.classification.classification_type
             ):
-                variation = await translator.translate(
+                result = await translator.translate(
                     validation_result,
                     warnings,
                     endpoint_name=endpoint_name,
@@ -103,5 +104,5 @@ class Translate:
                     copy_change=copy_change,
                     do_liftover=do_liftover
                 )
-                return variation
+                return result
         return None

@@ -1,5 +1,5 @@
 """Module for Coding DNA DelIns Translation."""
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from cool_seq_tool.schemas import ResidueMode
@@ -14,6 +14,7 @@ from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     ClassificationType, CdnaDelInsClassification
 )
+from variation.schemas.translation_response_schema import TranslationResult
 
 
 class CodingDNADelIns(Translator):
@@ -32,11 +33,12 @@ class CodingDNADelIns(Translator):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
         cds_start = validation_result.cds_start
         classification: CdnaDelInsClassification = validation_result.classification
         vrs_allele = None
+        vrs_seq_loc_ac = None
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
@@ -46,17 +48,24 @@ class CodingDNADelIns(Translator):
             )
 
             if mane:
+                vrs_seq_loc_ac = mane["refseq"]
                 vrs_allele = self.vrs.to_vrs_allele(
-                    mane["refseq"], mane["pos"][0] + 1, mane["pos"][1] + 1,
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
                     CoordinateType.CODING_DNA, AltType.DELINS, warnings,
                     cds_start=mane.get("coding_start_site", None),
                     alt=classification.inserted_sequence
                 )
         else:
+            vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
                 validation_result.accession, classification.pos0, classification.pos1,
                 CoordinateType.CODING_DNA, AltType.DELINS, warnings,
                 cds_start=cds_start, alt=classification.inserted_sequence
             )
 
-        return vrs_allele
+        if vrs_allele and vrs_seq_loc_ac:
+            return TranslationResult(
+                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+            )
+        else:
+            return None

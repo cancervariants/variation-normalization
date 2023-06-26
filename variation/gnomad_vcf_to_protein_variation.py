@@ -11,6 +11,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 from variation.classifiers.classify import Classify
 from variation.data_sources.codon_table import CodonTable
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.schemas.translation_response_schema import TranslationResult
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
@@ -160,7 +161,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     SequenceOntology.PROTEIN_SUBSTITUTION
             else:
                 alt_nuc = classification_token.ref_nucleotide
-                classification_token.so_id = SequenceOntology.REFERENCE_AGREE
+                classification_token.so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
             ref = None
             if reading_frame == 1:
@@ -350,9 +351,13 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                 classification_token.alt_type, [], alt=aa_alt
                             )
                             if variation:
+                                translation_result = TranslationResult(
+                                    vrs_variation=variation
+                                )
                                 vd_and_warnings = self.get_variation_descriptor(
-                                    q, variation, valid_result, _id, warnings,
-                                    gene=current_mane_data["HGNC_ID"])
+                                    q, translation_result, valid_result, _id, warnings,
+                                    gene=current_mane_data["HGNC_ID"]
+                                )
                                 if valid_result.is_mane_transcript:
                                     vd, warnings = vd_and_warnings
                                     return NormalizeService(

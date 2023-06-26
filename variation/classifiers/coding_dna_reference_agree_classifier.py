@@ -18,11 +18,15 @@ class CodingDNAReferenceAgreeClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE]
+            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_REFERENCE_AGREE]  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> CdnaReferenceAgreeClassification:
-        gene_token, cdna_ref_agree_token = tokens
+        if len(tokens) == 2:
+            gene_token, cdna_ref_agree_token = tokens
+        else:
+            gene_token, _, cdna_ref_agree_token = tokens
 
         return CdnaReferenceAgreeClassification(
             matching_tokens=tokens,

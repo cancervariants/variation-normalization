@@ -45,10 +45,12 @@ class ProteinSubstitution(Tokenizer):
             aa1_alt = None
 
             # Ref and Alt should use the same 1 or 3 letter AA codes
+            ref_upper = ref.upper()
+            alt_upper = alt.upper()
             try:
                 # see if it's 1 AA already
-                aa1_to_aa3(ref)
-                aa1_to_aa3(alt)
+                aa1_to_aa3(ref_upper)
+                aa1_to_aa3(alt_upper)
             except KeyError:
                 # maybe 3 letter AA code was used
                 try:
@@ -57,8 +59,8 @@ class ProteinSubstitution(Tokenizer):
                 except KeyError:
                     pass
             else:
-                aa1_ref = ref
-                aa1_alt = alt
+                aa1_ref = ref_upper
+                aa1_alt = alt_upper
 
             if aa1_alt and aa1_ref:
                 params = {

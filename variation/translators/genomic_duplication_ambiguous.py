@@ -1,5 +1,5 @@
 """Module for Genomic Duplication Ambiguous Translation."""
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
@@ -14,6 +14,7 @@ from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     AmbiguousType, ClassificationType, GenomicDuplicationAmbiguousClassification
 )
+from variation.schemas.translation_response_schema import TranslationResult
 
 
 class GenomicDuplicationAmbiguous(Translator):
@@ -32,11 +33,10 @@ class GenomicDuplicationAmbiguous(Translator):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
         # First will translate valid result to VRS Allele
         classification: GenomicDuplicationAmbiguousClassification = validation_result.classification  # noqa: E501
-
         vrs_variation = None
         outer_coords = None
 
@@ -45,7 +45,7 @@ class GenomicDuplicationAmbiguous(Translator):
             grch38_data = await self.get_grch38_data_ambiguous(classification, errors)
             if errors:
                 warnings += errors
-                return vrs_variation
+                return None
 
             if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
                 ival = self.vrs.get_ival_certain_range(
@@ -109,7 +109,7 @@ class GenomicDuplicationAmbiguous(Translator):
 
         seq_id = self.translate_sequence_identifier(ac, errors)
         if not seq_id:
-            return vrs_variation
+            return None
 
         seq_loc = self.vrs.get_sequence_loc(seq_id, ival).as_dict()
 
@@ -132,4 +132,7 @@ class GenomicDuplicationAmbiguous(Translator):
                 baseline_copies=baseline_copies, copy_change=copy_change
             )
 
-        return vrs_variation
+        if vrs_variation:
+            return TranslationResult(vrs_variation=vrs_variation, vrs_seq_loc_ac=ac)
+        else:
+            return None

@@ -18,6 +18,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.classification_response_schema import AmbiguousType, ClassificationType
+from variation.schemas.translation_response_schema import TranslationResult
 
 
 class Translator(ABC):
@@ -67,7 +68,7 @@ class Translator(ABC):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Optional[Dict]:
+    ) -> Optional[TranslationResult]:
         """"""
 
     async def get_grch38_data_ambiguous(

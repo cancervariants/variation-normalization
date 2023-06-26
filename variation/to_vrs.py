@@ -170,8 +170,7 @@ class ToVRS(VRSRepresentation):
 
         return translations, warnings
 
-    def get_ref_allele_seq(self, location: Dict,
-                           identifier: str) -> Optional[str]:
+    def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
         """Return ref allele seq for transcript.
 
         :param Dict location: VRS Location object
@@ -195,13 +194,15 @@ class ToVRS(VRSRepresentation):
             return None
 
         ref, _ = self.seqrepo_access.get_reference_sequence(
-            identifier, start, end, residue_mode=ResidueMode.INTER_RESIDUE)
+            ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+        )
 
         return ref
 
-    async def to_vrs(self, q: str,
-                     untranslatable_returns_text: bool = False) -> ToVRSService:
-        """Return a VRS-like representation of all validated variations for a query.  # noqa: E501
+    async def to_vrs(
+        self, q: str, untranslatable_returns_text: bool = False
+    ) -> ToVRSService:
+        """Return a VRS-like representation of all validated variations for a query.
 
         :param str q: The variation to translate (HGVS, gnomAD VCF, or free text) on
             GRCh37 or GRCh38 assembly
@@ -211,19 +212,24 @@ class ToVRS(VRSRepresentation):
         :return: ToVRSService containing VRS variations and warnings
         """
         validations, warnings = await self.get_validations(q)
-        translations, warnings = await self.get_translations(validations, warnings)
+        if validations:
+            translations, warnings = await self.get_translations(validations, warnings)
+        else:
+            translations = []
 
         if not translations:
             if untranslatable_returns_text and q and q.strip():
                 text = models.Text(definition=q, type="Text")
                 text._id = ga4gh_identify(text)
-                translations = [Text(**text.as_dict())]
+                variations = [Text(**text.as_dict())]
             else:
-                translations = []
+                variations = []
+        else:
+            variations = [tr.vrs_variation for tr in translations]
 
         return ToVRSService(
             search_term=q,
-            variations=translations,
+            variations=variations,
             service_meta_=ServiceMeta(
                 version=__version__,
                 response_datetime=datetime.now()

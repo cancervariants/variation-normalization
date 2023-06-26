@@ -34,6 +34,20 @@ class CdnaDeletion(Validator):
 
             if cds_start_err_msg:
                 errors.append(cds_start_err_msg)
+            else:
+                # validate deleted sequence
+                if classification.nomenclature in {Nomenclature.FREE_TEXT,
+                                                   Nomenclature.HGVS}:
+                    # HGVS deleted sequence includes start and end
+                    if classification.deleted_sequence:
+                        invalid_del_seq_msg = self.validate_reference_sequence(
+                            t, cds_start + classification.pos0,
+                            cds_start + classification.pos1 + 1,
+                            classification.deleted_sequence
+                        )
+
+                        if invalid_del_seq_msg:
+                            errors.append(invalid_del_seq_msg)
 
             # TODO: Validate pos0 and pos1 exist on given accession
 

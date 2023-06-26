@@ -31,12 +31,26 @@ class GenomicDeletion(Validator):
         # _validate_gene_pos?
 
         for ac in transcripts:
+            errors = []
+            # validate deleted sequence
+            if classification.nomenclature in {Nomenclature.FREE_TEXT,
+                                               Nomenclature.HGVS}:
+                # HGVS deleted sequence includes start and end
+                if classification.deleted_sequence:
+                    invalid_del_seq_message = self.validate_reference_sequence(
+                        ac, classification.pos0, classification.pos1 + 1,
+                        classification.deleted_sequence
+                    )
+
+                    if invalid_del_seq_message:
+                        errors.append(invalid_del_seq_message)
+
             validation_results.append(
                 ValidationResult(
                     accession=ac,
                     classification=classification,
-                    is_valid=True,
-                    errors=[],
+                    is_valid=not errors,
+                    errors=errors,
                     gene_tokens=gene_tokens
                 )
             )

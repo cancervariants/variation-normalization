@@ -323,7 +323,7 @@ def vhl(vhl_gene_context):
             "type": "Allele"
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001617",
+        "structural_type": "SO:0001587",
         "vrs_ref_allele_seq": "Y",
         "gene_context": vhl_gene_context
     }

@@ -1,21 +1,23 @@
 """Module for representing VRSATILE objects"""
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
-from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes, Allele, CopyNumberCount, CopyNumberChange
+from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 
 from variation.to_vrs import ToVRS
 from variation.schemas.token_response_schema import GeneToken, TokenType
 from variation.schemas.validation_response_schema import ValidationResult
+from variation.schemas.translation_response_schema import TranslationResult
 
 
 class ToVRSATILE(ToVRS):
     """Class for represnting VRSATILE objects"""
 
     def get_variation_descriptor(
-            self, label: str, variation: Dict, valid_result: ValidationResult,
-            _id: str, warnings: List, gene: Optional[str] = None
-    ) -> Tuple[VariationDescriptor, List]:
+        self, label: str, translation_result: TranslationResult,
+        valid_result: ValidationResult, _id: str, warnings: List,
+        gene: Optional[str] = None
+    ) -> Tuple[Optional[VariationDescriptor], List]:
         """Return variation descriptor and warnings
 
         :param str label: Initial input query
@@ -26,8 +28,13 @@ class ToVRSATILE(ToVRS):
         :param Optional[str] gene: Gene symbol
         :return: Variation descriptor, warnings
         """
+        try:
+            variation = translation_result.vrs_variation
+        except AttributeError as e:
+            warnings.append(str(e))
+            return None, warnings
+
         variation_id = variation["_id"]
-        identifier = valid_result.accession
         token_types = {
             t.token_type for t in valid_result.classification.matching_tokens
         }
@@ -41,7 +48,9 @@ class ToVRSATILE(ToVRS):
                                   VRSTypes.COPY_NUMBER_COUNT.value,
                                   VRSTypes.COPY_NUMBER_CHANGE.value}:
                 key = "location" if variation_type == VRSTypes.ALLELE else "subject"
-                vrs_ref_allele_seq = self.get_ref_allele_seq(variation[key], identifier)
+                vrs_ref_allele_seq = self.get_ref_allele_seq(
+                    variation[key], translation_result.vrs_seq_loc_ac
+                )
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

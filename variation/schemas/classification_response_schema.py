@@ -2,7 +2,7 @@
 from typing import List, Optional, Union, Literal
 from enum import Enum
 
-from pydantic import BaseModel, StrictStr, StrictBool
+from pydantic import BaseModel, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 
 from variation.schemas.token_response_schema import Token, GeneToken
@@ -18,7 +18,6 @@ class SequenceOntology(str, Enum):
 
     STOP_GAIN = "SO:0001587"
     PROTEIN_SUBSTITUTION = "SO:0001606"
-    REFERENCE_AGREE = "SO:0001017"
     SNV = "SO:0001483"
     MNV = "SO:0002007"
     NO_SEQUENCE_ALTERATION = "SO:0002073"
@@ -112,21 +111,21 @@ class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree)
 
     classification_type = ClassificationType.PROTEIN_REFERENCE_AGREE
     molecule_context = MoleculeContext.PROTEIN
-    so_id = SequenceOntology.REFERENCE_AGREE
+    so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
 
 class CdnaReferenceAgreeClassification(Classification, ReferenceAgree):
 
     classification_type = ClassificationType.CODING_DNA_REFERENCE_AGREE
     molecule_context = MoleculeContext.TRANSCRIPT
-    so_id = SequenceOntology.REFERENCE_AGREE
+    so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
 
 class GenomicReferenceAgreeClassification(Classification, ReferenceAgree):
 
     classification_type = ClassificationType.GENOMIC_REFERENCE_AGREE
     molecule_context = MoleculeContext.GENOMIC
-    so_id = SequenceOntology.REFERENCE_AGREE
+    so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
 
 class ProteinInsertionClassification(Classification, ProteinInsertion):
