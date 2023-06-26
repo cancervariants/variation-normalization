@@ -541,57 +541,6 @@ async def hgvs_to_copy_number_change(
     return resp
 
 
-assembly_descr = "Assembly. If `accession` is set, will ignore `assembly` and `chr`. "\
-                 "If `accession` not set, must provide both `assembly` and `chr`."
-chr_descr = "Chromosome. Must set when `assembly` is set."
-accession_descr = "Accession. If `accession` is set, will ignore `assembly` and "\
-                  "`chr`. If `accession` not set, must provide both `assembly` and `chr`."  # noqa: E501
-start_descr = "Start position as residue coordinate"
-end_descr = "End position as residue coordinate"
-total_copies_descr = "Total copies for Copy Number Count variation object"
-
-
-@app.get("/variation/parsed_to_cn_var",
-         summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
-         "VRS Copy Number Count Variation",
-         response_description="A response to a validly-formed query.",
-         description="Return VRS Copy Number Count Variation",
-         response_model=ParsedToCnVarService,
-         tags=[Tags.TO_COPY_NUMBER_VARIATION]
-         )
-def parsed_to_cn_var(
-    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
-    chr: Optional[str] = Query(None, description=chr_descr),
-    accession: Optional[str] = Query(None, description=accession_descr),
-    start: int = Query(..., description=start_descr),
-    end: int = Query(..., description=end_descr),
-    total_copies: int = Query(..., description=total_copies_descr),
-    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
-) -> ParsedToCnVarService:
-    """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number Count
-    Variation
-
-    :param int start: Start position as residue coordinate
-    :param int end: End position as residue coordinate
-    :param int total_copies: Total copies for Copy Number Count variation object
-    :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
-        will ignore `assembly` and `chr`. If `accession` not set, must provide
-        both `assembly` and `chr`.
-    :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
-    :param Optional[str] accession: Accession. If `accession` is set,
-        will ignore `assembly` and `chr`. If `accession` not set, must provide
-        both `assembly` and `chr`.
-    :param bool untranslatable_returns_text: `True` return VRS Text Object when
-        unable to translate or normalize query. `False` return `None` when
-        unable to translate or normalize query.
-    :return: Tuple containing Copy Number Count variation and list of warnings
-    """
-    resp = query_handler.to_copy_number_handler.parsed_to_cn_var(
-        start, end, total_copies, assembly, chr, accession,
-        untranslatable_returns_text=untranslatable_returns_text)
-    return resp
-
-
 start0_descr = ("Start position (residue coords). If start is a definite range, this "
                 "will be the min start position")
 start1_descr = ("Only set when start is a definite range, this will be the max start "
@@ -602,10 +551,104 @@ end1_descr = ("Only set when end is a definite range, this will be the max end "
               "position")
 start_pos_type = "Type of the start value in VRS Sequence Location"
 end_pos_type = "Type of the end value in VRS Sequence Location"
+assembly_descr = ("Assembly. Ignored, along with `chr`, if `accession` is set. If "
+                  "`accession` is not set, must provide both `assembly` and `chr`.")
+chr_descr = "Chromosome. Must set when `assembly` is set."
+accession_descr = ("Genomic accession. If `accession` is set, will ignore `assembly` "
+                   "and `chr`. If `accession` not set, must provide both `assembly` "
+                   "and `chr`.")
+total_copies_descr = "Total copies for Copy Number Count variation object"
+
+
+@app.get("/variation/parsed_to_cn_var",
+         summary="Given parsed genomic components, return VRS Copy Number Count "
+         "Variation",
+         response_description="A response to a validly-formed query.",
+         description="Return VRS Copy Number Count Variation",
+         response_model=ParsedToCnVarService,
+         tags=[Tags.TO_COPY_NUMBER_VARIATION]
+         )
+def parsed_to_cn_var(
+    start0: int = Query(..., description=start0_descr),
+    end0: int = Query(..., description=end0_descr),
+    total_copies: int = Query(..., description=total_copies_descr),
+    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
+    chr: Optional[str] = Query(None, description=chr_descr),
+    accession: Optional[str] = Query(None, description=accession_descr),
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=start_pos_type),
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Query(VRSTypes.NUMBER, description=end_pos_type),
+    start1: Optional[int] = Query(None, description=start1_descr),
+    end1: Optional[int] = Query(None, description=end1_descr),
+    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
+) -> ParsedToCnVarService:
+    """Given parsed genomic components, return Copy Number Count Variation.
+
+    :param start0: Start position (residue coords). If start is a definite range,
+        this will be the min start position
+    :param end0: End position (residue coords). If end is a definite range, this
+        will be the min end position
+    :param total_copies: Total copies for Copy Number Count variation object
+    :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
+        If `accession` not set, must provide both `assembly` and `chr`.
+    :param chr: Chromosome. Must set when `assembly` is set.
+    :param accession: Genomic accession. If `accession` is set, will ignore `assembly`
+        and `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+    :param start_pos_type: Type of the start value in VRS Sequence Location
+    :param end_pos_type: Type of the end value in VRS Sequence Location
+    :param start1: Only set when start is a definite range, this will be the max
+        start position
+    :param end1: Only set when end is a definite range, this will be the max end
+        position
+    :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+        translate or normalize query. `False` return `None` when unable to translate or
+        normalize query.
+    :return: ParsedToCnVarService containing Copy Number Count variation and list of
+        warnings
+    """
+    try:
+        resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
+            start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_COUNT,
+            assembly=assembly, chr=chr, accession=accession,
+            total_copies=total_copies, start_pos_type=start_pos_type,
+            end_pos_type=end_pos_type, start1=start1, end1=end1,
+            untranslatable_returns_text=untranslatable_returns_text
+        )
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        og_query = {
+            "assembly": assembly,
+            "chr": chr,
+            "accession": accession,
+            "start0": start0,
+            "end0": end0,
+            "total_copies": total_copies,
+            "start_pos_type": start_pos_type,
+            "end_pos_type": end_pos_type,
+            "start1": start1,
+            "end1": end1
+        }
+        return ParsedToCnVarService(
+            query=og_query,
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            )
+        )
+    else:
+        return resp
 
 
 @app.get("/variation/parsed_to_cx_var",
-         summary="Given parsed components, return VRS Copy Number Change Variation",
+         summary="Given parsed genomic components, return VRS Copy Number Change "
+         "Variation",
          response_description="A response to a validly-formed query.",
          description="Return VRS Copy Number Change Variation",
          response_model=ParsedToCxVarService,
@@ -628,7 +671,7 @@ def parsed_to_cx_var(
     end1: Optional[int] = Query(None, description=end1_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCxVarService:
-    """Given parsed components, return Copy Number Change Variation
+    """Given parsed genomic components, return Copy Number Change Variation
 
     :param start0: Start position (residue coords). If start is a definite range,
         this will be the min start position
@@ -653,8 +696,9 @@ def parsed_to_cx_var(
         warnings
     """
     try:
-        resp = query_handler.to_copy_number_handler.parsed_to_cx_var(
-            start0=start0, end0=end0, assembly=assembly, chr=chr, accession=accession,
+        resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
+            start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_CHANGE,
+            assembly=assembly, chr=chr, accession=accession,
             copy_change=copy_change, start_pos_type=start_pos_type,
             end_pos_type=end_pos_type, start1=start1, end1=end1,
             untranslatable_returns_text=untranslatable_returns_text

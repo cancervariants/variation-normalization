@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import Optional, Union, Dict, Any, Type, Literal
 
-from pydantic import BaseModel, StrictStr, root_validator
+from pydantic import BaseModel, StrictStr, root_validator, StrictInt
 from pydantic.main import ModelMetaclass
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
     SequenceLocation, CopyNumberChange, CopyChange, VRSTypes
@@ -22,15 +22,60 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-class ParsedToCnVarQuery(BaseModel):
-    """Define query for parsed to copy number count variation endpoint"""
+class ParsedToCopyNumberQuery(BaseModel):
+    """Define base model for parsed to copy number queries"""
 
     assembly: Optional[ClinVarAssembly] = None
     chr: Optional[StrictStr] = None
     accession: Optional[StrictStr] = None
-    start: int
-    end: int
-    total_copies: int
+    start0: StrictInt
+    end0: StrictInt
+    start_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ]
+    end_pos_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ]
+    start1: Optional[StrictInt]
+    end1: Optional[StrictInt]
+
+    @root_validator(pre=False, skip_on_failure=True)
+    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+        """Validate fields.
+        - `accession` or both `assembly` and `chr` must be provided
+        - `start1` is required when `start_pos_type` is a definite
+        range.
+        - `end1` is required when `end_pos_type` is a definite range.
+        - End positions must be greater than start positions
+        """
+        ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chr`"  # noqa: E501
+        assert v.get("accession") or (v.get("assembly") and v.get("chr")), ac_assembly_chr_msg  # noqa: E501
+
+        start0 = v["start0"]
+        start1 = v.get("start1")
+        if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
+            assert start1 is not None, "`start1` is required for definite ranges"
+            assert start1 > start0, "`start0` must be less than `start1`"
+
+        end0 = v["end0"]
+        end1 = v.get("end1")
+        if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
+            assert end1 is not None, "`end1` is required for definite ranges"
+            assert end1 > end0, "`end0` must be less than `end1`"
+
+        err_msg = "end positions must be greater than start"
+        if start1 is None:
+            assert end0 > start0, err_msg
+        else:
+            assert end0 > start1, err_msg
+
+        return v
+
+
+class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
+    """Define query for parsed to copy number count variation endpoint"""
+
+    total_copies: StrictInt
 
 
 class ParsedToCnVarService(ServiceResponse):
@@ -55,9 +100,13 @@ class ParsedToCnVarService(ServiceResponse):
                     "assembly": "GRCh37",
                     "chr": "1",
                     "accession": None,
-                    "start": 143134063,
-                    "end": 143284670,
-                    "total_copies": 3
+                    "start0": 143134063,
+                    "end0": 143284670,
+                    "total_copies": 3,
+                    "start_pos_type": "IndefiniteRange",
+                    "end_pos_type": "IndefiniteRange",
+                    "start1": None,
+                    "end1": None
                 },
                 "copy_number_count": {
                     "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
@@ -88,49 +137,10 @@ class ParsedToCnVarService(ServiceResponse):
             }
 
 
-class ParsedToCxVarQuery(BaseModel):
+class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
     """Define query for parsed to copy number change variation endpoint"""
 
-    assembly: Optional[ClinVarAssembly] = None
-    chr: Optional[StrictStr] = None
-    accession: Optional[StrictStr] = None
-    start0: int
-    end0: int
     copy_change: CopyChange
-    start_pos_type: Literal[
-        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ]
-    end_pos_type: Literal[
-        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ]
-    start1: Optional[int]
-    end1: Optional[int]
-
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_pos(cls: ModelMetaclass, v: Dict) -> Dict:
-        """Validate positions. `start1` is required when `start_pos_type` is a definite
-        range. `end1` is required when `end_pos_type` is a definite range. End positions
-        must be greater than start positions
-        """
-        start0 = v["start0"]
-        start1 = v.get("start1")
-        if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
-            assert start1 is not None, "`start1` is required for definite ranges"
-            assert start1 > start0, "`start0` must be less than `start1`"
-
-        end0 = v["end0"]
-        end1 = v.get("end1")
-        if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
-            assert end1 is not None, "`end1` is required for definite ranges"
-            assert end1 > end0, "`end0` must be less than `end1`"
-
-        err_msg = "end positions must be greater than start"
-        if start1 is None:
-            assert end0 > start0, err_msg
-        else:
-            assert end0 > start1, err_msg
-
-        return v
 
 
 class ParsedToCxVarService(ServiceResponse):
