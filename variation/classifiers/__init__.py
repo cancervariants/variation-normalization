@@ -19,4 +19,5 @@ from .genomic_insertion_classifier import GenomicInsertionClassifier
 from .genomic_duplication_classifier import GenomicDuplicationClassifier
 from .amplification_classifier import AmplificationClassifier
 from .hgvs_classifier import HgvsClassifier
+from .gnomad_vcf_classifier import GnomadVcfClassifier
 from .classify import Classify

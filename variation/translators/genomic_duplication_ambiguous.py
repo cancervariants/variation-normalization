@@ -115,7 +115,7 @@ class GenomicDuplicationAmbiguous(Translator):
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
-                AltType.DUPLICATION_AMBIGUOUS, seq_loc, warnings, hgvs_dup_del_mode,
+                AltType.DUPLICATION_AMBIGUOUS, seq_loc, warnings, hgvs_dup_del_mode, ac,
                 baseline_copies=baseline_copies, copy_change=copy_change
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
@@ -128,7 +128,7 @@ class GenomicDuplicationAmbiguous(Translator):
             )
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
-                AltType.DUPLICATION_AMBIGUOUS, outer_coords, "dup", seq_loc,
+                AltType.DUPLICATION_AMBIGUOUS, outer_coords, "dup", seq_loc, ac,
                 baseline_copies=baseline_copies, copy_change=copy_change
             )
 

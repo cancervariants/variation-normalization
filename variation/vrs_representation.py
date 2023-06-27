@@ -97,8 +97,9 @@ class VRSRepresentation:
         """
         return models.SequenceLocation(
             sequence_id=coerce_namespace(ac),
-            interval=interval, type="SequenceLocation")
-
+            interval=interval,
+            type="SequenceLocation"
+        )
 
     def vrs_allele(self, ac: str, interval: models.SequenceInterval,
                    sstate: Union[models.LiteralSequenceExpression,
@@ -146,7 +147,6 @@ class VRSRepresentation:
         else:
             errors.append(w)
             return None
-
 
     def to_vrs_allele(
             self, ac: str, start: int, end: int, coordinate: str,

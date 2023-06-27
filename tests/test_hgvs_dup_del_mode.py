@@ -333,11 +333,17 @@ def genomic_dup1_lse(genomic_dup1, genomic_dup1_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_cn(genomic_dup1, genomic_dup1_38_cn):
+def genomic_dup1_cn(genomic_dup1_38_cn):
     """Create a test fixture for genomic dup copy number count."""
-    genomic_dup1["variation"] = genomic_dup1_38_cn
-    genomic_dup1["variation_id"] = genomic_dup1["variation"]["_id"]
-    return VariationDescriptor(**genomic_dup1)
+    return VariationDescriptor(**{
+        "id": "normalize.variation:NC_000003.12%3Ag.49531262dup",
+        "type": "VariationDescriptor",
+        "variation": genomic_dup1_38_cn,
+        "variation_id": genomic_dup1_38_cn["_id"],
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000035",
+        "vrs_ref_allele_seq": "G"
+    })
 
 
 @pytest.fixture(scope="module")

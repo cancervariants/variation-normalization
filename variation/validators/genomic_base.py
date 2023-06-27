@@ -29,33 +29,25 @@ class GenomicBase:
         self, classification: Classification, gene_tokens: List[GeneToken]
     ) -> List[str]:
         """Get NC accession for a given classification."""
-        hgvs = [t.accession for t in classification.matching_tokens if
-                t.token_type == TokenType.HGVS]
-        nc_accessions = []
-        if hgvs:
-            nc_accessions = [hgvs[0]]
-        else:
-            if classification.nomenclature == Nomenclature.FREE_TEXT:
-                if gene_tokens and len(gene_tokens) == 1:
-                    nc_accessions = await self.uta.get_ac_from_gene(
-                        gene_tokens[0].matched_value
-                    )
-            else:
-                raise NotImplementedError
+        if classification.nomenclature == Nomenclature.HGVS:
+            nc_accessions = [classification.ac]
+        elif classification.nomenclature == Nomenclature.FREE_TEXT:
+            if gene_tokens and len(gene_tokens) == 1:
+                nc_accessions = await self.uta.get_ac_from_gene(
+                    gene_tokens[0].matched_value
+                )
+        elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            gnomad_vcf_token = classification.matching_tokens[0]
+            chromosome = gnomad_vcf_token.chromosome
+            nc_accessions = []
 
-            # chromosome = [t.token for t in classification.matching_tokens if
-            #               t.token_type in [TokenType.CHROMOSOME]]
-            # if chromosome:
-            #     chromosome = chromosome[0]
-            #     for assesmbly in ["GRCh37", "GRCh38"]:
-            #         ac = self.get_nc_accession(f"{assesmbly}:{chromosome}")
-            #         if ac:
-            #             nc_accessions.append(ac)
-            # else:
-            #     gene_tokens = [t.token for t in classification.matching_tokens
-            #                    if t.token_type == TokenType.GENE]
-            #     if gene_tokens and len(gene_tokens) == 1:
-            #         nc_accessions = await self.uta.get_ac_from_gene(gene_tokens[0])
+            for assembly in ["GRCh37", "GRCh38"]:
+                ac = self.get_nc_accession(f"{assembly}:{chromosome}")
+                if ac:
+                    nc_accessions.append(ac)
+        else:
+            raise NotImplementedError
+
         return nc_accessions
 
     def get_nc_accession(self, identifier: str) -> Optional[str]:

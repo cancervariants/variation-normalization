@@ -23,6 +23,14 @@ class GenomicReferenceAgree(Validator):
             errors = []
 
             # TODO: Validate pos exists on given accession
+            if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                token = classification.matching_tokens[0]
+                ref = token.ref
+                pos = token.pos
+
+                invalid_ref_msg = self.validate_reference_sequence(t, pos, pos, ref)
+                if invalid_ref_msg:
+                    errors.append(invalid_ref_msg)
 
             validation_results.append(
                 ValidationResult(

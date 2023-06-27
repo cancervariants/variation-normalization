@@ -13,7 +13,7 @@ from variation.classifiers import (
     GenomicInsertionClassifier,
     GenomicDuplicationClassifier,
     ProteinStopGainClassifier,
-    AmplificationClassifier, HgvsClassifier, Classifier
+    AmplificationClassifier, HgvsClassifier, GnomadVcfClassifier, Classifier
 )
 
 
@@ -21,30 +21,28 @@ class Classify:
     """The classify class."""
 
     hgvs_classifier = HgvsClassifier()
-
-    def __init__(self) -> None:
-        """Initialize the Classify class."""
-        self.classifiers: List[Classifier] = [
-            ProteinDelInsClassifier(),
-            ProteinSubstitutionClassifier(),
-            ProteinStopGainClassifier(),
-            ProteinReferenceAgreeClassifier(),
-            CodingDNASubstitutionClassifier(),
-            GenomicSubstitutionClassifier(),
-            CodingDNAReferenceAgreeClassifier(),
-            GenomicReferenceAgreeClassifier(),
-            ProteinDelInsClassifier(),
-            CodingDNADelInsClassifier(),
-            GenomicDelInsClassifier(),
-            ProteinDeletionClassifier(),
-            CdnaDeletionClassifier(),
-            GenomicDeletionClassifier(),
-            ProteinInsertionClassifier(),
-            CodingDNAInsertionClassifier(),
-            GenomicInsertionClassifier(),
-            GenomicDuplicationClassifier(),
-            AmplificationClassifier()
-        ]
+    gnomad_vcf_classifier = GnomadVcfClassifier()
+    classifiers: List[Classifier] = [
+        ProteinDelInsClassifier(),
+        ProteinSubstitutionClassifier(),
+        ProteinStopGainClassifier(),
+        ProteinReferenceAgreeClassifier(),
+        CodingDNASubstitutionClassifier(),
+        GenomicSubstitutionClassifier(),
+        CodingDNAReferenceAgreeClassifier(),
+        GenomicReferenceAgreeClassifier(),
+        ProteinDelInsClassifier(),
+        CodingDNADelInsClassifier(),
+        GenomicDelInsClassifier(),
+        ProteinDeletionClassifier(),
+        CdnaDeletionClassifier(),
+        GenomicDeletionClassifier(),
+        ProteinInsertionClassifier(),
+        CodingDNAInsertionClassifier(),
+        GenomicInsertionClassifier(),
+        GenomicDuplicationClassifier(),
+        AmplificationClassifier()
+    ]
 
     def perform(self, tokens: List[Token]) -> List[Classification]:
         """Classify a list of tokens.
@@ -54,8 +52,14 @@ class Classify:
         """
         classifications: List[Classification] = list()
 
-        if len(tokens) == 1 and tokens[0].token_type == TokenType.HGVS:
-            res = self.hgvs_classifier.match(tokens[0])
+        if len(tokens) == 1:
+            token_type = tokens[0].token_type
+            res = None
+            if token_type == TokenType.HGVS:
+                res = self.hgvs_classifier.match(tokens[0])
+            elif token_type == TokenType.GNOMAD_VCF:
+                res = self.gnomad_vcf_classifier.match(tokens[0])
+
             if res:
                 classifications.append(res)
         else:

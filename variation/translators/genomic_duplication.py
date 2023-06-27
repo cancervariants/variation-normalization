@@ -1,11 +1,11 @@
 """Module for Genomic Duplication Translation."""
 from typing import Optional, List
 
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
@@ -37,32 +37,57 @@ class GenomicDuplication(Translator):
         """Translate to VRS Variation representation."""
         # First will translate valid result to VRS Allele
         classification: GenomicDuplicationClassification = validation_result.classification  # noqa: E501
-        vrs_allele = None
-        vrs_seq_loc_ac = None
+        vrs_variation = None
+
+        if do_liftover or endpoint_name == Endpoint.NORMALIZE:
+            errors = []
+            grch38_data = await self.get_grch38_data(classification, errors)
+            if errors:
+                warnings += errors
+                return None
+
+            pos0 = grch38_data["pos0"]
+            pos1 = grch38_data["pos1"]
+            ac = grch38_data["ac"]
+        else:
+            pos0 = classification.pos0
+            pos1 = classification.pos1
+            ac = validation_result.accession
+
+        outer_coords = (pos0, pos1 if pos1 else pos0)
+        ival = models.SequenceInterval(
+            start=models.Number(value=pos0 - 1, type="Number"),
+            end=models.Number(value=pos1 if pos1 else pos0, type="Number")
+        ).as_dict()
+
+        seq_id = self.translate_sequence_identifier(ac, warnings)
+        if not seq_id:
+            return None
+
+        seq_loc = self.vrs.get_sequence_loc(seq_id, ival).as_dict()
 
         if endpoint_name == Endpoint.NORMALIZE:
-            mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos0,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos1,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
+            vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
+                AltType.DUPLICATION, seq_loc, warnings, hgvs_dup_del_mode, ac,
+                baseline_copies=baseline_copies, copy_change=copy_change
             )
-
-            if mane:
-                vrs_seq_loc_ac = mane["alt_ac"]
-                vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC, AltType.DUPLICATION, warnings
-                )
+        elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
+                "dup", seq_loc, baseline_copies
+            )
+        elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_CHANGE:
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_change_mode(
+                "dup", seq_loc, copy_change
+            )
         else:
-            vrs_seq_loc_ac = validation_result.accession
-            vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.DUPLICATION, warnings
+            vrs_variation = self.hgvs_dup_del_mode.default_mode(
+                AltType.DUPLICATION, outer_coords, "dup", seq_loc, ac,
+                baseline_copies=baseline_copies, copy_change=copy_change
             )
 
-        if vrs_allele and vrs_seq_loc_ac:
+        if vrs_variation:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac
             )
         else:
             return None

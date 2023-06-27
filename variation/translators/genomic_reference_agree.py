@@ -35,7 +35,7 @@ class GenomicReferenceAgree(Translator):
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
-        classification: GenomicReferenceAgreeClassification = validation_result.classification
+        classification: GenomicReferenceAgreeClassification = validation_result.classification  # noqa: E501
         vrs_allele = None
         vrs_seq_loc_ac = None
 

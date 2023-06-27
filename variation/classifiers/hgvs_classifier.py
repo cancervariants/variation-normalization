@@ -22,7 +22,7 @@ from variation.classifiers import Classifier
 
 
 class HgvsClassifier(Classifier):
-    """The Genomic Substitution Classifier class."""
+    """The HGVS Classifier."""
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
@@ -131,7 +131,7 @@ class HgvsClassifier(Classifier):
                     len_ref = len(params["ref"])
                     len_alt = len(params["alt"])
 
-                    if len_ref == 1 and len_alt == 1:
+                    if len_ref == len_alt == 1:
                         params["so_id"] = SequenceOntology.SNV
                     else:
                         params["so_id"] = SequenceOntology.MNV

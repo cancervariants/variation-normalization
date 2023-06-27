@@ -909,12 +909,21 @@ def genomic_dup1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup1_38_cn(genomic_dup1_seq_loc):
+def genomic_dup1_38_cn():
     """Create test fixture for copy number count dup1 on GRCh38"""
     return {
         "type": "CopyNumberCount",
-        "_id": "ga4gh:CN.wIUwSQ9MQdv-2dsoDo-RjI97iK3Mn5m6",
-        "subject": genomic_dup1_seq_loc,
+        "_id": "ga4gh:CN.lxbM1jOtrVgrwy_SHSSd3o2QkCRRswyf",
+        "subject": {
+            "_id": "ga4gh:VSL.0dgeuVKngTm5HWjNjcZ9PO-fnbNmKmBv",
+            "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "interval": {
+                "type": "SequenceInterval",
+                "start": {"value": 49531261, "type": "Number"},
+                "end": {"value": 49531262, "type": "Number"},
+            },
+            "type": "SequenceLocation"
+        },
         "copies": {"type": "Number", "value": 3}
     }
 

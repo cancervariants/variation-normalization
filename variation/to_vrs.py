@@ -162,7 +162,7 @@ class ToVRS(VRSRepresentation):
                 hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
                 copy_change=copy_change, do_liftover=do_liftover
             )
-            if result not in translations:
+            if result and result not in translations:
                 translations.append(result)
 
         if not translations and not warnings:
