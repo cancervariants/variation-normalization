@@ -8,7 +8,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 from variation.schemas.variation_schema import (
     DelIns, Deletion, ProteinDelIns, ProteinInsertion, Substitution, Insertion,
     ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain, Duplication,
-    DuplicationAmbiguous
+    DupDelAmbiguous
 )
 
 
@@ -47,8 +47,7 @@ class AltType(str, Enum):
 
     AMPLIFICATION = "amplification"
     DELETION = "deletion"
-    DELETION_RANGE = "deletion_range"
-    UNCERTAIN_DELETION = "uncertain_deletion"
+    DELETION_AMBIGUOUS = "deletion_ambiguous"
     DELINS = "delins"
     DUPLICATION = "duplication"
     DUPLICATION_AMBIGUOUS = "duplication_ambiguous"
@@ -56,15 +55,12 @@ class AltType(str, Enum):
     NONSENSE = "nonsense"
     REFERENCE_AGREE = "reference_agree"
     SUBSTITUTION = "substitution"
-    UNCERTAIN_DUPLICATION = "uncertain_duplication"
     STOP_GAIN = "stop_gain"
 
 
 # Ambiguous region alt types
 AMBIGUOUS_REGIONS = {
-    AltType.UNCERTAIN_DELETION,
-    AltType.UNCERTAIN_DUPLICATION,
-    AltType.DELETION_RANGE,
+    AltType.DELETION_AMBIGUOUS,
     AltType.DUPLICATION_AMBIGUOUS
 }
 
@@ -175,7 +171,7 @@ class GenomicDeletionToken(Token, Deletion):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class GenomicDeletionAmbiguousToken(Token, DuplicationAmbiguous):
+class GenomicDeletionAmbiguousToken(Token, DupDelAmbiguous):
     """Token for ambiguous deletion on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DELETION_AMBIGUOUS
@@ -231,7 +227,7 @@ class GenomicDuplicationToken(Token, Duplication):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class GenomicDuplicationAmbiguousToken(Token, DuplicationAmbiguous):
+class GenomicDuplicationAmbiguousToken(Token, DupDelAmbiguous):
     """Ambiguous duplication on genomic reference sequence"""
 
     token_type = TokenType.GENOMIC_DUPLICATION_AMBIGUOUS

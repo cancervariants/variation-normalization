@@ -9,7 +9,7 @@ from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
     ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
     ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain, Duplication,
-    DuplicationAmbiguous
+    DupDelAmbiguous
 )
 
 
@@ -57,13 +57,12 @@ class ClassificationType(str, Enum):
     PROTEIN_DELETION = "protein deletion"
     CODING_DNA_DELETION = "coding dna deletion"
     GENOMIC_DELETION = "genomic deletion"
+    GENOMIC_DELETION_AMBIGUOUS = "genomic deletion ambiguous"
     PROTEIN_INSERTION = "protein insertion"
     CODING_DNA_INSERTION = "coding dna insertion"
     GENOMIC_INSERTION = "genomic insertion"
-    GENOMIC_UNCERTAIN_DELETION = "genomic uncertain deletion"
     GENOMIC_DUPLICATION = "genomic duplication"
     GENOMIC_DUPLICATION_AMBIGUOUS = "genomic duplication ambiguous"
-    GENOMIC_DELETION_RANGE = "genomic deletion range"
     AMPLIFICATION = "amplification"
 
 
@@ -210,11 +209,19 @@ class AmbiguousType(str, Enum):
     AMBIGUOUS_7 = "#_(#_?)"
 
 
-class GenomicDuplicationAmbiguousClassification(Classification, DuplicationAmbiguous):
+class GenomicDuplicationAmbiguousClassification(Classification, DupDelAmbiguous):
 
     classification_type = ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
     molecule_context = MoleculeContext.GENOMIC
     so_id = SequenceOntology.DUPLICATION
+    ambiguous_type: AmbiguousType
+
+
+class GenomicDeletionAmbiguousClassification(Classification, DupDelAmbiguous):
+
+    classification_type = ClassificationType.GENOMIC_DELETION_AMBIGUOUS
+    molecule_context = MoleculeContext.GENOMIC
+    so_id = SequenceOntology.DELETION
     ambiguous_type: AmbiguousType
 
 

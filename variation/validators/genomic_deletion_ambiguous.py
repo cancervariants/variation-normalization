@@ -1,20 +1,20 @@
-"""The module for Genomic Duplication Ambiguous Validation."""
+"""The module for Genomic Deletion Ambiguous Validation."""
 from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
-    AmbiguousType, Classification, ClassificationType, GenomicDuplicationAmbiguousClassification,
-    Nomenclature
+    AmbiguousType, Classification, ClassificationType,
+    GenomicDeletionAmbiguousClassification, Nomenclature
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
 
 
-class GenomicDuplicationAmbiguous(Validator):
-    """The Genomic Duplication Ambiguous Validator class."""
+class GenomicDeletionAmbiguous(Validator):
+    """The Genomic Deletion Ambiguous Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicDuplicationAmbiguousClassification,
+        self, classification: GenomicDeletionAmbiguousClassification,
         transcripts: List[str], gene_tokens: List[GeneToken]
     ) -> List[ValidationResult]:
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
@@ -24,7 +24,7 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
+                        "Positions deleted should contain two different positions and "
                         "should be listed from 5' to 3'")]
                 )]
         elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
@@ -35,7 +35,7 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
+                        "Positions deleted should contain two different positions and "
                         "should be listed from 5' to 3'")]
                 )]
         elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
@@ -45,7 +45,7 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
+                        "Positions deleted should contain two different positions and "
                         "should be listed from 5' to 3'")]
                 )]
         else:
@@ -75,15 +75,15 @@ class GenomicDuplicationAmbiguous(Validator):
 
     def variation_name(self) -> str:
         """Return the variation name."""
-        return "genomic duplication ambiguous"
+        return "genomic deletion ambiguous"
 
     def validates_classification_type(
         self, classification_type: ClassificationType
     ) -> bool:
-        """Return whether or not the classification type is genomic duplication
+        """Return whether or not the classification type is genomic deletion
         ambiguous
         """
-        return classification_type == ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
+        return classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 
     async def get_transcripts(
         self, gene_tokens: List, classification: Classification, errors: List

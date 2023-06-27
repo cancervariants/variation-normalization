@@ -78,6 +78,21 @@ GENOMIC_DUPLICATION_AMBIGUOUS_3 = re.compile(
     r"^(?P<pos0>\d+)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)dup$"
 )
 
+# (#_#)_(#_#) OR (?_#)_(#_?)
+GENOMIC_DELETION_AMBIGUOUS_1 = re.compile(
+    r"^\((?P<pos0>\?|\d+)_(?P<pos1>\?|\d+)\)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)del$"
+)
+
+# (?_#)_#, (#_?)_# OR (#_#)_#
+GENOMIC_DELETION_AMBIGUOUS_2 = re.compile(
+    r"^\((?P<pos0>\?|\d+)_(?P<pos1>\?|\d+)\)_(?P<pos2>\d+)del$"
+)
+
+# #_(#_?) OR #_(#_#)
+GENOMIC_DELETION_AMBIGUOUS_3 = re.compile(
+    r"^(?P<pos0>\d+)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)del$"
+)
+
 PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         PROTEIN_SUBSTITUTION,
@@ -176,7 +191,7 @@ class AmbiguousRegexType(IntEnum):
     REGEX_3 = 3
 
 
-GENOMIC_AMBIGUOUS_REGEXPRS: List[
+GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
     Tuple[any, TokenType, ClassificationType, AmbiguousType]
 ] = [
     (
@@ -195,6 +210,30 @@ GENOMIC_AMBIGUOUS_REGEXPRS: List[
         GENOMIC_DUPLICATION_AMBIGUOUS_3,
         TokenType.GENOMIC_DUPLICATION_AMBIGUOUS,
         ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+        AmbiguousRegexType.REGEX_3
+    )
+]
+
+
+GENOMIC_DEL_AMBIGUOUS_REGEXPRS: List[
+    Tuple[any, TokenType, ClassificationType, AmbiguousType]
+] = [
+    (
+        GENOMIC_DELETION_AMBIGUOUS_1,
+        TokenType.GENOMIC_DELETION_AMBIGUOUS,
+        ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+        AmbiguousRegexType.REGEX_1
+    ),
+    (
+        GENOMIC_DELETION_AMBIGUOUS_2,
+        TokenType.GENOMIC_DELETION_AMBIGUOUS,
+        ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+        AmbiguousRegexType.REGEX_2
+    ),
+    (
+        GENOMIC_DELETION_AMBIGUOUS_3,
+        TokenType.GENOMIC_DELETION_AMBIGUOUS,
+        ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
         AmbiguousRegexType.REGEX_3
     )
 ]

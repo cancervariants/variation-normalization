@@ -11,9 +11,9 @@ from variation.schemas.normalize_response_schema import ServiceResponse
 
 VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_DUPLICATION,
+    ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
     ClassificationType.GENOMIC_DELETION,
-    ClassificationType.GENOMIC_DELETION_RANGE,
-    ClassificationType.GENOMIC_UNCERTAIN_DELETION
+    ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 ]
 
 VALID_COPY_CHANGE = [rcc.value for rcc in CopyChange.__members__.values()]

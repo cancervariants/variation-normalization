@@ -1,5 +1,5 @@
 """A module for the HGVS Classifier."""
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from variation.schemas.classification_response_schema import (
     Classification, ClassificationType, GenomicSubstitutionClassification,
@@ -11,12 +11,13 @@ from variation.schemas.classification_response_schema import (
     CdnaReferenceAgreeClassification, GenomicReferenceAgreeClassification,
     ProteinStopGainClassification, GenomicDuplicationClassification,
     GenomicDuplicationAmbiguousClassification, GenomicDeletionClassification,
+    GenomicDeletionAmbiguousClassification,
     Nomenclature, SequenceOntology, AmbiguousType
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
 from variation.regex import (
-    GENOMIC_REGEXPRS, GENOMIC_AMBIGUOUS_REGEXPRS, PROTEIN_REGEXPRS, CDNA_REGEXPRS,
-    AmbiguousRegexType
+    GENOMIC_REGEXPRS, GENOMIC_DUP_AMBIGUOUS_REGEXPRS, PROTEIN_REGEXPRS, CDNA_REGEXPRS,
+    AmbiguousRegexType, GENOMIC_DEL_AMBIGUOUS_REGEXPRS
 )
 from variation.classifiers import Classifier
 
@@ -162,7 +163,65 @@ class HgvsClassifier(Classifier):
     def _genomic_ambiguous_classification(
         self, token, params
     ) -> Optional[Classification]:
-        for regex, _, classification_type, regex_type in GENOMIC_AMBIGUOUS_REGEXPRS:
+        if token.token.endswith("dup"):
+            return self._genomic_dup_ambiguous_classification(token, params)
+        elif token.token.endswith("del"):
+            return self._genomic_del_ambiguous_classification(token, params)
+
+        return None
+
+    @staticmethod
+    def _update_ambiguous_params(
+        params: Dict, regex_type: AmbiguousRegexType
+    ):
+        params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
+
+        pos1_in_params = "pos1" in params
+        if pos1_in_params:
+            params["pos1"] = int(params["pos1"]) if params["pos1"] != "?" else params["pos1"]  # noqa: E501
+
+        params["pos2"] = int(params["pos2"]) if params["pos2"] != "?" else params["pos2"]  # noqa: E501
+
+        pos3_in_params = "pos3" in params
+        if pos3_in_params:
+            params["pos3"] = int(params["pos3"]) if params["pos3"] != "?" else params["pos3"]  # noqa: E501
+
+        if regex_type == AmbiguousRegexType.REGEX_1:
+            if all((
+                isinstance(params["pos0"], int),
+                isinstance(params["pos1"], int),
+                isinstance(params["pos2"], int),
+                isinstance(params["pos3"], int)
+            )):
+                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_1
+            elif all((
+                params["pos0"] == "?",
+                isinstance(params["pos1"], int),
+                isinstance(params["pos2"], int),
+                params["pos3"] == "?"
+            )):
+                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_2
+        elif regex_type == AmbiguousRegexType.REGEX_2:
+            if all((
+                params["pos0"] == "?",
+                isinstance(params["pos1"], int),
+                isinstance(params["pos2"], int),
+                not pos3_in_params
+            )):
+                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_5
+        elif regex_type == AmbiguousRegexType.REGEX_3:
+            if all((
+                isinstance(params["pos0"], int),
+                not pos1_in_params,
+                isinstance(params["pos2"], int),
+                params["pos3"] == "?"
+            )):
+                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_7
+
+    def _genomic_dup_ambiguous_classification(
+        self, token, params
+    ) -> Optional[Classification]:
+        for regex, _, classification_type, regex_type in GENOMIC_DUP_AMBIGUOUS_REGEXPRS:
             match = regex.match(token.change)
 
             if match:
@@ -170,49 +229,21 @@ class HgvsClassifier(Classifier):
                 params.update(match_dict)
 
                 if classification_type == ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS:  # noqa: E501
-                    params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
-
-                    pos1_in_params = "pos1" in params
-                    if pos1_in_params:
-                        params["pos1"] = int(params["pos1"]) if params["pos1"] != "?" else params["pos1"]  # noqa: E501
-
-                    params["pos2"] = int(params["pos2"]) if params["pos2"] != "?" else params["pos2"]  # noqa: E501
-
-                    pos3_in_params = "pos3" in params
-                    if pos3_in_params:
-                        params["pos3"] = int(params["pos3"]) if params["pos3"] != "?" else params["pos3"]  # noqa: E501
-
-                    if regex_type == AmbiguousRegexType.REGEX_1:
-                        if all((
-                            isinstance(params["pos0"], int),
-                            isinstance(params["pos1"], int),
-                            isinstance(params["pos2"], int),
-                            isinstance(params["pos3"], int)
-                        )):
-                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_1
-                        elif all((
-                            params["pos0"] == "?",
-                            isinstance(params["pos1"], int),
-                            isinstance(params["pos2"], int),
-                            params["pos3"] == "?"
-                        )):
-                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_2
-                    elif regex_type == AmbiguousRegexType.REGEX_2:
-                        if all((
-                            params["pos0"] == "?",
-                            isinstance(params["pos1"], int),
-                            isinstance(params["pos2"], int),
-                            not pos3_in_params
-                        )):
-                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_5
-                    elif regex_type == AmbiguousRegexType.REGEX_3:
-                        if all((
-                            isinstance(params["pos0"], int),
-                            not pos1_in_params,
-                            isinstance(params["pos2"], int),
-                            params["pos3"] == "?"
-                        )):
-                            params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_7
-
+                    self._update_ambiguous_params(params, regex_type)
                     return GenomicDuplicationAmbiguousClassification(**params)
+        return None
+
+    def _genomic_del_ambiguous_classification(
+        self, token, params
+    ) -> Optional[Classification]:
+        for regex, _, classification_type, regex_type in GENOMIC_DEL_AMBIGUOUS_REGEXPRS:
+            match = regex.match(token.change)
+
+            if match:
+                match_dict = match.groupdict()
+                params.update(match_dict)
+
+                if classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS:  # noqa: E501
+                    self._update_ambiguous_params(params, regex_type)
+                    return GenomicDeletionAmbiguousClassification(**params)
         return None

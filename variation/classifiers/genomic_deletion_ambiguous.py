@@ -1,30 +1,30 @@
-"""A module for the Genomic Duplication Ambiguous Classifier."""
+"""A module for the Genomic Deletion Ambiguous Classifier."""
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Nomenclature, GenomicDuplicationAmbiguousClassification
+    ClassificationType, Nomenclature, GenomicDeletionAmbiguousClassification
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
 
 
-class GenomicDuplicationAmbiguousClassifier(Classifier):
-    """The Genomic Duplication Ambiguous Classifier class."""
+class GenomicDeletionAmbiguousClassifier(Classifier):
+    """The Genomic Deletion Ambiguous Classifier class."""
 
     def classification_type(self) -> ClassificationType:
-        """Return the Genomic Duplication Ambiguous classification type."""
-        return ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
+        """Return the Genomic Deletion Ambiguous classification type."""
+        return ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.GENOMIC_DUPLICATION_AMBIGUOUS]
+            [TokenType.GENE, TokenType.GENOMIC_DELETION_AMBIGUOUS]
         ]
 
-    def match(self, tokens: List[Token]) -> GenomicDuplicationAmbiguousClassification:
+    def match(self, tokens: List[Token]) -> GenomicDeletionAmbiguousClassification:
         gene_token, genomic_dup_token = tokens
 
-        return GenomicDuplicationAmbiguousClassification(
+        return GenomicDeletionAmbiguousClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
             gene=gene_token,

@@ -10,8 +10,8 @@ from variation.classifiers import (
     GenomicReferenceAgreeClassifier, ProteinDelInsClassifier, CodingDNADelInsClassifier,
     GenomicDelInsClassifier, ProteinDeletionClassifier, CdnaDeletionClassifier,
     GenomicDeletionClassifier, ProteinInsertionClassifier, CodingDNAInsertionClassifier,
-    GenomicInsertionClassifier,
-    GenomicDuplicationClassifier,
+    GenomicInsertionClassifier, GenomicDuplicationAmbiguousClassifier,
+    GenomicDuplicationClassifier, GenomicDeletionAmbiguousClassifier,
     ProteinStopGainClassifier,
     AmplificationClassifier, HgvsClassifier, GnomadVcfClassifier, Classifier
 )
@@ -37,10 +37,12 @@ class Classify:
         ProteinDeletionClassifier(),
         CdnaDeletionClassifier(),
         GenomicDeletionClassifier(),
+        GenomicDeletionAmbiguousClassifier(),
         ProteinInsertionClassifier(),
         CodingDNAInsertionClassifier(),
         GenomicInsertionClassifier(),
         GenomicDuplicationClassifier(),
+        GenomicDuplicationAmbiguousClassifier(),
         AmplificationClassifier()
     ]
 

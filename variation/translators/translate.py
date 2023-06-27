@@ -30,6 +30,7 @@ from .genomic_delins import GenomicDelIns
 from .protein_deletion import ProteinDeletion
 from .coding_dna_deletion import CdnaDeletion
 from .genomic_deletion import GenomicDeletion
+from .genomic_deletion_ambiguous import GenomicDeletionAmbiguous
 from .protein_insertion import ProteinInsertion
 from .coding_dna_insertion import CdnaInsertion
 from .genomic_insertion import GenomicInsertion
@@ -72,6 +73,7 @@ class Translate:
             ProteinDeletion(*params),
             CdnaDeletion(*params),
             GenomicDeletion(*params),
+            GenomicDeletionAmbiguous(*params),
             ProteinInsertion(*params),
             CdnaInsertion(*params),
             GenomicInsertion(*params),

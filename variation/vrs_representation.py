@@ -210,31 +210,3 @@ class VRSRepresentation:
         sstate = models.LiteralSequenceExpression(sequence=state,
                                                   type="LiteralSequenceExpression")
         return self.vrs_allele(ac, interval, sstate, alt_type, errors)
-
-    def to_vrs_allele_ranges(
-            self, ac: str, coordinate: str, alt_type: AltType, errors: List,
-            ival: models.SequenceInterval) -> Optional[Dict]:
-        """Translate variation ranges to VRS Allele Object.
-
-        :param str ac: Accession
-        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param AltType alt_type: Type of alteration
-        :param List errors: List of errors
-        :param models.SequenceInterval ival: Sequence Interval
-        :return: VRS Allele object
-        """
-        if coordinate == "c":
-            # TODO: Once we add support for ranges on c. coord
-            return None
-        if alt_type in {AltType.UNCERTAIN_DELETION, AltType.UNCERTAIN_DUPLICATION,
-                        AltType.DELETION_RANGE, AltType.DUPLICATION_AMBIGUOUS}:
-            sstate = models.LiteralSequenceExpression(
-                sequence="", type="LiteralSequenceExpression"
-            )
-        else:
-            errors.append("No state")
-            return None
-
-        return self.vrs_allele(ac, ival, sstate, alt_type, errors)
-
-    # def to_copy_number()

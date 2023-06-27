@@ -71,7 +71,7 @@ class Duplication(BaseModel):
     pos1: Optional[StrictInt]
 
 
-class DuplicationAmbiguous(BaseModel):
+class DupDelAmbiguous(BaseModel):
 
     pos0: Union[StrictInt, Literal["?"]]
     pos1: Optional[Union[StrictInt, Literal["?"]]]
