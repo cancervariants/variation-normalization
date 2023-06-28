@@ -19,7 +19,6 @@ from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TY
     CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.token_response_schema import TokenType
-from variation.schemas.classification_response_schema import Nomenclature
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize

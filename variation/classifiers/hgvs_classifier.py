@@ -12,7 +12,7 @@ from variation.schemas.classification_response_schema import (
     ProteinStopGainClassification, GenomicDuplicationClassification,
     GenomicDuplicationAmbiguousClassification, GenomicDeletionClassification,
     GenomicDeletionAmbiguousClassification,
-    Nomenclature, SequenceOntology, AmbiguousType
+    Nomenclature, SequenceOntology
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
 from variation.schemas.app_schemas import AmbiguousRegexType

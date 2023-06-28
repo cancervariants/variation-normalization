@@ -5,12 +5,12 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_cx_38(genomic_dup1_seq_loc):
+def genomic_dup1_cx_38(genomic_dup1_seq_loc_normalized):
     """Create test fixture copy number change variation"""
     return {
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.hGuvyiJmDtx4-MRjsLja0fb_DqOE2chN",
-        "subject": genomic_dup1_seq_loc,
+        "subject": genomic_dup1_seq_loc_normalized,
         "copy_change": "efo:0030069"
     }
 

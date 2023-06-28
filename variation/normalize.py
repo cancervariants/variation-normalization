@@ -101,6 +101,10 @@ class Normalize(ToVRSATILE):
                             vd, warnings = no_variation_resp(
                                 label, _id, warnings, untranslatable_returns_text
                             )
+                    else:
+                        vd, warnings = no_variation_resp(
+                            label, _id, warnings, untranslatable_returns_text
+                        )
 
                 else:
                     if not label:

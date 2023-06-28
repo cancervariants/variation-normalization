@@ -71,28 +71,33 @@ class Translator(ABC):
     ) -> Optional[TranslationResult]:
         """"""
 
-    async def get_grch38_data(self, classification, errors):
-        old_ac = classification.ac
-        pos0, pos1, ac = None, None, None
+    async def get_grch38_data(self, classification, errors, ac):
+        """
+
+        :param ac: Accession
+        """
+        pos0, pos1, new_ac = None, None, None
 
         if classification.pos1:
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos0, classification.pos1
+                ac, classification.pos0, classification.pos1
             )
-            pos0, pos1 = grch38_pos["pos"]
-            ac = grch38_pos["ac"]
+            if grch38_pos:
+                pos0, pos1 = grch38_pos["pos"]
+                new_ac = grch38_pos["ac"]
         else:
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos0, classification.pos0
+                ac, classification.pos0, classification.pos0
             )
-            pos0, _ = grch38_pos["pos"]
-            ac = grch38_pos["ac"]
+            if grch38_pos:
+                pos0, _ = grch38_pos["pos"]
+                new_ac = grch38_pos["ac"]
 
-        if not ac:
-            errors.append(f"Unable to find a GRCh38 accession for: {old_ac}")
+        if not new_ac:
+            errors.append(f"Unable to find a GRCh38 accession for: {ac}")
 
         return {
-            "ac": ac,
+            "ac": new_ac,
             "pos0": pos0,
             "pos1": pos1
         }

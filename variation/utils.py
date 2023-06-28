@@ -12,6 +12,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 from variation.schemas.classification_response_schema import (
     AmbiguousType, ClassificationType
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.validation_response_schema import (
     ValidationSummary, ValidationResult
 )
@@ -208,3 +209,23 @@ def get_ambiguous_type(
             ambiguous_type = AmbiguousType.AMBIGUOUS_7
 
     return ambiguous_type
+
+
+def get_assembly(
+    seqrepo_access, alt_ac: str
+) -> Tuple[Optional[ClinVarAssembly], Optional[str]]:
+    assembly = None
+    warning = None
+
+    grch38_aliases, _ = seqrepo_access.translate_identifier(alt_ac, "GRCh38")
+    if grch38_aliases:
+        assembly = ClinVarAssembly.GRCH38
+
+    grch37_aliases, _ = seqrepo_access.translate_identifier(alt_ac, "GRCh37")
+    if grch37_aliases:
+        assembly = ClinVarAssembly.GRCH37
+
+    if not assembly:
+        warning = f"Unable to get GRCh37/GRCh38 assembly for: {alt_ac}"
+
+    return assembly, warning

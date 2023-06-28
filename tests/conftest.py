@@ -910,14 +910,31 @@ def braf_v600e_genomic_sub():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup1_seq_loc():
-    """Create test fixture containing genomic dup1 sequence location"""
+def genomic_dup1_seq_loc_normalized():
+    """Create test fixture containing genomic dup1 sequence location normalized"""
     return {
         "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
         "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
         "interval": {
             "type": "SequenceInterval",
             "start": {"value": 49531260, "type": "Number"},
+            "end": {"value": 49531262, "type": "Number"},
+        },
+        "type": "SequenceLocation"
+    }
+
+
+@pytest.fixture(scope="session")
+def genomic_dup1_seq_loc_not_normalized():
+    """Create test fixture containing genomic dup1 sequence location that was
+    normalized
+    """
+    return {
+        "_id": "ga4gh:VSL.0dgeuVKngTm5HWjNjcZ9PO-fnbNmKmBv",
+        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 49531261, "type": "Number"},
             "end": {"value": 49531262, "type": "Number"},
         },
         "type": "SequenceLocation"

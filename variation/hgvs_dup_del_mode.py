@@ -155,6 +155,8 @@ class HGVSDupDelMode:
         else:
             return None
 
+        location["_id"] = ga4gh_identify(models.SequenceLocation(**location))
+
         seq_expr = models.RepeatedSequenceExpression(
             seq_expr=models.DerivedSequenceExpression(
                 location=location,
@@ -165,12 +167,21 @@ class HGVSDupDelMode:
             type="RepeatedSequenceExpression"
         )
 
-        variation = models.Allele(
+        allele = models.Allele(
             location=location,
             state=seq_expr,
             type="Allele"
         )
-        return self._ga4gh_identify_variation(variation)
+
+        try:
+            allele = normalize(allele, self.seqrepo_access)
+        except (KeyError, AttributeError):
+            return None
+        else:
+            allele.state.seq_expr.location = allele.location
+            allele.location._id = ga4gh_identify(allele.location)
+            allele._id = ga4gh_identify(allele)
+            return allele.as_dict()
 
     def literal_seq_expr_mode(
         self, location: Dict, alt_type: AltType, vrs_seq_loc_ac: str
@@ -215,19 +226,6 @@ class HGVSDupDelMode:
             allele.location._id = ga4gh_identify(allele.location)
             allele._id = ga4gh_identify(allele)
             return allele.as_dict()
-
-    @staticmethod
-    def _ga4gh_identify_variation(variation: models.Variation) -> Optional[Dict]:
-        """Return variation with GA4GH digest-based id.
-
-        :param models.Variation variation: VRS variation object
-        :return: VRS Variation with GA4GH digest-based id represented as a dict
-        """
-        if variation is None:
-            return None
-        else:
-            variation._id = ga4gh_identify(variation)
-            return variation.as_dict()
 
     def interpret_variation(
         self, alt_type: AltType, location: Dict, errors: List,
