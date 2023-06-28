@@ -88,6 +88,6 @@ class GenomicDeletion(Tokenizer):
                             token=input_string,
                             pos0=matched_pos["pos0"],
                             pos1=matched_pos.get("pos1"),
-                            pos2=matched_pos.get("pos2"),
-                            pos3=matched_pos["pos3"]
+                            pos2=matched_pos["pos2"],
+                            pos3=matched_pos.get("pos3")
                         )

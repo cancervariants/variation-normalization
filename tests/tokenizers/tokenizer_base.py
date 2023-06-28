@@ -33,7 +33,7 @@ class TokenizerBase:
         for x in self.fixtures["should_match"]:
             res = self.tokenizer_instance().match(x["token"])
             self.assertIsNotNone(res, msg=x)
-            self.assertEqual(self.token_type(), res.token_type)
+            self.assertEqual(self.token_type(), res.token_type, msg=x)
 
     def test_not_matches(self):
         """Test that tokenizer matches correctly."""
