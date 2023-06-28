@@ -1,7 +1,7 @@
 """A module for testing Coding DNA Substitution tokenization."""
 import unittest
 
-from variation.tokenizers import CodingDNASubstitution
+from variation.tokenizers import CdnaSubstitution
 from variation.schemas.token_response_schema import TokenType
 from .tokenizer_base import TokenizerBase
 
@@ -11,7 +11,7 @@ class TestCodingDNASubstitutionTokenizer(TokenizerBase, unittest.TestCase):
 
     def tokenizer_instance(self):
         """Return Coding DNA Substitution instance."""
-        return CodingDNASubstitution()
+        return CdnaSubstitution()
 
     def token_type(self):
         """Return coding DNA substitution token type."""

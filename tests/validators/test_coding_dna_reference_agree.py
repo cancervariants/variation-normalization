@@ -1,7 +1,7 @@
 """Module for testing Coding DNA Reference Agree Validator."""
 import unittest
 
-from variation.validators import CodingDNAReferenceAgree
+from variation.validators import CdnaReferenceAgree
 from variation.classifiers import CodingDNAReferenceAgreeClassifier
 from .validator_base import ValidatorBase
 
@@ -11,7 +11,7 @@ class TestCodingDNAReferenceAgreeValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA reference agree instance."""
-        return CodingDNAReferenceAgree(*self.params)
+        return CdnaReferenceAgree(*self.params)
 
     def classifier_instance(self):
         """Return the coding DNA reference agree classifier instance."""

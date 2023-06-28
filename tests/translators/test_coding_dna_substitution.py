@@ -2,8 +2,8 @@
 import unittest
 
 from variation.classifiers import CodingDNASubstitutionClassifier
-from variation.translators import CodingDNASubstitution
-from variation.validators import CodingDNASubstitution as CDNASUB_V
+from variation.translators import CdnaSubstitution
+from variation.validators import CdnaSubstitution as CDNASUB_V
 from .translator_base import TranslatorBase
 
 
@@ -20,7 +20,7 @@ class TestCodingDNASubstitutionTranslator(TranslatorBase, unittest.TestCase):
 
     def translator_instance(self):
         """Return coding DNA substitution instance."""
-        return CodingDNASubstitution()
+        return CdnaSubstitution()
 
     def fixture_name(self):
         """Return the fixture name for coding DNA substitution."""

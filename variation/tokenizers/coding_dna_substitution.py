@@ -8,7 +8,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_SUBSTITUTION
 
 
-class CodingDNASubstitution(Tokenizer):
+class CdnaSubstitution(Tokenizer):
     """Class for tokenizing Substitution at the coding dna reference sequence."""
 
     def match(self, input_string: str) -> Optional[CodingDNASubstitutionToken]:

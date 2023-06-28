@@ -8,7 +8,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CNDA_GENOMIC_DELETION
 
 
-class CodingDNADeletion(Tokenizer):
+class CdnaDeletion(Tokenizer):
     """Class for tokenizing Deletion at the coding dna reference sequence."""
 
     def match(self, input_string: str) -> Optional[CodingDNADeletionToken]:

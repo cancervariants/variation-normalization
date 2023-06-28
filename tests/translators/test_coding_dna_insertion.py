@@ -2,8 +2,8 @@
 import unittest
 
 from variation.classifiers import CodingDNAInsertionClassifier
-from variation.translators import CodingDNAInsertion
-from variation.validators import CodingDNAInsertion as CDNAD_V
+from variation.translators import CdnaInsertion
+from variation.validators import CdnaInsertion as CDNAD_V
 from .translator_base import TranslatorBase
 
 
@@ -20,7 +20,7 @@ class TestCodingDNAInsertionTranslator(TranslatorBase, unittest.TestCase):
 
     def translator_instance(self):
         """Return coding DNA insertion instance."""
-        return CodingDNAInsertion()
+        return CdnaInsertion()
 
     def fixture_name(self):
         """Return the fixture name for coding DNA insertion."""

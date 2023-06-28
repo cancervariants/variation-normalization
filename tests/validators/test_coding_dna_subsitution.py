@@ -1,7 +1,7 @@
 """Module for testing Coding DNA Substitution Validator."""
 import unittest
 
-from variation.validators import CodingDNASubstitution
+from variation.validators import CdnaSubstitution
 from variation.classifiers import CodingDNASubstitutionClassifier
 from .validator_base import ValidatorBase
 
@@ -11,7 +11,7 @@ class TestCodingDNASubstitutionValidator(ValidatorBase, unittest.TestCase):
 
     def validator_instance(self):
         """Return coding DNA substitution instance."""
-        return CodingDNASubstitution(*self.params)
+        return CdnaSubstitution(*self.params)
 
     def classifier_instance(self):
         """Return the coding DNA substitution classifier instance."""

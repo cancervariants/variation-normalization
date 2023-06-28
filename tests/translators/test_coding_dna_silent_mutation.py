@@ -2,8 +2,8 @@
 import unittest
 
 from variation.classifiers import CodingDNAReferenceAgreeClassifier
-from variation.translators import CodingDNAReferenceAgree
-from variation.validators import CodingDNAReferenceAgree as CDNASM_V
+from variation.translators import CdnaReferenceAgree
+from variation.validators import CdnaReferenceAgree as CDNASM_V
 from .translator_base import TranslatorBase
 
 
@@ -20,7 +20,7 @@ class TestCodingDNAReferenceAgreeTranslator(TranslatorBase, unittest.TestCase):
 
     def translator_instance(self):
         """Return coding DNA reference agree instance."""
-        return CodingDNAReferenceAgree()
+        return CdnaReferenceAgree()
 
     def fixture_name(self):
         """Return the fixture name for coding DNA reference agree."""
