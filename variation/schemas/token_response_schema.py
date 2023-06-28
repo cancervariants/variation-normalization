@@ -10,6 +10,7 @@ from variation.schemas.variation_schema import (
     ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain, Duplication,
     DupDelAmbiguous
 )
+from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 class TokenType(str, Enum):
@@ -176,6 +177,7 @@ class GenomicDeletionAmbiguousToken(Token, DupDelAmbiguous):
 
     token_type = TokenType.GENOMIC_DELETION_AMBIGUOUS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
+    ambiguous_regex_type: AmbiguousRegexType
 
 
 class ProteinDelInsToken(Token, ProteinDelIns):
@@ -232,6 +234,7 @@ class GenomicDuplicationAmbiguousToken(Token, DupDelAmbiguous):
 
     token_type = TokenType.GENOMIC_DUPLICATION_AMBIGUOUS
     coordinate_type = CoordinateType.LINEAR_GENOMIC
+    ambiguous_regex_type: AmbiguousRegexType
 
 
 class AmplificationToken(Token):

@@ -15,11 +15,13 @@ from variation.schemas.classification_response_schema import (
     Nomenclature, SequenceOntology, AmbiguousType
 )
 from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
+from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.regex import (
     GENOMIC_REGEXPRS, GENOMIC_DUP_AMBIGUOUS_REGEXPRS, PROTEIN_REGEXPRS, CDNA_REGEXPRS,
-    AmbiguousRegexType, GENOMIC_DEL_AMBIGUOUS_REGEXPRS
+    GENOMIC_DEL_AMBIGUOUS_REGEXPRS
 )
 from variation.classifiers import Classifier
+from variation.utils import get_ambiguous_type
 
 
 class HgvsClassifier(Classifier):
@@ -176,47 +178,23 @@ class HgvsClassifier(Classifier):
     ):
         params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
 
-        pos1_in_params = "pos1" in params
-        if pos1_in_params:
+        if "pos1" in params:
             params["pos1"] = int(params["pos1"]) if params["pos1"] != "?" else params["pos1"]  # noqa: E501
+        else:
+            params["pos1"] = None
 
         params["pos2"] = int(params["pos2"]) if params["pos2"] != "?" else params["pos2"]  # noqa: E501
 
-        pos3_in_params = "pos3" in params
-        if pos3_in_params:
+        if "pos3" in params:
             params["pos3"] = int(params["pos3"]) if params["pos3"] != "?" else params["pos3"]  # noqa: E501
+        else:
+            params["pos3"] = None
 
-        if regex_type == AmbiguousRegexType.REGEX_1:
-            if all((
-                isinstance(params["pos0"], int),
-                isinstance(params["pos1"], int),
-                isinstance(params["pos2"], int),
-                isinstance(params["pos3"], int)
-            )):
-                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_1
-            elif all((
-                params["pos0"] == "?",
-                isinstance(params["pos1"], int),
-                isinstance(params["pos2"], int),
-                params["pos3"] == "?"
-            )):
-                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_2
-        elif regex_type == AmbiguousRegexType.REGEX_2:
-            if all((
-                params["pos0"] == "?",
-                isinstance(params["pos1"], int),
-                isinstance(params["pos2"], int),
-                not pos3_in_params
-            )):
-                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_5
-        elif regex_type == AmbiguousRegexType.REGEX_3:
-            if all((
-                isinstance(params["pos0"], int),
-                not pos1_in_params,
-                isinstance(params["pos2"], int),
-                params["pos3"] == "?"
-            )):
-                params["ambiguous_type"] = AmbiguousType.AMBIGUOUS_7
+        ambiguous_type = get_ambiguous_type(
+            params["pos0"], params["pos1"], params["pos2"], params["pos3"], regex_type
+        )
+        if ambiguous_type:
+            params["ambiguous_type"] = ambiguous_type
 
     def _genomic_dup_ambiguous_classification(
         self, token, params

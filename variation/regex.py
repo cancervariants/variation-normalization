@@ -1,12 +1,12 @@
 """Module containing regex"""
 import re
 from typing import List, Tuple
-from enum import IntEnum
 
 from variation.schemas.token_response_schema import TokenType
 from variation.schemas.classification_response_schema import (
     ClassificationType, AmbiguousType
 )
+from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 CDNA_GENOMIC_SUBSTITUTION = re.compile(
@@ -93,17 +93,9 @@ GENOMIC_DELETION_AMBIGUOUS_3 = re.compile(
     r"^(?P<pos0>\d+)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)del$"
 )
 
+# Note: Order matters for regexprs
+
 PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
-    (
-        PROTEIN_SUBSTITUTION,
-        TokenType.PROTEIN_SUBSTITUTION,
-        ClassificationType.PROTEIN_SUBSTITUTION
-    ),
-    (
-        PROTEIN_REFERENCE_AGREE,
-        TokenType.PROTEIN_REFERENCE_AGREE,
-        ClassificationType.PROTEIN_REFERENCE_AGREE
-    ),
     (
         PROTEIN_DELINS,
         TokenType.PROTEIN_DELINS,
@@ -113,6 +105,16 @@ PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         PROTEIN_DELETION,
         TokenType.PROTEIN_DELETION,
         ClassificationType.PROTEIN_DELETION
+    ),
+    (
+        PROTEIN_SUBSTITUTION,
+        TokenType.PROTEIN_SUBSTITUTION,
+        ClassificationType.PROTEIN_SUBSTITUTION
+    ),
+    (
+        PROTEIN_REFERENCE_AGREE,
+        TokenType.PROTEIN_REFERENCE_AGREE,
+        ClassificationType.PROTEIN_REFERENCE_AGREE
     ),
     (
         PROTEIN_INSERTION,
@@ -182,13 +184,6 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     )
 ]
 
-
-class AmbiguousRegexType(IntEnum):
-    """Helps determine the regex kind"""
-
-    REGEX_1 = 1
-    REGEX_2 = 2
-    REGEX_3 = 3
 
 
 GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[

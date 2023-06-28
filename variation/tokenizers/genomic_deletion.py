@@ -9,6 +9,7 @@ from variation.regex import (
     CNDA_GENOMIC_DELETION, GENOMIC_DELETION_AMBIGUOUS_1, GENOMIC_DELETION_AMBIGUOUS_2,
     GENOMIC_DELETION_AMBIGUOUS_3
 )
+from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 class GenomicDeletion(Tokenizer):
@@ -64,12 +65,13 @@ class GenomicDeletion(Tokenizer):
                         pos1=int(pos1) if pos1 != "?" else pos1,
                         pos2=int(pos2) if pos2 != "?" else pos2,
                         pos3=int(pos3) if pos3 != "?" else pos3,
+                        ambiguous_regex_type=AmbiguousRegexType.REGEX_1
                     )
 
             else:
-                for pattern_re in [
-                    GENOMIC_DELETION_AMBIGUOUS_2,
-                    GENOMIC_DELETION_AMBIGUOUS_3
+                for pattern_re, regex_type in [
+                    (GENOMIC_DELETION_AMBIGUOUS_2, AmbiguousRegexType.REGEX_2),
+                    (GENOMIC_DELETION_AMBIGUOUS_3, AmbiguousRegexType.REGEX_3)
                 ]:
                     match = pattern_re.match(input_string)
 
@@ -89,5 +91,6 @@ class GenomicDeletion(Tokenizer):
                             pos0=matched_pos["pos0"],
                             pos1=matched_pos.get("pos1"),
                             pos2=matched_pos["pos2"],
-                            pos3=matched_pos.get("pos3")
+                            pos3=matched_pos.get("pos3"),
+                            ambiguous_regex_type=regex_type
                         )

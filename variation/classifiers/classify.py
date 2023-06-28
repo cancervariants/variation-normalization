@@ -1,5 +1,5 @@
 """Module for classification."""
-from typing import List, Callable
+from typing import List
 
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import Token, TokenType

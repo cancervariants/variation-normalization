@@ -3,8 +3,12 @@ import asyncio
 
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from gene.database.dynamodb import DynamoDbDatabase
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.query import QueryHandler
+from variation.tokenizers import Tokenize, GeneSymbol
+from variation.classifiers import Classify
 
 
 @pytest.fixture(scope="session")
@@ -13,6 +17,18 @@ def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
+
+@pytest.fixture(scope="session")
+def test_tokenizer():
+    """Create test fixture for tokenizer"""
+    return Tokenize(GeneSymbol(GeneQueryHandler(DynamoDbDatabase())))
+
+
+@pytest.fixture(scope="session")
+def test_classifier():
+    """Create test fixture for classifier"""
+    return Classify()
 
 
 @pytest.fixture(scope="session")

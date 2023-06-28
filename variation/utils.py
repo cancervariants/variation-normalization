@@ -9,9 +9,13 @@ from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from cool_seq_tool.data_sources import SeqRepoAccess
 
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.validation_response_schema import ValidationSummary, \
-    ValidationResult
+from variation.schemas.classification_response_schema import (
+    AmbiguousType, ClassificationType
+)
+from variation.schemas.validation_response_schema import (
+    ValidationSummary, ValidationResult
+)
+from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 def no_variation_entered() -> Tuple[None, List[str]]:
@@ -165,3 +169,42 @@ def get_aa1_codes(aa: str) -> Optional[str]:
             aa1 = aa
 
     return aa1
+
+
+def get_ambiguous_type(
+    pos0, pos1, pos2, pos3, ambiguous_regex_type
+) -> Optional[AmbiguousType]:
+    ambiguous_type = None
+    if ambiguous_regex_type == AmbiguousRegexType.REGEX_1:
+        if all((
+            isinstance(pos0, int),
+            isinstance(pos1, int),
+            isinstance(pos2, int),
+            isinstance(pos3, int)
+        )):
+            ambiguous_type = AmbiguousType.AMBIGUOUS_1
+        elif all((
+            pos0 == "?",
+            isinstance(pos1, int),
+            isinstance(pos2, int),
+            pos3 == "?"
+        )):
+            ambiguous_type = AmbiguousType.AMBIGUOUS_2
+    elif ambiguous_regex_type == AmbiguousRegexType.REGEX_2:
+        if all((
+            pos0 == "?",
+            isinstance(pos1, int),
+            isinstance(pos2, int),
+            pos3 is None
+        )):
+            ambiguous_type = AmbiguousType.AMBIGUOUS_5
+    elif ambiguous_regex_type == AmbiguousRegexType.REGEX_3:
+        if all((
+            isinstance(pos0, int),
+            pos1 is None,
+            isinstance(pos2, int),
+            pos3 == "?"
+        )):
+            ambiguous_type = AmbiguousType.AMBIGUOUS_7
+
+    return ambiguous_type
