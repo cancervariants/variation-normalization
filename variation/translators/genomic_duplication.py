@@ -100,13 +100,14 @@ class GenomicDuplication(Translator):
 
             mane = await self.mane_transcript.get_mane_transcript(
                 ac, pos0, "g", end_pos=pos1, gene=classification.gene.token,
-                try_longest_compatible=True
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE
             )
 
             if mane:
+                # mane is 0 - based, but we are using residue
                 ac = mane["refseq"]
-                pos0 = mane["pos"][0] + mane["coding_start_site"]
-                pos1 = mane["pos"][1] + mane["coding_start_site"]
+                pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
+                pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
                 classification.molecule_context = MoleculeContext.TRANSCRIPT
             else:
                 return None
@@ -148,33 +149,3 @@ class GenomicDuplication(Translator):
             )
         else:
             return None
-
-    def is_valid(
-        self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE
-    ):
-        """Assumes grch38"""
-        gene_start = None
-        gene_end = None
-
-        for ext in gene_token.gene_descriptor.extensions:
-            if ext.name == "ensembl_locations":
-                if ext.value:
-                    ensembl_loc = ext.value[0]
-                    gene_start = ensembl_loc["interval"]["start"]["value"]
-                    gene_end = ensembl_loc["interval"]["end"]["value"] - 1
-
-        if gene_start is None and gene_end is None:
-            errors.append(
-                f"gene-normalizer unable to find Ensembl location for: {gene_token.token}"  # noqa: E501
-            )
-
-        for pos in [pos0, pos1, pos2, pos3]:
-            if pos not in {"?", None}:
-                if residue_mode == ResidueMode.RESIDUE:
-                    pos -= 1
-
-                if not (gene_start <= pos <= gene_end):
-                    errors.append(
-                        f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"  # noqa: E501
-                    )

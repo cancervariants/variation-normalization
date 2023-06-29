@@ -962,33 +962,33 @@ def genomic_dup1_38_cn():
 
 
 @pytest.fixture(scope="session")
-def genomic_dup2_seq_loc():
+def genomic_dup2_seq_loc_normalized():
     """Create genomic dup2 sequence location"""
     return {
-        "_id": "ga4gh:VSL.4mH68huylkPmu6zyUwH4wiazIYr9cQUX",
-        "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+        "_id": "ga4gh:VSL.zvoz73tg0UVNJf8gF_-J6RpQQ_rthVGx",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         "interval": {
             "type": "SequenceInterval",
-            "start": {"value": 2087937, "type": "Number"},
-            "end": {"value": 2087948, "type": "Number"},
+            "start": {"value": 33211289, "type": "Number"},
+            "end": {"value": 33211293, "type": "Number"},
         },
         "type": "SequenceLocation"
     }
 
 
 @pytest.fixture(scope="session")
-def genomic_dup2_38_cn(genomic_dup2_seq_loc):
+def genomic_dup2_38_cn(genomic_dup2_seq_loc_normalized):
     """Create test fixture for copy number count dup2 on GRCh38"""
     return {
         "type": "CopyNumberCount",
-        "_id": "ga4gh:CN.2ByO6IxnL3qVjpFfMBUzPHa45NW1JNJy",
-        "subject": genomic_dup2_seq_loc,
+        "_id": "ga4gh:CN.3IZ9lL_gcsJk5Oe-uafT9xx9rTezOOsA",
+        "subject": genomic_dup2_seq_loc_normalized,
         "copies": {"type": "Number", "value": 3}
     }
 
 
 @pytest.fixture(scope="session")
-def genomic_del3_dup3_loc():
+def genomic_del3_dup3_loc_not_normalized():
     """Create genomic del3 dup3 sequence location"""
     return {
         "_id": "ga4gh:VSL.DgEMxYt1AdPe-HZAQbT2AVz5OejICnOj",

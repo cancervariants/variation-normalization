@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
+from variation.schemas.classification_response_schema import ClassificationType
 
 from variation.to_vrs import ToVRS
 from variation.schemas.token_response_schema import GeneToken, TokenType
@@ -35,14 +36,11 @@ class ToVRSATILE(ToVRS):
             return None, warnings
 
         variation_id = variation["_id"]
-        token_types = {
-            t.token_type for t in valid_result.classification.matching_tokens
-        }
 
-        vrs_ref_allele_seq = None
-        if "uncertain" in token_types:
-            warnings = ["Ambiguous regions cannot be normalized"]
-        elif "range" not in token_types and TokenType.AMPLIFICATION not in token_types:
+        classification_type = valid_result.classification.classification_type
+        if classification_type not in {ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+                                       ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+                                       ClassificationType.AMPLIFICATION}:
             variation_type = variation["type"]
             if variation_type in {VRSTypes.ALLELE.value,
                                   VRSTypes.COPY_NUMBER_COUNT.value,
@@ -51,6 +49,8 @@ class ToVRSATILE(ToVRS):
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation[key], translation_result.vrs_seq_loc_ac
                 )
+        else:
+            vrs_ref_allele_seq = None
 
         if valid_result.gene_tokens:
             gene_token = valid_result.gene_tokens[0]

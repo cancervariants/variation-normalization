@@ -5,6 +5,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType, CoordinateType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
@@ -15,6 +16,7 @@ from variation.schemas.classification_response_schema import (
     ClassificationType, GenomicInsertionClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.utils import get_assembly
 
 
 class GenomicInsertion(Translator):

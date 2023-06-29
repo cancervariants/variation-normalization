@@ -27,23 +27,39 @@ class GenomicDeletion(Validator):
             )]
 
         validation_results = []
-        # TODO: Validate pos0 and pos1 exist on given accession
         # _validate_gene_pos?
 
         for ac in transcripts:
             errors = []
-            # validate deleted sequence
-            if classification.nomenclature in {Nomenclature.FREE_TEXT,
-                                               Nomenclature.HGVS}:
-                # HGVS deleted sequence includes start and end
-                if classification.deleted_sequence:
-                    invalid_del_seq_message = self.validate_reference_sequence(
+
+            invalid_ac_pos = self.validate_ac_and_pos(
+                ac, classification.pos0, end_pos=classification.pos1
+            )
+            if invalid_ac_pos:
+                errors.append(invalid_ac_pos)
+            else:
+                # validate deleted sequence
+                if classification.nomenclature in {Nomenclature.FREE_TEXT,
+                                                   Nomenclature.HGVS}:
+                    # HGVS deleted sequence includes start and end
+                    if classification.deleted_sequence:
+                        invalid_del_seq_message = self.validate_reference_sequence(
+                            ac, classification.pos0, classification.pos1 + 1,
+                            classification.deleted_sequence
+                        )
+
+                        if invalid_del_seq_message:
+                            errors.append(invalid_del_seq_message)
+
+            if not errors:
+                if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                    validate_ref_msg = self.validate_reference_sequence(
                         ac, classification.pos0, classification.pos1 + 1,
-                        classification.deleted_sequence
+                        classification.matching_tokens[0].ref
                     )
 
-                    if invalid_del_seq_message:
-                        errors.append(invalid_del_seq_message)
+                    if validate_ref_msg:
+                        errors.append(validate_ref_msg)
 
             validation_results.append(
                 ValidationResult(

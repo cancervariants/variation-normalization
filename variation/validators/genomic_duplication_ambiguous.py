@@ -57,16 +57,43 @@ class GenomicDuplicationAmbiguous(Validator):
             )]
 
         validation_results = []
-        # TODO: Validate pos0 and pos1 exist on given accession
         # _validate_gene_pos?
 
         for ac in transcripts:
+            errors = []
+
+            if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
+                start_pos = classification.pos0
+                end_pos = classification.pos3
+            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
+                start_pos = classification.pos1
+                end_pos = classification.pos2
+            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
+                start_pos = classification.pos1
+                end_pos = classification.pos2
+            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
+                start_pos = classification.pos0
+                end_pos = classification.pos2
+            else:
+                start_pos = None
+                end_pos = None
+                errors.append(
+                    f"ambiguous type not supported: {classification.ambiguous_type}"
+                )
+
+            if start_pos is not None and end_pos is not None:
+                invalid_ac_pos = self.validate_ac_and_pos(
+                    ac, start_pos, end_pos=end_pos
+                )
+                if invalid_ac_pos:
+                    errors.append(invalid_ac_pos)
+
             validation_results.append(
                 ValidationResult(
                     accession=ac,
                     classification=classification,
-                    is_valid=True,
-                    errors=[],
+                    is_valid=not errors,
+                    errors=errors,
                     gene_tokens=gene_tokens
                 )
             )

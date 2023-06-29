@@ -5,6 +5,7 @@ from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
@@ -15,6 +16,7 @@ from variation.schemas.classification_response_schema import (
     AmbiguousType, ClassificationType, GenomicDeletionAmbiguousClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.utils import get_assembly
 
 
 class GenomicDeletionAmbiguous(Translator):
@@ -40,72 +42,91 @@ class GenomicDeletionAmbiguous(Translator):
         vrs_variation = None
         outer_coords = None
 
+        # TODO: Clean this up
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
-            grch38_data = await self.get_grch38_data_ambiguous(classification, errors)
-            if errors:
-                warnings += errors
+
+            # Check if we need to do liftover
+            assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
+            if w:
+                warnings.append(w)
                 return None
+            else:
+                # assembly is either 37 or 38
+                if assembly == ClinVarAssembly.GRCH37:
+                    grch38_data = await self.get_grch38_data_ambiguous(
+                        classification, errors, validation_result.accession
+                    )
+                    if errors:
+                        warnings += errors
+                        return None
 
-            if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-                ival = self.vrs.get_ival_certain_range(
-                    grch38_data["pos0"], grch38_data["pos1"], grch38_data["pos2"],
-                    grch38_data["pos3"]
-                )
-                outer_coords = (grch38_data["pos0"], grch38_data["pos3"])
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(grch38_data["pos1"]),
-                    end=self.vrs.get_end_indef_range(grch38_data["pos2"]),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (grch38_data["pos1"], grch38_data["pos2"])
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(grch38_data["pos1"]),
-                    end=models.Number(value=grch38_data["pos2"], type="Number"),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (grch38_data["pos1"], grch38_data["pos2"])
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
-                ival = models.SequenceInterval(
-                    start=models.Number(value=grch38_data["pos0"] - 1, type="Number"),
-                    end=self.vrs.get_end_indef_range(grch38_data["pos2"]),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (grch38_data["pos0"], grch38_data["pos2"])
+                    ac = grch38_data["ac"]
+                    pos0 = grch38_data["pos0"]
+                    pos1 = grch38_data["pos1"]
+                    pos2 = grch38_data["pos2"]
+                    pos3 = grch38_data["pos3"]
+                else:
+                    ac = validation_result.accession
+                    pos0 = classification.pos0
+                    pos1 = classification.pos1
+                    pos2 = classification.pos2
+                    pos3 = classification.pos3
 
-            ac = grch38_data["ac"]
+                assembly = ClinVarAssembly.GRCH38
         else:
-            ac = classification.ac
+            ac = validation_result.accession
+            pos0 = classification.pos0
+            pos1 = classification.pos1
+            pos2 = classification.pos2
+            pos3 = classification.pos3
+            assembly = None
 
-            if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-                ival = self.vrs.get_ival_certain_range(
-                    classification.pos0, classification.pos1, classification.pos2,
-                    classification.pos3
+        if classification.gene:
+            errors = []
+            if not assembly:
+                grch38_data = await self.get_grch38_data_ambiguous(
+                    classification, errors, ac
                 )
-                outer_coords = (classification.pos0, classification.pos3)
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(classification.pos1),
-                    end=self.vrs.get_end_indef_range(classification.pos2),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (classification.pos1, classification.pos2)
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
-                ival = models.SequenceInterval(
-                    start=self.vrs.get_start_indef_range(classification.pos1),
-                    end=models.Number(value=classification.pos2, type="Number"),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (classification.pos1, classification.pos2)
-            elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
-                ival = models.SequenceInterval(
-                    start=models.Number(value=classification.pos0 - 1, type="Number"),
-                    end=self.vrs.get_end_indef_range(classification.pos2),
-                    type="SequenceInterval"
-                ).as_dict()
-                outer_coords = (classification.pos0, classification.pos2)
+
+                if errors:
+                    warnings += errors
+                    return None
+
+                self.is_valid(
+                    classification.gene, grch38_data["ac"], grch38_data["pos0"],
+                    grch38_data["pos1"], errors, pos2=grch38_data["pos2"],
+                    pos3=grch38_data["pos3"]
+                )
+            else:
+                self.is_valid(
+                    classification.gene, ac, pos0, pos1, errors, pos2=pos2, pos3=pos3
+                )
+
+        if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
+            ival = self.vrs.get_ival_certain_range(pos0, pos1, pos2, pos3)
+            outer_coords = (pos0, pos3)
+        elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2:
+            ival = models.SequenceInterval(
+                start=self.vrs.get_start_indef_range(pos1),
+                end=self.vrs.get_end_indef_range(pos2),
+                type="SequenceInterval"
+            ).as_dict()
+            outer_coords = (pos1, pos2)
+        elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5:
+            ival = models.SequenceInterval(
+                start=self.vrs.get_start_indef_range(pos1),
+                end=models.Number(value=pos2, type="Number"),
+                type="SequenceInterval"
+            ).as_dict()
+            outer_coords = (pos1, pos2)
+        elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
+            ival = models.SequenceInterval(
+                start=models.Number(value=pos0 - 1, type="Number"),
+                end=self.vrs.get_end_indef_range(pos2),
+                type="SequenceInterval"
+            ).as_dict()
+            outer_coords = (pos0, pos2)
 
         seq_id = self.translate_sequence_identifier(ac, errors)
         if not seq_id:

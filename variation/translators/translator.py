@@ -7,6 +7,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import (
     TranscriptMappings, SeqRepoAccess, UTADatabase, MANETranscript
 )
+from cool_seq_tool.schemas import ResidueMode
 
 from variation.validators.genomic_base import GenomicBase
 from variation.tokenizers import GeneSymbol
@@ -17,7 +18,9 @@ from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.schemas.classification_response_schema import AmbiguousType, ClassificationType
+from variation.schemas.classification_response_schema import (
+    AmbiguousType, ClassificationType
+)
 from variation.schemas.translation_response_schema import TranslationResult
 
 
@@ -103,46 +106,50 @@ class Translator(ABC):
         }
 
     async def get_grch38_data_ambiguous(
-        self, classification, errors
+        self, classification, errors, ac
     ) -> Dict:
-        old_ac = classification.ac
         pos0, pos1, pos2, pos3, new_ac = None, None, None, None, None
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             grch38_pos0_pos1 = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos0, classification.pos1
+                ac, classification.pos0, classification.pos1
             )
-            pos0, pos1 = grch38_pos0_pos1["pos"]
-            ac_pos0_pos1 = grch38_pos0_pos1["ac"]
+            if grch38_pos0_pos1:
+                pos0, pos1 = grch38_pos0_pos1["pos"]
+                ac_pos0_pos1 = grch38_pos0_pos1["ac"]
 
-            grch38_pos2_pos3 = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos2, classification.pos3
-            )
-            pos2, pos3 = grch38_pos2_pos3["pos"]
-            ac_pos2_pos3 = grch38_pos2_pos3["ac"]
-
-            if ac_pos0_pos1 != ac_pos2_pos3:
-                errors.append(
-                    f"{ac_pos0_pos1} does not equal {ac_pos2_pos3} when lifting over "
-                    f"to GRCh38"
+                grch38_pos2_pos3 = await self.mane_transcript.g_to_grch38(
+                    ac, classification.pos2, classification.pos3
                 )
-            else:
-                new_ac = ac_pos0_pos1
+
+                if grch38_pos2_pos3:
+                    pos2, pos3 = grch38_pos2_pos3["pos"]
+                    ac_pos2_pos3 = grch38_pos2_pos3["ac"]
+
+                    if ac_pos0_pos1 != ac_pos2_pos3:
+                        errors.append(
+                            f"{ac_pos0_pos1} does not equal {ac_pos2_pos3} when lifting"
+                            " over to GRCh38"
+                        )
+                    else:
+                        new_ac = ac_pos0_pos1
         elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
                                                AmbiguousType.AMBIGUOUS_5}:
             grch38 = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos1, classification.pos2
+                ac, classification.pos1, classification.pos2
             )
-            pos1, pos2 = grch38["pos"]
-            new_ac = grch38["ac"]
+            if grch38:
+                pos1, pos2 = grch38["pos"]
+                new_ac = grch38["ac"]
         elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
             grch38 = await self.mane_transcript.g_to_grch38(
-                old_ac, classification.pos0, classification.pos2
+                ac, classification.pos0, classification.pos2
             )
-            pos0, pos2, = grch38["pos"]
-            new_ac = grch38["ac"]
+            if grch38:
+                pos0, pos2, = grch38["pos"]
+                new_ac = grch38["ac"]
 
         if not new_ac:
-            errors.append(f"Unable to find a GRCh38 accession for: {old_ac}")
+            errors.append(f"Unable to find a GRCh38 accession for: {ac}")
 
         return {
             "ac": new_ac,
@@ -177,3 +184,33 @@ class Translator(ABC):
 
             ga4gh_seq_id = ids[0]
         return ga4gh_seq_id
+
+    def is_valid(
+        self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE
+    ):
+        """Assumes grch38"""
+        gene_start = None
+        gene_end = None
+
+        for ext in gene_token.gene_descriptor.extensions:
+            if ext.name == "ensembl_locations":
+                if ext.value:
+                    ensembl_loc = ext.value[0]
+                    gene_start = ensembl_loc["interval"]["start"]["value"]
+                    gene_end = ensembl_loc["interval"]["end"]["value"] - 1
+
+        if gene_start is None and gene_end is None:
+            errors.append(
+                f"gene-normalizer unable to find Ensembl location for: {gene_token.token}"  # noqa: E501
+            )
+
+        for pos in [pos0, pos1, pos2, pos3]:
+            if pos not in {"?", None}:
+                if residue_mode == ResidueMode.RESIDUE:
+                    pos -= 1
+
+                if not (gene_start <= pos <= gene_end):
+                    errors.append(
+                        f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"  # noqa: E501
+                    )

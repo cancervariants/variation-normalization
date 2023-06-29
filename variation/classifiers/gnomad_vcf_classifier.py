@@ -3,7 +3,8 @@ from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
     Classification, GenomicSubstitutionClassification, Nomenclature, SequenceOntology,
-    GenomicReferenceAgreeClassification
+    GenomicReferenceAgreeClassification, GenomicInsertionClassification,
+    GenomicDeletionClassification, GenomicDelInsClassification
 )
 from variation.schemas.token_response_schema import (
     GnomadVcfToken, TokenType
@@ -33,6 +34,7 @@ class GnomadVcfClassifier(Classifier):
         len_alt = len(alt)
 
         if len_ref == len_alt:
+            # Substitution
             params["pos"] = token.pos
 
             if ref == alt:
@@ -48,5 +50,19 @@ class GnomadVcfClassifier(Classifier):
                 params["alt"] = alt
 
                 return GenomicSubstitutionClassification(**params)
-
+        else:
+            if any((len_ref == 1, len_alt == 1)):
+                if len_ref == 1:
+                    # insertion
+                    pass
+                else:
+                    # deletion
+                    del_seq = ref[1:]
+                    params["pos0"] = token.pos
+                    params["pos1"] = params["pos0"] + len(del_seq)
+                    params["deleted_sequence"] = del_seq
+                    return GenomicDeletionClassification(**params)
+            else:
+                # delins
+                pass
         return None

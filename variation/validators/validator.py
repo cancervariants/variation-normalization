@@ -390,3 +390,41 @@ class Validator(ABC):
             msg = f"Unable to get CDS start for accession: {ac}"
 
         return cds_start, msg
+
+    def validate_accession(self, ac: str) -> Optional[str]:
+        try:
+            self.seqrepo_access.sr[ac][0]
+        except KeyError:
+            msg = f"Accession does not exist in SeqRepo: {ac}"
+        else:
+            msg = None
+
+        return msg
+
+    def validate_ac_and_pos(
+        self, ac: str, start_pos: int, end_pos: Optional[int] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE
+    ):
+        if residue_mode == ResidueMode.RESIDUE:
+            start_pos -= 1
+
+        msg = None
+        ref_len = None
+        try:
+            if end_pos:
+                ref_len = len(self.seqrepo_access.sr[ac][start_pos:end_pos])
+            else:
+                ref_len = len(self.seqrepo_access.sr[ac][start_pos])
+        except KeyError:
+            msg = f"Accession does not exist in SeqRepo: {ac}"
+        except ValueError as e:
+            msg = f"{e} on accession ({ac})"
+        else:
+            if end_pos:
+                if not ref_len or (end_pos - start_pos != ref_len):
+                    msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"
+            else:
+                if not ref_len:
+                    msg = f"Position ({start_pos}) not valid on accession ({ac})"
+
+        return msg

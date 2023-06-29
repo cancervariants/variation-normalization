@@ -1,20 +1,24 @@
 """Module for Genomic Deletion Translation."""
 from typing import Optional, List
 
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicDeletionClassification
+    ClassificationType, GenomicDeletionClassification, Nomenclature
 )
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.utils import get_assembly
 
 
 class GenomicDeletion(Translator):
@@ -37,32 +41,117 @@ class GenomicDeletion(Translator):
         """Translate to VRS Variation representation."""
         # First will translate valid result to VRS Allele
         classification: GenomicDeletionClassification = validation_result.classification  # noqa: E501
-        vrs_allele = None
-        vrs_seq_loc_ac = None
+        vrs_variation = None
 
-        if endpoint_name == Endpoint.NORMALIZE:
+        # TODO: Clean this up
+        if do_liftover or endpoint_name == Endpoint.NORMALIZE:
+            errors = []
+
+            # Check if we need to liftover
+            assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
+            if w:
+                warnings.append(w)
+                return None
+            else:
+                # assembly is either 37 or 38
+                if assembly == ClinVarAssembly.GRCH37:
+                    grch38_data = await self.get_grch38_data(
+                        classification, errors, validation_result.accession
+                    )
+                    if errors:
+                        warnings += errors
+                        return None
+
+                    pos0 = grch38_data["pos0"]
+                    pos1 = grch38_data["pos1"]
+                    ac = grch38_data["ac"]
+                else:
+                    pos0 = classification.pos0
+                    pos1 = classification.pos1
+                    ac = validation_result.accession
+
+                assembly = ClinVarAssembly.GRCH38
+        else:
+            pos0 = classification.pos0
+            pos1 = classification.pos1
+            ac = validation_result.accession
+            assembly = None
+
+        if classification.gene:
+            errors = []
+            if not assembly:
+                grch38_data = await self.get_grch38_data(
+                    classification, errors, ac
+                )
+                if errors:
+                    warnings += errors
+                    return None
+
+                self.is_valid(
+                    classification.gene, grch38_data["ac"], grch38_data["pos0"],
+                    grch38_data["pos1"], errors
+                )
+            else:
+                self.is_valid(classification.gene, ac, pos0, pos1, errors)
+
+            if errors:
+                warnings += errors
+                return None
+
             mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos0,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos1,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
+                ac, pos0, "g", end_pos=pos1, gene=classification.gene.token,
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE
             )
 
             if mane:
-                vrs_seq_loc_ac = mane["alt_ac"]
-                vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC, AltType.DELETION, warnings
-                )
+                # mane is 0 - based, but we are using residue
+                ac = mane["refseq"]
+                pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
+                pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
+                classification.molecule_context = MoleculeContext.TRANSCRIPT
+            else:
+                return None
+
+        outer_coords = (pos0, pos1 if pos1 else pos0)
+
+        # TODO: Check this
+        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            start_value = pos0
         else:
-            vrs_seq_loc_ac = validation_result.accession
-            vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.DELETION, warnings
+            start_value = pos0 - 1
+        ival = models.SequenceInterval(
+            start=models.Number(value=start_value, type="Number"),
+            end=models.Number(value=pos1 if pos1 else pos0, type="Number")
+        ).as_dict()
+
+        seq_id = self.translate_sequence_identifier(ac, warnings)
+        if not seq_id:
+            return None
+
+        seq_loc = self.vrs.get_sequence_loc(seq_id, ival).as_dict()
+
+        if endpoint_name == Endpoint.NORMALIZE:
+            vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
+                AltType.DELETION, seq_loc, warnings, hgvs_dup_del_mode, ac,
+                baseline_copies=baseline_copies, copy_change=copy_change
+            )
+        elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
+                "del", seq_loc, baseline_copies
+            )
+        elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_CHANGE:
+            vrs_variation = self.hgvs_dup_del_mode.copy_number_change_mode(
+                "del", seq_loc, copy_change
+            )
+        else:
+            vrs_variation = self.hgvs_dup_del_mode.default_mode(
+                AltType.DELETION, outer_coords, "del", seq_loc, ac,
+                baseline_copies=baseline_copies, copy_change=copy_change
             )
 
-        if vrs_allele and vrs_seq_loc_ac:
+        if vrs_variation:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac
             )
         else:
             return None
