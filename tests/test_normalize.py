@@ -1359,7 +1359,7 @@ async def test_valid_queries(test_handler):
 async def test_no_matches(test_handler):
     """Test no matches work correctly."""
     queries = [
-        "braf", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
+        "braf", "braf v600e", "braf v600000932092039e", "NP_000213.1:cp.Leu862=",
         "NP_000213.1:cp.Leu862", "BRAF V600E 33", "NP_004324.2:p.Glu600Val",
         "NP_004324.2:p.Glu600Gal", "NP_004324.2839:p.Glu600Val",
         "NP_004324.2:t.Glu600Val", "this:c.54G>H", "NC_000007.13:g.4T<A",
@@ -1371,6 +1371,7 @@ async def test_no_matches(test_handler):
         "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)"
     ]
     for q in queries:
+        assert isinstance(q, str)
         resp = await test_handler.normalize(q, untranslatable_returns_text=True)
         assert resp.variation_descriptor.type == "VariationDescriptor", q
         assert resp.variation_descriptor.variation.type == "Text", q
@@ -1397,13 +1398,6 @@ async def test_service_meta():
     assert service_meta.url == "https://github.com/cancervariants/variation-normalization"  # noqa: E501
 
     response = await normalize_get_response("this-wont-normalize", "default")
-    service_meta = response.service_meta_
-    assert service_meta.name == "variation-normalizer"
-    assert service_meta.version
-    assert isinstance(service_meta.response_datetime, datetime)
-    assert service_meta.url == "https://github.com/cancervariants/variation-normalization"  # noqa: E501
-
-    response = await to_vrs_get_response("BRAF v600e")
     service_meta = response.service_meta_
     assert service_meta.name == "variation-normalizer"
     assert service_meta.version

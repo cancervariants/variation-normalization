@@ -151,12 +151,6 @@ class Normalize(ToVRSATILE):
                 label, _id, warnings, untranslatable_returns_text
             )
 
-        return NormalizeService(
-            variation_query=q,
-            variation_descriptor=vd,
-            warnings=warnings,
-            service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
-            )
-        )
+        params["variation_descriptor"] = vd
+        params["warnings"] = warnings
+        return NormalizeService(**params)

@@ -130,15 +130,27 @@ class ToVRS(VRSRepresentation):
             unable to translate or normalize query.
         :return: ToVRSService containing VRS variations and warnings
         """
-        warnings = list()
+        warnings = []
+        variations = []
+        params = {
+            "search_term": q,
+            "variations": variations,
+            "service_meta_": ServiceMeta(
+                version=__version__,
+                response_datetime=datetime.now()
+            ),
+            "warnings": warnings
+        }
 
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if warnings:
-            return None, warnings
+            params["warnings"] = warnings
+            return ToVRSService(**params)
 
         classifications = self.classifier.perform(tokens)
         if not classifications:
-            return None, [f"Unable to find classification for: {q}"]
+            params["warnings"] = [f"Unable to find classification for: {q}"]
+            return ToVRSService(**params)
 
         validations = await self.validator.perform(classifications, warnings)
 
@@ -160,12 +172,6 @@ class ToVRS(VRSRepresentation):
         else:
             variations = [tr.vrs_variation for tr in translations]
 
-        return ToVRSService(
-            search_term=q,
-            variations=variations,
-            service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
-            ),
-            warnings=warnings
-        )
+        params["warnings"] = warnings
+        params["variations"] = variations
+        return ToVRSService(**params)
