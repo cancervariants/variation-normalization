@@ -1365,6 +1365,7 @@ def genomic_del3_free_text_cx(genomic_del3_free_text, genomic_del3_free_text_sub
     return VariationDescriptor(**genomic_del3_free_text)
 
 
+
 @pytest.fixture(scope="module")
 def genomic_del3_free_text_cn(genomic_del3_free_text, genomic_del3_free_text_subject):
     """Create a test fixture for genomic del copy number count."""

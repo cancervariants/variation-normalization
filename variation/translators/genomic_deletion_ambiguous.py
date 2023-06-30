@@ -103,6 +103,10 @@ class GenomicDeletionAmbiguous(Translator):
                     classification.gene, ac, pos0, pos1, errors, pos2=pos2, pos3=pos3
                 )
 
+            if errors:
+                warnings += errors
+                return None
+
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             ival = self.vrs.get_ival_certain_range(pos0, pos1, pos2, pos3)
             outer_coords = (pos0, pos3)

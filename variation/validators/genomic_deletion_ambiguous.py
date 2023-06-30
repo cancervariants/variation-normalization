@@ -92,8 +92,8 @@ class GenomicDeletionAmbiguous(Validator):
                 ValidationResult(
                     accession=ac,
                     classification=classification,
-                    is_valid=True,
-                    errors=[],
+                    is_valid=not errors,
+                    errors=errors,
                     gene_tokens=gene_tokens
                 )
             )
