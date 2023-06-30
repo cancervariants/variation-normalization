@@ -1,6 +1,7 @@
 """Module for to copy number variation translation"""
 from typing import Tuple, Optional, List, Union
 from datetime import datetime
+from urllib.parse import unquote
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
     Text, CopyChange
@@ -11,9 +12,11 @@ from gene.schemas import MatchType as GeneMatchType
 
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import \
-    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, \
-    VALID_COPY_CHANGE
+from variation.schemas.token_response_schema import TokenType
+from variation.schemas.hgvs_to_copy_number_schema import (
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, VALID_COPY_CHANGE,
+    VALID_CLASSIFICATION_TYPES
+)
 from variation.schemas.service_schema import AmplificationToCxVarQuery, \
     AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
     ParsedToCnVarService
@@ -58,6 +61,40 @@ class ToCopyNumberVariation(ToVRS):
         _id = ga4gh_identify(variation)
         variation = Text(definition=definition, id=_id)
         return variation, warnings
+
+    async def _get_validation_summary(
+        self, q: str
+    ) -> Tuple[Optional[ValidationSummary], List]:
+        validation_summary = None
+        warnings = []
+        tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
+        if not tokens:
+            return validation_summary, warnings
+
+        classifications = self.classifier.perform(tokens)
+        if not classifications:
+            warnings.append(f"Unable to find classification for: {q}")
+            return validation_summary, None
+
+        tmp_classifications = []
+        for c in classifications:
+            if all((
+                c.classification_type in VALID_CLASSIFICATION_TYPES,
+                TokenType.HGVS in c.matching_tokens
+            )):
+                tmp_classifications.append(c)
+
+        classifications = tmp_classifications
+        if not classifications:
+            warnings = [f"{q} is not a supported HGVS genomic "
+                        f"duplication or deletion"]
+            return validation_summary, warnings
+
+        validation_summary = await self.validator.perform(classifications, warnings)
+        if not validation_summary:
+            warnings = validation_summary.warnings
+
+        return validation_summary, warnings
 
     async def _hgvs_to_cnv_resp(
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
@@ -118,14 +155,11 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberCountService containing Copy Number Count
             Variation and warnings
         """
-        validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_COUNT,
-            baseline_copies=baseline_copies, do_liftover=do_liftover
-        )
+        validation_summary, warnings = self._get_validation_summary(hgvs_expr)
         cn_var, warnings = await self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover, validations,
-            warnings, untranslatable_returns_text)
+            HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover,
+            validation_summary, warnings, untranslatable_returns_text
+        )
 
         return HgvsToCopyNumberCountService(
             hgvs_expr=hgvs_expr,
@@ -152,19 +186,11 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberChangeService containing Copy Number Change
             Variation and warnings
         """
-        if copy_change and copy_change.lower() not in VALID_COPY_CHANGE:  # noqa: E501
-            return None, [f"{copy_change} is not a valid copy change: "
-                          f"{VALID_COPY_CHANGE}"]
-
-        validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_CHANGE,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
-            copy_change=copy_change, do_liftover=do_liftover
-        )
-
+        validation_summary, warnings = self._get_validation_summary(hgvs_expr)
         cx_var, warnings = await self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover, validations,
-            warnings, untranslatable_returns_text)
+            HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover,
+            validation_summary, warnings, untranslatable_returns_text
+        )
 
         return HgvsToCopyNumberChangeService(
             hgvs_expr=hgvs_expr,

@@ -21,29 +21,6 @@ class HGVSDupDelMode:
         :param SeqRepoAccess seqrepo_access: Access to seqrepo
         """
         self.seqrepo_access = seqrepo_access
-        self.valid_dup_del_modes = {mode.value for mode in
-                                    HGVSDupDelModeEnum.__members__.values()}
-        self.valid_copy_number_modes = {mode.value for mode in
-                                        HGVSDupDelModeEnum.__members__.values() if
-                                        mode.value.startswith("copy_number_")}
-
-    def is_valid_dup_del_mode(self, mode: str) -> bool:
-        """Determine if mode is a valid input for HGVS Dup Del Mode.
-
-        :param str mode: Entered mode
-        :return: `True` if valid mode. `False` otherwise.
-        """
-        hgvs_dup_del_mode = mode.strip().lower()
-        return hgvs_dup_del_mode in self.valid_dup_del_modes
-
-    def is_valid_copy_number_mode(self, mode: str) -> bool:
-        """Determine if mode is a valid input for copy number mode
-
-        :param str mode: Entered mode
-        :return: `True` if valid mode. `False` otherwise.
-        """
-        copy_number_type_mode = mode.strip().lower()
-        return copy_number_type_mode in self.valid_copy_number_modes
 
     def default_mode(
         self, alt_type: AltType, pos: Tuple[int, int], del_or_dup: str,

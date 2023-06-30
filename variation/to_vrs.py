@@ -54,86 +54,6 @@ class ToVRS(VRSRepresentation):
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
         self.gene_normalizer = gene_normalizer
 
-    async def get_validations(
-        self, q: str, endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,  # noqa: E501
-        baseline_copies: Optional[int] = None
-    ) -> Tuple[Optional[ValidationSummary], Optional[List[str]]]:
-        """Return validation results for a given variation.
-
-        :param str q: variation to get validation results for
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional HGVSDupDelModeEnum hgvs_dup_del_mode: This parameter determines
-            how to interpret HGVS dup/del expressions in VRS.
-        :param Optional[int] baseline_copies: Baseline copies number
-        :return: ValidationSummary for the variation and list of warnings
-        """
-        warnings = list()
-        if q is None:
-            return None, ["No variation entered"]
-        tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
-
-        # TODO: Look at this and see if it should be somewhere else
-        # # gnomad vcf should always be a literal seq expression (allele)
-        # nomenclature = {t.nomenclature for t in tokens}
-        # if Nomenclature.GNOMAD_VCF in nomenclature:
-        #     hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
-        # else:
-        #     if endpoint_name in [Endpoint.NORMALIZE, Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
-        #                          Endpoint.HGVS_TO_COPY_NUMBER_CHANGE]:
-        #         if hgvs_dup_del_mode:
-        #             hgvs_dup_del_mode = hgvs_dup_del_mode.strip().lower()
-        #             if endpoint_name == Endpoint.NORMALIZE:
-        #                 if not self.hgvs_dup_del_mode.is_valid_dup_del_mode(hgvs_dup_del_mode):  # noqa: E501
-        #                     warnings.append(
-        #                         f"hgvs_dup_del_mode must be one of: "
-        #                         f"{self.hgvs_dup_del_mode.valid_dup_del_modes}")
-        #                     return None, warnings
-        #             else:
-        #                 if not self.hgvs_dup_del_mode.is_valid_copy_number_mode(hgvs_dup_del_mode):  # noqa: E501
-        #                     warnings.append(f"hgvs_dup_del_mode must be one of "
-        #                                     f"{self.hgvs_dup_del_mode.valid_copy_number_modes}")  # noqa: E501
-        #                     return None, warnings
-        #             if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
-        #                 if not baseline_copies:
-        #                     warnings.append(f"{hgvs_dup_del_mode} mode "
-        #                                     f"requires `baseline_copies`")
-        #                     return None, warnings
-        #         elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
-        #             hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
-        #         else:
-        #             warnings.append(f"hgvs_dup_del_mode must be either "
-        #                             f"{HGVSDupDelModeEnum.COPY_NUMBER_COUNT.value} or "
-        #                             f"{HGVSDupDelModeEnum.COPY_NUMBER_CHANGE.value}")
-        #             return None, warnings
-        #     else:
-        #         hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
-
-        classifications = self.classifier.perform(tokens)
-        if not classifications:
-            return None, [f"Unable to find classification for: {q}"]
-
-        if endpoint_name in [Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
-                             Endpoint.HGVS_TO_COPY_NUMBER_CHANGE]:
-            tmp_classifications = []
-            for c in classifications:
-                conditions = (
-                    c.classification_type in VALID_CLASSIFICATION_TYPES,
-                    TokenType.HGVS in c.matching_tokens
-                )
-                if all(conditions):
-                    tmp_classifications.append(c)
-            classifications = tmp_classifications
-            if not classifications:
-                warnings = [f"{q} is not a supported HGVS genomic "
-                            f"duplication or deletion"]
-                return None, warnings
-
-        validation_summary = await self.validator.perform(classifications)
-        if not warnings:
-            warnings = validation_summary.warnings
-        return validation_summary, warnings
-
     async def get_translations(
         self,
         validation_summary: ValidationSummary,
@@ -210,9 +130,23 @@ class ToVRS(VRSRepresentation):
             unable to translate or normalize query.
         :return: ToVRSService containing VRS variations and warnings
         """
-        validations, warnings = await self.get_validations(q)
+        warnings = list()
+
+        tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
+        if warnings:
+            return None, warnings
+
+        classifications = self.classifier.perform(tokens)
+        if not classifications:
+            return None, [f"Unable to find classification for: {q}"]
+
+        validations = await self.validator.perform(classifications, warnings)
+
         if validations:
-            translations, warnings = await self.get_translations(validations, warnings)
+            translations, warnings = await self.get_translations(
+                validations, warnings, endpoint_name=Endpoint.TO_VRS,
+                hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=False
+            )
         else:
             translations = []
 

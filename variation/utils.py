@@ -13,10 +13,14 @@ from variation.schemas.classification_response_schema import (
     AmbiguousType, ClassificationType
 )
 from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.token_response_schema import Token, GnomadVcfToken
 from variation.schemas.validation_response_schema import (
     ValidationSummary, ValidationResult
 )
-from variation.schemas.app_schemas import AmbiguousRegexType
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum
+)
+from variation.schemas.app_schemas import AmbiguousRegexType, Endpoint
 
 
 def no_variation_entered() -> Tuple[None, List[str]]:
@@ -70,7 +74,6 @@ def no_variation_resp(
         unable to translate or normalize query.
     :return: Variation descriptor or `None`, warnings
     """
-    warning = f"Unable to translate {label}"
     if untranslatable_returns_text:
         text = models.Text(definition=label, type="Text")
         text._id = ga4gh_identify(text)
@@ -80,7 +83,7 @@ def no_variation_resp(
         resp = None
 
     if not warnings:
-        warnings.append(warning)
+        warnings.append(f"Unable to translate {label}")
     return resp, warnings
 
 
@@ -229,3 +232,36 @@ def get_assembly(
         warning = f"Unable to get GRCh37/GRCh38 assembly for: {alt_ac}"
 
     return assembly, warning
+
+
+def get_hgvs_dup_del_mode(
+    tokens: List[Token], endpoint_name: Endpoint,
+    hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
+    baseline_copies: Optional[int] = None
+):
+    warning = None
+    if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
+        # gnomad vcf should always be a literal seq expression (allele)
+        hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
+    else:
+        if endpoint_name in {
+            Endpoint.NORMALIZE, Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
+            Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
+        }:
+            if hgvs_dup_del_mode:
+                if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+                    if not baseline_copies:
+                        warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"  # noqa: E501
+                        return None, warning
+            elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
+                hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+            else:
+                warning = (
+                    f"hgvs_dup_del_mode must be either "
+                    f"{HGVSDupDelModeEnum.COPY_NUMBER_COUNT.value} or "
+                    f"{HGVSDupDelModeEnum.COPY_NUMBER_CHANGE.value}"
+                )
+                return None, warning
+        else:
+            hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+    return hgvs_dup_del_mode, warning

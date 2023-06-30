@@ -4,6 +4,9 @@ from copy import deepcopy
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelMode as HGVSDupDelModeEnum
+)
 from tests.conftest import assertion_checks
 
 
@@ -1837,7 +1840,7 @@ def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
 async def assert_text_variation(query_list, test_handler):
     """Make assertion checks for invalid queries"""
     for q in query_list:
-        resp = await test_handler.normalize(q, "default",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
         assert resp.variation_descriptor.label == q.strip()
         assert (resp.variation_descriptor.variation.type == "Text"), q
@@ -1851,43 +1854,47 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NC_000003.12%3Ag.49531262dup
     q = "NC_000003.12:g.49531262dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q)
 
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030072")
     assertion_checks(resp.variation_descriptor, genomic_dup1_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup1_rse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q)
 
     q = "NC_000003.11:g.49568695dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030072")
     assertion_checks(resp.variation_descriptor, genomic_dup1_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup1_rse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
     # Free Text
@@ -1895,23 +1902,25 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
         "DAG1 g.49568695dup",  # 37
         "DAG1 g.49531262dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_cn, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_rse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
                          ignore_id=True)
 
@@ -1932,35 +1941,39 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_cn,
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NM_004006.2%3Ac.20_23dup
     q = "NC_000023.11:g.33211290_33211293dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup2_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup2_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup2_rse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q)
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup2_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup2_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup2_rse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q, ignore_id=True)
 
     # Free text
@@ -1968,19 +1981,21 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_cn,
         "DMD g.33211290_33211293dup",  # 37
         "DMD g.33229407_33229410dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_default, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_cn, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_rse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_default, q,
                          ignore_id=True)
 
@@ -2000,40 +2015,44 @@ async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
                             genomic_dup3_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=1
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030070")
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=1
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
@@ -2043,21 +2062,23 @@ async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
         # "DMD g.(31165391_31165395)_(31200854_31200856)dup",
         "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=3
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_cn, q,
                          ignore_id=True)
 
         genomic_dup3_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2078,39 +2099,43 @@ async def test_genomic_dup4(test_handler, genomic_dup4_cn, genomic_dup4_cx,
                             genomic_dup4_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
@@ -2119,22 +2144,24 @@ async def test_genomic_dup4(test_handler, genomic_dup4_cn, genomic_dup4_cx,
         "PRPF8 g.(?_1577736)_(1587865_?)dup",  # 37
         "PRPF8 g.(?_1674442)_(1684571_?)dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_cn, q,
                          ignore_id=True)
 
         genomic_dup4_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         genomic_dup4_free_text_rse_lse.variation.definition = q
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2155,39 +2182,43 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
                             genomic_dup5_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
@@ -2196,21 +2227,23 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
         "MECP2 g.(?_153287263)_153357667dup",  # 37
         "MECP2 g.(?_154021812)_154092209dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_cn, q,
                          ignore_id=True)
 
         genomic_dup5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2222,7 +2255,7 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
         "MECP2 g.(?_154021812)_154097733dup"  # 37
         "MECP2 g.(?_154021572)_154092209dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, "default",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
         assert resp.variation_descriptor.variation.type == "Text"
 
@@ -2234,39 +2267,43 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
                             genomic_dup6_free_text_rse_lse):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=1
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=1
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
@@ -2275,21 +2312,23 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
         "MECP2 g.153287263_(153357667_?)dup",  # 37
         "MECP2 g.154021812_(154092209_?)dup"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=1)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=1
+        )
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_cn, q,
                          ignore_id=True)
 
         genomic_dup6_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2301,7 +2340,7 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
         "MECP2 g.154021812_(154097733_?)dup"  # 37
         "MECP2 g.154021572_(154092209_?)dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, "default",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
         assert resp.variation_descriptor.variation.type == "Text"
 
@@ -2313,37 +2352,41 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
                             genomic_del1_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10149811del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del1_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030064")
     assertion_checks(resp.variation_descriptor, genomic_del1_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del1_rse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q)
 
     q = "NC_000003.11:g.10191495del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del1_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030064")
     assertion_checks(resp.variation_descriptor, genomic_del1_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del1_rse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
     # Free text
@@ -2351,19 +2394,21 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
         "VHL g.10191495del",  # 37
         "VHL g.10149811del"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_cn, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_rse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_del1_free_text_lse, q,
                          ignore_id=True)
 
@@ -2372,14 +2417,14 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     resp = await test_handler.normalize(q)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
     q = "3-10191494-CT-C"  # 37
     resp = await test_handler.normalize(q)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
     # Invalid
@@ -2398,37 +2443,41 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
                             genomic_del2_free_text_rse):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del2_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030069")
     assertion_checks(resp.variation_descriptor, genomic_del2_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del2_rse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q)
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del2_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
                                         copy_change="efo:0030069")
     assertion_checks(resp.variation_descriptor, genomic_del2_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del2_rse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
     # Free text
@@ -2436,25 +2485,27 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
         "VHL g.10188279_10188297del",  # 37
         "VHL g.10146595_10146613del"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_default, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_cnv, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_rse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR)
         assertion_checks(resp.variation_descriptor, genomic_del2_free_text_default, q,
                          ignore_id=True)
 
     # gnomad vcf
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
     q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
@@ -2477,39 +2528,43 @@ async def test_genomic_del3(test_handler, genomic_del3_cn, genomic_del3_cx,
                             genomic_del3_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=3
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=3
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
@@ -2518,21 +2573,23 @@ async def test_genomic_del3(test_handler, genomic_del3_cn, genomic_del3_cx,
         "EFNB1 g.(68059108_68059111)_(68060963_68060968)del",  # 37
         "EFNB1 g.(68839265_68839268)_(68841120_68841125)del"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=3)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=3
+        )
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_cn, q,
                          ignore_id=True)
 
         genomic_del3_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2554,39 +2611,43 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
                             genomic_del4_free_text_rse_lse, genomic_del4_free_text_cx):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
@@ -2604,20 +2665,22 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
         # "COL4A4 g.(?_227886744)_(227890546_?)del",  # 37
         "COL4A4 g.(?_227022028)_(227025830_?)del"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_cn, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2639,39 +2702,43 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
                             genomic_del5_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=4
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=4
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
@@ -2681,21 +2748,23 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
         # "CDKL5 g.(?_18593474)_18671749del",
         "CDKL5 g.(?_18575354)_18653629del"
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=4)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=4
+        )
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_cn, q,
                          ignore_id=True)
 
         genomic_del5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2718,39 +2787,43 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
                             genomic_del6_free_text_rse_lse):
     """Test that genomic deletion works correctly."""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_cn, q)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q)
 
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
-    resp = await test_handler.normalize(q, "default")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "copy_number_change")
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, "repeated_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, "literal_seq_expr",
+    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                         untranslatable_returns_text=True)
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
@@ -2760,21 +2833,23 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
         # "EYA4 g.133783902_(133785996_?)del",  # 37
         "EYA4 g.133462764_(133464858_?)del"  # 38
     ]:
-        resp = await test_handler.normalize(q, "default")
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_cx, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "copy_number_count", baseline_copies=2)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
+        )
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_cn, q,
                          ignore_id=True)
 
         genomic_del6_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, "repeated_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
                          ignore_id=True)
 
-        resp = await test_handler.normalize(q, "literal_seq_expr",
+        resp = await test_handler.normalize(q, HGVSDupDelModeEnum.LITERAL_SEQ_EXPR,
                                             untranslatable_returns_text=True)
         assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
                          ignore_id=True)
@@ -2799,22 +2874,17 @@ async def test_parameters(test_handler):
     assert resp.warnings == []
 
     q = "NC_000003.12:g.49531262dup"
-    resp = await test_handler.normalize(q, "")
+    resp = await test_handler.normalize(q)
     assert resp.variation_descriptor
     assert resp.warnings == []
 
-    resp = await test_handler.normalize(q, None)
+    resp = await test_handler.normalize(q, hgvs_dup_del_mode=None)
     assert resp.variation_descriptor
     assert resp.warnings == []
 
-    resp = await test_handler.normalize(q, " copy_Number_Count ", baseline_copies=2)
-    assert resp.variation_descriptor
-    assert resp.warnings == []
-
-    resp = await test_handler.normalize(q, " copy_Number_Count ")
+    resp = await test_handler.normalize(
+        q, hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_COUNT
+    )
     assert resp.variation_descriptor is None
     assert resp.warnings == ["copy_number_count mode requires `baseline_copies`"]
 
-    resp = await test_handler.normalize(q, " copy_Number_Change ")
-    assert resp.variation_descriptor
-    assert resp.warnings == []
