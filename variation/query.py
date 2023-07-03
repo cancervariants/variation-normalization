@@ -99,4 +99,4 @@ class QueryHandler:
             *to_protein_params)
         self.to_canonical_handler = ToCanonicalVariation(
             *to_vrs_params + [self._tlr, uta_db])
-        self.to_copy_number_handler = ToCopyNumberVariation(*to_vrs_params)
+        self.to_copy_number_handler = ToCopyNumberVariation(*to_vrs_params + [uta_db])

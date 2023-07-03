@@ -312,6 +312,7 @@ copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Numb
                      "Change Variation.")
 baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
                         "`fmt`=`hgvs` and Copy Number Count Variation.`"
+do_liftover_descr = "Whether or not to liftover to GRCh38 assembly"
 
 
 @app.get("/variation/to_canonical_variation",
@@ -324,8 +325,7 @@ async def to_canonical_variation(
         q: str = Query(..., description="HGVS or SPDI query"),
         fmt: ToCanonicalVariationFmt = Query(...,
                                              description="Format of the input variation. Must be `spdi` or `hgvs`"),  # noqa: E501
-        do_liftover: bool = Query(False, description="Whether or not to liftover to "
-                                  "GRCh38 assembly."),
+        do_liftover: bool = Query(False, description=do_liftover_descr),
         hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
             HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
         copy_change: Optional[CopyChange] = Query(
@@ -491,8 +491,7 @@ async def hgvs_to_copy_number_count(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for duplication"),
-    do_liftover: bool = Query(False, description="Whether or not to liftover "
-                              "to GRCh38 assembly."),
+    do_liftover: bool = Query(False, description=do_liftover_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> HgvsToCopyNumberCountService:
     """Given hgvs expression, return copy number count variation
@@ -521,8 +520,7 @@ async def hgvs_to_copy_number_change(
     hgvs_expr: str = Query(..., description="Variation query"),
     copy_change: CopyChange = Query(
         ..., description="The copy change"),
-    do_liftover: bool = Query(False, description="Whether or not to liftover "
-                              "to GRCh38 assembly."),
+    do_liftover: bool = Query(False, description=do_liftover_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> HgvsToCopyNumberChangeService:
     """Given hgvs expression, return copy number change variation
@@ -551,12 +549,14 @@ end1_descr = ("Only set when end is a definite range, this will be the max end "
               "position")
 start_pos_type = "Type of the start value in VRS Sequence Location"
 end_pos_type = "Type of the end value in VRS Sequence Location"
-assembly_descr = ("Assembly. Ignored, along with `chr`, if `accession` is set. If "
-                  "`accession` is not set, must provide both `assembly` and `chr`.")
-chr_descr = "Chromosome. Must set when `assembly` is set."
+assembly_descr = ("Assembly. Ignored, along with `chromosome`, if `accession` is set. "
+                  "If `accession` is not set, must provide both `assembly` and "
+                  "`chromosome`.")
+chr_descr = ("Chromosome.  Must be contain 'chr' prefix, i.e 'chr7'. Must set when "
+             "`assembly` is set.")
 accession_descr = ("Genomic accession. If `accession` is set, will ignore `assembly` "
-                   "and `chr`. If `accession` not set, must provide both `assembly` "
-                   "and `chr`.")
+                   "and `chromosome`. If `accession` not set, must provide both "
+                   "`assembly` and `chromosome`.")
 total_copies_descr = "Total copies for Copy Number Count variation object"
 
 
@@ -573,7 +573,7 @@ def parsed_to_cn_var(
     end0: int = Query(..., description=end0_descr),
     total_copies: int = Query(..., description=total_copies_descr),
     assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
-    chr: Optional[str] = Query(None, description=chr_descr),
+    chromosome: Optional[str] = Query(None, description=chr_descr),
     accession: Optional[str] = Query(None, description=accession_descr),
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
@@ -583,6 +583,7 @@ def parsed_to_cn_var(
     ] = Query(VRSTypes.NUMBER, description=end_pos_type),
     start1: Optional[int] = Query(None, description=start1_descr),
     end1: Optional[int] = Query(None, description=end1_descr),
+    do_liftover: bool = Query(False, description=do_liftover_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCnVarService:
     """Given parsed genomic components, return Copy Number Count Variation.
@@ -592,17 +593,20 @@ def parsed_to_cn_var(
     :param end0: End position (residue coords). If end is a definite range, this
         will be the min end position
     :param total_copies: Total copies for Copy Number Count variation object
-    :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
-        If `accession` not set, must provide both `assembly` and `chr`.
-    :param chr: Chromosome. Must set when `assembly` is set.
+    :param assembly: Assembly. Ignored, along with `chromosome`, if `accession` is set.
+        If `accession` not set, must provide both `assembly` and `chromosome`.
+    :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
+        Must set when `assembly` is set.
     :param accession: Genomic accession. If `accession` is set, will ignore `assembly`
-        and `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        and `chromosome`. If `accession` not set, must provide both `assembly` and
+        `chromosome`
     :param start_pos_type: Type of the start value in VRS Sequence Location
     :param end_pos_type: Type of the end value in VRS Sequence Location
     :param start1: Only set when start is a definite range, this will be the max
         start position
     :param end1: Only set when end is a definite range, this will be the max end
         position
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :param untranslatable_returns_text: `True` return VRS Text Object when unable to
         translate or normalize query. `False` return `None` when unable to translate or
         normalize query.
@@ -612,9 +616,10 @@ def parsed_to_cn_var(
     try:
         resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
             start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_COUNT,
-            assembly=assembly, chr=chr, accession=accession,
+            assembly=assembly, chromosome=chromosome, accession=accession,
             total_copies=total_copies, start_pos_type=start_pos_type,
             end_pos_type=end_pos_type, start1=start1, end1=end1,
+            do_liftover=do_liftover,
             untranslatable_returns_text=untranslatable_returns_text
         )
     except Exception:
@@ -623,7 +628,7 @@ def parsed_to_cn_var(
 
         og_query = {
             "assembly": assembly,
-            "chr": chr,
+            "chromosome": chromosome,
             "accession": accession,
             "start0": start0,
             "end0": end0,
@@ -659,7 +664,7 @@ def parsed_to_cx_var(
     end0: int = Query(..., description=end0_descr),
     copy_change: CopyChange = Query(..., description="The copy change"),
     assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
-    chr: Optional[str] = Query(None, description=chr_descr),
+    chromosome: Optional[str] = Query(None, description=chr_descr),
     accession: Optional[str] = Query(None, description=accession_descr),
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
@@ -669,6 +674,7 @@ def parsed_to_cx_var(
     ] = Query(VRSTypes.NUMBER, description=end_pos_type),
     start1: Optional[int] = Query(None, description=start1_descr),
     end1: Optional[int] = Query(None, description=end1_descr),
+    do_liftover: bool = Query(False, description=do_liftover_descr),
     untranslatable_returns_text: bool = Query(False, description=untranslatable_descr)
 ) -> ParsedToCxVarService:
     """Given parsed genomic components, return Copy Number Change Variation
@@ -678,17 +684,21 @@ def parsed_to_cx_var(
     :param end0: End position (residue coords). If end is a definite range, this
         will be the min end position
     :param copy_change: Copy Change
-    :param assembly: Assembly. If `accession` is set, will ignore `assembly` and `chr`.
-        If `accession` not set, must provide both `assembly` and `chr`.
-    :param chr: Chromosome. Must set when `assembly` is set.
+    :param assembly: Assembly. If `accession` is set, will ignore `assembly` and
+        `chromosome`.
+        If `accession` not set, must provide both `assembly` and `chromosome`.
+    :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
+        Must set when `assembly` is set.
     :param accession: Accession. If `accession` is set, will ignore `assembly` and
-        `chr`. If `accession` not set, must provide both `assembly` and `chr`.
+        `chromosome`. If `accession` not set, must provide both `assembly` and
+        `chromosome`.
     :param start_pos_type: Type of the start value in VRS Sequence Location
     :param end_pos_type: Type of the end value in VRS Sequence Location
     :param start1: Only set when start is a definite range, this will be the max
         start position
     :param end1: Only set when end is a definite range, this will be the max end
         position
+    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
     :param untranslatable_returns_text: `True` return VRS Text Object when unable to
         translate or normalize query. `False` return `None` when unable to translate or
         normalize query.
@@ -698,9 +708,10 @@ def parsed_to_cx_var(
     try:
         resp = query_handler.to_copy_number_handler.parsed_to_copy_number(
             start0=start0, end0=end0, copy_number_type=VRSTypes.COPY_NUMBER_CHANGE,
-            assembly=assembly, chr=chr, accession=accession,
+            assembly=assembly, chromosome=chromosome, accession=accession,
             copy_change=copy_change, start_pos_type=start_pos_type,
             end_pos_type=end_pos_type, start1=start1, end1=end1,
+            do_liftover=do_liftover,
             untranslatable_returns_text=untranslatable_returns_text
         )
     except Exception:
@@ -709,7 +720,7 @@ def parsed_to_cx_var(
 
         og_query = {
             "assembly": assembly,
-            "chr": chr,
+            "chromosome": chromosome,
             "accession": accession,
             "start0": start0,
             "end0": end0,
