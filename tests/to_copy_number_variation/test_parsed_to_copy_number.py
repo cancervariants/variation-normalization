@@ -67,7 +67,7 @@ def cn_gain2():
 
 @pytest.fixture(scope="module")
 def cn_gain2_37():
-    """Create test fixture for clinvar copy number gain.
+    """Create test fixture for clinvar copy number gain on GRCh37 assembly.
     https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     """
     variation = {

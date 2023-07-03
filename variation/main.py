@@ -606,7 +606,7 @@ def parsed_to_cn_var(
         start position
     :param end1: Only set when end is a definite range, this will be the max end
         position
-    :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+    :param do_liftover: Whether or not to liftover to GRCh38 assembly
     :param untranslatable_returns_text: `True` return VRS Text Object when unable to
         translate or normalize query. `False` return `None` when unable to translate or
         normalize query.
