@@ -16,7 +16,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, \
     VALID_COPY_CHANGE
-from variation.schemas.service_schema import AmplificationToCxVarQuery, \
+from variation.schemas.copy_number_schema import AmplificationToCxVarQuery, \
     AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
     ParsedToCnVarService, ParsedToCxVarQuery, ParsedToCxVarService
 from variation.schemas.validation_response_schema import ValidationSummary
@@ -481,58 +481,12 @@ class ToCopyNumberVariation(ToVRS):
         return liftover_pos
 
     def parsed_to_copy_number(
-        self,
-        start0: int,
-        end0: int,
-        copy_number_type: Literal[
-            VRSTypes.COPY_NUMBER_CHANGE, VRSTypes.COPY_NUMBER_COUNT
-        ],
-        total_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        start_pos_type: Literal[
-            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-        ] = VRSTypes.NUMBER,
-        end_pos_type: Literal[
-            VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-        ] = VRSTypes.NUMBER,
-        start1: Optional[int] = None,
-        end1: Optional[int] = None,
-        assembly: Optional[ClinVarAssembly] = None,
-        chromosome: Optional[str] = None,
-        accession: Optional[str] = None,
-        do_liftover: bool = False,
-        untranslatable_returns_text: bool = False
+        self, request_body: Union[ParsedToCnVarQuery, ParsedToCxVarQuery]
     ) -> Union[ParsedToCnVarService, ParsedToCxVarService]:
         """Given parsed genomic components, return Copy Number Count or Copy Number
         Change Variation
 
-        :param start0: Start position (residue coords). If start is a definite range,
-            this will be the min start position
-        :param end0: End position (residue coords). If end is a definite range, this
-            will be the min end position
-        :param copy_number_type: The kind of Copy Number you wish to represent
-        :param total_copies: Total copies for Copy Number Count variation object.
-            Only used when `copy_number_type` is Copy Number Count.
-        :param copy_change: Copy Change.
-            Only used when `copy_number_type` is Copy Number Change.
-        :param assembly: Assembly. Ignored, along with `chromosome`, if `accession`
-            is set. If `accession` not set, must provide both `assembly` and
-            `chromosome`.
-        :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
-            Must set when `assembly` is set.
-        :param accession: Genomic accession. If `accession` is set, will ignore
-            `assembly` and `chromosome`. If `accession` not set, must provide both
-            `assembly` and `chromosome`.
-        :param start_pos_type: Type of the start value in VRS Sequence Location
-        :param end_pos_type: Type of the end value in VRS Sequence Location
-        :param start1: Only set when start is a definite range, this will be the max
-            start position
-        :param end1: Only set when end is a definite range, this will be the max end
-            position
-        :param do_liftover: Whether or not to liftover to GRCh38 assembly
-        :param untranslatable_returns_text: `True` return VRS Text Object when unable to
-            translate or normalize query. `False` return `None` when unable to translate
-            or normalize query.
+        :param request_body: request body
         :return: If `copy_number_type` is Copy Number Count, return ParsedToCnVarService
             containing Copy Number Count variation and list of warnings. Else, return
             ParsedToCxVarService containing Copy Number Change variation and list of
@@ -540,80 +494,61 @@ class ToCopyNumberVariation(ToVRS):
         """
         variation = None
         warnings = []
-        params = {
-            "assembly": assembly,
-            "chromosome": chromosome,
-            "accession": accession,
-            "start0": start0,
-            "end0": end0,
-            "start_pos_type": start_pos_type,
-            "end_pos_type": end_pos_type,
-            "start1": start1,
-            "end1": end1
-        }
 
-        is_cx = copy_number_type == VRSTypes.COPY_NUMBER_CHANGE
-        if is_cx:
-            params["copy_change"] = copy_change
-        else:
-            params["total_copies"] = total_copies
+        is_cx = isinstance(request_body, ParsedToCxVarQuery)
+        lifted_over = False
 
         try:
-            og_query = ParsedToCxVarQuery(**params) if is_cx else ParsedToCnVarQuery(**params)  # noqa: E501
-        except ValidationError as e:
-            warnings.append(str(e))
-            og_query = None
-        else:
-            lifted_over = False
-
-            try:
-                if not accession:
-                    accession_summary = self._get_parsed_ac(
-                        assembly, chromosome, use_grch38=do_liftover
-                    )
-                    accession = accession_summary.accession
-                    lifted_over = accession_summary.lifted_over
-                else:
-                    chr_summary = self._get_parsed_ac_chr(
-                        accession, do_liftover
-                    )
-                    accession = chr_summary.accession
-                    chromosome = chr_summary.chromosome
-                    lifted_over = chr_summary.lifted_over
-
-                seq_loc = self._get_parsed_seq_loc(
-                    accession, chromosome, start0, start_pos_type, end0, end_pos_type,
-                    start1=start1, end1=end1, liftover_pos=do_liftover and lifted_over
+            if not request_body.accession:
+                accession_summary = self._get_parsed_ac(
+                    request_body.assembly, request_body.chromosome,
+                    use_grch38=request_body.do_liftover
                 )
-            except ToCopyNumberException as e:
-                warnings.append(str(e))
+                chromosome = request_body.chromosome
+                accession = accession_summary.accession
+                lifted_over = accession_summary.lifted_over
             else:
-                if is_cx:
-                    variation = {
-                        "type": "CopyNumberChange",
-                        "subject": seq_loc,
-                        "copy_change": copy_change
-                    }
-                    variation["id"] = ga4gh_identify(
-                        models.CopyNumberChange(**variation)
-                    )
-                    variation = CopyNumberChange(**variation)
-                else:
-                    variation = {
-                        "type": "CopyNumberCount",
-                        "subject": seq_loc,
-                        "copies": {"value": total_copies, "type": "Number"}
-                    }
-                    variation["id"] = ga4gh_identify(
-                        models.CopyNumberCount(**variation)
-                    )
-                    variation = CopyNumberCount(**variation)
+                chr_summary = self._get_parsed_ac_chr(
+                    request_body.accession, request_body.do_liftover
+                )
+                accession = chr_summary.accession
+                chromosome = chr_summary.chromosome
+                lifted_over = chr_summary.lifted_over
 
-        if warnings and untranslatable_returns_text:
-            variation = self._parsed_to_text(params)
+            seq_loc = self._get_parsed_seq_loc(
+                accession, chromosome, request_body.start0, request_body.start_pos_type,
+                request_body.end0, request_body.end_pos_type,
+                start1=request_body.start1, end1=request_body.end1,
+                liftover_pos=request_body.do_liftover and lifted_over
+            )
+        except ToCopyNumberException as e:
+            warnings.append(str(e))
+        else:
+            if is_cx:
+                variation = {
+                    "type": "CopyNumberChange",
+                    "subject": seq_loc,
+                    "copy_change": request_body.copy_change
+                }
+                variation["id"] = ga4gh_identify(
+                    models.CopyNumberChange(**variation)
+                )
+                variation = CopyNumberChange(**variation)
+            else:
+                variation = {
+                    "type": "CopyNumberCount",
+                    "subject": seq_loc,
+                    "copies": {"value": request_body.total_copies, "type": "Number"}
+                }
+                variation["id"] = ga4gh_identify(
+                    models.CopyNumberCount(**variation)
+                )
+                variation = CopyNumberCount(**variation)
+
+        if warnings and request_body.untranslatable_returns_text:
+            variation = self._parsed_to_text(request_body.dict())
 
         service_params = {
-            "og_query": og_query,
             "warnings": warnings,
             "service_meta_": ServiceMeta(
                 version=__version__,

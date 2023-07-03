@@ -4,8 +4,11 @@ from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import (
     CopyNumberCount, CopyNumberChange, CopyChange, VRSTypes
 )
+from pydantic.error_wrappers import ValidationError
 
-from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.copy_number_schema import (
+    ClinVarAssembly, ParsedToCxVarQuery, ParsedToCnVarQuery
+)
 from variation.to_copy_number_variation import ToCopyNumberException
 
 
@@ -448,120 +451,127 @@ def test_liftover_pos(test_cnv_handler):
 def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_37):
     """Test that parsed_to_copy_number works for parsed copy number gain queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
-    resp = test_cnv_handler.parsed_to_copy_number(
-        143134063, 143284670, VRSTypes.COPY_NUMBER_COUNT, total_copies=3,
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, total_copies=3,
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain1.dict()
     assert resp.warnings == []
 
-    resp = test_cnv_handler.parsed_to_copy_number(
-        143134063, 143284670, VRSTypes.COPY_NUMBER_COUNT, total_copies=3,
-        assembly=ClinVarAssembly.HG19, chromosome="chr1",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
-    )
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
-    assert resp.warnings == []
-
-    resp = test_cnv_handler.parsed_to_copy_number(
-        143134063, 143284670, VRSTypes.COPY_NUMBER_COUNT, total_copies=3,
-        accession="NC_000001.10", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, total_copies=3, assembly=ClinVarAssembly.HG19,
+        chromosome="chr1", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    assert resp.copy_number_count.dict() == cn_gain1.dict()
+    assert resp.warnings == []
+
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, total_copies=3, accession="NC_000001.10",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain1.dict()
     assert resp.warnings == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     # 38
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        assembly=ClinVarAssembly.GRCH38, chromosome="chr15",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.GRCH38,
+        chromosome="chr15", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 38 with liftover (shouldnt do anything)
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        assembly=ClinVarAssembly.GRCH38, chromosome="chr15", do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.GRCH38,
+        chromosome="chr15", do_liftover=True, start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 38 with liftover (shouldnt do anything)
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        assembly=ClinVarAssembly.HG38, chromosome="chr15", do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.HG38,
+        chromosome="chr15", do_liftover=True, start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 38
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        assembly=ClinVarAssembly.HG38, chromosome="chr15",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.HG38,
+        chromosome="chr15", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 38 accession
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        accession="NC_000015.10", start_pos_type=VRSTypes.INDEFINITE_RANGE,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, accession="NC_000015.10",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 38 accession with liftover (shouldnt do anything)
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        accession="NC_000015.10", start_pos_type=VRSTypes.INDEFINITE_RANGE,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=31738809, end0=32217725, total_copies=2, accession="NC_000015.10",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 37 with liftover
-    resp = test_cnv_handler.parsed_to_copy_number(
-        32031012, 32509926, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        accession="NC_000015.9", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=32031012, end0=32509926, total_copies=2, accession="NC_000015.9",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE, do_liftover=True
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 37 chr+accession with liftover
-    resp = test_cnv_handler.parsed_to_copy_number(
-        32031012, 32509926, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        chromosome="chr15", assembly=ClinVarAssembly.GRCH37,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=32031012, end0=32509926, total_copies=2, chromosome="chr15",
+        assembly=ClinVarAssembly.GRCH37, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE, do_liftover=True
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2.dict()
     assert resp.warnings == []
 
     # 37 with no liftover
-    resp = test_cnv_handler.parsed_to_copy_number(
-        32031012, 32509926, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        accession="NC_000015.9", start_pos_type=VRSTypes.INDEFINITE_RANGE,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE
+    rb = ParsedToCnVarQuery(
+        start0=32031012, end0=32509926, total_copies=2, accession="NC_000015.9",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2_37.dict()
     assert resp.warnings == []
 
     # 37 chr+accession with no liftover
-    resp = test_cnv_handler.parsed_to_copy_number(
-        32031012, 32509926, VRSTypes.COPY_NUMBER_COUNT, total_copies=2,
-        chromosome="chr15", assembly=ClinVarAssembly.GRCH37,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=32031012, end0=32509926, total_copies=2, chromosome="chr15",
+        assembly=ClinVarAssembly.GRCH37, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_gain2_37.dict()
     assert resp.warnings == []
 
@@ -570,52 +580,56 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
                                  cn_loss2):
     """Test that parsed_to_copy_number works for parsed copy number loss queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/1299222/?new_evidence=true
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10491132, 10535643, VRSTypes.COPY_NUMBER_COUNT, total_copies=1,
-        assembly=ClinVarAssembly.GRCH37, chromosome="chrX",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
-    )
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
-    assert resp.warnings == []
-
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10491132, 10535643, VRSTypes.COPY_NUMBER_COUNT, total_copies=1,
-        assembly=ClinVarAssembly.HG19, chromosome="chrX",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
-    )
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
-    assert resp.warnings == []
-
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10491132, 10535643, VRSTypes.COPY_NUMBER_COUNT, total_copies=1,
-        accession="NC_000023.10", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=10491132, end0=10535643, total_copies=1, assembly=ClinVarAssembly.GRCH37,
+        chromosome="chrX", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    assert resp.copy_number_count.dict() == cn_loss1.dict()
+    assert resp.warnings == []
+
+    rb = ParsedToCnVarQuery(
+        start0=10491132, end0=10535643, total_copies=1, assembly=ClinVarAssembly.HG19,
+        chromosome="chrX", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    assert resp.copy_number_count.dict() == cn_loss1.dict()
+    assert resp.warnings == []
+
+    rb = ParsedToCnVarQuery(
+        start0=10491132, end0=10535643, total_copies=1, accession="NC_000023.10",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_loss1.dict()
     assert resp.warnings == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/148425/?new_evidence=true
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_COUNT, total_copies=0,
-        assembly=ClinVarAssembly.GRCH38, chromosome="chrY",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
-    )
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
-    assert resp.warnings == []
-
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_COUNT, total_copies=0,
-        assembly=ClinVarAssembly.HG38, chromosome="chrY",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
-    )
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
-    assert resp.warnings == []
-
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_COUNT, total_copies=0,
-        accession="NC_000024.10", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+    rb = ParsedToCnVarQuery(
+        start0=10001, end0=1223133, total_copies=0, assembly=ClinVarAssembly.GRCH38,
+        chromosome="chrY", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    assert resp.copy_number_count.dict() == cn_loss2.dict()
+    assert resp.warnings == []
+
+    rb = ParsedToCnVarQuery(
+        start0=10001, end0=1223133, total_copies=0, assembly=ClinVarAssembly.HG38,
+        chromosome="chrY", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=VRSTypes.INDEFINITE_RANGE
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    assert resp.copy_number_count.dict() == cn_loss2.dict()
+    assert resp.warnings == []
+
+    rb = ParsedToCnVarQuery(
+        start0=10001, end0=1223133, total_copies=0, accession="NC_000024.10",
+        start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_loss2.dict()
     assert resp.warnings == []
 
@@ -625,11 +639,12 @@ def test_to_parsed_cn_var(
 ):
     """Test that parsed_to_copy_number works correctly for copy number count"""
     # start uses definite and end uses number
-    resp = test_cnv_handler.parsed_to_copy_number(
-        143134063, 143284670, VRSTypes.COPY_NUMBER_COUNT, total_copies=3,
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, total_copies=3,
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_definite_number.dict()
     assert resp.warnings == []
 
@@ -640,41 +655,45 @@ def test_parsed_to_cx_var(
 ):
     """Test that parsed_to_copy_number works for copy number change"""
     # start and end use number
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_CHANGE,
+    rb = ParsedToCxVarQuery(
+        start0=10001, end0=1223133,
         copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY", start_pos_type=VRSTypes.NUMBER, end_pos_type=VRSTypes.NUMBER
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.dict() == cx_numbers.dict()
     assert resp.warnings == []
 
     # start and end use definite ranges
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
+    rb = ParsedToCxVarQuery(
+        start0=10001, end0=1223130,
         copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY", start_pos_type=VRSTypes.DEFINITE_RANGE,
         end_pos_type=VRSTypes.DEFINITE_RANGE, start1=10006, end1=1223133
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.dict() == cx_definite_ranges.dict()
     assert resp.warnings == []
 
     # start and end use indefinite ranges
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
+    rb = ParsedToCxVarQuery(
+        start0=10001, end0=1223130,
         copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.dict() == cx_indefinite_ranges.dict()
     assert resp.warnings == []
 
     # start uses number and end use indefinite range
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
+    rb = ParsedToCxVarQuery(
+        start0=10001, end0=1223130,
         copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY", start_pos_type=VRSTypes.NUMBER,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.dict() == cx_number_indefinite.dict()
     assert resp.warnings == []
 
@@ -682,104 +701,108 @@ def test_parsed_to_cx_var(
 def test_invalid(test_cnv_handler):
     """Test invalid copy number queries returns Text variation and warnings"""
     # Invalid Copy Change
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10491132, 10535643, VRSTypes.COPY_NUMBER_CHANGE, copy_change="efo:1234",
-        accession="NC_000001.10"
-    )
-    assert resp.copy_number_change is None
-    assert "copy_change" in resp.warnings[0]
-    assert "value is not a valid enumeration member" in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=10491132, end0=10535643, copy_change="efo:1234",
+            accession="NC_000001.10"
+        )
+    assert "value is not a valid enumeration member" in str(e.value)
 
     # NCBI36/hg18 assembly
-    resp = test_cnv_handler.parsed_to_copy_number(
-        2623228, 3150942, VRSTypes.COPY_NUMBER_CHANGE,
-        copy_change=CopyChange.GAIN, assembly=ClinVarAssembly.NCBI36, chromosome="chr1",
+    rb = ParsedToCxVarQuery(
+        start0=2623228, end0=3150942, copy_change=CopyChange.GAIN,
+        assembly=ClinVarAssembly.NCBI36, chromosome="chr1",
         untranslatable_returns_text=True
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.type == "Text"
     assert resp.warnings == ["NCBI36 assembly is not currently supported"]
 
-    resp = test_cnv_handler.parsed_to_copy_number(
-        2623228, 3150942, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
+    rb = ParsedToCxVarQuery(
+        start0=2623228, end0=3150942, copy_change=CopyChange.GAIN,
         assembly=ClinVarAssembly.HG18, chromosome="chr1",
         untranslatable_returns_text=True
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change.type == "Text"
     assert resp.warnings == ["hg18 assembly is not currently supported"]
 
     # Must give both assembly + chromosome or accession
     ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
-        assembly="hg38", untranslatable_returns_text=True
-    )
-    assert resp.copy_number_change.type == "Text"
-    assert ac_assembly_chr_msg in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=31738809, end0=32217725, copy_change=CopyChange.GAIN,
+            assembly="hg38", untranslatable_returns_text=True
+        )
+    assert ac_assembly_chr_msg in str(e.value)
 
     # Must give both assembly + chromosome or accession
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
-        chromosome="chr15", untranslatable_returns_text=True
-    )
-    assert resp.copy_number_change.type == "Text"
-    assert ac_assembly_chr_msg in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=31738809, end0=32217725, copy_change=CopyChange.GAIN,
+            chromosome="chr15", untranslatable_returns_text=True
+        )
+    assert ac_assembly_chr_msg in str(e.value)
 
     # Must give both assembly + chromosome or accession
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 32217725, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
-        untranslatable_returns_text=True
-    )
-    assert resp.copy_number_change.type == "Text"
-    assert ac_assembly_chr_msg in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=31738809, end0=32217725, copy_change=CopyChange.GAIN,
+            untranslatable_returns_text=True
+        )
+    assert ac_assembly_chr_msg in str(e.value)
 
     # invalid chromosome
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
-        assembly=ClinVarAssembly.GRCH38, chromosome="z"
-    )
-    assert resp.copy_number_change is None
-    assert "`chromosome`, z, does not match r'^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$'" in resp.warnings[0]  # noqa: E501
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=10001, end0=1223133, copy_change=CopyChange.GAIN,
+            assembly=ClinVarAssembly.GRCH38, chromosome="z"
+        )
+    assert "`chromosome`, z, does not match r'^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$'" in str(e.value)  # noqa: E501
 
     # invalid assembly
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223133, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
-        assembly="GRCh99"
-    )
-    assert resp.copy_number_change is None
-    assert resp.warnings
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=10001, end0=1223133, copy_change=CopyChange.GAIN, assembly="GRCh99"
+        )
+    assert "value is not a valid enumeration member" in str(e.value)
 
     # invalid accession
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10491132, 10535643, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
+    rb = ParsedToCxVarQuery(
+        start0=10491132, end0=10535643, copy_change=CopyChange.GAIN,
         accession="NC_00002310"
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change is None
     assert resp.warnings == \
         ["SeqRepo unable to get translated identifiers for NC_00002310"]
 
     # Invalid position
-    resp = test_cnv_handler.parsed_to_copy_number(
-        31738809, 2302991250, VRSTypes.COPY_NUMBER_CHANGE, copy_change=CopyChange.GAIN,
+    rb = ParsedToCxVarQuery(
+        start0=31738809, end0=2302991250, copy_change=CopyChange.GAIN,
         accession="NC_000015.10"
     )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_change is None
     assert resp.warnings == ["SeqRepo ValueError: Position out of range (2302991249)"]
 
     # start must be less than end
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
-        chromosome="chrY", start_pos_type=VRSTypes.DEFINITE_RANGE,
-        end_pos_type=VRSTypes.DEFINITE_RANGE, start1=1223132, end1=1223133
-    )
-    assert resp.copy_number_change is None
-    assert "end positions must be greater than start" in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=10001, end0=1223130,
+            copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+            assembly=ClinVarAssembly.GRCH38, chromosome="chrY",
+            start_pos_type=VRSTypes.DEFINITE_RANGE,
+            end_pos_type=VRSTypes.DEFINITE_RANGE, start1=1223132, end1=1223133
+        )
+    assert "end positions must be greater than start" in str(e.value)
 
     # start1 not provided
-    resp = test_cnv_handler.parsed_to_copy_number(
-        10001, 1223130, VRSTypes.COPY_NUMBER_CHANGE,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS, assembly=ClinVarAssembly.GRCH38,
-        chromosome="chrY", start_pos_type=VRSTypes.DEFINITE_RANGE
-    )
-    assert resp.copy_number_change is None
-    assert "`start1` is required for definite ranges" in resp.warnings[0]
+    with pytest.raises(ValidationError) as e:
+        ParsedToCxVarQuery(
+            start0=10001, end0=1223130,
+            copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+            assembly=ClinVarAssembly.GRCH38, chromosome="chrY",
+            start_pos_type=VRSTypes.DEFINITE_RANGE
+        )
+    assert "`start1` is required for definite ranges" in str(e.value)
