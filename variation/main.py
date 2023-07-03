@@ -585,7 +585,6 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
         logger.exception(traceback_resp)
 
         return ParsedToCnVarService(
-            query=request_body,
             copy_number_count=None,
             warnings=["Unhandled exception. See logs for more details."],
             service_meta_=ServiceMeta(
