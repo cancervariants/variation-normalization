@@ -58,7 +58,7 @@ class ToCopyNumberVariation(ToVRS):
         validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
         gene_normalizer: GeneQueryHandler, uta: UTADatabase
     ) -> None:
-        """Initialize the to canonical variation class
+        """Initialize the to copy number variation class
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
         :param Tokenize tokenizer: Tokenizer class for tokenizing
@@ -392,6 +392,7 @@ class ToCopyNumberVariation(ToVRS):
             start position
         :param end1: Only set when end is a definite range, this will be the max end
             position
+        :param liftover_pos: Whether or not to liftover positions
         :raises ToCopyNumberException: If error lifting over positions, translating
             accession, positions not valid on accession,
         :return: Tuple containing VRS sequence location represented as dict (if valid)
