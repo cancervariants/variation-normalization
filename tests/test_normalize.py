@@ -381,38 +381,6 @@ def nm_004448_coding_dna_delins(erbb2_context):
     return VariationDescriptor(**params)
 
 
-@pytest.fixture(scope="module")
-def nc_000007_genomic_delins(braf_gene_context):
-    """Create test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
-    params = {
-        "id": "normalize.variation:NC_000007.13%3Ag.140453135_140453136delinsAT",  # noqa: E501
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
-        "variation": {
-            "_id": "ga4gh:VA.4387UZ6Yssh3XCGKjm71z_WtadpBZT3O",
-            "location": {
-                "_id": "ga4gh:VSL.6PeoFwkO4ISmUjDWoYLkVsATVx8JRApd",
-                "interval": {
-                    "end": {"value": 2146, "type": "Number"},
-                    "start": {"value": 2144, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.I_0feOk5bZ3VfH8ejhWQiMDe9o6o4QdR",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "AT",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "transcript",
-        "structural_type": "SO:1000032",
-        "vrs_ref_allele_seq": "TG",
-        "gene_context": braf_gene_context
-    }
-    return VariationDescriptor(**params)
-
 
 @pytest.fixture(scope="module")
 def nm_000551(vhl_gene_context):
@@ -913,7 +881,7 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     resp.variation_descriptor.id = braf_id
     assertion_checks(resp.variation_descriptor, braf_v600e, "NP_004324.2:p.Val600Glu")
 
-    resp = await test_handler.normalize("braf v512e")
+    resp = await test_handler.normalize("braf V512E")
     assert resp.variation_descriptor.id == "normalize.variation:braf%20v512e"
     resp.variation_descriptor.id = braf_id
     assertion_checks(resp.variation_descriptor, braf_v600e, "braf v512e")
@@ -1110,8 +1078,7 @@ async def test_coding_dna_delins(test_handler, nm_004448_coding_dna_delins,
 
 
 @pytest.mark.asyncio
-async def test_genomic_delins(test_handler, nc_000007_genomic_delins,
-                              nm_000551, grch38_genomic_delins1,
+async def test_genomic_delins(test_handler, grch38_genomic_delins1,
                               grch38_genomic_delins2):
     """Test that Genomic DelIns normalizes correctly."""
     resp = await test_handler.normalize(
