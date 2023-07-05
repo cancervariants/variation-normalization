@@ -60,15 +60,14 @@ class ToCopyNumberVariation(ToVRS):
     ) -> None:
         """Initialize the to copy number variation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param Tokenize tokenizer: Tokenizer class for tokenizing
-        :param Classify classifier: Classifier class for classifying tokens
-        :param Validate validator: Validator class for validating valid inputs
-        :param Translate translator: Translating valid inputs
-        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
-            HGVS dup/del expressions
-        :param Translator tlr: Class for translating nomenclatures to and from VRS
-        :param UTADatabase uta: Access to UTA queries
+        :param seqrepo_access: Access to SeqRepo via cool-seq-tool
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
+        :param hgvs_dup_del_mode: Class for handling HGVS dup/del expressions
+        :param gene_normalizer: Gene normalizer query handler instance
+        :param uta: Access to UTA queries
         """
         super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
