@@ -1,5 +1,5 @@
 """Module for to copy number variation translation"""
-from typing import Tuple, Optional, List, Union, Dict, Literal
+from typing import Tuple, Optional, List, Union, Dict, Literal, NamedTuple
 from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
@@ -8,6 +8,8 @@ from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
 from gene.schemas import MatchType as GeneMatchType
+from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
@@ -20,12 +22,56 @@ from variation.schemas.service_schema import AmplificationToCxVarQuery, \
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
+from variation.classifiers.classify import Classify
+from variation.tokenizers.tokenize import Tokenize
+from variation.validators.validate import Validate
+from variation.translators.translate import Translate
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.utils import get_mane_valid_result, get_priority_sequence_location
 from variation.version import __version__
 
 
+class ToCopyNumberException(Exception):
+    """Custom exceptions when representing copy number"""
+
+
+class ParsedAccessionSummary(NamedTuple):
+    """Represents accession for parsed endpoints"""
+
+    accession: str
+    lifted_over: bool
+
+
+class ParsedChromosomeSummary(NamedTuple):
+    """Represents chromosome and assembly for parsed endpoints"""
+
+    accession: str
+    chromosome: str
+    lifted_over: bool
+
+
 class ToCopyNumberVariation(ToVRS):
     """Class for representing copy number variation"""
+
+    def __init__(
+        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
+        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+        gene_normalizer: GeneQueryHandler, uta: UTADatabase
+    ) -> None:
+        """Initialize the to copy number variation class
+
+        :param seqrepo_access: Access to SeqRepo via cool-seq-tool
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
+        :param hgvs_dup_del_mode: Class for handling HGVS dup/del expressions
+        :param gene_normalizer: Gene normalizer query handler instance
+        :param uta: Access to UTA queries
+        """
+        super().__init__(seqrepo_access, tokenizer, classifier, validator,
+                         translator, hgvs_dup_del_mode, gene_normalizer)
+        self.uta = uta
 
     @staticmethod
     def _parsed_to_text(
@@ -165,16 +211,21 @@ class ToCopyNumberVariation(ToVRS):
         )
 
     def _get_parsed_ac(
-        self, assembly: ClinVarAssembly, chr: str
-    ) -> Tuple[Optional[str], Optional[str]]:
+        self, assembly: ClinVarAssembly, chromosome: str, use_grch38: bool = False
+    ) -> ParsedAccessionSummary:
         """Get accession for parsed components
 
         :param assembly: Assembly
-        :param chr: Chromosome
-        :return: Tuple containing accession (if successful) and warnings (if error)
+        :param chromosome: Chromosome
+        :param use_grch38: Whether or not to use GRCh38 assembly
+        :raises ToCopyNumberException: If unable to translate assembly and chromosome
+            to an accession
+        :return: ParsedAccessionSummary containing accession and whether or not it was
+            lifted over
         """
         accession = None
-        warning = None
+        lifted_over = False
+        og_assembly = assembly
 
         if assembly == ClinVarAssembly.HG38:
             assembly = ClinVarAssembly.GRCH38
@@ -183,33 +234,93 @@ class ToCopyNumberVariation(ToVRS):
         elif assembly == ClinVarAssembly.HG18:
             assembly = ClinVarAssembly.NCBI36
 
+        if use_grch38 and assembly != ClinVarAssembly.GRCH38:
+            lifted_over = True
+            assembly = ClinVarAssembly.GRCH38
+
         if assembly != ClinVarAssembly.NCBI36:
             # Variation Normalizer does not support NCBI36 yet
-            query = f"{assembly.value}:{chr}"
-            aliases, warning = self.seqrepo_access.translate_identifier(query)
-            if not warning:
-                accession = ([a for a in aliases if a.startswith("refseq:")] or [None])[0]  # noqa: E501
-                if not accession:
-                    warning = f"Unable to find RefSeq accession for {query}"
+            query = f"{assembly.value}:{chromosome}"
+            aliases, error = self.seqrepo_access.translate_identifier(query, "ga4gh")
+            if aliases:
+                accession = aliases[0]
+            else:
+                raise ToCopyNumberException(str(error))
         else:
-            warning = f"{assembly.value} assembly is not currently supported"
+            raise ToCopyNumberException(
+                f"{og_assembly.value} assembly is not currently supported"
+            )
 
-        return accession, warning
+        return ParsedAccessionSummary(lifted_over=lifted_over, accession=accession)
 
-    def _validate_pos(self, accession: str, pos: int) -> Optional[str]:
+    def _get_parsed_ac_chr(
+        self, accession: str, do_liftover: bool
+    ) -> ParsedChromosomeSummary:
+        """Get accession and chromosome for parsed components
+
+        :param accession: Genomic accession
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :raises ToCopyNumberException: If unable to translate accession
+        :return: ParsedChromosomeSummary containing chromosome, accession, and whether
+            or not it was lifted over
+        """
+        chromosome = None
+        new_ac = None
+        lifted_over = False
+
+        aliases, error = self.seqrepo_access.translate_identifier(accession)
+        if error:
+            raise ToCopyNumberException(error)
+
+        grch_aliases = [a for a in aliases if a.startswith(("GRCh38:chr", "GRCh37:chr"))]  # noqa: E501
+
+        if grch_aliases:
+            grch_record = grch_aliases[0]
+            chromosome = grch_record.split(":")[-1]
+
+            if grch_record.startswith("GRCh38") or not do_liftover:
+                new_ac = [a for a in aliases if a.startswith("ga4gh")][0]
+            else:
+                grch38_query = grch_record.replace("GRCh37", "GRCh38")
+                aliases, error = self.seqrepo_access.translate_identifier(
+                    grch38_query, "ga4gh"
+                )
+
+                if error:
+                    raise ToCopyNumberException(error)
+
+                lifted_over = True
+                new_ac = aliases[0]
+        else:
+            raise ToCopyNumberException(
+                f"Not a supported genomic accession: {accession}"
+            )
+
+        return ParsedChromosomeSummary(
+            accession=new_ac, chromosome=chromosome, lifted_over=lifted_over
+        )
+
+    def _validate_ac_pos(self, accession: str, pos: int) -> None:
         """Validate position for parsed components
 
         :param accession: Genomic accession
         :param pos: Position on accession
-        :return: Warning if invalid position or sequence
+        :raises ToCopyNumberException: If position is not valid on accession or
+            if accession is not found in seqrepo
         """
         try:
-            self.seqrepo_access.sr[accession][pos - 1]
+            ref = self.seqrepo_access.sr[accession][pos - 1]
         except ValueError as e:
-            warning = f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
+            raise ToCopyNumberException(
+                f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
+            )
+        except KeyError:
+            raise ToCopyNumberException(f"Accession not found in SeqRepo: {accession}")
         else:
-            warning = None
-        return warning
+            if ref == "":
+                raise ToCopyNumberException(
+                    f"Position ({pos}) is not valid on {accession}"
+                )
 
     def _get_vrs_loc_start_or_end(
         self, accession: str, pos0: int,
@@ -217,10 +328,7 @@ class ToCopyNumberVariation(ToVRS):
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
         is_start: bool = True, pos1: Optional[int] = None
-    ) -> Tuple[
-        Optional[Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],
-        Optional[str]
-    ]:
+    ) -> Union[models.Number, models.DefiniteRange, models.IndefiniteRange]:
         """Get VRS Sequence Location start and end values
 
         :param accession: Genomic accession for sequence
@@ -231,16 +339,12 @@ class ToCopyNumberVariation(ToVRS):
             position(s) describing VRS end value
         :param pos1: Only set when end is a definite range, this will be the max end
             position
-        :return: Tuple containing VRS start or end value for sequence location
-            (if valid) and warning (if invalid)
+        :raises ToCopyNumberException: If position is not valid on accession when
+            using definite range
+        :return: VRS start or end value for sequence location
         """
-        vrs_val = None
-        warning = None
-
         if pos_type == VRSTypes.DEFINITE_RANGE:
-            warning = self._validate_pos(accession, pos1)
-            if warning:
-                return vrs_val, warning
+            self._validate_ac_pos(accession, pos1)
 
             vrs_val = models.DefiniteRange(
                 min=pos0 - 1 if is_start else pos0 + 1,
@@ -259,10 +363,10 @@ class ToCopyNumberVariation(ToVRS):
                 type="IndefiniteRange"
             )
 
-        return vrs_val, warning
+        return vrs_val
 
     def _get_parsed_seq_loc(
-        self, accession: str, start0: int,
+        self, accession: str, chromosome: str, start0: int,
         start_pos_type: Union[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
@@ -270,11 +374,13 @@ class ToCopyNumberVariation(ToVRS):
         end_pos_type: Union[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
-        start1: Optional[int] = None, end1: Optional[int] = None
+        start1: Optional[int] = None, end1: Optional[int] = None,
+        liftover_pos: bool = False
     ) -> Tuple[Optional[Dict], Optional[str]]:
-        """Get sequence location for parsed components
+        """Get sequence location for parsed components. Accession will be validated.
 
         :param accession: Genomic accession for sequence
+        :param chromosome: Chromosome
         :param start0: Start position (residue coords). If start is a definite range,
             this will be the min start position
         :param start_pos_type: Type of the start value in VRS Sequence Location
@@ -285,49 +391,93 @@ class ToCopyNumberVariation(ToVRS):
             start position
         :param end1: Only set when end is a definite range, this will be the max end
             position
+        :param liftover_pos: Whether or not to liftover positions
+        :raises ToCopyNumberException: If error lifting over positions, translating
+            accession, positions not valid on accession,
         :return: Tuple containing VRS sequence location represented as dict (if valid)
             and warning (if invalid)
         """
         seq_loc = None
-        warning = None
 
-        try:
-            sequence_id, warning = self.seqrepo_access.translate_identifier(
-                accession, "ga4gh"
-            )
-        except (IndexError, TypeError):
-            warning = f"{accession} does not have an associated ga4gh identifier"
-        else:
-            if not warning:
-                sequence_id = sequence_id[0]
+        # Liftover pos if needed
+        if liftover_pos:
+            liftover_pos = self._liftover_pos(chromosome, start0, end0, start1, end1)
+            start0 = liftover_pos["start0"]
+            end0 = liftover_pos["end0"]
+            start1 = liftover_pos["start1"]
+            end1 = liftover_pos["end1"]
 
-                for pos in [start0, end0]:
-                    # validate start0 and end0 since they're always required
-                    warning = self._validate_pos(accession, pos)
-                    if warning:
-                        return seq_loc, warning
+        sequence_ids, error = self.seqrepo_access.translate_identifier(
+            accession, "ga4gh"
+        )
+        if error:
+            raise ToCopyNumberException(error)
 
-                start_vrs, warning = self._get_vrs_loc_start_or_end(
-                    accession, start0, start_pos_type, is_start=True, pos1=start1
+        sequence_id = sequence_ids[0]
+
+        for pos in [start0, end0]:
+            # validate start0 and end0 since they're always required
+            self._validate_ac_pos(accession, pos)
+
+        start_vrs = self._get_vrs_loc_start_or_end(
+            accession, start0, start_pos_type, is_start=True, pos1=start1
+        )
+
+        end_vrs = self._get_vrs_loc_start_or_end(
+            accession, end0, end_pos_type, is_start=False, pos1=end1
+        )
+
+        seq_loc = models.SequenceLocation(
+            type="SequenceLocation",
+            sequence_id=sequence_id,
+            start=start_vrs,
+            end=end_vrs
+        )
+        seq_loc.id = ga4gh_identify(seq_loc)
+
+        return seq_loc.as_dict() if seq_loc else seq_loc
+
+    def _liftover_pos(
+        self, chromosome: str, start0: int, end0: int, start1: Optional[int],
+        end1: Optional[int]
+    ) -> Dict:
+        """Liftover GRCh37 positions to GRCh38 positions
+
+        :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
+        :param start0: Start position (residue coords) GRCh37 assembly. If start is a
+            definite range, this will be the min start position
+        :param end0: End position (residue coords) GRCh37 assembly. If end is a definite
+            range, this will be the min end position
+        :param start1: Only set when start is a definite range, this will be the max
+            start position. GRCh37 assembly
+        :param end1: Only set when end is a definite range, this will be the max end
+            position. GRCh37 assembly
+        :raises ToCopyNumberException: If unable to liftover position
+        :return: Dictionary containing lifted over positions
+            ('start0', 'end0', 'start1', 'end1')
+        """
+        liftover_pos = {
+            "start0": None,
+            "end0": None,
+            "start1": None,
+            "end1": None
+        }
+
+        for k, pos in [
+            ("start0", start0), ("end0", end0), ("start1", start1), ("end1", end1)
+        ]:
+            if pos is not None:
+                liftover = self.uta.liftover_37_to_38.convert_coordinate(
+                    chromosome, pos
                 )
-                if warning:
-                    return seq_loc, warning
+                if not liftover:
+                    raise ToCopyNumberException(
+                        f"Unable to liftover: {chromosome} with pos {pos}"
+                    )
+                else:
+                    liftover_pos[k] = liftover[0][1]
 
-                end_vrs, warning = self._get_vrs_loc_start_or_end(
-                    accession, end0, end_pos_type, is_start=False, pos1=end1
-                )
-                if warning:
-                    return seq_loc, warning
-
-                seq_loc = models.SequenceLocation(
-                    type="SequenceLocation",
-                    sequence_id=sequence_id,
-                    start=start_vrs,
-                    end=end_vrs
-                )
-                seq_loc.id = ga4gh_identify(seq_loc)
-
-        return seq_loc.as_dict() if seq_loc else seq_loc, warning
+        return liftover_pos
 
     def parsed_to_copy_number(
         self,
@@ -347,8 +497,9 @@ class ToCopyNumberVariation(ToVRS):
         start1: Optional[int] = None,
         end1: Optional[int] = None,
         assembly: Optional[ClinVarAssembly] = None,
-        chr: Optional[str] = None,
+        chromosome: Optional[str] = None,
         accession: Optional[str] = None,
+        do_liftover: bool = False,
         untranslatable_returns_text: bool = False
     ) -> Union[ParsedToCnVarService, ParsedToCxVarService]:
         """Given parsed genomic components, return Copy Number Count or Copy Number
@@ -363,18 +514,21 @@ class ToCopyNumberVariation(ToVRS):
             Only used when `copy_number_type` is Copy Number Count.
         :param copy_change: Copy Change.
             Only used when `copy_number_type` is Copy Number Change.
-        :param assembly: Assembly. Ignored, along with `chr`, if `accession` is set.
-            If `accession` not set, must provide both `assembly` and `chr`.
-        :param chr: Chromosome. Must set when `assembly` is set.
+        :param assembly: Assembly. Ignored, along with `chromosome`, if `accession`
+            is set. If `accession` not set, must provide both `assembly` and
+            `chromosome`.
+        :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
+            Must set when `assembly` is set.
         :param accession: Genomic accession. If `accession` is set, will ignore
-            `assembly` and `chr`. If `accession` not set, must provide both `assembly`
-            and `chr`.
+            `assembly` and `chromosome`. If `accession` not set, must provide both
+            `assembly` and `chromosome`.
         :param start_pos_type: Type of the start value in VRS Sequence Location
         :param end_pos_type: Type of the end value in VRS Sequence Location
         :param start1: Only set when start is a definite range, this will be the max
             start position
         :param end1: Only set when end is a definite range, this will be the max end
             position
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
         :param untranslatable_returns_text: `True` return VRS Text Object when unable to
             translate or normalize query. `False` return `None` when unable to translate
             or normalize query.
@@ -387,7 +541,7 @@ class ToCopyNumberVariation(ToVRS):
         warnings = []
         params = {
             "assembly": assembly,
-            "chr": chr,
+            "chromosome": chromosome,
             "accession": accession,
             "start0": start0,
             "end0": end0,
@@ -409,41 +563,53 @@ class ToCopyNumberVariation(ToVRS):
             warnings.append(str(e))
             og_query = None
         else:
-            if not accession:
-                accession, warning = self._get_parsed_ac(assembly, chr)
-            else:
-                warning = None
+            lifted_over = False
 
-            if warning:
-                warnings.append(warning)
-            else:
-                seq_loc, warning = self._get_parsed_seq_loc(
-                    accession, start0, start_pos_type, end0, end_pos_type,
-                    start1=start1, end1=end1
+            try:
+                if not accession:
+                    accession_summary = self._get_parsed_ac(
+                        assembly, chromosome, use_grch38=do_liftover
+                    )
+                    accession = accession_summary.accession
+                    lifted_over = accession_summary.lifted_over
+                else:
+                    chr_summary = self._get_parsed_ac_chr(
+                        accession, do_liftover
+                    )
+                    accession = chr_summary.accession
+                    chromosome = chr_summary.chromosome
+                    lifted_over = chr_summary.lifted_over
+
+                seq_loc = self._get_parsed_seq_loc(
+                    accession, chromosome, start0, start_pos_type, end0, end_pos_type,
+                    start1=start1, end1=end1, liftover_pos=do_liftover and lifted_over
                 )
-                if warning:
-                    warnings.append(warning)
-
-        if warnings:
-            if untranslatable_returns_text:
-                variation = self._parsed_to_text(params)
-        else:
-            if is_cx:
-                variation = {
-                    "type": "CopyNumberChange",
-                    "subject": seq_loc,
-                    "copy_change": copy_change
-                }
-                variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
-                variation = CopyNumberChange(**variation)
+            except ToCopyNumberException as e:
+                warnings.append(str(e))
             else:
-                variation = {
-                    "type": "CopyNumberCount",
-                    "subject": seq_loc,
-                    "copies": {"value": total_copies, "type": "Number"}
-                }
-                variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
-                variation = CopyNumberCount(**variation)
+                if is_cx:
+                    variation = {
+                        "type": "CopyNumberChange",
+                        "subject": seq_loc,
+                        "copy_change": copy_change
+                    }
+                    variation["id"] = ga4gh_identify(
+                        models.CopyNumberChange(**variation)
+                    )
+                    variation = CopyNumberChange(**variation)
+                else:
+                    variation = {
+                        "type": "CopyNumberCount",
+                        "subject": seq_loc,
+                        "copies": {"value": total_copies, "type": "Number"}
+                    }
+                    variation["id"] = ga4gh_identify(
+                        models.CopyNumberCount(**variation)
+                    )
+                    variation = CopyNumberCount(**variation)
+
+        if warnings and untranslatable_returns_text:
+            variation = self._parsed_to_text(params)
 
         service_params = {
             "og_query": og_query,
