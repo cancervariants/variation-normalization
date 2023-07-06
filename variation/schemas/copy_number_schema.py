@@ -3,7 +3,7 @@ import re
 from enum import Enum
 from typing import Optional, Union, Dict, Any, Type, Literal
 
-from pydantic import BaseModel, StrictStr, root_validator, StrictInt
+from pydantic import BaseModel, StrictStr, root_validator, StrictInt, StrictBool
 from pydantic.main import ModelMetaclass
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
     SequenceLocation, CopyNumberChange, CopyChange, VRSTypes
@@ -33,12 +33,14 @@ class ParsedToCopyNumberQuery(BaseModel):
     end0: StrictInt
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ]
+    ] = VRSTypes.NUMBER
     end_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ]
+    ] = VRSTypes.NUMBER
     start1: Optional[StrictInt]
     end1: Optional[StrictInt]
+    do_liftover: StrictBool = False
+    untranslatable_returns_text: StrictBool = False
 
     @root_validator(pre=False, skip_on_failure=True)
     def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
@@ -85,11 +87,36 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
 
     total_copies: StrictInt
 
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["ParsedToCnVarQuery"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "assembly": "GRCh37",
+                "chromosome": "chr1",
+                "accession": None,
+                "start0": 143134063,
+                "end0": 143284670,
+                "total_copies": 3,
+                "start_pos_type": "IndefiniteRange",
+                "end_pos_type": "IndefiniteRange",
+                "start1": None,
+                "end1": None,
+                "do_liftover": False,
+                "untranslatable_returns_text": False
+            }
+
 
 class ParsedToCnVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Count"""
 
-    query: Optional[ParsedToCnVarQuery] = None
     copy_number_count: Optional[Union[Text, CopyNumberCount]]
 
     class Config:
@@ -104,18 +131,6 @@ class ParsedToCnVarService(ServiceResponse):
             for prop in schema.get("properties", {}).values():
                 prop.pop("title", None)
             schema["example"] = {
-                "query": {
-                    "assembly": "GRCh37",
-                    "chromosome": "1",
-                    "accession": None,
-                    "start0": 143134063,
-                    "end0": 143284670,
-                    "total_copies": 3,
-                    "start_pos_type": "IndefiniteRange",
-                    "end_pos_type": "IndefiniteRange",
-                    "start1": None,
-                    "end1": None
-                },
                 "copy_number_count": {
                     "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
                     "type": "CopyNumberCount",
@@ -150,11 +165,36 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
 
     copy_change: CopyChange
 
+    class Config:
+        """Configure model."""
+
+        @staticmethod
+        def schema_extra(schema: Dict[str, Any],
+                         model: Type["ParsedToCxVarQuery"]) -> None:
+            """Configure OpenAPI schema."""
+            if "title" in schema.keys():
+                schema.pop("title", None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            schema["example"] = {
+                "assembly": "GRCh38",
+                "chromosome": "chrY",
+                "accession": None,
+                "start0": 10001,
+                "end0": 1223133,
+                "copy_change": "efo:0030069",
+                "start_pos_type": "Number",
+                "end_pos_type": "Number",
+                "start1": None,
+                "end1": None,
+                "do_liftover": False,
+                "untranslatable_returns_text": False
+            }
+
 
 class ParsedToCxVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Change"""
 
-    query: Optional[ParsedToCxVarQuery] = None
     copy_number_change: Optional[Union[Text, CopyNumberChange]]
 
     class Config:
@@ -169,18 +209,6 @@ class ParsedToCxVarService(ServiceResponse):
             for prop in schema.get("properties", {}).values():
                 prop.pop("title", None)
             schema["example"] = {
-                "query": {
-                    "assembly": "GRCh38",
-                    "chromosome": "chrY",
-                    "accession": None,
-                    "start0": 10001,
-                    "end0": 1223133,
-                    "copy_change": "efo:0030069",
-                    "start_pos_type": "Number",
-                    "end_pos_type": "Number",
-                    "start1": None,
-                    "end1": None
-                },
                 "copy_number_change": {
                     "type": "CopyNumberChange",
                     "id": "ga4gh:CX.UirzxujWnAIklYHh4VxSnFglfDROHYv6",
