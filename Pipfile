@@ -28,4 +28,4 @@ gene-normalizer = "~=0.1.36"
 pyliftover = "*"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = "~=0.0.13"
-cool-seq-tool = ">=0.1.13"
+cool-seq-tool = {editable = true, path = "cool-seq-tool"}
