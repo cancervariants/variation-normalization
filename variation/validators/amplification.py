@@ -58,4 +58,4 @@ class Amplification(Validator):
         :param Classification classification: The classification for tokens
         :return: A list of Gene Match Tokens in the classification
         """
-        return [classification.gene]
+        return [classification.gene_token]

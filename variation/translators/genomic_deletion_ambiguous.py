@@ -82,7 +82,7 @@ class GenomicDeletionAmbiguous(Translator):
             pos3 = classification.pos3
             assembly = None
 
-        if classification.gene:
+        if classification.gene_token:
             errors = []
             if not assembly:
                 grch38_data = await self.get_grch38_data_ambiguous(
@@ -94,13 +94,13 @@ class GenomicDeletionAmbiguous(Translator):
                     return None
 
                 self.is_valid(
-                    classification.gene, grch38_data["ac"], grch38_data["pos0"],
+                    classification.gene_token, grch38_data["ac"], grch38_data["pos0"],
                     grch38_data["pos1"], errors, pos2=grch38_data["pos2"],
                     pos3=grch38_data["pos3"]
                 )
             else:
                 self.is_valid(
-                    classification.gene, ac, pos0, pos1, errors, pos2=pos2, pos3=pos3
+                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2, pos3=pos3
                 )
 
             if errors:

@@ -77,7 +77,7 @@ class GenomicDuplication(Translator):
             ac = validation_result.accession
             assembly = None
 
-        if classification.gene:
+        if classification.gene_token:
             errors = []
             if not assembly:
                 grch38_data = await self.get_grch38_data(
@@ -88,18 +88,18 @@ class GenomicDuplication(Translator):
                     return None
 
                 self.is_valid(
-                    classification.gene, grch38_data["ac"], grch38_data["pos0"],
+                    classification.gene_token, grch38_data["ac"], grch38_data["pos0"],
                     grch38_data["pos1"], errors
                 )
             else:
-                self.is_valid(classification.gene, ac, pos0, pos1, errors)
+                self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 
             if errors:
                 warnings += errors
                 return None
 
             mane = await self.mane_transcript.get_mane_transcript(
-                ac, pos0, "g", end_pos=pos1, gene=classification.gene.token,
+                ac, pos0, "g", end_pos=pos1, gene=classification.gene_token.token,
                 try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE
             )
 

@@ -74,7 +74,7 @@ class Classification(BaseModel):
     nomenclature: Nomenclature
     molecule_context: MoleculeContext
     so_id: SequenceOntology
-    gene: Optional[GeneToken]
+    gene_token: Optional[GeneToken]
     ac: Optional[StrictStr]
 
 
