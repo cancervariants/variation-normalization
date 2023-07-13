@@ -27,6 +27,6 @@ class GenomicReferenceAgreeClassifier(Classifier):
         return GenomicReferenceAgreeClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos=genomic_ref_agree_token.pos
         )

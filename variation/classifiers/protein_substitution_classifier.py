@@ -27,7 +27,7 @@ class ProteinSubstitutionClassifier(Classifier):
         return ProteinSubstitutionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos=protein_sub_token.pos,
             ref=protein_sub_token.ref,
             alt=protein_sub_token.alt

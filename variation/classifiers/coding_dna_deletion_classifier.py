@@ -27,7 +27,7 @@ class CdnaDeletionClassifier(Classifier):
         return CdnaDeletionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=cdna_deletion_token.pos0,
             pos1=cdna_deletion_token.pos1,
             deleted_sequence=cdna_deletion_token.deleted_sequence

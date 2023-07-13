@@ -35,7 +35,7 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
         return GenomicDuplicationAmbiguousClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=genomic_dup_token.pos0,
             pos1=genomic_dup_token.pos1,
             pos2=genomic_dup_token.pos2,

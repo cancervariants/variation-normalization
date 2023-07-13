@@ -27,7 +27,7 @@ class ProteinDelInsClassifier(Classifier):
         return ProteinDelInsClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             aa0=protein_delins_token.aa0,
             pos0=protein_delins_token.pos0,
             aa1=protein_delins_token.aa1,

@@ -27,7 +27,7 @@ class CodingDNAInsertionClassifier(Classifier):
         return CdnaInsertionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=cdna_ins_token.pos0,
             pos1=cdna_ins_token.pos1,
             inserted_sequence=cdna_ins_token.inserted_sequence

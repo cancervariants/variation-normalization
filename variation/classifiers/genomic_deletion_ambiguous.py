@@ -35,7 +35,7 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
         return GenomicDeletionAmbiguousClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=genomic_del_token.pos0,
             pos1=genomic_del_token.pos1,
             pos2=genomic_del_token.pos2,

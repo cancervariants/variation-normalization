@@ -41,7 +41,7 @@ class CodingDNASubstitutionClassifier(Classifier):
             return CdnaSubstitutionClassification(
                 matching_tokens=tokens,
                 nomenclature=Nomenclature.FREE_TEXT,
-                gene=gene_token,
+                gene_token=gene_token,
                 pos=cdna_sub_token.pos,
                 ref=cdna_sub_token.ref,
                 alt=cdna_sub_token.alt,

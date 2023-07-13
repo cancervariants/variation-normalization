@@ -25,5 +25,5 @@ class AmplificationClassifier(Classifier):
         return AmplificationClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=tokens[0]
+            gene_token=tokens[0]
         )

@@ -27,7 +27,7 @@ class ProteinStopGainClassifier(Classifier):
         return ProteinStopGainClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos=protein_stop_gain_token.pos,
             ref=protein_stop_gain_token.ref,
             alt=protein_stop_gain_token.alt

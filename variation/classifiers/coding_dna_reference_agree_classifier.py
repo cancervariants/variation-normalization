@@ -31,6 +31,6 @@ class CodingDNAReferenceAgreeClassifier(Classifier):
         return CdnaReferenceAgreeClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos=cdna_ref_agree_token.pos
         )

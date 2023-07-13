@@ -27,7 +27,7 @@ class GenomicInsertionClassifier(Classifier):
         return GenomicInsertionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=genomic_ins_token.pos0,
             pos1=genomic_ins_token.pos1,
             inserted_sequence=genomic_ins_token.inserted_sequence

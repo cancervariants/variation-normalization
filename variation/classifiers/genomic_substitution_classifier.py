@@ -37,7 +37,7 @@ class GenomicSubstitutionClassifier(Classifier):
             return GenomicSubstitutionClassification(
                 matching_tokens=tokens,
                 nomenclature=Nomenclature.FREE_TEXT,
-                gene=gene_token,
+                gene_token=gene_token,
                 pos=genomic_sub_token.pos,
                 ref=genomic_sub_token.ref,
                 alt=genomic_sub_token.alt,

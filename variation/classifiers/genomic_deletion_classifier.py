@@ -27,7 +27,7 @@ class GenomicDeletionClassifier(Classifier):
         return GenomicDeletionClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene=gene_token,
+            gene_token=gene_token,
             pos0=genomic_deletion_token.pos0,
             pos1=genomic_deletion_token.pos1,
             deleted_sequence=genomic_deletion_token.deleted_sequence
