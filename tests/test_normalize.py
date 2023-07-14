@@ -882,9 +882,9 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     assertion_checks(resp.variation_descriptor, braf_v600e, "NP_004324.2:p.Val600Glu")
 
     resp = await test_handler.normalize("braf V512E")
-    assert resp.variation_descriptor.id == "normalize.variation:braf%20v512e"
+    assert resp.variation_descriptor.id == "normalize.variation:braf%20V512E"
     resp.variation_descriptor.id = braf_id
-    assertion_checks(resp.variation_descriptor, braf_v600e, "braf v512e")
+    assertion_checks(resp.variation_descriptor, braf_v600e, "braf V512E")
 
     resp = await test_handler.normalize(" NP_001365404.1:p.Val512Glu  ")
     assert resp.variation_descriptor.id == \
