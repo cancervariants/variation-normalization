@@ -19,11 +19,15 @@ class GenomicSubstitutionClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.GENOMIC_SUBSTITUTION]
+            [TokenType.GENE, TokenType.GENOMIC_SUBSTITUTION],
+            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_SUBSTITUTION]  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]):
-        gene_token, genomic_sub_token = tokens
+        if len(tokens) == 2:
+            gene_token, genomic_sub_token = tokens
+        else:
+            gene_token, _, genomic_sub_token = tokens
         len_ref = len(genomic_sub_token.ref)
         len_alt = len(genomic_sub_token.alt)
 

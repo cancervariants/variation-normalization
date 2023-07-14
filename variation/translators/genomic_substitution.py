@@ -2,6 +2,7 @@
 from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
@@ -12,7 +13,8 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicSubstitutionClassification
+    ClassificationType, GenomicSubstitutionClassification,
+    CdnaSubstitutionClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
 
@@ -52,11 +54,51 @@ class GenomicSubstitution(Translator):
             )
 
             if mane:
-                vrs_seq_loc_ac = mane["alt_ac"]
+                if gene:
+                    # TODO: Hacky. We should actually be changing the classification
+                    # to cdna
+                    classification.molecule_context = MoleculeContext.TRANSCRIPT
+
+                    if mane["strand"] == "-":
+                        ref_rev = classification.ref[::-1]
+                        alt_rev = classification.alt[::-1]
+
+                        complements = {
+                            "A": "T",
+                            "T": "A",
+                            "C": "G",
+                            "G": "C"
+                        }
+
+                        ref = ""
+                        alt = ""
+
+                        for nt in ref_rev:
+                            ref += complements[nt]
+                        for nt in alt_rev:
+                            alt += complements[nt]
+                    else:
+                        ref = classification.ref
+                        alt = classification.alt
+
+                    classification = CdnaSubstitutionClassification(
+                        matching_tokens=classification.matching_tokens,
+                        nomenclature=classification.nomenclature,
+                        gene_token=classification.gene_token,
+                        pos=mane["pos"][0] + 1,
+                        ref=ref,
+                        alt=alt,
+                        so_id=classification.so_id
+                    )
+                    vrs_seq_loc_ac = mane["refseq"]
+                    coord_type = CoordinateType.CODING_DNA
+                else:
+                    vrs_seq_loc_ac = mane["alt_ac"]
+                    coord_type = CoordinateType.LINEAR_GENOMIC
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, errors,
-                    alt=classification.alt
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
+                    AltType.SUBSTITUTION, errors, alt=classification.alt,
+                    cds_start=mane["coding_start_site"] if gene else None
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
