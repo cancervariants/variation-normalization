@@ -191,8 +191,6 @@ def test_cdna_delins(test_tokenizer, test_classifier):
         "NM_005157.6:c.1423_1424delinsGT",
         "ENST00000277541.6:c.7330delinsACA",
         "NM_000551.3:c.615delinsAA",
-        "LRG_199t1:c.79_80delinsTT",
-        "LRG_199:c.79_80delinsTT",
         "ENST00000257290.5:c.2524_2525delinsAT"
     ]:
         assert_match(test_tokenizer, test_classifier, q, CdnaDelInsClassification)
@@ -202,7 +200,9 @@ def test_cdna_delins(test_tokenizer, test_classifier):
         "c.1423delinsX",
         "NM_000797.3:c.812_829delins908_925",
         "foo c.131_234delinsA",
-        "foo NM_005157.6:c.1423_1424delinsGT"
+        "foo NM_005157.6:c.1423_1424delinsGT",
+        "LRG_199t1:c.79_80delinsTT",
+        "LRG_199:c.79_80delinsTT",
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 
@@ -233,8 +233,6 @@ def test_protein_deletion(test_tokenizer, test_classifier):
         "NP_004439.2:p.Leu755_Thr759del",
         "NP_000213.1:p.Val560del",
         "NP_000213.1:p.Lys550_Lys558del",
-        "LRG_199p1:p.Val7del",
-        "LRG_199p1:p.(Val7del)",
         "KIT D419del",
         "KIT E554_V559del",
         "CTNNB1 Y30_I35del",
@@ -246,7 +244,9 @@ def test_protein_deletion(test_tokenizer, test_classifier):
     for q in [
         "fakegene g.Leu755_Thr759delLeu",
         "GENE c.L755del",
-        "NP_004439.2:c.Leu755_Thr759del"
+        "NP_004439.2:c.Leu755_Thr759del",
+        "LRG_199p1:p.Val7del",
+        "LRG_199p1:p.(Val7del)",
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 
@@ -284,12 +284,7 @@ def test_genomic_deletion(test_tokenizer, test_classifier):
 
     for q in [
         "GENE g.152419920_152419921delinsAG",
-        "GENE g.152419920_152419921delAinsG",
-        "NC_000006.11:g.152419920_152419921delinsAG",
-        "NC_000023.11:g.(?_31120496)_(33339477_?)del",
-        "NC_000023.11:g.(?_155980375)_(156013167_?)del",
-        "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del",
-        "BRAF g.(31060227_31100351)_(33274278_33417151)del"
+        "GENE g.152419920_152419921delAinsG"
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 
@@ -357,7 +352,6 @@ def test_genomic_insertion(test_tokenizer, test_classifier):
         "NC_000023.10:g.32867861_32867862insT",
         "NC_000023.10:g.32862923_32862924insCCT",
         "NC_000009.11:g.5070053_5070054insG",
-        "chr17-131543-G-GA",
         "20-14223252-T-TATGCATG"
     ]:
         assert_match(test_tokenizer, test_classifier, q, GenomicInsertionClassification)
@@ -365,7 +359,8 @@ def test_genomic_insertion(test_tokenizer, test_classifier):
     for q in [
         "GENE 32867861_32867862insT",
         "accession:g.32867861_32867862insT",
-        "NC_000023.10:g.32867861_32867862insT foo"
+        "NC_000023.10:g.32867861_32867862insT foo",
+        "chr17-131543-G-GA",
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 

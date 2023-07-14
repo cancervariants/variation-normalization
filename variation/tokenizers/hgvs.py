@@ -10,8 +10,7 @@ class HGVS(Tokenizer):
     """The HGVS tokenizer class."""
 
     splitter = re.compile(
-        r"^(?P<accession>(NC_|NT_|NW_|NG_|NM_|NR_|NP_|ENSP|ENST|ENSG|LRG_)[^:\s]+):"
-        r"(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"
+        r"^(?P<accession>(NC_|NM_|NP_|ENSP|ENST)[^:\s]+):(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"  # noqa: E501
     )
 
     def match(self, input_string: str) -> Optional[HgvsToken]:

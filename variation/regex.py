@@ -125,16 +125,6 @@ PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 
 CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
-        CDNA_GENOMIC_SUBSTITUTION,
-        TokenType.CODING_DNA_SUBSTITUTION,
-        ClassificationType.CODING_DNA_SUBSTITUTION
-    ),
-    (
-        CDNA_GENOMIC_REFERENCE_AGREE,
-        TokenType.CODING_DNA_REFERENCE_AGREE,
-        ClassificationType.CODING_DNA_REFERENCE_AGREE
-    ),
-    (
         CDNA_GENOMIC_DELINS,
         TokenType.CODING_DNA_DELINS,
         ClassificationType.CODING_DNA_DELINS
@@ -145,6 +135,16 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         ClassificationType.CODING_DNA_DELETION
     ),
     (
+        CDNA_GENOMIC_SUBSTITUTION,
+        TokenType.CODING_DNA_SUBSTITUTION,
+        ClassificationType.CODING_DNA_SUBSTITUTION
+    ),
+    (
+        CDNA_GENOMIC_REFERENCE_AGREE,
+        TokenType.CODING_DNA_REFERENCE_AGREE,
+        ClassificationType.CODING_DNA_REFERENCE_AGREE
+    ),
+    (
         CDNA_GENOMIC_INSERTION,
         TokenType.CODING_DNA_INSERTION,
         ClassificationType.CODING_DNA_INSERTION
@@ -152,6 +152,16 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 ]
 
 GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+    (
+        CDNA_GENOMIC_DELINS,
+        TokenType.GENOMIC_DELINS,
+        ClassificationType.GENOMIC_DELINS
+    ),
+    (
+        CNDA_GENOMIC_DELETION,
+        TokenType.GENOMIC_DELETION,
+        ClassificationType.GENOMIC_DELETION
+    ),
     (
         CDNA_GENOMIC_SUBSTITUTION,
         TokenType.GENOMIC_SUBSTITUTION,
@@ -162,20 +172,11 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
         TokenType.GENOMIC_REFERENCE_AGREE,
         ClassificationType.GENOMIC_REFERENCE_AGREE
     ),
-    (
-        CDNA_GENOMIC_DELINS,
-        TokenType.GENOMIC_DELINS,
-        ClassificationType.GENOMIC_DELINS
-    ),
+
     (
         CDNA_GENOMIC_INSERTION,
         TokenType.GENOMIC_INSERTION,
         ClassificationType.GENOMIC_INSERTION
-    ),
-    (
-        CNDA_GENOMIC_DELETION,
-        TokenType.GENOMIC_DELETION,
-        ClassificationType.GENOMIC_DELETION
     ),
     (
         GENOMIC_DUPLICATION,

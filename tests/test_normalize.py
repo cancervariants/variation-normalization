@@ -1306,9 +1306,6 @@ async def test_valid_queries(test_handler):
     assert resp.variation_descriptor.variation.id == \
         "ga4gh:VA.7qNgfRjiDwephtGOuwtXm04YcXDSY47x"
 
-    resp = await test_handler.normalize("NG_008212.3:g.5426_5445del")
-    assert resp.variation_descriptor
-
     # Test ambiguous IUPAC code N
     for q in [
         "NC_000017.10:g.7572948_7572949insTTTTTTTTTNNNNN",
@@ -1335,7 +1332,7 @@ async def test_no_matches(test_handler):
         "NP_005219.2:p.Glu746Thr751delinsValAla", "EGFR L747_L474delinsP",
         "NP_005219.2:p.Glu746_Thr751delinssValAla", "EGFR delins",
         "NM_004333.4:c.1799_1800delTGinsAT",
-        "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)"
+        "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)", "NG_008212.3:g.5426_5445del"
     ]
     for q in queries:
         assert isinstance(q, str)

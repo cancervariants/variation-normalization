@@ -3,7 +3,7 @@ import yaml
 from biocommons.seqrepo import SeqRepo
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool import SEQREPO_ROOT_DIR
+from cool_seq_tool.paths import SEQREPO_ROOT_DIR
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, \
     MANETranscriptMappings, UTADatabase, MANETranscript
 

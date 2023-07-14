@@ -96,11 +96,11 @@ hgvs:
     - token: NC_000007.13:g.36561662C>T
     - token: NM_01234.5:c.22+1A>T
     - token: NP_000918.2:p.Ile1145=
-    - token: LRG_199t1:c.54G>H
   should_not_match:
     - token: NP004324.2
     - token: LRGp1
     - token: ERBB2:c.2326_2327delinsCT
+    - token: LRG_199t1:c.54G>H
 
 coding_dna_substitution:
   should_match:
