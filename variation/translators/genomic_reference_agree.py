@@ -43,7 +43,8 @@ class GenomicReferenceAgree(Translator):
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession, classification.pos,
                 CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
+                gene=classification.gene_token.token if classification.gene_token else None  # noqa: E501
             )
 
             if mane:

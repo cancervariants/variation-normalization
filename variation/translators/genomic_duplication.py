@@ -99,8 +99,9 @@ class GenomicDuplication(Translator):
                 return None
 
             mane = await self.mane_transcript.get_mane_transcript(
-                ac, pos0, "g", end_pos=pos1, gene=classification.gene_token.token,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE
+                ac, pos0, "g", end_pos=pos1, try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE,
+                gene=classification.gene_token.token if classification.gene_token else None  # noqa: E501
             )
 
             if mane:
