@@ -18,7 +18,7 @@ class GenomicReferenceAgreeClassifier(Classifier):
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the exact match token type candidates."""
         return [
-            [TokenType.GENE, TokenType.CODING_DNA_REFERENCE_AGREE]
+            [TokenType.GENE, TokenType.GENOMIC_REFERENCE_AGREE]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicReferenceAgreeClassification:

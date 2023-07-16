@@ -55,10 +55,6 @@ class GenomicSubstitution(Translator):
 
             if mane:
                 if gene:
-                    # TODO: Hacky. We should actually be changing the classification
-                    # to cdna
-                    classification.molecule_context = MoleculeContext.TRANSCRIPT
-
                     if mane["strand"] == "-":
                         ref_rev = classification.ref[::-1]
                         alt_rev = classification.alt[::-1]
@@ -92,9 +88,11 @@ class GenomicSubstitution(Translator):
                     )
                     vrs_seq_loc_ac = mane["refseq"]
                     coord_type = CoordinateType.CODING_DNA
+                    validation_result.classification = classification
                 else:
                     vrs_seq_loc_ac = mane["alt_ac"]
                     coord_type = CoordinateType.LINEAR_GENOMIC
+
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
                     AltType.SUBSTITUTION, errors, alt=classification.alt,
