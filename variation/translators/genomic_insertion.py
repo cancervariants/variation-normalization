@@ -5,7 +5,6 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType, CoordinateType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
@@ -13,10 +12,9 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicInsertionClassification
+    ClassificationType, GenomicInsertionClassification, CdnaInsertionClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
-from variation.utils import get_assembly
 
 
 class GenomicInsertion(Translator):
@@ -44,20 +42,36 @@ class GenomicInsertion(Translator):
         vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
+            gene = classification.gene_token.token if classification.gene_token else None
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession, classification.pos0,
                 CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos1,
                 try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
-                gene=classification.gene_token.token if classification.gene_token else None  # noqa: E501
+                gene=gene
             )
 
             if mane:
-                vrs_seq_loc_ac = mane["alt_ac"]
                 vrs_seq_loc_ac_status = mane["status"]
+                if gene:
+                    classification = CdnaInsertionClassification(
+                        matching_tokens=classification.matching_tokens,
+                        nomenclature=classification.nomenclature,
+                        gene_token=classification.gene_token,
+                        pos0=mane["pos"][0] + 1,
+                        pos1=mane["pos"][1] + 1,
+                        inserted_sequence=classification.inserted_sequence
+                    )
+                    vrs_seq_loc_ac = mane["refseq"]
+                    coord_type = CoordinateType.CODING_DNA
+                    validation_result.classification = classification
+                else:
+                    vrs_seq_loc_ac = mane["alt_ac"]
+                    coord_type = CoordinateType.LINEAR_GENOMIC
+
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC, AltType.INSERTION, warnings,
-                    alt=classification.inserted_sequence
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
+                    AltType.INSERTION, warnings, alt=classification.inserted_sequence,
+                    cds_start=mane["coding_start_site"] if gene else None
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
@@ -70,6 +84,7 @@ class GenomicInsertion(Translator):
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
                 vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
                 og_ac=validation_result.accession
             )
         else:

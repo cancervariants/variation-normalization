@@ -34,7 +34,7 @@ class GnomadVcfClassifier(Classifier):
         len_alt = len(alt)
 
         if len_ref == len_alt:
-            # Substitution
+            # substitution
             params["pos"] = token.pos
 
             if ref == alt:
@@ -50,19 +50,22 @@ class GnomadVcfClassifier(Classifier):
                 params["alt"] = alt
 
                 return GenomicSubstitutionClassification(**params)
+        elif len_ref < len_alt:
+            # insertion
+            if len_ref == 1:
+                if ref[0] == alt[0]:
+                    params["pos0"] = token.pos
+                    params["pos1"] = token.pos + 1
+                    params["inserted_sequence"] = alt[1:]
+                    return GenomicInsertionClassification(**params)
         else:
-            if any((len_ref == 1, len_alt == 1)):
-                if len_ref == 1:
-                    # insertion
-                    pass
-                else:
-                    # deletion
+            # deletion
+            if len_alt == 1:
+                if ref[0] == alt[0]:
                     del_seq = ref[1:]
                     params["pos0"] = token.pos
                     params["pos1"] = params["pos0"] + len(del_seq)
                     params["deleted_sequence"] = del_seq
                     return GenomicDeletionClassification(**params)
-            else:
-                # delins
-                pass
+
         return None

@@ -28,13 +28,24 @@ class GenomicInsertion(Validator):
 
         validation_results = []
 
-        for t in transcripts:
+        for ac in transcripts:
+            errors = []
+
+            # gnomAD VCF provides reference, so we should validate this
+            if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                invalid_ref_msg = self.validate_reference_sequence(
+                    ac, classification.pos0, classification.pos1,
+                    classification.matching_tokens[0].ref
+                )
+                if invalid_ref_msg:
+                    errors.append(invalid_ref_msg)
+
             validation_results.append(
                 ValidationResult(
-                    accession=t,
+                    accession=ac,
                     classification=classification,
-                    is_valid=True,
-                    errors=[],
+                    is_valid=not errors,
+                    errors=errors,
                     gene_tokens=gene_tokens
                 )
             )

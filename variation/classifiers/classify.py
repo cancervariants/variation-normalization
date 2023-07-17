@@ -65,7 +65,6 @@ class Classify:
             if res:
                 classifications.append(res)
         else:
-            # TODO: Still need to do this
             for classifier in self.classifiers:
                 # We only do EXACT match candidates
                 can_classify = classifier.can_classify(tokens)
