@@ -208,7 +208,10 @@ class HgvsClassifier(Classifier):
 
                 if classification_type == ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS:  # noqa: E501
                     self._update_ambiguous_params(params, regex_type)
-                    return GenomicDuplicationAmbiguousClassification(**params)
+
+                    # If ambiguous type not in params, it means we don't support it yet
+                    if "ambiguous_type" in params:
+                        return GenomicDuplicationAmbiguousClassification(**params)
         return None
 
     def _genomic_del_ambiguous_classification(
@@ -223,5 +226,8 @@ class HgvsClassifier(Classifier):
 
                 if classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS:  # noqa: E501
                     self._update_ambiguous_params(params, regex_type)
-                    return GenomicDeletionAmbiguousClassification(**params)
+
+                    # If ambiguous type not in params, it means we don't support it yet
+                    if "ambiguous_type" in params:
+                        return GenomicDeletionAmbiguousClassification(**params)
         return None

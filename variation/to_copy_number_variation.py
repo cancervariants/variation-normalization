@@ -74,13 +74,13 @@ class ToCopyNumberVariation(ToVRS):
         classifications = self.classifier.perform(tokens)
         if not classifications:
             warnings.append(f"Unable to find classification for: {q}")
-            return validation_summary, None
+            return validation_summary, warnings
 
         tmp_classifications = []
         for c in classifications:
             if all((
                 c.classification_type in VALID_CLASSIFICATION_TYPES,
-                TokenType.HGVS in c.matching_tokens
+                TokenType.HGVS in {t.token_type for t in c.matching_tokens}
             )):
                 tmp_classifications.append(c)
 
@@ -99,7 +99,8 @@ class ToCopyNumberVariation(ToVRS):
     async def _hgvs_to_cnv_resp(
         self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
-        warnings: List[str], untranslatable_returns_text: bool = False
+        warnings: List[str], untranslatable_returns_text: bool = False,
+        baseline_copies: Optional[int] = None, copy_change: Optional[CopyChange] = None
     ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:  # noqa: E501
         """Return copy number variation and warnings response
 
@@ -124,9 +125,19 @@ class ToCopyNumberVariation(ToVRS):
                 warnings.append(f"Unable to translate {hgvs_expr} to "
                                 f"copy number variation")
         else:
-            translations, warnings = await self.get_translations(validations, warnings)
-            if translations:
-                variation = translations[0].vrs_variation
+            if validations:
+                if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+                    endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
+                else:
+                    endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
+
+                translations, warnings = await self.get_translations(
+                    validations, warnings, hgvs_dup_del_mode=copy_number_type,
+                    endpoint_name=endpoint_name, copy_change=copy_change,
+                    baseline_copies=baseline_copies
+                )
+                if translations:
+                    variation = translations[0].vrs_variation
 
         if not variation:
             if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:
@@ -155,10 +166,12 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberCountService containing Copy Number Count
             Variation and warnings
         """
-        validation_summary, warnings = self._get_validation_summary(hgvs_expr)
+        validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
         cn_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover,
-            validation_summary, warnings, untranslatable_returns_text
+            validation_summary, warnings,
+            untranslatable_returns_text=untranslatable_returns_text,
+            baseline_copies=baseline_copies
         )
 
         return HgvsToCopyNumberCountService(
@@ -186,10 +199,12 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberChangeService containing Copy Number Change
             Variation and warnings
         """
-        validation_summary, warnings = self._get_validation_summary(hgvs_expr)
+        validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
         cx_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover,
-            validation_summary, warnings, untranslatable_returns_text
+            validation_summary, warnings,
+            untranslatable_returns_text=untranslatable_returns_text,
+            copy_change=copy_change
         )
 
         return HgvsToCopyNumberChangeService(

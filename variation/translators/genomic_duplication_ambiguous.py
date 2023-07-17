@@ -134,7 +134,7 @@ class GenomicDuplicationAmbiguous(Translator):
             ).as_dict()
             outer_coords = (pos0, pos2)
 
-        seq_id = self.translate_sequence_identifier(ac, errors)
+        seq_id = self.translate_sequence_identifier(ac, warnings)
         if not seq_id:
             return None
 

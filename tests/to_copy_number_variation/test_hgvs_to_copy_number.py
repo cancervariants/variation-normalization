@@ -1291,11 +1291,11 @@ async def test_invalid_cnv(test_cnv_handler):
                                   "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.copy_number_change.type == "Text"
 
-    q = "braf v600e"
+    q = "braf V600E"
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True)
-    assert set(resp.warnings) == {"Unable to translate braf v600e to copy number variation",  # noqa: E501
-                                  "braf v600e is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
+    assert set(resp.warnings) == {"Unable to translate braf V600E to copy number variation",  # noqa: E501
+                                  "braf V600E is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.copy_number_change is None
 
     # Not yet supported
@@ -1304,6 +1304,5 @@ async def test_invalid_cnv(test_cnv_handler):
         resp = await test_cnv_handler.hgvs_to_copy_number_change(
             q, copy_change="efo:0030070"
         )
-        assert resp.warnings == ["Unable to find valid result for classifications: "
-                                 "{'genomic duplication'}"], q
+        assert resp.warnings == [f"Unable to find classification for: {q}"], q
         assert resp.copy_number_change is None, q
