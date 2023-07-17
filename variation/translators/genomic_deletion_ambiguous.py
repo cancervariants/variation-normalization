@@ -158,6 +158,9 @@ class GenomicDeletionAmbiguous(Translator):
             )
 
         if vrs_variation:
-            return TranslationResult(vrs_variation=vrs_variation, vrs_seq_loc_ac=ac)
+            return TranslationResult(
+                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
+                og_ac=validation_result.accession
+            )
         else:
             return None

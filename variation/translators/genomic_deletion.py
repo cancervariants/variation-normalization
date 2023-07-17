@@ -155,7 +155,8 @@ class GenomicDeletion(Translator):
         if vrs_variation:
             return TranslationResult(
                 vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
-                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
+                og_ac=validation_result.accession
             )
         else:
             return None

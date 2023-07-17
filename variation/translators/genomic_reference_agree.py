@@ -82,7 +82,8 @@ class GenomicReferenceAgree(Translator):
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
                 vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
-                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
+                og_ac=validation_result.accession
             )
         else:
             return None

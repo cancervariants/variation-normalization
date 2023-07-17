@@ -11,13 +11,13 @@ class TranslationResult(BaseModel):
     vrs_variation: Optional[Dict]
     vrs_seq_loc_ac: Optional[StrictStr]
     vrs_seq_loc_ac_status: StrictStr = "na"
+    og_ac: Optional[StrictStr]
 
 
-# Used to sort translation results
-SORT_AC_ORDER = {
-    TranscriptPriorityLabel.MANESelect.value: 0,
-    TranscriptPriorityLabel.MANEPlusClinical.value: 1,
-    TranscriptPriorityLabel.LongestCompatibleRemaining.value: 2,
-    "GRCh38": 3,
-    "na": 4
-}
+AC_PRIORITY_LABELS = [
+    TranscriptPriorityLabel.MANESelect.value,
+    TranscriptPriorityLabel.MANEPlusClinical.value,
+    TranscriptPriorityLabel.LongestCompatibleRemaining.value,
+    "GRCh38",
+    "na"
+]

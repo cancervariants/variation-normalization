@@ -1,12 +1,12 @@
 """Module for representing VRSATILE objects"""
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
 from variation.schemas.classification_response_schema import ClassificationType
 
 from variation.to_vrs import ToVRS
-from variation.schemas.token_response_schema import GeneToken, TokenType
+from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.translation_response_schema import TranslationResult
 

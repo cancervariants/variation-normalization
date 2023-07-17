@@ -1,10 +1,11 @@
 """Module for Variation Normalization."""
-from typing import Optional
+from typing import Optional, List
 from urllib.parse import quote, unquote
 from datetime import datetime
 
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.schemas import TranscriptPriorityLabel
 
 from variation.classifiers.classify import Classify
 from variation.to_vrsatile import ToVRSATILE
@@ -17,6 +18,7 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import CopyChange
+from variation.schemas.translation_response_schema import TranslationResult, AC_PRIORITY_LABELS
 from variation.version import __version__
 
 
@@ -42,6 +44,42 @@ class Normalize(ToVRSATILE):
         super().__init__(seqrepo_access, tokenizer, classifier, validator,
                          translator, hgvs_dup_del_mode, gene_normalizer)
         self.uta = uta
+
+    @staticmethod
+    def _get_priority_translation_result(
+        translations: List[TranslationResult], ac_status: str
+    ) -> Optional[TranslationResult]:
+        preferred_translations = [
+            t for t in translations
+            if t.vrs_seq_loc_ac_status == ac_status
+        ]
+        len_preferred_translations = len(preferred_translations)
+
+        # Need to handle cases where there are multiple translations.
+        # Different `og_ac`'s can lead to different translation results.
+        # We must be consistent in what we return in /normalize
+        if len_preferred_translations > 1:
+            og_ac_preferred_match = (
+                [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac] or [None]  # noqa: E501
+            )[0]
+
+            # We'll first see if `og_ac` (starting ac) matches the `ac_status`
+            # accession. If that doesn't match, we'll just sort the original
+            # acs and return the first element. Later on, we'll want to figure
+            # out a better way to do this.
+            if og_ac_preferred_match:
+                translation_result = og_ac_preferred_match
+            else:
+                preferred_translations.sort(
+                    key=lambda t: t.og_ac, reverse=True
+                )
+                translation_result = translations[0]
+        elif len_preferred_translations == 1:
+            translation_result = translations[0]
+        else:
+            translation_result = None
+
+        return translation_result
 
     async def normalize(
         self, q: str,
@@ -132,7 +170,14 @@ class Normalize(ToVRSATILE):
                 do_liftover=True
             )
             if translations:
-                translation_result = translations[0]
+                # TODO: We should only do this for FREE TEXT
+                for ac_status in AC_PRIORITY_LABELS:
+                    translation_result = self._get_priority_translation_result(
+                        translations, ac_status
+                    )
+                    if translation_result:
+                        break
+
                 valid_result = validation_summary.valid_results[0]
                 vd, warnings = self.get_variation_descriptor(
                     label, translation_result, valid_result, _id, warnings
