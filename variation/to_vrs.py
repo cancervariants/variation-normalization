@@ -15,11 +15,10 @@ from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import VALID_CLASSIFICATION_TYPES,\
-    CopyChange
+from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
-from variation.schemas.token_response_schema import TokenType
 from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.translation_response_schema import SORT_AC_ORDER
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
@@ -84,8 +83,12 @@ class ToVRS(VRSRepresentation):
             if result and result not in translations:
                 translations.append(result)
 
-        if not translations and not warnings:
-            warnings.append("Unable to validate variation")
+        if translations:
+            # sort based on mane select, mane plus clinical, longest compatible
+            translations.sort(key=lambda t: SORT_AC_ORDER[t.vrs_seq_loc_ac_status])
+        else:
+            if not warnings:
+                warnings.append("Unable to validate variation")
 
         return translations, warnings
 

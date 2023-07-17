@@ -38,6 +38,7 @@ class GenomicDelIns(Translator):
         classification: GenomicDelInsClassification = validation_result.classification
         vrs_allele = None
         vrs_seq_loc_ac = None
+        vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
@@ -49,6 +50,7 @@ class GenomicDelIns(Translator):
 
             if mane:
                 vrs_seq_loc_ac = mane["refseq"]
+                vrs_seq_loc_ac_status = mane["status"]
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
                     CoordinateType.LINEAR_GENOMIC, AltType.DELINS, warnings,
@@ -64,7 +66,8 @@ class GenomicDelIns(Translator):
 
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status
             )
         else:
             return None

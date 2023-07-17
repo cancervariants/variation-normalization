@@ -39,6 +39,7 @@ class GenomicReferenceAgree(Translator):
         classification: GenomicReferenceAgreeClassification = validation_result.classification  # noqa: E501
         vrs_allele = None
         vrs_seq_loc_ac = None
+        vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
             gene = classification.gene_token.token if classification.gene_token else None  # noqa: E501
@@ -50,6 +51,8 @@ class GenomicReferenceAgree(Translator):
             )
 
             if mane:
+                vrs_seq_loc_ac_status = mane["status"]
+
                 if gene:
                     classification = CdnaReferenceAgreeClassification(
                         matching_tokens=classification.matching_tokens,
@@ -78,7 +81,8 @@ class GenomicReferenceAgree(Translator):
 
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac
+                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status
             )
         else:
             return None

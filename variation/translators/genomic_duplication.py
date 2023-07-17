@@ -42,6 +42,7 @@ class GenomicDuplication(Translator):
         # First will translate valid result to VRS Allele
         classification: GenomicDuplicationClassification = validation_result.classification  # noqa: E501
         vrs_variation = None
+        vrs_seq_loc_ac_status = "na"
 
         # TODO: Clean this up
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
@@ -107,6 +108,7 @@ class GenomicDuplication(Translator):
             if mane:
                 # mane is 0 - based, but we are using residue
                 ac = mane["refseq"]
+                vrs_seq_loc_ac_status = mane["status"]
                 pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
                 pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
                 classification.molecule_context = MoleculeContext.TRANSCRIPT
@@ -146,7 +148,8 @@ class GenomicDuplication(Translator):
 
         if vrs_variation:
             return TranslationResult(
-                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac
+                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status
             )
         else:
             return None
