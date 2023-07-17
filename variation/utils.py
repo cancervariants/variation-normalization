@@ -9,14 +9,9 @@ from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from cool_seq_tool.data_sources import SeqRepoAccess
 
-from variation.schemas.classification_response_schema import (
-    AmbiguousType, ClassificationType
-)
+from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import Token, GnomadVcfToken
-from variation.schemas.validation_response_schema import (
-    ValidationSummary, ValidationResult
-)
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
@@ -30,34 +25,6 @@ def no_variation_entered() -> Tuple[None, List[str]]:
     """
     warnings = ["No variation was entered to normalize"]
     return None, warnings
-
-
-# TODO: This should be removed
-def get_mane_valid_result(q: str, validations: ValidationSummary,
-                          warnings: List) -> ValidationResult:
-    """Get valid result from ValidationSummary
-
-    :param str q: Query string
-    :param ValidationSummary validations: Validation summary for query
-    :param List warnings: List of warnings
-    :return: Valid Validation Result
-    """
-    # For now, only use first valid result
-    valid_result = None
-    if validations and validations.valid_results:
-        for r in validations.valid_results:
-            if r.is_mane_transcript and r.variation:
-                valid_result = r
-                break
-    if not valid_result:
-        if validations and validations.valid_results:
-            valid_result = validations.valid_results[0]
-            classification_type = valid_result.classification.classification_type
-            if classification_type != ClassificationType.AMPLIFICATION:
-                # Amplification does not try to lift over to MANE
-                warning = f"Unable to find MANE Transcript for {q}."
-                warnings.append(warning)
-    return valid_result
 
 
 def no_variation_resp(

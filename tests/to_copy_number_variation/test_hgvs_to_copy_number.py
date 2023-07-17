@@ -1269,33 +1269,19 @@ async def test_genomic_del6_copy_number_change(test_cnv_handler, genomic_del6_cx
 
 
 @pytest.mark.asyncio
-async def test_invalid_cnv_parameters(test_cnv_handler):
-    """Check that invalid parameters return warnings"""
-    q = "NC_000006.11:g.133783902_(133785996_?)del"
-    resp, w = await test_cnv_handler.hgvs_to_copy_number_change(
-        q, copy_change="low-level gain", do_liftover=True)
-    assert resp is None
-    assert w == ["low-level gain is not a valid copy change: ['efo:0030069', "
-                 "'efo:0020073', 'efo:0030068', 'efo:0030067', 'efo:0030064', "
-                 "'efo:0030070', 'efo:0030071', 'efo:0030072']"]
-
-
-@pytest.mark.asyncio
 async def test_invalid_cnv(test_cnv_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True,
         untranslatable_returns_text=True)
-    assert set(resp.warnings) == {"Unable to translate DAG1 g.49568695dup to copy number variation",  # noqa: E501
-                                  "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
+    assert set(resp.warnings) == {"DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.copy_number_change.type == "Text"
 
     q = "braf V600E"
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True)
-    assert set(resp.warnings) == {"Unable to translate braf V600E to copy number variation",  # noqa: E501
-                                  "braf V600E is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
+    assert set(resp.warnings) == {"braf V600E is not a supported HGVS genomic duplication or deletion"}  # noqa: E501
     assert resp.copy_number_change is None
 
     # Not yet supported

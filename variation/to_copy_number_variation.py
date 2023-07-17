@@ -14,7 +14,7 @@ from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import TokenType
 from variation.schemas.hgvs_to_copy_number_schema import (
-    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, VALID_COPY_CHANGE,
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService,
     VALID_CLASSIFICATION_TYPES
 )
 from variation.schemas.service_schema import AmplificationToCxVarQuery, \
@@ -23,7 +23,7 @@ from variation.schemas.service_schema import AmplificationToCxVarQuery, \
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
-from variation.utils import get_mane_valid_result, get_priority_sequence_location
+from variation.utils import get_priority_sequence_location
 from variation.version import __version__
 
 
@@ -117,27 +117,19 @@ class ToCopyNumberVariation(ToVRS):
         :return: CopyNumberVariation and warnings
         """
         variation = None
-        if do_liftover:
-            valid_result = get_mane_valid_result(hgvs_expr, validations, [])
-            if valid_result:
-                variation = valid_result.variation
+        if validations:
+            if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+                endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
             else:
-                warnings.append(f"Unable to translate {hgvs_expr} to "
-                                f"copy number variation")
-        else:
-            if validations:
-                if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
-                    endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
-                else:
-                    endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
+                endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
 
-                translations, warnings = await self.get_translations(
-                    validations, warnings, hgvs_dup_del_mode=copy_number_type,
-                    endpoint_name=endpoint_name, copy_change=copy_change,
-                    baseline_copies=baseline_copies
-                )
-                if translations:
-                    variation = translations[0].vrs_variation
+            translations, warnings = await self.get_translations(
+                validations, warnings, hgvs_dup_del_mode=copy_number_type,
+                endpoint_name=endpoint_name, copy_change=copy_change,
+                baseline_copies=baseline_copies, do_liftover=do_liftover
+            )
+            if translations:
+                variation = translations[0].vrs_variation
 
         if not variation:
             if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:
