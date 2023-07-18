@@ -1,8 +1,10 @@
 """Test that parsed_to_copy_number works correctly"""
+from copy import deepcopy
+
 import pytest
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import (
-    CopyNumberCount, CopyNumberChange, CopyChange, VRSTypes
+    CopyNumberCount, CopyNumberChange, CopyChange, VRSTypes, Comparator
 )
 from pydantic.error_wrappers import ValidationError
 
@@ -452,7 +454,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
     """Test that parsed_to_copy_number works for parsed copy number gain queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
     rb = ParsedToCnVarQuery(
-        start0=143134063, end0=143284670, total_copies=3,
+        start0=143134063, end0=143284670, copies0=3,
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -461,7 +463,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=143134063, end0=143284670, total_copies=3, assembly=ClinVarAssembly.HG19,
+        start0=143134063, end0=143284670, copies0=3, assembly=ClinVarAssembly.HG19,
         chromosome="chr1", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -470,7 +472,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=143134063, end0=143284670, total_copies=3, accession="NC_000001.10",
+        start0=143134063, end0=143284670, copies0=3, accession="NC_000001.10",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -480,7 +482,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     # 38
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.GRCH38,
+        start0=31738809, end0=32217725, copies0=2, assembly=ClinVarAssembly.GRCH38,
         chromosome="chr15", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -490,7 +492,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 38 with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.GRCH38,
+        start0=31738809, end0=32217725, copies0=2, assembly=ClinVarAssembly.GRCH38,
         chromosome="chr15", do_liftover=True, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -500,7 +502,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 38 with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.HG38,
+        start0=31738809, end0=32217725, copies0=2, assembly=ClinVarAssembly.HG38,
         chromosome="chr15", do_liftover=True, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -510,7 +512,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 38
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, assembly=ClinVarAssembly.HG38,
+        start0=31738809, end0=32217725, copies0=2, assembly=ClinVarAssembly.HG38,
         chromosome="chr15", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -520,7 +522,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 38 accession
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, accession="NC_000015.10",
+        start0=31738809, end0=32217725, copies0=2, accession="NC_000015.10",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -529,7 +531,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 38 accession with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
-        start0=31738809, end0=32217725, total_copies=2, accession="NC_000015.10",
+        start0=31738809, end0=32217725, copies0=2, accession="NC_000015.10",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -538,7 +540,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 37 with liftover
     rb = ParsedToCnVarQuery(
-        start0=32031012, end0=32509926, total_copies=2, accession="NC_000015.9",
+        start0=32031012, end0=32509926, copies0=2, accession="NC_000015.9",
         start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE, do_liftover=True
     )
@@ -548,7 +550,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 37 chr+accession with liftover
     rb = ParsedToCnVarQuery(
-        start0=32031012, end0=32509926, total_copies=2, chromosome="chr15",
+        start0=32031012, end0=32509926, copies0=2, chromosome="chr15",
         assembly=ClinVarAssembly.GRCH37, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE, do_liftover=True
     )
@@ -558,7 +560,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 37 with no liftover
     rb = ParsedToCnVarQuery(
-        start0=32031012, end0=32509926, total_copies=2, accession="NC_000015.9",
+        start0=32031012, end0=32509926, copies0=2, accession="NC_000015.9",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -567,7 +569,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
 
     # 37 chr+accession with no liftover
     rb = ParsedToCnVarQuery(
-        start0=32031012, end0=32509926, total_copies=2, chromosome="chr15",
+        start0=32031012, end0=32509926, copies0=2, chromosome="chr15",
         assembly=ClinVarAssembly.GRCH37, start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -581,7 +583,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     """Test that parsed_to_copy_number works for parsed copy number loss queries"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/1299222/?new_evidence=true
     rb = ParsedToCnVarQuery(
-        start0=10491132, end0=10535643, total_copies=1, assembly=ClinVarAssembly.GRCH37,
+        start0=10491132, end0=10535643, copies0=1, assembly=ClinVarAssembly.GRCH37,
         chromosome="chrX", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -590,7 +592,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=10491132, end0=10535643, total_copies=1, assembly=ClinVarAssembly.HG19,
+        start0=10491132, end0=10535643, copies0=1, assembly=ClinVarAssembly.HG19,
         chromosome="chrX", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -599,7 +601,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=10491132, end0=10535643, total_copies=1, accession="NC_000023.10",
+        start0=10491132, end0=10535643, copies0=1, accession="NC_000023.10",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -608,7 +610,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/148425/?new_evidence=true
     rb = ParsedToCnVarQuery(
-        start0=10001, end0=1223133, total_copies=0, assembly=ClinVarAssembly.GRCH38,
+        start0=10001, end0=1223133, copies0=0, assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -617,7 +619,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=10001, end0=1223133, total_copies=0, assembly=ClinVarAssembly.HG38,
+        start0=10001, end0=1223133, copies0=0, assembly=ClinVarAssembly.HG38,
         chromosome="chrY", start_pos_type=VRSTypes.INDEFINITE_RANGE,
         end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
@@ -626,7 +628,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1,
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
-        start0=10001, end0=1223133, total_copies=0, accession="NC_000024.10",
+        start0=10001, end0=1223133, copies0=0, accession="NC_000024.10",
         start_pos_type=VRSTypes.INDEFINITE_RANGE, end_pos_type=VRSTypes.INDEFINITE_RANGE
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -640,12 +642,56 @@ def test_to_parsed_cn_var(
     """Test that parsed_to_copy_number works correctly for copy number count"""
     # start uses definite and end uses number
     rb = ParsedToCnVarQuery(
-        start0=143134063, end0=143284670, total_copies=3,
+        start0=143134063, end0=143284670, copies0=3,
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.dict() == cn_definite_number.dict()
+    assert resp.warnings == []
+
+    # copies is definite range
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, copies0=3, copies1=5,
+        copies_type=VRSTypes.DEFINITE_RANGE,
+        assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
+        start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    expected = deepcopy(cn_definite_number.dict())
+    expected["copies"] = {"type": "DefiniteRange", "min": 3, "max": 5}
+    expected["id"] = "ga4gh:CN.abS9SjAfusSTVgdX3kIUOGV8q8bmr5uO"
+    assert resp.copy_number_count.dict() == expected
+    assert resp.warnings == []
+
+    # copies is indefinite range <=
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, copies0=3,
+        copies_comparator=Comparator.LT_OR_EQUAL,
+        copies_type=VRSTypes.INDEFINITE_RANGE,
+        assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
+        start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    expected = deepcopy(cn_definite_number.dict())
+    expected["copies"] = {"type": "IndefiniteRange", "comparator": "<=", "value": 3}
+    expected["id"] = "ga4gh:CN.2aMndMYx2uVCN-XcG-uLimeXkRRHGDCs"
+    assert resp.copy_number_count.dict() == expected
+    assert resp.warnings == []
+
+    # copies is indefinite range >=
+    rb = ParsedToCnVarQuery(
+        start0=143134063, end0=143284670, copies0=3,
+        copies_comparator=Comparator.GT_OR_EQUAL,
+        copies_type=VRSTypes.INDEFINITE_RANGE,
+        assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
+        start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
+    )
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
+    expected = deepcopy(cn_definite_number.dict())
+    expected["copies"] = {"type": "IndefiniteRange", "comparator": ">=", "value": 3}
+    expected["id"] = "ga4gh:CN.UDIZLBzw7TiaM7Q7Ani4BPoWyVbstlKu"
+    assert resp.copy_number_count.dict() == expected
     assert resp.warnings == []
 
 
@@ -806,3 +852,23 @@ def test_invalid(test_cnv_handler):
             start_pos_type=VRSTypes.DEFINITE_RANGE
         )
     assert "`start1` is required for definite ranges" in str(e.value)
+
+    # copies1 not provided when copies_type is DefiniteRange
+    with pytest.raises(ValidationError) as e:
+        ParsedToCnVarQuery(
+            start0=143134063, end0=143284670, copies0=3,
+            copies_type=VRSTypes.DEFINITE_RANGE, assembly=ClinVarAssembly.GRCH37,
+            chromosome="chr1", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+            end_pos_type=VRSTypes.INDEFINITE_RANGE
+        )
+    assert "`copies1` must be provided for `copies_type == DefiniteRange`" in str(e.value)  # noqa: E501
+
+    # copies_comparator not provided when copies_type is IndefiniteRange
+    with pytest.raises(ValidationError) as e:
+        ParsedToCnVarQuery(
+            start0=143134063, end0=143284670, copies0=3,
+            copies_type=VRSTypes.INDEFINITE_RANGE, assembly=ClinVarAssembly.GRCH37,
+            chromosome="chr1", start_pos_type=VRSTypes.INDEFINITE_RANGE,
+            end_pos_type=VRSTypes.INDEFINITE_RANGE
+        )
+    assert "`copies_comparator` must be provided for `copies_type == IndefiniteRange`" in str(e.value)  # noqa: E501

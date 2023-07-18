@@ -534,10 +534,28 @@ class ToCopyNumberVariation(ToVRS):
                 )
                 variation = CopyNumberChange(**variation)
             else:
+                if request_body.copies_type == VRSTypes.NUMBER:
+                    copies = {
+                        "value": request_body.copies0,
+                        "type": "Number"
+                    }
+                elif request_body.copies_type == VRSTypes.DEFINITE_RANGE:
+                    copies = {
+                        "min": request_body.copies0,
+                        "max": request_body.copies1,
+                        "type": "DefiniteRange"
+                    }
+                else:
+                    copies = {
+                        "value": request_body.copies0,
+                        "comparator": request_body.copies_comparator.value,
+                        "type": "IndefiniteRange"
+                    }
+
                 variation = {
                     "type": "CopyNumberCount",
                     "subject": seq_loc,
-                    "copies": {"value": request_body.total_copies, "type": "Number"}
+                    "copies": copies
                 }
                 variation["id"] = ga4gh_identify(
                     models.CopyNumberCount(**variation)

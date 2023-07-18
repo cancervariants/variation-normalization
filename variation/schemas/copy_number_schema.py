@@ -3,10 +3,12 @@ import re
 from enum import Enum
 from typing import Optional, Union, Dict, Any, Type, Literal
 
-from pydantic import BaseModel, StrictStr, root_validator, StrictInt, StrictBool
+from pydantic import BaseModel, StrictStr, root_validator, StrictInt, StrictBool, Field
 from pydantic.main import ModelMetaclass
-from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
-    SequenceLocation, CopyNumberChange, CopyChange, VRSTypes
+from ga4gh.vrsatile.pydantic.vrs_models import (
+    CopyNumberCount, Text, SequenceLocation, CopyNumberChange, CopyChange, VRSTypes,
+    Comparator
+)
 
 from variation.version import __version__
 from variation.schemas.normalize_response_schema import ServiceResponse
@@ -26,21 +28,64 @@ class ClinVarAssembly(str, Enum):
 class ParsedToCopyNumberQuery(BaseModel):
     """Define base model for parsed to copy number queries"""
 
-    assembly: Optional[ClinVarAssembly] = None
-    chromosome: Optional[StrictStr] = None
-    accession: Optional[StrictStr] = None
-    start0: StrictInt
-    end0: StrictInt
+    assembly: Optional[ClinVarAssembly] = Field(
+        None,
+        description=("Assembly. Ignored, along with `chromosome`, if `accession` is "
+                     "provided.")
+    )
+    chromosome: Optional[StrictStr] = Field(
+        None,
+        description=("Chromosome. Must contain `chr` prefix, i.e. 'chr7'. Must provide "
+                     "when `assembly` is provided.")
+    )
+    accession: Optional[StrictStr] = Field(
+        None,
+        description=("Genomic RefSeq accession. If `accession` is provided, will "
+                     "ignore `assembly` and `chromosome`. If `accession` is not "
+                     "provided, must provide both `assembly` and `chromosome`.")
+    )
+    start0: StrictInt = Field(
+        ...,
+        description=("Start position (residue coords). If `start_pos_type` is a "
+                     "Definite Range, this will be the min start position.")
+    )
+    end0: StrictInt = Field(
+        ...,
+        description=("End position (residue coords). If `end_pos_type` is a definite "
+                     "range, this will be the min end position.")
+    )
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ] = VRSTypes.NUMBER
+    ] = Field(
+        VRSTypes.NUMBER,
+        description="The type of the start value in the VRS SequenceLocation"
+    )
     end_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ] = VRSTypes.NUMBER
-    start1: Optional[StrictInt]
-    end1: Optional[StrictInt]
-    do_liftover: StrictBool = False
-    untranslatable_returns_text: StrictBool = False
+    ] = Field(
+        VRSTypes.NUMBER,
+        description="Type of the end value in the VRS SequenceLocation"
+    )
+    start1: Optional[StrictInt] = Field(
+        None,
+        description=("Only provided when `start_pos_type` is a Definite Range, this "
+                     "will be the max start position.")
+    )
+    end1: Optional[StrictInt] = Field(
+        None,
+        description=("Only provided when `end_pos_type` is a Definite Range, this "
+                     "will be the max end position.")
+    )
+    do_liftover: StrictBool = Field(
+        False,
+        description="Whether or not to liftover to GRCh38 assembly"
+    )
+    untranslatable_returns_text: StrictBool = Field(
+        False,
+        description=("When set to `True`, return VRS Text Object when unable to "
+                     "translate or normalize query. When set to `False`, return `None` "
+                     "when unable to translate or normalize query.")
+    )
 
     @root_validator(pre=False, skip_on_failure=True)
     def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
@@ -48,7 +93,7 @@ class ParsedToCopyNumberQuery(BaseModel):
         - `accession` or both `assembly` and `chromosome` must be provided
         - `start1` is required when `start_pos_type` is a definite
         range.
-        - `end1` is required when `end_pos_type` is a definite range.
+        - `end1` is required when `end_pos_type` is a Definite Range.
         - End positions must be greater than start positions
         """
         ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
@@ -85,7 +130,47 @@ class ParsedToCopyNumberQuery(BaseModel):
 class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
     """Define query for parsed to copy number count variation endpoint"""
 
-    total_copies: StrictInt
+    copies0: StrictInt = Field(
+        ...,
+        description=("Number of copies. When `copies_type` is a Number or Indefinite "
+                     "Range, this will be the `value` for copies. When `copies_type` "
+                     "is a Definite Range, this will be the `min` copies.")
+    )
+    copies1: Optional[StrictInt] = Field(
+        None,
+        description=("Must provide when `copies_type` is a Definite Range. This will "
+                     "be the `max` copies.")
+    )
+    copies_type: Literal[
+        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
+    ] = Field(
+        VRSTypes.NUMBER,
+        description="Type for the `copies` in the `subject`"
+    )
+    copies_comparator: Optional[Comparator] = Field(
+        None,
+        description=("Must provide when `copies_type` is an Indefinite Range. "
+                     "Indicates which direction the range is indefinite.")
+    )
+
+    @root_validator(pre=False, skip_on_failure=True)
+    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+        """Validate fields.
+
+        - `copies1` should exist when `copies_type == VRSTypes.DEFINITE_RANGE`
+        - `copies_comparator` should exist when
+            `copies_type == VRSTypes.INDEFINITE_RANGE`
+        """
+        copies1 = v.get("copies1")
+        copies_type = v.get("copies_type")
+        copies_comparator = v.get("copies_comparator")
+
+        if copies_type == VRSTypes.DEFINITE_RANGE:
+            assert copies1, "`copies1` must be provided for `copies_type == DefiniteRange`"  # noqa: E501
+        elif copies_type == VRSTypes.INDEFINITE_RANGE:
+            assert copies_comparator, "`copies_comparator` must be provided for `copies_type == IndefiniteRange`"  # noqa: E501
+
+        return v
 
     class Config:
         """Configure model."""
@@ -104,7 +189,10 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
                 "accession": None,
                 "start0": 143134063,
                 "end0": 143284670,
-                "total_copies": 3,
+                "copies0": 3,
+                "copies1": None,
+                "copies_comparator": None,
+                "copies_type": "Number",
                 "start_pos_type": "IndefiniteRange",
                 "end_pos_type": "IndefiniteRange",
                 "start1": None,
