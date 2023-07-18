@@ -25,6 +25,50 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
+def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+    """Validate base copy number query fields
+    - `accession` or both `assembly` and `chromosome` must be provided
+    - `start1` is required when `start_pos_type` is a definite
+    range.
+    - `end1` is required when `end_pos_type` is a Definite Range.
+    - `start_pos_comparator` is required when `start_pos_type` is an Indefinite
+        Range
+    - `end_pos_comparator` is required when `end_pos_type` is an Indefinite Range
+    - End positions must be greater than start positions
+    """
+    ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
+    assembly = v.get("assembly")
+    chromosome = v.get("chromosome")
+    assembly_chr_set = assembly and chromosome
+    assert v.get("accession") or assembly_chr_set, ac_assembly_chr_msg  # noqa: E501
+
+    if assembly_chr_set:
+        pattern = r"^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$"
+        assert re.match(pattern, chromosome), f"`chromosome`, {chromosome}, does not match r'{pattern}'"  # noqa: E501
+
+    start0 = v["start0"]
+    start1 = v.get("start1")
+    if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
+        assert start1 is not None, "`start1` is required for definite ranges"
+        assert start1 > start0, "`start0` must be less than `start1`"
+    elif v["start_pos_type"] == VRSTypes.INDEFINITE_RANGE:
+        assert v.get("start_pos_comparator"), "`start_pos_comparator` is required for indefinite ranges"  # noqa: E501
+
+    end0 = v["end0"]
+    end1 = v.get("end1")
+    if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
+        assert end1 is not None, "`end1` is required for definite ranges"
+        assert end1 > end0, "`end0` must be less than `end1`"
+    elif v["end_pos_type"] == VRSTypes.INDEFINITE_RANGE:
+        assert v.get("end_pos_comparator"), "`end_pos_comparator` is required for indefinite ranges"  # noqa: E501
+
+    err_msg = "end positions must be greater than start"
+    if start1 is None:
+        assert end0 > start0, err_msg
+    else:
+        assert end0 > start1, err_msg
+
+
 class ParsedToCopyNumberQuery(BaseModel):
     """Define base model for parsed to copy number queries"""
 
@@ -53,6 +97,18 @@ class ParsedToCopyNumberQuery(BaseModel):
         ...,
         description=("End position (residue coords). If `end_pos_type` is a definite "
                      "range, this will be the min end position.")
+    )
+    start_pos_comparator: Optional[Comparator] = Field(
+        None,
+        description=("Must provide when `start_pos_type` is an Indefinite Range. "
+                     "Indicates which direction the range is indefinite. To represent "
+                     "(#_?), set to '<='. To represent (?_#), set to '>='.")
+    )
+    end_pos_comparator: Optional[Comparator] = Field(
+        None,
+        description=("Must provide when `end_pos_type` is an Indefinite Range. "
+                     "Indicates which direction the range is indefinite. To represent "
+                     "(#_?), set to '<='. To represent (?_#), set to '>='.")
     )
     start_pos_type: Literal[
         VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
@@ -86,45 +142,6 @@ class ParsedToCopyNumberQuery(BaseModel):
                      "translate or normalize query. When set to `False`, return `None` "
                      "when unable to translate or normalize query.")
     )
-
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
-        """Validate fields.
-        - `accession` or both `assembly` and `chromosome` must be provided
-        - `start1` is required when `start_pos_type` is a definite
-        range.
-        - `end1` is required when `end_pos_type` is a Definite Range.
-        - End positions must be greater than start positions
-        """
-        ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
-        assembly = v.get("assembly")
-        chromosome = v.get("chromosome")
-        assembly_chr_set = assembly and chromosome
-        assert v.get("accession") or assembly_chr_set, ac_assembly_chr_msg  # noqa: E501
-
-        if assembly_chr_set:
-            pattern = r"^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$"
-            assert re.match(pattern, chromosome), f"`chromosome`, {chromosome}, does not match r'{pattern}'"  # noqa: E501
-
-        start0 = v["start0"]
-        start1 = v.get("start1")
-        if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
-            assert start1 is not None, "`start1` is required for definite ranges"
-            assert start1 > start0, "`start0` must be less than `start1`"
-
-        end0 = v["end0"]
-        end1 = v.get("end1")
-        if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
-            assert end1 is not None, "`end1` is required for definite ranges"
-            assert end1 > end0, "`end0` must be less than `end1`"
-
-        err_msg = "end positions must be greater than start"
-        if start1 is None:
-            assert end0 > start0, err_msg
-        else:
-            assert end0 > start1, err_msg
-
-        return v
 
 
 class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
@@ -161,6 +178,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         - `copies_comparator` should exist when
             `copies_type == VRSTypes.INDEFINITE_RANGE`
         """
+        validate_parsed_fields(cls, v)
         copies1 = v.get("copies1")
         copies_type = v.get("copies_type")
         copies_comparator = v.get("copies_comparator")
@@ -193,6 +211,8 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
                 "copies1": None,
                 "copies_comparator": None,
                 "copies_type": "Number",
+                "start_pos_comparator": None,
+                "end_pos_comparator": None,
                 "start_pos_type": "IndefiniteRange",
                 "end_pos_type": "IndefiniteRange",
                 "start1": None,
@@ -252,6 +272,12 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
     """Define query for parsed to copy number change variation endpoint"""
 
     copy_change: CopyChange
+
+    @root_validator(pre=False, skip_on_failure=True)
+    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+        """Validate fields"""
+        validate_parsed_fields(cls, v)
+        return v
 
     class Config:
         """Configure model."""

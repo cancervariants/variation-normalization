@@ -3,7 +3,7 @@ from typing import Tuple, Optional, List, Union, Dict, Literal, NamedTuple
 from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
-    Text, CopyChange, VRSTypes
+    Text, CopyChange, VRSTypes, Comparator
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
@@ -327,7 +327,8 @@ class ToCopyNumberVariation(ToVRS):
         pos_type: Literal[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
-        is_start: bool = True, pos1: Optional[int] = None
+        is_start: bool = True, pos1: Optional[int] = None,
+        comparator: Optional[Comparator] = None
     ) -> Union[models.Number, models.DefiniteRange, models.IndefiniteRange]:
         """Get VRS Sequence Location start and end values
 
@@ -339,6 +340,9 @@ class ToCopyNumberVariation(ToVRS):
             position(s) describing VRS end value
         :param pos1: Only set when end is a definite range, this will be the max end
             position
+        :param comparator: Must provide when `pos_type` is an Indefinite Range.
+            Indicates which direction the range is indefinite. To represent (#_?), set
+            to '<='. To represent (?_#), set to '>='.
         :raises ToCopyNumberException: If position is not valid on accession when
             using definite range
         :return: VRS start or end value for sequence location
@@ -358,7 +362,7 @@ class ToCopyNumberVariation(ToVRS):
             )
         else:
             vrs_val = models.IndefiniteRange(
-                comparator="<=" if is_start else ">=",
+                comparator=comparator.value,
                 value=pos0 - 1 if is_start else pos0,
                 type="IndefiniteRange"
             )
@@ -375,7 +379,9 @@ class ToCopyNumberVariation(ToVRS):
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
         start1: Optional[int] = None, end1: Optional[int] = None,
-        liftover_pos: bool = False
+        liftover_pos: bool = False,
+        start_pos_comparator: Optional[Comparator] = None,
+        end_pos_comparator: Optional[Comparator] = None
     ) -> Tuple[Optional[Dict], Optional[str]]:
         """Get sequence location for parsed components. Accession will be validated.
 
@@ -392,6 +398,12 @@ class ToCopyNumberVariation(ToVRS):
         :param end1: Only set when end is a definite range, this will be the max end
             position
         :param liftover_pos: Whether or not to liftover positions
+        :param start_pos_comparator: Must provide when `start_pos_type` is an Indefinite
+            Range. Indicates which direction the range is indefinite. To represent
+            (#_?), set to '<='. To represent (?_#), set to '>='.
+        :param end_pos_comparator: Must provide when `end_pos_type` is an Indefinite
+            Range. Indicates which direction the range is indefinite. To represent
+            (#_?), set to '<='. To represent (?_#), set to '>='.
         :raises ToCopyNumberException: If error lifting over positions, translating
             accession, positions not valid on accession,
         :return: Tuple containing VRS sequence location represented as dict (if valid)
@@ -420,11 +432,13 @@ class ToCopyNumberVariation(ToVRS):
             self._validate_ac_pos(accession, pos)
 
         start_vrs = self._get_vrs_loc_start_or_end(
-            accession, start0, start_pos_type, is_start=True, pos1=start1
+            accession, start0, start_pos_type, is_start=True, pos1=start1,
+            comparator=start_pos_comparator
         )
 
         end_vrs = self._get_vrs_loc_start_or_end(
-            accession, end0, end_pos_type, is_start=False, pos1=end1
+            accession, end0, end_pos_type, is_start=False, pos1=end1,
+            comparator=end_pos_comparator
         )
 
         seq_loc = models.SequenceLocation(
@@ -518,6 +532,8 @@ class ToCopyNumberVariation(ToVRS):
                 accession, chromosome, request_body.start0, request_body.start_pos_type,
                 request_body.end0, request_body.end_pos_type,
                 start1=request_body.start1, end1=request_body.end1,
+                start_pos_comparator=request_body.start_pos_comparator,
+                end_pos_comparator=request_body.end_pos_comparator,
                 liftover_pos=request_body.do_liftover and lifted_over
             )
         except ToCopyNumberException as e:
