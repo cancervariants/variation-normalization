@@ -657,9 +657,10 @@ def test_to_parsed_cn_var(
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
     )
-    resp == test_cnv_handler.parsed_to_copy_number(rb)
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] == {"type": "DefiniteRange", "min": 3, "max": 5}
+    expected["copies"] = {"type": "DefiniteRange", "min": 3, "max": 5}
+    expected["id"] = "ga4gh:CN.abS9SjAfusSTVgdX3kIUOGV8q8bmr5uO"
     assert resp.copy_number_count.dict() == expected
     assert resp.warnings == []
 
@@ -671,9 +672,10 @@ def test_to_parsed_cn_var(
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
     )
-    resp == test_cnv_handler.parsed_to_copy_number(rb)
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] == {"type": "IndefiniteRange", "comparator": "<=", "value": 3}
+    expected["copies"] = {"type": "IndefiniteRange", "comparator": "<=", "value": 3}
+    expected["id"] = "ga4gh:CN.2aMndMYx2uVCN-XcG-uLimeXkRRHGDCs"
     assert resp.copy_number_count.dict() == expected
     assert resp.warnings == []
 
@@ -685,9 +687,10 @@ def test_to_parsed_cn_var(
         assembly=ClinVarAssembly.GRCH37, chromosome="chr1",
         start_pos_type=VRSTypes.DEFINITE_RANGE, start1=143134065
     )
-    resp == test_cnv_handler.parsed_to_copy_number(rb)
+    resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] == {"type": "IndefiniteRange", "comparator": ">=", "value": 3}
+    expected["copies"] = {"type": "IndefiniteRange", "comparator": ">=", "value": 3}
+    expected["id"] = "ga4gh:CN.UDIZLBzw7TiaM7Q7Ani4BPoWyVbstlKu"
     assert resp.copy_number_count.dict() == expected
     assert resp.warnings == []
 
