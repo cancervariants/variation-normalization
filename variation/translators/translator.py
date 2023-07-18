@@ -214,3 +214,19 @@ class Translator(ABC):
                     errors.append(
                         f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"  # noqa: E501
                     )
+
+    def validate_reference_sequence(
+        self, ac: str, start_pos: int, end_pos: int,
+        expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
+    ) -> Optional[str]:
+        """Validate that expected reference sequence matches actual"""
+        actual_ref, _ = self.seqrepo_access.get_reference_sequence(
+            ac, start=start_pos, end=end_pos, residue_mode=residue_mode
+        )
+
+        msg = None
+        if actual_ref != expected_ref:
+            msg = (f"Expected to find {expected_ref} at positions "
+                   f"({start_pos}, {end_pos}) on {ac} but found {actual_ref}")
+
+        return msg

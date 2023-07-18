@@ -66,6 +66,14 @@ class GenomicDeletion(Translator):
                     pos0 = grch38_data["pos0"]
                     pos1 = grch38_data["pos1"]
                     ac = grch38_data["ac"]
+
+                    if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                        invalid_ref_msg = self.validate_reference_sequence(
+                            ac, pos0, pos1 + 1, classification.matching_tokens[0].ref
+                        )
+                        if invalid_ref_msg:
+                            warnings.append(invalid_ref_msg)
+                            return None
                 else:
                     pos0 = classification.pos0
                     pos1 = classification.pos1

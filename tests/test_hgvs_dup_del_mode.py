@@ -2420,12 +2420,14 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
+    # TODO: Handle ambiguous translations in issue-176
     q = "3-10191494-CT-C"  # 37
+    expected_vid = "ga4gh:VA.i9sWiaZ9zSrCLKL1qWyaJRjsSJB4M3Yw"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
+    assert resp.variation_descriptor.variation_id == expected_vid
 
     resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
-    assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
+    assert resp.variation_descriptor.variation_id == expected_vid
 
     # Invalid
     invalid_queries = [
