@@ -134,7 +134,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         ...,
         description=("Number of copies. When `copies_type` is a Number or Indefinite "
                      "Range, this will be the `value` for copies. When `copies_type` "
-                     "is an Definite Range, this will be the `min` copies.")
+                     "is a Definite Range, this will be the `min` copies.")
     )
     copies1: Optional[StrictInt] = Field(
         None,
