@@ -352,15 +352,15 @@ def test_genomic_insertion(test_tokenizer, test_classifier):
         "NC_000023.10:g.32867861_32867862insT",
         "NC_000023.10:g.32862923_32862924insCCT",
         "NC_000009.11:g.5070053_5070054insG",
-        "20-14223252-T-TATGCATG"
+        "20-14223252-T-TATGCATG",
+        "chr17-131543-G-GA"
     ]:
         assert_match(test_tokenizer, test_classifier, q, GenomicInsertionClassification)
 
     for q in [
         "GENE 32867861_32867862insT",
         "accession:g.32867861_32867862insT",
-        "NC_000023.10:g.32867861_32867862insT foo",
-        "chr17-131543-G-GA",
+        "NC_000023.10:g.32867861_32867862insT foo"
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 
