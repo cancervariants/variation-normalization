@@ -162,7 +162,7 @@ class GenomicDuplicationAmbiguous(Translator):
         if vrs_variation:
             return TranslationResult(
                 vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
-                og_ac=validation_result.accession
+                og_ac=validation_result.accession, validation_result=validation_result
             )
         else:
             return None

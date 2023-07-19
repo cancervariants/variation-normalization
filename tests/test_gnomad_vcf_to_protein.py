@@ -938,4 +938,4 @@ async def test_invalid(test_handler):
                                                     untranslatable_returns_text=True)
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "20-2-TC-TG"
-    assert resp.warnings == ["Unable to get protein variation for 20-2-TC-TG"]
+    assert resp.warnings == ["No valid results found"]

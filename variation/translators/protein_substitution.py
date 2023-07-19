@@ -68,7 +68,7 @@ class ProteinSubstitution(Translator):
             return TranslationResult(
                 vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
                 vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession
+                og_ac=validation_result.accession, validation_result=validation_result
             )
         else:
             return None

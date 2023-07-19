@@ -4,6 +4,8 @@ from typing import Optional, Dict
 from pydantic import BaseModel, StrictStr
 from cool_seq_tool.schemas import TranscriptPriorityLabel
 
+from variation.schemas.validation_response_schema import ValidationResult
+
 
 class TranslationResult(BaseModel):
     """Translation Result"""
@@ -12,6 +14,7 @@ class TranslationResult(BaseModel):
     vrs_seq_loc_ac: Optional[StrictStr]
     vrs_seq_loc_ac_status: StrictStr = "na"
     og_ac: Optional[StrictStr]
+    validation_result: Optional[ValidationResult]  # TODO: Change to required
 
 
 AC_PRIORITY_LABELS = [

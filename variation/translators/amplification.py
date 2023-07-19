@@ -53,6 +53,8 @@ class Amplification(Translator):
             )
 
         if vrs_cx:
-            return TranslationResult(vrs_variation=vrs_cx)
+            return TranslationResult(
+                vrs_variation=vrs_cx, validation_result=validation_result
+            )
         else:
             return None

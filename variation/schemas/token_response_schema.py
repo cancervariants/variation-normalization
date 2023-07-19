@@ -241,7 +241,6 @@ class AmplificationToken(Token):
     """Token for amplification"""
 
     token_type = TokenType.AMPLIFICATION
-    alt_type = AltType.AMPLIFICATION
 
 
 class GeneToken(Token):

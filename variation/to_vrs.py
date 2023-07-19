@@ -73,17 +73,21 @@ class ToVRS(VRSRepresentation):
         Optional[List[str]]
     ]:
         translations = []
-        for valid_result in validation_summary.valid_results:
-            result = await self.translator.perform(
-                valid_result, warnings, endpoint_name=endpoint_name,
-                hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies,
-                copy_change=copy_change, do_liftover=do_liftover
-            )
-            if result and result not in translations:
-                translations.append(result)
+        if not validation_summary.valid_results:
+            warnings.append("No valid results found")
+        else:
+            for valid_result in validation_summary.valid_results:
+                result = await self.translator.perform(
+                    valid_result, warnings, endpoint_name=endpoint_name,
+                    hgvs_dup_del_mode=hgvs_dup_del_mode,
+                    baseline_copies=baseline_copies, copy_change=copy_change,
+                    do_liftover=do_liftover
+                )
+                if result and result not in translations:
+                    translations.append(result)
 
         if not translations and not warnings:
-            warnings.append("Unable to validate variation")
+            warnings.append("Unable to translate variation")
 
         return translations, warnings
 
