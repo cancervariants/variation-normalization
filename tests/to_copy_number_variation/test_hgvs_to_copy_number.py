@@ -5,12 +5,12 @@ import pytest
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_cx_38(genomic_dup1_seq_loc_normalized):
+def genomic_dup1_cx_38(genomic_dup1_seq_loc_not_normalized):
     """Create test fixture copy number change variation"""
     return {
         "type": "CopyNumberChange",
-        "_id": "ga4gh:CX.hGuvyiJmDtx4-MRjsLja0fb_DqOE2chN",
-        "subject": genomic_dup1_seq_loc_normalized,
+        "_id": "ga4gh:CX.49PTi3fDMxTdYRLp-svfrHrHc_pIAWT3",
+        "subject": genomic_dup1_seq_loc_not_normalized,
         "copy_change": "efo:0030069"
     }
 
@@ -19,11 +19,11 @@ def genomic_dup1_cx_38(genomic_dup1_seq_loc_normalized):
 def genomic_dup1_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "_id": "ga4gh:VSL.CXcLL6RUPkro3dLXN0miGEzlzPYiqw2q",
+        "_id": "ga4gh:VSL.3H_p33K7opnOybtXApKA_8APB66MsnZ-",
         "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
         "interval": {
             "type": "SequenceInterval",
-            "start": {"value": 49568693, "type": "Number"},
+            "start": {"value": 49568694, "type": "Number"},
             "end": {"value": 49568695, "type": "Number"},
         },
         "type": "SequenceLocation"
@@ -32,10 +32,10 @@ def genomic_dup1_37_loc():
 
 @pytest.fixture(scope="module")
 def genomic_dup1_cn_37(genomic_dup1_37_loc):
-    """Create test fixture copy number count variation"""
+    """Create test fixture copy number count variation (not normalized)"""
     return {
         "type": "CopyNumberCount",
-        "_id": "ga4gh:CN.pycd7qcmwmrqChKzm8VkIJUr6zYDoykP",
+        "_id": "ga4gh:CN.cnXZeWTy6DAvQLeBBVvqHp2MQioDWaJQ",
         "subject": genomic_dup1_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
@@ -46,7 +46,7 @@ def genomic_dup1_cx_37(genomic_dup1_37_loc):
     """Create test fixture copy number change variation"""
     return {
         "type": "CopyNumberChange",
-        "_id": "ga4gh:CX.UiX_v-GZihnyYExWIno6WjN3ZYKABjTF",
+        "_id": "ga4gh:CX.YIP3-G_lEbqLW1YHoyxOEuF9amanUTZq",
         "subject": genomic_dup1_37_loc,
         "copy_change": "efo:0030069"
     }
@@ -57,7 +57,7 @@ def genomic_dup2_cx_38(genomic_dup2_seq_loc_normalized):
     """Create test fixture copy number change variation"""
     return {
         "type": "CopyNumberChange",
-        "_id": "ga4gh:CX.I2J6PFYfQMShQO72ga2QK9I52gbJTLoK",
+        "_id": "ga4gh:CX.XhMbTUo-NA1AXhWwwHN8CXBh132_cqjX",
         "subject": genomic_dup2_seq_loc_normalized,
         "copy_change": "efo:0030067"
     }
@@ -67,12 +67,12 @@ def genomic_dup2_cx_38(genomic_dup2_seq_loc_normalized):
 def genomic_dup2_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "_id": "ga4gh:VSL.VY7qo3C2Nl-bpRtjOQ6MODJ2FfGUJRV1",
-        "sequence_id": "ga4gh:SQ.W6wLoIFOn4G7cjopxPxYNk2lcEqhLQFb",
+        "_id": "ga4gh:VSL.BWS0-RnN7vC6-TeBUa33swnY4GYPARoP",
+        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
         "interval": {
             "type": "SequenceInterval",
-            "start": {"value": 2137938, "type": "Number"},
-            "end": {"value": 2137949, "type": "Number"},
+            "start": {"value": 33229406, "type": "Number"},
+            "end": {"value": 33229410, "type": "Number"},
         },
         "type": "SequenceLocation"
     }
@@ -83,7 +83,7 @@ def genomic_dup2_cn_37(genomic_dup2_37_loc):
     """Create test fixture copy number count variation"""
     return {
         "type": "CopyNumberCount",
-        "_id": "ga4gh:CN.emp-0jz8WHt0ulMMUvon5iKRLxCKipLs",
+        "_id": "ga4gh:CN.BjxW1xFvFC5Rt8WqPD2ON1sfXtYN-Jzk",
         "subject": genomic_dup2_37_loc,
         "copies": {"type": "Number", "value": 3}
     }
@@ -94,7 +94,7 @@ def genomic_dup2_cx_37(genomic_dup2_37_loc):
     """Create test fixture copy number change variation"""
     return {
         "type": "CopyNumberChange",
-        "_id": "ga4gh:CX.6ld_A8Six_-TpnT_D9t694K4ZwNNzqIG",
+        "_id": "ga4gh:CX.mcHVOOpx1bVMACp5FYExpLKAR6yQ96U4",
         "subject": genomic_dup2_37_loc,
         "copy_change": "efo:0030067"
     }
@@ -729,8 +729,9 @@ def genomic_del6_cx_37(genomic_del6_37_loc):
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup1_copy_number_count(test_cnv_handler, genomic_dup1_38_cn,
-                                              genomic_dup1_cn_37):
+async def test_genomic_dup1_copy_number_count(
+    test_cnv_handler, genomic_dup1_38_cn, genomic_dup1_cn_37
+):
     """Test that genomic duplication works correctly"""
     q = "NC_000003.12:g.49531262dup"  # 38
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -750,7 +751,7 @@ async def test_genomic_dup1_copy_number_count(test_cnv_handler, genomic_dup1_38_
         q, baseline_copies=1, do_liftover=True)
     expected = copy.deepcopy(genomic_dup1_38_cn)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:CN.lPsJh-HYw3fn3I0EF4geYUUxzCCf9nrU"
+    expected["_id"] = "ga4gh:CN.j6wkkplSyDrYNisU8L7UFXLFLzRwL3bL"
     assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
@@ -795,7 +796,7 @@ async def test_genomic_dup2_copy_number_count(test_cnv_handler, genomic_dup2_38_
         q, baseline_copies=1, do_liftover=True)
     expected = copy.deepcopy(genomic_dup2_38_cn)
     expected["copies"]["value"] = 2
-    expected["_id"] = "ga4gh:CN.CDu0H77EVAC_xR1STNJy0BwPzVP3vvCK"
+    expected["_id"] = "ga4gh:CN.gQzX8KWIj51ySV1oyNtLapeTO6_U89pt"
     assert resp.copy_number_count.dict(by_alias=True) == expected
 
 
