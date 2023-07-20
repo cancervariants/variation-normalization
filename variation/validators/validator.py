@@ -51,6 +51,14 @@ class Validator(ABC):
         self.mane_transcript = mane_transcript
         self.gene_normalizer = gene_normalizer
         self.vrs = vrs
+        self._protein_ac_to_gene_mapping = [
+            self.transcript_mappings.get_gene_symbol_from_ensembl_protein,
+            self.transcript_mappings.get_gene_symbol_from_refeq_protein
+        ]
+        self._cdna_ac_to_gene_mapping = [
+            self.transcript_mappings.get_gene_symbol_from_refseq_rna,
+            self.transcript_mappings.get_gene_symbol_from_ensembl_transcript
+        ]
 
     @abstractmethod
     def variation_name(self) -> str:
@@ -261,8 +269,8 @@ class Validator(ABC):
         return gene_tokens
 
     def get_protein_gene_symbol_tokens(
-            self, classification: Classification
-    ) -> List[Optional[GeneToken]]:
+        self, classification: Classification
+    ) -> List[GeneToken]:
         """Return gene tokens for a classification with protein reference
         sequence.
 
@@ -270,30 +278,18 @@ class Validator(ABC):
             tokens
         :return: A list of Gene Match Tokens in the classification
         """
-        # TODO: MAKE MAPPINGS A CLASS VAR
-        mappings = [
-            self.transcript_mappings.get_gene_symbol_from_ensembl_protein,
-            self.transcript_mappings.get_gene_symbol_from_refeq_protein,
-            self.transcript_mappings.get_gene_symbol_from_lrg
-        ]
-        return self._get_gene_tokens(classification, mappings)
+        return self._get_gene_tokens(classification, self._protein_ac_to_gene_mapping)
 
     def get_coding_dna_gene_symbol_tokens(
             self, classification: Classification
-    ) -> List[Optional[GeneToken]]:
+    ) -> List[GeneToken]:
         """Return gene symbol tokens for classifications with coding dna
         reference sequence.
 
         :param Classification classification: Classification of input string
         :return: A list of gene match tokens
         """
-        # TODO: MAKE MAPPINGS A CLASS VAR
-        mappings = [
-            self.transcript_mappings.get_gene_symbol_from_refseq_rna,
-            self.transcript_mappings.get_gene_symbol_from_ensembl_transcript,  # noqa: E501
-            self.transcript_mappings.get_gene_symbol_from_lrg
-        ]
-        return self._get_gene_tokens(classification, mappings)
+        return self._get_gene_tokens(classification, self._cdna_ac_to_gene_mapping)
 
     async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
                                  errors: List, pos3: int = None, pos4: int = None,
