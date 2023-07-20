@@ -14,7 +14,7 @@ class TranslationResult(BaseModel):
     vrs_seq_loc_ac: Optional[StrictStr]
     vrs_seq_loc_ac_status: StrictStr = "na"
     og_ac: Optional[StrictStr]
-    validation_result: Optional[ValidationResult]  # TODO: Change to required
+    validation_result: ValidationResult
 
 
 AC_PRIORITY_LABELS = [

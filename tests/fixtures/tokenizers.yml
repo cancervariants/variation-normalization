@@ -174,7 +174,6 @@ coding_dna_delins:
     - token: (c.301_302delinsGG)
     - token: c.615delinsAA
   should_not_match:
-    # - token: c.150_147delinsTGG TODO: Should we actually make this check in tokenizer
     - token: 32386323delinsGA
     - token: c.145_147delinsTGGS
     - token: c.145_147delTGG
@@ -198,13 +197,10 @@ genomic_delins:
     - token: g.145_147delinsTGG
     - token: g.9002_9009delinsTTT
     - token: g.850_901delinsTTCCTCGATGCCTG
-#    - token: g.42522624_42522669delins42536337_42536382
-#    - token: g.812_829delins908_925
     - token: (g.301_302delinsGG)
     - token: g.10149938delinsAA
     - token: g.10149938delinsAAN
   should_not_match:
-    # - token: g.150_147delinsTGG TODO: Should we actually make this check in tokenizer
     - token: 32386323delinsGA
     - token: g.145_147delinsTGGS
     - token: g.145_147delTGG
@@ -266,7 +262,6 @@ coding_dna_deletion:
     - token: c._2277del
     - token: c.2263_del
     - token: c.2263
-    # - token: c.2277_2263del TODO: Should we do this in tokenizer
 
 genomic_deletion:
   should_match:
@@ -282,7 +277,6 @@ genomic_deletion:
     - token: g._37880233del
     - token: g._37880233del
     - token: g.37880219
-    # - token: g.37880233_37880219del TODO: Should we do this in tokenizer
 
 protein_insertion:
   should_match:
@@ -290,7 +284,6 @@ protein_insertion:
     - token: p.His4_Gln5insAla
     - token: p.Lys2_Gly3insGlnSerLys
     - token: p.(Met3_His4insGlyTer)
-#    - token: p.Arg78_Gly79ins23
     - token: T599_V600insV
     - token: A763_Y764insFQEA
   should_not_match:
@@ -332,7 +325,6 @@ genomic_duplication:
   should_not_match:
     - token: 49531262dup
     - token: dupdup
-    # - token: g.2087948_2087938dup TODO: Should we do this in tokenizer
     - token: g.(?_30417576)_(31394018_?)dup
     - token: g.(31060227_31100351)_(33274278_33417151)dup
     - token: g.(?_154021812)_154092209dup
@@ -346,8 +338,6 @@ genomic_duplication_ambiguous:
     - token: g.2087938_2087948dup
     - token: g.49531262dup
     - token: g.(?_31394018)_(_30417576_?)dup
-    # - token: g.(31060227_33274278)_(31100351_33417151)dup TODO: Should we do this in tokenizer
-    # - token: g.(?_154092209)_154021812dup TODO: Should we do this in tokenizer
 
 genomic_deletion_ambiguous:
   should_match:
@@ -361,6 +351,4 @@ genomic_deletion_ambiguous:
     - token: c.(?_169)_(170_?)del
     - token: g.(?_31120496)_(33339477_?)delins
     - token: (?_31120496)_(33339477_?)del
-    # - token: g.(?_33339477)_(31120496_?)del TODO: Should we do this in tokenization
-    # - token: g.(4_3)_(2_1)del TODO: Should we do this in tokenization
     - token: g.(x_31100351)_(33274278_33417151)del

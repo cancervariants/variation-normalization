@@ -77,9 +77,7 @@ class ProteinDelIns(Validator):
                 errors.append(invalid_aa0_seq_msg)
 
             # Validate aa1 exists at pos1
-            if classification.aa1:
-                # TODO: There shouldn't be a case where aa1 exists and pos1 doesn't
-                # but we should double check this
+            if classification.aa1 and classification.pos1:
                 invalid_aa1_seq_msg = self.validate_reference_sequence(
                     p_ac, classification.pos1, classification.pos1, classification.aa1
                 )

@@ -109,6 +109,7 @@ coding_dna_delins:
     - query: LRG_199t1:c.79_80delinsTT
     - query: LRG_199p1:c.79_80delinsTT
     - query: LRG_199:c.79_80delinsTT
+    - query: NM_001289937.1:c.2327_2326delinsCT
 
 genomic_delins:
   should_match:
@@ -121,6 +122,7 @@ genomic_delins:
     - query: NC_000007.13:g.159138664delinsAT
     - query: NC_000007.13:g.159138663_159138664delinsAT
     - query: NC_000023.11:g.3238646549879323delinsGA
+    - query: NC_000007.13:g.140453136_140453134delinsAT
 
 protein_deletion:
   should_match:
@@ -154,6 +156,7 @@ coding_dna_deletion:
   should_not_match:
     - query: NM_000535.6:c.21174568delT
     - query: NM_000535.6:c.21145457delA
+    - query: ENST00000269571.9:c.2277_2263del
 
 genomic_deletion:
   should_match:
@@ -163,8 +166,16 @@ genomic_deletion:
     - query: NC_000003.11:g.10191495delT
     - query: VHL g.10188279_10188297del
     - query: 16-2138199-GTGAG-G
+    - query: NC_000023.11:g.(?_155980375)_(156013167_?)del
+    - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
+    - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
   should_not_match:
     - query: NC_000003.11:g.10191454654654654495delT
+    - query: NC_000003.11:g.10188297_10188279del
+    - query: NC_000012.12:g.123256943_123256947del
+    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
+    - query: NC_000023.11:g.(?_156013167)_(155980375_?)del
+    - query: NC_000024.10:g.(14076805_14076804)_(14076803_14076802)del
 
 protein_insertion:
   should_match:
@@ -197,15 +208,6 @@ genomic_insertion:
     - query: NC_000022.10:g.51304566_51304567insT
     - query: NC_000022.10:g.51304567_51304568insT
 
-genomic_uncertain_deletion:
-  should_match:
-    - query: NC_000023.11:g.(?_155980375)_(156013167_?)del
-    - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
-    - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
-  should_not_match:
-    - query: NC_000012.12:g.123256943_123256947del
-    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
-
 genomic_duplication:
   should_match:
     - query: NC_000003.12:g.49531262dup
@@ -217,3 +219,6 @@ genomic_duplication:
     - query: NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup
   should_not_match:
     - query: NC_000003.12:g.495312625165465465465dup
+    - query: NC_000016.10:g.2087948_2087938dup
+    - query: NC_000023.11:g.(31060227_33274278)_(31100351_33417151)
+    - query: NC_000023.11:g.(?_154092209)_154021812dup

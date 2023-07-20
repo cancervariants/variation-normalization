@@ -2420,7 +2420,7 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    # TODO: Handle ambiguous translations in issue-176
+    # TODO: issue-176
     q = "3-10191494-CT-C"  # 37
     expected_vid = "ga4gh:VA.i9sWiaZ9zSrCLKL1qWyaJRjsSJB4M3Yw"
     resp = await test_handler.normalize(q)
