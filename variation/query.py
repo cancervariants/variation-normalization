@@ -30,9 +30,7 @@ class QueryHandler:
     def __init__(
         self, dynamodb_url: str = "", dynamodb_region: str = "us-east-2",
         gene_query_handler: Optional[GeneQueryHandler] = None,
-        transcript_file_path: str = None, refseq_file_path: str = None,
-        mane_data_path: str = None, uta_db_url: str = UTA_DB_URL,
-        uta_db_pwd: Optional[str] = None
+        uta_db_url: str = UTA_DB_URL
     ) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene normalizer dynamodb. Only used when
@@ -42,27 +40,10 @@ class QueryHandler:
         :param Optional[GeneQueryHandler] gene_query_handler: Gene normalizer query
             handler instance. If this is provided, will use a current instance. If this
             is not provided, will create a new instance.
-        :param str transcript_file_path: Path to transcript mappings file
-        :param str refseq_file_path: Path to refseq gene symbol file
-        :param str mane_data_path: Path to refseq mane data file
         :param str uta_db_url: URL for UTA database
-        :param Optional[str] uta_db_pwd: Password for UTA database user
         """
-        if not transcript_file_path:
-            transcript_file_path = environ.get("TRANSCRIPT_MAPPINGS_PATH",
-                                               TRANSCRIPT_MAPPINGS_PATH)
-        if not refseq_file_path:
-            refseq_file_path = environ.get("LRG_REFSEQGENE_PATH", LRG_REFSEQGENE_PATH)
-
-        if not mane_data_path:
-            mane_data_path = environ.get("MANE_SUMMARY_PATH", MANE_SUMMARY_PATH)
-
         cool_seq_tool = CoolSeqTool(
-            transcript_file_path=transcript_file_path,
-            lrg_refseqgene_path=refseq_file_path,
-            mane_data_path=mane_data_path,
             db_url=uta_db_url,
-            db_pwd=uta_db_pwd,
             gene_query_handler=gene_query_handler,
             gene_db_url=dynamodb_url,
             gene_db_region=dynamodb_region
