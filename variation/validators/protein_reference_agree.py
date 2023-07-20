@@ -1,11 +1,10 @@
 """The module for Protein Reference Agree Validation."""
-from typing import Optional, List
+from typing import List
 
 from variation.schemas.classification_response_schema import (
     ClassificationType, Classification, Nomenclature,
     ProteinReferenceAgreeClassification
 )
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
 from variation.validators.validator import Validator

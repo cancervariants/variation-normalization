@@ -1,7 +1,6 @@
 """Module for Amplification validation"""
 from typing import List
 
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.classification_response_schema import (
     Classification, ClassificationType, AmplificationClassification
 )

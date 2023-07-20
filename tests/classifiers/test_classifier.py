@@ -12,8 +12,8 @@ from variation.schemas.classification_response_schema import (
 )
 
 
-def _get_classifications(test_tokenizer, test_classifier, q):
-    """Get classifications for a query"""
+def _get_classification(test_tokenizer, test_classifier, q):
+    """Get classification for a query"""
     assert isinstance(q, str)
     tokens = test_tokenizer.perform(q, [])
     return test_classifier.perform(tokens)
@@ -23,18 +23,17 @@ def assert_match(
     test_tokenizer, test_classifier, q, expected_classification_instance
 ):
     """Assertion checks when a single classification match is expected"""
-    classifications = _get_classifications(test_tokenizer, test_classifier, q)
-    assert len(classifications) == 1, q
+    classification = _get_classification(test_tokenizer, test_classifier, q)
     assert isinstance(
-        classifications[0],
+        classification,
         expected_classification_instance
-    ), f"{q} is instance {type(classifications[0])}"
+    ), f"{q} is instance {type(classification)}"
 
 
 def assert_no_match(test_tokenizer, test_classifier, q):
     """Assertion checks when no classification match is expected"""
-    classifications = _get_classifications(test_tokenizer, test_classifier, q)
-    assert classifications == [], q
+    classification = _get_classification(test_tokenizer, test_classifier, q)
+    assert classification is None, q
 
 
 def test_amplification(test_tokenizer, test_classifier):

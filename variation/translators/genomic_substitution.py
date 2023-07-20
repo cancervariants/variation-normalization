@@ -2,7 +2,6 @@
 from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.app_schemas import Endpoint

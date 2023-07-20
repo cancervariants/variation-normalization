@@ -298,7 +298,7 @@ def genomic_dup2_cx(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
         "subject": genomic_dup2_seq_loc_normalized,
         "copy_change": "efo:0030070"
     }
-    genomic_dup2_normalized["variation_id"] = genomic_dup2_normalized["variation"]["_id"]
+    genomic_dup2_normalized["variation_id"] = genomic_dup2_normalized["variation"]["_id"]  # noqa: E501
     return VariationDescriptor(**genomic_dup2_normalized)
 
 

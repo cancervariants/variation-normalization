@@ -1,10 +1,9 @@
 """The module for cDNA Substitution Validation."""
-from typing import Optional, List
+from typing import List
 
 from variation.schemas.classification_response_schema import (
     ClassificationType, Classification, CdnaSubstitutionClassification, Nomenclature
 )
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
 

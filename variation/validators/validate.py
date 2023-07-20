@@ -83,7 +83,7 @@ class Validate:
         ]
 
     async def perform(
-        self, classifications: List[Classification], warnings: List = None
+        self, classification: Classification, warnings: List = None
     ) -> ValidationSummary:
         valid_possibilities = []
         invalid_possibilities = []
@@ -91,30 +91,27 @@ class Validate:
             warnings = []
 
         found_valid_result = False
-        invalid_classifications = set()
-        for classification in classifications:
-            for validator in self.validators:
-                if validator.validates_classification_type(
-                    classification.classification_type
-                ):
+        invalid_classification = None
 
-                    validation_results = await validator.validate(classification)
-                    for validation_result in validation_results:
-                        if validation_result.is_valid:
-                            found_valid_result = True
-                            valid_possibilities.append(validation_result)
-                        else:
-                            invalid_possibilities.append(validation_result)
-                            invalid_classifications.add(
-                                classification.classification_type.value
-                            )
+        for validator in self.validators:
+            if validator.validates_classification_type(
+                classification.classification_type
+            ):
+                validation_results = await validator.validate(classification)
+                for validation_result in validation_results:
+                    if validation_result.is_valid:
+                        found_valid_result = True
+                        valid_possibilities.append(validation_result)
+                    else:
+                        invalid_possibilities.append(validation_result)
+                        invalid_classification = classification.classification_type.value
 
-                if found_valid_result:
-                    break
+            if found_valid_result:
+                break
 
         if not found_valid_result and not warnings:
-            warnings.append(f"Unable to find valid result for classifications: "
-                            f"{invalid_classifications}")
+            warnings.append(f"Unable to find valid result for classification: "
+                            f"{invalid_classification}")
 
         return ValidationSummary(
             valid_results=valid_possibilities,

@@ -8,7 +8,6 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDes
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from cool_seq_tool.data_sources import SeqRepoAccess
-from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly

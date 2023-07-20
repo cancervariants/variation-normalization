@@ -1,5 +1,5 @@
 """Module for translation."""
-from typing import List, Optional, Dict
+from typing import List, Optional
 
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange

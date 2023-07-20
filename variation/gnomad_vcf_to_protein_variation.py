@@ -76,13 +76,12 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         :return: ValidationSummary for a gnomad VCF query
         """
         tokens = self.tokenizer.perform(q.strip(), warnings)
-        classifications = self.classifier.perform(tokens)
-        for c in classifications:
-            if c.nomenclature != Nomenclature.GNOMAD_VCF:
-                warnings.append(f"{q} is not a supported gnomad vcf query")
-                return None
+        classification = self.classifier.perform(tokens)
+        if classification.nomenclature != Nomenclature.GNOMAD_VCF:
+            warnings.append(f"{q} is not a supported gnomad vcf query")
+            return None
 
-        validation_summary = await self.validator.perform(classifications, warnings)
+        validation_summary = await self.validator.perform(classification, warnings)
         if not validation_summary:
             warnings.append(f"{q} is not a valid gnomad vcf query")
             return None

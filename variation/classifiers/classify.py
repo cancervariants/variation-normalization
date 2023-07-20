@@ -4,16 +4,16 @@ from typing import List
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import (
-    ProteinSubstitutionClassifier,
-    ProteinReferenceAgreeClassifier, CodingDNASubstitutionClassifier,
-    GenomicSubstitutionClassifier, CodingDNAReferenceAgreeClassifier,
-    GenomicReferenceAgreeClassifier, ProteinDelInsClassifier, CodingDNADelInsClassifier,
-    GenomicDelInsClassifier, ProteinDeletionClassifier, CdnaDeletionClassifier,
-    GenomicDeletionClassifier, ProteinInsertionClassifier, CodingDNAInsertionClassifier,
+    ProteinSubstitutionClassifier, ProteinReferenceAgreeClassifier,
+    CodingDNASubstitutionClassifier, GenomicSubstitutionClassifier,
+    CodingDNAReferenceAgreeClassifier, GenomicReferenceAgreeClassifier,
+    ProteinDelInsClassifier, CodingDNADelInsClassifier, GenomicDelInsClassifier,
+    ProteinDeletionClassifier, CdnaDeletionClassifier, GenomicDeletionClassifier,
+    ProteinInsertionClassifier, CodingDNAInsertionClassifier,
     GenomicInsertionClassifier, GenomicDuplicationAmbiguousClassifier,
     GenomicDuplicationClassifier, GenomicDeletionAmbiguousClassifier,
-    ProteinStopGainClassifier,
-    AmplificationClassifier, HgvsClassifier, GnomadVcfClassifier, Classifier
+    ProteinStopGainClassifier, AmplificationClassifier, HgvsClassifier,
+    GnomadVcfClassifier, Classifier
 )
 
 
@@ -46,31 +46,28 @@ class Classify:
         AmplificationClassifier()
     ]
 
-    def perform(self, tokens: List[Token]) -> List[Classification]:
+    def perform(self, tokens: List[Token]) -> Classification:
         """Classify a list of tokens.
 
         :param tokens: List of tokens found
-        :return: Classifications
+        :return: Classification for a list of tokens
         """
-        classifications: List[Classification] = list()
+        classification = None
 
         if len(tokens) == 1:
             token_type = tokens[0].token_type
-            res = None
-            if token_type == TokenType.HGVS:
-                res = self.hgvs_classifier.match(tokens[0])
-            elif token_type == TokenType.GNOMAD_VCF:
-                res = self.gnomad_vcf_classifier.match(tokens[0])
 
-            if res:
-                classifications.append(res)
+            if token_type == TokenType.HGVS:
+                classification = self.hgvs_classifier.match(tokens[0])
+            elif token_type == TokenType.GNOMAD_VCF:
+                classification = self.gnomad_vcf_classifier.match(tokens[0])
         else:
             for classifier in self.classifiers:
                 # We only do EXACT match candidates
                 can_classify = classifier.can_classify(tokens)
                 if can_classify:
-                    res = classifier.match(tokens)
-                    if res:
-                        classifications.append(res)
+                    classification = classifier.match(tokens)
+                    if classification:
+                        break
 
-        return classifications
+        return classification

@@ -149,12 +149,12 @@ class ToVRS(VRSRepresentation):
             params["warnings"] = warnings
             return ToVRSService(**params)
 
-        classifications = self.classifier.perform(tokens)
-        if not classifications:
+        classification = self.classifier.perform(tokens)
+        if not classification:
             params["warnings"] = [f"Unable to find classification for: {q}"]
             return ToVRSService(**params)
 
-        validations = await self.validator.perform(classifications, warnings)
+        validations = await self.validator.perform(classification, warnings)
 
         if validations:
             translations, warnings = await self.get_translations(

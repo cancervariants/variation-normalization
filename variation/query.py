@@ -1,12 +1,8 @@
 """This module provides methods for handling queries."""
 from typing import Optional
-from os import environ
 
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrs.extras.translator import Translator
-from cool_seq_tool.paths import (
-    TRANSCRIPT_MAPPINGS_PATH, LRG_REFSEQGENE_PATH, MANE_SUMMARY_PATH
-)
 from cool_seq_tool import CoolSeqTool
 
 from variation import UTA_DB_URL

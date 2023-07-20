@@ -4,7 +4,7 @@ from typing import List, Optional
 from variation.schemas.classification_response_schema import (
     Classification, GenomicSubstitutionClassification, Nomenclature, SequenceOntology,
     GenomicReferenceAgreeClassification, GenomicInsertionClassification,
-    GenomicDeletionClassification, GenomicDelInsClassification
+    GenomicDeletionClassification
 )
 from variation.schemas.token_response_schema import (
     GnomadVcfToken, TokenType

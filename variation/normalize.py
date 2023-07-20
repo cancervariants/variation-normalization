@@ -148,8 +148,8 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
-        classifications = self.classifier.perform(tokens)
-        if not classifications:
+        classification = self.classifier.perform(tokens)
+        if not classification:
             warnings.append(f"Unable to find classification for: {q}")
             vd, warnings = no_variation_resp(
                 label, _id, warnings, untranslatable_returns_text
@@ -158,7 +158,7 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
-        validation_summary = await self.validator.perform(classifications)
+        validation_summary = await self.validator.perform(classification)
         if not validation_summary:
             vd, warnings = no_variation_resp(
                 label, _id, validation_summary.warnings, untranslatable_returns_text

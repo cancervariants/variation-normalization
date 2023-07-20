@@ -230,10 +230,3 @@ class AmplificationClassification(Classification):
     classification_type = ClassificationType.AMPLIFICATION
     molecule_context = MoleculeContext.GENOMIC
     so_id = SequenceOntology.FEATURE_AMPLIFICATION
-
-
-class ClassificationResponseSchema(BaseModel):
-    """Classification response for a given query."""
-
-    search_term: StrictStr
-    classifications: List[Classification]

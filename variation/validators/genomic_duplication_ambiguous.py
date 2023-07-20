@@ -1,11 +1,10 @@
 """The module for Genomic Duplication Ambiguous Validation."""
-from typing import List, Optional
+from typing import List
 
 from variation.schemas.classification_response_schema import (
-    AmbiguousType, Classification, ClassificationType, GenomicDuplicationAmbiguousClassification,
-    Nomenclature
+    AmbiguousType, Classification, ClassificationType,
+    GenomicDuplicationAmbiguousClassification, Nomenclature
 )
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
 

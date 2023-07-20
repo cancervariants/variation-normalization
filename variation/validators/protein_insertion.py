@@ -1,10 +1,9 @@
 """The module for Protein Insertion Validation."""
-from typing import List, Optional
+from typing import List
 
 from variation.schemas.classification_response_schema import (
     Classification, ClassificationType, Nomenclature, ProteinInsertionClassification
 )
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
 from variation.utils import get_aa1_codes

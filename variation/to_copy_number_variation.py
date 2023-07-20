@@ -71,26 +71,24 @@ class ToCopyNumberVariation(ToVRS):
         if not tokens:
             return validation_summary, warnings
 
-        classifications = self.classifier.perform(tokens)
-        if not classifications:
+        classification = self.classifier.perform(tokens)
+        if not classification:
             warnings.append(f"Unable to find classification for: {q}")
             return validation_summary, warnings
 
-        tmp_classifications = []
-        for c in classifications:
-            if all((
-                c.classification_type in VALID_CLASSIFICATION_TYPES,
-                TokenType.HGVS in {t.token_type for t in c.matching_tokens}
-            )):
-                tmp_classifications.append(c)
+        tmp_classification = None
+        if all((
+            classification.classification_type in VALID_CLASSIFICATION_TYPES,
+            TokenType.HGVS in {t.token_type for t in classification.matching_tokens}
+        )):
+            tmp_classification = classification
 
-        classifications = tmp_classifications
-        if not classifications:
-            warnings = [f"{q} is not a supported HGVS genomic "
-                        f"duplication or deletion"]
+        classification = tmp_classification
+        if not classification:
+            warnings = [f"{q} is not a supported HGVS genomic duplication or deletion"]
             return validation_summary, warnings
 
-        validation_summary = await self.validator.perform(classifications, warnings)
+        validation_summary = await self.validator.perform(classification, warnings)
         if not validation_summary:
             warnings = validation_summary.warnings
 

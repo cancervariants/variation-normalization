@@ -4,8 +4,9 @@ from typing import List, Optional
 
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
 
-from variation.schemas.classification_response_schema import Classification, Nomenclature
-from variation.schemas.token_response_schema import GeneToken, TokenType
+from variation.schemas.classification_response_schema import (
+    Classification, Nomenclature
+)
 
 
 logger = logging.getLogger("variation")

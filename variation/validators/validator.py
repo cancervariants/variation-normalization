@@ -1,8 +1,7 @@
 """Module for Validation."""
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Tuple
 from abc import ABC, abstractmethod
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import (
     SeqRepoAccess, TranscriptMappings, MANETranscript, UTADatabase
@@ -10,16 +9,12 @@ from cool_seq_tool.data_sources import (
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, Nomenclature
+    Classification, ClassificationType
 )
-from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import TokenType, GeneToken
+from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
 from variation.vrs_representation import VRSRepresentation
 
 
@@ -291,7 +286,7 @@ class Validator(ABC):
         else:
             if end_pos:
                 if not ref_len or (end_pos - start_pos != ref_len):
-                    msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"
+                    msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"  # noqa: E501
             else:
                 if not ref_len:
                     msg = f"Position ({start_pos}) not valid on accession ({ac})"
