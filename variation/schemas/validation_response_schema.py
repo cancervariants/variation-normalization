@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from pydantic.types import StrictBool, StrictStr, StrictInt
 
 from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import GeneToken
 
 
 class ValidationResult(BaseModel):
@@ -14,7 +13,6 @@ class ValidationResult(BaseModel):
     accession: Optional[StrictStr]
     cds_start: Optional[StrictInt]  # This is only for cDNA
     classification: Classification
-    gene_tokens: List[GeneToken] = []
     is_valid: StrictBool
     errors: List[StrictStr] = []
 

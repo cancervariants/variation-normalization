@@ -34,7 +34,7 @@ class Amplification(Translator):
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
-        gene_descriptor = validation_result.gene_tokens[0].gene_descriptor
+        gene_descriptor = validation_result.classification.gene_token.gene_descriptor
         priority_seq_loc = get_priority_sequence_location(
             gene_descriptor, self.seqrepo_access
         )

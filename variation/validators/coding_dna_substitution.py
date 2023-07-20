@@ -13,8 +13,7 @@ class CdnaSubstitution(Validator):
     """The cDNA Substitution Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaSubstitutionClassification,
-        transcripts: List[str], gene_tokens: List[GeneToken]
+        self, classification: CdnaSubstitutionClassification, transcripts: List[str]
     ) -> List[ValidationResult]:
         validation_results = []
 
@@ -38,8 +37,7 @@ class CdnaSubstitution(Validator):
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
-                    errors=errors,
-                    gene_tokens=gene_tokens
+                    errors=errors
                 )
             )
 
@@ -56,11 +54,10 @@ class CdnaSubstitution(Validator):
         return classification_type == ClassificationType.CODING_DNA_SUBSTITUTION
 
     async def get_transcripts(
-        self, gene_tokens: List, classification: Classification, errors: List
-    ) -> Optional[List[str]]:
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get transcript accessions for a given classification.
 
-        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
         :param List errors: List of errors
@@ -70,14 +67,6 @@ class CdnaSubstitution(Validator):
             transcripts = [classification.ac]
         else:
             transcripts = self.get_coding_dna_transcripts(
-                gene_tokens, errors
+                classification.gene_token, errors
             )
         return transcripts
-
-    def get_gene_tokens(self, classification: Classification) -> List:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_coding_dna_gene_symbol_tokens(classification)

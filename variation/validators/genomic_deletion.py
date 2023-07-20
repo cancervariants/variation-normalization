@@ -14,7 +14,7 @@ class GenomicDeletion(Validator):
 
     async def get_valid_invalid_results(
         self, classification: GenomicDeletionClassification,
-        transcripts: List[str], gene_tokens: List[GeneToken]
+        transcripts: List[str]
     ) -> List[ValidationResult]:
         if classification.pos1 and classification.pos0 >= classification.pos1:
             return [ValidationResult(
@@ -66,8 +66,7 @@ class GenomicDeletion(Validator):
                     accession=ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors,
-                    gene_tokens=gene_tokens
+                    errors=errors
                 )
             )
 
@@ -84,11 +83,10 @@ class GenomicDeletion(Validator):
         return classification_type == ClassificationType.GENOMIC_DELETION
 
     async def get_transcripts(
-        self, gene_tokens: List, classification: Classification, errors: List
-    ) -> Optional[List[str]]:
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get transcript accessions for a given classification.
 
-        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
         :param List errors: List of errors
@@ -98,14 +96,6 @@ class GenomicDeletion(Validator):
             transcripts = [classification.ac]
         else:
             transcripts = await self.get_genomic_transcripts(
-                classification, gene_tokens, errors
+                classification, errors
             )
         return transcripts
-
-    def get_gene_tokens(self, classification: Classification) -> List:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_gene_symbol_tokens(classification)

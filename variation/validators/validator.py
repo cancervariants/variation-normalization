@@ -51,14 +51,6 @@ class Validator(ABC):
         self.mane_transcript = mane_transcript
         self.gene_normalizer = gene_normalizer
         self.vrs = vrs
-        self._protein_ac_to_gene_mapping = [
-            self.transcript_mappings.get_gene_symbol_from_ensembl_protein,
-            self.transcript_mappings.get_gene_symbol_from_refeq_protein
-        ]
-        self._cdna_ac_to_gene_mapping = [
-            self.transcript_mappings.get_gene_symbol_from_refseq_rna,
-            self.transcript_mappings.get_gene_symbol_from_ensembl_transcript
-        ]
 
     @abstractmethod
     def variation_name(self) -> str:
@@ -68,21 +60,11 @@ class Validator(ABC):
         """
 
     @abstractmethod
-    def get_gene_tokens(
-            self, classification: Classification) -> List[GeneToken]:
-        """Return a list of gene tokens for a classification.
-
-        :param Classification classification: Classification for a list of
-            tokens
-        :return: A list of gene tokens for the classification
-        """
-
-    @abstractmethod
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
+    async def get_transcripts(
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get transcript accessions for a given classification.
 
-        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
         :param List errors: List of errors
@@ -101,34 +83,13 @@ class Validator(ABC):
 
     @abstractmethod
     async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        self, classification: Classification, transcripts: List
     ) -> None:
         """Add validation result objects to a list of results.
 
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
         :param Classification classification: A classification for a list of
             tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param List transcripts: A list of transcript accessions
         """
 
     async def validate(
@@ -136,16 +97,9 @@ class Validator(ABC):
     ) -> ValidationResult:
         errors = []
 
-        gene_tokens = self.get_gene_tokens(classification)
-        if len(gene_tokens) > 1:
-            errors.append("More than one gene symbol found for a single"
-                          f" {self.variation_name()}")
-
         try:
             # NC_ queries do not have gene tokens
-            transcripts = await self.get_transcripts(
-                gene_tokens, classification, errors
-            )
+            transcripts = await self.get_transcripts(classification, errors)
         except IndexError:
             transcripts = []
 
@@ -159,137 +113,56 @@ class Validator(ABC):
                 )
             ]
         validation_results = await self.get_valid_invalid_results(
-            classification, transcripts, gene_tokens
+            classification, transcripts
         )
         return validation_results
 
-    def get_protein_transcripts(self, gene_tokens: List,
-                                errors: List) -> Optional[List[str]]:
+    def get_protein_transcripts(
+        self, gene_token: GeneToken, errors: List
+    ) -> List[str]:
         """Get transcripts for variations with protein reference sequence.
 
-        :param List gene_tokens: List of gene tokens for a classification
-        :param List errors: List of errors
+        :param gene_token: Gene token for a classification
+        :param errors: List of errors
         :return: List of possible transcript accessions for the variation
         """
-        transcripts = self.transcript_mappings.protein_transcripts(gene_tokens[0].token)
+        transcripts = self.transcript_mappings.protein_transcripts(gene_token.token)
         if not transcripts:
             errors.append(
-                f"No transcripts found for gene symbol {gene_tokens[0].token}"
+                f"No transcripts found for gene symbol {gene_token.token}"
             )
         return transcripts
 
-    def get_coding_dna_transcripts(self, gene_tokens: List,
-                                   errors: List) -> Optional[List[str]]:
+    def get_coding_dna_transcripts(
+        self, gene_token: GeneToken, errors: List
+    ) -> List[str]:
         """Get transcripts for variations with coding DNA reference sequence.
 
-        :param List gene_tokens: List of gene tokens for a classification
-        :param List errors: List of errors
+        :param gene_token: Gene token for a classification
+        :param errors: List of errors
         :return: List of possible transcript accessions for the variation
         """
-        transcripts = self.transcript_mappings.coding_dna_transcripts(
-            gene_tokens[0].token
-        )
+        transcripts = self.transcript_mappings.coding_dna_transcripts(gene_token.token)
         if not transcripts:
             errors.append(
-                f"No transcripts found for gene symbol {gene_tokens[0].token}"
+                f"No transcripts found for gene symbol {gene_token.token}"
             )
         return transcripts
 
     async def get_genomic_transcripts(
-        self, classification: Classification, gene_tokens: List[GeneToken], errors: List
-    ) -> Optional[List[str]]:
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get NC accessions for variations with genomic reference sequence.
 
-        :param Classification classification: Classification for a list of
+        :param classification: Classification for a list of
             tokens
-        :param List errors: List of errors
+        :param errors: List of errors
         :return: List of possible NC accessions for the variation
         """
-        nc_accessions = await self.genomic_base.get_nc_accessions(
-            classification, gene_tokens
-        )
+        nc_accessions = await self.genomic_base.get_nc_accessions(classification)
         if not nc_accessions:
             errors.append("Could not find NC_ accession for {self.variation_name()}")
         return nc_accessions
-
-    @staticmethod
-    def get_gene_symbol_tokens(
-            classification: Classification) -> List[Optional[GeneToken]]:
-        """Return tokens with GeneSymbol token type from a classification.
-
-        :param Classification classification: Classification of input string
-        :return: List of Gene Match Tokens
-        """
-        return [t for t in classification.matching_tokens
-                if t.token_type == TokenType.GENE]
-
-    def _add_gene_symbol_to_tokens(self, gene_symbol: str, gene_symbols: List,
-                                   gene_tokens: List) -> None:
-        """Add a gene symbol to list of gene match tokens.
-
-        :param str gene_symbol: Gene symbol
-        :param List gene_symbols: List of gene symbols matched
-        :param List gene_tokens: List of GeneMatchTokens
-        """
-        if gene_symbol and gene_symbol not in gene_symbols:
-            gene_symbols.append(gene_symbol)
-            gene_tokens.append(self._gene_matcher.match(
-                gene_symbol))
-
-    def _get_gene_tokens(self, classification: Classification,
-                         mappings: List) -> List[Optional[GeneToken]]:
-        """Get gene symbol tokens for protein or transcript reference
-        sequences.
-
-        :param Classification classification: Classification for a list of
-            tokens
-        :param List mappings: List of transcript mapping methods for
-            corresponding reference sequence
-        :return: A list of gene match tokens
-        """
-        gene_tokens = self.get_gene_symbol_tokens(classification)
-        if not gene_tokens:
-            if classification.nomenclature == Nomenclature.HGVS:
-                accession = classification.ac
-            else:
-                raise NotImplementedError
-
-            if not accession:
-                return []
-
-            gene_symbols = list()
-            for mapping in mappings:
-                gene_symbol = mapping(accession)
-                self._add_gene_symbol_to_tokens(
-                    gene_symbol, gene_symbols, gene_tokens
-                )
-                if gene_tokens:
-                    break
-
-        return gene_tokens
-
-    def get_protein_gene_symbol_tokens(
-        self, classification: Classification
-    ) -> List[GeneToken]:
-        """Return gene tokens for a classification with protein reference
-        sequence.
-
-        :param Classification classification: The classification for a list of
-            tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self._get_gene_tokens(classification, self._protein_ac_to_gene_mapping)
-
-    def get_coding_dna_gene_symbol_tokens(
-            self, classification: Classification
-    ) -> List[GeneToken]:
-        """Return gene symbol tokens for classifications with coding dna
-        reference sequence.
-
-        :param Classification classification: Classification of input string
-        :return: A list of gene match tokens
-        """
-        return self._get_gene_tokens(classification, self._cdna_ac_to_gene_mapping)
 
     async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
                                  errors: List, pos3: int = None, pos4: int = None,

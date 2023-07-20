@@ -30,10 +30,11 @@ class Tokenize:
 
     def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
+        self.gene_symbol = gene_symbol
         self.tokenizers = (
             HGVS(),
             GnomadVCF(),
-            gene_symbol,
+            self.gene_symbol,
             FreeTextCategorical(),
             # Substitution
             ProteinSubstitution(),

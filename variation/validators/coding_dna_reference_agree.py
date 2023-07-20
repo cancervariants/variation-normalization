@@ -13,8 +13,7 @@ class CdnaReferenceAgree(Validator):
     """The Coding DNA Reference Agree Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaReferenceAgreeClassification,
-        transcripts: List[str], gene_tokens: List[GeneToken]
+        self, classification: CdnaReferenceAgreeClassification, transcripts: List[str]
     ) -> List[ValidationResult]:
         validation_results = []
 
@@ -33,8 +32,7 @@ class CdnaReferenceAgree(Validator):
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
-                    errors=errors,
-                    gene_tokens=gene_tokens
+                    errors=errors
                 )
             )
 
@@ -51,11 +49,10 @@ class CdnaReferenceAgree(Validator):
         return classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE
 
     async def get_transcripts(
-        self, gene_tokens: List, classification: Classification, errors: List
-    ) -> Optional[List[str]]:
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get transcript accessions for a given classification.
 
-        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
         :param List errors: List of errors
@@ -65,14 +62,6 @@ class CdnaReferenceAgree(Validator):
             transcripts = [classification.ac]
         else:
             transcripts = self.get_coding_dna_transcripts(
-                gene_tokens, errors
+                classification.gene_token, errors
             )
         return transcripts
-
-    def get_gene_tokens(self, classification: Classification) -> List:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_coding_dna_gene_symbol_tokens(classification)

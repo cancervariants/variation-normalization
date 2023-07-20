@@ -4,7 +4,6 @@ from typing import Optional, List
 from variation.schemas.classification_response_schema import (
     ClassificationType, Classification, Nomenclature, ProteinSubstitutionClassification
 )
-from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
 from variation.validators.validator import Validator
@@ -15,7 +14,7 @@ class ProteinSubstitution(Validator):
 
     async def get_valid_invalid_results(
         self, classification: ProteinSubstitutionClassification,
-        transcripts: List[str], gene_tokens: List[GeneToken]
+        transcripts: List[str]
     ) -> List[ValidationResult]:
         errors = []
 
@@ -39,8 +38,7 @@ class ProteinSubstitution(Validator):
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=errors,
-                    gene_tokens=gene_tokens
+                    errors=errors
                 )]
 
         validation_results = []
@@ -59,8 +57,7 @@ class ProteinSubstitution(Validator):
                     accession=t,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors,
-                    gene_tokens=gene_tokens
+                    errors=errors
                 )
             )
 
@@ -77,11 +74,10 @@ class ProteinSubstitution(Validator):
         return classification_type == ClassificationType.PROTEIN_SUBSTITUTION
 
     async def get_transcripts(
-        self, gene_tokens: List, classification: Classification, errors: List
-    ) -> Optional[List[str]]:
+        self, classification: Classification, errors: List
+    ) -> List[str]:
         """Get transcript accessions for a given classification.
 
-        :param List gene_tokens: A list of gene tokens
         :param Classification classification: A classification for a list of
             tokens
         :param List errors: List of errors
@@ -90,13 +86,8 @@ class ProteinSubstitution(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             transcripts = [classification.ac]
         else:
-            transcripts = self.get_protein_transcripts(gene_tokens, errors)
+            transcripts = self.get_protein_transcripts(
+                classification.gene_token, errors
+            )
         return transcripts
 
-    def get_gene_tokens(self, classification: Classification) -> List:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_protein_gene_symbol_tokens(classification)

@@ -73,13 +73,18 @@ class QueryHandler:
                          classifier, validator, translator, hgvs_dup_del_mode,
                          gene_query_handler]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
-        self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params)
-        self.normalize_handler = Normalize(*to_vrs_params + [uta_db])
+        self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params + [transcript_mappings])
+        self.normalize_handler = Normalize(
+            *to_vrs_params + [transcript_mappings, uta_db]
+        )
 
         codon_table = CodonTable()
         mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
-        to_protein_params = to_vrs_params + [uta_db, mane_transcript,
-                                             mane_transcript_mappings, codon_table]
+        to_protein_params = to_vrs_params + [
+            transcript_mappings, uta_db, mane_transcript, mane_transcript_mappings,
+            codon_table
+        ]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
-            *to_protein_params)
+            *to_protein_params
+        )
         self.to_copy_number_handler = ToCopyNumberVariation(*to_vrs_params)

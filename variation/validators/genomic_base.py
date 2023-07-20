@@ -26,16 +26,15 @@ class GenomicBase:
 
     """The Genomic Base class."""
     async def get_nc_accessions(
-        self, classification: Classification, gene_tokens: List[GeneToken]
+        self, classification: Classification
     ) -> List[str]:
         """Get NC accession for a given classification."""
         if classification.nomenclature == Nomenclature.HGVS:
             nc_accessions = [classification.ac]
         elif classification.nomenclature == Nomenclature.FREE_TEXT:
-            if gene_tokens and len(gene_tokens) == 1:
-                nc_accessions = await self.uta.get_ac_from_gene(
-                    gene_tokens[0].matched_value
-                )
+            nc_accessions = await self.uta.get_ac_from_gene(
+                classification.gene_token.matched_value
+            )
         elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
             gnomad_vcf_token = classification.matching_tokens[0]
             chromosome = gnomad_vcf_token.chromosome

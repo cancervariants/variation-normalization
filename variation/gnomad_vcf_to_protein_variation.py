@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscript,\
-    MANETranscriptMappings
+    MANETranscriptMappings, TranscriptMappings
 from cool_seq_tool.schemas import ResidueMode
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -33,13 +33,13 @@ from variation.version import __version__
 class GnomadVcfToProteinVariation(ToVRSATILE):
     """Class for translating gnomAD VCF representation to protein representation"""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess,
-                 tokenizer: Tokenize, classifier: Classify, validator: Validate,
-                 translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
-                 gene_normalizer: GeneQueryHandler,
-                 uta: UTADatabase, mane_transcript: MANETranscript,
-                 mane_transcript_mappings: MANETranscriptMappings,
-                 codon_table: CodonTable) -> None:
+    def __init__(
+        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
+        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+        gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings,
+        uta: UTADatabase, mane_transcript: MANETranscript,
+        mane_transcript_mappings: MANETranscriptMappings, codon_table: CodonTable
+    ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo
@@ -57,8 +57,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             MANE Transcript data
         :param CodonTable codon_table: Codon table data
         """
-        super().__init__(seqrepo_access, tokenizer, classifier, validator,
-                         translator, hgvs_dup_del_mode, gene_normalizer)
+        super().__init__(
+            seqrepo_access, tokenizer, classifier, validator, translator,
+            hgvs_dup_del_mode, gene_normalizer, transcript_mappings
+        )
         self.uta = uta
         self.mane_transcript = mane_transcript
         self.mane_transcript_mappings = mane_transcript_mappings
