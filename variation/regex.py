@@ -186,7 +186,6 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 ]
 
 
-
 GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
     Tuple[any, TokenType, ClassificationType, AmbiguousType]
 ] = [

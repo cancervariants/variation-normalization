@@ -17,7 +17,9 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
 from variation.schemas.hgvs_to_copy_number_schema import CopyChange
-from variation.schemas.translation_response_schema import TranslationResult, AC_PRIORITY_LABELS
+from variation.schemas.translation_response_schema import (
+    TranslationResult, AC_PRIORITY_LABELS
+)
 from variation.version import __version__
 
 

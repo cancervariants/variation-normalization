@@ -54,7 +54,8 @@ class CdnaSubstitution(Translator):
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
                     CoordinateType.CODING_DNA, AltType.SUBSTITUTION, warnings,
-                    alt=classification.alt, cds_start=mane.get("coding_start_site", None)
+                    alt=classification.alt,
+                    cds_start=mane.get("coding_start_site", None)
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession

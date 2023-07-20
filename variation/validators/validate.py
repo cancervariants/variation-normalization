@@ -104,7 +104,7 @@ class Validate:
                         valid_possibilities.append(validation_result)
                     else:
                         invalid_possibilities.append(validation_result)
-                        invalid_classification = classification.classification_type.value
+                        invalid_classification = classification.classification_type.value  # noqa: E501
 
             if found_valid_result:
                 break

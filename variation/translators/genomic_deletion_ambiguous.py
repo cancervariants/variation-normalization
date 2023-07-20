@@ -100,7 +100,8 @@ class GenomicDeletionAmbiguous(Translator):
                 )
             else:
                 self.is_valid(
-                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2, pos3=pos3
+                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2,
+                    pos3=pos3
                 )
 
             if errors:

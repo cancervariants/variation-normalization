@@ -106,7 +106,7 @@ class HgvsClassifier(Classifier):
                     params["pos"] = int(params["pos"])
 
                     return CdnaSubstitutionClassification(**params)
-                elif classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE:
+                elif classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE:  # noqa: E501
                     params["pos"] = int(params["pos"])
                     return CdnaReferenceAgreeClassification(**params)
                 elif classification_type == ClassificationType.CODING_DNA_DELINS:

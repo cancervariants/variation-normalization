@@ -50,7 +50,8 @@ class ProteinDelIns(Validator):
                     classification.inserted_sequence = ins_codes
                 else:
                     errors.append(
-                        f"`inserted_sequence` not valid amino acid(s): {classification.inserted_sequence}"
+                        f"`inserted_sequence` not valid amino acid(s): "
+                        f"{classification.inserted_sequence}"
                     )
 
         if errors:

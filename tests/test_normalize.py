@@ -381,7 +381,6 @@ def nm_004448_coding_dna_delins(erbb2_context):
     return VariationDescriptor(**params)
 
 
-
 @pytest.fixture(scope="module")
 def nm_000551(vhl_gene_context):
     """Create test fixture for NM_000551.4:c.615delinsAA."""

@@ -285,7 +285,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         ClassificationType.GENOMIC_DELETION,
                         ClassificationType.GENOMIC_INSERTION
                     }:
-                        if classification_token.classification_type == ClassificationType.GENOMIC_DELETION:
+                        if classification_token.classification_type == ClassificationType.GENOMIC_DELETION:  # noqa: E501
                             alt_type = AltType.DELETION
                             # TODO: Check if we should be doing this here or fixing pos
                             # in classification
@@ -314,7 +314,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                 )
                                 continue
 
-                        if classification_token.classification_type == ClassificationType.GENOMIC_SUBSTITUTION:
+                        if classification_token.classification_type == ClassificationType.GENOMIC_SUBSTITUTION:  # noqa: E501
                             alt_type = AltType.SUBSTITUTION
                         else:
                             alt_type = AltType.REFERENCE_AGREE

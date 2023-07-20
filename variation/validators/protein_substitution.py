@@ -90,4 +90,3 @@ class ProteinSubstitution(Validator):
                 classification.gene_token, errors
             )
         return transcripts
-

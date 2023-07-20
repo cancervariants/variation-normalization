@@ -2,11 +2,15 @@
 from typing import List, Optional, Tuple
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor, MoleculeContext
+from ga4gh.vrsatile.pydantic.vrsatile_models import (
+    VariationDescriptor, GeneDescriptor, MoleculeContext
+)
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
 from gene.query import QueryHandler as GeneQueryHandler
 
-from variation.schemas.classification_response_schema import ClassificationType, Nomenclature
+from variation.schemas.classification_response_schema import (
+    ClassificationType, Nomenclature
+)
 from variation.to_vrs import ToVRS
 from variation.tokenizers import Tokenize
 from variation.classifiers import Classify

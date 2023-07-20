@@ -23,8 +23,8 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
-                        "should be listed from 5' to 3'")]
+                        "Positions duplicated should contain two different positions "
+                        "and should be listed from 5' to 3'")]
                 )]
         elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
                                                AmbiguousType.AMBIGUOUS_5}:
@@ -34,8 +34,8 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
-                        "should be listed from 5' to 3'")]
+                        "Positions duplicated should contain two different positions "
+                        "and should be listed from 5' to 3'")]
                 )]
         elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
             if classification.pos2 <= classification.pos0:
@@ -44,8 +44,8 @@ class GenomicDuplicationAmbiguous(Validator):
                     classification=classification,
                     is_valid=False,
                     errors=[(
-                        "Positions duplicated should contain two different positions and "
-                        "should be listed from 5' to 3'")]
+                        "Positions duplicated should contain two different positions "
+                        "and should be listed from 5' to 3'")]
                 )]
         else:
             return [ValidationResult(
