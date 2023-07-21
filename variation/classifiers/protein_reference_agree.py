@@ -21,7 +21,7 @@ class ProteinReferenceAgreeClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> ProteinReferenceAgreeClassification:
         gene_token, protein_ref_agree_token = tokens
 
         return ProteinReferenceAgreeClassification(

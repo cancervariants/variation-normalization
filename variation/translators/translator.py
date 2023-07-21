@@ -104,7 +104,7 @@ class Translator(ABC):
     def is_valid(
         self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
-    ):
+    ) -> None:
         """Assumes grch38"""
         gene_start = None
         gene_end = None

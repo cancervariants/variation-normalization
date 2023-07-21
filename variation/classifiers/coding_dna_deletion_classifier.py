@@ -21,7 +21,7 @@ class CdnaDeletionClassifier(Classifier):
             [TokenType.GENE, TokenType.CODING_DNA_DELETION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> CdnaDeletionClassification:
         gene_token, cdna_deletion_token = tokens
 
         return CdnaDeletionClassification(

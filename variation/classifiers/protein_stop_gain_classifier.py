@@ -21,7 +21,7 @@ class ProteinStopGainClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_STOP_GAIN]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> ProteinStopGainClassification:
         gene_token, protein_stop_gain_token = tokens
 
         return ProteinStopGainClassification(

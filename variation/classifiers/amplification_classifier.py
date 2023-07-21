@@ -21,7 +21,7 @@ class AmplificationClassifier(Classifier):
             [TokenType.GENE, TokenType.AMPLIFICATION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> AmplificationClassification:
         return AmplificationClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,

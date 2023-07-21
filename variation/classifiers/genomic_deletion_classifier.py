@@ -21,7 +21,7 @@ class GenomicDeletionClassifier(Classifier):
             [TokenType.GENE, TokenType.GENOMIC_DELETION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> GenomicDeletionClassification:
         gene_token, genomic_deletion_token = tokens
 
         return GenomicDeletionClassification(

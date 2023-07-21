@@ -21,7 +21,7 @@ class ProteinInsertionClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_INSERTION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> ProteinInsertionClassification:
         gene_token, protein_ins_token = tokens
 
         return ProteinInsertionClassification(

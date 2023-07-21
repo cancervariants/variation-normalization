@@ -21,7 +21,7 @@ class ProteinDeletionClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_DELETION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> ProteinDeletionClassification:
         gene_token, protein_del_token = tokens
 
         return ProteinDeletionClassification(

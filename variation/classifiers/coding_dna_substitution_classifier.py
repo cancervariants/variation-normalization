@@ -1,5 +1,5 @@
 """A module for the Coding DNA Substitution Classifier."""
-from typing import List
+from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
     ClassificationType, CdnaSubstitutionClassification, Nomenclature, SequenceOntology
@@ -22,7 +22,7 @@ class CodingDNASubstitutionClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CODING_DNA_SUBSTITUTION]  # noqa: E501
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> Optional[CdnaSubstitutionClassification]:
         if len(tokens) == 2:
             gene_token, cdna_sub_token = tokens
         else:

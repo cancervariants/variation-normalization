@@ -1,3 +1,4 @@
+"""Module for testing classifiers"""
 from variation.schemas.classification_response_schema import (
     AmplificationClassification, ProteinSubstitutionClassification,
     ProteinStopGainClassification, ProteinReferenceAgreeClassification,
@@ -22,7 +23,7 @@ def _get_classification(test_tokenizer, test_classifier, q):
 def assert_match(
     test_tokenizer, test_classifier, q, expected_classification_instance
 ):
-    """Assertion checks when a single classification match is expected"""
+    """Check that a single classification match is working correctly"""
     classification = _get_classification(test_tokenizer, test_classifier, q)
     assert isinstance(
         classification,
@@ -31,7 +32,7 @@ def assert_match(
 
 
 def assert_no_match(test_tokenizer, test_classifier, q):
-    """Assertion checks when no classification match is expected"""
+    """Check that no classification match is working correctly"""
     classification = _get_classification(test_tokenizer, test_classifier, q)
     assert classification is None, q
 

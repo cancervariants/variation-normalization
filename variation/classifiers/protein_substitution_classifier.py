@@ -21,7 +21,7 @@ class ProteinSubstitutionClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION]
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> ProteinSubstitutionClassification:
         gene_token, protein_sub_token = tokens
 
         return ProteinSubstitutionClassification(

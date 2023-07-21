@@ -1,5 +1,5 @@
 """A module for the Genomic Substitution Classifier."""
-from typing import List
+from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
     ClassificationType, GenomicSubstitutionClassification, Nomenclature,
@@ -23,7 +23,7 @@ class GenomicSubstitutionClassifier(Classifier):
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_SUBSTITUTION]  # noqa: E501
         ]
 
-    def match(self, tokens: List[Token]):
+    def match(self, tokens: List[Token]) -> Optional[GenomicSubstitutionClassification]:
         if len(tokens) == 2:
             gene_token, genomic_sub_token = tokens
         else:

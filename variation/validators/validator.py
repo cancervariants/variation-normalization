@@ -268,7 +268,7 @@ class Validator(ABC):
     def validate_ac_and_pos(
         self, ac: str, start_pos: int, end_pos: Optional[int] = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
-    ):
+    ) -> Optional[str]:
         if residue_mode == ResidueMode.RESIDUE:
             start_pos -= 1
 

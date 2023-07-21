@@ -205,7 +205,7 @@ def get_hgvs_dup_del_mode(
     tokens: List[Token], endpoint_name: Endpoint,
     hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
     baseline_copies: Optional[int] = None
-):
+) -> HGVSDupDelModeEnum:
     warning = None
     if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
         # gnomad vcf should always be a literal seq expression (allele)
