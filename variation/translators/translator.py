@@ -1,7 +1,8 @@
 """Module for translation."""
 from abc import abstractmethod, ABC
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, NamedTuple, Tuple
 
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import (
@@ -105,60 +106,6 @@ class Translator(ABC):
             "pos1": pos1
         }
 
-    async def get_grch38_data_ambiguous(
-        self, classification, errors, ac
-    ) -> Dict:
-        pos0, pos1, pos2, pos3, new_ac = None, None, None, None, None
-        if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-            grch38_pos0_pos1 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos1
-            )
-            if grch38_pos0_pos1:
-                pos0, pos1 = grch38_pos0_pos1["pos"]
-                ac_pos0_pos1 = grch38_pos0_pos1["ac"]
-
-                grch38_pos2_pos3 = await self.mane_transcript.g_to_grch38(
-                    ac, classification.pos2, classification.pos3
-                )
-
-                if grch38_pos2_pos3:
-                    pos2, pos3 = grch38_pos2_pos3["pos"]
-                    ac_pos2_pos3 = grch38_pos2_pos3["ac"]
-
-                    if ac_pos0_pos1 != ac_pos2_pos3:
-                        errors.append(
-                            f"{ac_pos0_pos1} does not equal {ac_pos2_pos3} when lifting"
-                            " over to GRCh38"
-                        )
-                    else:
-                        new_ac = ac_pos0_pos1
-        elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
-                                               AmbiguousType.AMBIGUOUS_5}:
-            grch38 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos1, classification.pos2
-            )
-            if grch38:
-                pos1, pos2 = grch38["pos"]
-                new_ac = grch38["ac"]
-        elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
-            grch38 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos2
-            )
-            if grch38:
-                pos0, pos2, = grch38["pos"]
-                new_ac = grch38["ac"]
-
-        if not new_ac:
-            errors.append(f"Unable to find a GRCh38 accession for: {ac}")
-
-        return {
-            "ac": new_ac,
-            "pos0": pos0,
-            "pos1": pos1,
-            "pos2": pos2,
-            "pos3": pos3
-        }
-
     def translate_sequence_identifier(
         self, sequence_id: str, errors: List[str]
     ) -> Optional[str]:
@@ -184,6 +131,8 @@ class Translator(ABC):
 
             ga4gh_seq_id = ids[0]
         return ga4gh_seq_id
+
+
 
     def is_valid(
         self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
