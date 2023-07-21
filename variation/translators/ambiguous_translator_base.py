@@ -20,7 +20,7 @@ from variation.utils import get_assembly
 
 
 class AmbiguousData(NamedTuple):
-    """Represents Ambiguous data assembly"""
+    """Represents Ambiguous data"""
 
     ac: StrictStr
     pos0: Union[StrictInt, Literal["?"]]
@@ -196,10 +196,15 @@ class AmbiguousTranslator(Translator):
                         warnings += errors
                         return None
 
+                    ac = grch38_data.ac
+                    pos0 = grch38_data.pos0
+                    pos1 = grch38_data.pos1
+                    pos2 = grch38_data.pos2
+                    pos3 = grch38_data.pos3
+
                 self.is_valid(
-                    classification.gene_token, grch38_data.ac, grch38_data.pos0,
-                    grch38_data.pos1, errors, pos2=grch38_data.pos2,
-                    pos3=grch38_data.pos3
+                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2,
+                    pos3=pos3
                 )
             else:
                 self.is_valid(

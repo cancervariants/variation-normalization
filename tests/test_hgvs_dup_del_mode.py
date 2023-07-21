@@ -1878,9 +1878,6 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
-    assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
-
     resp = await test_handler.normalize(
         q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT, baseline_copies=2
     )

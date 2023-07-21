@@ -75,37 +75,6 @@ class Translator(ABC):
     ) -> Optional[TranslationResult]:
         """"""
 
-    async def get_grch38_data(self, classification, errors, ac):
-        """
-
-        :param ac: Accession
-        """
-        pos0, pos1, new_ac = None, None, None
-
-        if classification.pos1:
-            grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos1
-            )
-            if grch38_pos:
-                pos0, pos1 = grch38_pos["pos"]
-                new_ac = grch38_pos["ac"]
-        else:
-            grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos0
-            )
-            if grch38_pos:
-                pos0, _ = grch38_pos["pos"]
-                new_ac = grch38_pos["ac"]
-
-        if not new_ac:
-            errors.append(f"Unable to find a GRCh38 accession for: {ac}")
-
-        return {
-            "ac": new_ac,
-            "pos0": pos0,
-            "pos1": pos1
-        }
-
     def translate_sequence_identifier(
         self, sequence_id: str, errors: List[str]
     ) -> Optional[str]:
@@ -131,8 +100,6 @@ class Translator(ABC):
 
             ga4gh_seq_id = ids[0]
         return ga4gh_seq_id
-
-
 
     def is_valid(
         self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
