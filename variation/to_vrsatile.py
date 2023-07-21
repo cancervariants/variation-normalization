@@ -1,5 +1,5 @@
 """Module for representing VRSATILE objects"""
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import (
@@ -123,8 +123,10 @@ class ToVRSATILE(ToVRS):
             gene_context=gene_context
         ), warnings
 
-    def _get_hgvs_gene_context(self, accession: str, molecule_context: MoleculeContext):
-        def _get_gene_token(ac, mappings):
+    def _get_hgvs_gene_context(
+        self, accession: str, molecule_context: MoleculeContext
+    ) -> Optional[GeneToken]:
+        def _get_gene_token(ac: str, mappings: List[Callable]) -> Optional[GeneToken]:
             gene_token = None
             for mapping in mappings:
                 gene_symbol = mapping(ac)

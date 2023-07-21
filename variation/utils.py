@@ -1,5 +1,5 @@
 """Module for general functionality throughout the app"""
-from typing import List, Tuple, Optional, Dict
+from typing import List, Tuple, Optional, Dict, Union, Literal
 import re
 
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3, aa3_to_aa1 as _aa3_to_aa1
@@ -143,7 +143,9 @@ def get_aa1_codes(aa: str) -> Optional[str]:
 
 
 def get_ambiguous_type(
-    pos0, pos1, pos2, pos3, ambiguous_regex_type
+    pos0: Union[int, Literal["?"]], pos1: Optional[Union[int, Literal["?"]]],
+    pos2: Union[int, Literal["?"]], pos3: Optional[Union[int, Literal["?"]]],
+    ambiguous_regex_type: AmbiguousRegexType
 ) -> Optional[AmbiguousType]:
     ambiguous_type = None
     if ambiguous_regex_type == AmbiguousRegexType.REGEX_1:
@@ -182,7 +184,7 @@ def get_ambiguous_type(
 
 
 def get_assembly(
-    seqrepo_access, alt_ac: str
+    seqrepo_access: SeqRepoAccess, alt_ac: str
 ) -> Tuple[Optional[ClinVarAssembly], Optional[str]]:
     assembly = None
     warning = None

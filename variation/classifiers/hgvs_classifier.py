@@ -53,7 +53,9 @@ class HgvsClassifier(Classifier):
 
         return classification
 
-    def _protein_classification(self, token, params) -> Optional[Classification]:
+    def _protein_classification(
+        self, token: HgvsToken, params: Dict
+    ) -> Optional[Classification]:
         for regex, _, classification_type in PROTEIN_REGEXPRS:
             match = regex.match(token.change)
 
@@ -86,7 +88,9 @@ class HgvsClassifier(Classifier):
 
         return None
 
-    def _cdna_classification(self, token, params) -> Optional[Classification]:
+    def _cdna_classification(
+        self, token: HgvsToken, params: Dict
+    ) -> Optional[Classification]:
         for regex, _, classification_type in CDNA_REGEXPRS:
             match = regex.match(token.change)
 
@@ -122,7 +126,9 @@ class HgvsClassifier(Classifier):
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return CdnaInsertionClassification(**params)
 
-    def _genomic_classification(self, token, params) -> Optional[Classification]:
+    def _genomic_classification(
+        self, token: HgvsToken, params: Dict
+    ) -> Optional[Classification]:
         for regex, _, classification_type in GENOMIC_REGEXPRS:
             match = regex.match(token.change)
 
@@ -163,7 +169,7 @@ class HgvsClassifier(Classifier):
                     return GenomicDuplicationClassification(**params)
 
     def _genomic_ambiguous_classification(
-        self, token, params
+        self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         if token.token.endswith("dup"):
             return self._genomic_dup_ambiguous_classification(token, params)
@@ -175,7 +181,7 @@ class HgvsClassifier(Classifier):
     @staticmethod
     def _update_ambiguous_params(
         params: Dict, regex_type: AmbiguousRegexType
-    ):
+    ) -> None:
         params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
 
         if "pos1" in params:
@@ -197,7 +203,7 @@ class HgvsClassifier(Classifier):
             params["ambiguous_type"] = ambiguous_type
 
     def _genomic_dup_ambiguous_classification(
-        self, token, params
+        self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         for regex, _, classification_type, regex_type in GENOMIC_DUP_AMBIGUOUS_REGEXPRS:
             match = regex.match(token.change)
@@ -215,7 +221,7 @@ class HgvsClassifier(Classifier):
         return None
 
     def _genomic_del_ambiguous_classification(
-        self, token, params
+        self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         for regex, _, classification_type, regex_type in GENOMIC_DEL_AMBIGUOUS_REGEXPRS:
             match = regex.match(token.change)

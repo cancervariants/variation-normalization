@@ -1,5 +1,5 @@
 """Module for Genomic Deletion Translation."""
-from typing import Optional, List, NamedTuple
+from typing import Optional, List, NamedTuple, Union
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
@@ -16,7 +16,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicDeletionClassification, Nomenclature
+    GenomicDeletionClassification, GenomicDuplicationClassification, Nomenclature
 )
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.utils import get_assembly
@@ -32,11 +32,15 @@ class DelDupData(NamedTuple):
 
 class GenomicDelDupTranslator(Translator):
 
-    async def get_grch38_data(self, classification, errors, ac) -> DelDupData:
-        """
-
-        :param ac: Accession
-        """
+    async def get_grch38_data(
+        self,
+        classification: Union[
+            GenomicDeletionClassification,
+            GenomicDuplicationClassification
+        ],
+        errors: List[str],
+        ac: str
+    ) -> DelDupData:
         pos0, pos1, new_ac = None, None, None
 
         if classification.pos1:
@@ -108,7 +112,8 @@ class GenomicDelDupTranslator(Translator):
                     if alt_type == AltType.DELETION:
                         if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                             invalid_ref_msg = self.validate_reference_sequence(
-                                ac, pos0, pos1 + 1, classification.matching_tokens[0].ref
+                                ac, pos0, pos1 + 1,
+                                classification.matching_tokens[0].ref
                             )
                             if invalid_ref_msg:
                                 warnings.append(invalid_ref_msg)

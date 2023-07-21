@@ -1,8 +1,7 @@
 """Module for translation."""
 from abc import abstractmethod, ABC
-from typing import Dict, Optional, List, NamedTuple, Tuple
+from typing import Optional, List
 
-from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import (
@@ -10,6 +9,7 @@ from cool_seq_tool.data_sources import (
 )
 from cool_seq_tool.schemas import ResidueMode
 
+from variation.schemas.token_response_schema import GeneToken
 from variation.validators.genomic_base import GenomicBase
 from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
@@ -19,9 +19,7 @@ from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.schemas.classification_response_schema import (
-    AmbiguousType, ClassificationType
-)
+from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.translation_response_schema import TranslationResult
 
 
@@ -102,7 +100,8 @@ class Translator(ABC):
         return ga4gh_seq_id
 
     def is_valid(
-        self, gene_token, alt_ac, pos0, pos1, errors, pos2=None, pos3=None,
+        self, gene_token: GeneToken, alt_ac: str, pos0: int, pos1: int,
+        errors: List[str], pos2: Optional[int] = None, pos3: Optional[int] = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> None:
         """Assumes grch38"""

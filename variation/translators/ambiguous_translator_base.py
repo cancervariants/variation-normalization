@@ -10,7 +10,8 @@ from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
 from variation.schemas.classification_response_schema import (
-    AmbiguousType, GenomicDeletionAmbiguousClassification
+    AmbiguousType, GenomicDeletionAmbiguousClassification,
+    GenomicDuplicationAmbiguousClassification
 )
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
@@ -39,7 +40,13 @@ class AmbiguousSequenceLocation(NamedTuple):
 class AmbiguousTranslator(Translator):
 
     async def get_grch38_data_ambiguous(
-        self, classification, errors, ac
+        self,
+        classification: Union[
+            GenomicDeletionAmbiguousClassification,
+            GenomicDuplicationAmbiguousClassification
+        ],
+        errors: List[str],
+        ac: str
     ) -> AmbiguousData:
         pos0, pos1, pos2, pos3, new_ac = None, None, None, None, None
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
@@ -87,8 +94,9 @@ class AmbiguousTranslator(Translator):
         return AmbiguousData(ac=new_ac, pos0=pos0, pos1=pos1, pos2=pos2, pos3=pos3)
 
     def get_dup_del_ambiguous_seq_loc(
-        self, ambiguous_type: AmbiguousType, ac: str, pos0, pos1, pos2, pos3,
-        warnings: List[str]
+        self, ambiguous_type: AmbiguousType, ac: str, pos0: Union[int, Literal["?"]],
+        pos1: Optional[Union[int, Literal["?"]]], pos2: Union[int, Literal["?"]],
+        pos3: Optional[Union[int, Literal["?"]]], warnings: List[str]
     ) -> AmbiguousSequenceLocation:
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             ival = self.vrs.get_ival_certain_range(pos0, pos1, pos2, pos3)
