@@ -56,7 +56,6 @@ class GenomicDuplicationAmbiguous(Validator):
             )]
 
         validation_results = []
-        # _validate_gene_pos?
 
         for alt_ac in accessions:
             errors = []
@@ -86,6 +85,15 @@ class GenomicDuplicationAmbiguous(Validator):
                 )
                 if invalid_ac_pos:
                     errors.append(invalid_ac_pos)
+
+            if not errors and classification.gene_token:
+                invalid_gene_pos_msg = await self._validate_gene_pos(
+                    classification.gene_token.matched_value, alt_ac,
+                    classification.pos0, classification.pos1, pos2=classification.pos2,
+                    pos3=classification.pos3
+                )
+                if invalid_gene_pos_msg:
+                    errors.append(invalid_gene_pos_msg)
 
             validation_results.append(
                 ValidationResult(

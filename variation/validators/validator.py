@@ -159,20 +159,22 @@ class Validator(ABC):
             errors.append("No genomic accessions found")
         return accessions
 
-    async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
-                                 errors: List, pos3: int = None, pos4: int = None,
-                                 residue_mode: str = "residue") -> None:
+    async def _validate_gene_pos(
+        self, gene: str, alt_ac: str, pos0: int, pos1: Optional[int],
+        pos2: Optional[int] = None,  pos3: Optional[int] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE
+    ) -> Optional[str]:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
 
-        :param str gene: Queried gene
-        :param str alt_ac: Genomic accession
-        :param int pos1: Queried genomic position
-        :param int pos2: Queried genomic position
-        :param int pos3: Queried genomic position
-        :param int pos4: Queried genomic position
-        :param str residue_mode: Must be either `inter-residue` or `residue`
-        :param List errors: List of errors
+        :param gene: Gene symbol
+        :param alt_ac: Genomic accession
+        :param pos0: Queried genomic position
+        :param pos1: Queried genomic position
+        :param pos2: Queried genomic position
+        :param pos3: Queried genomic position
+        :param residue_mode: Residue mode for positions
+        :return: Invalid error message if invalid. Else, `None`
         """
         gene_start_end = {"start": None, "end": None}
         resp = self.gene_normalizer.search(gene, incl="Ensembl")
@@ -184,8 +186,7 @@ class Validator(ABC):
                 gene_start_end["end"] = ensembl_loc.interval.end.value - 1
 
         if gene_start_end["start"] is None and gene_start_end["end"] is None:
-            errors.append(f"gene-normalizer unable to find Ensembl location"
-                          f"for {gene}")
+            return f"gene-normalizer unable to find Ensembl location for gene: {gene}"
         else:
             assembly = await self.uta.get_chr_assembly(alt_ac)
             if assembly:
@@ -194,25 +195,23 @@ class Validator(ABC):
                 chromosome, assembly = assembly
                 for key in gene_start_end.keys():
                     gene_pos = gene_start_end[key]
-                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(  # noqa: E501
-                        chromosome, gene_pos)
+                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(
+                        chromosome, gene_pos
+                    )
                     if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
-                        errors.append(f"{gene_pos} does not"
-                                      f" exist on {chromosome}")
-                        return None
+                        return f"{gene_pos} does not exist on {chromosome}"
                     else:
                         gene_start_end[key] = gene_pos_liftover[0][1]
 
             gene_start = gene_start_end["start"]
             gene_end = gene_start_end["end"]
 
-            for pos in [pos1, pos2, pos3, pos4]:
+            for pos in [pos0, pos1, pos2, pos3]:
                 if pos not in ["?", None]:
                     if residue_mode == "residue":
                         pos -= 1
                     if not (gene_start <= pos <= gene_end):
-                        errors.append(f"Position {pos} out of index on "
-                                      f"{alt_ac} on gene, {gene}")
+                        return f"Position {pos} out of index on {alt_ac} on gene, {gene}"  # noqa: E501
 
     def _check_index(self, ac: str, pos: int, errors: List) -> Optional[str]:
         """Check that index actually exists

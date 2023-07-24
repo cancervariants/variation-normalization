@@ -25,7 +25,6 @@ class GenomicDeletion(Validator):
             )]
 
         validation_results = []
-        # _validate_gene_pos?
 
         for alt_ac in accessions:
             errors = []
@@ -58,6 +57,14 @@ class GenomicDeletion(Validator):
 
                     if validate_ref_msg:
                         errors.append(validate_ref_msg)
+
+            if not errors and classification.gene_token:
+                invalid_gene_pos_msg = await self._validate_gene_pos(
+                    classification.gene_token.matched_value, alt_ac,
+                    classification.pos0, classification.pos1
+                )
+                if invalid_gene_pos_msg:
+                    errors.append(invalid_gene_pos_msg)
 
             validation_results.append(
                 ValidationResult(
