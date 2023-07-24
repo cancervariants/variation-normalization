@@ -72,7 +72,6 @@ class Normalize(ToVRSATILE):
             # accession. If that doesn't match, we'll just sort the original
             # acs and return the first element. Later on, we'll want to figure
             # out a better way to do this.
-            # TODO: issue-176 return warning message about multiple being found
             if og_ac_preferred_match:
                 translation_result = og_ac_preferred_match
             else:

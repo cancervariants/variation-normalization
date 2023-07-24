@@ -1242,12 +1242,6 @@ async def test_coding_dna_insertion(test_handler, coding_dna_insertion):
     assertion_checks(resp.variation_descriptor, coding_dna_insertion,
                      "ENST00000331728.9:c.2049_2050insA")
 
-    # TODO: issue-136
-    # resp = await test_handler.normalize("LIMK2 c.2049_2050insA")
-    # assert resp.variation_descriptor.id == "normalize.variation:LIMK2%20c.2049_2050insA"  # noqa: E501
-    # resp.variation_descriptor.id = "normalize.variation:ENST00000331728.9%3Ac.2049_2050insA"  # noqa: E501
-    # assertion_checks(resp.variation_descriptor, coding_dna_insertion)
-
 
 @pytest.mark.asyncio
 async def test_genomic_insertion(test_handler, genomic_insertion,

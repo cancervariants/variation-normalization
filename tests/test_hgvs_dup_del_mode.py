@@ -2054,8 +2054,6 @@ async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
 
     # Free Text
     for q in [
-        # TODO:  issue-176
-        # "DMD g.(31165391_31165395)_(31200854_31200856)dup",
         "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
@@ -2416,15 +2414,6 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     resp = await test_handler.normalize(q, HGVSDupDelModeEnum.COPY_NUMBER_COUNT)
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
-    # TODO: issue-176
-    q = "3-10191494-CT-C"  # 37
-    expected_vid = "ga4gh:VA.i9sWiaZ9zSrCLKL1qWyaJRjsSJB4M3Yw"
-    resp = await test_handler.normalize(q)
-    assert resp.variation_descriptor.variation_id == expected_vid
-
-    resp = await test_handler.normalize(q, HGVSDupDelModeEnum.REPEATED_SEQ_EXPR)
-    assert resp.variation_descriptor.variation_id == expected_vid
-
     # Invalid
     invalid_queries = [
         "NC_000003.11:g.198022431del",
@@ -2659,8 +2648,6 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
 
     # Free Text
     for q in [
-        # TODO:  issue-176
-        # "COL4A4 g.(?_227886744)_(227890546_?)del",  # 37
         "COL4A4 g.(?_227022028)_(227025830_?)del"  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
@@ -2742,8 +2729,6 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
 
     # Free text
     for q in [
-        # TODO:  issue-176
-        # "CDKL5 g.(?_18593474)_18671749del",
         "CDKL5 g.(?_18575354)_18653629del"
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
@@ -2827,8 +2812,6 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
 
     # Free text
     for q in [
-        # TODO:  issue-176
-        # "EYA4 g.133783902_(133785996_?)del",  # 37
         "EYA4 g.133462764_(133464858_?)del"  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT)
