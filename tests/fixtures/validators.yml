@@ -95,8 +95,6 @@ coding_dna_delins:
     - query: NM_000551.3:c.615delinsAA
     - query: NM_000551.3:c.4559delinsAA
     - query: ENST00000440973.5:c.1607_1608delinsAG
-      # TODO: Find this gene symbol
-#    - query: ENST00000277541.6:c.7330delinsACA
     - query: ENST00000318560.5:c.1423_1424delinsGT
     - query: ENST00000256474.2:c.364_365delinsAT
     - query: NM_000551.3:c.615delinsAA

@@ -923,7 +923,6 @@ async def test_coding_dna_and_genomic_substitution(
     # MANE transcript
     refseq_id = "normalize.variation:NM_004333.4%3Ac.1799T%3EA"
 
-    # TODO: Check if this should return a different VRS object?
     resp = await test_handler.normalize("ENST00000288602.10:c.1799T>A")
     assert resp.variation_descriptor.id == \
         "normalize.variation:ENST00000288602.10%3Ac.1799T%3EA"
@@ -1009,15 +1008,6 @@ async def test_coding_dna_reference_agree(test_handler,
     assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
                      "ENST00000288602.11:c.1799=")
 
-    # TODO: What to do for older Ensembl transcripts that aren"t found
-    #  in seqrepo or UTA
-    # resp = await test_handler.normalize("ENST00000288602.6:c.1799=")
-    # assert_coding_dna_genomic_reference_agree(resp, braf_gene_context,
-    #                                           1798, 1799)
-    # assert resp.variation_descriptor.id == "normalize.variation:ENST00000288602.6%3Ac.1799%3D"  # noqa: E501
-    # assert resp.variation_descriptor.label == "ENST00000288602.6:c.1799="
-    # assert resp.variation_descriptor.molecule_context == "transcript"
-
     resp = await test_handler.normalize("BRAF    c.1799=")
     assert resp.variation_descriptor.id == "normalize.variation:BRAF%20c.1799%3D"
     resp.variation_descriptor.id = fixture_id
@@ -1068,8 +1058,6 @@ async def test_coding_dna_delins(test_handler, nm_004448_coding_dna_delins,
     resp = await test_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
     assertion_checks(resp.variation_descriptor, nm_004448_coding_dna_delins,
                      "NM_004448.4:c.2326_2327delinsCT")
-
-    # TODO: Test ENST###.c
 
     resp = await test_handler.normalize("NM_000551.3:c.615delinsAA")
     nm_000551.id = "normalize.variation:NM_000551.3%3Ac.615delinsAA"
