@@ -89,8 +89,6 @@ class GenomicDelDupTranslator(Translator):
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
-
-            # TODO: Check if we need to liftover
             assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
             if w:
                 warnings.append(w)
@@ -130,20 +128,17 @@ class GenomicDelDupTranslator(Translator):
             ac = validation_result.accession
             assembly = None
 
-        if classification.gene_token:
+        if classification.nomenclature == Nomenclature.FREE_TEXT and classification.gene_token:  # noqa: E501
             errors = []
-            if not assembly:
-                if not grch38_data:
-                    grch38_data = await self.get_grch38_data(
-                        classification, errors, ac
-                    )
-                    if errors:
-                        warnings += errors
-                        return None
+            if not assembly and not grch38_data:
+                grch38_data = await self.get_grch38_data(classification, errors, ac)
+                if errors:
+                    warnings += errors
+                    return None
 
-                    pos0 = grch38_data.pos0
-                    pos1 = grch38_data.pos1
-                    ac = grch38_data.ac
+                pos0 = grch38_data.pos0
+                pos1 = grch38_data.pos1
+                ac = grch38_data.ac
 
             self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 

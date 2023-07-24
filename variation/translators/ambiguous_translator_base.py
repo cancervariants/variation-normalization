@@ -11,7 +11,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.schemas.classification_response_schema import (
     AmbiguousType, GenomicDeletionAmbiguousClassification,
-    GenomicDuplicationAmbiguousClassification
+    GenomicDuplicationAmbiguousClassification, Nomenclature
 )
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
@@ -154,8 +154,6 @@ class AmbiguousTranslator(Translator):
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
-
-            # TODO: Check if we need to do liftover
             assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
             if w:
                 warnings.append(w)
@@ -191,24 +189,22 @@ class AmbiguousTranslator(Translator):
             pos3 = classification.pos3
             assembly = None
 
-        if classification.gene_token:
-            # Free text
+        if classification.nomenclature == Nomenclature.FREE_TEXT and classification.gene_token:  # noqa: E501
             errors = []
-            if not assembly:
-                if not grch38_data:
-                    grch38_data = await self.get_grch38_data_ambiguous(
-                        classification, errors, ac
-                    )
+            if not assembly and not grch38_data:
+                grch38_data = await self.get_grch38_data_ambiguous(
+                    classification, errors, ac
+                )
 
-                    if errors:
-                        warnings += errors
-                        return None
+                if errors:
+                    warnings += errors
+                    return None
 
-                    ac = grch38_data.ac
-                    pos0 = grch38_data.pos0
-                    pos1 = grch38_data.pos1
-                    pos2 = grch38_data.pos2
-                    pos3 = grch38_data.pos3
+                ac = grch38_data.ac
+                pos0 = grch38_data.pos0
+                pos1 = grch38_data.pos1
+                pos2 = grch38_data.pos2
+                pos3 = grch38_data.pos3
 
                 self.is_valid(
                     classification.gene_token, ac, pos0, pos1, errors, pos2=pos2,
