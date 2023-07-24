@@ -13,12 +13,11 @@ class GenomicReferenceAgree(Validator):
     """The Genomic Reference Agree Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicReferenceAgreeClassification,
-        transcripts: List[str]
+        self, classification: GenomicReferenceAgreeClassification, accessions: List[str]
     ) -> List[ValidationResult]:
         validation_results = []
 
-        for t in transcripts:
+        for alt_ac in accessions:
             errors = []
 
             # TODO: Validate pos exists on given accession
@@ -27,13 +26,13 @@ class GenomicReferenceAgree(Validator):
                 ref = token.ref
                 pos = token.pos
 
-                invalid_ref_msg = self.validate_reference_sequence(t, pos, pos, ref)
+                invalid_ref_msg = self.validate_reference_sequence(alt_ac, pos, pos, ref)
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)
 
             validation_results.append(
                 ValidationResult(
-                    accession=t,
+                    accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
                     errors=errors
@@ -52,20 +51,22 @@ class GenomicReferenceAgree(Validator):
         """Return whether or not the classification type is genomic reference agree"""
         return classification_type == ClassificationType.GENOMIC_REFERENCE_AGREE
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = await self.get_genomic_transcripts(
+            accessions = await self.get_genomic_accessions(
                 classification, errors
             )
-        return transcripts
+        return accessions

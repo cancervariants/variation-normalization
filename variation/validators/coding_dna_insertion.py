@@ -12,7 +12,7 @@ class CdnaInsertion(Validator):
     """The Coding DNA Insertion Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaInsertionClassification, transcripts: List[str]
+        self, classification: CdnaInsertionClassification, accessions: List[str]
     ) -> List[ValidationResult]:
         if classification.pos1 and classification.pos0 >= classification.pos1:
             return [ValidationResult(
@@ -26,9 +26,9 @@ class CdnaInsertion(Validator):
 
         validation_results = []
 
-        for t in transcripts:
+        for c_ac in accessions:
             errors = []
-            cds_start, cds_start_err_msg = await self.get_cds_start(t)
+            cds_start, cds_start_err_msg = await self.get_cds_start(c_ac)
 
             if cds_start_err_msg:
                 errors.append(cds_start_err_msg)
@@ -37,7 +37,7 @@ class CdnaInsertion(Validator):
 
             validation_results.append(
                 ValidationResult(
-                    accession=t,
+                    accession=c_ac,
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
@@ -57,20 +57,22 @@ class CdnaInsertion(Validator):
         """Return whether or not the classification type is cdna insertion."""
         return classification_type == ClassificationType.CODING_DNA_INSERTION
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = self.get_coding_dna_transcripts(
+            accessions = self.get_cdna_accessions(
                 classification.gene_token, errors
             )
-        return transcripts
+        return accessions

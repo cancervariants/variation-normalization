@@ -55,15 +55,17 @@ class Validator(ABC):
         """
 
     @abstractmethod
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
 
     @abstractmethod
@@ -78,13 +80,12 @@ class Validator(ABC):
 
     @abstractmethod
     async def get_valid_invalid_results(
-        self, classification: Classification, transcripts: List
+        self, classification: Classification, accessions: List
     ) -> None:
         """Add validation result objects to a list of results.
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List transcripts: A list of transcript accessions
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
         """
 
     async def validate(
@@ -94,9 +95,9 @@ class Validator(ABC):
 
         try:
             # NC_ queries do not have gene tokens
-            transcripts = await self.get_transcripts(classification, errors)
+            accessions = await self.get_accessions(classification, errors)
         except IndexError:
-            transcripts = []
+            accessions = []
 
         if errors:
             return [
@@ -108,56 +109,55 @@ class Validator(ABC):
                 )
             ]
         validation_results = await self.get_valid_invalid_results(
-            classification, transcripts
+            classification, accessions
         )
         return validation_results
 
-    def get_protein_transcripts(
+    def get_protein_accessions(
         self, gene_token: GeneToken, errors: List
     ) -> List[str]:
-        """Get transcripts for variations with protein reference sequence.
+        """Get accessions for variations with protein reference sequence.
 
         :param gene_token: Gene token for a classification
         :param errors: List of errors
-        :return: List of possible transcript accessions for the variation
+        :return: List of possible protein accessions for the variation
         """
-        transcripts = self.transcript_mappings.protein_transcripts(gene_token.token)
-        if not transcripts:
+        accessions = self.transcript_mappings.protein_transcripts(gene_token.token)
+        if not accessions:
             errors.append(
-                f"No transcripts found for gene symbol {gene_token.token}"
+                f"No protein accessions found for gene symbol: {gene_token.token}"
             )
-        return transcripts
+        return accessions
 
-    def get_coding_dna_transcripts(
+    def get_cdna_accessions(
         self, gene_token: GeneToken, errors: List
     ) -> List[str]:
-        """Get transcripts for variations with coding DNA reference sequence.
+        """Get accessions for variations with coding DNA reference sequence.
 
         :param gene_token: Gene token for a classification
         :param errors: List of errors
-        :return: List of possible transcript accessions for the variation
+        :return: List of possible cDNA accessions for the variation
         """
-        transcripts = self.transcript_mappings.coding_dna_transcripts(gene_token.token)
-        if not transcripts:
+        accessions = self.transcript_mappings.coding_dna_transcripts(gene_token.token)
+        if not accessions:
             errors.append(
-                f"No transcripts found for gene symbol {gene_token.token}"
+                f"No cDNA accessions found for gene symbol: {gene_token.token}"
             )
-        return transcripts
+        return accessions
 
-    async def get_genomic_transcripts(
+    async def get_genomic_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get NC accessions for variations with genomic reference sequence.
+        """Get genomic RefSeq accessions for variations with genomic reference sequence.
 
-        :param classification: Classification for a list of
-            tokens
+        :param classification: Classification for a list of tokens
         :param errors: List of errors
-        :return: List of possible NC accessions for the variation
+        :return: List of possible genomic RefSeq accessions for the variation
         """
-        nc_accessions = await self.genomic_base.get_nc_accessions(classification)
-        if not nc_accessions:
-            errors.append("Could not find NC_ accession for {self.variation_name()}")
-        return nc_accessions
+        accessions = await self.genomic_base.get_nc_accessions(classification)
+        if not accessions:
+            errors.append("No genomic accessions found")
+        return accessions
 
     async def _validate_gene_pos(self, gene: str, alt_ac: str, pos1: int, pos2: int,
                                  errors: List, pos3: int = None, pos4: int = None,

@@ -12,7 +12,7 @@ class GenomicDelIns(Validator):
     """The Genomic DelIns Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicDelInsClassification, transcripts: List[str]
+        self, classification: GenomicDelInsClassification, accessions: List[str]
     ) -> List[ValidationResult]:
         if classification.pos1 and classification.pos0 >= classification.pos1:
             return [ValidationResult(
@@ -27,10 +27,10 @@ class GenomicDelIns(Validator):
         validation_results = []
         # TODO: Validate pos0 and pos1 exist on given accession
 
-        for ac in transcripts:
+        for alt_ac in accessions:
             validation_results.append(
                 ValidationResult(
-                    accession=ac,
+                    accession=alt_ac,
                     classification=classification,
                     is_valid=True,
                     errors=[]
@@ -49,20 +49,22 @@ class GenomicDelIns(Validator):
         """Return whether or not the classification type is genomic delins"""
         return classification_type == ClassificationType.GENOMIC_DELINS
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = await self.get_genomic_transcripts(
+            accessions = await self.get_genomic_accessions(
                 classification, errors
             )
-        return transcripts
+        return accessions

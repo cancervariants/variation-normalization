@@ -12,23 +12,22 @@ class GenomicSubstitution(Validator):
     """The Genomic Substitution Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicSubstitutionClassification,
-        transcripts: List[str]
+        self, classification: GenomicSubstitutionClassification, accessions: List[str]
     ) -> List[ValidationResult]:
         validation_results = []
 
-        for t in transcripts:
+        for alt_ac in accessions:
             errors = []
 
             valid_ref_seq_msg = self.validate_reference_sequence(
-                t, classification.pos, classification.pos, classification.ref
+                alt_ac, classification.pos, classification.pos, classification.ref
             )
             if valid_ref_seq_msg:
                 errors.append(valid_ref_seq_msg)
 
             validation_results.append(
                 ValidationResult(
-                    accession=t,
+                    accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
                     errors=errors
@@ -49,20 +48,22 @@ class GenomicSubstitution(Validator):
         """
         return classification_type == ClassificationType.GENOMIC_SUBSTITUTION
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = await self.get_genomic_transcripts(
+            accessions = await self.get_genomic_accessions(
                 classification, errors
             )
-        return transcripts
+        return accessions

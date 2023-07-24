@@ -14,7 +14,7 @@ class GenomicDeletionAmbiguous(Validator):
 
     async def get_valid_invalid_results(
         self, classification: GenomicDeletionAmbiguousClassification,
-        transcripts: List[str]
+        accessions: List[str]
     ) -> List[ValidationResult]:
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             if classification.pos3 <= classification.pos2 <= classification.pos1 <= classification.pos0:  # noqa: E501
@@ -58,7 +58,7 @@ class GenomicDeletionAmbiguous(Validator):
         validation_results = []
         # _validate_gene_pos?
 
-        for ac in transcripts:
+        for alt_ac in accessions:
             errors = []
 
             if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
@@ -82,14 +82,14 @@ class GenomicDeletionAmbiguous(Validator):
 
             if start_pos is not None and end_pos is not None:
                 invalid_ac_pos = self.validate_ac_and_pos(
-                    ac, start_pos, end_pos=end_pos
+                    alt_ac, start_pos, end_pos=end_pos
                 )
                 if invalid_ac_pos:
                     errors.append(invalid_ac_pos)
 
             validation_results.append(
                 ValidationResult(
-                    accession=ac,
+                    accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
                     errors=errors
@@ -110,20 +110,22 @@ class GenomicDeletionAmbiguous(Validator):
         """
         return classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = await self.get_genomic_transcripts(
+            accessions = await self.get_genomic_accessions(
                 classification, errors
             )
-        return transcripts
+        return accessions

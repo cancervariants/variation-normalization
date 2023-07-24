@@ -12,8 +12,7 @@ class GenomicDeletion(Validator):
     """The Genomic Deletion Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicDeletionClassification,
-        transcripts: List[str]
+        self, classification: GenomicDeletionClassification, accessions: List[str]
     ) -> List[ValidationResult]:
         if classification.pos1 and classification.pos0 >= classification.pos1:
             return [ValidationResult(
@@ -28,11 +27,11 @@ class GenomicDeletion(Validator):
         validation_results = []
         # _validate_gene_pos?
 
-        for ac in transcripts:
+        for alt_ac in accessions:
             errors = []
 
             invalid_ac_pos = self.validate_ac_and_pos(
-                ac, classification.pos0, end_pos=classification.pos1
+                alt_ac, classification.pos0, end_pos=classification.pos1
             )
             if invalid_ac_pos:
                 errors.append(invalid_ac_pos)
@@ -43,7 +42,7 @@ class GenomicDeletion(Validator):
                     # HGVS deleted sequence includes start and end
                     if classification.deleted_sequence:
                         invalid_del_seq_message = self.validate_reference_sequence(
-                            ac, classification.pos0, classification.pos1 + 1,
+                            alt_ac, classification.pos0, classification.pos1 + 1,
                             classification.deleted_sequence
                         )
 
@@ -53,7 +52,7 @@ class GenomicDeletion(Validator):
             if not errors:
                 if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                     validate_ref_msg = self.validate_reference_sequence(
-                        ac, classification.pos0 - 1, classification.pos1,
+                        alt_ac, classification.pos0 - 1, classification.pos1,
                         classification.matching_tokens[0].ref
                     )
 
@@ -62,7 +61,7 @@ class GenomicDeletion(Validator):
 
             validation_results.append(
                 ValidationResult(
-                    accession=ac,
+                    accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
                     errors=errors
@@ -81,20 +80,22 @@ class GenomicDeletion(Validator):
         """Return whether or not the classification type is genomic deletion"""
         return classification_type == ClassificationType.GENOMIC_DELETION
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List[str]:
-        """Get transcript accessions for a given classification.
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
 
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:
-            transcripts = [classification.ac]
+            accessions = [classification.ac]
         else:
-            transcripts = await self.get_genomic_transcripts(
+            accessions = await self.get_genomic_accessions(
                 classification, errors
             )
-        return transcripts
+        return accessions

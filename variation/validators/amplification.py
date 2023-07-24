@@ -12,7 +12,7 @@ class Amplification(Validator):
     """The Insertion Validator Base class."""
 
     async def get_valid_invalid_results(
-        self, classification: AmplificationClassification, transcripts: List
+        self, classification: AmplificationClassification, accessions: List
     ) -> List[ValidationResult]:
         # Does not require any validation
         return [ValidationResult(
@@ -37,13 +37,13 @@ class Amplification(Validator):
         """Return the variation name."""
         return "amplification"
 
-    async def get_transcripts(
+    async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List:
-        """Return empty list since amplification does not require transcripts
+        """Return empty list since amplification does not require accessions
 
-        :param Classification classification: A classification for a list of tokens
-        :param List errors: List of errors
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
         :return: Empty list
         """
         return []
