@@ -132,7 +132,7 @@ class Validator(ABC):
     def get_cdna_accessions(
         self, gene_token: GeneToken, errors: List
     ) -> List[str]:
-        """Get accessions for variations with coding DNA reference sequence.
+        """Get accessions for variations with cDNA reference sequence.
 
         :param gene_token: Gene token for a classification
         :param errors: List of errors

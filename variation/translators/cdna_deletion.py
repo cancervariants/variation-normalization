@@ -1,4 +1,4 @@
-"""Module for Genomic Insertion Translation."""
+"""Module for cDNA Deletion Translation."""
 from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
@@ -12,17 +12,17 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicInsertionClassification, CdnaInsertionClassification
+    ClassificationType, CdnaDeletionClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
 
 
-class GenomicInsertion(Translator):
-    """The Genomic Insertion Translator class."""
+class CdnaDeletion(Translator):
+    """The cDNA Deletion Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
-        """Return if classification type is Genomic Insertion."""
-        return type == ClassificationType.GENOMIC_INSERTION
+        """Return if classification type is cDNA Deletion."""
+        return type == ClassificationType.CDNA_DELETION
 
     async def translate(
         self,
@@ -35,50 +35,34 @@ class GenomicInsertion(Translator):
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
-        # First will translate valid result to VRS Allele
-        classification: GenomicInsertionClassification = validation_result.classification  # noqa: E501
+        errors = []
+        cds_start = validation_result.cds_start
+        classification: CdnaDeletionClassification = validation_result.classification
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
-            gene = classification.gene_token.token if classification.gene_token else None  # noqa: E501
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession, classification.pos0,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos1,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
-                gene=gene
+                CoordinateType.CDNA,
+                end_pos=classification.pos1,
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
             )
 
             if mane:
+                vrs_seq_loc_ac = mane["refseq"]
                 vrs_seq_loc_ac_status = mane["status"]
-                if gene:
-                    classification = CdnaInsertionClassification(
-                        matching_tokens=classification.matching_tokens,
-                        nomenclature=classification.nomenclature,
-                        gene_token=classification.gene_token,
-                        pos0=mane["pos"][0] + 1,
-                        pos1=mane["pos"][1] + 1,
-                        inserted_sequence=classification.inserted_sequence
-                    )
-                    vrs_seq_loc_ac = mane["refseq"]
-                    coord_type = CoordinateType.CDNA
-                    validation_result.classification = classification
-                else:
-                    vrs_seq_loc_ac = mane["alt_ac"]
-                    coord_type = CoordinateType.LINEAR_GENOMIC
-
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
-                    AltType.INSERTION, warnings, alt=classification.inserted_sequence,
-                    cds_start=mane["coding_start_site"] if gene else None
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
+                    CoordinateType.CDNA, AltType.DELETION, errors,
+                    cds_start=mane.get("coding_start_site", None)
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
                 vrs_seq_loc_ac, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, warnings,
-                alt=classification.inserted_sequence
+                CoordinateType.CDNA, AltType.DELETION, errors, cds_start=cds_start
             )
 
         if vrs_allele and vrs_seq_loc_ac:

@@ -126,28 +126,28 @@ PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         CDNA_GENOMIC_DELINS,
-        TokenType.CODING_DNA_DELINS,
-        ClassificationType.CODING_DNA_DELINS
+        TokenType.CDNA_DELINS,
+        ClassificationType.CDNA_DELINS
     ),
     (
         CNDA_GENOMIC_DELETION,
-        TokenType.CODING_DNA_DELETION,
-        ClassificationType.CODING_DNA_DELETION
+        TokenType.CDNA_DELETION,
+        ClassificationType.CDNA_DELETION
     ),
     (
         CDNA_GENOMIC_SUBSTITUTION,
-        TokenType.CODING_DNA_SUBSTITUTION,
-        ClassificationType.CODING_DNA_SUBSTITUTION
+        TokenType.CDNA_SUBSTITUTION,
+        ClassificationType.CDNA_SUBSTITUTION
     ),
     (
         CDNA_GENOMIC_REFERENCE_AGREE,
-        TokenType.CODING_DNA_REFERENCE_AGREE,
-        ClassificationType.CODING_DNA_REFERENCE_AGREE
+        TokenType.CDNA_REFERENCE_AGREE,
+        ClassificationType.CDNA_REFERENCE_AGREE
     ),
     (
         CDNA_GENOMIC_INSERTION,
-        TokenType.CODING_DNA_INSERTION,
-        ClassificationType.CODING_DNA_INSERTION
+        TokenType.CDNA_INSERTION,
+        ClassificationType.CDNA_INSERTION
     )
 ]
 

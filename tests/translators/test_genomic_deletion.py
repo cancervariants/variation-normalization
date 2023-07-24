@@ -15,7 +15,7 @@ class TestGenomicDeletionTranslator(TranslatorBase, unittest.TestCase):
         return GenomicDeletionClassifier()
 
     def validator_instance(self):
-        """Return coding DNA deletion instance."""
+        """Return cDNA deletion instance."""
         return GD_V(*self.params)
 
     def translator_instance(self):

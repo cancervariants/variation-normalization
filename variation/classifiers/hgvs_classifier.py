@@ -46,7 +46,7 @@ class HgvsClassifier(Classifier):
             if not classification:
                 # Try ambiguous
                 classification = self._genomic_ambiguous_classification(token, params)
-        elif token.coordinate_type == CoordinateType.CODING_DNA:
+        elif token.coordinate_type == CoordinateType.CDNA:
             classification = self._cdna_classification(token, params)
         elif token.coordinate_type == CoordinateType.PROTEIN:
             classification = self._protein_classification(token, params)
@@ -98,7 +98,7 @@ class HgvsClassifier(Classifier):
                 match_dict = match.groupdict()
                 params.update(match_dict)
 
-                if classification_type == ClassificationType.CODING_DNA_SUBSTITUTION:
+                if classification_type == ClassificationType.CDNA_SUBSTITUTION:
                     len_ref = len(params["ref"])
                     len_alt = len(params["alt"])
 
@@ -110,18 +110,18 @@ class HgvsClassifier(Classifier):
                     params["pos"] = int(params["pos"])
 
                     return CdnaSubstitutionClassification(**params)
-                elif classification_type == ClassificationType.CODING_DNA_REFERENCE_AGREE:  # noqa: E501
+                elif classification_type == ClassificationType.CDNA_REFERENCE_AGREE:  # noqa: E501
                     params["pos"] = int(params["pos"])
                     return CdnaReferenceAgreeClassification(**params)
-                elif classification_type == ClassificationType.CODING_DNA_DELINS:
+                elif classification_type == ClassificationType.CDNA_DELINS:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return CdnaDelInsClassification(**params)
-                elif classification_type == ClassificationType.CODING_DNA_DELETION:
+                elif classification_type == ClassificationType.CDNA_DELETION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return CdnaDeletionClassification(**params)
-                elif classification_type == ClassificationType.CODING_DNA_INSERTION:
+                elif classification_type == ClassificationType.CDNA_INSERTION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = int(params["pos1"]) if params["pos1"] is not None else params["pos1"]  # noqa: E501
                     return CdnaInsertionClassification(**params)

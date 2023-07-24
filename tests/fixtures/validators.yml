@@ -29,7 +29,7 @@ reference_agree:
   should_not_match:
     - query: NP_000542.1:p.Pro62=
 
-coding_dna_substitution:
+cdna_substitution:
   should_match:
     - query: NM_004333.4:c.1799T>A
     - query: ENST00000288602.10:c.1799T>A
@@ -57,7 +57,7 @@ genomic_substitution:
     - query: NC_000007.13:g.4T>A
     - query: 7-140453136-G-T
 
-coding_dna_reference_agree:
+cdna_reference_agree:
   should_match:
     - query: NM_004006.2:c.123=
     - query: NM_004333.4:c.1799=
@@ -89,7 +89,7 @@ protein_delins:
   should_not_match:
     - query: EGFR E709_G719delins11
 
-coding_dna_delins:
+cdna_delins:
   should_match:
     - query: NM_001289937.1:c.2326_2327delinsCT
     - query: NM_000551.3:c.615delinsAA
@@ -143,7 +143,7 @@ protein_deletion:
     - query: LRG_199p1:p.Trp4del
     - query: LRG_232p1:p.(Pro458_Gly460del)
 
-coding_dna_deletion:
+cdna_deletion:
   should_match:
     - query: ENST00000269571.9:c.2263_2277del
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
@@ -186,7 +186,7 @@ protein_insertion:
     - query: NP_005219.2:p.Gly1209_Gly1211insGlyLeu
     - query: NP_005219.2:p.Cys1211_Gly1256insGlyLeu
 
-coding_dna_insertion:
+cdna_insertion:
   should_match:
     - query: ENST00000000442.11:c.426_500insT
     - query: NM_007294.3:c.2902_2903insTC

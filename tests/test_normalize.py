@@ -349,7 +349,7 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
 
 
 @pytest.fixture(scope="module")
-def nm_004448_coding_dna_delins(erbb2_context):
+def nm_004448_cdna_delins(erbb2_context):
     """Create test fixture for NM_004448.4:c.2326_2327delinsCT."""
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
@@ -437,7 +437,7 @@ def braf_nuc_value():
 
 
 @pytest.fixture(scope="module")
-def coding_dna_reference_agree(braf_gene_context, braf_nuc_value):
+def cdna_reference_agree(braf_gene_context, braf_nuc_value):
     """Create test fixture for NM_004333.4:c.1799=."""
     value = copy.deepcopy(braf_nuc_value)
     value["state"]["sequence"] = "T"
@@ -508,8 +508,8 @@ def protein_delins(egfr_context):
 
 
 @pytest.fixture(scope="module")
-def coding_dna_deletion(erbb2_context):
-    """Create test fixture for coding dna deletion range with deleted
+def cdna_deletion(erbb2_context):
+    """Create test fixture for cdna deletion range with deleted
     sequence.
     """
     params = {
@@ -577,8 +577,8 @@ def genomic_deletion():
 
 
 @pytest.fixture(scope="module")
-def coding_dna_insertion(limk2_gene_context):
-    """Create test fixture for coding DNA insertion."""
+def cdna_insertion(limk2_gene_context):
+    """Create test fixture for cdna insertion."""
     params = {
         "id": "normalize.variation:ENST00000331728.9%3Ac.2049_2050insA",
         "type": "VariationDescriptor",
@@ -912,10 +912,10 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_and_genomic_substitution(
+async def test_cdna_and_genomic_substitution(
         test_handler, braf_v600e_nucleotide, genomic_substitution,
         genomic_sub_grch38, egfr_grch38_sub, grch38_braf_genom_sub):
-    """Test that coding dna and genomic substitutions normalize correctly."""
+    """Test that cdna and genomic substitutions normalize correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
     assertion_checks(resp.variation_descriptor, braf_v600e_nucleotide,
                      "NM_004333.4:c.1799T>A")
@@ -991,12 +991,12 @@ async def test_coding_dna_and_genomic_substitution(
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_reference_agree(test_handler,
-                                          coding_dna_reference_agree,
+async def test_cdna_reference_agree(test_handler,
+                                          cdna_reference_agree,
                                           braf_gene_context):
-    """Test that Coding DNA Reference Agree normalizes correctly."""
+    """Test that cdna Reference Agree normalizes correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799= ")
-    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
+    assertion_checks(resp.variation_descriptor, cdna_reference_agree,
                      "NM_004333.4:c.1799=")
 
     fixture_id = "normalize.variation:NM_004333.4%3Ac.1799%3D"
@@ -1005,20 +1005,20 @@ async def test_coding_dna_reference_agree(test_handler,
     assert resp.variation_descriptor.id == \
         "normalize.variation:ENST00000288602.11%3Ac.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
+    assertion_checks(resp.variation_descriptor, cdna_reference_agree,
                      "ENST00000288602.11:c.1799=")
 
     resp = await test_handler.normalize("BRAF    c.1799=")
     assert resp.variation_descriptor.id == "normalize.variation:BRAF%20c.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
+    assertion_checks(resp.variation_descriptor, cdna_reference_agree,
                      "BRAF    c.1799=")
 
     resp = await test_handler.normalize("  BRAF  V600E  c.1799=  ")
     assert resp.variation_descriptor.id == \
         "normalize.variation:BRAF%20V600E%20c.1799%3D"
     resp.variation_descriptor.id = fixture_id
-    assertion_checks(resp.variation_descriptor, coding_dna_reference_agree,
+    assertion_checks(resp.variation_descriptor, cdna_reference_agree,
                      "BRAF  V600E  c.1799=")
 
 
@@ -1052,11 +1052,11 @@ async def test_genomic_reference_agree(test_handler, nc_000007_reference_agree,
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_delins(test_handler, nm_004448_coding_dna_delins,
+async def test_cdna_delins(test_handler, nm_004448_cdna_delins,
                                  nm_000551):
-    """Test that Coding DNA DelIns normalizes correctly."""
+    """Test that cdna DelIns normalizes correctly."""
     resp = await test_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
-    assertion_checks(resp.variation_descriptor, nm_004448_coding_dna_delins,
+    assertion_checks(resp.variation_descriptor, nm_004448_cdna_delins,
                      "NM_004448.4:c.2326_2327delinsCT")
 
     resp = await test_handler.normalize("NM_000551.3:c.615delinsAA")
@@ -1144,12 +1144,12 @@ async def test_protein_deletion(test_handler, protein_deletion_np_range):
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_deletion(test_handler, coding_dna_deletion):
-    """Test that coding dna deletion normalizes correctly."""
+async def test_cdna_deletion(test_handler, cdna_deletion):
+    """Test that cdna deletion normalizes correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_caid?caid=CA645372623  # noqa: E501
     q = "NM_004448.3:c.2264_2278delTGAGGGAAAACACAT"
     resp1 = await test_handler.normalize(q)
-    assertion_checks(resp1.variation_descriptor, coding_dna_deletion, q)
+    assertion_checks(resp1.variation_descriptor, cdna_deletion, q)
 
     # incorrected deleted sequence
     resp = await test_handler.normalize("NM_004448.3:c.2264_2278delTGAGGGAAAACACTA")
@@ -1164,7 +1164,7 @@ async def test_coding_dna_deletion(test_handler, coding_dna_deletion):
            "normalize.variation:ERBB2%20c.2264_2278delTGAGGGAAAACACAT"
     resp.variation_descriptor.id = \
         "normalize.variation:NM_004448.3%3Ac.2264_2278delTGAGGGAAAACACAT"
-    assertion_checks(resp.variation_descriptor, coding_dna_deletion, q)
+    assertion_checks(resp.variation_descriptor, cdna_deletion, q)
 
 
 @pytest.mark.asyncio
@@ -1224,10 +1224,10 @@ async def test_protein_insertion(test_handler, protein_insertion):
 
 
 @pytest.mark.asyncio
-async def test_coding_dna_insertion(test_handler, coding_dna_insertion):
-    """Test that coding dna insertion normalizes correctly."""
+async def test_cdna_insertion(test_handler, cdna_insertion):
+    """Test that cdna insertion normalizes correctly."""
     resp = await test_handler.normalize("ENST00000331728.9:c.2049_2050insA")
-    assertion_checks(resp.variation_descriptor, coding_dna_insertion,
+    assertion_checks(resp.variation_descriptor, cdna_insertion,
                      "ENST00000331728.9:c.2049_2050insA")
 
 

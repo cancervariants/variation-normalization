@@ -7,7 +7,7 @@ from .tokenizer_base import TokenizerBase
 
 
 class TestGenomicDeletionTokenizer(TokenizerBase, unittest.TestCase):
-    """A class for testing Coding DNA Deletion Tokenization."""
+    """A class for testing Cdna Deletion Tokenization."""
 
     def tokenizer_instance(self):
         """Return Genomic Deletion instance."""

@@ -89,7 +89,7 @@ class GenomicSubstitution(Translator):
                         so_id=classification.so_id
                     )
                     vrs_seq_loc_ac = mane["refseq"]
-                    coord_type = CoordinateType.CODING_DNA
+                    coord_type = CoordinateType.CDNA
                     validation_result.classification = classification
                 else:
                     vrs_seq_loc_ac = mane["alt_ac"]

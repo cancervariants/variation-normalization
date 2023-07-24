@@ -65,7 +65,7 @@ protein_reference_agree:
     - token: p.Leu862==
     - token: p.Xyz223=
 
-coding_dna_reference_agree:
+cdna_reference_agree:
   should_match:
     - token: c.123=
     - token: (c.123=)
@@ -102,7 +102,7 @@ hgvs:
     - token: ERBB2:c.2326_2327delinsCT
     - token: LRG_199t1:c.54G>H
 
-coding_dna_substitution:
+cdna_substitution:
   should_match:
     - token: (c.292T>C)
     - token: c.292T>C
@@ -162,7 +162,7 @@ protein_delins:
     - token: delinsTrpVals
     - token: Glu776delinsVC
 
-coding_dna_delins:
+cdna_delins:
   should_match:
     - token: c.32386323delinsGA
     - token: c.6775_6777delinsC
@@ -247,7 +247,7 @@ protein_deletion:
     - token: p.(V7del
     - token: p.V7del)
 
-coding_dna_deletion:
+cdna_deletion:
   should_match:
     - token: c.2263_2277del
     - token: c.1608del
@@ -291,7 +291,7 @@ protein_insertion:
     - token: Lys23insAsp
     - token: p.His4_Gln5insAlaG
 
-coding_dna_insertion:
+cdna_insertion:
   should_match:
     - token: c.169_170insA
     - token: c.240_241insAGG

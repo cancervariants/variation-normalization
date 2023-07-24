@@ -15,7 +15,7 @@ class TestGenomicInsertionTranslator(TranslatorBase, unittest.TestCase):
         return GenomicInsertionClassifier()
 
     def validator_instance(self):
-        """Return coding DNA insertion instance."""
+        """Return cDNA insertion instance."""
         return GD_V(*self.params)
 
     def translator_instance(self):

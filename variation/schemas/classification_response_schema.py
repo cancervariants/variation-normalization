@@ -48,18 +48,18 @@ class ClassificationType(str, Enum):
     PROTEIN_STOP_GAIN = "protein stop gain"
     PROTEIN_REFERENCE_AGREE = "reference agree"
     PROTEIN_DELINS = "protein delins"
-    CODING_DNA_SUBSTITUTION = "coding dna substitution"
+    CDNA_SUBSTITUTION = "cdna substitution"
     GENOMIC_SUBSTITUTION = "genomic substitution"
-    CODING_DNA_REFERENCE_AGREE = "coding dna reference agree"
+    CDNA_REFERENCE_AGREE = "cdna reference agree"
     GENOMIC_REFERENCE_AGREE = "genomic reference agree"
-    CODING_DNA_DELINS = "coding dna delins"
+    CDNA_DELINS = "cdna delins"
     GENOMIC_DELINS = "genomic delins"
     PROTEIN_DELETION = "protein deletion"
-    CODING_DNA_DELETION = "coding dna deletion"
+    CDNA_DELETION = "cdna deletion"
     GENOMIC_DELETION = "genomic deletion"
     GENOMIC_DELETION_AMBIGUOUS = "genomic deletion ambiguous"
     PROTEIN_INSERTION = "protein insertion"
-    CODING_DNA_INSERTION = "coding dna insertion"
+    CDNA_INSERTION = "cdna insertion"
     GENOMIC_INSERTION = "genomic insertion"
     GENOMIC_DUPLICATION = "genomic duplication"
     GENOMIC_DUPLICATION_AMBIGUOUS = "genomic duplication ambiguous"
@@ -94,7 +94,7 @@ class GenomicSubstitutionClassification(Classification, Substitution):
 
 class CdnaSubstitutionClassification(Classification, Substitution):
 
-    classification_type = ClassificationType.CODING_DNA_SUBSTITUTION
+    classification_type = ClassificationType.CDNA_SUBSTITUTION
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id: Union[Literal[SequenceOntology.SNV], Literal[SequenceOntology.MNV]]
 
@@ -115,7 +115,7 @@ class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree)
 
 class CdnaReferenceAgreeClassification(Classification, ReferenceAgree):
 
-    classification_type = ClassificationType.CODING_DNA_REFERENCE_AGREE
+    classification_type = ClassificationType.CDNA_REFERENCE_AGREE
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
@@ -136,7 +136,7 @@ class ProteinInsertionClassification(Classification, ProteinInsertion):
 
 class CdnaInsertionClassification(Classification, Insertion):
 
-    classification_type = ClassificationType.CODING_DNA_INSERTION
+    classification_type = ClassificationType.CDNA_INSERTION
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id = SequenceOntology.INSERTION
 
@@ -164,7 +164,7 @@ class GenomicDeletionClassification(Classification, Deletion):
 
 class CdnaDeletionClassification(Classification, Deletion):
 
-    classification_type = ClassificationType.CODING_DNA_DELETION
+    classification_type = ClassificationType.CDNA_DELETION
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id = SequenceOntology.DELETION
 
@@ -178,7 +178,7 @@ class ProteinDelInsClassification(Classification, ProteinDelIns):
 
 class CdnaDelInsClassification(Classification, DelIns):
 
-    classification_type = ClassificationType.CODING_DNA_DELINS
+    classification_type = ClassificationType.CDNA_DELINS
     molecule_context = MoleculeContext.TRANSCRIPT
     so_id = SequenceOntology.DELINS
 

@@ -327,7 +327,7 @@ reference_agree:
         }
       ]
 
-coding_dna_substitution:
+cdna_substitution:
   tests:
     - query: NM_004333.4:c.1799T>A
       variations: [
@@ -440,7 +440,7 @@ genomic_substitution:
         }
       ]
 
-coding_dna_reference_agree:
+cdna_reference_agree:
   tests:
     - query:  NM_004333.4:c.1799=
       variations: [
@@ -662,7 +662,7 @@ protein_delins:
         }
       ]
 
-coding_dna_delins:
+cdna_delins:
   tests:
     - query: NM_001289937.1:c.2326_2327delinsCT
       variations: [
@@ -1010,7 +1010,7 @@ protein_deletion:
         }
       ]
 
-coding_dna_deletion:
+cdna_deletion:
   tests:
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
       variations: [
@@ -1180,7 +1180,7 @@ protein_insertion:
         }
       ]
 
-coding_dna_insertion:
+cdna_insertion:
   tests:
     - query: NM_007294.3:c.2902_2903insTC
       variations: [

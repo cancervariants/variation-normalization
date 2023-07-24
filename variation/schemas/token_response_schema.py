@@ -17,11 +17,11 @@ class TokenType(str, Enum):
     """Define token types."""
 
     AMPLIFICATION = "Amplification"
-    CODING_DNA_DELETION = "CdnaDeletion"
-    CODING_DNA_DELINS = "CodingDNADelIns"
-    CODING_DNA_INSERTION = "CdnaInsertion"
-    CODING_DNA_REFERENCE_AGREE = "CdnaReferenceAgree"
-    CODING_DNA_SUBSTITUTION = "CdnaSubstitution"
+    CDNA_DELETION = "CdnaDeletion"
+    CDNA_DELINS = "CdnaDelIns"
+    CDNA_INSERTION = "CdnaInsertion"
+    CDNA_REFERENCE_AGREE = "CdnaReferenceAgree"
+    CDNA_SUBSTITUTION = "CdnaSubstitution"
     GENE = "Gene"
     GENOMIC_DELETION = "GenomicDeletion"
     GENOMIC_DELETION_AMBIGUOUS = "GenomicDeletionAmbiguous"
@@ -69,7 +69,7 @@ AMBIGUOUS_REGIONS = {
 class CoordinateType(str, Enum):
     """Define constraints for coordinate types."""
 
-    CODING_DNA = "c"
+    CDNA = "c"
     LINEAR_GENOMIC = "g"
     PROTEIN = "p"
 
@@ -109,11 +109,11 @@ class GenomicSubstitutionToken(Token, Substitution):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class CodingDNASubstitutionToken(Token, Substitution):
-    """Token for substitution on coding DNA reference sequence"""
+class CdnaSubstitutionToken(Token, Substitution):
+    """Token for substitution on cDNA reference sequence"""
 
-    token_type = TokenType.CODING_DNA_SUBSTITUTION
-    coordinate_type = CoordinateType.CODING_DNA
+    token_type = TokenType.CDNA_SUBSTITUTION
+    coordinate_type = CoordinateType.CDNA
 
 
 class ProteinSubstitutionToken(Token, Substitution):
@@ -137,11 +137,11 @@ class ProteinReferenceAgreeToken(Token, ProteinReferenceAgree):
     token_type = TokenType.PROTEIN_REFERENCE_AGREE
 
 
-class CodingDNAReferenceAgreeToken(Token, ReferenceAgree):
-    """Token for reference agree on coding DNA reference sequence"""
+class CdnaReferenceAgreeToken(Token, ReferenceAgree):
+    """Token for reference agree on cDNA reference sequence"""
 
-    coordinate_type = CoordinateType.CODING_DNA
-    token_type = TokenType.CODING_DNA_REFERENCE_AGREE
+    coordinate_type = CoordinateType.CDNA
+    token_type = TokenType.CDNA_REFERENCE_AGREE
 
 
 class GenomicReferenceAgreeToken(Token, ReferenceAgree):
@@ -158,11 +158,11 @@ class ProteinDeletionToken(Token, ProteinDeletion):
     coordinate_type = CoordinateType.PROTEIN
 
 
-class CodingDNADeletionToken(Token, Deletion):
-    """Token for deletion on coding dna reference sequence"""
+class CdnaDeletionToken(Token, Deletion):
+    """Token for deletion on cdna reference sequence"""
 
-    token_type = TokenType.CODING_DNA_DELETION
-    coordinate_type = CoordinateType.CODING_DNA
+    token_type = TokenType.CDNA_DELETION
+    coordinate_type = CoordinateType.CDNA
 
 
 class GenomicDeletionToken(Token, Deletion):
@@ -187,11 +187,11 @@ class ProteinDelInsToken(Token, ProteinDelIns):
     coordinate_type = CoordinateType.PROTEIN
 
 
-class CodingDNADelInsToken(Token, DelIns):
-    """Token for delins on coding dna reference sequence"""
+class CdnaDelInsToken(Token, DelIns):
+    """Token for delins on cdna reference sequence"""
 
-    token_type = TokenType.CODING_DNA_DELINS
-    coordinate_type = CoordinateType.CODING_DNA
+    token_type = TokenType.CDNA_DELINS
+    coordinate_type = CoordinateType.CDNA
 
 
 class GenomicDelInsToken(Token, DelIns):
@@ -201,11 +201,11 @@ class GenomicDelInsToken(Token, DelIns):
     coordinate_type = CoordinateType.LINEAR_GENOMIC
 
 
-class CodingDNAInsertionToken(Token, Insertion):
-    """Token for insertion on coding dna reference sequence"""
+class CdnaInsertionToken(Token, Insertion):
+    """Token for insertion on cdna reference sequence"""
 
-    token_type = TokenType.CODING_DNA_INSERTION
-    coordinate_type = CoordinateType.CODING_DNA
+    token_type = TokenType.CDNA_INSERTION
+    coordinate_type = CoordinateType.CDNA
 
 
 class GenomicInsertionToken(Token, Insertion):

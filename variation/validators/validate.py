@@ -12,19 +12,19 @@ from variation.tokenizers import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .protein_stop_gain import ProteinStopGain
 from .protein_reference_agree import ProteinReferenceAgree
-from .coding_dna_substitution import CdnaSubstitution
-from .coding_dna_reference_agree import CdnaReferenceAgree
+from .cdna_substitution import CdnaSubstitution
+from .cdna_reference_agree import CdnaReferenceAgree
 from .genomic_reference_agree import GenomicReferenceAgree
 from .genomic_substitution import GenomicSubstitution
 from .protein_delins import ProteinDelIns
-from .coding_dna_delins import CodingDNADelIns
+from .cdna_delins import CdnaDelIns
 from .genomic_delins import GenomicDelIns
 from .protein_deletion import ProteinDeletion
-from .coding_dna_deletion import CdnaDeletion
+from .cdna_deletion import CdnaDeletion
 from .genomic_deletion import GenomicDeletion
 from .genomic_deletion_ambiguous import GenomicDeletionAmbiguous
 from .protein_insertion import ProteinInsertion
-from .coding_dna_insertion import CdnaInsertion
+from .cdna_insertion import CdnaInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_duplication import GenomicDuplication
 from .genomic_duplication_ambiguous import GenomicDuplicationAmbiguous
@@ -68,7 +68,7 @@ class Validate:
             CdnaReferenceAgree(*params),
             GenomicReferenceAgree(*params),
             ProteinDelIns(*params),
-            CodingDNADelIns(*params),
+            CdnaDelIns(*params),
             GenomicDelIns(*params),
             ProteinDeletion(*params),
             CdnaDeletion(*params),

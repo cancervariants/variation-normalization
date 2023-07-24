@@ -1,4 +1,4 @@
-"""Module for Genomic Reference Agree Translation."""
+"""Module for cDNA Substitution Translation."""
 from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
@@ -12,18 +12,17 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicReferenceAgreeClassification,
-    CdnaReferenceAgreeClassification
+    ClassificationType, CdnaSubstitutionClassification
 )
 from variation.schemas.translation_response_schema import TranslationResult
 
 
-class GenomicReferenceAgree(Translator):
-    """The Genomic Reference Agree Translator class."""
+class CdnaSubstitution(Translator):
+    """The cDNA Substitution Translator class."""
 
     def can_translate(self, type: ClassificationType) -> bool:
-        """Return if classification type is Genomic Reference Agree."""
-        return type == ClassificationType.GENOMIC_REFERENCE_AGREE
+        """Return if classification type is cDNA Substitution."""
+        return type == ClassificationType.CDNA_SUBSTITUTION
 
     async def translate(
         self,
@@ -36,47 +35,34 @@ class GenomicReferenceAgree(Translator):
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
         """Translate to VRS Variation representation."""
-        classification: GenomicReferenceAgreeClassification = validation_result.classification  # noqa: E501
+        cds_start = validation_result.cds_start
+        classification: CdnaSubstitutionClassification = validation_result.classification  # noqa: E501
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
-            gene = classification.gene_token.token if classification.gene_token else None  # noqa: E501
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession, classification.pos,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
-                gene=gene
+                CoordinateType.CDNA, end_pos=classification.pos,
+                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
             )
 
             if mane:
+                vrs_seq_loc_ac = mane["refseq"]
                 vrs_seq_loc_ac_status = mane["status"]
-
-                if gene:
-                    classification = CdnaReferenceAgreeClassification(
-                        matching_tokens=classification.matching_tokens,
-                        nomenclature=classification.nomenclature,
-                        gene_token=classification.gene_token,
-                        pos=mane["pos"][0] + 1
-                    )
-                    vrs_seq_loc_ac = mane["refseq"]
-                    coord_type = CoordinateType.CDNA
-                    validation_result.classification = classification
-                else:
-                    vrs_seq_loc_ac = mane["alt_ac"]
-                    coord_type = CoordinateType.LINEAR_GENOMIC
-
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
-                    AltType.REFERENCE_AGREE, warnings,
-                    cds_start=mane["coding_start_site"] if gene else None
+                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
+                    CoordinateType.CDNA, AltType.SUBSTITUTION, warnings,
+                    alt=classification.alt,
+                    cds_start=mane.get("coding_start_site", None)
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos, classification.pos,
-                CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
+                validation_result.accession, classification.pos + cds_start,
+                classification.pos + cds_start, CoordinateType.CDNA,
+                AltType.SUBSTITUTION, warnings, alt=classification.alt
             )
 
         if vrs_allele and vrs_seq_loc_ac:
