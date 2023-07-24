@@ -22,6 +22,7 @@ class GnomadVcfClassifier(Classifier):
         ]
 
     def match(self, token: GnomadVcfToken) -> Optional[Classification]:
+        """1-based positions"""
         params = {
             "matching_tokens": [token],
             "nomenclature": Nomenclature.GNOMAD_VCF
@@ -63,7 +64,7 @@ class GnomadVcfClassifier(Classifier):
             if len_alt == 1:
                 if ref[0] == alt[0]:
                     del_seq = ref[1:]
-                    params["pos0"] = token.pos
+                    params["pos0"] = token.pos + 1
                     params["pos1"] = params["pos0"] + len(del_seq)
                     params["deleted_sequence"] = del_seq
                     return GenomicDeletionClassification(**params)

@@ -53,7 +53,7 @@ class GenomicDeletion(Validator):
             if not errors:
                 if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                     validate_ref_msg = self.validate_reference_sequence(
-                        ac, classification.pos0, classification.pos1 + 1,
+                        ac, classification.pos0 - 1, classification.pos1,
                         classification.matching_tokens[0].ref
                     )
 

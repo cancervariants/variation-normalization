@@ -155,7 +155,7 @@ class AmbiguousTranslator(Translator):
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
 
-            # Check if we need to do liftover
+            # TODO: Check if we need to do liftover
             assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
             if w:
                 warnings.append(w)

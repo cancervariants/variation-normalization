@@ -291,16 +291,12 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         ClassificationType.GENOMIC_DELETION,
                         ClassificationType.GENOMIC_INSERTION
                     }:
+                        g_start_pos = classification_token.pos0
+                        g_end_pos = classification_token.pos1
                         if classification_token.classification_type == ClassificationType.GENOMIC_DELETION:  # noqa: E501
                             alt_type = AltType.DELETION
-                            # TODO: Check if we should be doing this here or fixing pos
-                            # in classification
-                            g_start_pos = classification_token.pos0 + 1
                         else:
                             alt_type = AltType.INSERTION
-                            g_start_pos = classification_token.pos0
-
-                        g_end_pos = classification_token.pos1
                     elif classification_token.classification_type in {
                         ClassificationType.GENOMIC_SUBSTITUTION,
                         ClassificationType.GENOMIC_REFERENCE_AGREE

@@ -161,22 +161,21 @@ class HGVSDupDelMode:
             return allele.as_dict()
 
     def literal_seq_expr_mode(
-        self, location: Dict, alt_type: AltType, vrs_seq_loc_ac: str
+        self, location: Dict, alt_type: AltType, vrs_seq_loc_ac: str,
+        alt: Optional[str] = None
     ) -> Optional[Dict]:
         """Return a VRS Allele with a normalized LiteralSequenceExpression.
 
         :param Dict location: VRS Location
         :param AltType alt_type: Alteration type
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
+        :param alt: Alteration
         :return: VRS Allele object represented as a dict
         """
         if alt_type in AMBIGUOUS_REGIONS:
             return None
 
-        # This will only be deletion or dup
-        if alt_type == AltType.DELETION:
-            state = ""
-        else:
+        if alt_type == AltType.DUPLICATION:
             # start is start - 1, end is end
             ival = location["interval"]
             ref, _ = self.seqrepo_access.get_reference_sequence(
@@ -187,6 +186,8 @@ class HGVSDupDelMode:
                 state = ref + ref
             else:
                 return None
+        else:
+            state = alt or ""
 
         allele = models.Allele(**{
             "type": "Allele",
@@ -195,6 +196,7 @@ class HGVSDupDelMode:
                 sequence=state, type="LiteralSequenceExpression"
             ).as_dict()
         })
+
         try:
             allele = normalize(allele, self.seqrepo_access)
         except (KeyError, AttributeError):
@@ -209,7 +211,8 @@ class HGVSDupDelMode:
         hgvs_dup_del_mode: HGVSDupDelModeEnum, vrs_seq_loc_ac: str,
         pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None
+        copy_change: Optional[CopyChange] = None,
+        alt: Optional[str] = None
     ) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
@@ -222,6 +225,7 @@ class HGVSDupDelMode:
         :param pos: Position changes
         :param baseline_copies: Baseline copies number
         :param copy_change: The copy change
+        :param alt: The alteration
         :return: VRS Variation object
         """
         if "deletion" in alt_type.value:
@@ -238,7 +242,9 @@ class HGVSDupDelMode:
         elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
             variation = self.repeated_seq_expr_mode(alt_type, location)
         elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
-            variation = self.literal_seq_expr_mode(location, alt_type, vrs_seq_loc_ac)
+            variation = self.literal_seq_expr_mode(
+                location, alt_type, vrs_seq_loc_ac, alt=alt
+            )
         elif hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
             if baseline_copies:
                 variation = self.copy_number_count_mode(

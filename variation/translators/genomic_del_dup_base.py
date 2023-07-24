@@ -90,7 +90,7 @@ class GenomicDelDupTranslator(Translator):
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
 
-            # Check if we need to liftover
+            # TODO: Check if we need to liftover
             assembly, w = get_assembly(self.seqrepo_access, validation_result.accession)
             if w:
                 warnings.append(w)
@@ -112,7 +112,7 @@ class GenomicDelDupTranslator(Translator):
                     if alt_type == AltType.DELETION:
                         if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                             invalid_ref_msg = self.validate_reference_sequence(
-                                ac, pos0, pos1 + 1,
+                                ac, pos0 - 1, pos1,
                                 classification.matching_tokens[0].ref
                             )
                             if invalid_ref_msg:
@@ -167,16 +167,17 @@ class GenomicDelDupTranslator(Translator):
             else:
                 return None
 
+        alt = None
+        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            if alt_type == AltType.DELETION:
+                pos0 -= 1
+                pos1 -= 1
+                alt = classification.matching_tokens[0].alt
+
         outer_coords = (pos0, pos1 if pos1 else pos0)
 
-        # TODO: Check this
-        if alt_type == AltType.DELETION and classification.nomenclature == Nomenclature.GNOMAD_VCF:  # noqa: E501
-            start_value = pos0
-        else:
-            start_value = pos0 - 1
-
         ival = models.SequenceInterval(
-            start=models.Number(value=start_value, type="Number"),
+            start=models.Number(value=pos0 - 1, type="Number"),
             end=models.Number(value=pos1 if pos1 else pos0, type="Number")
         ).as_dict()
 
@@ -189,7 +190,7 @@ class GenomicDelDupTranslator(Translator):
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
                 alt_type, seq_loc, warnings, hgvs_dup_del_mode, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change
+                baseline_copies=baseline_copies, copy_change=copy_change, alt=alt
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
@@ -202,7 +203,7 @@ class GenomicDelDupTranslator(Translator):
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
                 alt_type, outer_coords, del_or_dup, seq_loc, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change
+                baseline_copies=baseline_copies, copy_change=copy_change, alt=alt
             )
 
         if vrs_variation:
