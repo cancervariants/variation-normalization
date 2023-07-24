@@ -32,8 +32,14 @@ class CdnaInsertion(Validator):
 
             if cds_start_err_msg:
                 errors.append(cds_start_err_msg)
-
-            # TODO: Validate pos0 and pos1 exist on given accession
+            else:
+                # Validate accession and positions
+                invalid_ac_pos_msg = self.validate_ac_and_pos(
+                    c_ac, cds_start + classification.pos0,
+                    end_pos=cds_start + classification.pos1
+                )
+                if invalid_ac_pos_msg:
+                    errors.append(invalid_ac_pos_msg)
 
             validation_results.append(
                 ValidationResult(

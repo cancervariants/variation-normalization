@@ -176,7 +176,6 @@ class Normalize(ToVRSATILE):
                 do_liftover=True
             )
             if translations:
-                # TODO: We should only do this for FREE TEXT
                 for ac_status in AC_PRIORITY_LABELS:
                     translation_result = self._get_priority_translation_result(
                         translations, ac_status

@@ -231,16 +231,15 @@ class Validator(ABC):
         expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> Optional[str]:
         """Validate that expected reference sequence matches actual"""
-        actual_ref, _ = self.seqrepo_access.get_reference_sequence(
+        actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
             ac, start=start_pos, end=end_pos, residue_mode=residue_mode
         )
 
-        msg = None
-        if actual_ref != expected_ref:
-            msg = (f"Expected to find {expected_ref} at positions "
-                   f"({start_pos}, {end_pos}) on {ac} but found {actual_ref}")
+        if not err_msg and (actual_ref != expected_ref):
+            err_msg = (f"Expected to find {expected_ref} at positions ({start_pos}, "
+                       f"{end_pos}) on {ac} but found {actual_ref}")
 
-        return msg
+        return err_msg
 
     async def get_cds_start(self, ac: str) -> Tuple[Optional[int], Optional[str]]:
         cds_start_end = await self.uta.get_cds_start_end(ac)

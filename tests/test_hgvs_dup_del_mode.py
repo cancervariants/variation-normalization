@@ -1841,7 +1841,7 @@ async def assert_text_variation(query_list, test_handler):
     for q in query_list:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
-        assert resp.variation_descriptor.label == q.strip()
+        assert resp.variation_descriptor.label == q.strip(), q
         assert (resp.variation_descriptor.variation.type == "Text"), q
 
 
@@ -2251,7 +2251,7 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
-        assert resp.variation_descriptor.variation.type == "Text"
+        assert resp.variation_descriptor.variation.type == "Text", q
 
 
 @pytest.mark.asyncio
@@ -2336,7 +2336,7 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeEnum.DEFAULT,
                                             untranslatable_returns_text=True)
-        assert resp.variation_descriptor.variation.type == "Text"
+        assert resp.variation_descriptor.variation.type == "Text", q
 
 
 @pytest.mark.asyncio

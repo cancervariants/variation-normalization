@@ -25,7 +25,6 @@ class GenomicDuplication(Validator):
             )]
 
         validation_results = []
-        # TODO: Validate pos0 and pos1 exist on given accession
 
         for alt_ac in accessions:
             errors = []
@@ -37,6 +36,13 @@ class GenomicDuplication(Validator):
                 )
                 if invalid_gene_pos_msg:
                     errors.append(invalid_gene_pos_msg)
+
+            if not errors:
+                invalid_ac_pos = self.validate_ac_and_pos(
+                    alt_ac, classification.pos0, end_pos=classification.pos1
+                )
+                if invalid_ac_pos:
+                    errors.append(invalid_ac_pos)
 
             validation_results.append(
                 ValidationResult(

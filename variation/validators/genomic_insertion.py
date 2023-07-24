@@ -29,14 +29,21 @@ class GenomicInsertion(Validator):
         for alt_ac in accessions:
             errors = []
 
-            # gnomAD VCF provides reference, so we should validate this
             if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                # gnomAD VCF provides reference, so we should validate this
                 invalid_ref_msg = self.validate_reference_sequence(
                     alt_ac, classification.pos0, classification.pos1,
                     classification.matching_tokens[0].ref
                 )
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)
+            else:
+                # Validate ac and pos
+                invalid_ac_pos_msg = self.validate_ac_and_pos(
+                    alt_ac, classification.pos0, end_pos=classification.pos1
+                )
+                if invalid_ac_pos_msg:
+                    errors.append(invalid_ac_pos_msg)
 
             validation_results.append(
                 ValidationResult(

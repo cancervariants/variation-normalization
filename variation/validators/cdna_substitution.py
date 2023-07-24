@@ -24,8 +24,8 @@ class CdnaSubstitution(Validator):
                 errors.append(cds_start_err_msg)
             else:
                 valid_ref_seq_msg = self.validate_reference_sequence(
-                    c_ac, classification.pos + cds_start, classification.pos + cds_start,
-                    classification.ref
+                    c_ac, classification.pos + cds_start,
+                    classification.pos + cds_start, classification.ref
                 )
                 if valid_ref_seq_msg:
                     errors.append(valid_ref_seq_msg)

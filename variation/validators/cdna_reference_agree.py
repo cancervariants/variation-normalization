@@ -22,8 +22,12 @@ class CdnaReferenceAgree(Validator):
 
             if cds_start_err_msg:
                 errors.append(cds_start_err_msg)
-
-            # TODO: Validate pos exists on given accession
+            else:
+                invalid_ac_pos_msg = self.validate_ac_and_pos(
+                    c_ac, cds_start + classification.pos
+                )
+                if invalid_ac_pos_msg:
+                    errors.append(invalid_ac_pos_msg)
 
             validation_results.append(
                 ValidationResult(

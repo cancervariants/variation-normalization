@@ -25,15 +25,22 @@ class GenomicDelIns(Validator):
             )]
 
         validation_results = []
-        # TODO: Validate pos0 and pos1 exist on given accession
 
         for alt_ac in accessions:
+            errors = []
+
+            invalid_ac_pos = self.validate_ac_and_pos(
+                alt_ac, classification.pos0, end_pos=classification.pos1
+            )
+            if invalid_ac_pos:
+                errors.append(invalid_ac_pos)
+
             validation_results.append(
                 ValidationResult(
                     accession=alt_ac,
                     classification=classification,
-                    is_valid=True,
-                    errors=[]
+                    is_valid=not errors,
+                    errors=errors
                 )
             )
 
