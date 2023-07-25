@@ -182,7 +182,11 @@ def test_protein_delins(test_tokenizer, test_classifier):
     ]:
         assert_match(test_tokenizer, test_classifier, q, ProteinDelInsClassification)
 
-    assert_no_match(test_tokenizer, test_classifier, "N:p.Leu747_Thr751delinsPro")
+    for q in [
+        "EGFR E709_G719delins11",
+        "N:p.Leu747_Thr751delinsPro"
+    ]:
+        assert_no_match(test_tokenizer, test_classifier, q)
 
 
 def test_cdna_delins(test_tokenizer, test_classifier):
@@ -247,6 +251,7 @@ def test_protein_deletion(test_tokenizer, test_classifier):
         "NP_004439.2:c.Leu755_Thr759del",
         "LRG_199p1:p.Val7del",
         "LRG_199p1:p.(Val7del)",
+        "NP_003997.1:p.(Lys23_Val25del)"
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)
 
@@ -397,6 +402,7 @@ def test_genomic_duplication_ambiguous(test_tokenizer, test_classifier):
 
     for q in [
         "foo (?_30417576)_(31394018_?)dup",
-        "Accession:g.49531262dup"
+        "Accession:g.49531262dup",
+        "NC_000023.11:g.(31060227_33274278)_(31100351_33417151)"
     ]:
         assert_no_match(test_tokenizer, test_classifier, q)

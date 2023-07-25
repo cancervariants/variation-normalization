@@ -40,7 +40,7 @@ class CdnaDeletion(Validator):
                     if classification.deleted_sequence:
                         invalid_del_seq_msg = self.validate_reference_sequence(
                             c_ac, cds_start + classification.pos0,
-                            cds_start + classification.pos1 + 1,
+                            cds_start + classification.pos1 + 1 if classification.pos1 else None,  # noqa: E501
                             classification.deleted_sequence
                         )
 

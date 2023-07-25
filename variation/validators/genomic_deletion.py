@@ -41,7 +41,8 @@ class GenomicDeletion(Validator):
                     # HGVS deleted sequence includes start and end
                     if classification.deleted_sequence:
                         invalid_del_seq_message = self.validate_reference_sequence(
-                            alt_ac, classification.pos0, classification.pos1 + 1,
+                            alt_ac, classification.pos0,
+                            classification.pos1 + 1 if classification.pos1 else None,
                             classification.deleted_sequence
                         )
 

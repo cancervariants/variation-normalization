@@ -31,7 +31,7 @@ class Tokenize:
     def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
         self.gene_symbol = gene_symbol
-        self.tokenizers = (
+        self.tokenizers = [
             HGVS(),
             GnomadVCF(),
             self.gene_symbol,
@@ -57,7 +57,7 @@ class Tokenize:
             GenomicInsertion(),
             # Duplication
             GenomicDuplication()
-        )
+        ]
 
     def perform(self, search_string: str, warnings: List[str]) -> Iterable[Token]:
         """Return an iterable of tokens for a given search string.

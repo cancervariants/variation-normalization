@@ -175,7 +175,7 @@ protein_substitution:
 
 polypeptide_truncation:
   tests:
-    - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
+    - query: NP_000542.1:p.Tyr185Ter
       variations: [
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",

@@ -196,7 +196,7 @@ class GenomicDelDupTranslator(Translator):
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
                 alt_type, outer_coords, del_or_dup, seq_loc, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change, alt=alt
+                baseline_copies=baseline_copies, copy_change=copy_change
             )
 
         if vrs_variation:
