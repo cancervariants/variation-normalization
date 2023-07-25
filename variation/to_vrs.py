@@ -7,7 +7,6 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumberCoun
     VariationSet, Text
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-
 from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.normalize_response_schema\

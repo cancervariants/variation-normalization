@@ -1,11 +1,8 @@
 """Module for translation."""
 from typing import List, Optional
 
-from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from cool_seq_tool.data_sources import (
-    TranscriptMappings, SeqRepoAccess, UTADatabase, MANETranscript
-)
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscript
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.translation_response_schema import TranslationResult
@@ -13,7 +10,6 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelMode as HGVSDupDelModeEnum
 )
-from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from .translator import Translator

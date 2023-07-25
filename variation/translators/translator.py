@@ -3,10 +3,7 @@ from abc import abstractmethod, ABC
 from typing import Optional, List
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import (
-    TranscriptMappings, SeqRepoAccess, UTADatabase, MANETranscript
-)
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscript
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.token_response_schema import GeneToken

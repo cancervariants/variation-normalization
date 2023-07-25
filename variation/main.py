@@ -357,7 +357,9 @@ async def vrs_python_translate_to(
     variations = list()
     if allele:
         try:
-            variations = query_handler.vrs_python_tlr.translate_to(allele, request_body["fmt"])
+            variations = query_handler.vrs_python_tlr.translate_to(
+                allele, request_body["fmt"]
+            )
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 

@@ -2,8 +2,8 @@
 from typing import Tuple, Optional, List, Union
 from datetime import datetime
 from urllib.parse import unquote
-from cool_seq_tool.data_sources import SeqRepoAccess
 
+from cool_seq_tool.data_sources import SeqRepoAccess
 from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
     Text, CopyChange
@@ -11,8 +11,8 @@ from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
 from gene.schemas import MatchType as GeneMatchType
-from variation.classifiers import Classify
 
+from variation.classifiers import Classify
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import TokenType

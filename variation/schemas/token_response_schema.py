@@ -1,5 +1,5 @@
 """Module for schemas related to tokenization."""
-from typing import List, Optional
+from typing import Optional
 from enum import Enum
 
 from pydantic import BaseModel, StrictInt, StrictStr

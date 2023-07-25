@@ -1,8 +1,7 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
 from typing import Optional, Type, Any, Dict, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, CopyNumberCount, \
-    CopyNumberChange, Text
+from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, Text
 from pydantic import StrictStr
 
 from variation.schemas.classification_response_schema import ClassificationType

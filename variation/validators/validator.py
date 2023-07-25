@@ -143,7 +143,7 @@ class Validator(ABC):
 
     async def _validate_gene_pos(
         self, gene: str, alt_ac: str, pos0: int, pos1: Optional[int],
-        pos2: Optional[int] = None,  pos3: Optional[int] = None,
+        pos2: Optional[int] = None, pos3: Optional[int] = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> Optional[str]:
         """Validate whether free text genomic query is valid input.
