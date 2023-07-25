@@ -11,9 +11,7 @@ from variation.validators.genomic_base import GenomicBase
 from variation.vrs_representation import VRSRepresentation
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.translation_response_schema import TranslationResult
@@ -54,7 +52,7 @@ class Translator(ABC):
         self,
         validation_result: ValidationResult,
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False

@@ -7,9 +7,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.translation_response_schema import TranslationResult
@@ -28,7 +26,7 @@ class Amplification(Translator):
         validation_result: ValidationResult,
         warnings: List[str],
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False

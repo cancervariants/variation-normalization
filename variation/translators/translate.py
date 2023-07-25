@@ -7,9 +7,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscrip
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.vrs_representation import VRSRepresentation
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from .translator import Translator
@@ -79,7 +77,7 @@ class Translate:
         validation_result: ValidationResult,  # this is always valid
         warnings: List[str],
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False

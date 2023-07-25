@@ -21,7 +21,7 @@ from variation.schemas.hgvs_to_copy_number_schema import \
     HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService
 from variation.query import QueryHandler
 from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum, TranslateIdentifierService
+    HGVSDupDelModeOption, TranslateIdentifierService
 )
 from variation.schemas.service_schema import AmplificationToCxVarService, \
     ClinVarAssembly, ParsedToCnVarService, ToGenomicService, ToCdnaService
@@ -138,8 +138,8 @@ hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
          )
 async def normalize(
     q: str = Query(..., description=q_description),
-    hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = Query(
-        HGVSDupDelModeEnum.DEFAULT, description=hgvs_dup_del_mode_decsr),
+    hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = Query(
+        HGVSDupDelModeOption.DEFAULT, description=hgvs_dup_del_mode_decsr),
     baseline_copies: Optional[int] = Query(
         None, description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation"),  # noqa: E501
     copy_change: Optional[CopyChange] = Query(
@@ -152,7 +152,7 @@ async def normalize(
     priority transcript. Will make inferences about the query.
 
     :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
-    :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode: Must be: `default`,
+    :param Optional[HGVSDupDelModeOption] hgvs_dup_del_mode: Must be: `default`,
         `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
         `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
         expressions in VRS.

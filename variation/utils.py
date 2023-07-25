@@ -12,9 +12,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import Token, GnomadVcfToken
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.app_schemas import AmbiguousRegexType, Endpoint
 
 
@@ -196,32 +194,32 @@ def get_assembly(
 
 def get_hgvs_dup_del_mode(
     tokens: List[Token], endpoint_name: Endpoint,
-    hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = None,
+    hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
     baseline_copies: Optional[int] = None
-) -> HGVSDupDelModeEnum:
+) -> HGVSDupDelModeOption:
     warning = None
     if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
         # gnomad vcf should always be a literal seq expression (allele)
-        hgvs_dup_del_mode = HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
+        hgvs_dup_del_mode = HGVSDupDelModeOption.LITERAL_SEQ_EXPR
     else:
         if endpoint_name in {
             Endpoint.NORMALIZE, Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
             Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
         }:
             if hgvs_dup_del_mode:
-                if hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+                if hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
                     if not baseline_copies:
                         warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"  # noqa: E501
                         return None, warning
             elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
-                hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+                hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
             else:
                 warning = (
                     f"hgvs_dup_del_mode must be either "
-                    f"{HGVSDupDelModeEnum.COPY_NUMBER_COUNT.value} or "
-                    f"{HGVSDupDelModeEnum.COPY_NUMBER_CHANGE.value}"
+                    f"{HGVSDupDelModeOption.COPY_NUMBER_COUNT.value} or "
+                    f"{HGVSDupDelModeOption.COPY_NUMBER_CHANGE.value}"
                 )
                 return None, warning
         else:
-            hgvs_dup_del_mode = HGVSDupDelModeEnum.DEFAULT
+            hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
     return hgvs_dup_del_mode, warning

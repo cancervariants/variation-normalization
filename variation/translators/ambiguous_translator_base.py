@@ -6,9 +6,7 @@ from pydantic import StrictInt, StrictStr
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.classification_response_schema import (
     AmbiguousType, GenomicDeletionAmbiguousClassification,
     GenomicDuplicationAmbiguousClassification, Nomenclature
@@ -135,7 +133,7 @@ class AmbiguousTranslator(Translator):
         validation_result: ValidationResult,
         warnings: List[str],
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False

@@ -7,9 +7,7 @@ from cool_seq_tool.schemas import ResidueMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import AltType, CoordinateType
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     ClassificationType, GenomicSubstitutionClassification,
@@ -30,7 +28,7 @@ class GenomicSubstitution(Translator):
         validation_result: ValidationResult,
         warnings: List[str],
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False

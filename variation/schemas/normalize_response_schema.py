@@ -8,7 +8,7 @@ from pydantic.types import StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 
-class HGVSDupDelMode(str, Enum):
+class HGVSDupDelModeOption(str, Enum):
     """Define options for HGVSDupDelMode.
     This mode determines how to interpret HGVS dup/del.
     """

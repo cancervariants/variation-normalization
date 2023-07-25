@@ -1,14 +1,12 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 from typing import Optional, Dict, Tuple, List
 
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrs import models, normalize
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
 
-from variation.schemas.hgvs_to_copy_number_schema import CopyChange
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelMode as HGVSDupDelModeEnum
-)
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
 
 
@@ -208,7 +206,7 @@ class HGVSDupDelMode:
 
     def interpret_variation(
         self, alt_type: AltType, location: Dict, errors: List,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum, vrs_seq_loc_ac: str,
+        hgvs_dup_del_mode: HGVSDupDelModeOption, vrs_seq_loc_ac: str,
         pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
@@ -234,18 +232,18 @@ class HGVSDupDelMode:
             del_or_dup = "dup"
 
         variation = None
-        if hgvs_dup_del_mode == HGVSDupDelModeEnum.DEFAULT:
+        if hgvs_dup_del_mode == HGVSDupDelModeOption.DEFAULT:
             variation = self.default_mode(
                 alt_type, pos, del_or_dup, location, vrs_seq_loc_ac,
                 baseline_copies=baseline_copies, copy_change=copy_change
             )
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.REPEATED_SEQ_EXPR:
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.REPEATED_SEQ_EXPR:
             variation = self.repeated_seq_expr_mode(alt_type, location)
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.LITERAL_SEQ_EXPR:
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.LITERAL_SEQ_EXPR:
             variation = self.literal_seq_expr_mode(
                 location, alt_type, vrs_seq_loc_ac, alt=alt
             )
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
             if baseline_copies:
                 variation = self.copy_number_count_mode(
                     del_or_dup, location, baseline_copies
@@ -254,7 +252,7 @@ class HGVSDupDelMode:
                 errors.append(
                     "`baseline_copies` must be provided for Copy Number Count Variation"
                 )
-        elif hgvs_dup_del_mode == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_CHANGE:
             variation = self.copy_number_change_mode(
                 del_or_dup, location, copy_change=copy_change
             )

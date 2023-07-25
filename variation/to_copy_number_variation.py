@@ -24,8 +24,9 @@ from variation.schemas.service_schema import AmplificationToCxVarQuery, \
     AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
     ParsedToCnVarService
 from variation.schemas.validation_response_schema import ValidationSummary
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption, ServiceMeta
+)
 from variation.tokenizers import Tokenize
 from variation.translators import Translate
 from variation.utils import get_priority_sequence_location
@@ -108,14 +109,14 @@ class ToCopyNumberVariation(ToVRS):
         return validation_summary, warnings
 
     async def _hgvs_to_cnv_resp(
-        self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
+        self, copy_number_type: HGVSDupDelModeOption, hgvs_expr: str, do_liftover: bool,
         validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
         warnings: List[str], untranslatable_returns_text: bool = False,
         baseline_copies: Optional[int] = None, copy_change: Optional[CopyChange] = None
     ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:  # noqa: E501
         """Return copy number variation and warnings response
 
-        :param HGVSDupDelModeEnum copy_number_type: The type of copy number variation.
+        :param HGVSDupDelModeOption copy_number_type: The type of copy number variation.
             Must be either `copy_number_count` or `copy_number_change`
         :param str hgvs_expr: HGVS expression
         :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
@@ -129,7 +130,7 @@ class ToCopyNumberVariation(ToVRS):
         """
         variation = None
         if validations:
-            if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_CHANGE:
+            if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_CHANGE:
                 endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
             else:
                 endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
@@ -148,7 +149,7 @@ class ToCopyNumberVariation(ToVRS):
                 text._id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
         else:
-            if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+            if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
                 variation = CopyNumberCount(**variation)
             else:
                 variation = CopyNumberChange(**variation)
@@ -171,7 +172,7 @@ class ToCopyNumberVariation(ToVRS):
         """
         validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
         cn_var, warnings = await self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover,
+            HGVSDupDelModeOption.COPY_NUMBER_COUNT, hgvs_expr, do_liftover,
             validation_summary, warnings,
             untranslatable_returns_text=untranslatable_returns_text,
             baseline_copies=baseline_copies
@@ -204,7 +205,7 @@ class ToCopyNumberVariation(ToVRS):
         """
         validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
         cx_var, warnings = await self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover,
+            HGVSDupDelModeOption.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover,
             validation_summary, warnings,
             untranslatable_returns_text=untranslatable_returns_text,
             copy_change=copy_change

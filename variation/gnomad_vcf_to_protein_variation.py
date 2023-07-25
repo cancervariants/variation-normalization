@@ -23,8 +23,9 @@ from variation.schemas.classification_response_schema import (
     ClassificationType, Nomenclature, SequenceOntology
 )
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption, NormalizeService, ServiceMeta
+)
 from variation.version import __version__
 
 
@@ -287,7 +288,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         if validation_summary:
             translations, warnings = await self.get_translations(
                 validation_summary, warnings, Endpoint.NORMALIZE,
-                hgvs_dup_del_mode=HGVSDupDelModeEnum.LITERAL_SEQ_EXPR
+                hgvs_dup_del_mode=HGVSDupDelModeOption.LITERAL_SEQ_EXPR
             )
 
             if translations:

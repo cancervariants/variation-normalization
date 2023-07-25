@@ -3,6 +3,7 @@ from typing import Optional, List
 from urllib.parse import quote, unquote
 from datetime import datetime
 
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, TranscriptMappings
 
@@ -13,9 +14,9 @@ from variation.translators.translate import Translate
 from variation.utils import no_variation_resp, get_hgvs_dup_del_mode
 from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum, NormalizeService, ServiceMeta
-from variation.schemas.hgvs_to_copy_number_schema import CopyChange
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption, NormalizeService, ServiceMeta
+)
 from variation.schemas.translation_response_schema import (
     TranslationResult, AC_PRIORITY_LABELS
 )
@@ -86,7 +87,7 @@ class Normalize(ToVRSATILE):
 
     async def normalize(
         self, q: str,
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeEnum] = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False
@@ -95,7 +96,7 @@ class Normalize(ToVRSATILE):
 
         :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38
             assembly
-        :param Optional[HGVSDupDelModeEnum] hgvs_dup_del_mode:
+        :param Optional[HGVSDupDelModeOption] hgvs_dup_del_mode:
             Must be set when querying HGVS dup/del expressions.
             Must be: `default`, `copy_number_count`, `copy_number_change`,
             `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to

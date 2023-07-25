@@ -4,15 +4,15 @@ from urllib.parse import unquote
 from datetime import datetime
 
 from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumberCount,\
-    VariationSet, Text
+    VariationSet, Text, CopyChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
 
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption, ServiceMeta
+)
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.classifiers import Classify
@@ -49,7 +49,7 @@ class ToVRS(VRSRepresentation):
         validation_summary: ValidationSummary,
         warnings: List,
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum = HGVSDupDelModeEnum.DEFAULT,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
@@ -122,7 +122,7 @@ class ToVRS(VRSRepresentation):
         if validations:
             translations, warnings = await self.get_translations(
                 validations, warnings, endpoint_name=Endpoint.TO_VRS,
-                hgvs_dup_del_mode=HGVSDupDelModeEnum.DEFAULT, do_liftover=False
+                hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT, do_liftover=False
             )
         else:
             translations = []
