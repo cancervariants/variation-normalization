@@ -1,10 +1,11 @@
 """Module for representing VRSATILE objects"""
-from typing import List, Optional, Tuple, Callable
+from typing import List, Optional, Tuple, Callable, Dict
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import (
     VariationDescriptor, GeneDescriptor, MoleculeContext
 )
+from cool_seq_tool.schemas import ResidueMode
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -16,7 +17,6 @@ from variation.tokenizers import Tokenize
 from variation.classifiers import Classify
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.translation_response_schema import TranslationResult
@@ -27,7 +27,7 @@ class ToVRSATILE(ToVRS):
 
     def __init__(
         self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+        validator: Validate, translator: Translate,
         gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings
     ) -> None:
         """Initialize the ToVRSATILE class.
@@ -37,14 +37,12 @@ class ToVRSATILE(ToVRS):
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
-        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
-            HGVS dup/del expressions
         :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         """
         super().__init__(
-            seqrepo_access, tokenizer, classifier, validator, translator,
-            hgvs_dup_del_mode, gene_normalizer
+            seqrepo_access, tokenizer, classifier, validator, translator
         )
+        self.gene_normalizer = gene_normalizer
         self.transcript_mappings = transcript_mappings
 
         # AC to Gene mapping
@@ -169,3 +167,32 @@ class ToVRSATILE(ToVRS):
             return response.gene_descriptor
         else:
             return None
+
+    def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
+        """Return ref allele seq for transcript.
+
+        :param Dict location: VRS Location object
+        :param str identifier: Identifier for allele
+        :return: Ref seq allele
+        """
+        start = None
+        end = None
+        interval = location["interval"]
+        ival_type = interval["type"]
+
+        if ival_type == "SequenceInterval":
+            if interval["start"]["type"] == "Number":
+                start = interval["start"]["value"]
+                end = interval["end"]["value"]
+
+                if start == end:
+                    return None
+
+        if start is None and end is None:
+            return None
+
+        ref, _ = self.seqrepo_access.get_reference_sequence(
+            ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+        )
+
+        return ref

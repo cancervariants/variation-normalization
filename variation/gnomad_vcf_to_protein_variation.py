@@ -12,7 +12,6 @@ from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classifiers.classify import Classify
 from variation.data_sources.codon_table import CodonTable
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenizers.tokenize import Tokenize
@@ -35,9 +34,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
 
     def __init__(
         self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
-        gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings,
-        uta: UTADatabase, mane_transcript: MANETranscript,
+        validator: Validate, translator: Translate, gene_normalizer: GeneQueryHandler,
+        transcript_mappings: TranscriptMappings, uta: UTADatabase,
+        mane_transcript: MANETranscript,
         mane_transcript_mappings: MANETranscriptMappings, codon_table: CodonTable
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
@@ -47,8 +46,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
-        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
-            HGVS dup/del expressions
         :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         :param UTADatabase uta: Access to db containing alignment data
         :param MANETranscript mane_transcript: Access MANE Transcript
@@ -59,7 +56,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         """
         super().__init__(
             seqrepo_access, tokenizer, classifier, validator, translator,
-            hgvs_dup_del_mode, gene_normalizer, transcript_mappings
+            gene_normalizer, transcript_mappings
         )
         self.uta = uta
         self.mane_transcript = mane_transcript

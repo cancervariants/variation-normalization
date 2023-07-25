@@ -8,7 +8,6 @@ from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, TranscriptMap
 
 from variation.classifiers.classify import Classify
 from variation.to_vrsatile import ToVRSATILE
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
 from variation.utils import no_variation_resp, get_hgvs_dup_del_mode
@@ -28,7 +27,7 @@ class Normalize(ToVRSATILE):
 
     def __init__(
         self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
+        validator: Validate, translator: Translate,
         gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings,
         uta: UTADatabase
     ) -> None:
@@ -39,14 +38,12 @@ class Normalize(ToVRSATILE):
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
-        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
-            HGVS dup/del expressions
         :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         :param UTADatabase uta: Access to db containing alignment data
         """
         super().__init__(
             seqrepo_access, tokenizer, classifier, validator, translator,
-            hgvs_dup_del_mode, gene_normalizer, transcript_mappings
+            gene_normalizer, transcript_mappings
         )
         self.uta = uta
 

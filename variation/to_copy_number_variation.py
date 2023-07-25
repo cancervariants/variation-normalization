@@ -2,13 +2,16 @@
 from typing import Tuple, Optional, List, Union
 from datetime import datetime
 from urllib.parse import unquote
+from cool_seq_tool.data_sources import SeqRepoAccess
 
+from gene.query import QueryHandler as GeneQueryHandler
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
     Text, CopyChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from pydantic import ValidationError
 from gene.schemas import MatchType as GeneMatchType
+from variation.classifiers import Classify
 
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
@@ -23,12 +26,22 @@ from variation.schemas.service_schema import AmplificationToCxVarQuery, \
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
+from variation.tokenizers import Tokenize
+from variation.translators import Translate
 from variation.utils import get_priority_sequence_location
+from variation.validators import Validate
 from variation.version import __version__
 
 
 class ToCopyNumberVariation(ToVRS):
     """Class for representing copy number variation"""
+
+    def __init__(
+        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
+        validator: Validate, translator: Translate, gene_normalizer: GeneQueryHandler
+    ) -> None:
+        super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
+        self.gene_normalizer = gene_normalizer
 
     @staticmethod
     def _parsed_to_text(start: int, end: int, total_copies: int, warnings: List[str],

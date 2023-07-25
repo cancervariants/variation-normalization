@@ -1,5 +1,5 @@
 """Module for to_vrs endpoint."""
-from typing import Tuple, Optional, List, Union, Dict
+from typing import Tuple, Optional, List, Union
 from urllib.parse import unquote
 from datetime import datetime
 
@@ -7,13 +7,11 @@ from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumberCoun
     VariationSet, Text
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from cool_seq_tool.schemas import ResidueMode
+
 from cool_seq_tool.data_sources import SeqRepoAccess
-from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.normalize_response_schema\
     import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.hgvs_to_copy_number_schema import CopyChange
 from variation.schemas.to_vrs_response_schema import ToVRSService
@@ -29,28 +27,23 @@ from variation.version import __version__
 class ToVRS(VRSRepresentation):
     """The class for translating variation strings to VRS representations."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess,
-                 tokenizer: Tokenize, classifier: Classify, validator: Validate,
-                 translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
-                 gene_normalizer: GeneQueryHandler) -> None:
-        """Initialize the ToVrsAndVrsatile class.
+    def __init__(
+        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
+        validator: Validate, translator: Translate
+    ) -> None:
+        """Initialize the ToVRS class.
 
         :param SeqRepoAccess seqrepo_access: Access to SeqRepo
         :param Tokenize tokenizer: Tokenizer class for tokenizing
         :param Classify classifier: Classifier class for classifying tokens
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
-        :param HGVSDupDelMode hgvs_dup_del_mode: Class for handling
-            HGVS dup/del expressions
-        :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
         """
         super().__init__(seqrepo_access)
         self.tokenizer = tokenizer
         self.classifier = classifier
         self.validator = validator
         self.translator = translator
-        self.hgvs_dup_del_mode = hgvs_dup_del_mode
-        self.gene_normalizer = gene_normalizer
 
     async def get_translations(
         self,
@@ -90,35 +83,6 @@ class ToVRS(VRSRepresentation):
             warnings.append("Unable to translate variation")
 
         return translations, warnings
-
-    def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
-        """Return ref allele seq for transcript.
-
-        :param Dict location: VRS Location object
-        :param str identifier: Identifier for allele
-        :return: Ref seq allele
-        """
-        start = None
-        end = None
-        interval = location["interval"]
-        ival_type = interval["type"]
-
-        if ival_type == "SequenceInterval":
-            if interval["start"]["type"] == "Number":
-                start = interval["start"]["value"]
-                end = interval["end"]["value"]
-
-                if start == end:
-                    return None
-
-        if start is None and end is None:
-            return None
-
-        ref, _ = self.seqrepo_access.get_reference_sequence(
-            ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
-        )
-
-        return ref
 
     async def to_vrs(
         self, q: str, untranslatable_returns_text: bool = False
