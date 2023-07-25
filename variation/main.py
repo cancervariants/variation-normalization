@@ -195,7 +195,7 @@ def translate_identifier(
     warnings = None
     identifier = identifier.strip()
     try:
-        aliases = query_handler._seqrepo_access.sr.translate_identifier(
+        aliases = query_handler.seqrepo_access.sr.translate_identifier(
             identifier, target_namespaces=target_namespaces)
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
@@ -243,7 +243,7 @@ def vrs_python_translate_from(
     warnings = list()
     vrs_variation = None
     try:
-        resp = query_handler._tlr.translate_from(variation_query, fmt)
+        resp = query_handler.vrs_python_tlr.translate_from(variation_query, fmt)
     except (KeyError, ValueError, python_jsonschema_objects.validators.ValidationError) as e:  # noqa: E501
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
@@ -357,7 +357,7 @@ async def vrs_python_translate_to(
     variations = list()
     if allele:
         try:
-            variations = query_handler._tlr.translate_to(allele, request_body["fmt"])
+            variations = query_handler.vrs_python_tlr.translate_to(allele, request_body["fmt"])
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
 
@@ -409,7 +409,7 @@ async def vrs_python_to_hgvs(
     variations = list()
     if allele:
         try:
-            variations = query_handler._tlr._to_hgvs(
+            variations = query_handler.vrs_python_tlr._to_hgvs(
                 allele, namespace=request_body.get("namespace") or "refseq")
         except ValueError as e:
             warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")

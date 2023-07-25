@@ -2,7 +2,7 @@
 from typing import Optional
 
 from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.extras.translator import Translator
+from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
 from cool_seq_tool import CoolSeqTool
 
 from variation import UTA_DB_URL
@@ -43,10 +43,10 @@ class QueryHandler:
             gene_db_url=dynamodb_url,
             gene_db_region=dynamodb_region
         )
-        self._seqrepo_access = cool_seq_tool.seqrepo_access
+        self.seqrepo_access = cool_seq_tool.seqrepo_access
         gene_query_handler = cool_seq_tool.gene_query_handler
 
-        vrs_representation = VRSRepresentation(self._seqrepo_access)
+        vrs_representation = VRSRepresentation(self.seqrepo_access)
         gene_symbol = GeneSymbol(gene_query_handler)
         tokenizer = Tokenize(gene_symbol)
         classifier = Classify()
@@ -54,16 +54,16 @@ class QueryHandler:
         self.alignment_mapper = cool_seq_tool.alignment_mapper
         mane_transcript = cool_seq_tool.mane_transcript
         transcript_mappings = cool_seq_tool.transcript_mappings
-        self._tlr = Translator(data_proxy=self._seqrepo_access)
+        self.vrs_python_tlr = VrsPythonTranslator(data_proxy=self.seqrepo_access)
         validator = Validate(
-            self._seqrepo_access, transcript_mappings, uta_db, gene_query_handler
+            self.seqrepo_access, transcript_mappings, uta_db, gene_query_handler
         )
-        hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
+        hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         translator = Translate(
-            self._seqrepo_access, mane_transcript, uta_db, vrs_representation,
+            self.seqrepo_access, mane_transcript, uta_db, vrs_representation,
             hgvs_dup_del_mode
         )
-        to_vrs_params = [self._seqrepo_access, tokenizer,
+        to_vrs_params = [self.seqrepo_access, tokenizer,
                          classifier, validator, translator, hgvs_dup_del_mode,
                          gene_query_handler]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
