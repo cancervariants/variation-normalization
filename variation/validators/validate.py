@@ -2,13 +2,10 @@
 from typing import List
 
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase, \
-    MANETranscript
+from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase
 
-from variation.vrs_representation import VRSRepresentation
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
-from variation.tokenizers import GeneSymbol
 from .protein_substitution import ProteinSubstitution
 from .protein_stop_gain import ProteinStopGain
 from .protein_reference_agree import ProteinReferenceAgree
@@ -38,26 +35,18 @@ class Validate:
         self,
         seqrepo_access: SeqRepoAccess,
         transcript_mappings: TranscriptMappings,
-        gene_symbol: GeneSymbol,
-        mane_transcript: MANETranscript,
         uta: UTADatabase,
-        gene_normalizer: GeneQueryHandler,
-        vrs: VRSRepresentation
+        gene_normalizer: GeneQueryHandler
     ) -> None:
         """Initialize the validate class.
 
         :param seqrepo_access: Access to SeqRepo data
         :param transcript_mappings: Access to transcript mappings
-        :param gene_symbol: Gene symbol tokenizer
-        :param mane_transcript: Access MANE Transcript information
         :param uta: Access to UTA queries
-        :param tlr: Class for translating nomenclatures to and from VRS
         :param gene_normalizer: Access to gene-normalizer
-        :param vrs: Class for representing VRS objects
         """
         params = [
-            seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, gene_normalizer, vrs
+            seqrepo_access, transcript_mappings, uta, gene_normalizer
         ]
         self.validators = [
             ProteinSubstitution(*params),

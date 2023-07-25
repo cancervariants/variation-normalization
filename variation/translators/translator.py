@@ -11,7 +11,6 @@ from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.token_response_schema import GeneToken
 from variation.validators.genomic_base import GenomicBase
-from variation.tokenizers import GeneSymbol
 from variation.vrs_representation import VRSRepresentation
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
@@ -29,31 +28,23 @@ class Translator(ABC):
     def __init__(
         self,
         seqrepo_access: SeqRepoAccess,
-        transcript_mappings: TranscriptMappings,
-        gene_symbol: GeneSymbol,
         mane_transcript: MANETranscript,
         uta: UTADatabase,
-        gene_normalizer: GeneQueryHandler,
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode
     ) -> None:
         """Initialize the DelIns validator.
 
         :param seqrepo_access: Access to SeqRepo data
-        :param transcript_mappings: Access to transcript mappings
         :param gene_symbol: Gene symbol tokenizer
         :param mane_transcript: Access MANE Transcript information
         :param uta: Access to UTA queries
-        :param gene_normalizer: Access to gene-normalizer
         :param vrs: Class for creating VRS objects
         """
-        self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
-        self._gene_matcher = gene_symbol
         self.uta = uta
         self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
         self.mane_transcript = mane_transcript
-        self.gene_normalizer = gene_normalizer
         self.vrs = vrs
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
 

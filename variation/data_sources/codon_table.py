@@ -4,9 +4,6 @@ from typing import Dict, List
 from bioutils.sequences import aa3_to_aa1
 
 
-MULTIPLE_CODONS = {"Leu", "Ser", "Arg"}
-
-
 class CodonTable:
     """Class for codon table data."""
 
@@ -42,24 +39,6 @@ class CodonTable:
             "UAC": "Y", "UAU": "Y", "UAA": "*", "UAG": "*",
             "UGC": "C", "UGU": "C", "UGA": "*", "UGG": "W",
         }
-
-    def get_codons(self, amino_acid: str) -> List[str]:
-        """Return a list of codons for an amino acid.
-
-        :param str amino_acid: Amino acid to get codons for
-        :return: List of codons
-        """
-        if len(amino_acid) == 3:
-            amino_acid = aa3_to_aa1(amino_acid.capitalize())
-        else:
-            amino_acid = amino_acid.upper()
-
-        codons = list()
-        for k, v in self.table.items():
-            if v == amino_acid:
-                codons.append(k)
-        codons.sort()
-        return codons
 
     def dna_to_rna(self, dna_codon: str) -> str:
         """Convert DNA codon to RNA codon.

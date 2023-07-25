@@ -31,8 +31,3 @@ class Classifier(ABC):
                 exact_matches.append(candidate)
 
         return len(exact_matches) == 1
-
-    def get_token_by_token_type(
-        self, tokens: List[Token], token_type: TokenType
-    ) -> Optional[Token]:
-        return ([t for t in tokens if t.token_type == token_type] or [None])[0]

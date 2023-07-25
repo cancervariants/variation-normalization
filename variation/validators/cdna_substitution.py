@@ -42,10 +42,6 @@ class CdnaSubstitution(Validator):
 
         return validation_results
 
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "cdna substitution"
-
     def validates_classification_type(
         self, classification_type: ClassificationType
     ) -> bool:

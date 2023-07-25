@@ -45,18 +45,14 @@ class Translate:
     def __init__(
         self,
         seqrepo_access: SeqRepoAccess,
-        transcript_mappings: TranscriptMappings,
-        gene_symbol: GeneSymbol,
         mane_transcript: MANETranscript,
         uta: UTADatabase,
-        gene_normalizer: GeneQueryHandler,
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode
     ) -> None:
         """Initialize the translation class."""
         params = [
-            seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, gene_normalizer, vrs, hgvs_dup_del_mode
+            seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode
         ]
 
         self.all_translators: List[Translator] = [

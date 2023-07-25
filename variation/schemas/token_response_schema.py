@@ -33,7 +33,6 @@ class TokenType(str, Enum):
     GENOMIC_SUBSTITUTION = "GenomicSubstitution"
     GNOMAD_VCF = "GnomadVcf"
     HGVS = "Hgvs"
-    HGVS_SUBSTITUTION = "HgvsSubstitution"
     PROTEIN_STOP_GAIN = "ProteinStopGain"
     PROTEIN_DELETION = "ProteinDeletion"
     PROTEIN_DELINS = "ProteinDelIns"
@@ -249,10 +248,3 @@ class GeneToken(Token):
     matched_value: str
     token_type = TokenType.GENE
     gene_descriptor: Optional[GeneDescriptor]
-
-
-class TokenResponseSchema(BaseModel):
-    """Define model for token response."""
-
-    search_term: str
-    tokens: List[Token]

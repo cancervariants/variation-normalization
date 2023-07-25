@@ -18,15 +18,6 @@ from variation.schemas.normalize_response_schema import (
 from variation.schemas.app_schemas import AmbiguousRegexType, Endpoint
 
 
-def no_variation_entered() -> Tuple[None, List[str]]:
-    """Return response when no variation queried.
-
-    :return: None, list of warnings
-    """
-    warnings = ["No variation was entered to normalize"]
-    return None, warnings
-
-
 def no_variation_resp(
     label: str, _id: str, warnings: List, untranslatable_returns_text: bool = False
 ) -> Tuple[Optional[VariationDescriptor], List]:

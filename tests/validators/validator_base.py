@@ -4,12 +4,10 @@ from biocommons.seqrepo import SeqRepo
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.paths import SEQREPO_ROOT_DIR
-from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, \
-    MANETranscriptMappings, UTADatabase, MANETranscript
+from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase
 
 from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
-from variation.vrs_representation import VRSRepresentation
 from variation.tokenizers import Tokenize, GeneSymbol
 
 
@@ -29,14 +27,9 @@ class ValidatorBase:
         seqrepo_access = SeqRepoAccess(sr)
         transcript_mappings = TranscriptMappings()
         uta = UTADatabase()
-        mane_transcript = MANETranscript(
-            seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
-            gene_normalizer)
-        vrs = VRSRepresentation(seqrepo_access)
 
         cls.aa_params = [
-            seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, gene_normalizer, vrs
+            seqrepo_access, transcript_mappings, uta, gene_normalizer
         ]
         cls.params = cls.aa_params[:-1]
 

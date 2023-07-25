@@ -23,10 +23,3 @@ class ValidationSummary(BaseModel):
     valid_results: List[ValidationResult]
     invalid_results: List[ValidationResult]
     warnings: List[str]
-
-
-class ValidationResponseSchema(BaseModel):
-    """Validation Response for a given variation."""
-
-    search_term: str
-    validation_summary: ValidationSummary

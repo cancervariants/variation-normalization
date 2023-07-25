@@ -11,6 +11,7 @@ from tests import PROJECT_ROOT
 from variation.schemas.app_schemas import Endpoint
 from variation.vrs_representation import VRSRepresentation
 from variation.tokenizers import Tokenize, GeneSymbol
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 
 
 class TranslatorBase:
@@ -33,10 +34,10 @@ class TranslatorBase:
             seqrepo_access, transcript_mappings, MANETranscriptMappings(), uta,
             gene_normalizer)
         vrs = VRSRepresentation(seqrepo_access)
+        hgvs_dup_del_mode = HGVSDupDelMode(seqrepo_access)
 
         cls.aa_params = [
-            seqrepo_access, transcript_mappings, gene_symbol,
-            mane_transcript, uta, gene_normalizer, vrs
+            seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode
         ]
         cls.params = cls.aa_params[:-1]
 

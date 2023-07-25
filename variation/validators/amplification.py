@@ -33,10 +33,6 @@ class Amplification(Validator):
         """
         return classification_type == ClassificationType.AMPLIFICATION
 
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "amplification"
-
     async def get_accessions(
         self, classification: Classification, errors: List
     ) -> List:

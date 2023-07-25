@@ -14,7 +14,6 @@ from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
 from variation.data_sources import CodonTable
-from variation.to_vrsatile import ToVRSATILE
 from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
 from variation.normalize import Normalize
 from variation.to_copy_number_variation import ToCopyNumberVariation
@@ -57,19 +56,17 @@ class QueryHandler:
         transcript_mappings = cool_seq_tool.transcript_mappings
         self._tlr = Translator(data_proxy=self._seqrepo_access)
         validator = Validate(
-            self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta_db, gene_query_handler, vrs_representation
+            self._seqrepo_access, transcript_mappings, uta_db, gene_query_handler
         )
         hgvs_dup_del_mode = HGVSDupDelMode(self._seqrepo_access)
         translator = Translate(
-            self._seqrepo_access, transcript_mappings, gene_symbol, mane_transcript,
-            uta_db, gene_query_handler, vrs_representation, hgvs_dup_del_mode
+            self._seqrepo_access, mane_transcript, uta_db, vrs_representation,
+            hgvs_dup_del_mode
         )
         to_vrs_params = [self._seqrepo_access, tokenizer,
                          classifier, validator, translator, hgvs_dup_del_mode,
                          gene_query_handler]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
-        self.to_vrsatile_handler = ToVRSATILE(*to_vrs_params + [transcript_mappings])
         self.normalize_handler = Normalize(
             *to_vrs_params + [transcript_mappings, uta_db]
         )

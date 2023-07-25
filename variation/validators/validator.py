@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import (
-    SeqRepoAccess, TranscriptMappings, MANETranscript, UTADatabase
+    SeqRepoAccess, TranscriptMappings, UTADatabase
 )
 from cool_seq_tool.schemas import ResidueMode
 
@@ -13,46 +13,28 @@ from variation.schemas.classification_response_schema import (
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.tokenizers import GeneSymbol
 from variation.validators.genomic_base import GenomicBase
-from variation.vrs_representation import VRSRepresentation
 
 
 class Validator(ABC):
     """The validator class."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess,
-                 transcript_mappings: TranscriptMappings,
-                 gene_symbol: GeneSymbol,
-                 mane_transcript: MANETranscript,
-                 uta: UTADatabase,
-                 gene_normalizer: GeneQueryHandler,
-                 vrs: VRSRepresentation) -> None:
+    def __init__(
+        self, seqrepo_access: SeqRepoAccess, transcript_mappings: TranscriptMappings,
+        uta: UTADatabase, gene_normalizer: GeneQueryHandler
+    ) -> None:
         """Initialize the DelIns validator.
 
         :param seqrepo_access: Access to SeqRepo data
         :param transcript_mappings: Access to transcript mappings
-        :param gene_symbol: Gene symbol tokenizer
-        :param mane_transcript: Access MANE Transcript information
         :param uta: Access to UTA queries
         :param gene_normalizer: Access to gene-normalizer
-        :param vrs: Class for creating VRS objects
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
-        self._gene_matcher = gene_symbol
         self.uta = uta
         self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
-        self.mane_transcript = mane_transcript
         self.gene_normalizer = gene_normalizer
-        self.vrs = vrs
-
-    @abstractmethod
-    def variation_name(self) -> str:
-        """Return the variation name.
-
-        :return: variation class name
-        """
 
     @abstractmethod
     async def get_accessions(
@@ -213,19 +195,6 @@ class Validator(ABC):
                     if not (gene_start <= pos <= gene_end):
                         return f"Position {pos} out of index on {alt_ac} on gene, {gene}"  # noqa: E501
 
-    def _check_index(self, ac: str, pos: int, errors: List) -> Optional[str]:
-        """Check that index actually exists
-
-        :param str ac: Accession
-        :param int pos: Position changes
-        :param List errors: List of errors
-        :return: Reference sequence
-        """
-        seq, w = self.seqrepo_access.get_reference_sequence(ac, pos)
-        if not seq:
-            errors.append(w)
-        return seq
-
     def validate_reference_sequence(
         self, ac: str, start_pos: int, end_pos: int,
         expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
@@ -252,16 +221,6 @@ class Validator(ABC):
             msg = f"Unable to get CDS start for accession: {ac}"
 
         return cds_start, msg
-
-    def validate_accession(self, ac: str) -> Optional[str]:
-        try:
-            self.seqrepo_access.sr[ac][0]
-        except KeyError:
-            msg = f"Accession does not exist in SeqRepo: {ac}"
-        else:
-            msg = None
-
-        return msg
 
     def validate_ac_and_pos(
         self, ac: str, start_pos: int, end_pos: Optional[int] = None,

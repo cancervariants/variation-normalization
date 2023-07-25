@@ -306,10 +306,6 @@ hgvs_dup_del_mode_decsr = ("Must be one of: `default`, `copy_number_count`, "
                            "`copy_number_change`, `repeated_seq_expr`, "
                            "`literal_seq_expr`. This parameter determines how to "
                            "interpret HGVS dup/del expressions in VRS.")
-copy_change_descr = ("The copy change. Only used when `fmt`=`hgvs` and Copy Number "
-                     "Change Variation.")
-baseline_copies_descr = "Baseline copies for duplication or deletion. Only used when "\
-                        "`fmt`=`hgvs` and Copy Number Count Variation.`"
 
 
 def _get_allele(request_body: Union[TranslateToQuery, TranslateToHGVSQuery],

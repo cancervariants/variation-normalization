@@ -46,10 +46,6 @@ class GenomicDelIns(Validator):
 
         return validation_results
 
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "genomic delins"
-
     def validates_classification_type(
         self, classification_type: ClassificationType
     ) -> bool:

@@ -16,8 +16,6 @@ VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 ]
 
-VALID_COPY_CHANGE = [rcc.value for rcc in CopyChange.__members__.values()]
-
 
 class HgvsToCopyNumberCountService(ServiceResponse):
     """A response for translating HGVS to copy number count."""
