@@ -13,7 +13,6 @@ from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
 from variation.translators import Translate
-from variation.data_sources import CodonTable
 from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
 from variation.normalize import Normalize
 from variation.to_copy_number_variation import ToCopyNumberVariation
@@ -71,10 +70,9 @@ class QueryHandler:
         ]
         self.normalize_handler = Normalize(*normalize_params)
 
-        codon_table = CodonTable()
         mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
         to_protein_params = normalize_params + [
-            mane_transcript, mane_transcript_mappings, codon_table
+            mane_transcript, mane_transcript_mappings
         ]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
             *to_protein_params

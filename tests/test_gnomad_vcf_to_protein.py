@@ -3,6 +3,7 @@ import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 from tests.conftest import assertion_checks
+from variation.gnomad_vcf_to_protein_variation import dna_to_rna
 
 
 @pytest.fixture(scope="module")
@@ -823,6 +824,15 @@ def kras_g12d():
             "sequence": "D"
         }
     }
+
+
+def test_dna_to_rna():
+    """Test that dna_to_rna method works correctly."""
+    resp = dna_to_rna("GTA")
+    assert resp == "CAU"
+
+    resp = dna_to_rna("AAGTGACA")
+    assert resp == "UUCACUGU"
 
 
 @pytest.mark.asyncio

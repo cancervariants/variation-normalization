@@ -11,7 +11,6 @@ from cool_seq_tool.schemas import ResidueMode
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classifiers.classify import Classify
-from variation.data_sources.codon_table import CodonTable
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenizers.tokenize import Tokenize
@@ -29,6 +28,44 @@ from variation.schemas.normalize_response_schema\
 from variation.version import __version__
 
 
+DNA_TO_RNA = {
+    "T": "A", "A": "U",
+    "G": "C", "C": "G"
+}
+
+CODON_TABLE = {
+    "AUA": "I", "AUC": "I", "AUU": "I", "AUG": "M",
+    "ACA": "T", "ACC": "T", "ACG": "T", "ACU": "T",
+    "AAC": "N", "AAU": "N", "AAA": "K", "AAG": "K",
+    "AGC": "S", "AGU": "S", "AGA": "R", "AGG": "R",
+    "CUA": "L", "CUC": "L", "CUG": "L", "CUU": "L",
+    "CCA": "P", "CCC": "P", "CCG": "P", "CCU": "P",
+    "CAC": "H", "CAU": "H", "CAA": "Q", "CAG": "Q",
+    "CGA": "R", "CGC": "R", "CGG": "R", "CGU": "R",
+    "GUA": "V", "GUC": "V", "GUG": "V", "GUU": "V",
+    "GCA": "A", "GCC": "A", "GCG": "A", "GCU": "A",
+    "GAC": "D", "GAU": "D", "GAA": "E", "GAG": "E",
+    "GGA": "G", "GGC": "G", "GGG": "G", "GGU": "G",
+    "UCA": "S", "UCC": "S", "UCG": "S", "UCU": "S",
+    "UUC": "F", "UUU": "F", "UUA": "L", "UUG": "L",
+    "UAC": "Y", "UAU": "Y", "UAA": "*", "UAG": "*",
+    "UGC": "C", "UGU": "C", "UGA": "*", "UGG": "W",
+}
+
+
+def dna_to_rna(dna_codon: str) -> str:
+    """Convert DNA codon to RNA codon.
+
+    :param str dna_codon: DNA codon
+    :return: RNA codon
+    """
+    dna_codon_list = list(dna_codon)
+    rna_codon = ""
+    for char in dna_codon_list:
+        rna_codon += DNA_TO_RNA[char]
+    return rna_codon
+
+
 class GnomadVcfToProteinVariation(ToVRSATILE):
     """Class for translating gnomAD VCF representation to protein representation"""
 
@@ -37,7 +74,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         validator: Validate, translator: Translate, gene_normalizer: GeneQueryHandler,
         transcript_mappings: TranscriptMappings, uta: UTADatabase,
         mane_transcript: MANETranscript,
-        mane_transcript_mappings: MANETranscriptMappings, codon_table: CodonTable
+        mane_transcript_mappings: MANETranscriptMappings
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
@@ -52,7 +89,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             information
         :param MANETranscriptMappings mane_transcript_mappings: Mappings for
             MANE Transcript data
-        :param CodonTable codon_table: Codon table data
         """
         super().__init__(
             seqrepo_access, tokenizer, classifier, validator, translator,
@@ -61,7 +97,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         self.uta = uta
         self.mane_transcript = mane_transcript
         self.mane_transcript_mappings = mane_transcript_mappings
-        self.codon_table = codon_table
 
     async def _get_validation_summary(
         self, q: str, warnings: List
@@ -206,7 +241,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     )
                     alt = ref[0] + ref[1] + alt_nuc
             if alt and strand == "-":
-                alt = self.codon_table.dna_to_rna(alt)
+                alt = dna_to_rna(alt)
             else:
                 alt = alt.replace("T", "U")
         elif classification_token.classification_type == ClassificationType.GENOMIC_DELETION:  # noqa: E501
@@ -228,7 +263,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
 
             aa_alt = ""
             for i in range(int(len(alt) / 3)):
-                aa_alt += self.codon_table.table[alt[3 * i:(3 * i) + 3]]
+                aa_alt += CODON_TABLE[alt[3 * i:(3 * i) + 3]]
             return aa_alt
 
     async def gnomad_vcf_to_protein(
