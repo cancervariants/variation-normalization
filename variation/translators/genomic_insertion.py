@@ -75,7 +75,7 @@ class GenomicInsertion(Translator):
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
                 vrs_seq_loc_ac, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.SUBSTITUTION, warnings,
+                CoordinateType.LINEAR_GENOMIC, AltType.INSERTION, warnings,
                 alt=classification.inserted_sequence
             )
 

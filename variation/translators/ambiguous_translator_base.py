@@ -187,7 +187,11 @@ class AmbiguousTranslator(Translator):
             pos3 = classification.pos3
             assembly = None
 
-        if classification.nomenclature == Nomenclature.FREE_TEXT and classification.gene_token:  # noqa: E501
+        if all((
+            endpoint_name == Endpoint.NORMALIZE,
+            classification.nomenclature == Nomenclature.FREE_TEXT,
+            classification.gene_token
+        )):
             errors = []
             if not assembly and not grch38_data:
                 grch38_data = await self.get_grch38_data_ambiguous(
