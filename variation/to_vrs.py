@@ -137,8 +137,8 @@ class ToVRS(VRSRepresentation):
         else:
             variations = []
             for tr in translations:
-                if tr not in variations:
-                    translations.append(tr)
+                if tr.vrs_variation not in variations:
+                    variations.append(tr.vrs_variation)
 
         params["warnings"] = warnings
         params["variations"] = variations
