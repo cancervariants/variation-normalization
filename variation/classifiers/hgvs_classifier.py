@@ -1,5 +1,6 @@
 """A module for the HGVS Classifier."""
 from typing import Dict, List, Optional
+from re import Match, Pattern
 
 from variation.schemas.classification_response_schema import (
     Classification, ClassificationType, GenomicSubstitutionClassification,
@@ -53,11 +54,19 @@ class HgvsClassifier(Classifier):
 
         return classification
 
+    @staticmethod
+    def _regex_match(change: str, regex: Pattern) -> Optional[Match]:
+        if change[0] == "(" and change[-1] == ")":
+            match = regex.match(change[1:-1])
+        else:
+            match = regex.match(change)
+        return match
+
     def _protein_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         for regex, _, classification_type in PROTEIN_REGEXPRS:
-            match = regex.match(token.change)
+            match = self._regex_match(token.change, regex)
 
             if match:
                 match_dict = match.groupdict()
@@ -92,7 +101,7 @@ class HgvsClassifier(Classifier):
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         for regex, _, classification_type in CDNA_REGEXPRS:
-            match = regex.match(token.change)
+            match = self._regex_match(token.change, regex)
 
             if match:
                 match_dict = match.groupdict()
@@ -130,7 +139,7 @@ class HgvsClassifier(Classifier):
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
         for regex, _, classification_type in GENOMIC_REGEXPRS:
-            match = regex.match(token.change)
+            match = self._regex_match(token.change, regex)
 
             if match:
                 match_dict = match.groupdict()

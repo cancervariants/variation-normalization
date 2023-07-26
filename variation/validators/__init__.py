@@ -21,3 +21,4 @@ from .cdna_insertion import CdnaInsertion
 from .genomic_insertion import GenomicInsertion
 from .genomic_duplication import GenomicDuplication
 from .genomic_duplication_ambiguous import GenomicDuplicationAmbiguous
+from .amplification import Amplification
