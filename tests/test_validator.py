@@ -6,7 +6,7 @@ from variation.validators import (
     ProteinReferenceAgree, CdnaReferenceAgree, GenomicReferenceAgree, ProteinDelIns,
     CdnaDelIns, GenomicDelIns, ProteinDeletion, CdnaDeletion, GenomicDeletion,
     GenomicDeletionAmbiguous, ProteinInsertion, CdnaInsertion, GenomicInsertion,
-    GenomicDuplication, GenomicDuplicationAmbiguous
+    GenomicDuplication, GenomicDuplicationAmbiguous, Amplification
 )
 
 
@@ -501,4 +501,14 @@ async def test_genomic_duplication_ambiguous(
     await validator_checks(
         test_tokenizer, test_classifier, "NC_000023.11:g.(?_154092209)_154021812dup",
         val_params, validator_instance, expect_valid=False
+    )
+
+
+@pytest.mark.asyncio
+async def test_amplification(test_tokenizer, test_classifier, val_params):
+    """Test that amplification validator works correctly"""
+    validator_instance = Amplification
+    await validator_checks(
+        test_tokenizer, test_classifier, "BRAF Amplification", val_params,
+        validator_instance
     )
