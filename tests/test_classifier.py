@@ -40,7 +40,6 @@ def classifier_checks(
             query = x["query"]
             tokens = test_tokenizer.perform(query, [])
             classification = test_classifier.perform(tokens)
-            print(classification)
 
             if label == "should_match":
                 assert isinstance(classification, expected_classification), query
