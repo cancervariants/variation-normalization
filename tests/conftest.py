@@ -5,6 +5,7 @@ import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
+from cool_seq_tool import CoolSeqTool
 
 from variation.query import QueryHandler
 from variation.tokenizers import Tokenize, GeneSymbol
@@ -29,6 +30,24 @@ def test_tokenizer():
 def test_classifier():
     """Create test fixture for classifier"""
     return Classify()
+
+
+@pytest.fixture(scope="session")
+def test_gene_normalizer():
+    return GeneQueryHandler(DynamoDbDatabase())
+
+
+@pytest.fixture(scope="session")
+def test_cool_seq_tool():
+    return CoolSeqTool()
+
+
+@pytest.fixture(scope="session")
+def val_params(test_cool_seq_tool, test_gene_normalizer):
+    return [
+        test_cool_seq_tool.seqrepo_access, test_cool_seq_tool.transcript_mappings,
+        test_cool_seq_tool.uta_db, test_gene_normalizer
+    ]
 
 
 @pytest.fixture(scope="session")

@@ -1,10 +1,5 @@
 """Module for testing validators"""
 import pytest
-from biocommons.seqrepo import SeqRepo
-from gene.database.dynamodb import DynamoDbDatabase
-from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.paths import SEQREPO_ROOT_DIR
-from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase
 
 from variation.validators import (
     ProteinSubstitution, CdnaSubstitution, GenomicSubstitution, ProteinStopGain,
@@ -13,19 +8,6 @@ from variation.validators import (
     GenomicDeletionAmbiguous, ProteinInsertion, CdnaInsertion, GenomicInsertion,
     GenomicDuplication, GenomicDuplicationAmbiguous
 )
-
-
-@pytest.fixture(scope="module")
-def val_params():
-    gene_normalizer = GeneQueryHandler(DynamoDbDatabase())
-    sr = SeqRepo(root_dir=SEQREPO_ROOT_DIR)
-    seqrepo_access = SeqRepoAccess(sr)
-    transcript_mappings = TranscriptMappings()
-    uta = UTADatabase()
-
-    return [
-        seqrepo_access, transcript_mappings, uta, gene_normalizer
-    ]
 
 
 async def validator_checks(
