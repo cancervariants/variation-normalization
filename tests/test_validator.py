@@ -14,7 +14,7 @@ from variation.validators import (
 
 @pytest.fixture(scope="module")
 def all_fixtures():
-    """Create fixture for classifiers"""
+    """Create fixture for validators"""
     with open(f"{PROJECT_ROOT}/tests/fixtures/validators.yml") as stream:
         return yaml.safe_load(stream)
 

@@ -14,7 +14,7 @@ protein_substitution:
     - token: V600E
     - token: Arg54Ser
     - token: p.Met918Thr
-    - token: p.Asp842Valhttps://ca.slack-edge.com/T0K226A3T-U039R09J8LF-e8a28189c1f7-192
+    - token: p.Asp842Val
     - token: p.(Arg54Ser)
     - token: p.Arg54Ser
     - token: p.Val600Glu
@@ -352,3 +352,12 @@ genomic_deletion_ambiguous:
     - token: g.(?_31120496)_(33339477_?)delins
     - token: (?_31120496)_(33339477_?)del
     - token: g.(x_31100351)_(33274278_33417151)del
+
+amplification:
+  should_match:
+    - token: Amplification
+    - token: amplification
+    - token: AMPLIFICATION
+  should_not_match:
+    - token: amplificatoin
+    - token: amp
