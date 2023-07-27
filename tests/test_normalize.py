@@ -707,39 +707,6 @@ def genomic_sub_grch38():
 
 
 @pytest.fixture(scope="module")
-def egfr_grch38_sub(genomic_sub_grch38, egfr_context):
-    """Create a genomic substitution GRCh38 test fixture."""
-    params = {
-        "id": "normalize.variation:NC_000007.13%3Ag.55249071C%3ET",
-        "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
-        "variation": {
-            "_id": "ga4gh:VA.1ewlywoD423K7YH_K4YefZg6J_87pQTp",
-            "location": {
-                "_id": "ga4gh:VSL.0p1nWj9-sryfUD5jvPTZZdnZeiHVHXls",
-                "interval": {
-                    "end": {"value": 55181378, "type": "Number"},
-                    "start": {"value": 55181377, "type": "Number"},
-                    "type": "SequenceInterval"
-                },
-                "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
-                "type": "SequenceLocation"
-            },
-            "state": {
-                "sequence": "T",
-                "type": "LiteralSequenceExpression"
-            },
-            "type": "Allele"
-        },
-        "molecule_context": "genomic",
-        "structural_type": "SO:0001483",
-        "vrs_ref_allele_seq": "C",
-        "gene_context": egfr_context
-    }
-    return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope="module")
 def grch38_braf_genom_sub(braf_v600e_genomic_sub):
     """Create a genomic substitution GRCh38 test fixture for BRAF."""
     params = {
@@ -914,7 +881,7 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
 @pytest.mark.asyncio
 async def test_cdna_and_genomic_substitution(
         test_handler, braf_v600e_nucleotide, genomic_substitution,
-        genomic_sub_grch38, egfr_grch38_sub, grch38_braf_genom_sub):
+        genomic_sub_grch38, grch38_braf_genom_sub):
     """Test that cdna and genomic substitutions normalize correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
     assertion_checks(resp.variation_descriptor, braf_v600e_nucleotide,
@@ -991,9 +958,7 @@ async def test_cdna_and_genomic_substitution(
 
 
 @pytest.mark.asyncio
-async def test_cdna_reference_agree(test_handler,
-                                          cdna_reference_agree,
-                                          braf_gene_context):
+async def test_cdna_reference_agree(test_handler, cdna_reference_agree):
     """Test that cdna Reference Agree normalizes correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799= ")
     assertion_checks(resp.variation_descriptor, cdna_reference_agree,
@@ -1024,7 +989,6 @@ async def test_cdna_reference_agree(test_handler,
 
 @pytest.mark.asyncio
 async def test_genomic_reference_agree(test_handler, nc_000007_reference_agree,
-                                       braf_gene_context,
                                        grch38_braf_genom_reference_agree):
     """Test that genomic reference agree normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453136=")
@@ -1052,8 +1016,7 @@ async def test_genomic_reference_agree(test_handler, nc_000007_reference_agree,
 
 
 @pytest.mark.asyncio
-async def test_cdna_delins(test_handler, nm_004448_cdna_delins,
-                                 nm_000551):
+async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
     """Test that cdna DelIns normalizes correctly."""
     resp = await test_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
     assertion_checks(resp.variation_descriptor, nm_004448_cdna_delins,

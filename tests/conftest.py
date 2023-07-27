@@ -34,16 +34,19 @@ def test_classifier():
 
 @pytest.fixture(scope="session")
 def test_gene_normalizer():
+    """Create test fixture for gene normalizer"""
     return GeneQueryHandler(DynamoDbDatabase())
 
 
 @pytest.fixture(scope="session")
 def test_cool_seq_tool():
+    """Create test fixture for cool seq tool"""
     return CoolSeqTool()
 
 
 @pytest.fixture(scope="session")
 def val_params(test_cool_seq_tool, test_gene_normalizer):
+    """Create test fixture for validator params"""
     return [
         test_cool_seq_tool.seqrepo_access, test_cool_seq_tool.transcript_mappings,
         test_cool_seq_tool.uta_db, test_gene_normalizer

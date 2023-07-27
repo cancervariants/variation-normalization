@@ -23,6 +23,9 @@ async def validator_checks(
     all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
     validator_instance
 ):
+    """Ensure that fixtures exist for fixture name and that validator response matches
+    expected
+    """
     labels = ["should_match", "should_not_match"]
     if fixture_name == "amplification":
         # Amplification are always valid

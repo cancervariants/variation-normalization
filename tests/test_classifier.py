@@ -28,6 +28,9 @@ def classifier_checks(
     all_fixtures, test_tokenizer, test_classifier, fixture_name,
     expected_classification
 ):
+    """Ensure that fixtures exist for fixture name and that classifier response matches
+    expected
+    """
     fixtures = all_fixtures.get(
         fixture_name,
         {"should_match": [], "should_not_match": []}

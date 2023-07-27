@@ -30,6 +30,9 @@ def all_fixtures():
 def tokenizer_checks(
     all_fixtures, fixture_name, tokenizer_instance, expected_token
 ):
+    """Ensure that fixtures exist for fixture name and that tokenizer response matches
+    expected
+    """
     labels = ["should_match", "should_not_match"]
     fixtures = all_fixtures.get(
         fixture_name,
@@ -138,6 +141,7 @@ def test_protein_delins(all_fixtures):
         all_fixtures, fixture_name, tokenizer_instance, expected_token
     )
 
+
 def test_cdna_delins(all_fixtures):
     """Test that cdna delins tokenizer works"""
     fixture_name = "cdna_delins"
@@ -176,6 +180,7 @@ def test_cdna_deletion(all_fixtures):
     tokenizer_checks(
         all_fixtures, fixture_name, tokenizer_instance, expected_token
     )
+
 
 def test_genomic_deletion(all_fixtures):
     """Test that genomic deletion tokenizer works"""

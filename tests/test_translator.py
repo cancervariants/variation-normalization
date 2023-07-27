@@ -44,7 +44,7 @@ async def translator_checks(
     all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
     fixture_name, translator_instance
 ):
-    """Ensure that fixtures exist for fixture name and that actual translations match
+    """Ensure that fixtures exist for fixture name and that translator response matches
     expected
     """
     fixtures = all_fixtures.get(fixture_name, {"tests": []})
