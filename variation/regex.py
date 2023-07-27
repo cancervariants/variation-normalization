@@ -1,4 +1,4 @@
-"""Module containing regex"""
+"""Module containing regex patterns"""
 import re
 from typing import List, Tuple
 
@@ -93,8 +93,10 @@ GENOMIC_DELETION_AMBIGUOUS_3 = re.compile(
     r"^(?P<pos0>\d+)_\((?P<pos2>\?|\d+)_(?P<pos3>\?|\d+)\)del$"
 )
 
-# Note: Order matters for regexprs
+# _REGEXPRS are used to help group the regex pattern and associated token type and
+# classification type
 
+# Note: Order matters for regexprs
 PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         PROTEIN_DELINS,
@@ -123,6 +125,7 @@ PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     )
 ]
 
+# Note: Order matters for regexprs
 CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         CDNA_GENOMIC_DELINS,
@@ -151,6 +154,7 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     )
 ]
 
+# Note: Order matters for regexprs
 GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
     (
         CDNA_GENOMIC_DELINS,
@@ -186,6 +190,7 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 ]
 
 
+# Note: Order matters for regexprs
 GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
     Tuple[any, TokenType, ClassificationType, AmbiguousType]
 ] = [
@@ -210,6 +215,7 @@ GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
 ]
 
 
+# Note: Order matters for regexprs
 GENOMIC_DEL_AMBIGUOUS_REGEXPRS: List[
     Tuple[any, TokenType, ClassificationType, AmbiguousType]
 ] = [

@@ -22,4 +22,4 @@ class ValidationSummary(BaseModel):
 
     valid_results: List[ValidationResult]
     invalid_results: List[ValidationResult]
-    warnings: List[str]
+    warnings: List[StrictStr]

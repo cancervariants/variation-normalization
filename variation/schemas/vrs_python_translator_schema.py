@@ -13,7 +13,7 @@ class VrsPythonMeta(BaseModel):
     """Metadata regarding vrs-python dependency"""
 
     name = "vrs-python"
-    version: str
+    version: StrictStr
     url = "https://github.com/ga4gh/vrs-python"
 
 

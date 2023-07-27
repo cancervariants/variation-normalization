@@ -16,9 +16,9 @@ from variation.classifiers import Classify
 from variation.to_vrs import ToVRS
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import TokenType
+from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.hgvs_to_copy_number_schema import (
-    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService,
-    VALID_CLASSIFICATION_TYPES
+    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService
 )
 from variation.schemas.service_schema import AmplificationToCxVarQuery, \
     AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
@@ -32,6 +32,14 @@ from variation.translators import Translate
 from variation.utils import get_priority_sequence_location
 from variation.validators import Validate
 from variation.version import __version__
+
+
+VALID_CLASSIFICATION_TYPES = [
+    ClassificationType.GENOMIC_DUPLICATION,
+    ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+    ClassificationType.GENOMIC_DELETION,
+    ClassificationType.GENOMIC_DELETION_AMBIGUOUS
+]
 
 
 class ToCopyNumberVariation(ToVRS):
@@ -88,17 +96,26 @@ class ToCopyNumberVariation(ToVRS):
     async def _get_validation_summary(
         self, q: str
     ) -> Tuple[Optional[ValidationSummary], List]:
+        """Get validation summary for to copy number variation endpoint
+
+        :param q: Input query string
+        :return: Validation summary if found and list of warnings
+        """
         validation_summary = None
         warnings = []
+
+        # Get tokens for input query
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if not tokens:
             return validation_summary, warnings
 
+        # Get classification for list of tokens
         classification = self.classifier.perform(tokens)
         if not classification:
             warnings.append(f"Unable to find classification for: {q}")
             return validation_summary, warnings
 
+        # Ensure that classification is HGVS duplication or deletion
         tmp_classification = None
         if all((
             classification.classification_type in VALID_CLASSIFICATION_TYPES,
@@ -111,6 +128,7 @@ class ToCopyNumberVariation(ToVRS):
             warnings = [f"{q} is not a supported HGVS genomic duplication or deletion"]
             return validation_summary, warnings
 
+        # Get validation summary for classification
         validation_summary = await self.validator.perform(classification)
         if not validation_summary:
             warnings = validation_summary.warnings

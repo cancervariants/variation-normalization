@@ -53,6 +53,17 @@ class Normalize(ToVRSATILE):
     def _get_priority_translation_result(
         translations: List[TranslationResult], ac_status: str
     ) -> Optional[TranslationResult]:
+        """Get prioritized translation result. Tries to find translation results with
+        the same `vrs_seq_loc_ac_status` as `ac_status`. If more than one translation
+        result is found, will try to find translation result where `og_ac` (original
+        accession used to get the translation) is the same as `vrs_seq_loc_ac`. If not
+        found, will sort the translations and return the first translation result in
+        the list
+
+        :param translations: List of translation results
+        :param ac_status: Accession status to filter by
+        :return: Prioritized translation result with `ac_status` if found. Else, `None`
+        """
         preferred_translations = [
             t for t in translations
             if t.vrs_seq_loc_ac_status == ac_status
@@ -155,6 +166,7 @@ class Normalize(ToVRSATILE):
             )
         }
 
+        # Get tokens for input query
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if warnings:
             vd, warnings = no_variation_resp(
@@ -164,6 +176,7 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
+        # Get HGVS dup del mode option to use
         hgvs_dup_del_mode, warning = self.get_hgvs_dup_del_mode(
             tokens, hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies
         )
@@ -176,6 +189,7 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
+        # Get classification for list of tokens
         classification = self.classifier.perform(tokens)
         if not classification:
             warnings.append(f"Unable to find classification for: {q}")
@@ -186,6 +200,7 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
+        # Get validation summary for classification
         validation_summary = await self.validator.perform(classification)
         if not validation_summary:
             vd, warnings = no_variation_resp(
@@ -196,6 +211,7 @@ class Normalize(ToVRSATILE):
             return NormalizeService(**params)
 
         if len(validation_summary.valid_results) > 0:
+            # Get translated VRS representations for valid results
             translations, warnings = await self.get_translations(
                 validation_summary, warnings, endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
@@ -203,6 +219,7 @@ class Normalize(ToVRSATILE):
                 do_liftover=True
             )
             if translations:
+                # Get prioritized translation result so that output is always the same
                 for ac_status in AC_PRIORITY_LABELS:
                     translation_result = self._get_priority_translation_result(
                         translations, ac_status
@@ -210,6 +227,7 @@ class Normalize(ToVRSATILE):
                     if translation_result:
                         break
 
+                # Get variation descriptor information
                 valid_result = validation_summary.valid_results[0]
                 vd, warnings = self.get_variation_descriptor(
                     label, translation_result, valid_result, _id, warnings
@@ -224,6 +242,7 @@ class Normalize(ToVRSATILE):
                     label, _id, warnings, untranslatable_returns_text
                 )
         else:
+            # No valid results were found for input query
             vd, warnings = no_variation_resp(
                 label, _id, warnings, untranslatable_returns_text
             )

@@ -4,16 +4,7 @@ from typing import Optional, Type, Any, Dict, Union
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, Text
 from pydantic import StrictStr
 
-from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import ServiceResponse
-
-
-VALID_CLASSIFICATION_TYPES = [
-    ClassificationType.GENOMIC_DUPLICATION,
-    ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
-    ClassificationType.GENOMIC_DELETION,
-    ClassificationType.GENOMIC_DELETION_AMBIGUOUS
-]
 
 
 class HgvsToCopyNumberCountService(ServiceResponse):

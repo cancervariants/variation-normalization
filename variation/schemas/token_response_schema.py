@@ -76,9 +76,9 @@ class CoordinateType(str, Enum):
 class Token(BaseModel):
     """A string from a given query."""
 
-    token: str
+    token: StrictStr
     token_type: TokenType
-    input_string: str
+    input_string: StrictStr
 
 
 class HgvsToken(Token):
@@ -245,6 +245,6 @@ class AmplificationToken(Token):
 class GeneToken(Token):
     """Token for genes"""
 
-    matched_value: str
+    matched_value: StrictStr
     token_type = TokenType.GENE
     gene_descriptor: Optional[GeneDescriptor]

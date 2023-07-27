@@ -32,12 +32,14 @@ class ToVRSATILE(ToVRS):
     ) -> None:
         """Initialize the ToVRSATILE class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param Tokenize tokenizer: Tokenizer class for tokenizing
-        :param Classify classifier: Classifier class for classifying tokens
-        :param Validate validator: Validator class for validating valid inputs
-        :param Translate translator: Translating valid inputs
-        :param GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
+        :param gene_normalizer: Client for normalizing gene concepts
+        :param transcript_mappings: Transcript mappings for gene to accession for
+            RefSeq and Ensembl
         """
         super().__init__(
             seqrepo_access, tokenizer, classifier, validator, translator
@@ -105,6 +107,8 @@ class ToVRSATILE(ToVRS):
             else:
                 gene_context = None
                 if valid_result.classification.nomenclature == Nomenclature.HGVS:
+                    # Since the supported HGVS expressions do not include a gene,
+                    # we should try getting the gene context from the accession
                     ac = valid_result.classification.ac
                     gene_token = self._get_hgvs_gene_context(ac, molecule_context)
                     if gene_token:
@@ -124,7 +128,20 @@ class ToVRSATILE(ToVRS):
     def _get_hgvs_gene_context(
         self, accession: str, molecule_context: MoleculeContext
     ) -> Optional[GeneToken]:
+        """Get gene context for HGVS expression
+
+        :param accession: Accession to get gene context for
+        :param molecule_context: Molecule context for accession. Genomic will not return
+            a gene context, since there could be multiple genes associated
+        :return: Gene token associated to accession if found
+        """
         def _get_gene_token(ac: str, mappings: List[Callable]) -> Optional[GeneToken]:
+            """Get gene token for accession
+
+            :param ac: Accession
+            :param mappings: List of mapping functions to get gene from accession
+            :return: Gene token associated to accession if found
+            """
             gene_token = None
             for mapping in mappings:
                 gene_symbol = mapping(ac)
@@ -171,8 +188,8 @@ class ToVRSATILE(ToVRS):
     def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
         """Return ref allele seq for transcript.
 
-        :param Dict location: VRS Location object
-        :param str identifier: Identifier for allele
+        :param location: VRS Location object
+        :param identifier: Identifier for allele
         :return: Ref seq allele
         """
         start = None

@@ -109,21 +109,24 @@ class ToVRS(VRSRepresentation):
             "warnings": warnings
         }
 
+        # Get tokens for input query
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if warnings:
             params["warnings"] = warnings
             return ToVRSService(**params)
 
+        # Get classification for list of tokens
         classification = self.classifier.perform(tokens)
         if not classification:
             params["warnings"] = [f"Unable to find classification for: {q}"]
             return ToVRSService(**params)
 
-        validations = await self.validator.perform(classification)
-
-        if validations:
+        # Get validation summary for classification
+        validation_summary = await self.validator.perform(classification)
+        if validation_summary:
+            # Get translated VRS representation for valid results
             translations, warnings = await self.get_translations(
-                validations, warnings, endpoint_name=Endpoint.TO_VRS,
+                validation_summary, warnings, endpoint_name=Endpoint.TO_VRS,
                 hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT, do_liftover=False
             )
         else:
@@ -138,6 +141,7 @@ class ToVRS(VRSRepresentation):
                 variations = []
         else:
             variations = []
+            # Ensure only unique VRS variations are in the list of variations returned
             for tr in translations:
                 if tr.vrs_variation not in variations:
                     variations.append(tr.vrs_variation)
