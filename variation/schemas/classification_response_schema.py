@@ -44,25 +44,25 @@ class Nomenclature(str, Enum):
 class ClassificationType(str, Enum):
     """Enums for Classification Types."""
 
-    PROTEIN_SUBSTITUTION = "protein substitution"
-    PROTEIN_STOP_GAIN = "protein stop gain"
-    PROTEIN_REFERENCE_AGREE = "reference agree"
-    PROTEIN_DELINS = "protein delins"
-    CDNA_SUBSTITUTION = "cdna substitution"
-    GENOMIC_SUBSTITUTION = "genomic substitution"
-    CDNA_REFERENCE_AGREE = "cdna reference agree"
-    GENOMIC_REFERENCE_AGREE = "genomic reference agree"
-    CDNA_DELINS = "cdna delins"
-    GENOMIC_DELINS = "genomic delins"
-    PROTEIN_DELETION = "protein deletion"
-    CDNA_DELETION = "cdna deletion"
-    GENOMIC_DELETION = "genomic deletion"
-    GENOMIC_DELETION_AMBIGUOUS = "genomic deletion ambiguous"
-    PROTEIN_INSERTION = "protein insertion"
-    CDNA_INSERTION = "cdna insertion"
-    GENOMIC_INSERTION = "genomic insertion"
-    GENOMIC_DUPLICATION = "genomic duplication"
-    GENOMIC_DUPLICATION_AMBIGUOUS = "genomic duplication ambiguous"
+    PROTEIN_SUBSTITUTION = "protein_substitution"
+    PROTEIN_STOP_GAIN = "protein_stop_gain"
+    PROTEIN_REFERENCE_AGREE = "protein_reference_agree"
+    PROTEIN_DELINS = "protein_delins"
+    CDNA_SUBSTITUTION = "cdna_substitution"
+    GENOMIC_SUBSTITUTION = "genomic_substitution"
+    CDNA_REFERENCE_AGREE = "cdna_reference_agree"
+    GENOMIC_REFERENCE_AGREE = "genomic_reference_agree"
+    CDNA_DELINS = "cdna_delins"
+    GENOMIC_DELINS = "genomic_delins"
+    PROTEIN_DELETION = "protein_deletion"
+    CDNA_DELETION = "cdna_deletion"
+    GENOMIC_DELETION = "genomic_deletion"
+    GENOMIC_DELETION_AMBIGUOUS = "genomic_deletion_ambiguous"
+    PROTEIN_INSERTION = "protein_insertion"
+    CDNA_INSERTION = "cdna_insertion"
+    GENOMIC_INSERTION = "genomic_insertion"
+    GENOMIC_DUPLICATION = "genomic_duplication"
+    GENOMIC_DUPLICATION_AMBIGUOUS = "genomic_duplication_ambiguous"
     AMPLIFICATION = "amplification"
 
 
@@ -79,6 +79,7 @@ class Classification(BaseModel):
 
 
 class ProteinSubstitutionClassification(Classification, Substitution):
+    """Define protein substitution classification"""
 
     classification_type = ClassificationType.PROTEIN_SUBSTITUTION
     molecule_context = MoleculeContext.PROTEIN
@@ -86,6 +87,7 @@ class ProteinSubstitutionClassification(Classification, Substitution):
 
 
 class GenomicSubstitutionClassification(Classification, Substitution):
+    """Define genomic substitution classification"""
 
     classification_type = ClassificationType.GENOMIC_SUBSTITUTION
     molecule_context = MoleculeContext.GENOMIC
@@ -93,6 +95,7 @@ class GenomicSubstitutionClassification(Classification, Substitution):
 
 
 class CdnaSubstitutionClassification(Classification, Substitution):
+    """Define cdna substitution classification"""
 
     classification_type = ClassificationType.CDNA_SUBSTITUTION
     molecule_context = MoleculeContext.TRANSCRIPT
@@ -100,6 +103,7 @@ class CdnaSubstitutionClassification(Classification, Substitution):
 
 
 class ProteinStopGainClassification(Classification, StopGain):
+    """Define protein stop gain classification"""
 
     classification_type = ClassificationType.PROTEIN_STOP_GAIN
     molecule_context = MoleculeContext.PROTEIN
@@ -107,6 +111,7 @@ class ProteinStopGainClassification(Classification, StopGain):
 
 
 class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree):
+    """Define protein reference agree classification"""
 
     classification_type = ClassificationType.PROTEIN_REFERENCE_AGREE
     molecule_context = MoleculeContext.PROTEIN
@@ -114,6 +119,7 @@ class ProteinReferenceAgreeClassification(Classification, ProteinReferenceAgree)
 
 
 class CdnaReferenceAgreeClassification(Classification, ReferenceAgree):
+    """Define cdna reference agree classification"""
 
     classification_type = ClassificationType.CDNA_REFERENCE_AGREE
     molecule_context = MoleculeContext.TRANSCRIPT
@@ -121,6 +127,7 @@ class CdnaReferenceAgreeClassification(Classification, ReferenceAgree):
 
 
 class GenomicReferenceAgreeClassification(Classification, ReferenceAgree):
+    """Define genomic reference agree classification"""
 
     classification_type = ClassificationType.GENOMIC_REFERENCE_AGREE
     molecule_context = MoleculeContext.GENOMIC
@@ -128,6 +135,7 @@ class GenomicReferenceAgreeClassification(Classification, ReferenceAgree):
 
 
 class ProteinInsertionClassification(Classification, ProteinInsertion):
+    """Define protein insertion classification"""
 
     classification_type = ClassificationType.PROTEIN_INSERTION
     molecule_context = MoleculeContext.PROTEIN
@@ -135,6 +143,7 @@ class ProteinInsertionClassification(Classification, ProteinInsertion):
 
 
 class CdnaInsertionClassification(Classification, Insertion):
+    """Define cdna insertion classification"""
 
     classification_type = ClassificationType.CDNA_INSERTION
     molecule_context = MoleculeContext.TRANSCRIPT
@@ -142,6 +151,7 @@ class CdnaInsertionClassification(Classification, Insertion):
 
 
 class GenomicInsertionClassification(Classification, Insertion):
+    """Define genomic insertion classification"""
 
     classification_type = ClassificationType.GENOMIC_INSERTION
     molecule_context = MoleculeContext.GENOMIC
@@ -149,6 +159,7 @@ class GenomicInsertionClassification(Classification, Insertion):
 
 
 class ProteinDeletionClassification(Classification, ProteinDeletion):
+    """Define protein deletion classification"""
 
     classification_type = ClassificationType.PROTEIN_DELETION
     molecule_context = MoleculeContext.PROTEIN
@@ -156,6 +167,7 @@ class ProteinDeletionClassification(Classification, ProteinDeletion):
 
 
 class GenomicDeletionClassification(Classification, Deletion):
+    """Define genomic deletion classification"""
 
     classification_type = ClassificationType.GENOMIC_DELETION
     molecule_context = MoleculeContext.GENOMIC
@@ -163,6 +175,7 @@ class GenomicDeletionClassification(Classification, Deletion):
 
 
 class CdnaDeletionClassification(Classification, Deletion):
+    """Define cdna classification"""
 
     classification_type = ClassificationType.CDNA_DELETION
     molecule_context = MoleculeContext.TRANSCRIPT
@@ -170,6 +183,7 @@ class CdnaDeletionClassification(Classification, Deletion):
 
 
 class ProteinDelInsClassification(Classification, ProteinDelIns):
+    """Define protein delins classification"""
 
     classification_type = ClassificationType.PROTEIN_DELINS
     molecule_context = MoleculeContext.PROTEIN
@@ -177,6 +191,7 @@ class ProteinDelInsClassification(Classification, ProteinDelIns):
 
 
 class CdnaDelInsClassification(Classification, DelIns):
+    """Define cdna delins classification"""
 
     classification_type = ClassificationType.CDNA_DELINS
     molecule_context = MoleculeContext.TRANSCRIPT
@@ -184,6 +199,7 @@ class CdnaDelInsClassification(Classification, DelIns):
 
 
 class GenomicDelInsClassification(Classification, DelIns):
+    """Define genomic delins classification"""
 
     classification_type = ClassificationType.GENOMIC_DELINS
     molecule_context = MoleculeContext.GENOMIC
@@ -191,6 +207,7 @@ class GenomicDelInsClassification(Classification, DelIns):
 
 
 class GenomicDuplicationClassification(Classification, Duplication):
+    """Define genomic duplication classification"""
 
     classification_type = ClassificationType.GENOMIC_DUPLICATION
     molecule_context = MoleculeContext.GENOMIC
@@ -198,7 +215,7 @@ class GenomicDuplicationClassification(Classification, Duplication):
 
 
 class AmbiguousType(str, Enum):
-    """Helps determine the kind of ambiguous variant"""
+    """Define ambiguous type  which helps determine the ambiguous expression format"""
 
     AMBIGUOUS_1 = "(#_#)_(#_#)"
     AMBIGUOUS_2 = "(?_#)_(#_?)"
@@ -210,6 +227,7 @@ class AmbiguousType(str, Enum):
 
 
 class GenomicDuplicationAmbiguousClassification(Classification, DupDelAmbiguous):
+    """Define genomic duplication ambiguous classification"""
 
     classification_type = ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
     molecule_context = MoleculeContext.GENOMIC
@@ -218,6 +236,7 @@ class GenomicDuplicationAmbiguousClassification(Classification, DupDelAmbiguous)
 
 
 class GenomicDeletionAmbiguousClassification(Classification, DupDelAmbiguous):
+    """Define genomic deletion ambiguous classification"""
 
     classification_type = ClassificationType.GENOMIC_DELETION_AMBIGUOUS
     molecule_context = MoleculeContext.GENOMIC
@@ -226,6 +245,7 @@ class GenomicDeletionAmbiguousClassification(Classification, DupDelAmbiguous):
 
 
 class AmplificationClassification(Classification):
+    """Define amplification classification"""
 
     classification_type = ClassificationType.AMPLIFICATION
     molecule_context = MoleculeContext.GENOMIC

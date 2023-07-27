@@ -3,7 +3,9 @@ from enum import Enum, IntEnum
 
 
 class Endpoint(str, Enum):
-    """Define endpoint names in app that lead to decisions such as hgvs_dup_del_mode"""
+    """Define endpoint names in app that lead to decisions such as hgvs_dup_del_mode
+    option.
+    """
 
     TO_VRS = "to_vrs"
     NORMALIZE = "normalize"
@@ -12,7 +14,7 @@ class Endpoint(str, Enum):
 
 
 class AmbiguousRegexType(IntEnum):
-    """Helps determine the regex kind"""
+    """Helps determine the regex that was used in ambiguous expressions"""
 
     REGEX_1 = 1
     REGEX_2 = 2

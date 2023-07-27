@@ -17,6 +17,7 @@ class TranslationResult(BaseModel):
     validation_result: ValidationResult
 
 
+# Define accession priority. First has highest priority, last has lowest priority
 AC_PRIORITY_LABELS = [
     TranscriptPriorityLabel.MANESelect.value,
     TranscriptPriorityLabel.MANEPlusClinical.value,

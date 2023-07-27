@@ -8,7 +8,7 @@ from variation.schemas.classification_response_schema import Classification
 
 
 class ValidationResult(BaseModel):
-    """Validation Results for a given variation."""
+    """Validation Results for a given input"""
 
     accession: Optional[StrictStr]
     cds_start: Optional[StrictInt]  # This is only for cDNA
@@ -18,7 +18,7 @@ class ValidationResult(BaseModel):
 
 
 class ValidationSummary(BaseModel):
-    """Give Valid and Invalid Results for a given variation."""
+    """Give Valid and Invalid Results for a given input."""
 
     valid_results: List[ValidationResult]
     invalid_results: List[ValidationResult]
