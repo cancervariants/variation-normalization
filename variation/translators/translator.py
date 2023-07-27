@@ -18,7 +18,7 @@ from variation.schemas.translation_response_schema import TranslationResult
 
 
 class Translator(ABC):
-    """The translation class."""
+    """Class for translating to VRS representations"""
 
     def __init__(
         self,
@@ -28,13 +28,13 @@ class Translator(ABC):
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode
     ) -> None:
-        """Initialize the DelIns validator.
+        """Initialize the Translator class.
 
         :param seqrepo_access: Access to SeqRepo data
-        :param gene_symbol: Gene symbol tokenizer
         :param mane_transcript: Access MANE Transcript information
         :param uta: Access to UTA queries
         :param vrs: Class for creating VRS objects
+        :param hgvs_dup_del_mode: Class for interpreting HGVS duplications and deletions
         """
         self.seqrepo_access = seqrepo_access
         self.uta = uta
@@ -44,8 +44,13 @@ class Translator(ABC):
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
 
     @abstractmethod
-    def can_translate(self, type: ClassificationType) -> bool:
-        """Determine if it's possible to translate a classification."""
+    def can_translate(self, classification_type: ClassificationType) -> bool:
+        """Determine if it's possible to translate a classification.
+
+        :param classification_type: Classification type found
+        :return: `True` if `classification_type` matches translator's classification
+            type. Otherwise, `False`
+        """
 
     @abstractmethod
     async def translate(
@@ -57,7 +62,18 @@ class Translator(ABC):
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
-        """"""
+        """Translate validation result to VRS representation
+
+        :param validation_result: Validation result for a classification
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Translation result if translation was successful. If translation was
+            not successful, `None`
+        """
 
     def translate_sequence_identifier(
         self, sequence_id: str, errors: List[str]
@@ -90,7 +106,17 @@ class Translator(ABC):
         errors: List[str], pos2: Optional[int] = None, pos3: Optional[int] = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> None:
-        """Assumes grch38"""
+        """Check that positions are valid on a gene. Will mutate `errors` if invalid.
+
+        :param gene_token: Gene token
+        :param alt_ac: Genomic RefSeq accession
+        :param pos0: Position 0 (GRCh38 assembly)
+        :param pos1: Position 1 (GRCh38 assembly)
+        :param errors: List of errors. Will get mutated if invalid.
+        :param pos2: Position 2 (GRCh38 assembly)
+        :param pos3: Position 3 (GRCh38 assembly)
+        :param residue_mode: Residue mode for positions
+        """
         gene_start = None
         gene_end = None
 
@@ -120,14 +146,23 @@ class Translator(ABC):
         self, ac: str, start_pos: int, end_pos: int,
         expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> Optional[str]:
-        """Validate that expected reference sequence matches actual"""
-        actual_ref, _ = self.seqrepo_access.get_reference_sequence(
+        """Validate that expected reference sequence matches actual reference sequence
+        This is also in validator, but there is a ticket to have this method be moved
+        to cool-seq-tool. Once added, will be removed
+
+        :param ac: Accession
+        :param start_pos: Start position
+        :param end_pos: End position
+        :param expected_ref: The expected reference sequence (from input string)
+        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :return: Invalid message if invalid. If valid, `None`
+        """
+        actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
             ac, start=start_pos, end=end_pos, residue_mode=residue_mode
         )
 
-        msg = None
-        if actual_ref != expected_ref:
-            msg = (f"Expected to find {expected_ref} at positions "
-                   f"({start_pos}, {end_pos}) on {ac} but found {actual_ref}")
+        if not err_msg and (actual_ref != expected_ref):
+            err_msg = (f"Expected to find {expected_ref} at positions ({start_pos}, "
+                       f"{end_pos}) on {ac} but found {actual_ref}")
 
-        return msg
+        return err_msg

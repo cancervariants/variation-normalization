@@ -16,6 +16,12 @@ class GenomicDeletionAmbiguous(Validator):
         self, classification: GenomicDeletionAmbiguousClassification,
         accessions: List[str]
     ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
+
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
+        """
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             if classification.pos3 <= classification.pos2 <= classification.pos1 <= classification.pos0:  # noqa: E501
                 return [ValidationResult(

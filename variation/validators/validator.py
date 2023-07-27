@@ -63,16 +63,25 @@ class Validator(ABC):
     @abstractmethod
     async def get_valid_invalid_results(
         self, classification: Classification, accessions: List
-    ) -> None:
-        """Add validation result objects to a list of results.
+    ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
         :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
         """
 
     async def validate(
         self, classification: Classification
     ) -> ValidationResult:
+        """Get list of associated accessions for a classification. Use these accessions
+        to perform validation checks (pos exists, accession is valid, reference sequence
+        matches expected, etc). Gets list of validation results for a given
+        classification
+
+        :param classification: A classification for a list of tokens
+        :return: List of validation results containing invalid and valid results
+        """
         errors = []
 
         try:
@@ -199,7 +208,17 @@ class Validator(ABC):
         self, ac: str, start_pos: int, end_pos: int,
         expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> Optional[str]:
-        """Validate that expected reference sequence matches actual"""
+        """Validate that expected reference sequence matches actual reference sequence.
+        This is also in translator, but there is a ticket to have this method be moved
+        to cool-seq-tool. Once added, will be removed
+
+        :param ac: Accession
+        :param start_pos: Start position
+        :param end_pos: End position
+        :param expected_ref: The expected reference sequence (from input string)
+        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :return: Invalid message if invalid. If valid, `None`
+        """
         actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
             ac, start=start_pos, end=end_pos, residue_mode=residue_mode
         )
@@ -211,6 +230,12 @@ class Validator(ABC):
         return err_msg
 
     async def get_cds_start(self, ac: str) -> Tuple[Optional[int], Optional[str]]:
+        """Get coding start site for accession
+
+        :param ac: Accession to get coding start site for
+        :return: Tuple containing coding start site (if successful) and errors
+            (if unsuccessful)
+        """
         cds_start_end = await self.uta.get_cds_start_end(ac)
 
         if cds_start_end:
@@ -226,6 +251,15 @@ class Validator(ABC):
         self, ac: str, start_pos: int, end_pos: Optional[int] = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE
     ) -> Optional[str]:
+        """Validate that accession exists and that position(s) exist on accession
+
+        :param ac: Accession
+        :param start_pos: Start position on accession
+        :param end_position: End position on accession
+        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :return: If valid accession and position(s) on accession, `None`. If invalid
+            accession or invalid position(s) on accession, return error message
+        """
         if residue_mode == ResidueMode.RESIDUE:
             start_pos -= 1
 

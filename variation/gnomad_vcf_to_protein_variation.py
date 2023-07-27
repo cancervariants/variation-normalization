@@ -120,7 +120,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             warnings.append(f"{q} is not a supported gnomad vcf query")
             return None
 
-        validation_summary = await self.validator.perform(classification, warnings)
+        validation_summary = await self.validator.perform(classification)
         if not validation_summary:
             warnings.append(f"{q} is not a valid gnomad vcf query")
             return None

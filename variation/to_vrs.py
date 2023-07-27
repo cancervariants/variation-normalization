@@ -1,10 +1,9 @@
 """Module for to_vrs endpoint."""
-from typing import Tuple, Optional, List, Union
+from typing import Tuple, Optional, List
 from urllib.parse import unquote
 from datetime import datetime
 
-from ga4gh.vrsatile.pydantic.vrs_models import Allele, Haplotype, CopyNumberCount,\
-    VariationSet, Text, CopyChange
+from ga4gh.vrsatile.pydantic.vrs_models import Text, CopyChange
 from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
@@ -15,6 +14,7 @@ from variation.schemas.normalize_response_schema import (
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.translation_response_schema import TranslationResult
 from variation.classifiers import Classify
 from variation.tokenizers import Tokenize
 from variation.validators import Validate
@@ -53,30 +53,32 @@ class ToVRS(VRSRepresentation):
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
-    ) -> Tuple[
-        Optional[
-            Union[
-                List[Allele],
-                List[CopyNumberCount],
-                List[Text], List[Haplotype],
-                List[VariationSet]
-            ]
-        ],
-        Optional[List[str]]
-    ]:
+    ) -> Tuple[List[TranslationResult], List[str]]:
+        """Get translation results
+
+        :param validation_summary: Validation summary found for a given input
+        :param warnings: List of warnings
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The copy change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRC3h8 assembly
+        :return: Tuple containing list of translations and list of warnings
+        """
         translations = []
         if not validation_summary.valid_results:
             warnings.append("No valid results found")
         else:
             for valid_result in validation_summary.valid_results:
-                result = await self.translator.perform(
+                tr = await self.translator.perform(
                     valid_result, warnings, endpoint_name=endpoint_name,
                     hgvs_dup_del_mode=hgvs_dup_del_mode,
                     baseline_copies=baseline_copies, copy_change=copy_change,
                     do_liftover=do_liftover
                 )
-                if result and result not in translations:
-                    translations.append(result)
+                if tr and tr not in translations:
+                    translations.append(tr)
 
         if not translations and not warnings:
             warnings.append("Unable to translate variation")
@@ -117,7 +119,7 @@ class ToVRS(VRSRepresentation):
             params["warnings"] = [f"Unable to find classification for: {q}"]
             return ToVRSService(**params)
 
-        validations = await self.validator.perform(classification, warnings)
+        validations = await self.validator.perform(classification)
 
         if validations:
             translations, warnings = await self.get_translations(

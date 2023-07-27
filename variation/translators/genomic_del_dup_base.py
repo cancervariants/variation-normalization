@@ -5,7 +5,7 @@ from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.schemas import ResidueMode
-from pydantic import StrictStr, StrictInt
+from pydantic import StrictStr, StrictInt, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.service_schema import ClinVarAssembly
@@ -29,6 +29,7 @@ class DelDupData(NamedTuple):
 
 
 class GenomicDelDupTranslator(Translator):
+    """Class for translating genomic deletions and duplications to VRS representations"""  # noqa: E501
 
     async def get_grch38_data(
         self,
@@ -39,6 +40,13 @@ class GenomicDelDupTranslator(Translator):
         errors: List[str],
         ac: str
     ) -> DelDupData:
+        """Get GRCh38 data for genomic duplication or deletion classification
+
+        :param classification: Classification to get translation for
+        :param errors: List of errors. Will be mutated if errors are found
+        :param ac: Genomic RefSeq accession
+        :return: Data on GRCh38 assembly if successful liftover. Else, `None`
+        """
         pos0, pos1, new_ac = None, None, None
 
         if classification.pos1:
@@ -59,7 +67,11 @@ class GenomicDelDupTranslator(Translator):
         if not new_ac:
             errors.append(f"Unable to find a GRCh38 accession for: {ac}")
 
-        return DelDupData(ac=new_ac, pos0=pos0, pos1=pos1)
+        try:
+            data = DelDupData(ac=new_ac, pos0=pos0, pos1=pos1)
+        except ValidationError:
+            data = None
+        return data
 
     async def translate(
         self,
@@ -71,7 +83,18 @@ class GenomicDelDupTranslator(Translator):
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
-        """Translate to VRS Variation representation."""
+        """Translate validation result to VRS representation
+
+        :param validation_result: Validation result for a classification
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Translation result if translation was successful. If translation was
+            not successful, `None`
+        """
         # First will translate valid result to VRS Allele
         classification = validation_result.classification
         if isinstance(classification, GenomicDeletionClassification):

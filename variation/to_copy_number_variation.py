@@ -41,6 +41,15 @@ class ToCopyNumberVariation(ToVRS):
         self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
         validator: Validate, translator: Translate, gene_normalizer: GeneQueryHandler
     ) -> None:
+        """Initialize theToCopyNumberVariation class
+
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Instance for tokenizing input strings
+        :param classifier: Instance for classifying list of ordered tokens
+        :param validator: Instance for validating classification
+        :param translator: Instance for translating valid results to VRS representations
+        :param gene_normalizer: Client for normalizing gene concepts
+        """
         super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
         self.gene_normalizer = gene_normalizer
 
@@ -102,7 +111,7 @@ class ToCopyNumberVariation(ToVRS):
             warnings = [f"{q} is not a supported HGVS genomic duplication or deletion"]
             return validation_summary, warnings
 
-        validation_summary = await self.validator.perform(classification, warnings)
+        validation_summary = await self.validator.perform(classification)
         if not validation_summary:
             warnings = validation_summary.warnings
 

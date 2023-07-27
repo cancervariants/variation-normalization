@@ -34,7 +34,7 @@ from .amplification import Amplification
 
 
 class Translate:
-    """The translation class."""
+    """Class for translating to VRS representations"""
 
     def __init__(
         self,
@@ -44,7 +44,14 @@ class Translate:
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode
     ) -> None:
-        """Initialize the translation class."""
+        """Initialize the Translate class.
+
+        :param seqrepo_access: Access to SeqRepo data
+        :param mane_transcript: Access MANE Transcript information
+        :param uta: Access to UTA queries
+        :param vrs: Class for creating VRS objects
+        :param hgvs_dup_del_mode: Class for interpreting HGVS duplications and deletions
+        """
         params = [
             seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode
         ]
@@ -82,7 +89,18 @@ class Translate:
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
-        """Translate a valid variation query."""
+        """Translate validation result to VRS representation
+
+        :param validation_result: Validation result for a classification
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Translation result if translation was successful. If translation was
+            not successful, `None`
+        """
         for translator in self.all_translators:
             if translator.can_translate(
                 validation_result.classification.classification_type

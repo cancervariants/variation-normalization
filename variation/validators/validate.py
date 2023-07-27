@@ -1,6 +1,4 @@
 """Module for Validation."""
-from typing import List
-
 from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase
 
@@ -71,13 +69,14 @@ class Validate:
             Amplification(*params)
         ]
 
-    async def perform(
-        self, classification: Classification, warnings: List = None
-    ) -> ValidationSummary:
+    async def perform(self, classification: Classification) -> ValidationSummary:
+        """Get validation summary containing invalid and valid results for a
+        classification
+
+        :param classification: A classification for a list of tokens
+        """
         valid_possibilities = []
         invalid_possibilities = []
-        if not warnings:
-            warnings = []
 
         found_valid_result = False
         invalid_classification = None
@@ -98,9 +97,12 @@ class Validate:
             if found_valid_result:
                 break
 
-        if not found_valid_result and not warnings:
-            warnings.append(f"Unable to find valid result for classification: "
-                            f"{invalid_classification}")
+        if not found_valid_result:
+            warnings = [
+                f"Unable to find valid result for classification: {invalid_classification}"  # noqa: E501
+            ]
+        else:
+            warnings = []
 
         return ValidationSummary(
             valid_results=valid_possibilities,

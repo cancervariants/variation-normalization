@@ -14,6 +14,12 @@ class GenomicSubstitution(Validator):
     async def get_valid_invalid_results(
         self, classification: GenomicSubstitutionClassification, accessions: List[str]
     ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
+
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
+        """
         validation_results = []
 
         for alt_ac in accessions:

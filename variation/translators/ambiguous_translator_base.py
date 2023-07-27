@@ -1,8 +1,9 @@
+"""Module for translating genomic ambiguous deletions and duplications"""
 from typing import Dict, Optional, List, NamedTuple, Tuple, Union, Literal
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from pydantic import StrictInt, StrictStr
+from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
@@ -36,6 +37,9 @@ class AmbiguousSequenceLocation(NamedTuple):
 
 
 class AmbiguousTranslator(Translator):
+    """Class for translating genomic ambiguous deletions and duplications to VRS
+    representations
+    """
 
     async def get_grch38_data_ambiguous(
         self,
@@ -45,7 +49,14 @@ class AmbiguousTranslator(Translator):
         ],
         errors: List[str],
         ac: str
-    ) -> AmbiguousData:
+    ) -> Optional[AmbiguousData]:
+        """Get GRCh38 data for genomic ambiguous duplication or deletion classification
+
+        :param classification: Classification to get translation for
+        :param errors: List of errors. Will be mutated if errors are found
+        :param ac: Genomic RefSeq accession
+        :return: Ambiguous data on GRCh38 assembly if successful liftover. Else, `None`
+        """
         pos0, pos1, pos2, pos3, new_ac = None, None, None, None, None
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             grch38_pos0_pos1 = await self.mane_transcript.g_to_grch38(
@@ -89,13 +100,32 @@ class AmbiguousTranslator(Translator):
         if not new_ac:
             errors.append(f"Unable to find a GRCh38 accession for: {ac}")
 
-        return AmbiguousData(ac=new_ac, pos0=pos0, pos1=pos1, pos2=pos2, pos3=pos3)
+        try:
+            ambiguous_data = AmbiguousData(
+                ac=new_ac, pos0=pos0, pos1=pos1, pos2=pos2, pos3=pos3
+            )
+        except ValidationError:
+            ambiguous_data = None
+        return ambiguous_data
 
     def get_dup_del_ambiguous_seq_loc(
         self, ambiguous_type: AmbiguousType, ac: str, pos0: Union[int, Literal["?"]],
         pos1: Optional[Union[int, Literal["?"]]], pos2: Union[int, Literal["?"]],
         pos3: Optional[Union[int, Literal["?"]]], warnings: List[str]
     ) -> AmbiguousSequenceLocation:
+        """Get VRS Sequence Location and outer coords for genomic ambiguous duplication
+        or deletion
+
+        :param ambiguous_type: Type of ambiguous expression used
+        :param ac: Genomic RefSeq accession
+        :param pos0: Position 0 (residue)
+        :param pos1: Position 1 (residue)
+        :param pos2: Position 2 (residue)
+        :param pos3: Position 3 (residue)
+        :param warnings: List of warnings
+        :return: Ambiguous sequence location data containing VRS Sequence Location
+            and outer coordinates
+        """
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             ival = self.vrs.get_ival_certain_range(pos0, pos1, pos2, pos3)
             outer_coords = (pos0, pos3)
@@ -120,6 +150,7 @@ class AmbiguousTranslator(Translator):
                 type="SequenceInterval"
             ).as_dict()
             outer_coords = (pos0, pos2)
+        # No else since validator should catch if the ambiguous type is supported or not
 
         seq_id = self.translate_sequence_identifier(ac, warnings)
 
@@ -138,7 +169,18 @@ class AmbiguousTranslator(Translator):
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
-        """Translate to VRS Variation representation."""
+        """Translate validation result to VRS representation
+
+        :param validation_result: Validation result for a classification
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Translation result if translation was successful. If translation was
+            not successful, `None`
+        """
         # First will translate valid result to VRS Allele
         classification = validation_result.classification
         if isinstance(classification, GenomicDeletionAmbiguousClassification):

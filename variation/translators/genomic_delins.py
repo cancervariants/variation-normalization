@@ -18,9 +18,14 @@ from variation.schemas.translation_response_schema import TranslationResult
 class GenomicDelIns(Translator):
     """The Genomic DelIns Translator class."""
 
-    def can_translate(self, type: ClassificationType) -> bool:
-        """Return if classification type is Genomic DelIns."""
-        return type == ClassificationType.GENOMIC_DELINS
+    def can_translate(self, classification_type: ClassificationType) -> bool:
+        """Determine if it's possible to translate a classification.
+
+        :param classification_type: Classification type found
+        :return: `True` if `classification_type` matches translator's classification
+            type. Otherwise, `False`
+        """
+        return classification_type == ClassificationType.GENOMIC_DELINS
 
     async def translate(
         self,
@@ -32,7 +37,18 @@ class GenomicDelIns(Translator):
         copy_change: Optional[CopyChange] = None,
         do_liftover: bool = False
     ) -> Optional[TranslationResult]:
-        """Translate to VRS Variation representation."""
+        """Translate validation result to VRS representation
+
+        :param validation_result: Validation result for a classification
+        :param endpoint_name: Name of endpoint that is being used
+        :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
+            deletions
+        :param baseline_copies: The baseline copies for a copy number count variation
+        :param copy_change: The change for a copy number change variation
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :return: Translation result if translation was successful. If translation was
+            not successful, `None`
+        """
         classification: GenomicDelInsClassification = validation_result.classification
         vrs_allele = None
         vrs_seq_loc_ac = None
