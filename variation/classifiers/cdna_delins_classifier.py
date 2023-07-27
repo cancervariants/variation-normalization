@@ -16,12 +16,22 @@ class CdnaDelInsClassifier(Classifier):
         return ClassificationType.CDNA_DELINS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the cdna delins classification.
+
+        :return: List of list of tokens, where order matters, that represent a cdna
+        delins classification.
+        """
         return [
             [TokenType.GENE, TokenType.CDNA_DELINS]
         ]
 
     def match(self, tokens: List[Token]) -> CdnaDelInsClassification:
+        """Return the cdna delins classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            cdna delins classification
+        :return: cdna delins classification for the list of matched tokens
+        """
         gene_token, cdna_delins_token = tokens
 
         return CdnaDelInsClassification(

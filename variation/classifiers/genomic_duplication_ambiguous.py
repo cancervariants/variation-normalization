@@ -17,12 +17,25 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
         return ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic ambiguous duplication
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        ambiguous duplication classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_DUPLICATION_AMBIGUOUS]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicDuplicationAmbiguousClassification:
+        """Return the genomic ambiguous duplication classification from a list of token
+        matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic ambiguous duplication classification
+        :return: genomic ambiguous duplication classification for the list of matched
+            tokens
+        """
         gene_token, genomic_dup_token = tokens
         ambiguous_type = get_ambiguous_type(
             genomic_dup_token.pos0,

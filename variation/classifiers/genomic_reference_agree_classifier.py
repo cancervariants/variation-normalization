@@ -16,12 +16,24 @@ class GenomicReferenceAgreeClassifier(Classifier):
         return ClassificationType.GENOMIC_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic reference agree
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        reference agree classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_REFERENCE_AGREE]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicReferenceAgreeClassification:
+        """Return the genomic reference agree classification from a list of token
+        matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic reference agree classification
+        :return: genomic reference agree classification for the list of matched tokens
+        """
         gene_token, genomic_ref_agree_token = tokens
 
         return GenomicReferenceAgreeClassification(

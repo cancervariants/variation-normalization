@@ -16,12 +16,22 @@ class GenomicDuplicationClassifier(Classifier):
         return ClassificationType.GENOMIC_DUPLICATION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic duplication classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        duplication classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_DUPLICATION]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicDuplicationClassification:
+        """Return the genomic duplication classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic duplication classification
+        :return: genomic duplication classification for the list of matched tokens
+        """
         gene_token, genomic_dup_token = tokens
 
         return GenomicDuplicationClassification(

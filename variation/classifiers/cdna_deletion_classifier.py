@@ -16,12 +16,22 @@ class CdnaDeletionClassifier(Classifier):
         return ClassificationType.CDNA_DELETION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the cdna deletion classification.
+
+        :return: List of list of tokens, where order matters, that represent a cdna
+        deletion classification.
+        """
         return [
             [TokenType.GENE, TokenType.CDNA_DELETION]
         ]
 
     def match(self, tokens: List[Token]) -> CdnaDeletionClassification:
+        """Return the cdna deletion classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            cdna deletion classification
+        :return: cdna deletion classification for the list of matched tokens
+        """
         gene_token, cdna_deletion_token = tokens
 
         return CdnaDeletionClassification(

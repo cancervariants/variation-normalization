@@ -16,13 +16,24 @@ class CdnaReferenceAgreeClassifier(Classifier):
         return ClassificationType.CDNA_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the cdna reference agree
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a cdna
+        reference agree classification.
+        """
         return [
             [TokenType.GENE, TokenType.CDNA_REFERENCE_AGREE],
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CDNA_REFERENCE_AGREE]  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> CdnaReferenceAgreeClassification:
+        """Return the cdna reference agree classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            cdna reference agree classification
+        :return: cdna reference agree classification for the list of matched tokens
+        """
         if len(tokens) == 2:
             gene_token, cdna_ref_agree_token = tokens
         else:

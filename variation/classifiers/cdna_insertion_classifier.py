@@ -16,12 +16,22 @@ class CdnaInsertionClassifier(Classifier):
         return ClassificationType.CDNA_INSERTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the cdna insertion classification.
+
+        :return: List of list of tokens, where order matters, that represent a cdna
+        insertion classification.
+        """
         return [
             [TokenType.GENE, TokenType.CDNA_INSERTION]
         ]
 
     def match(self, tokens: List[Token]) -> CdnaInsertionClassification:
+        """Return the cdna insertion classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            cdna insertion classification
+        :return: cdna insertion classification for the list of matched tokens
+        """
         gene_token, cdna_ins_token = tokens
 
         return CdnaInsertionClassification(

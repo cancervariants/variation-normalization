@@ -16,13 +16,23 @@ class CdnaSubstitutionClassifier(Classifier):
         return ClassificationType.CDNA_SUBSTITUTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the cdna substitution classification.
+
+        :return: List of list of tokens, where order matters, that represent a cdna
+        substitution classification.
+        """
         return [
             [TokenType.GENE, TokenType.CDNA_SUBSTITUTION],
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CDNA_SUBSTITUTION]  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> Optional[CdnaSubstitutionClassification]:
+        """Return the cdna substitution classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            cdna substitution classification
+        :return: cdna substitution classification for the list of matched tokens
+        """
         if len(tokens) == 2:
             gene_token, cdna_sub_token = tokens
         else:

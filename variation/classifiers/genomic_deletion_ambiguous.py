@@ -17,12 +17,25 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
         return ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic ambiguous deletion
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        ambiguous deletion classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_DELETION_AMBIGUOUS]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicDeletionAmbiguousClassification:
+        """Return the genomic ambiguous deletion classification from a list of token
+        matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic ambiguous deletion classification
+        :return: genomic ambiguous deletion classification for the list of matched
+            tokens
+        """
         gene_token, genomic_del_token = tokens
         ambiguous_type = get_ambiguous_type(
             genomic_del_token.pos0,

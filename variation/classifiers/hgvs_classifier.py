@@ -29,12 +29,23 @@ class HgvsClassifier(Classifier):
     """The HGVS Classifier."""
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the hgvs classification.
+
+        :return: List of list of tokens, where order matters, that represent a hgvs
+        classification.
+        """
         return [
             [TokenType.HGVS]
         ]
 
     def match(self, token: HgvsToken) -> Optional[Classification]:
+        """Return the classification from a hgvs token using regex matches to determine
+        the type of classification.
+
+        :param token: hgvs token
+        :return: The corresponding classification for the hgvs token if a regex match
+            is found. Else, return `None`
+        """
         classification = None
         params = {
             "matching_tokens": [token],
@@ -56,6 +67,13 @@ class HgvsClassifier(Classifier):
 
     @staticmethod
     def _regex_match(change: str, regex: Pattern) -> Optional[Match]:
+        """Strip parentheses from `change` and return whether or not `change` matches
+        the `regex`
+
+        :param change: The alteration part of the hgvs expression
+        :param regex: The pattern to match against
+        :return: A regex match if found against pattern, else `None`
+        """
         if change[0] == "(" and change[-1] == ")":
             match = regex.match(change[1:-1])
         else:
@@ -65,6 +83,14 @@ class HgvsClassifier(Classifier):
     def _protein_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding protein
+        classification if a match is found
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: Protein classification if hgvs token matches regex checks. Else, `None`
+        """
         for regex, _, classification_type in PROTEIN_REGEXPRS:
             match = self._regex_match(token.change, regex)
 
@@ -100,6 +126,14 @@ class HgvsClassifier(Classifier):
     def _cdna_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding cdna
+        classification if a match is found
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: cdna classification if hgvs token matches regex checks. Else, `None`
+        """
         for regex, _, classification_type in CDNA_REGEXPRS:
             match = self._regex_match(token.change, regex)
 
@@ -138,6 +172,15 @@ class HgvsClassifier(Classifier):
     def _genomic_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding genomic
+        classification if a match is found. Only checks against 'simple'
+        duplication/deletions.
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: genomic classification if hgvs token matches regex checks. Else, `None`
+        """
         for regex, _, classification_type in GENOMIC_REGEXPRS:
             match = self._regex_match(token.change, regex)
 
@@ -180,6 +223,16 @@ class HgvsClassifier(Classifier):
     def _genomic_ambiguous_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding genomic
+        ambiguous classification if a match is found. Only checks against ambiguous
+        duplication/deletions.
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: genomic ambiguous classification if hgvs token matches regex checks.
+            Else, `None`
+        """
         if token.token.endswith("dup"):
             return self._genomic_dup_ambiguous_classification(token, params)
         elif token.token.endswith("del"):
@@ -191,6 +244,12 @@ class HgvsClassifier(Classifier):
     def _update_ambiguous_params(
         params: Dict, regex_type: AmbiguousRegexType
     ) -> None:
+        """Mutates `params` to match correct types and gets associated ambiguous type
+        from fields in `params`
+
+        :param params: Fields for a classification. This will get mutated.
+        :param regex_type: The kind of ambiguous regex that was used
+        """
         params["pos0"] = int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]  # noqa: E501
 
         if "pos1" in params:
@@ -214,6 +273,16 @@ class HgvsClassifier(Classifier):
     def _genomic_dup_ambiguous_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding genomic
+        ambiguous duplication classification if a match is found. Only checks against
+        genomic ambiguous duplications.
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: genomic ambiguous duplication classification if hgvs token matches
+            regex checks. Else, `None`
+        """
         for regex, _, classification_type, regex_type in GENOMIC_DUP_AMBIGUOUS_REGEXPRS:
             match = regex.match(token.change)
 
@@ -232,6 +301,16 @@ class HgvsClassifier(Classifier):
     def _genomic_del_ambiguous_classification(
         self, token: HgvsToken, params: Dict
     ) -> Optional[Classification]:
+        """Determine if hgvs token matches regex checks and return corresponding genomic
+        ambiguous deletion classification if a match is found. Only checks against
+        genomic ambiguous deletion.
+
+        :param token: hgvs token
+        :param params: Base fields for a classification. This will get mutated if a
+            match is found.
+        :return: genomic ambiguous deletion classification if hgvs token matches regex
+            checks. Else, `None`
+        """
         for regex, _, classification_type, regex_type in GENOMIC_DEL_AMBIGUOUS_REGEXPRS:
             match = regex.match(token.change)
 

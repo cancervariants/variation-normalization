@@ -16,12 +16,24 @@ class ProteinReferenceAgreeClassifier(Classifier):
         return ClassificationType.PROTEIN_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the protein reference agree
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a protein
+        reference agree classification.
+        """
         return [
             [TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]
         ]
 
     def match(self, tokens: List[Token]) -> ProteinReferenceAgreeClassification:
+        """Return the protein reference agree classification from a list of token
+        matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            protein reference agree classification
+        :return: protein reference agree classification for the list of matched tokens
+        """
         gene_token, protein_ref_agree_token = tokens
 
         return ProteinReferenceAgreeClassification(

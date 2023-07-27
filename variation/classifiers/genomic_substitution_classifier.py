@@ -17,13 +17,24 @@ class GenomicSubstitutionClassifier(Classifier):
         return ClassificationType.GENOMIC_SUBSTITUTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic substitution
+        classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        substitution classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_SUBSTITUTION],
             [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_SUBSTITUTION]  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> Optional[GenomicSubstitutionClassification]:
+        """Return the genomic substitution classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic substitution classification
+        :return: genomic substitution classification for the list of matched tokens
+        """
         if len(tokens) == 2:
             gene_token, genomic_sub_token = tokens
         else:

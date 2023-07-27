@@ -16,12 +16,22 @@ class GenomicDeletionClassifier(Classifier):
         return ClassificationType.GENOMIC_DELETION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the genomic deletion classification.
+
+        :return: List of list of tokens, where order matters, that represent a genomic
+        deletion classification.
+        """
         return [
             [TokenType.GENE, TokenType.GENOMIC_DELETION]
         ]
 
     def match(self, tokens: List[Token]) -> GenomicDeletionClassification:
+        """Return the genomic deletion classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            genomic deletion classification
+        :return: genomic deletion classification for the list of matched tokens
+        """
         gene_token, genomic_deletion_token = tokens
 
         return GenomicDeletionClassification(

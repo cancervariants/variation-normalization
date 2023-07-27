@@ -16,12 +16,22 @@ class ProteinDelInsClassifier(Classifier):
         return ClassificationType.PROTEIN_DELINS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
-        """Return the exact match token type candidates."""
+        """Return the token match candidates for the protein delins classification.
+
+        :return: List of list of tokens, where order matters, that represent a protein
+        delins classification.
+        """
         return [
             [TokenType.GENE, TokenType.PROTEIN_DELINS]
         ]
 
     def match(self, tokens: List[Token]) -> ProteinDelInsClassification:
+        """Return the protein delins classification from a list of token matches.
+
+        :param tokens: List of ordered tokens that are exact match candidates for a
+            protein delins classification
+        :return: protein delins classification for the list of matched tokens
+        """
         gene_token, protein_delins_token = tokens
 
         return ProteinDelInsClassification(
