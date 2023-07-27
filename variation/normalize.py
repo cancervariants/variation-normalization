@@ -1,5 +1,5 @@
 """Module for Variation Normalization."""
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from urllib.parse import quote, unquote
 from datetime import datetime
 
@@ -11,9 +11,10 @@ from variation.classifiers.classify import Classify
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenizers.tokenize import Tokenize
 from variation.translators.translate import Translate
-from variation.utils import no_variation_resp, get_hgvs_dup_del_mode
+from variation.utils import no_variation_resp
 from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.token_response_schema import Token, GnomadVcfToken
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption, NormalizeService, ServiceMeta
 )
@@ -85,9 +86,38 @@ class Normalize(ToVRSATILE):
 
         return translation_result
 
+    @staticmethod
+    def get_hgvs_dup_del_mode(
+        tokens: List[Token], hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
+        baseline_copies: Optional[int] = None
+    ) -> Tuple[Optional[HGVSDupDelModeOption], Optional[str]]:
+        """Get option to use for hgvs dup del mode
+
+        :param tokens: List of tokens found in an input query
+        :param hgvs_dup_del_mode: The hgvs dup del mode option provided in the input
+            query. gnomad vcf token will always set to
+            `HGVSDupDelModeOption.LITERAL_SEQ_EXPR`.
+        :param baseline_copies: The baseline copies provided in the input query.
+            Required when `hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT`.
+        :return: Tuple containing the hgvs dup del mode option and warnings
+        """
+        warning = None
+        if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
+            hgvs_dup_del_mode = HGVSDupDelModeOption.LITERAL_SEQ_EXPR
+        else:
+            if not hgvs_dup_del_mode:
+                hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
+
+            if hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
+                if not baseline_copies:
+                    warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"  # noqa: E501
+                    return None, warning
+
+        return hgvs_dup_del_mode, warning
+
     async def normalize(
         self, q: str,
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = HGVSDupDelModeOption.DEFAULT,
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = HGVSDupDelModeOption.DEFAULT,  # noqa: E501
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False
@@ -134,9 +164,8 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
-        hgvs_dup_del_mode, warning = get_hgvs_dup_del_mode(
-            tokens, Endpoint.NORMALIZE, hgvs_dup_del_mode=hgvs_dup_del_mode,
-            baseline_copies=baseline_copies
+        hgvs_dup_del_mode, warning = self.get_hgvs_dup_del_mode(
+            tokens, hgvs_dup_del_mode=hgvs_dup_del_mode, baseline_copies=baseline_copies
         )
         if warning:
             warnings.append(warning)

@@ -11,9 +11,7 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
-from variation.schemas.token_response_schema import Token, GnomadVcfToken
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.app_schemas import AmbiguousRegexType, Endpoint
+from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 def no_variation_resp(
@@ -105,11 +103,11 @@ def get_priority_sequence_location(gene_descriptor: GeneDescriptor,
 
 
 def get_aa1_codes(aa: str) -> Optional[str]:
-    """Get single AA codes given possible AA string (either single or three letter).
-    Will also validate the input AA string
+    """Get 1 letter AA codes given possible AA string (either 1 or 3 letter).
+    Will also validate the input AA string.
 
-    :param aa: Input amino acid string
-    :return: Amino acid string represented using single AA codes if valid. If invalid,
+    :param aa: Input amino acid string. Case sensitive.
+    :return: Amino acid string represented using 1 letter AA codes if valid. If invalid,
         will return None
     """
     aa1 = None
@@ -136,6 +134,15 @@ def get_ambiguous_type(
     pos2: Union[int, Literal["?"]], pos3: Optional[Union[int, Literal["?"]]],
     ambiguous_regex_type: AmbiguousRegexType
 ) -> Optional[AmbiguousType]:
+    """Get the ambiguous type given positions and regex used
+
+    :param pos0: Position 0
+    :param pos1: Position 1
+    :param pos2: Position 2
+    :param pos3: Position 3
+    :param ambiguous_regex_type: The matched regex pattern
+    :return: Corresponding ambiguous type if a match is found. Else, `None`
+    """
     ambiguous_type = None
     if ambiguous_regex_type == AmbiguousRegexType.REGEX_1:
         if all((
@@ -175,6 +182,13 @@ def get_ambiguous_type(
 def get_assembly(
     seqrepo_access: SeqRepoAccess, alt_ac: str
 ) -> Tuple[Optional[ClinVarAssembly], Optional[str]]:
+    """Get GRCh assembly for given genomic RefSeq accession
+
+    :param seqrepo_access: Access to SeqRepo client
+    :param alt_ac: Genomic RefSeq accession
+    :return: Tuple containing the corresponding GRCh assembly, if found in SeqRepo and
+        optional warning message if an assembly is not found in SeqRepo
+    """
     assembly = None
     warning = None
 
@@ -190,36 +204,3 @@ def get_assembly(
         warning = f"Unable to get GRCh37/GRCh38 assembly for: {alt_ac}"
 
     return assembly, warning
-
-
-def get_hgvs_dup_del_mode(
-    tokens: List[Token], endpoint_name: Endpoint,
-    hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
-    baseline_copies: Optional[int] = None
-) -> HGVSDupDelModeOption:
-    warning = None
-    if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
-        # gnomad vcf should always be a literal seq expression (allele)
-        hgvs_dup_del_mode = HGVSDupDelModeOption.LITERAL_SEQ_EXPR
-    else:
-        if endpoint_name in {
-            Endpoint.NORMALIZE, Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
-            Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
-        }:
-            if hgvs_dup_del_mode:
-                if hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
-                    if not baseline_copies:
-                        warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"  # noqa: E501
-                        return None, warning
-            elif not hgvs_dup_del_mode and endpoint_name == Endpoint.NORMALIZE:
-                hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
-            else:
-                warning = (
-                    f"hgvs_dup_del_mode must be either "
-                    f"{HGVSDupDelModeOption.COPY_NUMBER_COUNT.value} or "
-                    f"{HGVSDupDelModeOption.COPY_NUMBER_CHANGE.value}"
-                )
-                return None, warning
-        else:
-            hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
-    return hgvs_dup_del_mode, warning
