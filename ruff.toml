@@ -1,0 +1,26 @@
+# pycodestyle (E, W)
+# Pyflakes (F)
+# flake8-annotations (ANN)
+# flake8-quotes (Q)
+# pydocstyle (D)
+# pep8-naming (N)
+select = ["E", "W", "F", "ANN", "Q", "D", "N"]
+
+line-length = 88
+
+# D205 - blank-line-after-summary
+# D400 - ends-in-period
+# D415 - ends-in-punctuation
+# ANN101 - missing-type-self
+ignore = ["D205", "D400", "D415", "ANN101"]
+
+[flake8-quotes]
+inline-quotes = "double"
+
+[per-file-ignores]
+# ANN001 -	missing-type-function-argument
+# ANN2 - missing-return-type
+# ANN102 - missing-type-cls
+"tests/*" = ["ANN001", "ANN2", "ANN102"]
+"setup.py" = ["F821"]
+"*__init__.py" = ["F401"]

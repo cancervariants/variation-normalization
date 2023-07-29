@@ -140,7 +140,7 @@ Next, view the OpenAPI docs on your local machine:
 http://127.0.0.1:8000/variation
 
 ### Init coding style tests
-Code style is managed by [flake8](https://github.com/PyCQA/flake8) and checked prior to commit.
+Code style is managed by [Ruff](https://github.com/astral-sh/ruff) and checked prior to commit.
 
 We use [pre-commit](https://pre-commit.com/#usage) to run conformance tests.
 

@@ -7,16 +7,12 @@ verify_ssl = true
 pytest = "*"
 pytest-asyncio = "*"
 pytest-cov = "*"
-flake8 = "*"
-flake8-docstrings = "*"
-flake8-quotes = "*"
-flake8-annotations = "*"
-flake8-import-order = "*"
 pre-commit = "*"
 variation-normalizer = {editable = true, path = "."}
 jupyter = "*"
 ipykernel = "*"
 psycopg2-binary = "*"
+ruff = "*"
 
 [packages]
 "biocommons.seqrepo" = "*"

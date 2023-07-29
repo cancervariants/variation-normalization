@@ -82,8 +82,7 @@ def _get_priority_sequence_location(locations: List[Dict],
 
 def get_priority_sequence_location(gene_descriptor: GeneDescriptor,
                                    seqrepo_access: SeqRepoAccess) -> Optional[Dict]:
-    """
-    Get prioritized sequence location from a gene descriptor
+    """Get prioritized sequence location from a gene descriptor
     Will prioritize NCBI and then Ensembl. GRCh38 will be chosen over GRCh37.
 
     :param GeneDescriptor gene_descriptor: Gene descriptor

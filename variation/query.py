@@ -1,4 +1,4 @@
-"""This module provides methods for handling queries."""
+"""Module for providing methods for handling queries."""
 from typing import Optional
 
 from gene.query import QueryHandler as GeneQueryHandler

@@ -18,8 +18,7 @@ def kit_amplification():
                 "start": {"type": "Number", "value": 55599320},
                 "end": {"type": "Number", "value": 55599321},
                 "type": "SequenceInterval"
-            },
-            "type": "SequenceLocation"
+            }
         }
     }
     return CopyNumberChange(**params)
