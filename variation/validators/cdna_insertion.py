@@ -2,9 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
-    Classification,
     CdnaInsertionClassification,
+    Classification,
+    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult

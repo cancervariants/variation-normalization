@@ -1,14 +1,14 @@
 """A module for Protein Substitution Tokenization."""
 from typing import Optional, Union
 
-from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
+from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
+from variation.regex import PROTEIN_SUBSTITUTION
 from variation.schemas.token_response_schema import (
-    ProteinSubstitutionToken,
     ProteinStopGainToken,
+    ProteinSubstitutionToken,
 )
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import PROTEIN_SUBSTITUTION
 
 
 class ProteinSubstitution(Tokenizer):

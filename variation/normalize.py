@@ -1,29 +1,29 @@
 """Module for Variation Normalization."""
-from typing import Optional, List, Tuple
-from urllib.parse import quote, unquote
 from datetime import datetime
+from typing import List, Optional, Tuple
+from urllib.parse import quote, unquote
 
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, TranscriptMappings
 
-from variation.classifiers.classify import Classify
-from variation.to_vrsatile import ToVRSATILE
-from variation.tokenizers.tokenize import Tokenize
-from variation.translators.translate import Translate
-from variation.utils import no_variation_resp
-from variation.validators.validate import Validate
+from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import Token, GnomadVcfToken
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     NormalizeService,
     ServiceMeta,
 )
+from variation.schemas.token_response_schema import GnomadVcfToken, Token
 from variation.schemas.translation_response_schema import (
-    TranslationResult,
     AC_PRIORITY_LABELS,
+    TranslationResult,
 )
+from variation.to_vrsatile import ToVRSATILE
+from variation.tokenize import Tokenize
+from variation.translate import Translate
+from variation.utils import no_variation_resp
+from variation.validate import Validate
 from variation.version import __version__
 
 

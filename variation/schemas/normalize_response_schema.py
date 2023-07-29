@@ -1,11 +1,11 @@
 """Module for normalize endpoint response schema."""
-from enum import Enum
-from typing import List, Optional, Dict, Any, Type
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Type
 
+from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from pydantic import BaseModel
 from pydantic.types import StrictStr
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 
 class HGVSDupDelModeOption(str, Enum):

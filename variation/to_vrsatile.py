@@ -1,28 +1,28 @@
 """Module for representing VRSATILE objects"""
-from typing import List, Optional, Tuple, Callable, Dict
+from typing import Callable, Dict, List, Optional, Tuple
 
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
+from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import (
-    VariationDescriptor,
     GeneDescriptor,
     MoleculeContext,
+    VariationDescriptor,
 )
-from cool_seq_tool.schemas import ResidueMode
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
 from gene.query import QueryHandler as GeneQueryHandler
 
+from variation.classify import Classify
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     Nomenclature,
 )
-from variation.to_vrs import ToVRS
-from variation.tokenizers import Tokenize
-from variation.classifiers import Classify
-from variation.validators import Validate
-from variation.translators import Translate
 from variation.schemas.token_response_schema import GeneToken
-from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.to_vrs import ToVRS
+from variation.tokenize import Tokenize
+from variation.translate import Translate
+from variation.validate import Validate
 
 
 class ToVRSATILE(ToVRS):

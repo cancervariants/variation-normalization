@@ -1,7 +1,8 @@
 """Module for terminating EB staging environment."""
-import boto3
 import json
 import time
+
+import boto3
 
 client = boto3.client("lambda")
 servicecatalog = boto3.client("servicecatalog")

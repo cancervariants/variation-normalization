@@ -8,8 +8,8 @@ from variation.schemas.classification_response_schema import (
     ProteinDelInsClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.validators.validator import Validator
 from variation.utils import get_aa1_codes
+from variation.validators.validator import Validator
 
 
 class ProteinDelIns(Validator):

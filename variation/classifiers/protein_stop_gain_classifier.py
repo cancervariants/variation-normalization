@@ -1,13 +1,13 @@
 """A module for the Protein Stop Gain Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
-    ProteinStopGainClassification,
     Nomenclature,
+    ProteinStopGainClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class ProteinStopGainClassifier(Classifier):

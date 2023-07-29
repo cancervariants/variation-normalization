@@ -2,13 +2,12 @@
 import logging
 from typing import List, Optional
 
-from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
 
 from variation.schemas.classification_response_schema import (
     Classification,
     Nomenclature,
 )
-
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)

@@ -2,14 +2,15 @@
 import asyncio
 
 import pytest
+from cool_seq_tool import CoolSeqTool
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool import CoolSeqTool
 
+from variation.classify import Classify
 from variation.query import QueryHandler
-from variation.tokenizers import Tokenize, GeneSymbol
-from variation.classifiers import Classify
+from variation.tokenize import Tokenize
+from variation.tokenizers import GeneSymbol
 
 
 @pytest.fixture(scope="session")

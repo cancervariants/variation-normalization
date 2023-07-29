@@ -1,11 +1,11 @@
 """A module for Reference Agree Tokenization."""
 from typing import Optional
 
-from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
+from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
+from variation.regex import PROTEIN_REFERENCE_AGREE
 from variation.schemas.token_response_schema import ProteinReferenceAgreeToken
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import PROTEIN_REFERENCE_AGREE
 
 
 class ProteinReferenceAgree(Tokenizer):

@@ -1,21 +1,21 @@
 """Module for providing methods for handling queries."""
 from typing import Optional
 
-from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
 from cool_seq_tool import CoolSeqTool
+from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation import UTA_DB_URL
-from variation.tokenizers import GeneSymbol
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.to_vrs import VRSRepresentation, ToVRS
-from variation.classifiers import Classify
-from variation.tokenizers import Tokenize
-from variation.validators import Validate
-from variation.translators import Translate
+from variation.classify import Classify
 from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.normalize import Normalize
 from variation.to_copy_number_variation import ToCopyNumberVariation
+from variation.to_vrs import ToVRS, VRSRepresentation
+from variation.tokenize import Tokenize
+from variation.tokenizers import GeneSymbol
+from variation.translate import Translate
+from variation.validate import Validate
 
 
 class QueryHandler:

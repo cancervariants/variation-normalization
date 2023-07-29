@@ -1,13 +1,13 @@
 """A module for the Genomic Reference Agree Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     GenomicReferenceAgreeClassification,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class GenomicReferenceAgreeClassifier(Classifier):

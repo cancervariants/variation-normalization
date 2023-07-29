@@ -1,16 +1,16 @@
 """Module for Amplification Translation."""
-from typing import Optional, List
+from typing import List, Optional
 
-from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.translators.translator import Translator
 from variation.utils import get_priority_sequence_location
 
 

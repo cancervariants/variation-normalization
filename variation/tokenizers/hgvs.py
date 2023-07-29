@@ -2,8 +2,8 @@
 import re
 from typing import Optional
 
-from variation.schemas.token_response_schema import HgvsToken, CoordinateType
-from .tokenizer import Tokenizer
+from variation.schemas.token_response_schema import CoordinateType, HgvsToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class HGVS(Tokenizer):

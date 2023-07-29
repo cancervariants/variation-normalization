@@ -1,6 +1,6 @@
 """Module for Genomic Duplication Ambiguous Translation."""
-from variation.translators.ambiguous_translator_base import AmbiguousTranslator
 from variation.schemas.classification_response_schema import ClassificationType
+from variation.translators.ambiguous_translator_base import AmbiguousTranslator
 
 
 class GenomicDuplicationAmbiguous(AmbiguousTranslator):

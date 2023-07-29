@@ -1,12 +1,6 @@
 """A module for Genomic Deletion Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import (
-    GenomicDeletionToken,
-    GenomicDeletionAmbiguousToken,
-    CoordinateType,
-)
-from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import (
     CNDA_GENOMIC_DELETION,
     GENOMIC_DELETION_AMBIGUOUS_1,
@@ -14,6 +8,12 @@ from variation.regex import (
     GENOMIC_DELETION_AMBIGUOUS_3,
 )
 from variation.schemas.app_schemas import AmbiguousRegexType
+from variation.schemas.token_response_schema import (
+    CoordinateType,
+    GenomicDeletionAmbiguousToken,
+    GenomicDeletionToken,
+)
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GenomicDeletion(Tokenizer):

@@ -1,20 +1,20 @@
 """Module for translation."""
-from abc import abstractmethod, ABC
-from typing import Optional, List
+from abc import ABC, abstractmethod
+from typing import List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase, MANETranscript
+from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
 from cool_seq_tool.schemas import ResidueMode
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
+from variation.hgvs_dup_del_mode import HGVSDupDelMode
+from variation.schemas.app_schemas import Endpoint
+from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import GeneToken
+from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.genomic_base import GenomicBase
 from variation.vrs_representation import VRSRepresentation
-from variation.schemas.app_schemas import Endpoint
-from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.translation_response_schema import TranslationResult
 
 
 class Translator(ABC):

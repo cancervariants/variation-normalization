@@ -2,8 +2,8 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Classification,
+    ClassificationType,
     Nomenclature,
     ProteinStopGainClassification,
 )

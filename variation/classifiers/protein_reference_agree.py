@@ -1,13 +1,13 @@
 """A module for the Reference Agree Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
-    ProteinReferenceAgreeClassification,
     Nomenclature,
+    ProteinReferenceAgreeClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class ProteinReferenceAgreeClassifier(Classifier):

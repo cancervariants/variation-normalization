@@ -2,10 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
-    Classification,
-    Nomenclature,
     CdnaReferenceAgreeClassification,
+    Classification,
+    ClassificationType,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator

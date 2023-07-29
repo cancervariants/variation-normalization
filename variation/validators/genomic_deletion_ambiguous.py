@@ -9,7 +9,7 @@ from variation.schemas.classification_response_schema import (
     Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from .validator import Validator
+from variation.validators.validator import Validator
 
 
 class GenomicDeletionAmbiguous(Validator):

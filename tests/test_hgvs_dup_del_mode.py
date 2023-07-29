@@ -4,8 +4,8 @@ from copy import deepcopy
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from tests.conftest import assertion_checks
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 
 
 @pytest.fixture(scope="module")

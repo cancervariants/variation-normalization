@@ -1,26 +1,28 @@
-"""A module for tokenizing."""
+"""A module for tokenization."""
 from typing import Iterable, List
 
 from variation.schemas.token_response_schema import Token, TokenType
-from .gene_symbol import GeneSymbol
-from .protein_substitution import ProteinSubstitution
-from .protein_reference_agree import ProteinReferenceAgree
-from .cdna_and_genomic_reference_agree import CdnaGenomicReferenceAgree
-from .cdna_substitution import CdnaSubstitution
-from .genomic_substitution import GenomicSubstitution
-from .protein_delins import ProteinDelIns
-from .cdna_delins import CdnaDelIns
-from .genomic_delins import GenomicDelIns
-from .hgvs import HGVS
-from .protein_deletion import ProteinDeletion
-from .cdna_deletion import CdnaDeletion
-from .genomic_deletion import GenomicDeletion
-from .protein_insertion import ProteinInsertion
-from .cdna_insertion import CdnaInsertion
-from .genomic_insertion import GenomicInsertion
-from .genomic_duplication import GenomicDuplication
-from .gnomad_vcf import GnomadVCF
-from .free_text_categorical import FreeTextCategorical
+from variation.tokenizers import (
+    HGVS,
+    CdnaDeletion,
+    CdnaDelIns,
+    CdnaGenomicReferenceAgree,
+    CdnaInsertion,
+    CdnaSubstitution,
+    FreeTextCategorical,
+    GeneSymbol,
+    GenomicDeletion,
+    GenomicDelIns,
+    GenomicDuplication,
+    GenomicInsertion,
+    GenomicSubstitution,
+    GnomadVCF,
+    ProteinDeletion,
+    ProteinDelIns,
+    ProteinInsertion,
+    ProteinReferenceAgree,
+    ProteinSubstitution,
+)
 
 r"(\((\?|d+)_(\?|\d+)\))_(\((\?|\d+)_(\?|\d+)\))dup"
 

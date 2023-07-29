@@ -1,29 +1,31 @@
 """Module for to copy number variation translation"""
-from typing import Tuple, Optional, List, Union
 from datetime import datetime
+from typing import List, Optional, Tuple, Union
 from urllib.parse import unquote
 
 from cool_seq_tool.data_sources import SeqRepoAccess
-from gene.query import QueryHandler as GeneQueryHandler
-from ga4gh.vrsatile.pydantic.vrs_models import (
-    CopyNumberCount,
-    CopyNumberChange,
-    Text,
-    CopyChange,
-)
-from ga4gh.vrs import models
 from ga4gh.core import ga4gh_identify
-from pydantic import ValidationError
+from ga4gh.vrs import models
+from ga4gh.vrsatile.pydantic.vrs_models import (
+    CopyChange,
+    CopyNumberChange,
+    CopyNumberCount,
+    Text,
+)
+from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
+from pydantic import ValidationError
 
-from variation.classifiers import Classify
-from variation.to_vrs import ToVRS
+from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import TokenType
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.hgvs_to_copy_number_schema import (
-    HgvsToCopyNumberCountService,
     HgvsToCopyNumberChangeService,
+    HgvsToCopyNumberCountService,
+)
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption,
+    ServiceMeta,
 )
 from variation.schemas.service_schema import (
     AmplificationToCxVarQuery,
@@ -32,17 +34,14 @@ from variation.schemas.service_schema import (
     ParsedToCnVarQuery,
     ParsedToCnVarService,
 )
+from variation.schemas.token_response_schema import TokenType
 from variation.schemas.validation_response_schema import ValidationSummary
-from variation.schemas.normalize_response_schema import (
-    HGVSDupDelModeOption,
-    ServiceMeta,
-)
-from variation.tokenizers import Tokenize
-from variation.translators import Translate
+from variation.to_vrs import ToVRS
+from variation.tokenize import Tokenize
+from variation.translate import Translate
 from variation.utils import get_priority_sequence_location
-from variation.validators import Validate
+from variation.validate import Validate
 from variation.version import __version__
-
 
 VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_DUPLICATION,

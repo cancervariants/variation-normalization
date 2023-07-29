@@ -2,7 +2,6 @@
 import logging
 from os import environ
 
-
 if "VARIATION_NORM_EB_PROD" in environ:
     LOG_FN = "/tmp/variation.log"
 else:

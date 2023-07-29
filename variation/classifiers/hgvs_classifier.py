@@ -1,42 +1,42 @@
 """A module for the HGVS Classifier."""
-from typing import Dict, List, Optional
 from re import Match, Pattern
+from typing import Dict, List, Optional
 
+from variation.classifiers.classifier import Classifier
+from variation.regex import (
+    CDNA_REGEXPRS,
+    GENOMIC_DEL_AMBIGUOUS_REGEXPRS,
+    GENOMIC_DUP_AMBIGUOUS_REGEXPRS,
+    GENOMIC_REGEXPRS,
+    PROTEIN_REGEXPRS,
+)
+from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.classification_response_schema import (
+    CdnaDeletionClassification,
+    CdnaDelInsClassification,
+    CdnaInsertionClassification,
+    CdnaReferenceAgreeClassification,
+    CdnaSubstitutionClassification,
     Classification,
     ClassificationType,
-    GenomicSubstitutionClassification,
+    GenomicDeletionAmbiguousClassification,
+    GenomicDeletionClassification,
+    GenomicDelInsClassification,
+    GenomicDuplicationAmbiguousClassification,
+    GenomicDuplicationClassification,
     GenomicInsertionClassification,
-    ProteinSubstitutionClassification,
-    CdnaSubstitutionClassification,
-    CdnaDeletionClassification,
+    GenomicReferenceAgreeClassification,
+    GenomicSubstitutionClassification,
+    Nomenclature,
     ProteinDeletionClassification,
     ProteinDelInsClassification,
     ProteinInsertionClassification,
     ProteinReferenceAgreeClassification,
-    CdnaDelInsClassification,
-    GenomicDelInsClassification,
-    CdnaInsertionClassification,
-    CdnaReferenceAgreeClassification,
-    GenomicReferenceAgreeClassification,
     ProteinStopGainClassification,
-    GenomicDuplicationClassification,
-    GenomicDuplicationAmbiguousClassification,
-    GenomicDeletionClassification,
-    GenomicDeletionAmbiguousClassification,
-    Nomenclature,
+    ProteinSubstitutionClassification,
     SequenceOntology,
 )
-from variation.schemas.token_response_schema import HgvsToken, TokenType, CoordinateType
-from variation.schemas.app_schemas import AmbiguousRegexType
-from variation.regex import (
-    GENOMIC_REGEXPRS,
-    GENOMIC_DUP_AMBIGUOUS_REGEXPRS,
-    PROTEIN_REGEXPRS,
-    CDNA_REGEXPRS,
-    GENOMIC_DEL_AMBIGUOUS_REGEXPRS,
-)
-from variation.classifiers import Classifier
+from variation.schemas.token_response_schema import CoordinateType, HgvsToken, TokenType
 from variation.utils import get_ambiguous_type
 
 

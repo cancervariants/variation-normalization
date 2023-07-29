@@ -1,6 +1,6 @@
 """Module for vrs-python translator endpoint response schema"""
 from enum import Enum
-from typing import Any, Dict, Optional, List, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import Allele
 from pydantic import BaseModel

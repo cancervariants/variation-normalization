@@ -1,8 +1,8 @@
 """Module for Translation Response Schema."""
-from typing import Optional, Dict
+from typing import Dict, Optional
 
-from pydantic import BaseModel, StrictStr
 from cool_seq_tool.schemas import TranscriptPriorityLabel
+from pydantic import BaseModel, StrictStr
 
 from variation.schemas.validation_response_schema import ValidationResult
 

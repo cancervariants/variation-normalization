@@ -1,10 +1,10 @@
 """Module for Validation."""
-from typing import List, Optional, Tuple
 from abc import ABC, abstractmethod
+from typing import List, Optional, Tuple
 
-from gene.query import QueryHandler as GeneQueryHandler
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from cool_seq_tool.schemas import ResidueMode
+from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import (
     Classification,

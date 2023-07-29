@@ -15,9 +15,12 @@ line-length = 88
 # flake8-quotes (Q)
 # pydocstyle (D)
 # pep8-naming (N)
-select = ["E", "W", "F", "ANN", "Q", "D", "N"]
+# isort (I)
+select = ["E", "W", "F", "ANN", "Q", "D", "N", "I"]
 
 line-length = 88
+
+fixable = ["I"]
 
 # D205 - blank-line-after-summary
 # D400 - ends-in-period

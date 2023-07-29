@@ -2,9 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
+    AmplificationClassification,
     Classification,
     ClassificationType,
-    AmplificationClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator

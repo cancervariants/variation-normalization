@@ -1,42 +1,41 @@
 """Module for going from gnomAD VCF to VRS variation on the protein coordinate"""
-from typing import Optional, Tuple, List, Dict
-from urllib.parse import quote
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import quote
 
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from cool_seq_tool.data_sources import (
-    SeqRepoAccess,
-    UTADatabase,
     MANETranscript,
     MANETranscriptMappings,
+    SeqRepoAccess,
     TranscriptMappings,
+    UTADatabase,
 )
 from cool_seq_tool.schemas import ResidueMode
+from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from gene.query import QueryHandler as GeneQueryHandler
 
-from variation.classifiers.classify import Classify
-from variation.schemas.translation_response_schema import TranslationResult
-from variation.to_vrsatile import ToVRSATILE
-from variation.tokenizers.tokenize import Tokenize
-from variation.translators.translate import Translate
-from variation.utils import no_variation_resp
-from variation.validators.validate import Validate
-from variation.schemas.validation_response_schema import ValidationSummary
-from variation.schemas.token_response_schema import Token, AltType
+from variation.classify import Classify
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     Nomenclature,
     SequenceOntology,
 )
-from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     NormalizeService,
     ServiceMeta,
 )
+from variation.schemas.token_response_schema import AltType, Token
+from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationSummary
+from variation.to_vrsatile import ToVRSATILE
+from variation.tokenize import Tokenize
+from variation.translate import Translate
+from variation.utils import no_variation_resp
+from variation.validate import Validate
 from variation.version import __version__
-
 
 DNA_TO_RNA = {"T": "A", "A": "U", "G": "C", "C": "G"}
 

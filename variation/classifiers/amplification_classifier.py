@@ -1,13 +1,13 @@
 """A module for the Amplification Classifier"""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     AmplificationClassification,
+    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class AmplificationClassifier(Classifier):

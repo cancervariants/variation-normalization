@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from pydantic import BaseModel
-from pydantic.types import StrictBool, StrictStr, StrictInt
+from pydantic.types import StrictBool, StrictInt, StrictStr
 
 from variation.schemas.classification_response_schema import Classification
 

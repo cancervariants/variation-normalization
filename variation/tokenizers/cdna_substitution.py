@@ -1,12 +1,12 @@
 """A module for Cdna Substitution Tokenization."""
 from typing import Optional
 
+from variation.regex import CDNA_GENOMIC_SUBSTITUTION
 from variation.schemas.token_response_schema import (
     CdnaSubstitutionToken,
     CoordinateType,
 )
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import CDNA_GENOMIC_SUBSTITUTION
 
 
 class CdnaSubstitution(Tokenizer):

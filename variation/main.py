@@ -1,27 +1,27 @@
 """Main application for FastAPI."""
+from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional, Union
-from datetime import datetime
 from urllib.parse import unquote
 
 import pkg_resources
+import python_jsonschema_objects
+from bioutils.exceptions import BioutilsError
+from cool_seq_tool.schemas import Assembly, ResidueMode
 from fastapi import FastAPI, Query
 from fastapi.openapi.utils import get_openapi
-from pydantic import ValidationError
-import python_jsonschema_objects
+from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from hgvs.exceptions import HGVSError
-from bioutils.exceptions import BioutilsError
-from ga4gh.vrs import models
-from cool_seq_tool.schemas import ResidueMode, Assembly
+from pydantic import ValidationError
 
 from variation import logger
-from variation.schemas import ToVRSService, NormalizeService, ServiceMeta
-from variation.schemas.hgvs_to_copy_number_schema import (
-    HgvsToCopyNumberCountService,
-    HgvsToCopyNumberChangeService,
-)
 from variation.query import QueryHandler
+from variation.schemas import NormalizeService, ServiceMeta, ToVRSService
+from variation.schemas.hgvs_to_copy_number_schema import (
+    HgvsToCopyNumberChangeService,
+    HgvsToCopyNumberCountService,
+)
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     TranslateIdentifierService,
@@ -30,19 +30,19 @@ from variation.schemas.service_schema import (
     AmplificationToCxVarService,
     ClinVarAssembly,
     ParsedToCnVarService,
-    ToGenomicService,
     ToCdnaService,
+    ToGenomicService,
 )
-from .version import __version__
-from .schemas.vrs_python_translator_schema import (
+from variation.schemas.vrs_python_translator_schema import (
     TranslateFromFormat,
-    TranslateFromService,
     TranslateFromQuery,
+    TranslateFromService,
     TranslateToHGVSQuery,
     TranslateToQuery,
     TranslateToService,
     VrsPythonMeta,
 )
+from variation.version import __version__
 
 
 class Tags(Enum):

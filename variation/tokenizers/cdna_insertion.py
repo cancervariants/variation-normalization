@@ -1,9 +1,9 @@
 """A module for Cdna Insertion Tokenization."""
 from typing import Optional
 
+from variation.regex import CDNA_GENOMIC_INSERTION
 from variation.schemas.token_response_schema import CdnaInsertionToken, CoordinateType
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import CDNA_GENOMIC_INSERTION
 
 
 class CdnaInsertion(Tokenizer):

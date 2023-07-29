@@ -1,9 +1,9 @@
 """A module for Cdna Deletion Tokenization."""
 from typing import Optional
 
+from variation.regex import CNDA_GENOMIC_DELETION
 from variation.schemas.token_response_schema import CdnaDeletionToken, CoordinateType
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import CNDA_GENOMIC_DELETION
 
 
 class CdnaDeletion(Tokenizer):

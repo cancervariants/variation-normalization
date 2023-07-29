@@ -2,11 +2,11 @@
 import re
 from typing import Optional
 
-from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
+from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
+from variation.regex import PROTEIN_DELETION
 from variation.schemas.token_response_schema import ProteinDeletionToken
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import PROTEIN_DELETION
 
 
 class ProteinDeletion(Tokenizer):

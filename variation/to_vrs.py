@@ -1,27 +1,27 @@
 """Module for to_vrs endpoint."""
-from typing import Tuple, Optional, List
-from urllib.parse import unquote
 from datetime import datetime
+from typing import List, Optional, Tuple
+from urllib.parse import unquote
 
-from ga4gh.vrsatile.pydantic.vrs_models import Text, CopyChange
-from ga4gh.vrs import models
-from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, Text
 
+from variation.classify import Classify
+from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     ServiceMeta,
 )
-from variation.schemas.app_schemas import Endpoint
 from variation.schemas.to_vrs_response_schema import ToVRSService
-from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.translation_response_schema import TranslationResult
-from variation.classifiers import Classify
-from variation.tokenizers import Tokenize
-from variation.validators import Validate
-from variation.translators import Translate
-from variation.vrs_representation import VRSRepresentation
+from variation.schemas.validation_response_schema import ValidationSummary
+from variation.tokenize import Tokenize
+from variation.translate import Translate
+from variation.validate import Validate
 from variation.version import __version__
+from variation.vrs_representation import VRSRepresentation
 
 
 class ToVRS(VRSRepresentation):

@@ -1,25 +1,25 @@
 """Module for schemas related to tokenization."""
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
-from pydantic import BaseModel, StrictInt, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
+from pydantic import BaseModel, StrictInt, StrictStr
 
+from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.variation_schema import (
-    DelIns,
     Deletion,
-    ProteinDelIns,
-    ProteinInsertion,
-    Substitution,
+    DelIns,
+    DupDelAmbiguous,
+    Duplication,
     Insertion,
     ProteinDeletion,
-    ReferenceAgree,
+    ProteinDelIns,
+    ProteinInsertion,
     ProteinReferenceAgree,
+    ReferenceAgree,
     StopGain,
-    Duplication,
-    DupDelAmbiguous,
+    Substitution,
 )
-from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 class TokenType(str, Enum):

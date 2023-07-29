@@ -1,19 +1,19 @@
 """Module for Protein Deletion Translation."""
-from typing import Optional, List
+from typing import List, Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from cool_seq_tool.schemas import ResidueMode
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.token_response_schema import AltType, CoordinateType
-from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     ProteinDeletionClassification,
 )
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
+from variation.schemas.token_response_schema import AltType, CoordinateType
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.translators.translator import Translator
 
 
 class ProteinDeletion(Translator):

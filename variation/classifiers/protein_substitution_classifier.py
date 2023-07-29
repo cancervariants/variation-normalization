@@ -1,13 +1,13 @@
 """A module for the Protein Substitution Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
-    ProteinSubstitutionClassification,
     Nomenclature,
+    ProteinSubstitutionClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class ProteinSubstitutionClassifier(Classifier):

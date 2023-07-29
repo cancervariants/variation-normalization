@@ -1,13 +1,13 @@
 """A module for the Cdna Deletion Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     CdnaDeletionClassification,
+    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class CdnaDeletionClassifier(Classifier):

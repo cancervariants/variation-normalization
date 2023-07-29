@@ -1,14 +1,14 @@
 """A module for the Cdna Substitution Classifier."""
 from typing import List, Optional
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     CdnaSubstitutionClassification,
+    ClassificationType,
     Nomenclature,
     SequenceOntology,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class CdnaSubstitutionClassifier(Classifier):

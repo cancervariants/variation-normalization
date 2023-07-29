@@ -1,23 +1,23 @@
 """Module for translating genomic ambiguous deletions and duplications"""
-from typing import Dict, Optional, List, NamedTuple, Tuple, Union, Literal
+from typing import Dict, List, Literal, NamedTuple, Optional, Tuple, Union
 
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.classification_response_schema import (
     AmbiguousType,
     GenomicDeletionAmbiguousClassification,
     GenomicDuplicationAmbiguousClassification,
     Nomenclature,
 )
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
-from variation.schemas.service_schema import ClinVarAssembly
 from variation.utils import get_assembly
 
 

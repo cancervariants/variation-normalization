@@ -2,13 +2,12 @@
 import re
 from typing import List, Tuple
 
-from variation.schemas.token_response_schema import TokenType
-from variation.schemas.classification_response_schema import (
-    ClassificationType,
-    AmbiguousType,
-)
 from variation.schemas.app_schemas import AmbiguousRegexType
-
+from variation.schemas.classification_response_schema import (
+    AmbiguousType,
+    ClassificationType,
+)
+from variation.schemas.token_response_schema import TokenType
 
 CDNA_GENOMIC_SUBSTITUTION = re.compile(
     r"^(?P<pos>\d+)(?P<ref>[ACTGN])>(?P<alt>[ACTGN])$"

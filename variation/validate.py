@@ -1,29 +1,31 @@
 """Module for Validation."""
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import TranscriptMappings, SeqRepoAccess, UTADatabase
 
-from variation.schemas.validation_response_schema import ValidationSummary
 from variation.schemas.classification_response_schema import Classification
-from .protein_substitution import ProteinSubstitution
-from .protein_stop_gain import ProteinStopGain
-from .protein_reference_agree import ProteinReferenceAgree
-from .cdna_substitution import CdnaSubstitution
-from .cdna_reference_agree import CdnaReferenceAgree
-from .genomic_reference_agree import GenomicReferenceAgree
-from .genomic_substitution import GenomicSubstitution
-from .protein_delins import ProteinDelIns
-from .cdna_delins import CdnaDelIns
-from .genomic_delins import GenomicDelIns
-from .protein_deletion import ProteinDeletion
-from .cdna_deletion import CdnaDeletion
-from .genomic_deletion import GenomicDeletion
-from .genomic_deletion_ambiguous import GenomicDeletionAmbiguous
-from .protein_insertion import ProteinInsertion
-from .cdna_insertion import CdnaInsertion
-from .genomic_insertion import GenomicInsertion
-from .genomic_duplication import GenomicDuplication
-from .genomic_duplication_ambiguous import GenomicDuplicationAmbiguous
-from .amplification import Amplification
+from variation.schemas.validation_response_schema import ValidationSummary
+from variation.validators import (
+    Amplification,
+    CdnaDeletion,
+    CdnaDelIns,
+    CdnaInsertion,
+    CdnaReferenceAgree,
+    CdnaSubstitution,
+    GenomicDeletion,
+    GenomicDeletionAmbiguous,
+    GenomicDelIns,
+    GenomicDuplication,
+    GenomicDuplicationAmbiguous,
+    GenomicInsertion,
+    GenomicReferenceAgree,
+    GenomicSubstitution,
+    ProteinDeletion,
+    ProteinDelIns,
+    ProteinInsertion,
+    ProteinReferenceAgree,
+    ProteinStopGain,
+    ProteinSubstitution,
+)
 
 
 class Validate:

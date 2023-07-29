@@ -1,6 +1,7 @@
 """Module to deploy to staging EB environment."""
-import boto3
 import time
+
+import boto3
 
 elasticbeanstalk = boto3.client("elasticbeanstalk")
 servicecatalog = boto3.client("servicecatalog")

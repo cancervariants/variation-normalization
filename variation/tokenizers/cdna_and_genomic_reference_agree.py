@@ -1,13 +1,13 @@
 """A module for Reference Agree Tokenization on cDNA and genomic reference sequence."""
 from typing import Optional, Union
 
+from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
 from variation.schemas.token_response_schema import (
     CdnaReferenceAgreeToken,
-    GenomicReferenceAgreeToken,
     CoordinateType,
+    GenomicReferenceAgreeToken,
 )
 from variation.tokenizers.tokenizer import Tokenizer
-from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
 
 
 class CdnaGenomicReferenceAgree(Tokenizer):

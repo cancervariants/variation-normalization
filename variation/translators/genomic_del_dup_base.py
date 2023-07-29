@@ -1,24 +1,24 @@
 """Module for Genomic Deletion Translation."""
-from typing import Optional, List, NamedTuple, Union
+from typing import List, NamedTuple, Optional, Union
 
+from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
-from cool_seq_tool.schemas import ResidueMode
-from pydantic import StrictStr, StrictInt, ValidationError
+from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.service_schema import ClinVarAssembly
-from variation.schemas.token_response_schema import AltType
-from variation.schemas.validation_response_schema import ValidationResult
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
     GenomicDeletionClassification,
     GenomicDuplicationClassification,
     Nomenclature,
 )
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
+from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.translators.translator import Translator
 from variation.utils import get_assembly
 
 

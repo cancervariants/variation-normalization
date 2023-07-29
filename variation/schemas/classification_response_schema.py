@@ -1,24 +1,24 @@
 """Module for Classification schema."""
-from typing import List, Optional, Union, Literal
 from enum import Enum
+from typing import List, Literal, Optional, Union
 
-from pydantic import BaseModel, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
+from pydantic import BaseModel, StrictStr
 
-from variation.schemas.token_response_schema import Token, GeneToken
+from variation.schemas.token_response_schema import GeneToken, Token
 from variation.schemas.variation_schema import (
-    ProteinDelIns,
-    Substitution,
     Deletion,
+    DelIns,
+    DupDelAmbiguous,
+    Duplication,
     Insertion,
     ProteinDeletion,
+    ProteinDelIns,
     ProteinInsertion,
-    ReferenceAgree,
     ProteinReferenceAgree,
-    DelIns,
+    ReferenceAgree,
     StopGain,
-    Duplication,
-    DupDelAmbiguous,
+    Substitution,
 )
 
 

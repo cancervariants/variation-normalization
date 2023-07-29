@@ -1,15 +1,16 @@
 """Module containing schemas for services"""
 from enum import Enum
-from typing import Optional, Union, Dict, Any, Type
+from typing import Any, Dict, Optional, Type, Union
 
-from pydantic import BaseModel, StrictStr
+from cool_seq_tool.schemas import ToCdnaService as ToCdna
+from cool_seq_tool.schemas import ToGenomicService as ToGenomic
 from ga4gh.vrsatile.pydantic.vrs_models import (
-    CopyNumberCount,
-    Text,
-    SequenceLocation,
     CopyNumberChange,
+    CopyNumberCount,
+    SequenceLocation,
+    Text,
 )
-from cool_seq_tool.schemas import ToCdnaService as ToCdna, ToGenomicService as ToGenomic
+from pydantic import BaseModel, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceMeta, ServiceResponse
 

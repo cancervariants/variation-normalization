@@ -1,6 +1,7 @@
 """A module for the Genomic Substitution Classifier."""
 from typing import List, Optional
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     GenomicSubstitutionClassification,
@@ -8,7 +9,6 @@ from variation.schemas.classification_response_schema import (
     SequenceOntology,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class GenomicSubstitutionClassifier(Classifier):

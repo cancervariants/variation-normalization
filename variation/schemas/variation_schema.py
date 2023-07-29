@@ -1,5 +1,5 @@
 """Define supported variation types"""
-from typing import Optional, Literal, Union
+from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, StrictInt, StrictStr
 

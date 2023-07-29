@@ -1,9 +1,9 @@
 """A module for Genomic DelIns Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import GenomicDelInsToken, CoordinateType
-from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_DELINS
+from variation.schemas.token_response_schema import CoordinateType, GenomicDelInsToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GenomicDelIns(Tokenizer):

@@ -1,12 +1,6 @@
 """A module for Genomic Duplication Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import (
-    GenomicDuplicationToken,
-    GenomicDuplicationAmbiguousToken,
-    CoordinateType,
-)
-from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import (
     GENOMIC_DUPLICATION,
     GENOMIC_DUPLICATION_AMBIGUOUS_1,
@@ -14,6 +8,12 @@ from variation.regex import (
     GENOMIC_DUPLICATION_AMBIGUOUS_3,
 )
 from variation.schemas.app_schemas import AmbiguousRegexType
+from variation.schemas.token_response_schema import (
+    CoordinateType,
+    GenomicDuplicationAmbiguousToken,
+    GenomicDuplicationToken,
+)
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class GenomicDuplication(Tokenizer):

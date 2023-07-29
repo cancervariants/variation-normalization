@@ -1,12 +1,12 @@
 """Module for generating VRS objects"""
-from typing import List, Optional, Tuple, Union, Dict
+from typing import Dict, List, Optional, Tuple, Union
 
-from ga4gh.vrs import models, normalize
-from ga4gh.core import ga4gh_identify
-from cool_seq_tool.data_sources import SeqRepoAccess
 from bioutils.accessions import coerce_namespace
+from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models, normalize
 
-from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
+from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
 
 
 class VRSRepresentation:

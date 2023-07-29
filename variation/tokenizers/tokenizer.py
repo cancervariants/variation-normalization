@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
-from variation.schemas.token_response_schema import Token, CoordinateType
+from variation.schemas.token_response_schema import CoordinateType, Token
 
 
 class Tokenizer(ABC):

@@ -5,9 +5,9 @@ from datetime import datetime
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
+from tests.conftest import assertion_checks
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
-from tests.conftest import assertion_checks
 
 
 @pytest.fixture(scope="module")

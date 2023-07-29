@@ -1,16 +1,16 @@
 """A module for the gnomAD VCF Classifier"""
 from typing import List, Optional, Union
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
+    GenomicDeletionClassification,
+    GenomicInsertionClassification,
+    GenomicReferenceAgreeClassification,
     GenomicSubstitutionClassification,
     Nomenclature,
     SequenceOntology,
-    GenomicReferenceAgreeClassification,
-    GenomicInsertionClassification,
-    GenomicDeletionClassification,
 )
 from variation.schemas.token_response_schema import GnomadVcfToken, TokenType
-from variation.classifiers import Classifier
 
 
 class GnomadVcfClassifier(Classifier):

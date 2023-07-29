@@ -1,17 +1,18 @@
 """Module for general functionality throughout the app"""
-from typing import List, Tuple, Optional, Dict, Union, Literal
 import re
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
-from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3, aa3_to_aa1 as _aa3_to_aa1
-from ga4gh.vrsatile.pydantic.vrs_models import Text
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor, GeneDescriptor
+from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
+from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
+from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
-from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.vrsatile.pydantic.vrs_models import Text
+from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor, VariationDescriptor
 
+from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
-from variation.schemas.app_schemas import AmbiguousRegexType
 
 
 def no_variation_resp(

@@ -1,13 +1,13 @@
 """A module for the Protein DelIns Classifier."""
 from typing import List
 
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     ClassificationType,
-    ProteinDelInsClassification,
     Nomenclature,
+    ProteinDelInsClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
-from variation.classifiers import Classifier
 
 
 class ProteinDelInsClassifier(Classifier):

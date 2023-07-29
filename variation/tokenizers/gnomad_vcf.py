@@ -1,6 +1,6 @@
 """A module for gnomad VCF tokenization"""
-from typing import Optional
 import re
+from typing import Optional
 
 from variation.schemas.token_response_schema import GnomadVcfToken
 from variation.tokenizers.tokenizer import Tokenizer

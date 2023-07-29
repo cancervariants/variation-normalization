@@ -1,13 +1,13 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-from typing import Optional, Dict, Tuple, List
+from typing import Dict, List, Optional, Tuple
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrs import models, normalize
-from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models, normalize
+from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
+from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
 
 
 class HGVSDupDelMode:

@@ -1,33 +1,33 @@
 """Module for classification."""
 from typing import List
 
-from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import (
-    ProteinSubstitutionClassifier,
-    ProteinReferenceAgreeClassifier,
-    CdnaSubstitutionClassifier,
-    GenomicSubstitutionClassifier,
-    CdnaReferenceAgreeClassifier,
-    GenomicReferenceAgreeClassifier,
-    ProteinDelInsClassifier,
-    CdnaDelInsClassifier,
-    GenomicDelInsClassifier,
-    ProteinDeletionClassifier,
+    AmplificationClassifier,
     CdnaDeletionClassifier,
-    GenomicDeletionClassifier,
-    ProteinInsertionClassifier,
+    CdnaDelInsClassifier,
     CdnaInsertionClassifier,
-    GenomicInsertionClassifier,
+    CdnaReferenceAgreeClassifier,
+    CdnaSubstitutionClassifier,
+    Classifier,
+    GenomicDeletionAmbiguousClassifier,
+    GenomicDeletionClassifier,
+    GenomicDelInsClassifier,
     GenomicDuplicationAmbiguousClassifier,
     GenomicDuplicationClassifier,
-    GenomicDeletionAmbiguousClassifier,
-    ProteinStopGainClassifier,
-    AmplificationClassifier,
-    HgvsClassifier,
+    GenomicInsertionClassifier,
+    GenomicReferenceAgreeClassifier,
+    GenomicSubstitutionClassifier,
     GnomadVcfClassifier,
-    Classifier,
+    HgvsClassifier,
+    ProteinDeletionClassifier,
+    ProteinDelInsClassifier,
+    ProteinInsertionClassifier,
+    ProteinReferenceAgreeClassifier,
+    ProteinStopGainClassifier,
+    ProteinSubstitutionClassifier,
 )
+from variation.schemas.classification_response_schema import Classification
+from variation.schemas.token_response_schema import Token, TokenType
 
 
 class Classify:
