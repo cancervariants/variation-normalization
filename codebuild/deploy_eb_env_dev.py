@@ -6,7 +6,7 @@ servicecatalog = boto3.client("servicecatalog")
 terminate_time = 720
 eb_app_name = "VariationNormalization"
 eb_env_name = "VariationNormalization-dev-env"
-sc_product_id = "prod-mmw6ymv2ntzl2"
+sc_product_id = "prod-m4b65t5jgmcm4"
 print(f"Launching new Service Catalog Product for dev environment: "
       f"{eb_app_name}")
 sc_product_artifacts = \
