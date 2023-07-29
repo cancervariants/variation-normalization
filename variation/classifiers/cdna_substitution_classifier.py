@@ -30,7 +30,7 @@ class CdnaSubstitutionClassifier(Classifier):
                 TokenType.GENE,
                 TokenType.PROTEIN_SUBSTITUTION,
                 TokenType.CDNA_SUBSTITUTION,
-            ],  # noqa: E501
+            ],
         ]
 
     def match(self, tokens: List[Token]) -> Optional[CdnaSubstitutionClassification]:

@@ -285,7 +285,7 @@ def genomic_dup2_cx(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
     }
     genomic_dup2_normalized["variation_id"] = genomic_dup2_normalized["variation"][
         "_id"
-    ]  # noqa: E501
+    ]
     return VariationDescriptor(**genomic_dup2_normalized)
 
 
@@ -446,7 +446,7 @@ def genomic_dup3_rse_lse(genomic_dup3):
         "variation": {
             "_id": "ga4gh:VT.15sKDgSyoCPOgfrFHvSea-fHVeu7huVT",
             "type": "Text",
-            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup",  # noqa: E501
+            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup",
         },
     }
     return VariationDescriptor(**params)
@@ -588,7 +588,7 @@ def genomic_dup4_rse_lse(genomic_dup4):
 def genomic_dup4_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",  # noqa: E501
+        "id": "normalize.variation:PRF8%20g.%28%3F_1577736%29_%281587865_%3F%29",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -662,7 +662,7 @@ def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
 def genomic_dup5():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_154021812%29_154092209dup",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_154021812%29_154092209dup",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -775,7 +775,7 @@ def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
 def genomic_dup6():
     """Create test fixture containing params for genomic dup VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.154021812_%28154092209_%3F%29dup",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.154021812_%28154092209_%3F%29dup",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -1244,7 +1244,7 @@ def genomic_del3_rse_lse(genomic_del3):
         "variation": {
             "_id": "ga4gh:VT.tmA3mpMy9HKUweaB8aYsq6uuejEx9iK7",
             "type": "Text",
-            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del",  # noqa: E501
+            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del",
         },
     }
     return VariationDescriptor(**params)
@@ -1536,7 +1536,7 @@ def genomic_uncertain_del_y():
 def genomic_del5():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_18575354%29_18653629del",  # noqa: E501
+        "id": "normalize.variation:NC_000023.11%3Ag.%28%3F_18575354%29_18653629del",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),
@@ -1649,7 +1649,7 @@ def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
 def genomic_del6():
     """Create test fixture containing params for genomic del VD."""
     params = {
-        "id": "normalize.variation:NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",  # noqa: E501
+        "id": "normalize.variation:NC_000006.12%3Ag.133462764_%28133464858_%3F%29del",
         "type": "VariationDescriptor",
         "variation_id": "",
         "variation": dict(),

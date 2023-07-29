@@ -53,7 +53,7 @@ class CdnaDelIns(Validator):
                     cds_start + classification.pos0,
                     end_pos=cds_start + classification.pos1
                     if classification.pos1
-                    else None,  # noqa: E501
+                    else None,
                 )
                 if invalid_ac_pos_msg:
                     errors.append(invalid_ac_pos_msg)

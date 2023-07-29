@@ -127,7 +127,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return ProteinDelInsClassification(**params)
                 elif classification_type == ClassificationType.PROTEIN_DELETION:
                     params["pos0"] = int(params["pos0"])
@@ -135,7 +135,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return ProteinDeletionClassification(**params)
                 elif classification_type == ClassificationType.PROTEIN_INSERTION:
                     params["pos0"] = int(params["pos0"])
@@ -143,7 +143,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return ProteinInsertionClassification(**params)
 
         return None
@@ -178,9 +178,7 @@ class HgvsClassifier(Classifier):
                     params["pos"] = int(params["pos"])
 
                     return CdnaSubstitutionClassification(**params)
-                elif (
-                    classification_type == ClassificationType.CDNA_REFERENCE_AGREE
-                ):  # noqa: E501
+                elif classification_type == ClassificationType.CDNA_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
                     return CdnaReferenceAgreeClassification(**params)
                 elif classification_type == ClassificationType.CDNA_DELINS:
@@ -189,7 +187,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return CdnaDelInsClassification(**params)
                 elif classification_type == ClassificationType.CDNA_DELETION:
                     params["pos0"] = int(params["pos0"])
@@ -197,7 +195,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return CdnaDeletionClassification(**params)
                 elif classification_type == ClassificationType.CDNA_INSERTION:
                     params["pos0"] = int(params["pos0"])
@@ -205,7 +203,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return CdnaInsertionClassification(**params)
 
     def _genomic_classification(
@@ -248,7 +246,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return GenomicDelInsClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_INSERTION:
                     params["pos0"] = int(params["pos0"])
@@ -256,7 +254,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return GenomicInsertionClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_DELETION:
                     params["pos0"] = int(params["pos0"])
@@ -264,7 +262,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return GenomicDeletionClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_DUPLICATION:
                     params["pos0"] = int(params["pos0"])
@@ -272,7 +270,7 @@ class HgvsClassifier(Classifier):
                         int(params["pos1"])
                         if params["pos1"] is not None
                         else params["pos1"]
-                    )  # noqa: E501
+                    )
                     return GenomicDuplicationClassification(**params)
 
     def _genomic_ambiguous_classification(
@@ -305,23 +303,23 @@ class HgvsClassifier(Classifier):
         """
         params["pos0"] = (
             int(params["pos0"]) if params["pos0"] != "?" else params["pos0"]
-        )  # noqa: E501
+        )
 
         if "pos1" in params:
             params["pos1"] = (
                 int(params["pos1"]) if params["pos1"] != "?" else params["pos1"]
-            )  # noqa: E501
+            )
         else:
             params["pos1"] = None
 
         params["pos2"] = (
             int(params["pos2"]) if params["pos2"] != "?" else params["pos2"]
-        )  # noqa: E501
+        )
 
         if "pos3" in params:
             params["pos3"] = (
                 int(params["pos3"]) if params["pos3"] != "?" else params["pos3"]
-            )  # noqa: E501
+            )
         else:
             params["pos3"] = None
 
@@ -354,7 +352,7 @@ class HgvsClassifier(Classifier):
                 if (
                     classification_type
                     == ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
-                ):  # noqa: E501
+                ):
                     self._update_ambiguous_params(params, regex_type)
 
                     # If ambiguous type not in params, it means we don't support it yet
@@ -382,9 +380,7 @@ class HgvsClassifier(Classifier):
                 match_dict = match.groupdict()
                 params.update(match_dict)
 
-                if (
-                    classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS
-                ):  # noqa: E501
+                if classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS:
                     self._update_ambiguous_params(params, regex_type)
 
                     # If ambiguous type not in params, it means we don't support it yet

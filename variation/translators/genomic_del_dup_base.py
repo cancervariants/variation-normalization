@@ -31,7 +31,9 @@ class DelDupData(NamedTuple):
 
 
 class GenomicDelDupTranslator(Translator):
-    """Class for translating genomic deletions and duplications to VRS representations"""  # noqa: E501
+    """Class for translating genomic deletions and duplications to VRS
+    representations
+    """
 
     async def get_grch38_data(
         self,
@@ -185,7 +187,7 @@ class GenomicDelDupTranslator(Translator):
                 residue_mode=ResidueMode.RESIDUE,
                 gene=classification.gene_token.token
                 if classification.gene_token
-                else None,  # noqa: E501
+                else None,
             )
 
             if mane:

@@ -1331,7 +1331,7 @@ async def test_invalid_cnv(test_cnv_handler):
     )
     assert set(resp.warnings) == {
         "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"
-    }  # noqa: E501
+    }
     assert resp.copy_number_change.type == "Text"
 
     q = "braf V600E"
@@ -1340,7 +1340,7 @@ async def test_invalid_cnv(test_cnv_handler):
     )
     assert set(resp.warnings) == {
         "braf V600E is not a supported HGVS genomic duplication or deletion"
-    }  # noqa: E501
+    }
     assert resp.copy_number_change is None
 
     # Not yet supported

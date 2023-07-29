@@ -1135,7 +1135,7 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
             if test_variation.variation_id:
                 assert (
                     normalize_response.variation_id == normalize_response.variation.id
-                ), "variation_id == variation.id"  # noqa: E501
+                ), "variation_id == variation.id"
         assert normalize_response.variation == test_variation.variation, "variation"
     else:
         if not ignore_id:

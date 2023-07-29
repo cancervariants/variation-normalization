@@ -65,7 +65,7 @@ class GenomicDelIns(Translator):
                 residue_mode=ResidueMode.RESIDUE.value,
                 gene=classification.gene_token.token
                 if classification.gene_token
-                else None,  # noqa: E501
+                else None,
             )
 
             if mane:

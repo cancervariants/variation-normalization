@@ -30,7 +30,7 @@ class CdnaReferenceAgreeClassifier(Classifier):
                 TokenType.GENE,
                 TokenType.PROTEIN_SUBSTITUTION,
                 TokenType.CDNA_REFERENCE_AGREE,
-            ],  # noqa: E501
+            ],
         ]
 
     def match(self, tokens: List[Token]) -> CdnaReferenceAgreeClassification:

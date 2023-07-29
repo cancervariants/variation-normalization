@@ -32,7 +32,7 @@ class GenomicDeletionAmbiguous(Validator):
                 <= classification.pos2
                 <= classification.pos1
                 <= classification.pos0
-            ):  # noqa: E501
+            ):
                 return [
                     ValidationResult(
                         accession=None,

@@ -169,7 +169,7 @@ class AmbiguousTranslator(Translator):
         return AmbiguousSequenceLocation(
             seq_loc=self.vrs.get_sequence_loc(seq_id, ival).as_dict()
             if seq_id
-            else None,  # noqa: E501
+            else None,
             outer_coords=outer_coords,
         )
 

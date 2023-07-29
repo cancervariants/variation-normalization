@@ -273,7 +273,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             if (
                 classification_token.classification_type
                 == ClassificationType.GENOMIC_SUBSTITUTION
-            ):  # noqa: E501
+            ):
                 classification_token.so_id = SequenceOntology.PROTEIN_SUBSTITUTION
             else:
                 classification_token.so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
@@ -326,13 +326,13 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         elif (
             classification_token.classification_type
             == ClassificationType.GENOMIC_DELETION
-        ):  # noqa: E501
+        ):
             # There is no alt for a deletion
             classification_token.so_id = SequenceOntology.PROTEIN_DELETION
         elif (
             classification_token.classification_type
             == ClassificationType.GENOMIC_INSERTION
-        ):  # noqa: E501
+        ):
             classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
@@ -418,7 +418,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         if (
                             classification_token.classification_type
                             == ClassificationType.GENOMIC_DELETION
-                        ):  # noqa: E501
+                        ):
                             alt_type = AltType.DELETION
                         else:
                             alt_type = AltType.INSERTION
@@ -444,7 +444,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         if (
                             classification_token.classification_type
                             == ClassificationType.GENOMIC_SUBSTITUTION
-                        ):  # noqa: E501
+                        ):
                             alt_type = AltType.SUBSTITUTION
                         else:
                             alt_type = AltType.REFERENCE_AGREE
@@ -520,7 +520,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                             aa_alt
                             or classification_token.classification_type
                             == ClassificationType.GENOMIC_DELETION
-                        ):  # noqa: E501
+                        ):
                             # mane_p is 0-based, but to_vrs allele takes 1-based
                             variation = self.to_vrs_allele(
                                 p_ac,

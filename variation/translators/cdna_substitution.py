@@ -53,7 +53,7 @@ class CdnaSubstitution(Translator):
         cds_start = validation_result.cds_start
         classification: CdnaSubstitutionClassification = (
             validation_result.classification
-        )  # noqa: E501
+        )
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"

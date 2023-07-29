@@ -173,9 +173,7 @@ class ToCopyNumberVariation(ToVRS):
         untranslatable_returns_text: bool = False,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-    ) -> Tuple[
-        Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]
-    ]:  # noqa: E501
+    ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:
         """Return copy number variation and warnings response
 
         :param HGVSDupDelModeOption copy_number_type: The type of copy number variation.
@@ -360,13 +358,11 @@ class ToCopyNumberVariation(ToVRS):
                     else:
                         accession = (
                             [a for a in aliases if a.startswith("refseq:")] or [None]
-                        )[
-                            0
-                        ]  # noqa: E501
+                        )[0]
                         if not accession:
                             warnings.append(
                                 f"Unable to find RefSeq accession for {query}"
-                            )  # noqa: E501
+                            )
                 else:
                     warnings.append(
                         f"{assembly.value} assembly is not currently supported"

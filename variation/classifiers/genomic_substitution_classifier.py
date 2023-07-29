@@ -31,7 +31,7 @@ class GenomicSubstitutionClassifier(Classifier):
                 TokenType.GENE,
                 TokenType.PROTEIN_SUBSTITUTION,
                 TokenType.GENOMIC_SUBSTITUTION,
-            ],  # noqa: E501
+            ],
         ]
 
     def match(self, tokens: List[Token]) -> Optional[GenomicSubstitutionClassification]:

@@ -561,7 +561,7 @@ def cdna_insertion(limk2_gene_context):
 def genomic_insertion(erbb2_context):
     """Create a gene insertion test fixture."""
     params = {
-        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",  # noqa: E501
+        "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.nHB0_mpsq2t90S-znr81oCi2cY5CMdUe",
         "variation": {
@@ -891,7 +891,7 @@ async def test_cdna_and_genomic_substitution(
     assert (
         resp.variation_descriptor.id
         == "normalize.variation:BRAF%20V600E%20%28g.140453136A%3ET%29"
-    )  # noqa: E501
+    )
     resp.variation_descriptor.id = refseq_id
     assertion_checks(
         resp.variation_descriptor, braf_v600e_nucleotide, "BRAF V600E (g.140453136A>T)"
@@ -1125,7 +1125,7 @@ async def test_cdna_deletion(test_handler, cdna_deletion):
     assert (
         resp1.variation_descriptor.variation.id
         == resp2.variation_descriptor.variation.id
-    )  # noqa: E501
+    )
 
     q = "ERBB2 c.2264_2278delTGAGGGAAAACACAT"
     resp = await test_handler.normalize(q)
@@ -1223,7 +1223,7 @@ async def test_genomic_insertion(
     """Test that genomic insertion normalizes correctly."""
     resp = await test_handler.normalize(
         "NC_000017.10:g.37880993_37880994insGCTTACGTGATG"
-    )  # noqa: E501
+    )
     assertion_checks(
         resp.variation_descriptor,
         grch38_genomic_insertion,
@@ -1360,7 +1360,7 @@ async def test_service_meta():
     assert isinstance(service_meta.response_datetime, datetime)
     assert (
         service_meta.url == "https://github.com/cancervariants/variation-normalization"
-    )  # noqa: E501
+    )
 
     response = await normalize_get_response("this-wont-normalize", "default")
     service_meta = response.service_meta_
@@ -1369,7 +1369,7 @@ async def test_service_meta():
     assert isinstance(service_meta.response_datetime, datetime)
     assert (
         service_meta.url == "https://github.com/cancervariants/variation-normalization"
-    )  # noqa: E501
+    )
 
     response = await to_vrs_get_response("this-wont-normalize")
     service_meta = response.service_meta_
@@ -1378,4 +1378,4 @@ async def test_service_meta():
     assert isinstance(service_meta.response_datetime, datetime)
     assert (
         service_meta.url == "https://github.com/cancervariants/variation-normalization"
-    )  # noqa: E501
+    )

@@ -51,9 +51,7 @@ class ProteinStopGain(Translator):
             not successful, `None`
         """
         # First will translate valid result to VRS Allele
-        classification: ProteinStopGainClassification = (
-            validation_result.classification
-        )  # noqa: E501
+        classification: ProteinStopGainClassification = validation_result.classification
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"

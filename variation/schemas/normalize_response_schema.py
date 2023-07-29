@@ -42,7 +42,7 @@ class ServiceMeta(BaseModel):
                 "name": "variation-normalizer",
                 "version": "0.1.0",
                 "response_datetime": "2021-04-05T16:44:15.367831",
-                "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
+                "url": "https://github.com/cancervariants/variation-normalization",
             }
 
 
@@ -54,7 +54,9 @@ class ServiceResponse(BaseModel):
 
 
 class NormalizeService(ServiceResponse):
-    """A response to normalizing a variation to a single GA4GH Value Object Descriptor."""  # noqa: E501
+    """A response to normalizing a variation to a single GA4GH Value Object
+    Descriptor.
+    """
 
     variation_query: StrictStr
     variation_descriptor: Optional[VariationDescriptor]
@@ -77,17 +79,17 @@ class NormalizeService(ServiceResponse):
                     "id": "normalize.variation:BRAF%20V600E",
                     "label": "BRAF V600E",
                     "type": "VariationDescriptor",
-                    "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",  # noqa: E501
+                    "variation_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
                     "variation": {
                         "_id": "ga4gh:VA.8JkgnqIgYqufNl-OV_hpRG_aWF9UFQCE",
                         "location": {
-                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",  # noqa: E501
+                            "_id": "ga4gh:VSL.AqrQ-EkAvTrXOFn70_8i3dXF5shBBZ5i",
                             "interval": {
                                 "end": {"value": 640, "type": "Number"},
                                 "start": {"value": 639, "type": "Number"},
                                 "type": "SequenceInterval",
                             },
-                            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
+                            "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",
                             "type": "SequenceLocation",
                         },
                         "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
@@ -169,11 +171,11 @@ class NormalizeService(ServiceResponse):
                                             "start": {
                                                 "type": "Number",
                                                 "value": 140719326,
-                                            },  # noqa: E501
+                                            },
                                             "end": {
                                                 "type": "Number",
                                                 "value": 140924929,
-                                            },  # noqa: E501
+                                            },
                                             "type": "SequenceInterval",
                                         },
                                     }
@@ -202,11 +204,11 @@ class NormalizeService(ServiceResponse):
                                             "start": {
                                                 "type": "Number",
                                                 "value": 140713327,
-                                            },  # noqa: E501
+                                            },
                                             "end": {
                                                 "type": "Number",
                                                 "value": 140924929,
-                                            },  # noqa: E501
+                                            },
                                             "type": "SequenceInterval",
                                         },
                                     },
@@ -234,7 +236,7 @@ class NormalizeService(ServiceResponse):
                     "name": "variation-normalizer",
                     "version": "0.2.17",
                     "response_datetime": "2022-01-26T22:23:41.821673",
-                    "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
+                    "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
 
@@ -278,6 +280,6 @@ class TranslateIdentifierService(ServiceResponse):
                     "name": "variation-normalizer",
                     "version": "0.2.14",
                     "response_datetime": "2021-11-18T14:10:53.909158",
-                    "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
+                    "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }

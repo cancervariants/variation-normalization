@@ -81,7 +81,7 @@ def _get_priority_sequence_location(
                 if location["interval"][k]["type"] == "Number":
                     location["interval"][k]["value"] = int(
                         location["interval"][k]["value"]
-                    )  # noqa: E501
+                    )
     return location
 
 

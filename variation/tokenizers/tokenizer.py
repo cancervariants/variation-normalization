@@ -48,9 +48,7 @@ class Tokenizer(ABC):
             """
             if string.startswith(
                 (f"({coord_type}.", f"{coord_type}.(")
-            ) and string.endswith(
-                ")"
-            ):  # noqa: E501
+            ) and string.endswith(")"):
                 string = string[3:-1]
             elif string.startswith(f"{coord_type}."):
                 string = string[2:]

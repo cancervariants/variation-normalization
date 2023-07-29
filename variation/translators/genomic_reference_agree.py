@@ -53,7 +53,7 @@ class GenomicReferenceAgree(Translator):
         """
         classification: GenomicReferenceAgreeClassification = (
             validation_result.classification
-        )  # noqa: E501
+        )
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
@@ -61,7 +61,7 @@ class GenomicReferenceAgree(Translator):
         if endpoint_name == Endpoint.NORMALIZE:
             gene = (
                 classification.gene_token.token if classification.gene_token else None
-            )  # noqa: E501
+            )
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession,
                 classification.pos,

@@ -84,7 +84,7 @@ async def translator_checks(
         for vr in validation_summary.valid_results:
             translation_result = await translator_instance(*trans_params).translate(
                 vr, []
-            )  # noqa: E501
+            )
             vrs_variation = translation_result.vrs_variation
             if vrs_variation and vrs_variation not in translations:
                 assert vrs_variation in expected, f"{query}: {vrs_variation['_id']}"

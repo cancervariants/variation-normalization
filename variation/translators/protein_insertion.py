@@ -53,7 +53,7 @@ class ProteinInsertion(Translator):
         # First will translate valid result to VRS Allele
         classification: ProteinInsertionClassification = (
             validation_result.classification
-        )  # noqa: E501
+        )
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"

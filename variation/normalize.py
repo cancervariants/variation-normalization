@@ -88,7 +88,7 @@ class Normalize(ToVRSATILE):
         if len_preferred_translations > 1:
             og_ac_preferred_match = (
                 [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac]
-                or [None]  # noqa: E501
+                or [None]
             )[0]
 
             # We'll first see if `og_ac` (starting ac) matches the `ac_status`
@@ -145,7 +145,7 @@ class Normalize(ToVRSATILE):
         q: str,
         hgvs_dup_del_mode: Optional[
             HGVSDupDelModeOption
-        ] = HGVSDupDelModeOption.DEFAULT,  # noqa: E501
+        ] = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False,

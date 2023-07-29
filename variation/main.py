@@ -225,7 +225,7 @@ def translate_identifier(
     identifier: str = Query(..., description="The identifier to find aliases for"),
     target_namespaces: Optional[str] = Query(
         None, description="The namespaces of the aliases, separated by commas"
-    ),  # noqa: E501
+    ),
 ) -> TranslateIdentifierService:
     """Return data containing identifier aliases.
 
@@ -298,7 +298,7 @@ def vrs_python_translate_from(
         KeyError,
         ValueError,
         python_jsonschema_objects.validators.ValidationError,
-    ) as e:  # noqa: E501
+    ) as e:
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
         warnings.append(f"hgvs raised {type(e).__name__}: {e}")
@@ -574,7 +574,7 @@ chr_descr = "Chromosome. Must set when `assembly` is set."
 accession_descr = (
     "Accession. If `accession` is set, will ignore `assembly` and "
     "`chr`. If `accession` not set, must provide both `assembly` and `chr`."
-)  # noqa: E501
+)
 start_descr = "Start position as residue coordinate"
 end_descr = "End position as residue coordinate"
 total_copies_descr = "Total copies for Copy Number Count variation object"
