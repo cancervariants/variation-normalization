@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicReferenceAgreeClassification, Nomenclature
+    ClassificationType,
+    GenomicReferenceAgreeClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -22,9 +24,7 @@ class GenomicReferenceAgreeClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         reference agree classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_REFERENCE_AGREE]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_REFERENCE_AGREE]]
 
     def match(self, tokens: List[Token]) -> GenomicReferenceAgreeClassification:
         """Return the genomic reference agree classification from a list of token
@@ -40,5 +40,5 @@ class GenomicReferenceAgreeClassifier(Classifier):
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
             gene_token=gene_token,
-            pos=genomic_ref_agree_token.pos
+            pos=genomic_ref_agree_token.pos,
         )

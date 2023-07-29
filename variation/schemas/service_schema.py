@@ -3,8 +3,12 @@ from enum import Enum
 from typing import Optional, Union, Dict, Any, Type
 
 from pydantic import BaseModel, StrictStr
-from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, Text, \
-    SequenceLocation, CopyNumberChange
+from ga4gh.vrsatile.pydantic.vrs_models import (
+    CopyNumberCount,
+    Text,
+    SequenceLocation,
+    CopyNumberChange,
+)
 from cool_seq_tool.schemas import ToCdnaService as ToCdna, ToGenomicService as ToGenomic
 
 from variation.schemas.normalize_response_schema import ServiceMeta, ServiceResponse
@@ -42,8 +46,9 @@ class ParsedToCnVarService(ServiceResponse):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["ParsedToCnVarService"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["ParsedToCnVarService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -56,7 +61,7 @@ class ParsedToCnVarService(ServiceResponse):
                     "accession": None,
                     "start": 143134063,
                     "end": 143284670,
-                    "total_copies": 3
+                    "total_copies": 3,
                 },
                 "copy_number_count": {
                     "_id": "ga4gh:CN.N6C9rWBjrNuiIhJkPxdPlRKvSGKoFynr",
@@ -70,23 +75,23 @@ class ParsedToCnVarService(ServiceResponse):
                             "start": {
                                 "type": "IndefiniteRange",
                                 "value": 143134062,
-                                "comparator": "<="
+                                "comparator": "<=",
                             },
                             "end": {
                                 "type": "IndefiniteRange",
                                 "value": 143284670,
-                                "comparator": ">="
-                            }
-                        }
+                                "comparator": ">=",
+                            },
+                        },
                     },
-                    "copies": {"type": "Number", "value": 3}
+                    "copies": {"type": "Number", "value": 3},
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
                     "version": "0.2.17",
                     "response_datetime": "2022-01-26T22:23:41.821673",
-                    "url": "https://github.com/cancervariants/variation-normalization"
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
             }
 
 
@@ -111,8 +116,9 @@ class AmplificationToCxVarService(ServiceResponse):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["AmplificationToCxVarService"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["AmplificationToCxVarService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -124,7 +130,7 @@ class AmplificationToCxVarService(ServiceResponse):
                     "sequence_id": None,
                     "start": None,
                     "end": None,
-                    "sequence_location": None
+                    "sequence_location": None,
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
@@ -137,17 +143,17 @@ class AmplificationToCxVarService(ServiceResponse):
                         "interval": {
                             "type": "SequenceInterval",
                             "start": {"type": "Number", "value": 140713327},
-                            "end": {"type": "Number", "value": 140924929}
-                        }
+                            "end": {"type": "Number", "value": 140924929},
+                        },
                     },
-                    "copy_change": "efo:0030072"
+                    "copy_change": "efo:0030072",
                 },
                 "service_meta_": {
                     "version": "0.7.dev0",
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
-                    "url": "https://github.com/cancervariants/variation-normalization"
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
             }
 
 
@@ -160,8 +166,7 @@ class ToCdnaService(ToCdna):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["ToCdnaService"]) -> None:
+        def schema_extra(schema: Dict[str, Any], model: Type["ToCdnaService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -173,15 +178,15 @@ class ToCdnaService(ToCdna):
                     "c_start_pos": 1797,
                     "c_end_pos": 1800,
                     "cds_start": 226,
-                    "residue_mode": "inter-residue"
+                    "residue_mode": "inter-residue",
                 },
                 "warnings": list(),
                 "service_meta": {
                     "version": "0.5.4",
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
-                    "url": "https://github.com/cancervariants/variation-normalization"
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
             }
 
 
@@ -194,8 +199,7 @@ class ToGenomicService(ToGenomic):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["ToCdnaService"]) -> None:
+        def schema_extra(schema: Dict[str, Any], model: Type["ToCdnaService"]) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -206,13 +210,13 @@ class ToGenomicService(ToGenomic):
                     "g_ac": "NC_000007.13",
                     "g_start_pos": 140453134,
                     "g_end_pos": 140453137,
-                    "residue_mode": "inter-residue"
+                    "residue_mode": "inter-residue",
                 },
                 "warnings": list(),
                 "service_meta": {
                     "version": "0.5.4",
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
-                    "url": "https://github.com/cancervariants/variation-normalization"
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
             }

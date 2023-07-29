@@ -3,13 +3,12 @@ from typing import List, Optional, Tuple
 from abc import ABC, abstractmethod
 
 from gene.query import QueryHandler as GeneQueryHandler
-from cool_seq_tool.data_sources import (
-    SeqRepoAccess, TranscriptMappings, UTADatabase
-)
+from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from cool_seq_tool.schemas import ResidueMode
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType
+    Classification,
+    ClassificationType,
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
@@ -20,8 +19,11 @@ class Validator(ABC):
     """The validator class."""
 
     def __init__(
-        self, seqrepo_access: SeqRepoAccess, transcript_mappings: TranscriptMappings,
-        uta: UTADatabase, gene_normalizer: GeneQueryHandler
+        self,
+        seqrepo_access: SeqRepoAccess,
+        transcript_mappings: TranscriptMappings,
+        uta: UTADatabase,
+        gene_normalizer: GeneQueryHandler,
     ) -> None:
         """Initialize the DelIns validator.
 
@@ -52,7 +54,8 @@ class Validator(ABC):
 
     @abstractmethod
     def validates_classification_type(
-            self, classification_type: ClassificationType) -> bool:
+        self, classification_type: ClassificationType
+    ) -> bool:
         """Check that classification type can be validated by validator.
 
         :param ClassificationType classification_type: The type of variation
@@ -71,9 +74,7 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
 
-    async def validate(
-        self, classification: Classification
-    ) -> ValidationResult:
+    async def validate(self, classification: Classification) -> ValidationResult:
         """Get list of associated accessions for a classification. Use these accessions
         to perform validation checks (pos exists, accession is valid, reference sequence
         matches expected, etc). Gets list of validation results for a given
@@ -96,7 +97,7 @@ class Validator(ABC):
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=errors
+                    errors=errors,
                 )
             ]
         validation_results = await self.get_valid_invalid_results(
@@ -104,9 +105,7 @@ class Validator(ABC):
         )
         return validation_results
 
-    def get_protein_accessions(
-        self, gene_token: GeneToken, errors: List
-    ) -> List[str]:
+    def get_protein_accessions(self, gene_token: GeneToken, errors: List) -> List[str]:
         """Get accessions for variations with protein reference sequence.
 
         :param gene_token: Gene token for a classification
@@ -120,9 +119,7 @@ class Validator(ABC):
             )
         return accessions
 
-    def get_cdna_accessions(
-        self, gene_token: GeneToken, errors: List
-    ) -> List[str]:
+    def get_cdna_accessions(self, gene_token: GeneToken, errors: List) -> List[str]:
         """Get accessions for variations with cDNA reference sequence.
 
         :param gene_token: Gene token for a classification
@@ -151,9 +148,14 @@ class Validator(ABC):
         return accessions
 
     async def _validate_gene_pos(
-        self, gene: str, alt_ac: str, pos0: int, pos1: Optional[int],
-        pos2: Optional[int] = None, pos3: Optional[int] = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE
+        self,
+        gene: str,
+        alt_ac: str,
+        pos0: int,
+        pos1: Optional[int],
+        pos2: Optional[int] = None,
+        pos3: Optional[int] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> Optional[str]:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
@@ -205,8 +207,12 @@ class Validator(ABC):
                         return f"Position {pos} out of index on {alt_ac} on gene, {gene}"  # noqa: E501
 
     def validate_reference_sequence(
-        self, ac: str, start_pos: int, end_pos: int,
-        expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
+        self,
+        ac: str,
+        start_pos: int,
+        end_pos: int,
+        expected_ref: str,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> Optional[str]:
         """Validate that expected reference sequence matches actual reference sequence.
         This is also in translator, but there is a ticket to have this method be moved
@@ -224,8 +230,10 @@ class Validator(ABC):
         )
 
         if not err_msg and (actual_ref != expected_ref):
-            err_msg = (f"Expected to find {expected_ref} at positions ({start_pos}, "
-                       f"{end_pos}) on {ac} but found {actual_ref}")
+            err_msg = (
+                f"Expected to find {expected_ref} at positions ({start_pos}, "
+                f"{end_pos}) on {ac} but found {actual_ref}"
+            )
 
         return err_msg
 
@@ -248,8 +256,11 @@ class Validator(ABC):
         return cds_start, msg
 
     def validate_ac_and_pos(
-        self, ac: str, start_pos: int, end_pos: Optional[int] = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE
+        self,
+        ac: str,
+        start_pos: int,
+        end_pos: Optional[int] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> Optional[str]:
         """Validate that accession exists and that position(s) exist on accession
 

@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinReferenceAgreeClassification, Nomenclature
+    ClassificationType,
+    ProteinReferenceAgreeClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -22,9 +24,7 @@ class ProteinReferenceAgreeClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a protein
         reference agree classification.
         """
-        return [
-            [TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]
-        ]
+        return [[TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]]
 
     def match(self, tokens: List[Token]) -> ProteinReferenceAgreeClassification:
         """Return the protein reference agree classification from a list of token
@@ -41,5 +41,5 @@ class ProteinReferenceAgreeClassifier(Classifier):
             nomenclature=Nomenclature.FREE_TEXT,
             gene_token=gene_token,
             pos=protein_ref_agree_token.pos,
-            ref=protein_ref_agree_token.ref
+            ref=protein_ref_agree_token.ref,
         )

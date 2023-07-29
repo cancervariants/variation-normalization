@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, Nomenclature, ProteinDeletionClassification
+    Classification,
+    ClassificationType,
+    Nomenclature,
+    ProteinDeletionClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -55,7 +58,7 @@ class ProteinDeletion(Validator):
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=errors
+                    errors=errors,
                 )
             ]
 
@@ -81,14 +84,18 @@ class ProteinDeletion(Validator):
                     errors.append(invalid_aa1_seq_msg)
 
             # Validate that deleted sequence matches expected
-            if classification.nomenclature in {Nomenclature.FREE_TEXT,
-                                               Nomenclature.HGVS}:
+            if classification.nomenclature in {
+                Nomenclature.FREE_TEXT,
+                Nomenclature.HGVS,
+            }:
                 # HGVS deleted sequence includes start and end
                 if classification.deleted_sequence:
                     if classification.pos1 is not None:
                         invalid_del_seq_msg = self.validate_reference_sequence(
-                            p_ac, classification.pos0, classification.pos1 + 1,
-                            classification.deleted_sequence
+                            p_ac,
+                            classification.pos0,
+                            classification.pos1 + 1,
+                            classification.deleted_sequence,
                         )
 
                         if invalid_del_seq_msg:
@@ -99,7 +106,7 @@ class ProteinDeletion(Validator):
                     accession=p_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -126,7 +133,5 @@ class ProteinDeletion(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_protein_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_protein_accessions(classification.gene_token, errors)
         return accessions

@@ -2,7 +2,8 @@
 from typing import Optional
 
 from variation.schemas.token_response_schema import (
-    GenomicSubstitutionToken, CoordinateType
+    GenomicSubstitutionToken,
+    CoordinateType,
 )
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_SUBSTITUTION
@@ -37,5 +38,5 @@ class GenomicSubstitution(Tokenizer):
                 token=input_string,
                 pos=int(match_dict["pos"]),
                 ref=match_dict["ref"],
-                alt=match_dict["alt"]
+                alt=match_dict["alt"],
             )

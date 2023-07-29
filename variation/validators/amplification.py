@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, AmplificationClassification
+    Classification,
+    ClassificationType,
+    AmplificationClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -21,12 +23,11 @@ class Amplification(Validator):
         :return: List of validation results containing invalid and valid results
         """
         # Does not require any validation
-        return [ValidationResult(
-            accession=None,
-            classification=classification,
-            is_valid=True,
-            errors=[]
-        )]
+        return [
+            ValidationResult(
+                accession=None, classification=classification, is_valid=True, errors=[]
+            )
+        ]
 
     def validates_classification_type(
         self, classification_type: ClassificationType

@@ -45,8 +45,9 @@ class TranslateToQuery(BaseModel):
         allow_population_by_field_name = True
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["TranslateToQuery"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["TranslateToQuery"]
+        ) -> None:
             """Configure OpenAPI schema"""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -62,22 +63,13 @@ class TranslateToQuery(BaseModel):
                         "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
                         "interval": {
                             "type": "SequenceInterval",
-                            "start": {
-                                "type": "Number",
-                                "value": 140453135
-                            },
-                            "end": {
-                                "type": "Number",
-                                "value": 140453136
-                            }
-                        }
+                            "start": {"type": "Number", "value": 140453135},
+                            "end": {"type": "Number", "value": 140453136},
+                        },
                     },
-                    "state": {
-                        "type": "LiteralSequenceExpression",
-                        "sequence": "T"
-                    }
+                    "state": {"type": "LiteralSequenceExpression", "sequence": "T"},
                 },
-                "fmt": "hgvs"
+                "fmt": "hgvs",
             }
 
 
@@ -93,8 +85,9 @@ class TranslateToHGVSQuery(BaseModel):
         allow_population_by_field_name = True
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["TranslateToHGVSQuery"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["TranslateToHGVSQuery"]
+        ) -> None:
             """Configure OpenAPI schema"""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -110,22 +103,13 @@ class TranslateToHGVSQuery(BaseModel):
                         "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
                         "interval": {
                             "type": "SequenceInterval",
-                            "start": {
-                                "type": "Number",
-                                "value": 140453135
-                            },
-                            "end": {
-                                "type": "Number",
-                                "value": 140453136
-                            }
-                        }
+                            "start": {"type": "Number", "value": 140453135},
+                            "end": {"type": "Number", "value": 140453136},
+                        },
                     },
-                    "state": {
-                        "type": "LiteralSequenceExpression",
-                        "sequence": "T"
-                    }
+                    "state": {"type": "LiteralSequenceExpression", "sequence": "T"},
                 },
-                "namespace": "refseq"
+                "namespace": "refseq",
             }
 
 

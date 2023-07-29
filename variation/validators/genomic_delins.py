@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, GenomicDelInsClassification, Nomenclature
+    Classification,
+    ClassificationType,
+    GenomicDelInsClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
@@ -21,14 +24,19 @@ class GenomicDelIns(Validator):
         :return: List of validation results containing invalid and valid results
         """
         if classification.pos1 and classification.pos0 >= classification.pos1:
-            return [ValidationResult(
-                accession=None,
-                classification=classification,
-                is_valid=False,
-                errors=[(
-                    "Positions deleted should contain two different positions and "
-                    "should be listed from 5' to 3'")]
-            )]
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[
+                        (
+                            "Positions deleted should contain two different positions "
+                            "and should be listed from 5' to 3'"
+                        )
+                    ],
+                )
+            ]
 
         validation_results = []
 
@@ -46,7 +54,7 @@ class GenomicDelIns(Validator):
                     accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -73,7 +81,5 @@ class GenomicDelIns(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = await self.get_genomic_accessions(
-                classification, errors
-            )
+            accessions = await self.get_genomic_accessions(classification, errors)
         return accessions

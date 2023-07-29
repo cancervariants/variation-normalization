@@ -42,7 +42,7 @@ class Translate:
         mane_transcript: MANETranscript,
         uta: UTADatabase,
         vrs: VRSRepresentation,
-        hgvs_dup_del_mode: HGVSDupDelMode
+        hgvs_dup_del_mode: HGVSDupDelMode,
     ) -> None:
         """Initialize the Translate class.
 
@@ -52,9 +52,7 @@ class Translate:
         :param vrs: Class for creating VRS objects
         :param hgvs_dup_del_mode: Class for interpreting HGVS duplications and deletions
         """
-        params = [
-            seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode
-        ]
+        params = [seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode]
 
         self.all_translators: List[Translator] = [
             ProteinSubstitution(*params),
@@ -76,7 +74,7 @@ class Translate:
             GenomicInsertion(*params),
             GenomicDuplication(*params),
             GenomicDuplicationAmbiguous(*params),
-            Amplification(*params)
+            Amplification(*params),
         ]
 
     async def perform(
@@ -87,7 +85,7 @@ class Translate:
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -112,7 +110,7 @@ class Translate:
                     hgvs_dup_del_mode=hgvs_dup_del_mode,
                     baseline_copies=baseline_copies,
                     copy_change=copy_change,
-                    do_liftover=do_liftover
+                    do_liftover=do_liftover,
                 )
                 return result
         return None

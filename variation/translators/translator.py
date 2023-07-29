@@ -26,7 +26,7 @@ class Translator(ABC):
         mane_transcript: MANETranscript,
         uta: UTADatabase,
         vrs: VRSRepresentation,
-        hgvs_dup_del_mode: HGVSDupDelMode
+        hgvs_dup_del_mode: HGVSDupDelMode,
     ) -> None:
         """Initialize the Translator class.
 
@@ -60,7 +60,7 @@ class Translator(ABC):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -102,9 +102,15 @@ class Translator(ABC):
         return ga4gh_seq_id
 
     def is_valid(
-        self, gene_token: GeneToken, alt_ac: str, pos0: int, pos1: int,
-        errors: List[str], pos2: Optional[int] = None, pos3: Optional[int] = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE
+        self,
+        gene_token: GeneToken,
+        alt_ac: str,
+        pos0: int,
+        pos1: int,
+        errors: List[str],
+        pos2: Optional[int] = None,
+        pos3: Optional[int] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> None:
         """Check that positions are valid on a gene. Will mutate `errors` if invalid.
 
@@ -143,8 +149,12 @@ class Translator(ABC):
                     )
 
     def validate_reference_sequence(
-        self, ac: str, start_pos: int, end_pos: int,
-        expected_ref: str, residue_mode: ResidueMode = ResidueMode.RESIDUE
+        self,
+        ac: str,
+        start_pos: int,
+        end_pos: int,
+        expected_ref: str,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> Optional[str]:
         """Validate that expected reference sequence matches actual reference sequence
         This is also in validator, but there is a ticket to have this method be moved
@@ -162,7 +172,9 @@ class Translator(ABC):
         )
 
         if not err_msg and (actual_ref != expected_ref):
-            err_msg = (f"Expected to find {expected_ref} at positions ({start_pos}, "
-                       f"{end_pos}) on {ac} but found {actual_ref}")
+            err_msg = (
+                f"Expected to find {expected_ref} at positions ({start_pos}, "
+                f"{end_pos}) on {ac} but found {actual_ref}"
+            )
 
         return err_msg

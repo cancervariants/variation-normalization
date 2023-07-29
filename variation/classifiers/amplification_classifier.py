@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, AmplificationClassification, Nomenclature
+    ClassificationType,
+    AmplificationClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class AmplificationClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent an
         amplification classification.
         """
-        return [
-            [TokenType.GENE, TokenType.AMPLIFICATION]
-        ]
+        return [[TokenType.GENE, TokenType.AMPLIFICATION]]
 
     def match(self, tokens: List[Token]) -> AmplificationClassification:
         """Return the amplification classification from a list of token matches.
@@ -35,5 +35,5 @@ class AmplificationClassifier(Classifier):
         return AmplificationClassification(
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
-            gene_token=tokens[0]
+            gene_token=tokens[0],
         )

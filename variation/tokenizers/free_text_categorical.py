@@ -16,9 +16,6 @@ class FreeTextCategorical(Tokenizer):
         :return: AmplificationToken token if a match is found
         """
         if input_string.lower() == "amplification":
-            return AmplificationToken(
-                token=input_string,
-                input_string=input_string
-            )
+            return AmplificationToken(token=input_string, input_string=input_string)
 
         return None

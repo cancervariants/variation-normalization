@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicDeletionClassification, Nomenclature
+    ClassificationType,
+    GenomicDeletionClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class GenomicDeletionClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         deletion classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_DELETION]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_DELETION]]
 
     def match(self, tokens: List[Token]) -> GenomicDeletionClassification:
         """Return the genomic deletion classification from a list of token matches.
@@ -40,5 +40,5 @@ class GenomicDeletionClassifier(Classifier):
             gene_token=gene_token,
             pos0=genomic_deletion_token.pos0,
             pos1=genomic_deletion_token.pos1,
-            deleted_sequence=genomic_deletion_token.deleted_sequence
+            deleted_sequence=genomic_deletion_token.deleted_sequence,
         )

@@ -2,13 +2,14 @@
 from typing import List, Optional, Union
 
 from variation.schemas.classification_response_schema import (
-    GenomicSubstitutionClassification, Nomenclature, SequenceOntology,
-    GenomicReferenceAgreeClassification, GenomicInsertionClassification,
-    GenomicDeletionClassification
+    GenomicSubstitutionClassification,
+    Nomenclature,
+    SequenceOntology,
+    GenomicReferenceAgreeClassification,
+    GenomicInsertionClassification,
+    GenomicDeletionClassification,
 )
-from variation.schemas.token_response_schema import (
-    GnomadVcfToken, TokenType
-)
+from variation.schemas.token_response_schema import GnomadVcfToken, TokenType
 from variation.classifiers import Classifier
 
 
@@ -21,18 +22,18 @@ class GnomadVcfClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a gnomad
         vcf classification.
         """
-        return [
-            [TokenType.GNOMAD_VCF]
-        ]
+        return [[TokenType.GNOMAD_VCF]]
 
     def match(
         self, token: GnomadVcfToken
-    ) -> Optional[Union[
+    ) -> Optional[
+        Union[
             GenomicReferenceAgreeClassification,
             GenomicSubstitutionClassification,
             GenomicInsertionClassification,
-            GenomicDeletionClassification
-    ]]:
+            GenomicDeletionClassification,
+        ]
+    ]:
         """Return the genomic classification (either reference agree, substitution,
         insertion, or deletion) from a gnomad vcf token.
         Currently only support simple genomic variation.
@@ -41,10 +42,7 @@ class GnomadVcfClassifier(Classifier):
         :return: The corresponding genomic classification for the gnomad vcf token if
             simple variation change. Else, return `None`
         """
-        params = {
-            "matching_tokens": [token],
-            "nomenclature": Nomenclature.GNOMAD_VCF
-        }
+        params = {"matching_tokens": [token], "nomenclature": Nomenclature.GNOMAD_VCF}
 
         ref = token.ref
         alt = token.alt

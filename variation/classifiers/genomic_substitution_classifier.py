@@ -2,8 +2,10 @@
 from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicSubstitutionClassification, Nomenclature,
-    SequenceOntology
+    ClassificationType,
+    GenomicSubstitutionClassification,
+    Nomenclature,
+    SequenceOntology,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -25,7 +27,11 @@ class GenomicSubstitutionClassifier(Classifier):
         """
         return [
             [TokenType.GENE, TokenType.GENOMIC_SUBSTITUTION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.GENOMIC_SUBSTITUTION]  # noqa: E501
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_SUBSTITUTION,
+                TokenType.GENOMIC_SUBSTITUTION,
+            ],  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> Optional[GenomicSubstitutionClassification]:
@@ -56,5 +62,5 @@ class GenomicSubstitutionClassifier(Classifier):
                 pos=genomic_sub_token.pos,
                 ref=genomic_sub_token.ref,
                 alt=genomic_sub_token.alt,
-                so_id=so_id
+                so_id=so_id,
             )

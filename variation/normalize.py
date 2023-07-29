@@ -16,10 +16,13 @@ from variation.validators.validate import Validate
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.token_response_schema import Token, GnomadVcfToken
 from variation.schemas.normalize_response_schema import (
-    HGVSDupDelModeOption, NormalizeService, ServiceMeta
+    HGVSDupDelModeOption,
+    NormalizeService,
+    ServiceMeta,
 )
 from variation.schemas.translation_response_schema import (
-    TranslationResult, AC_PRIORITY_LABELS
+    TranslationResult,
+    AC_PRIORITY_LABELS,
 )
 from variation.version import __version__
 
@@ -28,10 +31,15 @@ class Normalize(ToVRSATILE):
     """The Normalize class used to normalize a given variation."""
 
     def __init__(
-        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate,
-        gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings,
-        uta: UTADatabase
+        self,
+        seqrepo_access: SeqRepoAccess,
+        tokenizer: Tokenize,
+        classifier: Classify,
+        validator: Validate,
+        translator: Translate,
+        gene_normalizer: GeneQueryHandler,
+        transcript_mappings: TranscriptMappings,
+        uta: UTADatabase,
     ) -> None:
         """Initialize Normalize class.
 
@@ -44,8 +52,13 @@ class Normalize(ToVRSATILE):
         :param UTADatabase uta: Access to db containing alignment data
         """
         super().__init__(
-            seqrepo_access, tokenizer, classifier, validator, translator,
-            gene_normalizer, transcript_mappings
+            seqrepo_access,
+            tokenizer,
+            classifier,
+            validator,
+            translator,
+            gene_normalizer,
+            transcript_mappings,
         )
         self.uta = uta
 
@@ -65,8 +78,7 @@ class Normalize(ToVRSATILE):
         :return: Prioritized translation result with `ac_status` if found. Else, `None`
         """
         preferred_translations = [
-            t for t in translations
-            if t.vrs_seq_loc_ac_status == ac_status
+            t for t in translations if t.vrs_seq_loc_ac_status == ac_status
         ]
         len_preferred_translations = len(preferred_translations)
 
@@ -75,7 +87,8 @@ class Normalize(ToVRSATILE):
         # We must be consistent in what we return in /normalize
         if len_preferred_translations > 1:
             og_ac_preferred_match = (
-                [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac] or [None]  # noqa: E501
+                [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac]
+                or [None]  # noqa: E501
             )[0]
 
             # We'll first see if `og_ac` (starting ac) matches the `ac_status`
@@ -87,7 +100,7 @@ class Normalize(ToVRSATILE):
             else:
                 preferred_translations.sort(
                     key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
-                    reverse=True
+                    reverse=True,
                 )
                 translation_result = translations[0]
         elif len_preferred_translations == 1:
@@ -99,8 +112,9 @@ class Normalize(ToVRSATILE):
 
     @staticmethod
     def get_hgvs_dup_del_mode(
-        tokens: List[Token], hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
-        baseline_copies: Optional[int] = None
+        tokens: List[Token],
+        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
+        baseline_copies: Optional[int] = None,
     ) -> Tuple[Optional[HGVSDupDelModeOption], Optional[str]]:
         """Get option to use for hgvs dup del mode
 
@@ -127,11 +141,14 @@ class Normalize(ToVRSATILE):
         return hgvs_dup_del_mode, warning
 
     async def normalize(
-        self, q: str,
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = HGVSDupDelModeOption.DEFAULT,  # noqa: E501
+        self,
+        q: str,
+        hgvs_dup_del_mode: Optional[
+            HGVSDupDelModeOption
+        ] = HGVSDupDelModeOption.DEFAULT,  # noqa: E501
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        untranslatable_returns_text: bool = False
+        untranslatable_returns_text: bool = False,
     ) -> NormalizeService:
         """Normalize a given variation.
 
@@ -161,9 +178,8 @@ class Normalize(ToVRSATILE):
             "variation_descriptor": vd,
             "warnings": warnings,
             "service_meta_": ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
-            )
+                version=__version__, response_datetime=datetime.now()
+            ),
         }
 
         # Get tokens for input query
@@ -213,10 +229,13 @@ class Normalize(ToVRSATILE):
         if len(validation_summary.valid_results) > 0:
             # Get translated VRS representations for valid results
             translations, warnings = await self.get_translations(
-                validation_summary, warnings, endpoint_name=Endpoint.NORMALIZE,
+                validation_summary,
+                warnings,
+                endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
-                baseline_copies=baseline_copies, copy_change=copy_change,
-                do_liftover=True
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
+                do_liftover=True,
             )
             if translations:
                 # Get prioritized translation result so that output is always the same

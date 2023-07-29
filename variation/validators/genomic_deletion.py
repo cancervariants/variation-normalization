@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, GenomicDeletionClassification, Nomenclature
+    Classification,
+    ClassificationType,
+    GenomicDeletionClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
@@ -21,14 +24,19 @@ class GenomicDeletion(Validator):
         :return: List of validation results containing invalid and valid results
         """
         if classification.pos1 and classification.pos0 >= classification.pos1:
-            return [ValidationResult(
-                accession=None,
-                classification=classification,
-                is_valid=False,
-                errors=[(
-                    "Positions deleted should contain two different positions and "
-                    "should be listed from 5' to 3'")]
-            )]
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[
+                        (
+                            "Positions deleted should contain two different positions "
+                            "and should be listed from 5' to 3'"
+                        )
+                    ],
+                )
+            ]
 
         validation_results = []
 
@@ -41,15 +49,18 @@ class GenomicDeletion(Validator):
             if invalid_ac_pos:
                 errors.append(invalid_ac_pos)
             else:
-                if classification.nomenclature in {Nomenclature.FREE_TEXT,
-                                                   Nomenclature.HGVS}:
+                if classification.nomenclature in {
+                    Nomenclature.FREE_TEXT,
+                    Nomenclature.HGVS,
+                }:
                     # Validate deleted sequence
                     # HGVS deleted sequence includes start and end
                     if classification.deleted_sequence:
                         invalid_del_seq_message = self.validate_reference_sequence(
-                            alt_ac, classification.pos0,
+                            alt_ac,
+                            classification.pos0,
                             classification.pos1 + 1 if classification.pos1 else None,
-                            classification.deleted_sequence
+                            classification.deleted_sequence,
                         )
 
                         if invalid_del_seq_message:
@@ -66,8 +77,10 @@ class GenomicDeletion(Validator):
                 if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                     # Validate reference sequence
                     validate_ref_msg = self.validate_reference_sequence(
-                        alt_ac, classification.pos0 - 1, classification.pos1,
-                        classification.matching_tokens[0].ref
+                        alt_ac,
+                        classification.pos0 - 1,
+                        classification.pos1,
+                        classification.matching_tokens[0].ref,
                     )
 
                     if validate_ref_msg:
@@ -76,8 +89,10 @@ class GenomicDeletion(Validator):
             if not errors and classification.gene_token:
                 # Validate positions exist within gene range
                 invalid_gene_pos_msg = await self._validate_gene_pos(
-                    classification.gene_token.matched_value, alt_ac,
-                    classification.pos0, classification.pos1
+                    classification.gene_token.matched_value,
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
                 )
                 if invalid_gene_pos_msg:
                     errors.append(invalid_gene_pos_msg)
@@ -87,7 +102,7 @@ class GenomicDeletion(Validator):
                     accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -114,7 +129,5 @@ class GenomicDeletion(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = await self.get_genomic_accessions(
-                classification, errors
-            )
+            accessions = await self.get_genomic_accessions(classification, errors)
         return accessions

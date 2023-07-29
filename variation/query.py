@@ -22,9 +22,11 @@ class QueryHandler:
     """Class for initializing handlers that make app queries."""
 
     def __init__(
-        self, dynamodb_url: str = "", dynamodb_region: str = "us-east-2",
+        self,
+        dynamodb_url: str = "",
+        dynamodb_region: str = "us-east-2",
         gene_query_handler: Optional[GeneQueryHandler] = None,
-        uta_db_url: str = UTA_DB_URL
+        uta_db_url: str = UTA_DB_URL,
     ) -> None:
         """Initialize QueryHandler instance.
         :param str dynamodb_url: URL to gene normalizer dynamodb. Only used when
@@ -40,7 +42,7 @@ class QueryHandler:
             db_url=uta_db_url,
             gene_query_handler=gene_query_handler,
             gene_db_url=dynamodb_url,
-            gene_db_region=dynamodb_region
+            gene_db_region=dynamodb_region,
         )
         self.seqrepo_access = cool_seq_tool.seqrepo_access
         gene_query_handler = cool_seq_tool.gene_query_handler
@@ -59,20 +61,31 @@ class QueryHandler:
         )
         hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         translator = Translate(
-            self.seqrepo_access, mane_transcript, uta_db, vrs_representation,
-            hgvs_dup_del_mode
+            self.seqrepo_access,
+            mane_transcript,
+            uta_db,
+            vrs_representation,
+            hgvs_dup_del_mode,
         )
-        to_vrs_params = [self.seqrepo_access, tokenizer,
-                         classifier, validator, translator]
+        to_vrs_params = [
+            self.seqrepo_access,
+            tokenizer,
+            classifier,
+            validator,
+            translator,
+        ]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
         normalize_params = to_vrs_params + [
-            gene_query_handler, transcript_mappings, uta_db
+            gene_query_handler,
+            transcript_mappings,
+            uta_db,
         ]
         self.normalize_handler = Normalize(*normalize_params)
 
         mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
         to_protein_params = normalize_params + [
-            mane_transcript, mane_transcript_mappings
+            mane_transcript,
+            mane_transcript_mappings,
         ]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
             *to_protein_params

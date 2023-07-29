@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinSubstitutionClassification, Nomenclature
+    ClassificationType,
+    ProteinSubstitutionClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -22,9 +24,7 @@ class ProteinSubstitutionClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a protein
         substitution classification.
         """
-        return [
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION]
-        ]
+        return [[TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION]]
 
     def match(self, tokens: List[Token]) -> ProteinSubstitutionClassification:
         """Return the protein substitution classification from a list of token matches.
@@ -41,5 +41,5 @@ class ProteinSubstitutionClassifier(Classifier):
             gene_token=gene_token,
             pos=protein_sub_token.pos,
             ref=protein_sub_token.ref,
-            alt=protein_sub_token.alt
+            alt=protein_sub_token.alt,
         )

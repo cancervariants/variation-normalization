@@ -2,8 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, GenomicReferenceAgreeClassification,
-    Nomenclature
+    ClassificationType,
+    Classification,
+    GenomicReferenceAgreeClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -48,7 +50,7 @@ class GenomicReferenceAgree(Validator):
                     accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -75,7 +77,5 @@ class GenomicReferenceAgree(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = await self.get_genomic_accessions(
-                classification, errors
-            )
+            accessions = await self.get_genomic_accessions(classification, errors)
         return accessions

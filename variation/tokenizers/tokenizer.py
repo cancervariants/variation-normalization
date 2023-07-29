@@ -35,8 +35,9 @@ class Tokenizer(ABC):
         stripped_str = None
 
         def _strip(
-            coord_type: str, string: str,
-            match_coord_type: Optional[CoordinateType] = None
+            coord_type: str,
+            string: str,
+            match_coord_type: Optional[CoordinateType] = None,
         ) -> str:
             """Strip parentheses and coordinate type from string
 
@@ -45,7 +46,11 @@ class Tokenizer(ABC):
                 corresponding to this value to succeed
             :return: Stripped string
             """
-            if string.startswith((f"({coord_type}.", f"{coord_type}.(")) and string.endswith(")"):  # noqa: E501
+            if string.startswith(
+                (f"({coord_type}.", f"{coord_type}.(")
+            ) and string.endswith(
+                ")"
+            ):  # noqa: E501
                 string = string[3:-1]
             elif string.startswith(f"{coord_type}."):
                 string = string[2:]

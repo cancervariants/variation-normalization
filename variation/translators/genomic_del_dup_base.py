@@ -14,7 +14,9 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    GenomicDeletionClassification, GenomicDuplicationClassification, Nomenclature
+    GenomicDeletionClassification,
+    GenomicDuplicationClassification,
+    Nomenclature,
 )
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.utils import get_assembly
@@ -34,11 +36,10 @@ class GenomicDelDupTranslator(Translator):
     async def get_grch38_data(
         self,
         classification: Union[
-            GenomicDeletionClassification,
-            GenomicDuplicationClassification
+            GenomicDeletionClassification, GenomicDuplicationClassification
         ],
         errors: List[str],
-        ac: str
+        ac: str,
     ) -> DelDupData:
         """Get GRCh38 data for genomic duplication or deletion classification
 
@@ -81,7 +82,7 @@ class GenomicDelDupTranslator(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -131,8 +132,10 @@ class GenomicDelDupTranslator(Translator):
                     if alt_type == AltType.DELETION:
                         if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                             invalid_ref_msg = self.validate_reference_sequence(
-                                ac, pos0 - 1, pos1,
-                                classification.matching_tokens[0].ref
+                                ac,
+                                pos0 - 1,
+                                pos1,
+                                classification.matching_tokens[0].ref,
                             )
                             if invalid_ref_msg:
                                 warnings.append(invalid_ref_msg)
@@ -149,11 +152,13 @@ class GenomicDelDupTranslator(Translator):
             ac = validation_result.accession
             assembly = None
 
-        if all((
-            endpoint_name == Endpoint.NORMALIZE,
-            classification.nomenclature == Nomenclature.FREE_TEXT,
-            classification.gene_token
-        )):
+        if all(
+            (
+                endpoint_name == Endpoint.NORMALIZE,
+                classification.nomenclature == Nomenclature.FREE_TEXT,
+                classification.gene_token,
+            )
+        ):
             errors = []
             if not assembly and not grch38_data:
                 grch38_data = await self.get_grch38_data(classification, errors, ac)
@@ -172,9 +177,15 @@ class GenomicDelDupTranslator(Translator):
                 return None
 
             mane = await self.mane_transcript.get_mane_transcript(
-                ac, pos0, "g", end_pos=pos1,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE,
-                gene=classification.gene_token.token if classification.gene_token else None  # noqa: E501
+                ac,
+                pos0,
+                "g",
+                end_pos=pos1,
+                try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE,
+                gene=classification.gene_token.token
+                if classification.gene_token
+                else None,  # noqa: E501
             )
 
             if mane:
@@ -198,7 +209,7 @@ class GenomicDelDupTranslator(Translator):
 
         ival = models.SequenceInterval(
             start=models.Number(value=pos0 - 1, type="Number"),
-            end=models.Number(value=pos1 if pos1 else pos0, type="Number")
+            end=models.Number(value=pos1 if pos1 else pos0, type="Number"),
         ).as_dict()
 
         seq_id = self.translate_sequence_identifier(ac, warnings)
@@ -209,8 +220,14 @@ class GenomicDelDupTranslator(Translator):
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
-                alt_type, seq_loc, warnings, hgvs_dup_del_mode, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change, alt=alt
+                alt_type,
+                seq_loc,
+                warnings,
+                hgvs_dup_del_mode,
+                ac,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
+                alt=alt,
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
@@ -222,15 +239,22 @@ class GenomicDelDupTranslator(Translator):
             )
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
-                alt_type, outer_coords, del_or_dup, seq_loc, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change
+                alt_type,
+                outer_coords,
+                del_or_dup,
+                seq_loc,
+                ac,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
             )
 
         if vrs_variation:
             return TranslationResult(
-                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
+                vrs_variation=vrs_variation,
+                vrs_seq_loc_ac=ac,
                 vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession, validation_result=validation_result
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
             )
         else:
             return None

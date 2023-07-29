@@ -41,8 +41,9 @@ def no_variation_resp(
     return resp, warnings
 
 
-def _get_priority_sequence_location(locations: List[Dict],
-                                    seqrepo_access: SeqRepoAccess) -> Optional[Dict]:
+def _get_priority_sequence_location(
+    locations: List[Dict], seqrepo_access: SeqRepoAccess
+) -> Optional[Dict]:
     """Get prioritized sequence location from list of locations
     Will prioritize GRCh8 over GRCh37. Will also only support chromosomes.
 
@@ -60,8 +61,9 @@ def _get_priority_sequence_location(locations: List[Dict],
                 seq_id = loc["sequence_id"]
                 aliases, _ = seqrepo_access.translate_identifier(seq_id)
                 if aliases:
-                    grch_aliases = [a for a in aliases
-                                    if re.match(r"^GRCh3\d:chr(X|Y|\d+)$", a)]
+                    grch_aliases = [
+                        a for a in aliases if re.match(r"^GRCh3\d:chr(X|Y|\d+)$", a)
+                    ]
                     if grch_aliases:
                         grch_alias = grch_aliases[0]
                         if grch_alias.startswith("GRCh38"):
@@ -76,12 +78,15 @@ def _get_priority_sequence_location(locations: List[Dict],
             # DynamoDB stores as Decimal, so need to convert to int
             for k in {"start", "end"}:
                 if location["interval"][k]["type"] == "Number":
-                    location["interval"][k]["value"] = int(location["interval"][k]["value"])  # noqa: E501
+                    location["interval"][k]["value"] = int(
+                        location["interval"][k]["value"]
+                    )  # noqa: E501
     return location
 
 
-def get_priority_sequence_location(gene_descriptor: GeneDescriptor,
-                                   seqrepo_access: SeqRepoAccess) -> Optional[Dict]:
+def get_priority_sequence_location(
+    gene_descriptor: GeneDescriptor, seqrepo_access: SeqRepoAccess
+) -> Optional[Dict]:
     """Get prioritized sequence location from a gene descriptor
     Will prioritize NCBI and then Ensembl. GRCh38 will be chosen over GRCh37.
 
@@ -129,9 +134,11 @@ def get_aa1_codes(aa: str) -> Optional[str]:
 
 
 def get_ambiguous_type(
-    pos0: Union[int, Literal["?"]], pos1: Optional[Union[int, Literal["?"]]],
-    pos2: Union[int, Literal["?"]], pos3: Optional[Union[int, Literal["?"]]],
-    ambiguous_regex_type: AmbiguousRegexType
+    pos0: Union[int, Literal["?"]],
+    pos1: Optional[Union[int, Literal["?"]]],
+    pos2: Union[int, Literal["?"]],
+    pos3: Optional[Union[int, Literal["?"]]],
+    ambiguous_regex_type: AmbiguousRegexType,
 ) -> Optional[AmbiguousType]:
     """Get the ambiguous type given positions and regex used
 
@@ -144,35 +151,28 @@ def get_ambiguous_type(
     """
     ambiguous_type = None
     if ambiguous_regex_type == AmbiguousRegexType.REGEX_1:
-        if all((
-            isinstance(pos0, int),
-            isinstance(pos1, int),
-            isinstance(pos2, int),
-            isinstance(pos3, int)
-        )):
+        if all(
+            (
+                isinstance(pos0, int),
+                isinstance(pos1, int),
+                isinstance(pos2, int),
+                isinstance(pos3, int),
+            )
+        ):
             ambiguous_type = AmbiguousType.AMBIGUOUS_1
-        elif all((
-            pos0 == "?",
-            isinstance(pos1, int),
-            isinstance(pos2, int),
-            pos3 == "?"
-        )):
+        elif all(
+            (pos0 == "?", isinstance(pos1, int), isinstance(pos2, int), pos3 == "?")
+        ):
             ambiguous_type = AmbiguousType.AMBIGUOUS_2
     elif ambiguous_regex_type == AmbiguousRegexType.REGEX_2:
-        if all((
-            pos0 == "?",
-            isinstance(pos1, int),
-            isinstance(pos2, int),
-            pos3 is None
-        )):
+        if all(
+            (pos0 == "?", isinstance(pos1, int), isinstance(pos2, int), pos3 is None)
+        ):
             ambiguous_type = AmbiguousType.AMBIGUOUS_5
     elif ambiguous_regex_type == AmbiguousRegexType.REGEX_3:
-        if all((
-            isinstance(pos0, int),
-            pos1 is None,
-            isinstance(pos2, int),
-            pos3 == "?"
-        )):
+        if all(
+            (isinstance(pos0, int), pos1 is None, isinstance(pos2, int), pos3 == "?")
+        ):
             ambiguous_type = AmbiguousType.AMBIGUOUS_7
 
     return ambiguous_type

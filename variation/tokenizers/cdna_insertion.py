@@ -1,9 +1,7 @@
 """A module for Cdna Insertion Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import (
-    CdnaInsertionToken, CoordinateType
-)
+from variation.schemas.token_response_schema import CdnaInsertionToken, CoordinateType
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_INSERTION
 
@@ -38,5 +36,5 @@ class CdnaInsertion(Tokenizer):
                 token=f"{pos0}_{pos1}{inserted_sequence}",
                 pos0=pos0,
                 pos1=pos1,
-                inserted_sequence=inserted_sequence
+                inserted_sequence=inserted_sequence,
             )

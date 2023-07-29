@@ -10,7 +10,8 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicDelInsClassification
+    ClassificationType,
+    GenomicDelInsClassification,
 )
 from variation.schemas.translation_response_schema import TranslationResult
 
@@ -35,7 +36,7 @@ class GenomicDelIns(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -56,33 +57,48 @@ class GenomicDelIns(Translator):
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos0,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos1,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
-                gene=classification.gene_token.token if classification.gene_token else None  # noqa: E501
+                validation_result.accession,
+                classification.pos0,
+                CoordinateType.LINEAR_GENOMIC,
+                end_pos=classification.pos1,
+                try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE.value,
+                gene=classification.gene_token.token
+                if classification.gene_token
+                else None,  # noqa: E501
             )
 
             if mane:
                 vrs_seq_loc_ac = mane["refseq"]
                 vrs_seq_loc_ac_status = mane["status"]
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC, AltType.DELINS, warnings,
-                    alt=classification.inserted_sequence
+                    vrs_seq_loc_ac,
+                    mane["pos"][0] + 1,
+                    mane["pos"][1] + 1,
+                    CoordinateType.LINEAR_GENOMIC,
+                    AltType.DELINS,
+                    warnings,
+                    alt=classification.inserted_sequence,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos0, classification.pos1,
-                CoordinateType.LINEAR_GENOMIC, AltType.DELINS, warnings,
-                alt=classification.inserted_sequence
+                vrs_seq_loc_ac,
+                classification.pos0,
+                classification.pos1,
+                CoordinateType.LINEAR_GENOMIC,
+                AltType.DELINS,
+                warnings,
+                alt=classification.inserted_sequence,
             )
 
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_variation=vrs_allele,
+                vrs_seq_loc_ac=vrs_seq_loc_ac,
                 vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession, validation_result=validation_result
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
             )
         else:
             return None

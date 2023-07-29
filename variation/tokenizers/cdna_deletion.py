@@ -1,9 +1,7 @@
 """A module for Cdna Deletion Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import (
-    CdnaDeletionToken, CoordinateType
-)
+from variation.schemas.token_response_schema import CdnaDeletionToken, CoordinateType
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CNDA_GENOMIC_DELETION
 
@@ -36,5 +34,5 @@ class CdnaDeletion(Tokenizer):
                 token=input_string,
                 pos0=int(match_dict["pos0"]),
                 pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
-                deleted_sequence=match_dict["deleted_sequence"]
+                deleted_sequence=match_dict["deleted_sequence"],
             )

@@ -1,9 +1,7 @@
 """A module for Genomic DelIns Tokenization."""
 from typing import Optional
 
-from variation.schemas.token_response_schema import (
-    GenomicDelInsToken, CoordinateType
-)
+from variation.schemas.token_response_schema import GenomicDelInsToken, CoordinateType
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_DELINS
 
@@ -37,5 +35,5 @@ class GenomicDelIns(Tokenizer):
                 token=input_string,
                 pos0=int(match_dict["pos0"]),
                 pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
-                inserted_sequence=match_dict["inserted_sequence"]
+                inserted_sequence=match_dict["inserted_sequence"],
             )

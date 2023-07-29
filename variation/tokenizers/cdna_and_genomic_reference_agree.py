@@ -2,7 +2,9 @@
 from typing import Optional, Union
 
 from variation.schemas.token_response_schema import (
-    CdnaReferenceAgreeToken, GenomicReferenceAgreeToken, CoordinateType
+    CdnaReferenceAgreeToken,
+    GenomicReferenceAgreeToken,
+    CoordinateType,
 )
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
@@ -11,9 +13,9 @@ from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
 class CdnaGenomicReferenceAgree(Tokenizer):
     """Class for tokenizing Reference Agree on cDNA and genomic reference sequence."""
 
-    def match(self, input_string: str) -> Optional[
-        Union[CdnaReferenceAgreeToken, GenomicReferenceAgreeToken]
-    ]:
+    def match(
+        self, input_string: str
+    ) -> Optional[Union[CdnaReferenceAgreeToken, GenomicReferenceAgreeToken]]:
         """Return a CdnaReferenceAgreeToken or GenomicReferenceAgreeToken match if
         one exists.
 
@@ -33,7 +35,7 @@ class CdnaGenomicReferenceAgree(Tokenizer):
                 "input_string": og_input_string,
                 "token": input_string,
                 "coordinate_type": coordinate_type,
-                "pos": int(match_dict["pos"])
+                "pos": int(match_dict["pos"]),
             }
 
             if coordinate_type == CoordinateType.LINEAR_GENOMIC:

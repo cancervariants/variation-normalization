@@ -56,7 +56,7 @@ class Tokenize:
             CdnaInsertion(),
             GenomicInsertion(),
             # Duplication
-            GenomicDuplication()
+            GenomicDuplication(),
         ]
 
     def perform(self, search_string: str, warnings: List[str]) -> Iterable[Token]:
@@ -89,10 +89,8 @@ class Tokenize:
 
             if not matched:
                 warnings.append(f"Unable to tokenize: {term}")
-                tokens.append(Token(
-                    token=term,
-                    token_type=TokenType.UNKNOWN,
-                    input_string=term
-                ))
+                tokens.append(
+                    Token(token=term, token_type=TokenType.UNKNOWN, input_string=term)
+                )
 
         return tokens

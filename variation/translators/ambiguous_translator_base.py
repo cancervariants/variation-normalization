@@ -9,8 +9,10 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.classification_response_schema import (
-    AmbiguousType, GenomicDeletionAmbiguousClassification,
-    GenomicDuplicationAmbiguousClassification, Nomenclature
+    AmbiguousType,
+    GenomicDeletionAmbiguousClassification,
+    GenomicDuplicationAmbiguousClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
@@ -45,10 +47,10 @@ class AmbiguousTranslator(Translator):
         self,
         classification: Union[
             GenomicDeletionAmbiguousClassification,
-            GenomicDuplicationAmbiguousClassification
+            GenomicDuplicationAmbiguousClassification,
         ],
         errors: List[str],
-        ac: str
+        ac: str,
     ) -> Optional[AmbiguousData]:
         """Get GRCh38 data for genomic ambiguous duplication or deletion classification
 
@@ -81,8 +83,10 @@ class AmbiguousTranslator(Translator):
                         )
                     else:
                         new_ac = ac_pos0_pos1
-        elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
-                                               AmbiguousType.AMBIGUOUS_5}:
+        elif classification.ambiguous_type in {
+            AmbiguousType.AMBIGUOUS_2,
+            AmbiguousType.AMBIGUOUS_5,
+        }:
             grch38 = await self.mane_transcript.g_to_grch38(
                 ac, classification.pos1, classification.pos2
             )
@@ -94,7 +98,10 @@ class AmbiguousTranslator(Translator):
                 ac, classification.pos0, classification.pos2
             )
             if grch38:
-                pos0, pos2, = grch38["pos"]
+                (
+                    pos0,
+                    pos2,
+                ) = grch38["pos"]
                 new_ac = grch38["ac"]
 
         if not new_ac:
@@ -109,9 +116,14 @@ class AmbiguousTranslator(Translator):
         return ambiguous_data
 
     def get_dup_del_ambiguous_seq_loc(
-        self, ambiguous_type: AmbiguousType, ac: str, pos0: Union[int, Literal["?"]],
-        pos1: Optional[Union[int, Literal["?"]]], pos2: Union[int, Literal["?"]],
-        pos3: Optional[Union[int, Literal["?"]]], warnings: List[str]
+        self,
+        ambiguous_type: AmbiguousType,
+        ac: str,
+        pos0: Union[int, Literal["?"]],
+        pos1: Optional[Union[int, Literal["?"]]],
+        pos2: Union[int, Literal["?"]],
+        pos3: Optional[Union[int, Literal["?"]]],
+        warnings: List[str],
     ) -> AmbiguousSequenceLocation:
         """Get VRS Sequence Location and outer coords for genomic ambiguous duplication
         or deletion
@@ -133,21 +145,21 @@ class AmbiguousTranslator(Translator):
             ival = models.SequenceInterval(
                 start=self.vrs.get_start_indef_range(pos1),
                 end=self.vrs.get_end_indef_range(pos2),
-                type="SequenceInterval"
+                type="SequenceInterval",
             ).as_dict()
             outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_5:
             ival = models.SequenceInterval(
                 start=self.vrs.get_start_indef_range(pos1),
                 end=models.Number(value=pos2, type="Number"),
-                type="SequenceInterval"
+                type="SequenceInterval",
             ).as_dict()
             outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_7:
             ival = models.SequenceInterval(
                 start=models.Number(value=pos0 - 1, type="Number"),
                 end=self.vrs.get_end_indef_range(pos2),
-                type="SequenceInterval"
+                type="SequenceInterval",
             ).as_dict()
             outer_coords = (pos0, pos2)
         # No else since validator should catch if the ambiguous type is supported or not
@@ -155,8 +167,10 @@ class AmbiguousTranslator(Translator):
         seq_id = self.translate_sequence_identifier(ac, warnings)
 
         return AmbiguousSequenceLocation(
-            seq_loc=self.vrs.get_sequence_loc(seq_id, ival).as_dict() if seq_id else None,  # noqa: E501
-            outer_coords=outer_coords
+            seq_loc=self.vrs.get_sequence_loc(seq_id, ival).as_dict()
+            if seq_id
+            else None,  # noqa: E501
+            outer_coords=outer_coords,
         )
 
     async def translate(
@@ -167,7 +181,7 @@ class AmbiguousTranslator(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -229,11 +243,13 @@ class AmbiguousTranslator(Translator):
             pos3 = classification.pos3
             assembly = None
 
-        if all((
-            endpoint_name == Endpoint.NORMALIZE,
-            classification.nomenclature == Nomenclature.FREE_TEXT,
-            classification.gene_token
-        )):
+        if all(
+            (
+                endpoint_name == Endpoint.NORMALIZE,
+                classification.nomenclature == Nomenclature.FREE_TEXT,
+                classification.gene_token,
+            )
+        ):
             errors = []
             if not assembly and not grch38_data:
                 grch38_data = await self.get_grch38_data_ambiguous(
@@ -251,13 +267,23 @@ class AmbiguousTranslator(Translator):
                 pos3 = grch38_data.pos3
 
                 self.is_valid(
-                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2,
-                    pos3=pos3
+                    classification.gene_token,
+                    ac,
+                    pos0,
+                    pos1,
+                    errors,
+                    pos2=pos2,
+                    pos3=pos3,
                 )
             else:
                 self.is_valid(
-                    classification.gene_token, ac, pos0, pos1, errors, pos2=pos2,
-                    pos3=pos3
+                    classification.gene_token,
+                    ac,
+                    pos0,
+                    pos1,
+                    errors,
+                    pos2=pos2,
+                    pos3=pos3,
                 )
 
             if errors:
@@ -270,9 +296,13 @@ class AmbiguousTranslator(Translator):
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
-                alt_type, ambiguous_seq_loc_data.seq_loc, warnings,
-                hgvs_dup_del_mode, ac, baseline_copies=baseline_copies,
-                copy_change=copy_change
+                alt_type,
+                ambiguous_seq_loc_data.seq_loc,
+                warnings,
+                hgvs_dup_del_mode,
+                ac,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
@@ -284,15 +314,21 @@ class AmbiguousTranslator(Translator):
             )
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
-                alt_type, ambiguous_seq_loc_data.outer_coords,
-                del_or_dup, ambiguous_seq_loc_data.seq_loc, ac,
-                baseline_copies=baseline_copies, copy_change=copy_change
+                alt_type,
+                ambiguous_seq_loc_data.outer_coords,
+                del_or_dup,
+                ambiguous_seq_loc_data.seq_loc,
+                ac,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
             )
 
         if vrs_variation:
             return TranslationResult(
-                vrs_variation=vrs_variation, vrs_seq_loc_ac=ac,
-                og_ac=validation_result.accession, validation_result=validation_result
+                vrs_variation=vrs_variation,
+                vrs_seq_loc_ac=ac,
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
             )
         else:
             return None

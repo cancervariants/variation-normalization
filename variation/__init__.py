@@ -9,8 +9,8 @@ else:
     LOG_FN = "variation.log"
 
 logging.basicConfig(
-    filename=LOG_FN,
-    format="[%(asctime)s] - %(name)s - %(levelname)s : %(message)s")
+    filename=LOG_FN, format="[%(asctime)s] - %(name)s - %(levelname)s : %(message)s"
+)
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
 logger.handlers = []
@@ -31,5 +31,6 @@ if "VARIATION_NORM_EB_PROD" in environ:
     logger.addHandler(ch)
 
 
-UTA_DB_URL = environ.get("UTA_DB_URL",
-                         "postgresql://uta_admin@localhost:5433/uta/uta_20210129")
+UTA_DB_URL = environ.get(
+    "UTA_DB_URL", "postgresql://uta_admin@localhost:5433/uta/uta_20210129"
+)

@@ -21,9 +21,14 @@ class HGVSDupDelMode:
         self.seqrepo_access = seqrepo_access
 
     def default_mode(
-        self, alt_type: AltType, pos: Tuple[int, int], del_or_dup: str,
-        location: Dict, vrs_seq_loc_ac: str, baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None
+        self,
+        alt_type: AltType,
+        pos: Tuple[int, int],
+        del_or_dup: str,
+        location: Dict,
+        vrs_seq_loc_ac: str,
+        baseline_copies: Optional[int] = None,
+        copy_change: Optional[CopyChange] = None,
     ) -> Optional[Dict]:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous - copy_number_change
@@ -50,16 +55,18 @@ class HGVSDupDelMode:
         if not baseline_copies and alt_type in AMBIGUOUS_REGIONS:
             variation = self.copy_number_change_mode(del_or_dup, location, copy_change)
         elif baseline_copies:
-            variation = self.copy_number_count_mode(del_or_dup, location,
-                                                    baseline_copies)
+            variation = self.copy_number_count_mode(
+                del_or_dup, location, baseline_copies
+            )
         elif pos and (pos[1] - pos[0] > 100):
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
             variation = self.literal_seq_expr_mode(location, alt_type, vrs_seq_loc_ac)
         return variation
 
-    def copy_number_count_mode(self, del_or_dup: str, location: Dict,
-                               baseline_copies: int) -> Optional[Dict]:
+    def copy_number_count_mode(
+        self, del_or_dup: str, location: Dict, baseline_copies: int
+    ) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
 
         :param str del_or_dup: Must be either `del` or `dup`
@@ -69,12 +76,12 @@ class HGVSDupDelMode:
         """
         copies = models.Number(
             value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,
-            type="Number"
+            type="Number",
         )
         variation = {
             "type": "CopyNumberCount",
             "subject": location,
-            "copies": copies.as_dict()
+            "copies": copies.as_dict(),
         }
         variation["subject"]["_id"] = ga4gh_identify(
             models.SequenceLocation(**location)
@@ -83,8 +90,7 @@ class HGVSDupDelMode:
         return variation
 
     def copy_number_change_mode(
-        self, del_or_dup: str, location: Dict,
-        copy_change: Optional[CopyChange] = None
+        self, del_or_dup: str, location: Dict, copy_change: Optional[CopyChange] = None
     ) -> Optional[Dict]:
         """Return copy number change variation
 
@@ -101,7 +107,7 @@ class HGVSDupDelMode:
         variation = {
             "type": "CopyNumberChange",
             "subject": location,
-            "copy_change": copy_change
+            "copy_change": copy_change,
         }
         variation["subject"]["_id"] = ga4gh_identify(
             models.SequenceLocation(**location)
@@ -109,8 +115,9 @@ class HGVSDupDelMode:
         variation["_id"] = ga4gh_identify(models.CopyNumberChange(**variation))
         return variation
 
-    def repeated_seq_expr_mode(self, alt_type: AltType,
-                               location: Dict) -> Optional[Dict]:
+    def repeated_seq_expr_mode(
+        self, alt_type: AltType, location: Dict
+    ) -> Optional[Dict]:
         """Return a VRS Allele with a RepeatedSequenceExpression.
         The RepeatedSequenceExpression subject will be a
             DerivedSequenceExpression.
@@ -136,17 +143,13 @@ class HGVSDupDelMode:
             seq_expr=models.DerivedSequenceExpression(
                 location=location,
                 reverse_complement=False,
-                type="DerivedSequenceExpression"
+                type="DerivedSequenceExpression",
             ),
             count=count,
-            type="RepeatedSequenceExpression"
+            type="RepeatedSequenceExpression",
         )
 
-        allele = models.Allele(
-            location=location,
-            state=seq_expr,
-            type="Allele"
-        )
+        allele = models.Allele(location=location, state=seq_expr, type="Allele")
 
         try:
             allele = normalize(allele, self.seqrepo_access)
@@ -159,8 +162,11 @@ class HGVSDupDelMode:
             return allele.as_dict()
 
     def literal_seq_expr_mode(
-        self, location: Dict, alt_type: AltType, vrs_seq_loc_ac: str,
-        alt: Optional[str] = None
+        self,
+        location: Dict,
+        alt_type: AltType,
+        vrs_seq_loc_ac: str,
+        alt: Optional[str] = None,
     ) -> Optional[Dict]:
         """Return a VRS Allele with a normalized LiteralSequenceExpression.
 
@@ -187,13 +193,15 @@ class HGVSDupDelMode:
         else:
             state = alt or ""
 
-        allele = models.Allele(**{
-            "type": "Allele",
-            "location": location,
-            "state": models.LiteralSequenceExpression(
-                sequence=state, type="LiteralSequenceExpression"
-            ).as_dict()
-        })
+        allele = models.Allele(
+            **{
+                "type": "Allele",
+                "location": location,
+                "state": models.LiteralSequenceExpression(
+                    sequence=state, type="LiteralSequenceExpression"
+                ).as_dict(),
+            }
+        )
 
         try:
             allele = normalize(allele, self.seqrepo_access)
@@ -205,12 +213,16 @@ class HGVSDupDelMode:
             return allele.as_dict()
 
     def interpret_variation(
-        self, alt_type: AltType, location: Dict, errors: List,
-        hgvs_dup_del_mode: HGVSDupDelModeOption, vrs_seq_loc_ac: str,
+        self,
+        alt_type: AltType,
+        location: Dict,
+        errors: List,
+        hgvs_dup_del_mode: HGVSDupDelModeOption,
+        vrs_seq_loc_ac: str,
         pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        alt: Optional[str] = None
+        alt: Optional[str] = None,
     ) -> Dict:
         """Interpret variation using HGVSDupDelMode
 
@@ -234,8 +246,13 @@ class HGVSDupDelMode:
         variation = None
         if hgvs_dup_del_mode == HGVSDupDelModeOption.DEFAULT:
             variation = self.default_mode(
-                alt_type, pos, del_or_dup, location, vrs_seq_loc_ac,
-                baseline_copies=baseline_copies, copy_change=copy_change
+                alt_type,
+                pos,
+                del_or_dup,
+                location,
+                vrs_seq_loc_ac,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
             )
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.REPEATED_SEQ_EXPR:
             variation = self.repeated_seq_expr_mode(alt_type, location)

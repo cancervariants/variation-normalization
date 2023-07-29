@@ -7,12 +7,26 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.vrs_representation import VRSRepresentation
 from variation.validators import Validate
 from variation.translators import (
-    ProteinSubstitution, CdnaSubstitution, GenomicSubstitution, ProteinStopGain,
-    ProteinReferenceAgree, CdnaReferenceAgree, GenomicReferenceAgree, ProteinDelIns,
-    CdnaDelIns, GenomicDelIns, ProteinDeletion, CdnaDeletion, GenomicDeletion,
-    GenomicDeletionAmbiguous, ProteinInsertion, CdnaInsertion, GenomicInsertion,
-    GenomicDuplication, GenomicDuplicationAmbiguous, Amplification
-
+    ProteinSubstitution,
+    CdnaSubstitution,
+    GenomicSubstitution,
+    ProteinStopGain,
+    ProteinReferenceAgree,
+    CdnaReferenceAgree,
+    GenomicReferenceAgree,
+    ProteinDelIns,
+    CdnaDelIns,
+    GenomicDelIns,
+    ProteinDeletion,
+    CdnaDeletion,
+    GenomicDeletion,
+    GenomicDeletionAmbiguous,
+    ProteinInsertion,
+    CdnaInsertion,
+    GenomicInsertion,
+    GenomicDuplication,
+    GenomicDuplicationAmbiguous,
+    Amplification,
 )
 
 
@@ -29,8 +43,11 @@ def trans_params(test_cool_seq_tool):
     vrs_representation = VRSRepresentation(test_cool_seq_tool.seqrepo_access)
     hgvs_dup_del_mode = HGVSDupDelMode(test_cool_seq_tool.seqrepo_access)
     return [
-        test_cool_seq_tool.seqrepo_access, test_cool_seq_tool.mane_transcript,
-        test_cool_seq_tool.uta_db, vrs_representation, hgvs_dup_del_mode
+        test_cool_seq_tool.seqrepo_access,
+        test_cool_seq_tool.mane_transcript,
+        test_cool_seq_tool.uta_db,
+        vrs_representation,
+        hgvs_dup_del_mode,
     ]
 
 
@@ -41,8 +58,13 @@ def test_validator(val_params):
 
 
 async def translator_checks(
-    all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-    fixture_name, translator_instance
+    all_fixtures,
+    test_tokenizer,
+    test_classifier,
+    test_validator,
+    trans_params,
+    fixture_name,
+    translator_instance,
 ):
     """Ensure that fixtures exist for fixture name and that translator response matches
     expected
@@ -60,7 +82,9 @@ async def translator_checks(
         validation_summary = await test_validator.perform(classification)
         translations = []
         for vr in validation_summary.valid_results:
-            translation_result = await translator_instance(*trans_params).translate(vr, [])  # noqa: E501
+            translation_result = await translator_instance(*trans_params).translate(
+                vr, []
+            )  # noqa: E501
             vrs_variation = translation_result.vrs_variation
             if vrs_variation and vrs_variation not in translations:
                 assert vrs_variation in expected, f"{query}: {vrs_variation['_id']}"
@@ -77,8 +101,13 @@ async def test_protein_substitution(
     translator_instance = ProteinSubstitution
     fixture_name = "protein_substitution"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -90,8 +119,13 @@ async def test_cdna_substitution(
     translator_instance = CdnaSubstitution
     fixture_name = "cdna_substitution"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -103,8 +137,13 @@ async def test_genomic_substitution(
     translator_instance = GenomicSubstitution
     fixture_name = "genomic_substitution"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -116,8 +155,13 @@ async def test_protein_stop_gain(
     translator_instance = ProteinStopGain
     fixture_name = "protein_stop_gain"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -129,8 +173,13 @@ async def test_protein_reference_agree(
     translator_instance = ProteinReferenceAgree
     fixture_name = "protein_reference_agree"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -142,8 +191,13 @@ async def test_cdna_reference_agree(
     translator_instance = CdnaReferenceAgree
     fixture_name = "cdna_reference_agree"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -155,8 +209,13 @@ async def test_genomic_reference_agree(
     translator_instance = GenomicReferenceAgree
     fixture_name = "genomic_reference_agree"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -168,8 +227,13 @@ async def test_protein_delins(
     translator_instance = ProteinDelIns
     fixture_name = "protein_delins"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -181,8 +245,13 @@ async def test_cdna_delins(
     translator_instance = CdnaDelIns
     fixture_name = "cdna_delins"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -194,8 +263,13 @@ async def test_genomic_delins(
     translator_instance = GenomicDelIns
     fixture_name = "genomic_delins"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -207,8 +281,13 @@ async def test_protein_deletion(
     translator_instance = ProteinDeletion
     fixture_name = "protein_deletion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -220,8 +299,13 @@ async def test_cdna_deletion(
     translator_instance = CdnaDeletion
     fixture_name = "cdna_deletion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -233,8 +317,13 @@ async def test_genomic_deletion(
     translator_instance = GenomicDeletion
     fixture_name = "genomic_deletion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -246,8 +335,13 @@ async def test_genomic_deletion_ambiguous(
     translator_instance = GenomicDeletionAmbiguous
     fixture_name = "genomic_deletion_ambiguous"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -259,8 +353,13 @@ async def test_protein_insertion(
     translator_instance = ProteinInsertion
     fixture_name = "protein_insertion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -272,8 +371,13 @@ async def test_cdna_insertion(
     translator_instance = CdnaInsertion
     fixture_name = "cdna_insertion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -285,8 +389,13 @@ async def test_genomic_insertion(
     translator_instance = GenomicInsertion
     fixture_name = "genomic_insertion"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -298,8 +407,13 @@ async def test_genomic_duplication(
     translator_instance = GenomicDuplication
     fixture_name = "genomic_duplication"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -311,8 +425,13 @@ async def test_genomic_duplication_ambiguous(
     translator_instance = GenomicDuplicationAmbiguous
     fixture_name = "genomic_duplication_ambiguous"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )
 
 
@@ -324,6 +443,11 @@ async def test_amplification(
     translator_instance = Amplification
     fixture_name = "amplification"
     await translator_checks(
-        all_fixtures, test_tokenizer, test_classifier, test_validator, trans_params,
-        fixture_name, translator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        test_validator,
+        trans_params,
+        fixture_name,
+        translator_instance,
     )

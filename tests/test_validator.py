@@ -4,11 +4,26 @@ import yaml
 
 from tests import PROJECT_ROOT
 from variation.validators import (
-    ProteinSubstitution, CdnaSubstitution, GenomicSubstitution, ProteinStopGain,
-    ProteinReferenceAgree, CdnaReferenceAgree, GenomicReferenceAgree, ProteinDelIns,
-    CdnaDelIns, GenomicDelIns, ProteinDeletion, CdnaDeletion, GenomicDeletion,
-    GenomicDeletionAmbiguous, ProteinInsertion, CdnaInsertion, GenomicInsertion,
-    GenomicDuplication, GenomicDuplicationAmbiguous, Amplification
+    ProteinSubstitution,
+    CdnaSubstitution,
+    GenomicSubstitution,
+    ProteinStopGain,
+    ProteinReferenceAgree,
+    CdnaReferenceAgree,
+    GenomicReferenceAgree,
+    ProteinDelIns,
+    CdnaDelIns,
+    GenomicDelIns,
+    ProteinDeletion,
+    CdnaDeletion,
+    GenomicDeletion,
+    GenomicDeletionAmbiguous,
+    ProteinInsertion,
+    CdnaInsertion,
+    GenomicInsertion,
+    GenomicDuplication,
+    GenomicDuplicationAmbiguous,
+    Amplification,
 )
 
 
@@ -20,8 +35,12 @@ def all_fixtures():
 
 
 async def validator_checks(
-    all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-    validator_instance
+    all_fixtures,
+    test_tokenizer,
+    test_classifier,
+    val_params,
+    fixture_name,
+    validator_instance,
 ):
     """Ensure that fixtures exist for fixture name and that validator response matches
     expected
@@ -30,15 +49,10 @@ async def validator_checks(
     if fixture_name == "amplification":
         # Amplification are always valid
         labels = labels[:-1]
-        fixtures = all_fixtures.get(
-            fixture_name, {labels[0]: []}
-        )
+        fixtures = all_fixtures.get(fixture_name, {labels[0]: []})
     else:
         labels = ["should_match", "should_not_match"]
-        fixtures = all_fixtures.get(
-            fixture_name,
-            {labels[0]: [], labels[1]: []}
-        )
+        fixtures = all_fixtures.get(fixture_name, {labels[0]: [], labels[1]: []})
 
     for label in labels:
         assert fixtures[label], f"{fixture_name} has no {label} queries"
@@ -73,8 +87,12 @@ async def test_protein_substitution(
     fixture_name = "protein_substitution"
     validator_instance = ProteinSubstitution
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -86,8 +104,12 @@ async def test_cdna_substitution(
     fixture_name = "cdna_substitution"
     validator_instance = CdnaSubstitution
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -99,8 +121,12 @@ async def test_genomic_substitution(
     fixture_name = "genomic_substitution"
     validator_instance = GenomicSubstitution
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -112,8 +138,12 @@ async def test_protein_stop_gain(
     fixture_name = "protein_stop_gain"
     validator_instance = ProteinStopGain
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -125,8 +155,12 @@ async def test_protein_reference_agree(
     fixture_name = "protein_reference_agree"
     validator_instance = ProteinReferenceAgree
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -138,8 +172,12 @@ async def test_cdna_reference_agree(
     fixture_name = "cdna_reference_agree"
     validator_instance = CdnaReferenceAgree
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -151,8 +189,12 @@ async def test_genomic_reference_agree(
     fixture_name = "genomic_reference_agree"
     validator_instance = GenomicReferenceAgree
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -164,21 +206,27 @@ async def test_protein_delins(
     fixture_name = "protein_delins"
     validator_instance = ProteinDelIns
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
 @pytest.mark.asyncio
-async def test_cdna_delins(
-    all_fixtures, test_tokenizer, test_classifier, val_params
-):
+async def test_cdna_delins(all_fixtures, test_tokenizer, test_classifier, val_params):
     """Test that cdna delins validator works correctly"""
     fixture_name = "cdna_delins"
     validator_instance = CdnaDelIns
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -190,8 +238,12 @@ async def test_genomic_delins(
     fixture_name = "genomic_delins"
     validator_instance = GenomicDelIns
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -203,21 +255,27 @@ async def test_protein_deletion(
     fixture_name = "protein_deletion"
     validator_instance = ProteinDeletion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
 @pytest.mark.asyncio
-async def test_cdna_deletion(
-    all_fixtures, test_tokenizer, test_classifier, val_params
-):
+async def test_cdna_deletion(all_fixtures, test_tokenizer, test_classifier, val_params):
     """Test that cdna deletion validator works correctly"""
     fixture_name = "cdna_deletion"
     validator_instance = CdnaDeletion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -229,8 +287,12 @@ async def test_genomic_deletion(
     fixture_name = "genomic_deletion"
     validator_instance = GenomicDeletion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -242,8 +304,12 @@ async def test_genomic_deletion_ambiguous(
     fixture_name = "genomic_deletion_ambiguous"
     validator_instance = GenomicDeletionAmbiguous
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -255,8 +321,12 @@ async def test_protein_insertion(
     fixture_name = "protein_insertion"
     validator_instance = ProteinInsertion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -268,8 +338,12 @@ async def test_cdna_insertion(
     fixture_name = "cdna_insertion"
     validator_instance = CdnaInsertion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -281,8 +355,12 @@ async def test_genomic_insertion(
     fixture_name = "genomic_insertion"
     validator_instance = GenomicInsertion
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -294,8 +372,12 @@ async def test_genomic_duplication(
     fixture_name = "genomic_duplication"
     validator_instance = GenomicDuplication
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
@@ -307,19 +389,25 @@ async def test_genomic_duplication_ambiguous(
     fixture_name = "genomic_duplication_ambiguous"
     validator_instance = GenomicDuplicationAmbiguous
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )
 
 
 @pytest.mark.asyncio
-async def test_amplification(
-    all_fixtures, test_tokenizer, test_classifier, val_params
-):
+async def test_amplification(all_fixtures, test_tokenizer, test_classifier, val_params):
     """Test that amplification validator works correctly"""
     fixture_name = "amplification"
     validator_instance = Amplification
     await validator_checks(
-        all_fixtures, test_tokenizer, test_classifier, val_params, fixture_name,
-        validator_instance
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        val_params,
+        fixture_name,
+        validator_instance,
     )

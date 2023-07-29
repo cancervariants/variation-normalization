@@ -2,12 +2,16 @@
 from typing import Optional
 
 from variation.schemas.token_response_schema import (
-    GenomicDeletionToken, GenomicDeletionAmbiguousToken, CoordinateType
+    GenomicDeletionToken,
+    GenomicDeletionAmbiguousToken,
+    CoordinateType,
 )
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import (
-    CNDA_GENOMIC_DELETION, GENOMIC_DELETION_AMBIGUOUS_1, GENOMIC_DELETION_AMBIGUOUS_2,
-    GENOMIC_DELETION_AMBIGUOUS_3
+    CNDA_GENOMIC_DELETION,
+    GENOMIC_DELETION_AMBIGUOUS_1,
+    GENOMIC_DELETION_AMBIGUOUS_2,
+    GENOMIC_DELETION_AMBIGUOUS_3,
 )
 from variation.schemas.app_schemas import AmbiguousRegexType
 
@@ -41,7 +45,7 @@ class GenomicDeletion(Tokenizer):
                 token=input_string,
                 pos0=int(match_dict["pos0"]),
                 pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
-                deleted_sequence=match_dict["deleted_sequence"]
+                deleted_sequence=match_dict["deleted_sequence"],
             )
         else:
             # Going to try ambiguous genomic duplications
@@ -55,8 +59,7 @@ class GenomicDeletion(Tokenizer):
 
                 # (?_?)_(#_#), (#_#)_(?, ?), (?_?)_(?_?) are not supported
                 if not any(
-                    ((pos0 == "?" and pos1 == "?"),
-                     (pos2 == "?" and pos3 == "?"))
+                    ((pos0 == "?" and pos1 == "?"), (pos2 == "?" and pos3 == "?"))
                 ):
                     return GenomicDeletionAmbiguousToken(
                         input_string=og_input_string,
@@ -65,13 +68,13 @@ class GenomicDeletion(Tokenizer):
                         pos1=int(pos1) if pos1 != "?" else pos1,
                         pos2=int(pos2) if pos2 != "?" else pos2,
                         pos3=int(pos3) if pos3 != "?" else pos3,
-                        ambiguous_regex_type=AmbiguousRegexType.REGEX_1
+                        ambiguous_regex_type=AmbiguousRegexType.REGEX_1,
                     )
 
             else:
                 for pattern_re, regex_type in [
                     (GENOMIC_DELETION_AMBIGUOUS_2, AmbiguousRegexType.REGEX_2),
-                    (GENOMIC_DELETION_AMBIGUOUS_3, AmbiguousRegexType.REGEX_3)
+                    (GENOMIC_DELETION_AMBIGUOUS_3, AmbiguousRegexType.REGEX_3),
                 ]:
                     match = pattern_re.match(input_string)
 
@@ -92,5 +95,5 @@ class GenomicDeletion(Tokenizer):
                             pos1=matched_pos.get("pos1"),
                             pos2=matched_pos["pos2"],
                             pos3=matched_pos.get("pos3"),
-                            ambiguous_regex_type=regex_type
+                            ambiguous_regex_type=regex_type,
                         )

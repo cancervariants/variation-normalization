@@ -11,7 +11,8 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinSubstitutionClassification
+    ClassificationType,
+    ProteinSubstitutionClassification,
 )
 
 
@@ -35,7 +36,7 @@ class ProteinSubstitution(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -50,39 +51,54 @@ class ProteinSubstitution(Translator):
             not successful, `None`
         """
         # First will translate valid result to VRS Allele
-        classification: ProteinSubstitutionClassification = validation_result.classification  # noqa: E501
+        classification: ProteinSubstitutionClassification = (
+            validation_result.classification
+        )  # noqa: E501
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos,
-                CoordinateType.PROTEIN, end_pos=classification.pos,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value
+                validation_result.accession,
+                classification.pos,
+                CoordinateType.PROTEIN,
+                end_pos=classification.pos,
+                try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE.value,
             )
 
             if mane:
                 vrs_seq_loc_ac = mane["refseq"]
                 vrs_seq_loc_ac_status = mane["status"]
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1,
-                    CoordinateType.PROTEIN, AltType.SUBSTITUTION, warnings,
-                    alt=classification.alt
+                    vrs_seq_loc_ac,
+                    mane["pos"][0] + 1,
+                    mane["pos"][1] + 1,
+                    CoordinateType.PROTEIN,
+                    AltType.SUBSTITUTION,
+                    warnings,
+                    alt=classification.alt,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos, classification.pos,
-                CoordinateType.PROTEIN, AltType.SUBSTITUTION, warnings,
-                alt=classification.alt
+                vrs_seq_loc_ac,
+                classification.pos,
+                classification.pos,
+                CoordinateType.PROTEIN,
+                AltType.SUBSTITUTION,
+                warnings,
+                alt=classification.alt,
             )
 
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_variation=vrs_allele,
+                vrs_seq_loc_ac=vrs_seq_loc_ac,
                 vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession, validation_result=validation_result
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
             )
         else:
             return None

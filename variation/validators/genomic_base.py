@@ -5,7 +5,8 @@ from typing import List, Optional
 from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
 
 from variation.schemas.classification_response_schema import (
-    Classification, Nomenclature
+    Classification,
+    Nomenclature,
 )
 
 
@@ -26,9 +27,8 @@ class GenomicBase:
         self.uta = uta
 
     """The Genomic Base class."""
-    async def get_nc_accessions(
-        self, classification: Classification
-    ) -> List[str]:
+
+    async def get_nc_accessions(self, classification: Classification) -> List[str]:
         """Get NC accession for a given classification."""
         if classification.nomenclature == Nomenclature.HGVS:
             nc_accessions = [classification.ac]
@@ -55,10 +55,10 @@ class GenomicBase:
         nc_accession = None
         try:
             translated_identifiers, _ = self.seqrepo_access.translate_identifier(
-                identifier)
+                identifier
+            )
         except KeyError:
-            logger.warning("Data Proxy unable to get metadata"
-                           f"for {identifier}")
+            logger.warning("Data Proxy unable to get metadata" f"for {identifier}")
         else:
             aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
             if aliases:

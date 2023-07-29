@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, GenomicInsertionClassification, Nomenclature
+    Classification,
+    ClassificationType,
+    GenomicInsertionClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -21,14 +24,19 @@ class GenomicInsertion(Validator):
         :return: List of validation results containing invalid and valid results
         """
         if classification.pos1 and classification.pos0 >= classification.pos1:
-            return [ValidationResult(
-                accession=None,
-                classification=classification,
-                is_valid=False,
-                errors=[(
-                    "Positions deleted should contain two different positions and "
-                    "should be listed from 5' to 3'")]
-            )]
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[
+                        (
+                            "Positions deleted should contain two different positions "
+                            "and should be listed from 5' to 3'"
+                        )
+                    ],
+                )
+            ]
 
         validation_results = []
 
@@ -38,8 +46,10 @@ class GenomicInsertion(Validator):
             if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                 # gnomAD VCF provides reference, so we should validate this
                 invalid_ref_msg = self.validate_reference_sequence(
-                    alt_ac, classification.pos0, classification.pos1,
-                    classification.matching_tokens[0].ref
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
+                    classification.matching_tokens[0].ref,
                 )
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)
@@ -56,7 +66,7 @@ class GenomicInsertion(Validator):
                     accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -83,7 +93,5 @@ class GenomicInsertion(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = await self.get_genomic_accessions(
-                classification, errors
-            )
+            accessions = await self.get_genomic_accessions(classification, errors)
         return accessions

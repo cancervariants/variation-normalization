@@ -10,8 +10,9 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicReferenceAgreeClassification,
-    CdnaReferenceAgreeClassification
+    ClassificationType,
+    GenomicReferenceAgreeClassification,
+    CdnaReferenceAgreeClassification,
 )
 from variation.schemas.translation_response_schema import TranslationResult
 
@@ -36,7 +37,7 @@ class GenomicReferenceAgree(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -50,18 +51,25 @@ class GenomicReferenceAgree(Translator):
         :return: Translation result if translation was successful. If translation was
             not successful, `None`
         """
-        classification: GenomicReferenceAgreeClassification = validation_result.classification  # noqa: E501
+        classification: GenomicReferenceAgreeClassification = (
+            validation_result.classification
+        )  # noqa: E501
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
 
         if endpoint_name == Endpoint.NORMALIZE:
-            gene = classification.gene_token.token if classification.gene_token else None  # noqa: E501
+            gene = (
+                classification.gene_token.token if classification.gene_token else None
+            )  # noqa: E501
             mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession, classification.pos,
-                CoordinateType.LINEAR_GENOMIC, end_pos=classification.pos,
-                try_longest_compatible=True, residue_mode=ResidueMode.RESIDUE.value,
-                gene=gene
+                validation_result.accession,
+                classification.pos,
+                CoordinateType.LINEAR_GENOMIC,
+                end_pos=classification.pos,
+                try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE.value,
+                gene=gene,
             )
 
             if mane:
@@ -72,7 +80,7 @@ class GenomicReferenceAgree(Translator):
                         matching_tokens=classification.matching_tokens,
                         nomenclature=classification.nomenclature,
                         gene_token=classification.gene_token,
-                        pos=mane["pos"][0] + 1
+                        pos=mane["pos"][0] + 1,
                     )
                     vrs_seq_loc_ac = mane["refseq"]
                     coord_type = CoordinateType.CDNA
@@ -82,22 +90,32 @@ class GenomicReferenceAgree(Translator):
                     coord_type = CoordinateType.LINEAR_GENOMIC
 
                 vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac, mane["pos"][0] + 1, mane["pos"][1] + 1, coord_type,
-                    AltType.REFERENCE_AGREE, warnings,
-                    cds_start=mane["coding_start_site"] if gene else None
+                    vrs_seq_loc_ac,
+                    mane["pos"][0] + 1,
+                    mane["pos"][1] + 1,
+                    coord_type,
+                    AltType.REFERENCE_AGREE,
+                    warnings,
+                    cds_start=mane["coding_start_site"] if gene else None,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
-                vrs_seq_loc_ac, classification.pos, classification.pos,
-                CoordinateType.LINEAR_GENOMIC, AltType.REFERENCE_AGREE, warnings,
+                vrs_seq_loc_ac,
+                classification.pos,
+                classification.pos,
+                CoordinateType.LINEAR_GENOMIC,
+                AltType.REFERENCE_AGREE,
+                warnings,
             )
 
         if vrs_allele and vrs_seq_loc_ac:
             return TranslationResult(
-                vrs_variation=vrs_allele, vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_variation=vrs_allele,
+                vrs_seq_loc_ac=vrs_seq_loc_ac,
                 vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession, validation_result=validation_result
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
             )
         else:
             return None

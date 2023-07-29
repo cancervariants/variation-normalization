@@ -4,16 +4,26 @@ import yaml
 
 from tests import PROJECT_ROOT
 from variation.schemas.classification_response_schema import (
-    AmplificationClassification, ProteinSubstitutionClassification,
-    ProteinStopGainClassification, ProteinReferenceAgreeClassification,
-    CdnaSubstitutionClassification, GenomicSubstitutionClassification,
-    CdnaReferenceAgreeClassification, GenomicReferenceAgreeClassification,
-    ProteinDelInsClassification, CdnaDelInsClassification, GenomicDelInsClassification,
-    ProteinDeletionClassification, CdnaDeletionClassification,
-    GenomicDeletionClassification, GenomicDeletionAmbiguousClassification,
-    ProteinInsertionClassification, CdnaInsertionClassification,
-    GenomicInsertionClassification, GenomicDuplicationClassification,
-    GenomicDuplicationAmbiguousClassification
+    AmplificationClassification,
+    ProteinSubstitutionClassification,
+    ProteinStopGainClassification,
+    ProteinReferenceAgreeClassification,
+    CdnaSubstitutionClassification,
+    GenomicSubstitutionClassification,
+    CdnaReferenceAgreeClassification,
+    GenomicReferenceAgreeClassification,
+    ProteinDelInsClassification,
+    CdnaDelInsClassification,
+    GenomicDelInsClassification,
+    ProteinDeletionClassification,
+    CdnaDeletionClassification,
+    GenomicDeletionClassification,
+    GenomicDeletionAmbiguousClassification,
+    ProteinInsertionClassification,
+    CdnaInsertionClassification,
+    GenomicInsertionClassification,
+    GenomicDuplicationClassification,
+    GenomicDuplicationAmbiguousClassification,
 )
 
 
@@ -25,15 +35,13 @@ def all_fixtures():
 
 
 def classifier_checks(
-    all_fixtures, test_tokenizer, test_classifier, fixture_name,
-    expected_classification
+    all_fixtures, test_tokenizer, test_classifier, fixture_name, expected_classification
 ):
     """Ensure that fixtures exist for fixture name and that classifier response matches
     expected
     """
     fixtures = all_fixtures.get(
-        fixture_name,
-        {"should_match": [], "should_not_match": []}
+        fixture_name, {"should_match": [], "should_not_match": []}
     )
 
     for label in ["should_match", "should_not_match"]:
@@ -55,8 +63,11 @@ def test_amplification(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "amplification"
     expected_classification = AmplificationClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -65,8 +76,11 @@ def test_protein_substitution(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_substitution"
     expected_classification = ProteinSubstitutionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -75,8 +89,11 @@ def test_cdna_substitution(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "cdna_substitution"
     expected_classification = CdnaSubstitutionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -85,8 +102,11 @@ def test_genomic_substitution(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_substitution"
     expected_classification = GenomicSubstitutionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -95,8 +115,11 @@ def test_protein_stop_gain(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_stop_gain"
     expected_classification = ProteinStopGainClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -105,8 +128,11 @@ def test_protein_reference_agree(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_reference_agree"
     expected_classification = ProteinReferenceAgreeClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -115,8 +141,11 @@ def test_cdna_reference_agree(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "cdna_reference_agree"
     expected_classification = CdnaReferenceAgreeClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -125,8 +154,11 @@ def test_genomic_reference_agree(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_reference_agree"
     expected_classification = GenomicReferenceAgreeClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -135,8 +167,11 @@ def test_protein_delins(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_delins"
     expected_classification = ProteinDelInsClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -145,8 +180,11 @@ def test_cdna_delins(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "cdna_delins"
     expected_classification = CdnaDelInsClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -155,8 +193,11 @@ def test_genomic_delins(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_delins"
     expected_classification = GenomicDelInsClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -165,8 +206,11 @@ def test_protein_deletion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_deletion"
     expected_classification = ProteinDeletionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -175,8 +219,11 @@ def test_cdna_deletion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "cdna_deletion"
     expected_classification = CdnaDeletionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -185,8 +232,11 @@ def test_genomic_deletion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_deletion"
     expected_classification = GenomicDeletionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -195,8 +245,11 @@ def test_genomic_deletion_ambiguous(all_fixtures, test_tokenizer, test_classifie
     fixture_name = "genomic_deletion_ambiguous"
     expected_classification = GenomicDeletionAmbiguousClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -205,8 +258,11 @@ def test_protein_insertion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "protein_insertion"
     expected_classification = ProteinInsertionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -215,8 +271,11 @@ def test_cdna_insertion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "cdna_insertion"
     expected_classification = CdnaInsertionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -225,8 +284,11 @@ def test_genomic_insertion(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_insertion"
     expected_classification = GenomicInsertionClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -235,8 +297,11 @@ def test_genomic_duplication(all_fixtures, test_tokenizer, test_classifier):
     fixture_name = "genomic_duplication"
     expected_classification = GenomicDuplicationClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )
 
 
@@ -245,6 +310,9 @@ def test_genomic_duplication_ambiguous(all_fixtures, test_tokenizer, test_classi
     fixture_name = "genomic_duplication_ambiguous"
     expected_classification = GenomicDuplicationAmbiguousClassification
     classifier_checks(
-        all_fixtures, test_tokenizer, test_classifier, fixture_name,
-        expected_classification
+        all_fixtures,
+        test_tokenizer,
+        test_classifier,
+        fixture_name,
+        expected_classification,
     )

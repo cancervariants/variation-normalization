@@ -13,6 +13,7 @@ jupyter = "*"
 ipykernel = "*"
 psycopg2-binary = "*"
 ruff = "*"
+black = "*"
 
 [packages]
 "biocommons.seqrepo" = "*"

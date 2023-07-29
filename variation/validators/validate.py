@@ -34,7 +34,7 @@ class Validate:
         seqrepo_access: SeqRepoAccess,
         transcript_mappings: TranscriptMappings,
         uta: UTADatabase,
-        gene_normalizer: GeneQueryHandler
+        gene_normalizer: GeneQueryHandler,
     ) -> None:
         """Initialize the validate class.
 
@@ -43,9 +43,7 @@ class Validate:
         :param uta: Access to UTA queries
         :param gene_normalizer: Access to gene-normalizer
         """
-        params = [
-            seqrepo_access, transcript_mappings, uta, gene_normalizer
-        ]
+        params = [seqrepo_access, transcript_mappings, uta, gene_normalizer]
         self.validators = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
@@ -66,7 +64,7 @@ class Validate:
             GenomicInsertion(*params),
             GenomicDuplication(*params),
             GenomicDuplicationAmbiguous(*params),
-            Amplification(*params)
+            Amplification(*params),
         ]
 
     async def perform(self, classification: Classification) -> ValidationSummary:
@@ -92,7 +90,9 @@ class Validate:
                         valid_possibilities.append(validation_result)
                     else:
                         invalid_possibilities.append(validation_result)
-                        invalid_classification = classification.classification_type.value  # noqa: E501
+                        invalid_classification = (
+                            classification.classification_type.value
+                        )  # noqa: E501
 
             if found_valid_result:
                 break
@@ -107,5 +107,5 @@ class Validate:
         return ValidationSummary(
             valid_results=valid_possibilities,
             invalid_results=invalid_possibilities,
-            warnings=warnings
+            warnings=warnings,
         )

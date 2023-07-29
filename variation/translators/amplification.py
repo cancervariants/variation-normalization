@@ -34,7 +34,7 @@ class Amplification(Translator):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 
@@ -56,7 +56,7 @@ class Amplification(Translator):
         if priority_seq_loc:
             vrs_cx = models.CopyNumberChange(
                 subject=models.SequenceLocation(**priority_seq_loc),
-                copy_change=CopyChange.HIGH_LEVEL_GAIN.value
+                copy_change=CopyChange.HIGH_LEVEL_GAIN.value,
             )
             vrs_cx._id = ga4gh_identify(vrs_cx)
             vrs_cx = vrs_cx.as_dict()

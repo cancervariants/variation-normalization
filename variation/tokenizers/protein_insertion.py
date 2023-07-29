@@ -65,5 +65,5 @@ class ProteinInsertion(Tokenizer):
                     pos0=pos0,
                     aa1=one_letter_aa1,
                     pos1=pos1,
-                    inserted_sequence=one_letter_ins_seq
+                    inserted_sequence=one_letter_ins_seq,
                 )

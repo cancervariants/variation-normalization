@@ -9,7 +9,8 @@ from ga4gh.core import ga4gh_identify
 from cool_seq_tool.data_sources import SeqRepoAccess
 
 from variation.schemas.normalize_response_schema import (
-    HGVSDupDelModeOption, ServiceMeta
+    HGVSDupDelModeOption,
+    ServiceMeta,
 )
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.to_vrs_response_schema import ToVRSService
@@ -27,8 +28,12 @@ class ToVRS(VRSRepresentation):
     """The class for translating variation strings to VRS representations."""
 
     def __init__(
-        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate
+        self,
+        seqrepo_access: SeqRepoAccess,
+        tokenizer: Tokenize,
+        classifier: Classify,
+        validator: Validate,
+        translator: Translate,
     ) -> None:
         """Initialize the ToVRS class.
 
@@ -52,7 +57,7 @@ class ToVRS(VRSRepresentation):
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
+        do_liftover: bool = False,
     ) -> Tuple[List[TranslationResult], List[str]]:
         """Get translation results
 
@@ -72,10 +77,13 @@ class ToVRS(VRSRepresentation):
         else:
             for valid_result in validation_summary.valid_results:
                 tr = await self.translator.perform(
-                    valid_result, warnings, endpoint_name=endpoint_name,
+                    valid_result,
+                    warnings,
+                    endpoint_name=endpoint_name,
                     hgvs_dup_del_mode=hgvs_dup_del_mode,
-                    baseline_copies=baseline_copies, copy_change=copy_change,
-                    do_liftover=do_liftover
+                    baseline_copies=baseline_copies,
+                    copy_change=copy_change,
+                    do_liftover=do_liftover,
                 )
                 if tr and tr not in translations:
                     translations.append(tr)
@@ -103,10 +111,9 @@ class ToVRS(VRSRepresentation):
             "search_term": q,
             "variations": variations,
             "service_meta_": ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
+                version=__version__, response_datetime=datetime.now()
             ),
-            "warnings": warnings
+            "warnings": warnings,
         }
 
         # Get tokens for input query
@@ -126,8 +133,11 @@ class ToVRS(VRSRepresentation):
         if validation_summary:
             # Get translated VRS representation for valid results
             translations, warnings = await self.get_translations(
-                validation_summary, warnings, endpoint_name=Endpoint.TO_VRS,
-                hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT, do_liftover=False
+                validation_summary,
+                warnings,
+                endpoint_name=Endpoint.TO_VRS,
+                hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT,
+                do_liftover=False,
             )
         else:
             translations = []

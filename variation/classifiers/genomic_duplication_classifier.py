@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Nomenclature, GenomicDuplicationClassification
+    ClassificationType,
+    Nomenclature,
+    GenomicDuplicationClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class GenomicDuplicationClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         duplication classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_DUPLICATION]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_DUPLICATION]]
 
     def match(self, tokens: List[Token]) -> GenomicDuplicationClassification:
         """Return the genomic duplication classification from a list of token matches.
@@ -39,5 +39,5 @@ class GenomicDuplicationClassifier(Classifier):
             nomenclature=Nomenclature.FREE_TEXT,
             gene_token=gene_token,
             pos0=genomic_dup_token.pos0,
-            pos1=genomic_dup_token.pos1
+            pos1=genomic_dup_token.pos1,
         )

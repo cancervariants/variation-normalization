@@ -2,8 +2,11 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    AmbiguousType, Classification, ClassificationType,
-    GenomicDeletionAmbiguousClassification, Nomenclature
+    AmbiguousType,
+    Classification,
+    ClassificationType,
+    GenomicDeletionAmbiguousClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from .validator import Validator
@@ -13,8 +16,9 @@ class GenomicDeletionAmbiguous(Validator):
     """The Genomic Deletion Ambiguous Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: GenomicDeletionAmbiguousClassification,
-        accessions: List[str]
+        self,
+        classification: GenomicDeletionAmbiguousClassification,
+        accessions: List[str],
     ) -> List[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
@@ -23,43 +27,67 @@ class GenomicDeletionAmbiguous(Validator):
         :return: List of validation results containing invalid and valid results
         """
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-            if classification.pos3 <= classification.pos2 <= classification.pos1 <= classification.pos0:  # noqa: E501
-                return [ValidationResult(
-                    accession=None,
-                    classification=classification,
-                    is_valid=False,
-                    errors=[(
-                        "Positions deleted should contain two different positions and "
-                        "should be listed from 5' to 3'")]
-                )]
-        elif classification.ambiguous_type in {AmbiguousType.AMBIGUOUS_2,
-                                               AmbiguousType.AMBIGUOUS_5}:
+            if (
+                classification.pos3
+                <= classification.pos2
+                <= classification.pos1
+                <= classification.pos0
+            ):  # noqa: E501
+                return [
+                    ValidationResult(
+                        accession=None,
+                        classification=classification,
+                        is_valid=False,
+                        errors=[
+                            (
+                                "Positions deleted should contain two different "
+                                "positions and should be listed from 5' to 3'"
+                            )
+                        ],
+                    )
+                ]
+        elif classification.ambiguous_type in {
+            AmbiguousType.AMBIGUOUS_2,
+            AmbiguousType.AMBIGUOUS_5,
+        }:
             if classification.pos2 <= classification.pos1:
-                return [ValidationResult(
-                    accession=None,
-                    classification=classification,
-                    is_valid=False,
-                    errors=[(
-                        "Positions deleted should contain two different positions and "
-                        "should be listed from 5' to 3'")]
-                )]
+                return [
+                    ValidationResult(
+                        accession=None,
+                        classification=classification,
+                        is_valid=False,
+                        errors=[
+                            (
+                                "Positions deleted should contain two different "
+                                "positions and should be listed from 5' to 3'"
+                            )
+                        ],
+                    )
+                ]
         elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
             if classification.pos2 <= classification.pos0:
-                return [ValidationResult(
+                return [
+                    ValidationResult(
+                        accession=None,
+                        classification=classification,
+                        is_valid=False,
+                        errors=[
+                            (
+                                "Positions deleted should contain two different "
+                                "positions and should be listed from 5' to 3'"
+                            )
+                        ],
+                    )
+                ]
+        else:
+            return [
+                ValidationResult(
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=[(
-                        "Positions deleted should contain two different positions and "
-                        "should be listed from 5' to 3'")]
-                )]
-        else:
-            return [ValidationResult(
-                accession=None,
-                classification=classification,
-                is_valid=False,
-                errors=[(f"{classification.ambiguous_type} is not yet supported")]
-            )]
+                    errors=[(f"{classification.ambiguous_type} is not yet supported")],
+                )
+            ]
 
         validation_results = []
 
@@ -94,9 +122,12 @@ class GenomicDeletionAmbiguous(Validator):
 
             if not errors and classification.gene_token:
                 invalid_gene_pos_msg = await self._validate_gene_pos(
-                    classification.gene_token.matched_value, alt_ac,
-                    classification.pos0, classification.pos1, pos2=classification.pos2,
-                    pos3=classification.pos3
+                    classification.gene_token.matched_value,
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
+                    pos2=classification.pos2,
+                    pos3=classification.pos3,
                 )
                 if invalid_gene_pos_msg:
                     errors.append(invalid_gene_pos_msg)
@@ -106,7 +137,7 @@ class GenomicDeletionAmbiguous(Validator):
                     accession=alt_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -135,7 +166,5 @@ class GenomicDeletionAmbiguous(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = await self.get_genomic_accessions(
-                classification, errors
-            )
+            accessions = await self.get_genomic_accessions(classification, errors)
         return accessions

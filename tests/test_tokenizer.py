@@ -4,19 +4,44 @@ import yaml
 
 from tests import PROJECT_ROOT
 from variation.tokenizers import (
-    FreeTextCategorical, ProteinSubstitution, CdnaSubstitution, GenomicSubstitution,
-    ProteinReferenceAgree, CdnaGenomicReferenceAgree, ProteinDelIns,
-    CdnaDelIns, GenomicDelIns, ProteinDeletion, CdnaDeletion, GenomicDeletion,
-    ProteinInsertion, CdnaInsertion, GenomicInsertion, GenomicDuplication
+    FreeTextCategorical,
+    ProteinSubstitution,
+    CdnaSubstitution,
+    GenomicSubstitution,
+    ProteinReferenceAgree,
+    CdnaGenomicReferenceAgree,
+    ProteinDelIns,
+    CdnaDelIns,
+    GenomicDelIns,
+    ProteinDeletion,
+    CdnaDeletion,
+    GenomicDeletion,
+    ProteinInsertion,
+    CdnaInsertion,
+    GenomicInsertion,
+    GenomicDuplication,
 )
 from variation.schemas.token_response_schema import (
-    AmplificationToken, ProteinSubstitutionToken, CdnaSubstitutionToken,
-    GenomicSubstitutionToken, ProteinReferenceAgreeToken, CdnaReferenceAgreeToken,
-    GenomicReferenceAgreeToken, ProteinDelInsToken, CdnaDelInsToken, GenomicDelInsToken,
-    ProteinDeletionToken, CdnaDeletionToken, GenomicDeletionToken,
-    GenomicDeletionAmbiguousToken, ProteinInsertionToken, CdnaInsertionToken,
-    GenomicInsertionToken, GenomicDuplicationToken, GenomicDuplicationAmbiguousToken,
-    ProteinStopGainToken
+    AmplificationToken,
+    ProteinSubstitutionToken,
+    CdnaSubstitutionToken,
+    GenomicSubstitutionToken,
+    ProteinReferenceAgreeToken,
+    CdnaReferenceAgreeToken,
+    GenomicReferenceAgreeToken,
+    ProteinDelInsToken,
+    CdnaDelInsToken,
+    GenomicDelInsToken,
+    ProteinDeletionToken,
+    CdnaDeletionToken,
+    GenomicDeletionToken,
+    GenomicDeletionAmbiguousToken,
+    ProteinInsertionToken,
+    CdnaInsertionToken,
+    GenomicInsertionToken,
+    GenomicDuplicationToken,
+    GenomicDuplicationAmbiguousToken,
+    ProteinStopGainToken,
 )
 
 
@@ -27,17 +52,12 @@ def all_fixtures():
         return yaml.safe_load(stream)
 
 
-def tokenizer_checks(
-    all_fixtures, fixture_name, tokenizer_instance, expected_token
-):
+def tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token):
     """Ensure that fixtures exist for fixture name and that tokenizer response matches
     expected
     """
     labels = ["should_match", "should_not_match"]
-    fixtures = all_fixtures.get(
-        fixture_name,
-        {labels[0]: [], labels[1]: []}
-    )
+    fixtures = all_fixtures.get(fixture_name, {labels[0]: [], labels[1]: []})
 
     for label in labels:
         assert fixtures[label], f"{fixture_name} has no {label} queries"
@@ -57,9 +77,7 @@ def test_amplification(all_fixtures):
     fixture_name = "amplification"
     tokenizer_instance = FreeTextCategorical
     expected_token = AmplificationToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_substitution(all_fixtures):
@@ -67,9 +85,7 @@ def test_protein_substitution(all_fixtures):
     fixture_name = "protein_substitution"
     tokenizer_instance = ProteinSubstitution
     expected_token = ProteinSubstitutionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_cdna_substitution(all_fixtures):
@@ -77,9 +93,7 @@ def test_cdna_substitution(all_fixtures):
     fixture_name = "cdna_substitution"
     tokenizer_instance = CdnaSubstitution
     expected_token = CdnaSubstitutionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_substitution(all_fixtures):
@@ -87,9 +101,7 @@ def test_genomic_substitution(all_fixtures):
     fixture_name = "genomic_substitution"
     tokenizer_instance = GenomicSubstitution
     expected_token = GenomicSubstitutionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_stop_gain(all_fixtures):
@@ -97,9 +109,7 @@ def test_protein_stop_gain(all_fixtures):
     fixture_name = "protein_stop_gain"
     tokenizer_instance = ProteinSubstitution
     expected_token = ProteinStopGainToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_reference_agree(all_fixtures):
@@ -107,9 +117,7 @@ def test_protein_reference_agree(all_fixtures):
     fixture_name = "protein_reference_agree"
     tokenizer_instance = ProteinReferenceAgree
     expected_token = ProteinReferenceAgreeToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_cdna_reference_agree(all_fixtures):
@@ -117,9 +125,7 @@ def test_cdna_reference_agree(all_fixtures):
     fixture_name = "cdna_reference_agree"
     tokenizer_instance = CdnaGenomicReferenceAgree
     expected_token = CdnaReferenceAgreeToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_reference_agree(all_fixtures):
@@ -127,9 +133,7 @@ def test_genomic_reference_agree(all_fixtures):
     fixture_name = "genomic_reference_agree"
     tokenizer_instance = CdnaGenomicReferenceAgree
     expected_token = GenomicReferenceAgreeToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_delins(all_fixtures):
@@ -137,9 +141,7 @@ def test_protein_delins(all_fixtures):
     fixture_name = "protein_delins"
     tokenizer_instance = ProteinDelIns
     expected_token = ProteinDelInsToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_cdna_delins(all_fixtures):
@@ -147,9 +149,7 @@ def test_cdna_delins(all_fixtures):
     fixture_name = "cdna_delins"
     tokenizer_instance = CdnaDelIns
     expected_token = CdnaDelInsToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_delins(all_fixtures):
@@ -157,9 +157,7 @@ def test_genomic_delins(all_fixtures):
     fixture_name = "genomic_delins"
     tokenizer_instance = GenomicDelIns
     expected_token = GenomicDelInsToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_deletion(all_fixtures):
@@ -167,9 +165,7 @@ def test_protein_deletion(all_fixtures):
     fixture_name = "protein_deletion"
     tokenizer_instance = ProteinDeletion
     expected_token = ProteinDeletionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_cdna_deletion(all_fixtures):
@@ -177,9 +173,7 @@ def test_cdna_deletion(all_fixtures):
     fixture_name = "cdna_deletion"
     tokenizer_instance = CdnaDeletion
     expected_token = CdnaDeletionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_deletion(all_fixtures):
@@ -187,9 +181,7 @@ def test_genomic_deletion(all_fixtures):
     fixture_name = "genomic_deletion"
     tokenizer_instance = GenomicDeletion
     expected_token = GenomicDeletionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_deletion_ambiguous(all_fixtures):
@@ -197,9 +189,7 @@ def test_genomic_deletion_ambiguous(all_fixtures):
     fixture_name = "genomic_deletion_ambiguous"
     tokenizer_instance = GenomicDeletion
     expected_token = GenomicDeletionAmbiguousToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_protein_insertion(all_fixtures):
@@ -207,9 +197,7 @@ def test_protein_insertion(all_fixtures):
     fixture_name = "protein_insertion"
     tokenizer_instance = ProteinInsertion
     expected_token = ProteinInsertionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_cdna_insertion(all_fixtures):
@@ -217,9 +205,7 @@ def test_cdna_insertion(all_fixtures):
     fixture_name = "cdna_insertion"
     tokenizer_instance = CdnaInsertion
     expected_token = CdnaInsertionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_insertion(all_fixtures):
@@ -227,9 +213,7 @@ def test_genomic_insertion(all_fixtures):
     fixture_name = "genomic_insertion"
     tokenizer_instance = GenomicInsertion
     expected_token = GenomicInsertionToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_duplication(all_fixtures):
@@ -237,9 +221,7 @@ def test_genomic_duplication(all_fixtures):
     fixture_name = "genomic_duplication"
     tokenizer_instance = GenomicDuplication
     expected_token = GenomicDuplicationToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
 def test_genomic_duplication_ambiguous(all_fixtures):
@@ -247,6 +229,4 @@ def test_genomic_duplication_ambiguous(all_fixtures):
     fixture_name = "genomic_duplication_ambiguous"
     tokenizer_instance = GenomicDuplication
     expected_token = GenomicDuplicationAmbiguousToken
-    tokenizer_checks(
-        all_fixtures, fixture_name, tokenizer_instance, expected_token
-    )
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)

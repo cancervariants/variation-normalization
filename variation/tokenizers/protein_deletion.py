@@ -12,8 +12,10 @@ from variation.regex import PROTEIN_DELETION
 class ProteinDeletion(Tokenizer):
     """Class for tokenizing Deletions on the protein reference sequence."""
 
-    pattern = r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)" \
-              r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
+    pattern = (
+        r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)"
+        r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
+    )
     splitter = re.compile(pattern)
 
     def match(self, input_string: str) -> Optional[ProteinDeletionToken]:
@@ -74,11 +76,13 @@ class ProteinDeletion(Tokenizer):
                 one_letter_aa1 = aa1
                 one_letter_del_seq = deleted_sequence
 
-            if all((
-                type(aa0) == type(one_letter_aa0),
-                type(aa1) == type(one_letter_aa1),
-                type(deleted_sequence) == type(one_letter_del_seq)
-            )):
+            if all(
+                (
+                    type(aa0) == type(one_letter_aa0),
+                    type(aa1) == type(one_letter_aa1),
+                    type(deleted_sequence) == type(one_letter_del_seq),
+                )
+            ):
                 return ProteinDeletionToken(
                     input_string=og_input_string,
                     token=og_input_string,
@@ -86,5 +90,5 @@ class ProteinDeletion(Tokenizer):
                     pos0=pos0,
                     aa1=one_letter_aa1,
                     pos1=pos1,
-                    deleted_sequence=one_letter_del_seq
+                    deleted_sequence=one_letter_del_seq,
                 )

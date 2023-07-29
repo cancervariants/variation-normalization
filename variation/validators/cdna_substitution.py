@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, CdnaSubstitutionClassification, Nomenclature
+    ClassificationType,
+    Classification,
+    CdnaSubstitutionClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -30,8 +33,10 @@ class CdnaSubstitution(Validator):
                 errors.append(cds_start_err_msg)
             else:
                 valid_ref_seq_msg = self.validate_reference_sequence(
-                    c_ac, classification.pos + cds_start,
-                    classification.pos + cds_start, classification.ref
+                    c_ac,
+                    classification.pos + cds_start,
+                    classification.pos + cds_start,
+                    classification.ref,
                 )
                 if valid_ref_seq_msg:
                     errors.append(valid_ref_seq_msg)
@@ -42,7 +47,7 @@ class CdnaSubstitution(Validator):
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -69,7 +74,5 @@ class CdnaSubstitution(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_cdna_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_cdna_accessions(classification.gene_token, errors)
         return accessions

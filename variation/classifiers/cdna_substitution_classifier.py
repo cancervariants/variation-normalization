@@ -2,7 +2,10 @@
 from typing import List, Optional
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, CdnaSubstitutionClassification, Nomenclature, SequenceOntology
+    ClassificationType,
+    CdnaSubstitutionClassification,
+    Nomenclature,
+    SequenceOntology,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -23,7 +26,11 @@ class CdnaSubstitutionClassifier(Classifier):
         """
         return [
             [TokenType.GENE, TokenType.CDNA_SUBSTITUTION],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CDNA_SUBSTITUTION]  # noqa: E501
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_SUBSTITUTION,
+                TokenType.CDNA_SUBSTITUTION,
+            ],  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> Optional[CdnaSubstitutionClassification]:
@@ -55,5 +62,5 @@ class CdnaSubstitutionClassifier(Classifier):
                 pos=cdna_sub_token.pos,
                 ref=cdna_sub_token.ref,
                 alt=cdna_sub_token.alt,
-                so_id=so_id
+                so_id=so_id,
             )

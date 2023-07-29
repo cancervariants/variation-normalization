@@ -4,7 +4,8 @@ from typing import Optional, Union
 from bioutils.sequences import aa3_to_aa1, aa1_to_aa3
 
 from variation.schemas.token_response_schema import (
-    ProteinSubstitutionToken, ProteinStopGainToken
+    ProteinSubstitutionToken,
+    ProteinStopGainToken,
 )
 from variation.tokenizers.tokenizer import Tokenizer
 from variation.regex import PROTEIN_SUBSTITUTION
@@ -13,9 +14,9 @@ from variation.regex import PROTEIN_SUBSTITUTION
 class ProteinSubstitution(Tokenizer):
     """Class for tokenizing Protein Substitution."""
 
-    def match(self, input_string: str) -> Optional[
-        Union[ProteinSubstitutionToken, ProteinStopGainToken]
-    ]:
+    def match(
+        self, input_string: str
+    ) -> Optional[Union[ProteinSubstitutionToken, ProteinStopGainToken]]:
         """Return a ProteinSubstitutionToken or ProteinStopGainToken match if one
         exists.
 
@@ -68,7 +69,7 @@ class ProteinSubstitution(Tokenizer):
                     "token": f"{aa1_ref}{pos}{aa1_alt}",
                     "pos": pos,
                     "ref": aa1_ref,
-                    "alt": aa1_alt
+                    "alt": aa1_alt,
                 }
 
                 if aa1_alt == "*":

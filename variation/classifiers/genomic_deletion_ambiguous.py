@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Nomenclature, GenomicDeletionAmbiguousClassification
+    ClassificationType,
+    Nomenclature,
+    GenomicDeletionAmbiguousClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -23,9 +25,7 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         ambiguous deletion classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_DELETION_AMBIGUOUS]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_DELETION_AMBIGUOUS]]
 
     def match(self, tokens: List[Token]) -> GenomicDeletionAmbiguousClassification:
         """Return the genomic ambiguous deletion classification from a list of token
@@ -42,7 +42,7 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
             genomic_del_token.pos1,
             genomic_del_token.pos2,
             genomic_del_token.pos3,
-            genomic_del_token.ambiguous_regex_type
+            genomic_del_token.ambiguous_regex_type,
         )
 
         return GenomicDeletionAmbiguousClassification(
@@ -53,5 +53,5 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
             pos1=genomic_del_token.pos1,
             pos2=genomic_del_token.pos2,
             pos3=genomic_del_token.pos3,
-            ambiguous_type=ambiguous_type
+            ambiguous_type=ambiguous_type,
         )

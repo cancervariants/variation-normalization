@@ -1,3 +1,14 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta:__legacy__"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
 # pycodestyle (E, W)
 # Pyflakes (F)
 # flake8-annotations (ANN)
@@ -14,10 +25,10 @@ line-length = 88
 # ANN101 - missing-type-self
 ignore = ["D205", "D400", "D415", "ANN101"]
 
-[flake8-quotes]
-inline-quotes = "double"
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
 
-[per-file-ignores]
+[tool.ruff.per-file-ignores]
 # ANN001 -	missing-type-function-argument
 # ANN2 - missing-return-type
 # ANN102 - missing-type-cls

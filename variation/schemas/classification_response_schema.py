@@ -7,9 +7,18 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 
 from variation.schemas.token_response_schema import Token, GeneToken
 from variation.schemas.variation_schema import (
-    ProteinDelIns, Substitution, Deletion, Insertion, ProteinDeletion, ProteinInsertion,
-    ReferenceAgree, ProteinReferenceAgree, DelIns, StopGain, Duplication,
-    DupDelAmbiguous
+    ProteinDelIns,
+    Substitution,
+    Deletion,
+    Insertion,
+    ProteinDeletion,
+    ProteinInsertion,
+    ReferenceAgree,
+    ProteinReferenceAgree,
+    DelIns,
+    StopGain,
+    Duplication,
+    DupDelAmbiguous,
 )
 
 

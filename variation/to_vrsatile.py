@@ -3,14 +3,17 @@ from typing import List, Optional, Tuple, Callable, Dict
 
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import (
-    VariationDescriptor, GeneDescriptor, MoleculeContext
+    VariationDescriptor,
+    GeneDescriptor,
+    MoleculeContext,
 )
 from cool_seq_tool.schemas import ResidueMode
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Nomenclature
+    ClassificationType,
+    Nomenclature,
 )
 from variation.to_vrs import ToVRS
 from variation.tokenizers import Tokenize
@@ -26,9 +29,14 @@ class ToVRSATILE(ToVRS):
     """Class for representing VRSATILE objects"""
 
     def __init__(
-        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate,
-        gene_normalizer: GeneQueryHandler, transcript_mappings: TranscriptMappings
+        self,
+        seqrepo_access: SeqRepoAccess,
+        tokenizer: Tokenize,
+        classifier: Classify,
+        validator: Validate,
+        translator: Translate,
+        gene_normalizer: GeneQueryHandler,
+        transcript_mappings: TranscriptMappings,
     ) -> None:
         """Initialize the ToVRSATILE class.
 
@@ -41,26 +49,28 @@ class ToVRSATILE(ToVRS):
         :param transcript_mappings: Transcript mappings for gene to accession for
             RefSeq and Ensembl
         """
-        super().__init__(
-            seqrepo_access, tokenizer, classifier, validator, translator
-        )
+        super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
         self.gene_normalizer = gene_normalizer
         self.transcript_mappings = transcript_mappings
 
         # AC to Gene mapping
         self._protein_ac_to_gene_mapping = [
             self.transcript_mappings.get_gene_symbol_from_ensembl_protein,
-            self.transcript_mappings.get_gene_symbol_from_refeq_protein
+            self.transcript_mappings.get_gene_symbol_from_refeq_protein,
         ]
         self._cdna_ac_to_gene_mapping = [
             self.transcript_mappings.get_gene_symbol_from_refseq_rna,
-            self.transcript_mappings.get_gene_symbol_from_ensembl_transcript
+            self.transcript_mappings.get_gene_symbol_from_ensembl_transcript,
         ]
 
     def get_variation_descriptor(
-        self, label: str, translation_result: TranslationResult,
-        valid_result: ValidationResult, _id: str, warnings: List,
-        gene: Optional[str] = None
+        self,
+        label: str,
+        translation_result: TranslationResult,
+        valid_result: ValidationResult,
+        _id: str,
+        warnings: List,
+        gene: Optional[str] = None,
     ) -> Tuple[Optional[VariationDescriptor], List]:
         """Return variation descriptor and warnings
 
@@ -81,13 +91,17 @@ class ToVRSATILE(ToVRS):
         variation_id = variation["_id"]
 
         classification_type = valid_result.classification.classification_type
-        if classification_type not in {ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
-                                       ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
-                                       ClassificationType.AMPLIFICATION}:
+        if classification_type not in {
+            ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+            ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+            ClassificationType.AMPLIFICATION,
+        }:
             variation_type = variation["type"]
-            if variation_type in {VRSTypes.ALLELE.value,
-                                  VRSTypes.COPY_NUMBER_COUNT.value,
-                                  VRSTypes.COPY_NUMBER_CHANGE.value}:
+            if variation_type in {
+                VRSTypes.ALLELE.value,
+                VRSTypes.COPY_NUMBER_COUNT.value,
+                VRSTypes.COPY_NUMBER_CHANGE.value,
+            }:
                 key = "location" if variation_type == VRSTypes.ALLELE else "subject"
                 vrs_ref_allele_seq = self.get_ref_allele_seq(
                     variation[key], translation_result.vrs_seq_loc_ac
@@ -114,16 +128,19 @@ class ToVRSATILE(ToVRS):
                     if gene_token:
                         gene_context = self.get_gene_descriptor(gene_token=gene_token)
 
-        return VariationDescriptor(
-            id=_id,
-            label=label,
-            variation_id=variation_id,
-            variation=variation,
-            molecule_context=molecule_context,
-            structural_type=valid_result.classification.so_id,
-            vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,
-            gene_context=gene_context
-        ), warnings
+        return (
+            VariationDescriptor(
+                id=_id,
+                label=label,
+                variation_id=variation_id,
+                variation=variation,
+                molecule_context=molecule_context,
+                structural_type=valid_result.classification.so_id,
+                vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,
+                gene_context=gene_context,
+            ),
+            warnings,
+        )
 
     def _get_hgvs_gene_context(
         self, accession: str, molecule_context: MoleculeContext
@@ -135,6 +152,7 @@ class ToVRSATILE(ToVRS):
             a gene context, since there could be multiple genes associated
         :return: Gene token associated to accession if found
         """
+
         def _get_gene_token(ac: str, mappings: List[Callable]) -> Optional[GeneToken]:
             """Get gene token for accession
 

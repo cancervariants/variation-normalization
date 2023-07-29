@@ -24,7 +24,7 @@ def genomic_dup1_normalized():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": "GG"
+        "vrs_ref_allele_seq": "GG",
     }
     return params
 
@@ -39,7 +39,7 @@ def genomic_dup1_not_normalized():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": "G"
+        "vrs_ref_allele_seq": "G",
     }
     return params
 
@@ -53,10 +53,7 @@ def genomic_dup1_lse(genomic_dup1_normalized, genomic_dup1_seq_loc_normalized):
         "type": "Allele",
         "_id": _id,
         "location": genomic_dup1_seq_loc_normalized,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": "GGG"
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": "GGG"},
     }
     return VariationDescriptor(**genomic_dup1_normalized)
 
@@ -78,7 +75,7 @@ def genomic_dup1_cx(genomic_dup1_not_normalized, genomic_dup1_seq_loc_not_normal
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.x2NGTioeXIMjcevBk4iFl0YMHj3slQfW",
         "subject": genomic_dup1_seq_loc_not_normalized,
-        "copy_change": "efo:0030072"
+        "copy_change": "efo:0030072",
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
@@ -97,13 +94,10 @@ def genomic_dup1_rse(genomic_dup1_normalized, genomic_dup1_seq_loc_normalized):
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_dup1_seq_loc_normalized,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 2
-            }
-        }
+            "count": {"type": "Number", "value": 2},
+        },
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
@@ -120,7 +114,7 @@ def genomic_dup1_free_text_normalized():
         "molecule_context": "transcript",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "GG",
-        "gene_context": "hgnc:2666"
+        "gene_context": "hgnc:2666",
     }
     return params
 
@@ -136,7 +130,7 @@ def genomic_dup1_free_text_not_normalized():
         "molecule_context": "transcript",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "G",
-        "gene_context": "hgnc:2666"
+        "gene_context": "hgnc:2666",
     }
     return params
 
@@ -152,7 +146,7 @@ def genomic_dup1_free_text_seq_loc_normalized():
             "start": {"value": 1032, "type": "Number"},
             "end": {"value": 1034, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
@@ -167,23 +161,21 @@ def genomic_dup1_free_text_seq_loc_not_normalized():
             "start": {"value": 1033, "type": "Number"},
             "end": {"value": 1034, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_free_text_lse(genomic_dup1_free_text_normalized,
-                               genomic_dup1_free_text_seq_loc_normalized):
+def genomic_dup1_free_text_lse(
+    genomic_dup1_free_text_normalized, genomic_dup1_free_text_seq_loc_normalized
+):
     """Create a test fixture for genomic dup LSE."""
     params = deepcopy(genomic_dup1_free_text_normalized)
     params["variation"] = {
         "type": "Allele",
         "_id": "ga4gh:VA.eE5Kr1zJrv3PSXeBabbKTFnZxToaYxat",
         "location": genomic_dup1_free_text_seq_loc_normalized,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": "GGG"
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": "GGG"},
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
@@ -199,15 +191,16 @@ def genomic_dup1_free_text_cn(
         "type": "CopyNumberCount",
         "_id": "ga4gh:CN.qQDTjKiHmFn9smTsUOJ0eunjSEGFXosM",
         "subject": genomic_dup1_free_text_seq_loc_not_normalized,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup1_free_text_rse(genomic_dup1_free_text_normalized,
-                               genomic_dup1_free_text_seq_loc_normalized):
+def genomic_dup1_free_text_rse(
+    genomic_dup1_free_text_normalized, genomic_dup1_free_text_seq_loc_normalized
+):
     """Create a test fixture for genomic dup RSE."""
     params = deepcopy(genomic_dup1_free_text_normalized)
     params["variation"] = {
@@ -219,13 +212,10 @@ def genomic_dup1_free_text_rse(genomic_dup1_free_text_normalized,
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_dup1_free_text_seq_loc_normalized,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 2
-            }
-        }
+            "count": {"type": "Number", "value": 2},
+        },
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
@@ -241,7 +231,7 @@ def genomic_dup2_normalized():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": "TCTA"
+        "vrs_ref_allele_seq": "TCTA",
     }
     return params
 
@@ -256,7 +246,7 @@ def genomic_dup2_not_normalized():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": "TCTA"
+        "vrs_ref_allele_seq": "TCTA",
     }
     return params
 
@@ -270,10 +260,7 @@ def genomic_dup2_lse(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
         "type": "Allele",
         "_id": _id,
         "location": genomic_dup2_seq_loc_normalized,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": "TCTATCTA"
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": "TCTATCTA"},
     }
     return VariationDescriptor(**genomic_dup2_normalized)
 
@@ -294,9 +281,11 @@ def genomic_dup2_cx(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.4E6PpfJwp9DF5gq_gsD05teDrzr6gUWs",
         "subject": genomic_dup2_seq_loc_normalized,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
-    genomic_dup2_normalized["variation_id"] = genomic_dup2_normalized["variation"]["_id"]  # noqa: E501
+    genomic_dup2_normalized["variation_id"] = genomic_dup2_normalized["variation"][
+        "_id"
+    ]  # noqa: E501
     return VariationDescriptor(**genomic_dup2_normalized)
 
 
@@ -313,13 +302,10 @@ def genomic_dup2_rse(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_dup2_seq_loc_normalized,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 2
-            }
-        }
+            "count": {"type": "Number", "value": 2},
+        },
     }
     genomic_dup2_normalized["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_normalized)
@@ -336,7 +322,7 @@ def genomic_dup2_free_text():
         "molecule_context": "transcript",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "TAGA",
-        "gene_context": "hgnc:2928"
+        "gene_context": "hgnc:2928",
     }
     return params
 
@@ -352,13 +338,14 @@ def genomic_dup2_free_text_seq_loc():
             "start": {"value": 256, "type": "Number"},
             "end": {"value": 260, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_free_text_default(genomic_dup2_free_text,
-                                   genomic_dup2_free_text_seq_loc):
+def genomic_dup2_free_text_default(
+    genomic_dup2_free_text, genomic_dup2_free_text_seq_loc
+):
     """Create a test fixture for genomic dup default and LSE."""
     _id = "ga4gh:VA.BRi89LZSxVMXaa6xVjuXIh0I_u2MyPkc"
     genomic_dup2_free_text["variation_id"] = _id
@@ -366,10 +353,7 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text,
         "type": "Allele",
         "_id": _id,
         "location": genomic_dup2_free_text_seq_loc,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": "TAGATAGA"
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": "TAGATAGA"},
     }
     return VariationDescriptor(**genomic_dup2_free_text)
 
@@ -382,15 +366,14 @@ def genomic_dup2_free_text_cn(genomic_dup2_free_text, genomic_dup2_free_text_seq
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup2_free_text_seq_loc,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     genomic_dup2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_free_text_rse(genomic_dup2_free_text,
-                               genomic_dup2_free_text_seq_loc):
+def genomic_dup2_free_text_rse(genomic_dup2_free_text, genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup RSE."""
     _id = "ga4gh:VA.Rby7K6TikhqXL9BhM8xDJHNudJlRmS3j"
     genomic_dup2_free_text["variation"] = {
@@ -402,13 +385,10 @@ def genomic_dup2_free_text_rse(genomic_dup2_free_text,
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_dup2_free_text_seq_loc,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 2
-            }
-        }
+            "count": {"type": "Number", "value": 2},
+        },
     }
     genomic_dup2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup2_free_text)
@@ -424,7 +404,7 @@ def genomic_dup3():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -437,7 +417,7 @@ def genomic_dup3_cn(genomic_dup3, genomic_del3_dup3_loc_not_normalized):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copies": {"type": "Number", "value": 2}
+        "copies": {"type": "Number", "value": 2},
     }
     genomic_dup3["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3)
@@ -451,7 +431,7 @@ def genomic_dup3_cx(genomic_dup3, genomic_del3_dup3_loc_not_normalized):
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.4VtgQTAnp-X0IRWweZ9x2CqQfRtONWAm",
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     params["variation_id"] = params["variation"]["_id"]
     return VariationDescriptor(**params)
@@ -466,8 +446,8 @@ def genomic_dup3_rse_lse(genomic_dup3):
         "variation": {
             "_id": "ga4gh:VT.15sKDgSyoCPOgfrFHvSea-fHVeu7huVT",
             "type": "Text",
-            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # noqa: E501
-        }
+            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup",  # noqa: E501
+        },
     }
     return VariationDescriptor(**params)
 
@@ -483,7 +463,7 @@ def genomic_dup3_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:2928"
+        "gene_context": "hgnc:2928",
     }
     return params
 
@@ -496,18 +476,10 @@ def genomic_dup3_free_text_subject():
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         "interval": {
             "type": "SequenceInterval",
-            "start": {
-                "min": 31147273,
-                "max": 31147277,
-                "type": "DefiniteRange"
-            },
-            "end": {
-                "min": 31182738,
-                "max": 31182740,
-                "type": "DefiniteRange"
-            }
+            "start": {"min": 31147273, "max": 31147277, "type": "DefiniteRange"},
+            "end": {"min": 31182738, "max": 31182740, "type": "DefiniteRange"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
@@ -519,7 +491,7 @@ def genomic_dup3_free_text_cx(genomic_dup3_free_text, genomic_dup3_free_text_sub
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup3_free_text_subject,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
@@ -533,7 +505,7 @@ def genomic_dup3_free_text_cn(genomic_dup3_free_text, genomic_dup3_free_text_sub
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup3_free_text_subject,
-        "copies": {"type": "Number", "value": 4}
+        "copies": {"type": "Number", "value": 4},
     }
     genomic_dup3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup3_free_text)
@@ -548,8 +520,8 @@ def genomic_dup3_free_text_rse_lse(genomic_dup3_free_text):
         "variation": {
             "_id": "ga4gh:VT.F0AX-RkMN4U8KLkIE68ECGU83Y-ICWXh",
             "type": "Text",
-            "definition": "DMD g.(31147274_31147278)_(31182737_31182739)dup"
-        }
+            "definition": "DMD g.(31147274_31147278)_(31182737_31182739)dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -564,7 +536,7 @@ def genomic_dup4():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -577,7 +549,7 @@ def genomic_dup4_cx(genomic_dup4, genomic_dup4_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup4_loc,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
@@ -591,7 +563,7 @@ def genomic_dup4_cn(genomic_dup4, genomic_dup4_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup4_loc,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     genomic_dup4["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4)
@@ -606,8 +578,8 @@ def genomic_dup4_rse_lse(genomic_dup4):
         "variation": {
             "_id": "ga4gh:VT.Pga4IH82qga2iZAodjxYw9OXhB4Xa2g8",
             "type": "Text",
-            "definition": "NC_000020.11:g.(?_30417576)_(31394018_?)dup"
-        }
+            "definition": "NC_000020.11:g.(?_30417576)_(31394018_?)dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -623,7 +595,7 @@ def genomic_dup4_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:17340"
+        "gene_context": "hgnc:17340",
     }
     return params
 
@@ -636,18 +608,10 @@ def genomic_dup4_free_text_subject():
         "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
         "interval": {
             "type": "SequenceInterval",
-            "start": {
-                "value": 1674441,
-                "comparator": "<=",
-                "type": "IndefiniteRange"
-            },
-            "end": {
-                "value": 1684571,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
+            "start": {"value": 1674441, "comparator": "<=", "type": "IndefiniteRange"},
+            "end": {"value": 1684571, "comparator": ">=", "type": "IndefiniteRange"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
@@ -659,7 +623,7 @@ def genomic_dup4_free_text_cx(genomic_dup4_free_text, genomic_dup4_free_text_sub
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup4_free_text_subject,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     genomic_dup4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4_free_text)
@@ -673,7 +637,7 @@ def genomic_dup4_free_text_cn(genomic_dup4_free_text, genomic_dup4_free_text_sub
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup4_free_text_subject,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     genomic_dup4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_dup4_free_text)
@@ -688,8 +652,8 @@ def genomic_dup4_free_text_rse_lse(genomic_dup4_free_text):
         "variation": {
             "_id": "ga4gh:VT.Pga4IH82qga2iZAodjxYw9OXhB4Xa2g8",
             "type": "Text",
-            "definition": "NC_000020.11:g.(?_30417576)_(31394018_?)dup"
-        }
+            "definition": "NC_000020.11:g.(?_30417576)_(31394018_?)dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -704,7 +668,7 @@ def genomic_dup5():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -716,7 +680,7 @@ def genomic_dup5_cn_var(params, genomic_dup5_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup5_loc,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     params["variation_id"] = _id
 
@@ -728,7 +692,7 @@ def genomic_dup5_cx_var(params, genomic_dup5_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup5_loc,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     params["variation_id"] = _id
 
@@ -756,8 +720,8 @@ def genomic_dup5_rse_lse(genomic_dup5):
         "variation": {
             "_id": "ga4gh:VT.of16BEeHyU9od62SrjSCQ4LyUtbbGoKi",
             "type": "Text",
-            "definition": "NC_000023.11:g.(?_154021812)_154092209dup"
-        }
+            "definition": "NC_000023.11:g.(?_154021812)_154092209dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -773,7 +737,7 @@ def genomic_dup5_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:6990"
+        "gene_context": "hgnc:6990",
     }
     return params
 
@@ -801,8 +765,8 @@ def genomic_dup5_free_text_rse_lse(genomic_dup5_free_text):
         "variation": {
             "_id": "ga4gh:VT.Kw18bSFpQp9xdKg88fqW7zUx4_VXFIiW",
             "type": "Text",
-            "definition": "MECP2 g.(?_154021812)_154092209dup"
-        }
+            "definition": "MECP2 g.(?_154021812)_154092209dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -817,7 +781,7 @@ def genomic_dup6():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -829,7 +793,7 @@ def genomic_dup6_cx_var(params, genomic_dup6_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_dup6_loc,
-        "copy_change": "efo:0030070"
+        "copy_change": "efo:0030070",
     }
     params["variation_id"] = _id
 
@@ -841,7 +805,7 @@ def genomic_dup6_cn_var(params, genomic_dup6_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_dup6_loc,
-        "copies": {"type": "Number", "value": 2}
+        "copies": {"type": "Number", "value": 2},
     }
     params["variation_id"] = _id
 
@@ -869,8 +833,8 @@ def genomic_dup6_rse_lse(genomic_dup6):
         "variation": {
             "_id": "ga4gh:VT.2k5AWTbGJxvLVT6bUW0pUMq6XGAcEjXW",
             "type": "Text",
-            "definition": "NC_000023.11:g.154021812_(154092209_?)dup"
-        }
+            "definition": "NC_000023.11:g.154021812_(154092209_?)dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -886,7 +850,7 @@ def genomic_dup6_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:6990"
+        "gene_context": "hgnc:6990",
     }
     return params
 
@@ -914,8 +878,8 @@ def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
         "variation": {
             "_id": "ga4gh:VT.LbAqiLmJs1t9-FgEKD0-KDKwzvM3AAlz",
             "type": "Text",
-            "definition": "MECP2 g.154021812_(154092209_?)dup"
-        }
+            "definition": "MECP2 g.154021812_(154092209_?)dup",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -930,7 +894,7 @@ def genomic_del1():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "T"
+        "vrs_ref_allele_seq": "T",
     }
     return params
 
@@ -944,10 +908,7 @@ def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
         "type": "Allele",
         "_id": _id,
         "location": genomic_del1_seq_loc,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": ""
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
     return VariationDescriptor(**genomic_del1)
 
@@ -967,7 +928,7 @@ def genomic_del1_cx(genomic_del1, genomic_del1_seq_loc):
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.d00Awg55O8wqzMAO6lognOO0nZIu8Vvj",
         "subject": genomic_del1_seq_loc,
-        "copy_change": "efo:0030064"
+        "copy_change": "efo:0030064",
     }
     genomic_del1["variation_id"] = genomic_del1["variation"]["_id"]
     return VariationDescriptor(**genomic_del1)
@@ -986,13 +947,10 @@ def genomic_del1_rse(genomic_del1, genomic_del1_seq_loc):
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_del1_seq_loc,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 0
-            }
-        }
+            "count": {"type": "Number", "value": 0},
+        },
     }
     genomic_del1["variation_id"] = _id
     return VariationDescriptor(**genomic_del1)
@@ -1009,7 +967,7 @@ def genomic_del1_free_text():
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "T",
-        "gene_context": "hgnc:12687"
+        "gene_context": "hgnc:12687",
     }
     return params
 
@@ -1025,13 +983,12 @@ def genomic_del1_free_text_seq_loc():
             "start": {"value": 557, "type": "Number"},
             "end": {"value": 558, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_free_text_lse(genomic_del1_free_text,
-                               genomic_del1_free_text_seq_loc):
+def genomic_del1_free_text_lse(genomic_del1_free_text, genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del LSE."""
     _id = "ga4gh:VA.DdtLZ_d22R0O0VU020WcCLvNhXNZtU2j"
     genomic_del1_free_text["variation_id"] = _id
@@ -1039,10 +996,7 @@ def genomic_del1_free_text_lse(genomic_del1_free_text,
         "type": "Allele",
         "_id": _id,
         "location": genomic_del1_free_text_seq_loc,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": ""
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
     return VariationDescriptor(**genomic_del1_free_text)
 
@@ -1055,15 +1009,14 @@ def genomic_del1_free_text_cn(genomic_del1_free_text, genomic_del1_free_text_seq
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del1_free_text_seq_loc,
-        "copies": {"type": "Number", "value": 1}
+        "copies": {"type": "Number", "value": 1},
     }
     genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del1_free_text_rse(genomic_del1_free_text,
-                               genomic_del1_free_text_seq_loc):
+def genomic_del1_free_text_rse(genomic_del1_free_text, genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.o8kDqsCKM-cakyb_Pa5HWXLFxKqHtZA4"
     genomic_del1_free_text["variation"] = {
@@ -1075,13 +1028,10 @@ def genomic_del1_free_text_rse(genomic_del1_free_text,
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_del1_free_text_seq_loc,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 0
-            }
-        }
+            "count": {"type": "Number", "value": 0},
+        },
     }
     genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
@@ -1097,7 +1047,7 @@ def genomic_del2():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT"
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
     }
     return params
 
@@ -1111,10 +1061,7 @@ def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
         "type": "Allele",
         "_id": _id,
         "location": genomic_del2_seq_loc,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": ""
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
     return VariationDescriptor(**genomic_del2)
 
@@ -1134,7 +1081,7 @@ def genomic_del2_cx(genomic_del2, genomic_del2_seq_loc):
         "type": "CopyNumberChange",
         "_id": "ga4gh:CX.RCahMJuL8e7L5Z56Uri2hq-l8tYHHnC3",
         "subject": genomic_del2_seq_loc,
-        "copy_change": "efo:0030069"
+        "copy_change": "efo:0030069",
     }
     genomic_del2["variation_id"] = genomic_del2["variation"]["_id"]
     return VariationDescriptor(**genomic_del2)
@@ -1153,13 +1100,10 @@ def genomic_del2_rse(genomic_del2, genomic_del2_seq_loc):
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_del2_seq_loc,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 0
-            }
-        }
+            "count": {"type": "Number", "value": 0},
+        },
     }
     genomic_del2["variation_id"] = _id
     return VariationDescriptor(**genomic_del2)
@@ -1176,7 +1120,7 @@ def genomic_del2_free_text():
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
-        "gene_context": "hgnc:12687"
+        "gene_context": "hgnc:12687",
     }
     return params
 
@@ -1192,13 +1136,14 @@ def genomic_del2_free_text_seq_loc():
             "start": {"value": 491, "type": "Number"},
             "end": {"value": 510, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_free_text_default(genomic_del2_free_text,
-                                   genomic_del2_free_text_seq_loc):
+def genomic_del2_free_text_default(
+    genomic_del2_free_text, genomic_del2_free_text_seq_loc
+):
     """Create a test fixture for genomic del default and LSE."""
     _id = "ga4gh:VA.V0TeIIZTlBnFTIc64hqxzjbhAH3I4VZI"
     genomic_del2_free_text["variation_id"] = _id
@@ -1206,32 +1151,27 @@ def genomic_del2_free_text_default(genomic_del2_free_text,
         "type": "Allele",
         "_id": _id,
         "location": genomic_del2_free_text_seq_loc,
-        "state": {
-            "type": "LiteralSequenceExpression",
-            "sequence": ""
-        }
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
     return VariationDescriptor(**genomic_del2_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_free_text_cnv(genomic_del2_free_text,
-                               genomic_del2_free_text_seq_loc):
+def genomic_del2_free_text_cnv(genomic_del2_free_text, genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
     _id = "ga4gh:CN.q88lo37aluIzCiKlFqlkGdxNU8XTJrIo"
     genomic_del2_free_text["variation"] = {
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del2_free_text_seq_loc,
-        "copies": {"type": "Number", "value": 1}
+        "copies": {"type": "Number", "value": 1},
     }
     genomic_del2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del2_free_text)
 
 
 @pytest.fixture(scope="module")
-def genomic_del2_free_text_rse(genomic_del2_free_text,
-                               genomic_del2_free_text_seq_loc):
+def genomic_del2_free_text_rse(genomic_del2_free_text, genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
     _id = "ga4gh:VA.uED5jM7zwbFLiXfCufVuwIs2ufkPF2KJ"
     genomic_del2_free_text["variation"] = {
@@ -1243,13 +1183,10 @@ def genomic_del2_free_text_rse(genomic_del2_free_text,
             "seq_expr": {
                 "type": "DerivedSequenceExpression",
                 "location": genomic_del2_free_text_seq_loc,
-                "reverse_complement": False
+                "reverse_complement": False,
             },
-            "count": {
-                "type": "Number",
-                "value": 0
-            }
-        }
+            "count": {"type": "Number", "value": 0},
+        },
     }
     genomic_del2_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del2_free_text)
@@ -1265,7 +1202,7 @@ def genomic_del3():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -1278,7 +1215,7 @@ def genomic_del3_cx(genomic_del3, genomic_del3_dup3_loc_not_normalized):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
@@ -1292,7 +1229,7 @@ def genomic_del3_cn(genomic_del3, genomic_del3_dup3_loc_not_normalized):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copies": {"type": "Number", "value": 2}
+        "copies": {"type": "Number", "value": 2},
     }
     genomic_del3["variation_id"] = _id
     return VariationDescriptor(**genomic_del3)
@@ -1307,8 +1244,8 @@ def genomic_del3_rse_lse(genomic_del3):
         "variation": {
             "_id": "ga4gh:VT.tmA3mpMy9HKUweaB8aYsq6uuejEx9iK7",
             "type": "Text",
-            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # noqa: E501
-        }
+            "definition": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del",  # noqa: E501
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1324,7 +1261,7 @@ def genomic_del3_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:3226"
+        "gene_context": "hgnc:3226",
     }
     return params
 
@@ -1337,18 +1274,10 @@ def genomic_del3_free_text_subject():
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         "interval": {
             "type": "SequenceInterval",
-            "start": {
-                "min": 68839264,
-                "max": 68839267,
-                "type": "DefiniteRange"
-            },
-            "end": {
-                "min": 68841121,
-                "max": 68841126,
-                "type": "DefiniteRange"
-            }
+            "start": {"min": 68839264, "max": 68839267, "type": "DefiniteRange"},
+            "end": {"min": 68841121, "max": 68841126, "type": "DefiniteRange"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
@@ -1360,7 +1289,7 @@ def genomic_del3_free_text_cx(genomic_del3_free_text, genomic_del3_free_text_sub
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del3_free_text_subject,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
@@ -1374,7 +1303,7 @@ def genomic_del3_free_text_cn(genomic_del3_free_text, genomic_del3_free_text_sub
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del3_free_text_subject,
-        "copies": {"type": "Number", "value": 2}
+        "copies": {"type": "Number", "value": 2},
     }
     genomic_del3_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del3_free_text)
@@ -1389,8 +1318,8 @@ def genomic_del3_free_text_rse_lse(genomic_del3_free_text):
         "variation": {
             "_id": "ga4gh:VT.9mGg0U_Z7NZCFV3jrLdGxSQU03g7z3Z1",
             "type": "Text",
-            "definition": "EFNB1 g.(68839265_68839268)_(68841120_68841125)del"
-        }
+            "definition": "EFNB1 g.(68839265_68839268)_(68841120_68841125)del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1405,7 +1334,7 @@ def genomic_del4():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -1418,7 +1347,7 @@ def genomic_del4_cx(genomic_del4, genomic_del4_seq_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del4_seq_loc,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
@@ -1432,7 +1361,7 @@ def genomic_del4_cn(genomic_del4, genomic_del4_seq_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del4_seq_loc,
-        "copies": {"type": "Number", "value": 1}
+        "copies": {"type": "Number", "value": 1},
     }
     genomic_del4["variation_id"] = _id
     return VariationDescriptor(**genomic_del4)
@@ -1447,8 +1376,8 @@ def genomic_del4_rse_lse(genomic_del4):
         "variation": {
             "_id": "ga4gh:VT.whBY5P24WVxF1wneDcI8x8btqorJUWXQ",
             "type": "Text",
-            "definition": "NC_000023.11:g.(?_31120496)_(33339477_?)del"
-        }
+            "definition": "NC_000023.11:g.(?_31120496)_(33339477_?)del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1464,7 +1393,7 @@ def genomic_del4_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:2206"
+        "gene_context": "hgnc:2206",
     }
     return params
 
@@ -1480,15 +1409,11 @@ def genomic_del4_free_text_subject():
             "start": {
                 "value": 227022027,
                 "comparator": "<=",
-                "type": "IndefiniteRange"
+                "type": "IndefiniteRange",
             },
-            "end": {
-                "value": 227025830,
-                "comparator": ">=",
-                "type": "IndefiniteRange"
-            }
+            "end": {"value": 227025830, "comparator": ">=", "type": "IndefiniteRange"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
 
 
@@ -1500,7 +1425,7 @@ def genomic_del4_free_text_cx(genomic_del4_free_text, genomic_del4_free_text_sub
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del4_free_text_subject,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
@@ -1514,7 +1439,7 @@ def genomic_del4_free_text_cn(genomic_del4_free_text, genomic_del4_free_text_sub
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del4_free_text_subject,
-        "copies": {"type": "Number", "value": 1}
+        "copies": {"type": "Number", "value": 1},
     }
     genomic_del4_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del4_free_text)
@@ -1529,8 +1454,8 @@ def genomic_del4_free_text_rse_lse(genomic_del4_free_text):
         "variation": {
             "_id": "ga4gh:VT.lT0rFYhOGFLA9MYA8ypnCf5q-CkV8dJv",
             "type": "Text",
-            "definition": "COL4A4 g.(?_227022028)_(227025830_?)del"
-        }
+            "definition": "COL4A4 g.(?_227022028)_(227025830_?)del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1551,22 +1476,22 @@ def genomic_uncertain_del_2():
                     "start": {
                         "value": 110104899,
                         "comparator": "<=",
-                        "type": "IndefiniteRange"
+                        "type": "IndefiniteRange",
                     },
                     "end": {
                         "value": 110207160,
                         "comparator": ">=",
-                        "type": "IndefiniteRange"
+                        "type": "IndefiniteRange",
                     },
-                    "type": "SequenceInterval"
+                    "type": "SequenceInterval",
                 },
-                "type": "SequenceLocation"
+                "type": "SequenceLocation",
             },
             "copy_change": "efo:0030067",
-            "type": "CopyNumberChange"
+            "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159"
+        "structural_type": "SO:0000159",
     }
     return VariationDescriptor(**params)
 
@@ -1587,22 +1512,22 @@ def genomic_uncertain_del_y():
                     "start": {
                         "value": 14076801,
                         "comparator": "<=",
-                        "type": "IndefiniteRange"
+                        "type": "IndefiniteRange",
                     },
                     "end": {
                         "value": 57165209,
                         "comparator": ">=",
-                        "type": "IndefiniteRange"
+                        "type": "IndefiniteRange",
                     },
-                    "type": "SequenceInterval"
+                    "type": "SequenceInterval",
                 },
-                "type": "SequenceLocation"
+                "type": "SequenceLocation",
             },
             "copy_change": "efo:0030067",
-            "type": "CopyNumberChange"
+            "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159"
+        "structural_type": "SO:0000159",
     }
     return VariationDescriptor(**params)
 
@@ -1617,7 +1542,7 @@ def genomic_del5():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -1629,7 +1554,7 @@ def genomic_del5_cn_var(params, genomic_del5_seq_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del5_seq_loc,
-        "copies": {"type": "Number", "value": 3}
+        "copies": {"type": "Number", "value": 3},
     }
     params["variation_id"] = _id
 
@@ -1641,7 +1566,7 @@ def genomic_del5_cx_var(params, genomic_del5_seq_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del5_seq_loc,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     params["variation_id"] = _id
 
@@ -1669,8 +1594,8 @@ def genomic_del5_rse_lse(genomic_del5):
         "variation": {
             "_id": "ga4gh:VT.xCLHh3GpCebrP6KDMsWZRdIiW7Sti27H",
             "type": "Text",
-            "definition": "NC_000023.11:g.(?_18575354)_18653629del"
-        }
+            "definition": "NC_000023.11:g.(?_18575354)_18653629del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1686,7 +1611,7 @@ def genomic_del5_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:11411"
+        "gene_context": "hgnc:11411",
     }
     return params
 
@@ -1714,8 +1639,8 @@ def genomic_del5_free_text_rse_lse(genomic_del5_free_text):
         "variation": {
             "_id": "ga4gh:VT.xCLHh3GpCebrP6KDMsWZRdIiW7Sti27H",
             "type": "Text",
-            "definition": "NC_000023.11:g.(?_18575354)_18653629del"
-        }
+            "definition": "NC_000023.11:g.(?_18575354)_18653629del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1730,7 +1655,7 @@ def genomic_del6():
         "variation": dict(),
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": None
+        "vrs_ref_allele_seq": None,
     }
     return params
 
@@ -1742,7 +1667,7 @@ def genomic_del6_cx_var(params, genomic_del6_seq_loc):
         "type": "CopyNumberChange",
         "_id": _id,
         "subject": genomic_del6_seq_loc,
-        "copy_change": "efo:0030067"
+        "copy_change": "efo:0030067",
     }
     params["variation_id"] = _id
 
@@ -1754,7 +1679,7 @@ def genomic_del6_cn_var(params, genomic_del6_seq_loc):
         "type": "CopyNumberCount",
         "_id": _id,
         "subject": genomic_del6_seq_loc,
-        "copies": {"type": "Number", "value": 1}
+        "copies": {"type": "Number", "value": 1},
     }
     params["variation_id"] = _id
 
@@ -1782,8 +1707,8 @@ def genomic_del6_rse_lse(genomic_del6):
         "variation": {
             "_id": "ga4gh:VT.Df49jbB-kZ2LSm180uA9wn4TT_p215yX",
             "type": "Text",
-            "definition": "NC_000006.12:g.133462764_(133464858_?)del"
-        }
+            "definition": "NC_000006.12:g.133462764_(133464858_?)del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1799,7 +1724,7 @@ def genomic_del6_free_text():
         "molecule_context": "genomic",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
-        "gene_context": "hgnc:3522"
+        "gene_context": "hgnc:3522",
     }
     return params
 
@@ -1827,8 +1752,8 @@ def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
         "variation": {
             "_id": "ga4gh:VT.a3kXhodtO3tgsdPlEL39Ql4jOuCpOc0s",
             "type": "Text",
-            "definition": "EYA4 g.133462764_(133464858_?)del"
-        }
+            "definition": "EYA4 g.133462764_(133464858_?)del",
+        },
     }
     return VariationDescriptor(**params)
 
@@ -1837,17 +1762,24 @@ def genomic_del6_free_text_rse_lse(genomic_del6_free_text):
 async def assert_text_variation(query_list, test_handler):
     """Make assertion checks for invalid queries"""
     for q in query_list:
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT,
-                                            untranslatable_returns_text=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.DEFAULT, untranslatable_returns_text=True
+        )
         assert resp.variation_descriptor.label == q.strip(), q
-        assert (resp.variation_descriptor.variation.type == "Text"), q
+        assert resp.variation_descriptor.variation.type == "Text", q
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup1(test_handler, genomic_dup1_lse,
-                            genomic_dup1_cn, genomic_dup1_cx, genomic_dup1_rse,
-                            genomic_dup1_free_text_lse,
-                            genomic_dup1_free_text_cn, genomic_dup1_free_text_rse):
+async def test_genomic_dup1(
+    test_handler,
+    genomic_dup1_lse,
+    genomic_dup1_cn,
+    genomic_dup1_cx,
+    genomic_dup1_rse,
+    genomic_dup1_free_text_lse,
+    genomic_dup1_free_text_cn,
+    genomic_dup1_free_text_rse,
+):
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NC_000003.12%3Ag.49531262dup
     q = "NC_000003.12:g.49531262dup"  # 38
@@ -1862,8 +1794,9 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cn, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030072")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030072"
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cx, q)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -1881,8 +1814,9 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030072")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030072"
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup1_cx, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -1892,46 +1826,55 @@ async def test_genomic_dup1(test_handler, genomic_dup1_lse,
     assertion_checks(resp.variation_descriptor, genomic_dup1_lse, q, ignore_id=True)
 
     # Free Text
-    for q in [
-        "DAG1 g.49568695dup",  # 37
-        "DAG1 g.49531262dup"  # 38
-    ]:
+    for q in ["DAG1 g.49568695dup", "DAG1 g.49531262dup"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup1_free_text_lse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup1_free_text_lse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup1_free_text_cn, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_rse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup1_free_text_rse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_dup1_free_text_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup1_free_text_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
         "NC_000007.13:g.159138670dup",
         "NC_000007.14:g.159345976dup",
-        "BRAF g.140219337dup", "BRAF g.141024929dup"
+        "BRAF g.140219337dup",
+        "BRAF g.141024929dup",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_cn,
-                            genomic_dup2_cx, genomic_dup2_rse,
-                            genomic_dup2_free_text_default, genomic_dup2_free_text_cn,
-                            genomic_dup2_free_text_rse):
+async def test_genomic_dup2(
+    test_handler,
+    genomic_dup2_lse,
+    genomic_dup2_cn,
+    genomic_dup2_cx,
+    genomic_dup2_rse,
+    genomic_dup2_free_text_default,
+    genomic_dup2_free_text_cn,
+    genomic_dup2_free_text_rse,
+):
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NM_004006.2%3Ac.20_23dup
     q = "NC_000023.11:g.33211290_33211293dup"  # 38
@@ -1971,42 +1914,49 @@ async def test_genomic_dup2(test_handler, genomic_dup2_lse, genomic_dup2_cn,
     assertion_checks(resp.variation_descriptor, genomic_dup2_lse, q, ignore_id=True)
 
     # Free text
-    for q in [
-        "DMD g.33211290_33211293dup",  # 37
-        "DMD g.33229407_33229410dup"  # 38
-    ]:
+    for q in ["DMD g.33211290_33211293dup", "DMD g.33229407_33229410dup"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_default, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup2_free_text_default, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup2_free_text_cn, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_rse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup2_free_text_rse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_dup2_free_text_default, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup2_free_text_default, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
         "NC_000007.13:g.140413127_159138670dup",
         "NC_000007.14:g.140413127_159345976dup",
-        "BRAF g.140219337_140924929dup", "BRAF g.140719326_141024929dup"
+        "BRAF g.140219337_140924929dup",
+        "BRAF g.140719326_141024929dup",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
-                            genomic_dup3_rse_lse, genomic_dup3_free_text_cn,
-                            genomic_dup3_free_text_cx,
-                            genomic_dup3_free_text_rse_lse):
+async def test_genomic_dup3(
+    test_handler,
+    genomic_dup3_cx,
+    genomic_dup3_cn,
+    genomic_dup3_rse_lse,
+    genomic_dup3_free_text_cn,
+    genomic_dup3_free_text_cx,
+    genomic_dup3_free_text_rse_lse,
+):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2017,16 +1967,19 @@ async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
     )
     assertion_checks(resp.variation_descriptor, genomic_dup3_cn, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030070")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030070"
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
@@ -2042,53 +1995,64 @@ async def test_genomic_dup3(test_handler, genomic_dup3_cx, genomic_dup3_cn,
     assertion_checks(resp.variation_descriptor, genomic_dup3_cx, q, ignore_id=True)
 
     genomic_dup3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup3_rse_lse, q, ignore_id=True)
 
     # Free Text
-    for q in [
-        "DMD g.(31147274_31147278)_(31182737_31182739)dup"  # 38
-    ]:
+    for q in ["DMD g.(31147274_31147278)_(31182737_31182739)dup"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup3_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup3_free_text_cn, q, ignore_id=True
+        )
 
         genomic_dup3_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup3_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
         "NC_000023.10:g.(31119221_31119227)_(31119300_155270562)dup",
         "NC_000023.11:g.(31119221_31119227)_(31119300_156040899)dup",
-        "DMD g.(31060227_31100351)_(33274278_33417151)dup"
+        "DMD g.(31060227_31100351)_(33274278_33417151)dup",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup4(test_handler, genomic_dup4_cn, genomic_dup4_cx,
-                            genomic_dup4_rse_lse, genomic_dup4_free_text_cn,
-                            genomic_dup4_free_text_cx,
-                            genomic_dup4_free_text_rse_lse):
+async def test_genomic_dup4(
+    test_handler,
+    genomic_dup4_cn,
+    genomic_dup4_cx,
+    genomic_dup4_rse_lse,
+    genomic_dup4_free_text_cn,
+    genomic_dup4_free_text_cx,
+    genomic_dup4_free_text_rse_lse,
+):
     """Test that genomic duplication works correctly."""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2102,12 +2066,14 @@ async def test_genomic_dup4(test_handler, genomic_dup4_cn, genomic_dup4_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
@@ -2123,55 +2089,68 @@ async def test_genomic_dup4(test_handler, genomic_dup4_cn, genomic_dup4_cx,
     assertion_checks(resp.variation_descriptor, genomic_dup4_cx, q, ignore_id=True)
 
     genomic_dup4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup4_rse_lse, q, ignore_id=True)
 
     # Free Text
     for q in [
         "PRPF8 g.(?_1577736)_(1587865_?)dup",  # 37
-        "PRPF8 g.(?_1674442)_(1684571_?)dup"  # 38
+        "PRPF8 g.(?_1674442)_(1684571_?)dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup4_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup4_free_text_cn, q, ignore_id=True
+        )
 
         genomic_dup4_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
         genomic_dup4_free_text_rse_lse.variation.definition = q
-        assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup4_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
         "NC_000020.10:g.(?_29652252)_(63025530_?)dup",
         "NC_000020.11:g.(?_29652252)_(64444169_?)dup",
-        "PRPF8 g.(?_1650628)_(1684571_?)dup"
+        "PRPF8 g.(?_1650628)_(1684571_?)dup",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
-                            genomic_dup5_rse_lse, genomic_dup5_free_text_cn,
-                            genomic_dup5_free_text_cx,
-                            genomic_dup5_free_text_rse_lse):
+async def test_genomic_dup5(
+    test_handler,
+    genomic_dup5_cn,
+    genomic_dup5_cx,
+    genomic_dup5_rse_lse,
+    genomic_dup5_free_text_cn,
+    genomic_dup5_free_text_cx,
+    genomic_dup5_free_text_rse_lse,
+):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2185,12 +2164,14 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
@@ -2206,39 +2187,47 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
     assertion_checks(resp.variation_descriptor, genomic_dup5_cx, q, ignore_id=True)
 
     genomic_dup5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup5_rse_lse, q, ignore_id=True)
 
     # Free Text
     for q in [
         "MECP2 g.(?_153287263)_153357667dup",  # 37
-        "MECP2 g.(?_154021812)_154092209dup"  # 38
+        "MECP2 g.(?_154021812)_154092209dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup5_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup5_free_text_cn, q, ignore_id=True
+        )
 
         genomic_dup5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup5_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     for q in [
@@ -2247,16 +2236,22 @@ async def test_genomic_dup5(test_handler, genomic_dup5_cn, genomic_dup5_cx,
         "MECP2 g.(?_154021812)_154097733dup"  # 37
         "MECP2 g.(?_154021572)_154092209dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT,
-                                            untranslatable_returns_text=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.DEFAULT, untranslatable_returns_text=True
+        )
         assert resp.variation_descriptor.variation.type == "Text", q
 
 
 @pytest.mark.asyncio
-async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
-                            genomic_dup6_rse_lse, genomic_dup6_free_text_cn,
-                            genomic_dup6_free_text_cx,
-                            genomic_dup6_free_text_rse_lse):
+async def test_genomic_dup6(
+    test_handler,
+    genomic_dup6_cn,
+    genomic_dup6_cx,
+    genomic_dup6_rse_lse,
+    genomic_dup6_free_text_cn,
+    genomic_dup6_free_text_cx,
+    genomic_dup6_free_text_rse_lse,
+):
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2270,12 +2265,14 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
@@ -2291,39 +2288,47 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
     assertion_checks(resp.variation_descriptor, genomic_dup6_cx, q, ignore_id=True)
 
     genomic_dup6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_dup6_rse_lse, q, ignore_id=True)
 
     # Free Text
     for q in [
         "MECP2 g.153287263_(153357667_?)dup",  # 37
-        "MECP2 g.154021812_(154092209_?)dup"  # 38
+        "MECP2 g.154021812_(154092209_?)dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup6_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
         )
-        assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup6_free_text_cn, q, ignore_id=True
+        )
 
         genomic_dup6_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_dup6_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     for q in [
@@ -2332,16 +2337,23 @@ async def test_genomic_dup6(test_handler, genomic_dup6_cn, genomic_dup6_cx,
         "MECP2 g.154021812_(154097733_?)dup"  # 37
         "MECP2 g.154021572_(154092209_?)dup",  # 38
     ]:
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT,
-                                            untranslatable_returns_text=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.DEFAULT, untranslatable_returns_text=True
+        )
         assert resp.variation_descriptor.variation.type == "Text", q
 
 
 @pytest.mark.asyncio
-async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
-                            genomic_del1_cx, genomic_del1_rse,
-                            genomic_del1_free_text_lse, genomic_del1_free_text_cn,
-                            genomic_del1_free_text_rse):
+async def test_genomic_del1(
+    test_handler,
+    genomic_del1_lse,
+    genomic_del1_cn,
+    genomic_del1_cx,
+    genomic_del1_rse,
+    genomic_del1_free_text_lse,
+    genomic_del1_free_text_cn,
+    genomic_del1_free_text_rse,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2352,8 +2364,9 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     )
     assertion_checks(resp.variation_descriptor, genomic_del1_cn, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030064")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030064"
+    )
     assertion_checks(resp.variation_descriptor, genomic_del1_cx, q)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -2371,8 +2384,9 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     )
     assertion_checks(resp.variation_descriptor, genomic_del1_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030064")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030064"
+    )
     assertion_checks(resp.variation_descriptor, genomic_del1_cx, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -2382,27 +2396,28 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
 
     # Free text
-    for q in [
-        "VHL g.10191495del",  # 37
-        "VHL g.10149811del"  # 38
-    ]:
+    for q in ["VHL g.10191495del", "VHL g.10149811del"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del1_free_text_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del1_free_text_lse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_del1_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del1_free_text_cn, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_del1_free_text_rse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del1_free_text_rse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_del1_free_text_lse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del1_free_text_lse, q, ignore_id=True
+        )
 
     # gnomad vcf
     q = "3-10149810-CT-C"  # 38
@@ -2416,16 +2431,23 @@ async def test_genomic_del1(test_handler, genomic_del1_lse, genomic_del1_cn,
     invalid_queries = [
         "NC_000003.11:g.198022431del",
         "NC_000003.12:g.198295567del",
-        "BRAF g.140413127del", "BRAF g.141024929del"
+        "BRAF g.140413127del",
+        "BRAF g.141024929del",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
-                            genomic_del2_cx, genomic_del2_rse,
-                            genomic_del2_free_text_default, genomic_del2_free_text_cnv,
-                            genomic_del2_free_text_rse):
+async def test_genomic_del2(
+    test_handler,
+    genomic_del2_lse,
+    genomic_del2_cn,
+    genomic_del2_cx,
+    genomic_del2_rse,
+    genomic_del2_free_text_default,
+    genomic_del2_free_text_cnv,
+    genomic_del2_free_text_rse,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2436,8 +2458,9 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
     )
     assertion_checks(resp.variation_descriptor, genomic_del2_cn, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030069")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030069"
+    )
     assertion_checks(resp.variation_descriptor, genomic_del2_cx, q)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -2455,8 +2478,9 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
     )
     assertion_checks(resp.variation_descriptor, genomic_del2_cn, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-                                        copy_change="efo:0030069")
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE, copy_change="efo:0030069"
+    )
     assertion_checks(resp.variation_descriptor, genomic_del2_cx, q, ignore_id=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
@@ -2466,27 +2490,28 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
     assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
     # Free text
-    for q in [
-        "VHL g.10188279_10188297del",  # 37
-        "VHL g.10146595_10146613del"  # 38
-    ]:
+    for q in ["VHL g.10188279_10188297del", "VHL g.10146595_10146613del"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del2_free_text_default, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del2_free_text_default, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_del2_free_text_cnv, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del2_free_text_cnv, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_del2_free_text_rse, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del2_free_text_rse, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR)
-        assertion_checks(resp.variation_descriptor, genomic_del2_free_text_default, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del2_free_text_default, q, ignore_id=True
+        )
 
     # gnomad vcf
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
@@ -2501,16 +2526,22 @@ async def test_genomic_del2(test_handler, genomic_del2_lse, genomic_del2_cn,
     invalid_queries = [
         "NC_000003.12:g.10146595_198295580del",
         "NC_000003.11:g.198022435_198022437del",
-        "BRAF g.140413127_140419136del", "BRAF g.140719326_141024929del"
+        "BRAF g.140413127_140419136del",
+        "BRAF g.140719326_141024929del",
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_del3(test_handler, genomic_del3_cn, genomic_del3_cx,
-                            genomic_del3_rse_lse, genomic_del3_free_text_cn,
-                            genomic_del3_free_text_cx,
-                            genomic_del3_free_text_rse_lse):
+async def test_genomic_del3(
+    test_handler,
+    genomic_del3_cn,
+    genomic_del3_cx,
+    genomic_del3_rse_lse,
+    genomic_del3_free_text_cn,
+    genomic_del3_free_text_cx,
+    genomic_del3_free_text_rse_lse,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2524,12 +2555,14 @@ async def test_genomic_del3(test_handler, genomic_del3_cn, genomic_del3_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
@@ -2545,55 +2578,70 @@ async def test_genomic_del3(test_handler, genomic_del3_cn, genomic_del3_cx,
     assertion_checks(resp.variation_descriptor, genomic_del3_cx, q, ignore_id=True)
 
     genomic_del3_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del3_rse_lse, q, ignore_id=True)
 
     # Free Text
     for q in [
         "EFNB1 g.(68059108_68059111)_(68060963_68060968)del",  # 37
-        "EFNB1 g.(68839265_68839268)_(68841120_68841125)del"  # 38
+        "EFNB1 g.(68839265_68839268)_(68841120_68841125)del",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del3_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del3_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
         )
-        assertion_checks(resp.variation_descriptor, genomic_del3_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del3_free_text_cn, q, ignore_id=True
+        )
 
         genomic_del3_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del3_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del3_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del3_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
         "NC_000023.11:g.(156040880_156040883)_(156040896_156040899)del",
         "NC_000023.10:g.(155270550_155270555)_(155270560_155270562)del",
         "EFNB1 g.(68048863_68048870)_(68842150_68842152)del",  # 37
-        "EFNB1 g.(68829022_68829030)_(68842150_68842161)del"  # 38
+        "EFNB1 g.(68829022_68829030)_(68842150_68842161)del",  # 38
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
-                            genomic_del4_rse_lse, genomic_uncertain_del_2,
-                            genomic_uncertain_del_y, genomic_del4_free_text_cn,
-                            genomic_del4_free_text_rse_lse, genomic_del4_free_text_cx):
+async def test_genomic_del4(
+    test_handler,
+    genomic_del4_cn,
+    genomic_del4_cx,
+    genomic_del4_rse_lse,
+    genomic_uncertain_del_2,
+    genomic_uncertain_del_y,
+    genomic_del4_free_text_cn,
+    genomic_del4_free_text_rse_lse,
+    genomic_del4_free_text_cx,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2607,12 +2655,14 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
@@ -2628,12 +2678,14 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
     assertion_checks(resp.variation_descriptor, genomic_del4_cx, q, ignore_id=True)
 
     genomic_del4_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del4_rse_lse, q, ignore_id=True)
 
     q = "NC_000002.12:g.(?_110104900)_(110207160_?)del"
@@ -2645,28 +2697,32 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
     assertion_checks(resp.variation_descriptor, genomic_uncertain_del_y, q)
 
     # Free Text
-    for q in [
-        "COL4A4 g.(?_227022028)_(227025830_?)del"  # 38
-    ]:
+    for q in ["COL4A4 g.(?_227022028)_(227025830_?)del"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del4_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del4_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_del4_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del4_free_text_cn, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del4_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del4_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del4_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
@@ -2679,10 +2735,15 @@ async def test_genomic_del4(test_handler, genomic_del4_cn, genomic_del4_cx,
 
 
 @pytest.mark.asyncio
-async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
-                            genomic_del5_rse_lse, genomic_del5_free_text_cn,
-                            genomic_del5_free_text_cx,
-                            genomic_del5_free_text_rse_lse):
+async def test_genomic_del5(
+    test_handler,
+    genomic_del5_cn,
+    genomic_del5_cx,
+    genomic_del5_rse_lse,
+    genomic_del5_free_text_cn,
+    genomic_del5_free_text_cx,
+    genomic_del5_free_text_rse_lse,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2696,12 +2757,14 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
@@ -2717,38 +2780,44 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
     assertion_checks(resp.variation_descriptor, genomic_del5_cx, q, ignore_id=True)
 
     genomic_del5_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del5_rse_lse, q, ignore_id=True)
 
     # Free text
-    for q in [
-        "CDKL5 g.(?_18575354)_18653629del"
-    ]:
+    for q in ["CDKL5 g.(?_18575354)_18653629del"]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del5_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del5_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=4
         )
-        assertion_checks(resp.variation_descriptor, genomic_del5_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del5_free_text_cn, q, ignore_id=True
+        )
 
         genomic_del5_free_text_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del5_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del5_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del5_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
@@ -2756,16 +2825,21 @@ async def test_genomic_del5(test_handler, genomic_del5_cn, genomic_del5_cx,
         "NC_000023.11:g.(?_18593474)_18671749del"
         "CDKL5  g.(?_18443702)_18671700del",  # 37
         "CDKL5  g.(?_18425585)_18653631del",  # 38
-        "CDKL5  g.(?_18425582)_18653500del"  # 38
+        "CDKL5  g.(?_18425582)_18653500del",  # 38
     ]
     await assert_text_variation(invalid_queries, test_handler)
 
 
 @pytest.mark.asyncio
-async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
-                            genomic_del6_rse_lse, genomic_del6_free_text_cn,
-                            genomic_del6_free_text_cx,
-                            genomic_del6_free_text_rse_lse):
+async def test_genomic_del6(
+    test_handler,
+    genomic_del6_cn,
+    genomic_del6_cx,
+    genomic_del6_rse_lse,
+    genomic_del6_free_text_cn,
+    genomic_del6_free_text_cx,
+    genomic_del6_free_text_rse_lse,
+):
     """Test that genomic deletion works correctly."""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
@@ -2779,12 +2853,14 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
@@ -2800,38 +2876,44 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
     assertion_checks(resp.variation_descriptor, genomic_del6_cx, q, ignore_id=True)
 
     genomic_del6_rse_lse.variation.definition = q
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                        untranslatable_returns_text=True)
+    resp = await test_handler.normalize(
+        q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+    )
     assertion_checks(resp.variation_descriptor, genomic_del6_rse_lse, q, ignore_id=True)
 
     # Free text
-    for q in [
-        "EYA4 g.133462764_(133464858_?)del"  # 38
-    ]:
+    for q in ["EYA4 g.133462764_(133464858_?)del"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp.variation_descriptor, genomic_del6_free_text_cx, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del6_free_text_cx, q, ignore_id=True
+        )
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp.variation_descriptor, genomic_del6_free_text_cn, q,
-                         ignore_id=True)
+        assertion_checks(
+            resp.variation_descriptor, genomic_del6_free_text_cn, q, ignore_id=True
+        )
 
         genomic_del6_rse_lse.variation.definition = q
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.REPEATED_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del6_free_text_rse_lse, q, ignore_id=True
+        )
 
-        resp = await test_handler.normalize(q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
-                                            untranslatable_returns_text=True)
-        assertion_checks(resp.variation_descriptor, genomic_del6_free_text_rse_lse, q,
-                         ignore_id=True)
+        resp = await test_handler.normalize(
+            q, HGVSDupDelModeOption.LITERAL_SEQ_EXPR, untranslatable_returns_text=True
+        )
+        assertion_checks(
+            resp.variation_descriptor, genomic_del6_free_text_rse_lse, q, ignore_id=True
+        )
 
     # Invalid
     invalid_queries = [
@@ -2840,7 +2922,7 @@ async def test_genomic_del6(test_handler, genomic_del6_cn, genomic_del6_cx,
         "EYA4 g.133561700_(133853270_?)del",  # 37
         "EYA4 g.133561651_(133561708_?)del",  # 37
         "EYA4 g.133240513_(133240600_?)del",  # 38
-        "EYA4 g.133240515_(133532130_?)del"  # 38
+        "EYA4 g.133240515_(133532130_?)del",  # 38
     ]
     await assert_text_variation(invalid_queries, test_handler)
 

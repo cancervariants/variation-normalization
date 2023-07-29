@@ -54,5 +54,5 @@ class ProteinReferenceAgree(Tokenizer):
                     input_string=og_input_string,
                     token=f"{aa1_ref}{pos}=",
                     pos=pos,
-                    ref=aa1_ref
+                    ref=aa1_ref,
                 )

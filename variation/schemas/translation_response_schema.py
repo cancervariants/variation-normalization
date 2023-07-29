@@ -23,5 +23,5 @@ AC_PRIORITY_LABELS = [
     TranscriptPriorityLabel.MANEPlusClinical.value,
     TranscriptPriorityLabel.LongestCompatibleRemaining.value,
     "GRCh38",
-    "na"
+    "na",
 ]

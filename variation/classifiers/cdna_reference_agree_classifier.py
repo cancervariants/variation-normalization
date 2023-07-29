@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, CdnaReferenceAgreeClassification, Nomenclature
+    ClassificationType,
+    CdnaReferenceAgreeClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -24,7 +26,11 @@ class CdnaReferenceAgreeClassifier(Classifier):
         """
         return [
             [TokenType.GENE, TokenType.CDNA_REFERENCE_AGREE],
-            [TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION, TokenType.CDNA_REFERENCE_AGREE]  # noqa: E501
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_SUBSTITUTION,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],  # noqa: E501
         ]
 
     def match(self, tokens: List[Token]) -> CdnaReferenceAgreeClassification:
@@ -43,5 +49,5 @@ class CdnaReferenceAgreeClassifier(Classifier):
             matching_tokens=tokens,
             nomenclature=Nomenclature.FREE_TEXT,
             gene_token=gene_token,
-            pos=cdna_ref_agree_token.pos
+            pos=cdna_ref_agree_token.pos,
         )

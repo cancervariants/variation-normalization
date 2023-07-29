@@ -2,8 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, Nomenclature,
-    ProteinReferenceAgreeClassification
+    ClassificationType,
+    Classification,
+    Nomenclature,
+    ProteinReferenceAgreeClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
@@ -34,12 +36,14 @@ class ProteinReferenceAgree(Validator):
                 errors.append(f"`ref` not valid amino acid(s): {classification.ref}")
 
             if errors:
-                return [ValidationResult(
-                    accession=None,
-                    classification=classification,
-                    is_valid=False,
-                    errors=errors
-                )]
+                return [
+                    ValidationResult(
+                        accession=None,
+                        classification=classification,
+                        is_valid=False,
+                        errors=errors,
+                    )
+                ]
 
         validation_results = []
 
@@ -57,7 +61,7 @@ class ProteinReferenceAgree(Validator):
                     accession=p_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -84,7 +88,5 @@ class ProteinReferenceAgree(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_protein_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_protein_accessions(classification.gene_token, errors)
         return accessions

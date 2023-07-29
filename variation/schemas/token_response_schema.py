@@ -6,9 +6,18 @@ from pydantic import BaseModel, StrictInt, StrictStr
 from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor
 
 from variation.schemas.variation_schema import (
-    DelIns, Deletion, ProteinDelIns, ProteinInsertion, Substitution, Insertion,
-    ProteinDeletion, ReferenceAgree, ProteinReferenceAgree, StopGain, Duplication,
-    DupDelAmbiguous
+    DelIns,
+    Deletion,
+    ProteinDelIns,
+    ProteinInsertion,
+    Substitution,
+    Insertion,
+    ProteinDeletion,
+    ReferenceAgree,
+    ProteinReferenceAgree,
+    StopGain,
+    Duplication,
+    DupDelAmbiguous,
 )
 from variation.schemas.app_schemas import AmbiguousRegexType
 
@@ -59,10 +68,7 @@ class AltType(str, Enum):
 
 
 # Ambiguous region alt types
-AMBIGUOUS_REGIONS = {
-    AltType.DELETION_AMBIGUOUS,
-    AltType.DUPLICATION_AMBIGUOUS
-}
+AMBIGUOUS_REGIONS = {AltType.DELETION_AMBIGUOUS, AltType.DUPLICATION_AMBIGUOUS}
 
 
 class CoordinateType(str, Enum):

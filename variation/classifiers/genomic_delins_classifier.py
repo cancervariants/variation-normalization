@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, GenomicDelInsClassification, Nomenclature
+    ClassificationType,
+    GenomicDelInsClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class GenomicDelInsClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         delins classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_DELINS]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_DELINS]]
 
     def match(self, tokens: List[Token]) -> GenomicDelInsClassification:
         """Return the genomic delins classification from a list of token matches.
@@ -40,5 +40,5 @@ class GenomicDelInsClassifier(Classifier):
             gene_token=gene_token,
             pos0=genomic_delins_token.pos0,
             pos1=genomic_delins_token.pos1,
-            inserted_sequence=genomic_delins_token.inserted_sequence
+            inserted_sequence=genomic_delins_token.inserted_sequence,
         )

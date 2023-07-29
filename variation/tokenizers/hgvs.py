@@ -28,7 +28,7 @@ class HGVS(Tokenizer):
                 input_string=input_string,
                 accession=match_dict["accession"],
                 coordinate_type=CoordinateType(match_dict["coordinate"]),
-                change=match_dict["change"]
+                change=match_dict["change"],
             )
         else:
             return None

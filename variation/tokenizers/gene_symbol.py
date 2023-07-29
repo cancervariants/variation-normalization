@@ -33,7 +33,7 @@ class GeneSymbol(Tokenizer):
                 token=label,
                 input_string=input_string,
                 matched_value=label,
-                gene_descriptor=gene_descriptor
+                gene_descriptor=gene_descriptor,
             )
             return gene_match_token
 

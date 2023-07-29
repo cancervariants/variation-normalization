@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, Nomenclature, CdnaReferenceAgreeClassification
+    ClassificationType,
+    Classification,
+    Nomenclature,
+    CdnaReferenceAgreeClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -41,7 +44,7 @@ class CdnaReferenceAgree(Validator):
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -68,7 +71,5 @@ class CdnaReferenceAgree(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_cdna_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_cdna_accessions(classification.gene_token, errors)
         return accessions

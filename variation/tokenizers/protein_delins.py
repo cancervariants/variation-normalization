@@ -69,11 +69,13 @@ class ProteinDelIns(Tokenizer):
                 one_letter_aa1 = aa1
                 one_letter_ins_seq = inserted_sequence
 
-            if all((
-                type(aa0) == type(one_letter_aa0),
-                type(aa1) == type(one_letter_aa1),
-                type(inserted_sequence) == type(one_letter_ins_seq)
-            )):
+            if all(
+                (
+                    type(aa0) == type(one_letter_aa0),
+                    type(aa1) == type(one_letter_aa1),
+                    type(inserted_sequence) == type(one_letter_ins_seq),
+                )
+            ):
                 return ProteinDelInsToken(
                     input_string=og_input_string,
                     token=og_input_string,
@@ -81,5 +83,5 @@ class ProteinDelIns(Tokenizer):
                     pos0=pos0,
                     aa1=one_letter_aa1,
                     pos1=pos1,
-                    inserted_sequence=one_letter_ins_seq
+                    inserted_sequence=one_letter_ins_seq,
                 )

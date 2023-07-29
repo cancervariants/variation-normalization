@@ -32,8 +32,7 @@ class ServiceMeta(BaseModel):
         """Configure schema example."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["ServiceMeta"]) -> None:
+        def schema_extra(schema: Dict[str, Any], model: Type["ServiceMeta"]) -> None:
             """Configure OpenAPI schema"""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -43,7 +42,7 @@ class ServiceMeta(BaseModel):
                 "name": "variation-normalizer",
                 "version": "0.1.0",
                 "response_datetime": "2021-04-05T16:44:15.367831",
-                "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
+                "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
             }
 
 
@@ -64,8 +63,9 @@ class NormalizeService(ServiceResponse):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["NormalizeService"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["NormalizeService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -85,16 +85,13 @@ class NormalizeService(ServiceResponse):
                             "interval": {
                                 "end": {"value": 640, "type": "Number"},
                                 "start": {"value": 639, "type": "Number"},
-                                "type": "SequenceInterval"
+                                "type": "SequenceInterval",
                             },
                             "sequence_id": "ga4gh:SQ.WaAJ_cXXn9YpMNfhcq9lnzIvaB9ALawo",  # noqa: E501
-                            "type": "SequenceLocation"
+                            "type": "SequenceLocation",
                         },
-                        "state": {
-                            "sequence": "E",
-                            "type": "LiteralSequenceExpression"
-                        },
-                        "type": "Allele"
+                        "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
+                        "type": "Allele",
                     },
                     "molecule_context": "protein",
                     "structural_type": "SO:0001606",
@@ -104,28 +101,25 @@ class NormalizeService(ServiceResponse):
                         "type": "GeneDescriptor",
                         "label": "BRAF",
                         "gene_id": "hgnc:1097",
-                        "xrefs": [
-                            "ncbigene:673",
-                            "ensembl:ENSG00000157764"
-                        ],
+                        "xrefs": ["ncbigene:673", "ensembl:ENSG00000157764"],
                         "alternate_labels": [
                             "BRAF1",
                             "RAFB1",
                             "B-raf",
                             "B-RAF1",
                             "NS7",
-                            "BRAF-1"
+                            "BRAF-1",
                         ],
                         "extensions": [
                             {
                                 "type": "Extension",
                                 "name": "symbol_status",
-                                "value": "approved"
+                                "value": "approved",
                             },
                             {
                                 "type": "Extension",
                                 "name": "approved_name",
-                                "value": "B-Raf proto-oncogene, serine/threonine kinase"
+                                "value": "B-Raf proto-oncogene, serine/threonine kinase",  # noqa: E501
                             },
                             {
                                 "type": "Extension",
@@ -143,8 +137,8 @@ class NormalizeService(ServiceResponse):
                                     "ena.embl:M95712",
                                     "pubmed:2284096",
                                     "uniprot:P15056",
-                                    "cosmic:BRAF"
-                                ]
+                                    "cosmic:BRAF",
+                                ],
                             },
                             {
                                 "type": "Extension",
@@ -158,10 +152,10 @@ class NormalizeService(ServiceResponse):
                                         "interval": {
                                             "end": "q34",
                                             "start": "q34",
-                                            "type": "CytobandInterval"
-                                        }
+                                            "type": "CytobandInterval",
+                                        },
                                     }
-                                ]
+                                ],
                             },
                             {
                                 "type": "Extension",
@@ -172,12 +166,18 @@ class NormalizeService(ServiceResponse):
                                         "type": "SequenceLocation",
                                         "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",  # noqa: E501
                                         "interval": {
-                                            "start": {"type": "Number", "value": 140719326},  # noqa: E501
-                                            "end": {"type": "Number", "value": 140924929},  # noqa: E501
-                                            "type": "SequenceInterval"
-                                        }
+                                            "start": {
+                                                "type": "Number",
+                                                "value": 140719326,
+                                            },  # noqa: E501
+                                            "end": {
+                                                "type": "Number",
+                                                "value": 140924929,
+                                            },  # noqa: E501
+                                            "type": "SequenceInterval",
+                                        },
                                     }
-                                ]
+                                ],
                             },
                             {
                                 "type": "Extension",
@@ -191,45 +191,51 @@ class NormalizeService(ServiceResponse):
                                         "interval": {
                                             "end": "q34",
                                             "start": "q34",
-                                            "type": "CytobandInterval"
-                                        }
+                                            "type": "CytobandInterval",
+                                        },
                                     },
                                     {
                                         "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",  # noqa: E501
                                         "type": "SequenceLocation",
                                         "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",  # noqa: E501
                                         "interval": {
-                                            "start": {"type": "Number", "value": 140713327},  # noqa: E501
-                                            "end": {"type": "Number", "value": 140924929},  # noqa: E501
-                                            "type": "SequenceInterval"
-                                        }
-                                    }
-                                ]
+                                            "start": {
+                                                "type": "Number",
+                                                "value": 140713327,
+                                            },  # noqa: E501
+                                            "end": {
+                                                "type": "Number",
+                                                "value": 140924929,
+                                            },  # noqa: E501
+                                            "type": "SequenceInterval",
+                                        },
+                                    },
+                                ],
                             },
                             {
                                 "type": "Extension",
                                 "name": "hgnc_locus_type",
-                                "value": "gene with protein product"
+                                "value": "gene with protein product",
                             },
                             {
                                 "type": "Extension",
                                 "name": "ncbi_gene_type",
-                                "value": "protein-coding"
+                                "value": "protein-coding",
                             },
                             {
                                 "type": "Extension",
                                 "name": "ensembl_biotype",
-                                "value": "protein_coding"
-                            }
-                        ]
-                    }
+                                "value": "protein_coding",
+                            },
+                        ],
+                    },
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
                     "version": "0.2.17",
                     "response_datetime": "2022-01-26T22:23:41.821673",
-                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
+                },
             }
 
 
@@ -243,8 +249,9 @@ class TranslateIdentifierService(ServiceResponse):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any],
-                         model: Type["TranslateIdentifierService"]) -> None:
+        def schema_extra(
+            schema: Dict[str, Any], model: Type["TranslateIdentifierService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -265,12 +272,12 @@ class TranslateIdentifierService(ServiceResponse):
                     "SHA1:b1fcc82e93695fc50507fbe01fd2ce28ba65ffe8",
                     "VMC:GS_cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
                     "sha512t24u:cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
-                    "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y"
+                    "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
                 ],
                 "service_meta_": {
                     "name": "variation-normalizer",
                     "version": "0.2.14",
                     "response_datetime": "2021-11-18T14:10:53.909158",
-                    "url": "https://github.com/cancervariants/variation-normalization"  # noqa: E501
-                }
+                    "url": "https://github.com/cancervariants/variation-normalization",  # noqa: E501
+                },
             }

@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, CdnaDelInsClassification, Nomenclature
+    ClassificationType,
+    CdnaDelInsClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class CdnaDelInsClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a cdna
         delins classification.
         """
-        return [
-            [TokenType.GENE, TokenType.CDNA_DELINS]
-        ]
+        return [[TokenType.GENE, TokenType.CDNA_DELINS]]
 
     def match(self, tokens: List[Token]) -> CdnaDelInsClassification:
         """Return the cdna delins classification from a list of token matches.
@@ -40,5 +40,5 @@ class CdnaDelInsClassifier(Classifier):
             gene_token=gene_token,
             pos0=cdna_delins_token.pos0,
             pos1=cdna_delins_token.pos1,
-            inserted_sequence=cdna_delins_token.inserted_sequence
+            inserted_sequence=cdna_delins_token.inserted_sequence,
         )

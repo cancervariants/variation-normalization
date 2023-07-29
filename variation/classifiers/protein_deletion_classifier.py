@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinDeletionClassification, Nomenclature
+    ClassificationType,
+    ProteinDeletionClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class ProteinDeletionClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a protein
         deletion classification.
         """
-        return [
-            [TokenType.GENE, TokenType.PROTEIN_DELETION]
-        ]
+        return [[TokenType.GENE, TokenType.PROTEIN_DELETION]]
 
     def match(self, tokens: List[Token]) -> ProteinDeletionClassification:
         """Return the protein deletion classification from a list of token matches.
@@ -42,5 +42,5 @@ class ProteinDeletionClassifier(Classifier):
             pos0=protein_del_token.pos0,
             aa1=protein_del_token.aa1,
             pos1=protein_del_token.pos1,
-            deleted_sequence=protein_del_token.deleted_sequence
+            deleted_sequence=protein_del_token.deleted_sequence,
         )

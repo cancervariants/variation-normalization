@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Classification, CdnaInsertionClassification, Nomenclature
+    ClassificationType,
+    Classification,
+    CdnaInsertionClassification,
+    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -21,14 +24,19 @@ class CdnaInsertion(Validator):
         :return: List of validation results containing invalid and valid results
         """
         if classification.pos1 and classification.pos0 >= classification.pos1:
-            return [ValidationResult(
-                accession=None,
-                classification=classification,
-                is_valid=False,
-                errors=[(
-                    "Positions deleted should contain two different positions and "
-                    "should be listed from 5' to 3'")]
-            )]
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[
+                        (
+                            "Positions deleted should contain two different positions "
+                            "and should be listed from 5' to 3'"
+                        )
+                    ],
+                )
+            ]
 
         validation_results = []
 
@@ -41,8 +49,9 @@ class CdnaInsertion(Validator):
             else:
                 # Validate accession and positions
                 invalid_ac_pos_msg = self.validate_ac_and_pos(
-                    c_ac, cds_start + classification.pos0,
-                    end_pos=cds_start + classification.pos1
+                    c_ac,
+                    cds_start + classification.pos0,
+                    end_pos=cds_start + classification.pos1,
                 )
                 if invalid_ac_pos_msg:
                     errors.append(invalid_ac_pos_msg)
@@ -53,7 +62,7 @@ class CdnaInsertion(Validator):
                     classification=classification,
                     cds_start=cds_start,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -80,7 +89,5 @@ class CdnaInsertion(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_cdna_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_cdna_accessions(classification.gene_token, errors)
         return accessions

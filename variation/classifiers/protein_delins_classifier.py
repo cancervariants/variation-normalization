@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinDelInsClassification, Nomenclature
+    ClassificationType,
+    ProteinDelInsClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class ProteinDelInsClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a protein
         delins classification.
         """
-        return [
-            [TokenType.GENE, TokenType.PROTEIN_DELINS]
-        ]
+        return [[TokenType.GENE, TokenType.PROTEIN_DELINS]]
 
     def match(self, tokens: List[Token]) -> ProteinDelInsClassification:
         """Return the protein delins classification from a list of token matches.
@@ -42,5 +42,5 @@ class ProteinDelInsClassifier(Classifier):
             pos0=protein_delins_token.pos0,
             aa1=protein_delins_token.aa1,
             pos1=protein_delins_token.pos1,
-            inserted_sequence=protein_delins_token.inserted_sequence
+            inserted_sequence=protein_delins_token.inserted_sequence,
         )

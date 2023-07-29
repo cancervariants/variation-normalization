@@ -4,16 +4,29 @@ from typing import List
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import (
-    ProteinSubstitutionClassifier, ProteinReferenceAgreeClassifier,
-    CdnaSubstitutionClassifier, GenomicSubstitutionClassifier,
-    CdnaReferenceAgreeClassifier, GenomicReferenceAgreeClassifier,
-    ProteinDelInsClassifier, CdnaDelInsClassifier, GenomicDelInsClassifier,
-    ProteinDeletionClassifier, CdnaDeletionClassifier, GenomicDeletionClassifier,
-    ProteinInsertionClassifier, CdnaInsertionClassifier,
-    GenomicInsertionClassifier, GenomicDuplicationAmbiguousClassifier,
-    GenomicDuplicationClassifier, GenomicDeletionAmbiguousClassifier,
-    ProteinStopGainClassifier, AmplificationClassifier, HgvsClassifier,
-    GnomadVcfClassifier, Classifier
+    ProteinSubstitutionClassifier,
+    ProteinReferenceAgreeClassifier,
+    CdnaSubstitutionClassifier,
+    GenomicSubstitutionClassifier,
+    CdnaReferenceAgreeClassifier,
+    GenomicReferenceAgreeClassifier,
+    ProteinDelInsClassifier,
+    CdnaDelInsClassifier,
+    GenomicDelInsClassifier,
+    ProteinDeletionClassifier,
+    CdnaDeletionClassifier,
+    GenomicDeletionClassifier,
+    ProteinInsertionClassifier,
+    CdnaInsertionClassifier,
+    GenomicInsertionClassifier,
+    GenomicDuplicationAmbiguousClassifier,
+    GenomicDuplicationClassifier,
+    GenomicDeletionAmbiguousClassifier,
+    ProteinStopGainClassifier,
+    AmplificationClassifier,
+    HgvsClassifier,
+    GnomadVcfClassifier,
+    Classifier,
 )
 
 
@@ -43,7 +56,7 @@ class Classify:
         GenomicInsertionClassifier(),
         GenomicDuplicationClassifier(),
         GenomicDuplicationAmbiguousClassifier(),
-        AmplificationClassifier()
+        AmplificationClassifier(),
     ]
 
     def perform(self, tokens: List[Token]) -> Classification:

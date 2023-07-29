@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, CdnaInsertionClassification, Nomenclature
+    ClassificationType,
+    CdnaInsertionClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class CdnaInsertionClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a cdna
         insertion classification.
         """
-        return [
-            [TokenType.GENE, TokenType.CDNA_INSERTION]
-        ]
+        return [[TokenType.GENE, TokenType.CDNA_INSERTION]]
 
     def match(self, tokens: List[Token]) -> CdnaInsertionClassification:
         """Return the cdna insertion classification from a list of token matches.
@@ -40,5 +40,5 @@ class CdnaInsertionClassifier(Classifier):
             gene_token=gene_token,
             pos0=cdna_ins_token.pos0,
             pos1=cdna_ins_token.pos1,
-            inserted_sequence=cdna_ins_token.inserted_sequence
+            inserted_sequence=cdna_ins_token.inserted_sequence,
         )

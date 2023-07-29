@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, Nomenclature, GenomicDuplicationAmbiguousClassification
+    ClassificationType,
+    Nomenclature,
+    GenomicDuplicationAmbiguousClassification,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -23,9 +25,7 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a genomic
         ambiguous duplication classification.
         """
-        return [
-            [TokenType.GENE, TokenType.GENOMIC_DUPLICATION_AMBIGUOUS]
-        ]
+        return [[TokenType.GENE, TokenType.GENOMIC_DUPLICATION_AMBIGUOUS]]
 
     def match(self, tokens: List[Token]) -> GenomicDuplicationAmbiguousClassification:
         """Return the genomic ambiguous duplication classification from a list of token
@@ -42,7 +42,7 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
             genomic_dup_token.pos1,
             genomic_dup_token.pos2,
             genomic_dup_token.pos3,
-            genomic_dup_token.ambiguous_regex_type
+            genomic_dup_token.ambiguous_regex_type,
         )
 
         return GenomicDuplicationAmbiguousClassification(
@@ -53,5 +53,5 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
             pos1=genomic_dup_token.pos1,
             pos2=genomic_dup_token.pos2,
             pos3=genomic_dup_token.pos3,
-            ambiguous_type=ambiguous_type
+            ambiguous_type=ambiguous_type,
         )

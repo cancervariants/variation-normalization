@@ -2,7 +2,10 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    Classification, ClassificationType, Nomenclature, ProteinInsertionClassification
+    Classification,
+    ClassificationType,
+    Nomenclature,
+    ProteinInsertionClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
@@ -66,7 +69,7 @@ class ProteinInsertion(Validator):
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=errors
+                    errors=errors,
                 )
             ]
 
@@ -96,7 +99,7 @@ class ProteinInsertion(Validator):
                     accession=p_ac,
                     classification=classification,
                     is_valid=not errors,
-                    errors=errors
+                    errors=errors,
                 )
             )
 
@@ -123,7 +126,5 @@ class ProteinInsertion(Validator):
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
         else:
-            accessions = self.get_protein_accessions(
-                classification.gene_token, errors
-            )
+            accessions = self.get_protein_accessions(classification.gene_token, errors)
         return accessions

@@ -2,7 +2,9 @@
 from typing import List
 
 from variation.schemas.classification_response_schema import (
-    ClassificationType, ProteinStopGainClassification, Nomenclature
+    ClassificationType,
+    ProteinStopGainClassification,
+    Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.classifiers import Classifier
@@ -21,9 +23,7 @@ class ProteinStopGainClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a protein
         stop gain classification.
         """
-        return [
-            [TokenType.GENE, TokenType.PROTEIN_STOP_GAIN]
-        ]
+        return [[TokenType.GENE, TokenType.PROTEIN_STOP_GAIN]]
 
     def match(self, tokens: List[Token]) -> ProteinStopGainClassification:
         """Return the protein stop gain classification from a list of token matches.
@@ -40,5 +40,5 @@ class ProteinStopGainClassifier(Classifier):
             gene_token=gene_token,
             pos=protein_stop_gain_token.pos,
             ref=protein_stop_gain_token.ref,
-            alt=protein_stop_gain_token.alt
+            alt=protein_stop_gain_token.alt,
         )
