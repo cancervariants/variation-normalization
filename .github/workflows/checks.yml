@@ -20,13 +20,13 @@ jobs:
         run: |
           python -m pip install pipenv
           pipenv install --skip-lock  # this is what Elastic beanstalk uses
-  black:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: psf/black@stable
-  ruff:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: chartboost/ruff-action@v1
+
+      - name: black
+        uses: psf/black@stable
+
+      - name: ruff
+        uses: chartboost/ruff-action@v1
