@@ -505,7 +505,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
 async def hgvs_to_copy_number_count(
     hgvs_expr: str = Query(..., description="Variation query"),
     baseline_copies: Optional[int] = Query(
-        None, description="Baseline copies for duplication"
+        ..., description="Baseline copies for duplication"
     ),
     do_liftover: bool = Query(
         False, description="Whether or not to liftover " "to GRCh38 assembly."
