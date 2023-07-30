@@ -26,66 +26,17 @@ class GenomicDuplicationAmbiguous(Validator):
         :param accessions: A list of accessions for a classification
         :return: List of validation results containing invalid and valid results
         """
-        if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-            if (
-                classification.pos3
-                <= classification.pos2
-                <= classification.pos1
-                <= classification.pos0
-            ):
-                return [
-                    ValidationResult(
-                        accession=None,
-                        classification=classification,
-                        is_valid=False,
-                        errors=[
-                            (
-                                "Positions duplicated should contain two different "
-                                "positions and should be listed from 5' to 3'"
-                            )
-                        ],
-                    )
-                ]
-        elif classification.ambiguous_type in {
-            AmbiguousType.AMBIGUOUS_2,
-            AmbiguousType.AMBIGUOUS_5,
-        }:
-            if classification.pos2 <= classification.pos1:
-                return [
-                    ValidationResult(
-                        accession=None,
-                        classification=classification,
-                        is_valid=False,
-                        errors=[
-                            (
-                                "Positions duplicated should contain two different "
-                                "positions and should be listed from 5' to 3'"
-                            )
-                        ],
-                    )
-                ]
-        elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
-            if classification.pos2 <= classification.pos0:
-                return [
-                    ValidationResult(
-                        accession=None,
-                        classification=classification,
-                        is_valid=False,
-                        errors=[
-                            (
-                                "Positions duplicated should contain two different "
-                                "positions and should be listed from 5' to 3'"
-                            )
-                        ],
-                    )
-                ]
-        else:
+        # Validate ambiguous type and positions
+        invalid_classification_msg = self.validate_ambiguous_classification(
+            classification
+        )
+        if invalid_classification_msg:
             return [
                 ValidationResult(
                     accession=None,
                     classification=classification,
                     is_valid=False,
-                    errors=[(f"{classification.ambiguous_type} is not yet supported")],
+                    errors=[invalid_classification_msg],
                 )
             ]
 

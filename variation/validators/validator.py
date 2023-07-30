@@ -1,14 +1,17 @@
 """Module for Validation."""
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
+from typing import List, Literal, Optional, Tuple, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from cool_seq_tool.schemas import ResidueMode
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import (
+    AmbiguousType,
     Classification,
     ClassificationType,
+    GenomicDeletionAmbiguousClassification,
+    GenomicDuplicationAmbiguousClassification,
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
@@ -294,3 +297,67 @@ class Validator(ABC):
                     msg = f"Position ({start_pos}) not valid on accession ({ac})"
 
         return msg
+
+    @staticmethod
+    def validate_5_prime_to_3_prime(
+        pos0: int,
+        pos1: Optional[Union[int, Literal["?"]]],
+        pos2: Optional[Union[int, Literal["?"]]] = None,
+        pos3: Optional[Union[int, Literal["?"]]] = None,
+    ) -> Optional[str]:
+        """Validate that positions are unique and listed from 5' to 3'
+
+        :param pos0: Position 0
+        :param pos1: Position 1
+        :param pos2: Position 2
+        :param pos3: Position 3
+        :return: Message if positions are not unique or not listed from 5' to 3'.
+            Else, `None`
+        """
+        prev_pos = None
+        invalid_msg = None
+        for pos in [pos0, pos1, pos2, pos3]:
+            if pos not in {"?", None}:
+                if prev_pos is None:
+                    prev_pos = pos
+                else:
+                    if pos <= prev_pos:
+                        invalid_msg = (
+                            "Positions should contain two different positions and "
+                            "should be listed from 5' to 3'"
+                        )
+                        break
+                    else:
+                        prev_pos = pos
+        return invalid_msg
+
+    def validate_ambiguous_classification(
+        self,
+        classification: Union[
+            GenomicDeletionAmbiguousClassification,
+            GenomicDuplicationAmbiguousClassification,
+        ],
+    ) -> Optional[str]:
+        """Validate that ambiguous type is supported and that positions are unique and
+        listed from 5' to 3'
+
+        :param classification: Ambiguous duplication or deletion classification
+        :return: Message if ambiguous type is not supported, positions are not unique,
+            or if positions are not listed from 5' to 3'. Else, `None`
+        """
+        invalid_msg = None
+        if classification.ambiguous_type not in {
+            AmbiguousType.AMBIGUOUS_1,
+            AmbiguousType.AMBIGUOUS_2,
+            AmbiguousType.AMBIGUOUS_5,
+            AmbiguousType.AMBIGUOUS_7,
+        }:
+            invalid_msg = f"{classification.ambiguous_type} is not yet supported"
+        else:
+            invalid_msg = self.validate_5_prime_to_3_prime(
+                classification.pos0,
+                pos1=classification.pos1,
+                pos2=classification.pos2,
+                pos3=classification.pos3,
+            )
+        return invalid_msg

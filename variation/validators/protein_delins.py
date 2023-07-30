@@ -24,13 +24,20 @@ class ProteinDelIns(Validator):
         :param accessions: A list of accessions for a classification
         :return: List of validation results containing invalid and valid results
         """
-        errors = []
-        if classification.pos1:
-            if classification.pos0 >= classification.pos1:
-                errors.append(
-                    "Positions deleted should contain two different positions and "
-                    "should be listed from 5' to 3'"
+        invalid_pos_msg = self.validate_5_prime_to_3_prime(
+            classification.pos0, pos1=classification.pos1
+        )
+        if invalid_pos_msg:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[invalid_pos_msg],
                 )
+            ]
+
+        errors = []
 
         # Only HGVS Expressions are validated
         # Free text is validated during tokenization
