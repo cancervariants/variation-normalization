@@ -8,7 +8,6 @@ from variation.schemas.classification_response_schema import (
     ProteinSubstitutionClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.utils import get_aa1_codes
 from variation.validators.validator import Validator
 
 
@@ -24,30 +23,19 @@ class ProteinSubstitution(Validator):
         :param accessions: A list of accessions for a classification
         :return: List of validation results containing invalid and valid results
         """
-        errors = []
-
         # Only HGVS Expressions are validated
         # Free text is validated during tokenization
         if classification.nomenclature == Nomenclature.HGVS:
-            aa1_ref = get_aa1_codes(classification.ref)
-            if aa1_ref:
-                classification.ref = aa1_ref
-            else:
-                errors.append(f"`ref` not valid amino acid(s): {classification.ref}")
-
-            aa1_alt = get_aa1_codes(classification.alt)
-            if aa1_alt:
-                classification.alt = aa1_alt
-            else:
-                errors.append(f"`alt` not valid amino acid(s): {classification.alt}")
-
-            if errors:
+            invalid_classification_msgs = self.validate_protein_hgvs_classification(
+                classification
+            )
+            if invalid_classification_msgs:
                 return [
                     ValidationResult(
                         accession=None,
                         classification=classification,
                         is_valid=False,
-                        errors=errors,
+                        errors=invalid_classification_msgs,
                     )
                 ]
 

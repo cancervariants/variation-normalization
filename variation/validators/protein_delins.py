@@ -8,7 +8,6 @@ from variation.schemas.classification_response_schema import (
     ProteinDelInsClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.utils import get_aa1_codes
 from variation.validators.validator import Validator
 
 
@@ -37,48 +36,21 @@ class ProteinDelIns(Validator):
                 )
             ]
 
-        errors = []
-
         # Only HGVS Expressions are validated
         # Free text is validated during tokenization
         if classification.nomenclature == Nomenclature.HGVS:
-            # 1 letter AA codes for aa0
-            aa0_codes = get_aa1_codes(classification.aa0)
-            if aa0_codes:
-                classification.aa0 = aa0_codes
-            else:
-                errors.append(f"`aa0` not valid amino acid(s): {classification.aa0}")
-
-            if classification.aa1:
-                # 1 letter AA codes for aa1
-                aa1_codes = get_aa1_codes(classification.aa1)
-                if aa1_codes:
-                    classification.aa1 = aa1_codes
-                else:
-                    errors.append(
-                        f"`aa1` not valid amino acid(s): {classification.aa1}"
+            invalid_classification_msgs = self.validate_protein_hgvs_classification(
+                classification
+            )
+            if invalid_classification_msgs:
+                return [
+                    ValidationResult(
+                        accession=None,
+                        classification=classification,
+                        is_valid=False,
+                        errors=invalid_classification_msgs,
                     )
-
-            if classification.inserted_sequence:
-                # 1 letter AA codes for inserted sequence
-                ins_codes = get_aa1_codes(classification.inserted_sequence)
-                if ins_codes:
-                    classification.inserted_sequence = ins_codes
-                else:
-                    errors.append(
-                        f"`inserted_sequence` not valid amino acid(s): "
-                        f"{classification.inserted_sequence}"
-                    )
-
-        if errors:
-            return [
-                ValidationResult(
-                    accession=None,
-                    classification=classification,
-                    is_valid=False,
-                    errors=errors,
-                )
-            ]
+                ]
 
         validation_results = []
 

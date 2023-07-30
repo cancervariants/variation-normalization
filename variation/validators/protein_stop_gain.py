@@ -8,7 +8,6 @@ from variation.schemas.classification_response_schema import (
     ProteinStopGainClassification,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.utils import get_aa1_codes
 from variation.validators.validator import Validator
 
 
@@ -30,19 +29,16 @@ class ProteinStopGain(Validator):
         # Free text is validated during tokenization
         # Don't need to validate alt, since we know it's '*'
         if classification.nomenclature == Nomenclature.HGVS:
-            aa1_ref = get_aa1_codes(classification.ref)
-            if aa1_ref:
-                classification.ref = aa1_ref
-            else:
-                errors.append(f"`ref` not valid amino acid(s): {classification.ref}")
-
-            if errors:
+            invalid_classification_msgs = self.validate_protein_hgvs_classification(
+                classification
+            )
+            if invalid_classification_msgs:
                 return [
                     ValidationResult(
                         accession=None,
                         classification=classification,
                         is_valid=False,
-                        errors=errors,
+                        errors=invalid_classification_msgs,
                     )
                 ]
 

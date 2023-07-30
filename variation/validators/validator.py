@@ -12,9 +12,16 @@ from variation.schemas.classification_response_schema import (
     ClassificationType,
     GenomicDeletionAmbiguousClassification,
     GenomicDuplicationAmbiguousClassification,
+    ProteinDeletionClassification,
+    ProteinDelInsClassification,
+    ProteinInsertionClassification,
+    ProteinReferenceAgreeClassification,
+    ProteinStopGainClassification,
+    ProteinSubstitutionClassification,
 )
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
+from variation.utils import get_aa1_codes
 from variation.validators.genomic_base import GenomicBase
 
 
@@ -361,3 +368,65 @@ class Validator(ABC):
                 pos3=classification.pos3,
             )
         return invalid_msg
+
+    def validate_protein_hgvs_classification(
+        self,
+        classification: Union[
+            ProteinDelInsClassification,
+            ProteinDeletionClassification,
+            ProteinInsertionClassification,
+            ProteinReferenceAgreeClassification,
+            ProteinStopGainClassification,
+            ProteinSubstitutionClassification,
+        ],
+    ) -> List[str]:
+        """Validate protein HGVS classification
+
+        :param classification: Classification
+            Will be mutated if used 3 letter AA codes
+        :return: List of invalid error messages if found
+        """
+        errors = []
+
+        if hasattr(classification, "ref"):
+            aa1_ref = get_aa1_codes(classification.ref)
+            if aa1_ref:
+                classification.ref = aa1_ref
+            else:
+                errors.append(f"`ref` not valid amino acid(s): {classification.ref}")
+
+        if hasattr(classification, "alt"):
+            aa1_alt = get_aa1_codes(classification.alt)
+            if aa1_alt:
+                classification.alt = aa1_alt
+            else:
+                errors.append(f"`alt` not valid amino acid(s): {classification.alt}")
+
+        if hasattr(classification, "aa0"):
+            aa0_codes = get_aa1_codes(classification.aa0)
+            if aa0_codes:
+                classification.aa0 = aa0_codes
+            else:
+                errors.append(f"`aa0` not valid amino acid(s): {classification.aa0}")
+
+        if hasattr(classification, "aa1"):
+            if classification.aa1:
+                aa1_codes = get_aa1_codes(classification.aa1)
+                if aa1_codes:
+                    classification.aa1 = aa1_codes
+                else:
+                    errors.append(
+                        f"`aa1` not valid amino acid(s): {classification.aa1}"
+                    )
+
+        if hasattr(classification, "inserted_sequence"):
+            ins_codes = get_aa1_codes(classification.inserted_sequence)
+            if ins_codes:
+                classification.inserted_sequence = ins_codes
+            else:
+                errors.append(
+                    f"`inserted_sequence` not valid amino acid(s): "
+                    f"{classification.inserted_sequence}"
+                )
+
+        return errors
