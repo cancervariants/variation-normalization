@@ -1,7 +1,6 @@
 """Module for cDNA Substitution Translation."""
 from typing import List, Optional
 
-from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
@@ -54,52 +53,17 @@ class CdnaSubstitution(Translator):
         classification: CdnaSubstitutionClassification = (
             validation_result.classification
         )
-        vrs_allele = None
-        vrs_seq_loc_ac = None
-        vrs_seq_loc_ac_status = "na"
 
-        if endpoint_name == Endpoint.NORMALIZE:
-            mane = await self.mane_transcript.get_mane_transcript(
-                validation_result.accession,
-                classification.pos,
-                CoordinateType.CDNA,
-                end_pos=classification.pos,
-                try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE.value,
-            )
-
-            if mane:
-                vrs_seq_loc_ac = mane["refseq"]
-                vrs_seq_loc_ac_status = mane["status"]
-                vrs_allele = self.vrs.to_vrs_allele(
-                    vrs_seq_loc_ac,
-                    mane["pos"][0] + 1,
-                    mane["pos"][1] + 1,
-                    CoordinateType.CDNA,
-                    AltType.SUBSTITUTION,
-                    warnings,
-                    alt=classification.alt,
-                    cds_start=mane.get("coding_start_site", None),
-                )
-        else:
-            vrs_seq_loc_ac = validation_result.accession
-            vrs_allele = self.vrs.to_vrs_allele(
-                validation_result.accession,
-                classification.pos + cds_start,
-                classification.pos + cds_start,
-                CoordinateType.CDNA,
-                AltType.SUBSTITUTION,
-                warnings,
-                alt=classification.alt,
-            )
-
-        if vrs_allele and vrs_seq_loc_ac:
-            return TranslationResult(
-                vrs_variation=vrs_allele,
-                vrs_seq_loc_ac=vrs_seq_loc_ac,
-                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
-                og_ac=validation_result.accession,
-                validation_result=validation_result,
-            )
-        else:
-            return None
+        translation_result = await self.get_p_or_cdna_translation_result(
+            endpoint_name,
+            validation_result,
+            classification.pos,
+            classification.pos,
+            AltType.SUBSTITUTION,
+            CoordinateType.CDNA,
+            warnings,
+            cds_start=cds_start,
+            ref=classification.ref,
+            alt=classification.alt,
+        )
+        return translation_result

@@ -1,6 +1,6 @@
 """Module for translation."""
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
 from cool_seq_tool.schemas import ResidueMode
@@ -10,7 +10,7 @@ from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.token_response_schema import GeneToken
+from variation.schemas.token_response_schema import AltType, CoordinateType, GeneToken
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.genomic_base import GenomicBase
@@ -178,3 +178,84 @@ class Translator(ABC):
             )
 
         return err_msg
+
+    async def get_p_or_cdna_translation_result(
+        self,
+        endpoint_name: Endpoint,
+        validation_result: ValidationResult,
+        start_pos: int,
+        end_pos: int,
+        alt_type: AltType,
+        coordinate_type: Union[CoordinateType.PROTEIN, CoordinateType.CDNA],
+        errors: List[str],
+        cds_start: Optional[int] = None,
+        ref: Optional[str] = None,
+        alt: Optional[str] = None,
+    ) -> Optional[TranslationResult]:
+        """Get translation result for validation result. Used for unambiguous
+        variations on protein or cDNA coordinate types
+
+        :param endpoint_name: Name of endpoint that is being used
+        :param validation_result: Validation result for a classification
+        :param start_pos: Start position (residue-mode)
+        :param end_pos: End position (residue-mode)
+        :param alt_type: Alteration type for validation result
+        :param coordinate_type: Coordinate type for validation result
+        :param errors: List of errors. Will be mutated if errors are found
+        :param cds_start: Coding start site. Only required for
+            `coordinate_type == CoordinateType.CDNA`.
+        :param ref: Expected reference sequence
+        :param alt: Expected change
+        :return: Translation result if successful. Else, `None`
+        """
+        vrs_allele = None
+        vrs_seq_loc_ac = None
+        vrs_seq_loc_ac_status = "na"
+
+        if endpoint_name == Endpoint.NORMALIZE:
+            mane = await self.mane_transcript.get_mane_transcript(
+                validation_result.accession,
+                start_pos,
+                coordinate_type,
+                end_pos=end_pos,
+                try_longest_compatible=True,
+                residue_mode=ResidueMode.RESIDUE.value,
+                ref=ref,
+            )
+
+            if mane:
+                vrs_seq_loc_ac = mane["refseq"]
+                vrs_seq_loc_ac_status = mane["status"]
+                vrs_allele = self.vrs.to_vrs_allele(
+                    vrs_seq_loc_ac,
+                    mane["pos"][0] + 1,
+                    mane["pos"][1] + 1,
+                    coordinate_type,
+                    alt_type,
+                    errors,
+                    cds_start=mane.get("coding_start_site", None),
+                    alt=alt,
+                )
+        else:
+            vrs_seq_loc_ac = validation_result.accession
+            vrs_allele = self.vrs.to_vrs_allele(
+                vrs_seq_loc_ac,
+                start_pos,
+                end_pos,
+                coordinate_type,
+                alt_type,
+                errors,
+                cds_start=cds_start,
+                alt=alt,
+            )
+
+        if vrs_allele and vrs_seq_loc_ac:
+            return TranslationResult(
+                vrs_variation=vrs_allele,
+                vrs_seq_loc_ac=vrs_seq_loc_ac,
+                vrs_seq_loc_ac_status=vrs_seq_loc_ac_status,
+                og_ac=validation_result.accession,
+                validation_result=validation_result,
+            )
+        else:
+            return None

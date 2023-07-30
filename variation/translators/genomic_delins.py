@@ -54,6 +54,7 @@ class GenomicDelIns(Translator):
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
+        # TODO: Need to do g-> c like others
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
