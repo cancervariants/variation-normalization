@@ -8,7 +8,6 @@ from variation.classifiers import (
     CdnaInsertionClassifier,
     CdnaReferenceAgreeClassifier,
     CdnaSubstitutionClassifier,
-    Classifier,
     GenomicDeletionAmbiguousClassifier,
     GenomicDeletionClassifier,
     GenomicDelInsClassifier,
@@ -26,6 +25,7 @@ from variation.classifiers import (
     ProteinStopGainClassifier,
     ProteinSubstitutionClassifier,
 )
+from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import Classification
 from variation.schemas.token_response_schema import Token, TokenType
 
