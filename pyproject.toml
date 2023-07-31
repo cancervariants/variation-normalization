@@ -26,7 +26,8 @@ fixable = ["I"]
 # D400 - ends-in-period
 # D415 - ends-in-punctuation
 # ANN101 - missing-type-self
-ignore = ["D205", "D400", "D415", "ANN101"]
+# ANN003 - missing-type-kwargs
+ignore = ["D205", "D400", "D415", "ANN101", "ANN003"]
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"
