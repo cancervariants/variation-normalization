@@ -1022,6 +1022,9 @@ async def test_genomic_delins(
         "NC_000003.12:g.10149938delinsAA",
     )
 
+    # TODO: Add response
+    resp = await test_handler.normalize("BRAF g.140453135_140453136delinsAT")
+
 
 @pytest.mark.asyncio
 async def test_protein_delins(test_handler, protein_delins):
@@ -1305,24 +1308,24 @@ async def test_valid_queries(test_handler):
 async def test_no_matches(test_handler):
     """Test no matches work correctly."""
     queries = [
-        "braf",
-        "braf v600e",
-        "braf v600000932092039e",
-        "NP_000213.1:cp.Leu862=",
-        "NP_000213.1:cp.Leu862",
-        "BRAF V600E 33",
-        "NP_004324.2:p.Glu600Val",
-        "NP_004324.2:p.Glu600Gal",
-        "NP_004324.2839:p.Glu600Val",
-        "NP_004324.2:t.Glu600Val",
-        "this:c.54G>H",
-        "NC_000007.13:g.4T<A",
+        "braf",  # no change
+        "braf v600e",  # incorrect case
+        "braf v600000932092039e",  # invalid pos
+        "NP_000213.1:cp.Leu862=",  # cp is invalid
+        "NP_000213.1:cp.Leu862",  # cp is invalid
+        "BRAF V600E 33",  # not supported query type
+        "NP_004324.2:p.Glu600Val",  # not valid ref
+        "NP_004324.2:p.Glu600Gal",  # not valid ref
+        "NP_004324.2839:p.Glu600Val",  # not valid accession
+        "NP_004324.2:t.Glu600Val",  # t is invalid
+        "this:c.54G>H",  # not a valid accession
+        "NC_000007.13:g.4T<A",  # invalid hgvs format
         "test",
         "131",
-        "braf z600e",
-        "braf e600z",
-        "Thr790Met",
-        "p.Tyr365Ter",
+        "braf Z600E",  # invalid ref
+        "braf E600Z",  # invalid ref
+        "Thr790Met",  # no gene/accession
+        "p.Tyr365Ter",  # no accession
         "ERBB2 G776delinsVCZ",
         "NP005219.2:p.Glu746_Thr751delinsValAla",
         "NP_005219.2:p.Glu746Thr751delinsValAla",
@@ -1331,7 +1334,8 @@ async def test_no_matches(test_handler):
         "EGFR delins",
         "NM_004333.4:c.1799_1800delTGinsAT",
         "NM_173851.3(SLC30A8):c.973C>T%20(p.Arg325Trp)",
-        "NG_008212.3:g.5426_5445del",
+        "NG_008212.3:g.5426_5445del",  # NG accessions not supported
+        "NC_000010.11-87925523-C-G",  # invalid format
     ]
     for q in queries:
         assert isinstance(q, str)
