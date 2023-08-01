@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Type
 
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
-from pydantic import BaseModel
+from pydantic import BaseModel, root_validator
 from pydantic.types import StrictStr
 
 
@@ -49,8 +49,14 @@ class ServiceMeta(BaseModel):
 class ServiceResponse(BaseModel):
     """Base response model for services"""
 
-    warnings: Optional[List[StrictStr]]
+    warnings: Optional[List[StrictStr]] = []
     service_meta_: ServiceMeta
+
+    @root_validator(pre=False)
+    def unique_warnings(cls, values):
+        """Ensure unique warnings"""
+        values["warnings"] = list(set(values["warnings"]))
+        return values
 
 
 class NormalizeService(ServiceResponse):

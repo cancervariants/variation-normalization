@@ -36,6 +36,8 @@ docstring-quotes = "double"
 # ANN001 -	missing-type-function-argument
 # ANN2 - missing-return-type
 # ANN102 - missing-type-cls
+# N805 - invalid-first-argument-name-for-method
 "tests/*" = ["ANN001", "ANN2", "ANN102"]
 "setup.py" = ["F821"]
 "*__init__.py" = ["F401"]
+"variation/schemas/*" = ["ANN201", "N805", "ANN001"]
