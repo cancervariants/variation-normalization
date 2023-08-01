@@ -160,8 +160,9 @@ class ToCopyNumberVariation(ToVRS):
             valid_results = validation_summary.valid_results
         else:
             warnings = validation_summary.warnings
+            valid_results = []
 
-        return validation_summary, warnings
+        return valid_results, warnings
 
     async def _hgvs_to_cnv_resp(
         self,
