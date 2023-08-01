@@ -1,4 +1,6 @@
 """Module for Validation."""
+from typing import List
+
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -26,6 +28,7 @@ from variation.validators import (
     ProteinStopGain,
     ProteinSubstitution,
 )
+from variation.validators.validator import Validator
 
 
 class Validate:
@@ -38,7 +41,8 @@ class Validate:
         uta: UTADatabase,
         gene_normalizer: GeneQueryHandler,
     ) -> None:
-        """Initialize the validate class.
+        """Initialize the validate class. Will create an instance variable,
+        `validators`, which is a list of Validators for supported variation types.
 
         :param seqrepo_access: Access to SeqRepo data
         :param transcript_mappings: Access to transcript mappings
@@ -46,7 +50,7 @@ class Validate:
         :param gene_normalizer: Access to gene-normalizer
         """
         params = [seqrepo_access, transcript_mappings, uta, gene_normalizer]
-        self.validators = [
+        self.validators: List[Validator] = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
@@ -74,6 +78,8 @@ class Validate:
         classification
 
         :param classification: A classification for a list of tokens
+        :return: Validation summary for classification containing valid and invalid
+            results
         """
         valid_possibilities = []
         invalid_possibilities = []

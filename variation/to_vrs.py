@@ -16,7 +16,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.schemas.to_vrs_response_schema import ToVRSService
 from variation.schemas.translation_response_schema import TranslationResult
-from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.validate import Validate
@@ -51,7 +51,7 @@ class ToVRS(VRSRepresentation):
 
     async def get_translations(
         self,
-        validation_summary: ValidationSummary,
+        valid_results: List[ValidationResult],
         warnings: List,
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
@@ -61,7 +61,7 @@ class ToVRS(VRSRepresentation):
     ) -> Tuple[List[TranslationResult], List[str]]:
         """Get translation results
 
-        :param validation_summary: Validation summary found for a given input
+        :param valid_results: List of valid results for a given input
         :param warnings: List of warnings
         :param endpoint_name: Name of endpoint that is being used
         :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
@@ -72,21 +72,18 @@ class ToVRS(VRSRepresentation):
         :return: Tuple containing list of translations and list of warnings
         """
         translations = []
-        if not validation_summary.valid_results:
-            warnings.append("No valid results found")
-        else:
-            for valid_result in validation_summary.valid_results:
-                tr = await self.translator.perform(
-                    valid_result,
-                    warnings,
-                    endpoint_name=endpoint_name,
-                    hgvs_dup_del_mode=hgvs_dup_del_mode,
-                    baseline_copies=baseline_copies,
-                    copy_change=copy_change,
-                    do_liftover=do_liftover,
-                )
-                if tr and tr not in translations:
-                    translations.append(tr)
+        for valid_result in valid_results:
+            tr = await self.translator.perform(
+                valid_result,
+                warnings,
+                endpoint_name=endpoint_name,
+                hgvs_dup_del_mode=hgvs_dup_del_mode,
+                baseline_copies=baseline_copies,
+                copy_change=copy_change,
+                do_liftover=do_liftover,
+            )
+            if tr and tr not in translations:
+                translations.append(tr)
 
         if not translations and not warnings:
             warnings.append("Unable to translate variation")
@@ -130,17 +127,15 @@ class ToVRS(VRSRepresentation):
 
         # Get validation summary for classification
         validation_summary = await self.validator.perform(classification)
-        if validation_summary:
+        if validation_summary.valid_results:
             # Get translated VRS representation for valid results
             translations, warnings = await self.get_translations(
-                validation_summary,
+                validation_summary.valid_results,
                 warnings,
                 endpoint_name=Endpoint.TO_VRS,
                 hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT,
                 do_liftover=False,
             )
-        else:
-            translations = []
 
         if not translations:
             if untranslatable_returns_text and q and q.strip():

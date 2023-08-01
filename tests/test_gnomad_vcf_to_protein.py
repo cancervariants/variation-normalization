@@ -855,4 +855,4 @@ async def test_invalid(test_handler):
     )
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "20-2-TC-TG"
-    assert resp.warnings == ["No valid results found"]
+    assert resp.warnings == ["20-2-TC-TG is not a valid gnomad vcf query"]

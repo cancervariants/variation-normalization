@@ -29,7 +29,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.schemas.token_response_schema import AltType, Token
 from variation.schemas.translation_response_schema import TranslationResult
-from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenize import Tokenize
 from variation.translate import Translate
@@ -163,14 +163,14 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         self.mane_transcript = mane_transcript
         self.mane_transcript_mappings = mane_transcript_mappings
 
-    async def _get_validation_summary(
+    async def _get_valid_results(
         self, q: str, warnings: List
-    ) -> Optional[ValidationSummary]:
+    ) -> List[ValidationResult]:
         """Get gnomad vcf validation summary
 
-        :param str q: Input query
-        :param List warnings: List of warnings
-        :return: ValidationSummary for a gnomad VCF query
+        :param q: gnomad vcf input query
+        :param warnings: List of warnings
+        :return: List of valid results for a gnomad VCF query
         """
         tokens = self.tokenizer.perform(q.strip(), warnings)
         if not tokens:
@@ -185,11 +185,12 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             return None
 
         validation_summary = await self.validator.perform(classification)
-        if not validation_summary:
-            warnings.append(f"{q} is not a valid gnomad vcf query")
-            return None
+        if validation_summary.valid_results:
+            valid_results = validation_summary.valid_results
         else:
-            return validation_summary
+            warnings.append(f"{q} is not a valid gnomad vcf query")
+            valid_results = []
+        return valid_results
 
     def _get_refseq_alt_ac_from_variation(self, variation: Dict) -> str:
         """Get genomic ac from variation sequence_id
@@ -368,10 +369,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         warnings = []
         _id = f"normalize.variation:{quote(' '.join(q.split()))}"
 
-        validation_summary = await self._get_validation_summary(q, warnings)
-        if validation_summary:
+        valid_results = await self._get_valid_results(q, warnings)
+        if valid_results:
             translations, warnings = await self.get_translations(
-                validation_summary,
+                valid_results,
                 warnings,
                 Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=HGVSDupDelModeOption.LITERAL_SEQ_EXPR,

@@ -31,6 +31,7 @@ from variation.translators import (
     ProteinStopGain,
     ProteinSubstitution,
 )
+from variation.translators.translator import Translator
 from variation.vrs_representation import VRSRepresentation
 
 
@@ -45,7 +46,9 @@ class Translate:
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode,
     ) -> None:
-        """Initialize the Translate class.
+        """Initialize the Translate class. Will create an instance variable,
+        `translators`, which is a list of Translator for supported variation types.
+
 
         :param seqrepo_access: Access to SeqRepo data
         :param mane_transcript: Access MANE Transcript information
@@ -55,7 +58,7 @@ class Translate:
         """
         params = [seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode]
 
-        self.all_translators = [
+        self.translators: List[Translator] = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
@@ -100,7 +103,7 @@ class Translate:
         :return: Translation result if translation was successful. If translation was
             not successful, `None`
         """
-        for translator in self.all_translators:
+        for translator in self.translators:
             if translator.can_translate(
                 validation_result.classification.classification_type
             ):

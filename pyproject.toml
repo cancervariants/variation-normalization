@@ -18,8 +18,6 @@ line-length = 88
 # isort (I)
 select = ["E", "W", "F", "ANN", "Q", "D", "N", "I"]
 
-line-length = 88
-
 fixable = ["I"]
 
 # D205 - blank-line-after-summary
@@ -27,7 +25,8 @@ fixable = ["I"]
 # D415 - ends-in-punctuation
 # ANN101 - missing-type-self
 # ANN003 - missing-type-kwargs
-ignore = ["D205", "D400", "D415", "ANN101", "ANN003"]
+# E501 - line-too-long
+ignore = ["D205", "D400", "D415", "ANN101", "ANN003", "E501"]
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"

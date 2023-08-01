@@ -1,5 +1,5 @@
 """A module for tokenization."""
-from typing import Iterable, List
+from typing import List
 
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.tokenizers import (
@@ -23,6 +23,7 @@ from variation.tokenizers import (
     ProteinReferenceAgree,
     ProteinSubstitution,
 )
+from variation.tokenizers.tokenizer import Tokenizer
 
 r"(\((\?|d+)_(\?|\d+)\))_(\((\?|\d+)_(\?|\d+)\))dup"
 
@@ -33,7 +34,7 @@ class Tokenize:
     def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
         self.gene_symbol = gene_symbol
-        self.tokenizers = [
+        self.tokenizers: List[Tokenizer] = [
             HGVS(),
             GnomadVCF(),
             self.gene_symbol,
@@ -61,12 +62,12 @@ class Tokenize:
             GenomicDuplication(),
         ]
 
-    def perform(self, search_string: str, warnings: List[str]) -> Iterable[Token]:
-        """Return an iterable of tokens for a given search string.
+    def perform(self, search_string: str, warnings: List[str]) -> List[Token]:
+        """Return a list of tokens for a given search string
 
-        :param str search_string: The input string to search on
-        :param List warnings: List of warnings
-        :return: An Iterable of Tokens
+        :param search_string: The input string to search on
+        :param warnings: List of warnings
+        :return: A list of tokens found
         """
         terms = search_string.split()
 

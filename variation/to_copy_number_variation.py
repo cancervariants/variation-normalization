@@ -35,7 +35,7 @@ from variation.schemas.service_schema import (
     ParsedToCnVarService,
 )
 from variation.schemas.token_response_schema import TokenType
-from variation.schemas.validation_response_schema import ValidationSummary
+from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
@@ -118,27 +118,25 @@ class ToCopyNumberVariation(ToVRS):
         variation = Text(definition=definition, id=_id)
         return variation, warnings
 
-    async def _get_validation_summary(
-        self, q: str
-    ) -> Tuple[Optional[ValidationSummary], List]:
-        """Get validation summary for to copy number variation endpoint
+    async def _get_valid_results(self, q: str) -> Tuple[List[ValidationResult], List]:
+        """Get valid results for to copy number variation endpoint
 
         :param q: Input query string
-        :return: Validation summary if found and list of warnings
+        :return: Valid results and list of warnings
         """
-        validation_summary = None
+        valid_results = None
         warnings = []
 
         # Get tokens for input query
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if not tokens:
-            return validation_summary, warnings
+            return valid_results, warnings
 
         # Get classification for list of tokens
         classification = self.classifier.perform(tokens)
         if not classification:
             warnings.append(f"Unable to find classification for: {q}")
-            return validation_summary, warnings
+            return valid_results, warnings
 
         # Ensure that classification is HGVS duplication or deletion
         tmp_classification = None
@@ -154,11 +152,13 @@ class ToCopyNumberVariation(ToVRS):
         classification = tmp_classification
         if not classification:
             warnings = [f"{q} is not a supported HGVS genomic duplication or deletion"]
-            return validation_summary, warnings
+            return valid_results, warnings
 
         # Get validation summary for classification
         validation_summary = await self.validator.perform(classification)
-        if not validation_summary:
+        if validation_summary.valid_results:
+            valid_results = validation_summary.valid_results
+        else:
             warnings = validation_summary.warnings
 
         return validation_summary, warnings
@@ -168,7 +168,7 @@ class ToCopyNumberVariation(ToVRS):
         copy_number_type: HGVSDupDelModeOption,
         hgvs_expr: str,
         do_liftover: bool,
-        validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
+        valid_results: Tuple[List[ValidationResult], Optional[List[str]]],
         warnings: List[str],
         untranslatable_returns_text: bool = False,
         baseline_copies: Optional[int] = None,
@@ -176,27 +176,26 @@ class ToCopyNumberVariation(ToVRS):
     ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:
         """Return copy number variation and warnings response
 
-        :param HGVSDupDelModeOption copy_number_type: The type of copy number variation.
-            Must be either `copy_number_count` or `copy_number_change`
-        :param str hgvs_expr: HGVS expression
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
-            summary and warnings for hgvs_expr
-        :param List[str] warnings: List of warnings
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
+        :param copy_number_type: The type of copy number variation. Must be either
+            `copy_number_count` or `copy_number_change`
+        :param hgvs_expr: HGVS expression
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Valid results and warnings for hgvs_expr
+        :param warnings: List of warnings
+        :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+            translate or normalize query. `False` return `None` when unable to translate
+            or normalize query.
         :return: CopyNumberVariation and warnings
         """
         variation = None
-        if validations:
+        if valid_results:
             if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_CHANGE:
                 endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
             else:
                 endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
 
             translations, warnings = await self.get_translations(
-                validations,
+                valid_results,
                 warnings,
                 hgvs_dup_del_mode=copy_number_type,
                 endpoint_name=endpoint_name,
@@ -237,12 +236,12 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberCountService containing Copy Number Count
             Variation and warnings
         """
-        validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
+        valid_results, warnings = await self._get_valid_results(hgvs_expr)
         cn_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeOption.COPY_NUMBER_COUNT,
             hgvs_expr,
             do_liftover,
-            validation_summary,
+            valid_results,
             warnings,
             untranslatable_returns_text=untranslatable_returns_text,
             baseline_copies=baseline_copies,
@@ -275,12 +274,12 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberChangeService containing Copy Number Change
             Variation and warnings
         """
-        validation_summary, warnings = await self._get_validation_summary(hgvs_expr)
+        valid_results, warnings = await self._get_valid_results(hgvs_expr)
         cx_var, warnings = await self._hgvs_to_cnv_resp(
             HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
             hgvs_expr,
             do_liftover,
-            validation_summary,
+            valid_results,
             warnings,
             untranslatable_returns_text=untranslatable_returns_text,
             copy_change=copy_change,

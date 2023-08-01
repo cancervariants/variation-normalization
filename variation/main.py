@@ -1,7 +1,7 @@
 """Main application for FastAPI."""
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 from urllib.parse import unquote
 
 import pkg_resources
@@ -9,7 +9,6 @@ import python_jsonschema_objects
 from bioutils.exceptions import BioutilsError
 from cool_seq_tool.schemas import Assembly, ResidueMode
 from fastapi import FastAPI, Query
-from fastapi.openapi.utils import get_openapi
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from hgvs.exceptions import HGVSError
@@ -45,9 +44,10 @@ from variation.schemas.vrs_python_translator_schema import (
 from variation.version import __version__
 
 
-class Tags(Enum):
-    """Define tags for endpoints"""
+class Tag(Enum):
+    """Define tag names for endpoints"""
 
+    MAIN = "Main"
     SEQREPO = "SeqRepo"
     TO_PROTEIN_VARIATION = "To Protein Variation"
     VRS_PYTHON = "VRS-Python"
@@ -55,35 +55,27 @@ class Tags(Enum):
     ALIGNMENT_MAPPER = "Alignment Mapper"
 
 
+query_handler = QueryHandler()
+
+
 app = FastAPI(
+    title="The VICC Variation Normalizer",
+    description="Services and guidelines for normalizing variations.",
+    version=__version__,
+    contact={
+        "name": "Alex H. Wagner",
+        "email": "Alex.Wagner@nationwidechildrens.org",
+        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab",  # noqa: E501
+    },
+    license={
+        "name": "MIT",
+        "url": "https://github.com/cancervariants/variation-normalization/blob/main/LICENSE",
+    },
     docs_url="/variation",
     openapi_url="/variation/openapi.json",
     swagger_ui_parameters={"tryItOutEnabled": True},
 )
-query_handler = QueryHandler()
 
-
-def custom_openapi() -> Dict:
-    """Generate custom fields for OpenAPI response."""
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi(
-        title="The VICC Variation Normalizer",
-        version=__version__,
-        description="Services and guidelines for normalizing variations.",
-        routes=app.routes,
-    )
-
-    openapi_schema["info"]["contact"] = {
-        "name": "Alex H. Wagner",
-        "email": "Alex.Wagner@nationwidechildrens.org",
-        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab",  # noqa: E501
-    }
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-
-app.openapi = custom_openapi
 
 to_vrs_untranslatable_descr = (
     "`True` returns VRS Text object when unable to translate"
@@ -110,6 +102,7 @@ q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 a
     response_description=translate_response_description,
     response_model=ToVRSService,
     description=translate_description,
+    tags=[Tag.MAIN],
 )
 async def to_vrs(
     q: str = Query(..., description=q_description),
@@ -167,6 +160,7 @@ hgvs_dup_del_mode_decsr = (
     response_description=normalize_response_description,
     response_model=NormalizeService,
     description=normalize_description,
+    tags=[Tag.MAIN],
 )
 async def normalize(
     q: str = Query(..., description=q_description),
@@ -219,7 +213,7 @@ async def normalize(
     response_description="A response to a validly-formed query.",
     response_model=TranslateIdentifierService,
     description="Return list of aliases for an identifier",
-    tags=[Tags.SEQREPO],
+    tags=[Tag.SEQREPO],
 )
 def translate_identifier(
     identifier: str = Query(..., description="The identifier to find aliases for"),
@@ -269,7 +263,7 @@ from_fmt_descr = (
     response_description="A response to a validly-formed query.",
     description="Return VRS Allele object",
     response_model=TranslateFromService,
-    tags=[Tags.VRS_PYTHON],
+    tags=[Tag.VRS_PYTHON],
 )
 def vrs_python_translate_from(
     variation: str = Query(
@@ -334,7 +328,7 @@ q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protei
     response_description=g_to_p_response_description,
     description=g_to_p_description,
     response_model=NormalizeService,
-    tags=[Tags.TO_PROTEIN_VARIATION],
+    tags=[Tag.TO_PROTEIN_VARIATION],
 )
 async def gnomad_vcf_to_protein(
     q: str = Query(..., description=q_description),
@@ -399,7 +393,7 @@ def _get_allele(
     " a VRS Allele object represented as a dict. `fmt` must be either"
     " `spdi` or `hgvs`",
     response_model=TranslateToService,
-    tags=[Tags.VRS_PYTHON],
+    tags=[Tag.VRS_PYTHON],
 )
 async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateToService:
     """Given VRS Allele object as a dict, return variation expressed as queried
@@ -453,7 +447,7 @@ to_hgvs_descr = (
     response_description="A response to a validly-formed query.",
     description=to_hgvs_descr,
     response_model=TranslateToService,
-    tags=[Tags.VRS_PYTHON],
+    tags=[Tag.VRS_PYTHON],
 )
 async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToService:
     """Given VRS Allele object as a dict, return variation expressed as HGVS
@@ -500,7 +494,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
     response_model=HgvsToCopyNumberCountService,
-    tags=[Tags.TO_COPY_NUMBER_VARIATION],
+    tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_count(
     hgvs_expr: str = Query(..., description="Variation query"),
@@ -537,7 +531,7 @@ async def hgvs_to_copy_number_count(
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Change Variation",
     response_model=HgvsToCopyNumberChangeService,
-    tags=[Tags.TO_COPY_NUMBER_VARIATION],
+    tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_change(
     hgvs_expr: str = Query(..., description="Variation query"),
@@ -587,7 +581,7 @@ total_copies_descr = "Total copies for Copy Number Count variation object"
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
     response_model=ParsedToCnVarService,
-    tags=[Tags.TO_COPY_NUMBER_VARIATION],
+    tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 def parsed_to_cn_var(
     assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
@@ -643,7 +637,7 @@ amplification_to_cx_var_descr = (
     response_description="A response to a validly-formed query.",
     description=amplification_to_cx_var_descr,
     response_model=AmplificationToCxVarService,
-    tags=[Tags.TO_COPY_NUMBER_VARIATION],
+    tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
@@ -689,7 +683,7 @@ def amplification_to_cx_var(
     description="Given protein accession and positions, return associated cDNA "
     "accession and positions to codon(s)",
     response_model=ToCdnaService,
-    tags=[Tags.ALIGNMENT_MAPPER],
+    tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_c(
     p_ac: str = Query(..., description="Protein RefSeq accession"),
@@ -731,7 +725,7 @@ async def p_to_c(
     description="Given cDNA accession and positions for codon(s), return associated genomic"  # noqa: E501
     " accession and positions for a given target genome assembly",
     response_model=ToGenomicService,
-    tags=[Tags.ALIGNMENT_MAPPER],
+    tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def c_to_g(
     c_ac: str = Query(..., description="cDNA RefSeq accession"),
@@ -787,7 +781,7 @@ async def c_to_g(
     description="Given protein accession and positions, return associated genomic "
     "accession and positions for a given target genome assembly",
     response_model=ToGenomicService,
-    tags=[Tags.ALIGNMENT_MAPPER],
+    tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_g(
     p_ac: str = Query(..., description="Protein RefSeq accession"),

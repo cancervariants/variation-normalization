@@ -226,10 +226,10 @@ class Normalize(ToVRSATILE):
             params["warnings"] = warnings
             return NormalizeService(**params)
 
-        if len(validation_summary.valid_results) > 0:
+        if validation_summary.valid_results:
             # Get translated VRS representations for valid results
             translations, warnings = await self.get_translations(
-                validation_summary,
+                validation_summary.valid_results,
                 warnings,
                 endpoint_name=Endpoint.NORMALIZE,
                 hgvs_dup_del_mode=hgvs_dup_del_mode,
