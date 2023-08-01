@@ -4,7 +4,6 @@ from typing import List
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaReferenceAgreeClassification,
-    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class CdnaReferenceAgreeClassifier(Classifier):
     """The Cdna Reference Agree Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Cdna Reference Agree classification type."""
-        return ClassificationType.CDNA_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the cdna reference agree

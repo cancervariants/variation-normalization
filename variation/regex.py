@@ -1,12 +1,9 @@
 """Module containing regex patterns"""
 import re
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 from variation.schemas.app_schemas import AmbiguousRegexType
-from variation.schemas.classification_response_schema import (
-    AmbiguousType,
-    ClassificationType,
-)
+from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.token_response_schema import TokenType
 
 CDNA_GENOMIC_SUBSTITUTION = re.compile(
@@ -93,7 +90,7 @@ GENOMIC_DELETION_AMBIGUOUS_3 = re.compile(
 # classification type
 
 # Note: Order matters for regexprs
-PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+PROTEIN_REGEXPRS: List[Tuple[Any, TokenType, ClassificationType]] = [
     (PROTEIN_DELINS, TokenType.PROTEIN_DELINS, ClassificationType.PROTEIN_DELINS),
     (PROTEIN_DELETION, TokenType.PROTEIN_DELETION, ClassificationType.PROTEIN_DELETION),
     (
@@ -114,7 +111,7 @@ PROTEIN_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 ]
 
 # Note: Order matters for regexprs
-CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+CDNA_REGEXPRS: List[Tuple[Any, TokenType, ClassificationType]] = [
     (CDNA_GENOMIC_DELINS, TokenType.CDNA_DELINS, ClassificationType.CDNA_DELINS),
     (CNDA_GENOMIC_DELETION, TokenType.CDNA_DELETION, ClassificationType.CDNA_DELETION),
     (
@@ -135,7 +132,7 @@ CDNA_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 ]
 
 # Note: Order matters for regexprs
-GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
+GENOMIC_REGEXPRS: List[Tuple[Any, TokenType, ClassificationType]] = [
     (CDNA_GENOMIC_DELINS, TokenType.GENOMIC_DELINS, ClassificationType.GENOMIC_DELINS),
     (
         CNDA_GENOMIC_DELETION,
@@ -167,7 +164,7 @@ GENOMIC_REGEXPRS: List[Tuple[any, TokenType, ClassificationType]] = [
 
 # Note: Order matters for regexprs
 GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
-    Tuple[any, TokenType, ClassificationType, AmbiguousType]
+    Tuple[Any, TokenType, ClassificationType, AmbiguousRegexType]
 ] = [
     (
         GENOMIC_DUPLICATION_AMBIGUOUS_1,
@@ -192,7 +189,7 @@ GENOMIC_DUP_AMBIGUOUS_REGEXPRS: List[
 
 # Note: Order matters for regexprs
 GENOMIC_DEL_AMBIGUOUS_REGEXPRS: List[
-    Tuple[any, TokenType, ClassificationType, AmbiguousType]
+    Tuple[Any, TokenType, ClassificationType, AmbiguousRegexType]
 ] = [
     (
         GENOMIC_DELETION_AMBIGUOUS_1,

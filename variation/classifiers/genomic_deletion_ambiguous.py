@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicDeletionAmbiguousClassification,
     Nomenclature,
 )
@@ -13,10 +12,6 @@ from variation.utils import get_ambiguous_type
 
 class GenomicDeletionAmbiguousClassifier(Classifier):
     """The Genomic Deletion Ambiguous Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Deletion Ambiguous classification type."""
-        return ClassificationType.GENOMIC_DELETION_AMBIGUOUS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic ambiguous deletion

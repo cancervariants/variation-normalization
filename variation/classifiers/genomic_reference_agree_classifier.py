@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicReferenceAgreeClassification,
     Nomenclature,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class GenomicReferenceAgreeClassifier(Classifier):
     """The Genomic Reference Agree Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Reference Agree classification type."""
-        return ClassificationType.GENOMIC_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic reference agree

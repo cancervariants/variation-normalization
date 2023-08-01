@@ -103,6 +103,7 @@ class Translate:
         :return: Translation result if translation was successful. If translation was
             not successful, `None`
         """
+        translation_result = None
         for translator in self.translators:
             if translator.can_translate(
                 validation_result.classification.classification_type
@@ -116,5 +117,7 @@ class Translate:
                     copy_change=copy_change,
                     do_liftover=do_liftover,
                 )
-                return result
-        return None
+                translation_result = result
+                break
+
+        return translation_result

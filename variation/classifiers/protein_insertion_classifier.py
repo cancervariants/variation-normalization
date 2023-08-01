@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Nomenclature,
     ProteinInsertionClassification,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class ProteinInsertionClassifier(Classifier):
     """The Protein Insertion Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Protein Insertion classification type."""
-        return ClassificationType.PROTEIN_INSERTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the protein insertion classification.

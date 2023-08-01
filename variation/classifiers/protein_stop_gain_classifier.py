@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Nomenclature,
     ProteinStopGainClassification,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class ProteinStopGainClassifier(Classifier):
     """The Protein Stop Gain Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Protein Stop Gain classification type."""
-        return ClassificationType.PROTEIN_STOP_GAIN
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the protein stop gain classification.

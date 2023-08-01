@@ -1,5 +1,5 @@
 """Module for classification."""
-from typing import List
+from typing import List, Optional
 
 from variation.classifiers import (
     AmplificationClassifier,
@@ -59,11 +59,11 @@ class Classify:
         AmplificationClassifier(),
     ]
 
-    def perform(self, tokens: List[Token]) -> Classification:
+    def perform(self, tokens: List[Token]) -> Optional[Classification]:
         """Classify a list of tokens.
 
         :param tokens: List of tokens found
-        :return: Classification for a list of tokens
+        :return: Classification for a list of tokens if found
         """
         classification = None
 

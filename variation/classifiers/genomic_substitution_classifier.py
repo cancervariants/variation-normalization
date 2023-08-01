@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicSubstitutionClassification,
     Nomenclature,
     SequenceOntology,
@@ -13,10 +12,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class GenomicSubstitutionClassifier(Classifier):
     """The Genomic Substitution Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Substitution classification type."""
-        return ClassificationType.GENOMIC_SUBSTITUTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic substitution

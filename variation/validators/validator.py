@@ -84,7 +84,7 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
 
-    async def validate(self, classification: Classification) -> ValidationResult:
+    async def validate(self, classification: Classification) -> List[ValidationResult]:
         """Get list of associated accessions for a classification. Use these accessions
         to perform validation checks (pos exists, accession is valid, reference sequence
         matches expected, etc). Gets list of validation results for a given

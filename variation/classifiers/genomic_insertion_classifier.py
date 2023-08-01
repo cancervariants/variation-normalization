@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicInsertionClassification,
     Nomenclature,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class GenomicInsertionClassifier(Classifier):
     """The Genomic Insertion Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Insertion classification type."""
-        return ClassificationType.GENOMIC_INSERTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic insertion classification.

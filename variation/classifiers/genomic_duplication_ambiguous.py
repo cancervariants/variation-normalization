@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicDuplicationAmbiguousClassification,
     Nomenclature,
 )
@@ -13,10 +12,6 @@ from variation.utils import get_ambiguous_type
 
 class GenomicDuplicationAmbiguousClassifier(Classifier):
     """The Genomic Duplication Ambiguous Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Duplication Ambiguous classification type."""
-        return ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic ambiguous duplication

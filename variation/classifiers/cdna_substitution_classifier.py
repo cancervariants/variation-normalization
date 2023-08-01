@@ -4,7 +4,6 @@ from typing import List, Optional
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaSubstitutionClassification,
-    ClassificationType,
     Nomenclature,
     SequenceOntology,
 )
@@ -13,10 +12,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class CdnaSubstitutionClassifier(Classifier):
     """The Cdna Substitution Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Cdna Substitution classification type."""
-        return ClassificationType.CDNA_SUBSTITUTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the cdna substitution classification.

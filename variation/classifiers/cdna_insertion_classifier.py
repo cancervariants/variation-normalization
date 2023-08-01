@@ -4,7 +4,6 @@ from typing import List
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaInsertionClassification,
-    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class CdnaInsertionClassifier(Classifier):
     """The Cdna insertion Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Cdna insertion classification type."""
-        return ClassificationType.CDNA_INSERTION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the cdna insertion classification.

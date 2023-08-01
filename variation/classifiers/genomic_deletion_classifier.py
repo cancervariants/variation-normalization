@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicDeletionClassification,
     Nomenclature,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class GenomicDeletionClassifier(Classifier):
     """The Genomic Deletion Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Deletion classification type."""
-        return ClassificationType.GENOMIC_DELETION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic deletion classification.

@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     GenomicDuplicationClassification,
     Nomenclature,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class GenomicDuplicationClassifier(Classifier):
     """The Genomic Duplication Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Genomic Duplication classification type."""
-        return ClassificationType.GENOMIC_DUPLICATION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the genomic duplication classification.

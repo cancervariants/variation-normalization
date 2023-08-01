@@ -4,7 +4,6 @@ from typing import List
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaDeletionClassification,
-    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.token_response_schema import Token, TokenType
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class CdnaDeletionClassifier(Classifier):
     """The Cdna Deletion Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Cdna Deletion classification type."""
-        return ClassificationType.CDNA_DELETION
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the cdna deletion classification.

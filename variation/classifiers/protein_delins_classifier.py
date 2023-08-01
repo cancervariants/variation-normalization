@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Nomenclature,
     ProteinDelInsClassification,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class ProteinDelInsClassifier(Classifier):
     """The Protein DelIns Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Protein DelIns classification type."""
-        return ClassificationType.PROTEIN_DELINS
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the protein delins classification.

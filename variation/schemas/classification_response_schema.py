@@ -224,7 +224,7 @@ class GenomicDuplicationClassification(Classification, Duplication):
 
 
 class AmbiguousType(str, Enum):
-    """Define ambiguous type  which helps determine the ambiguous expression format"""
+    """Define ambiguous type which helps determine the ambiguous expression format"""
 
     AMBIGUOUS_1 = "(#_#)_(#_#)"
     AMBIGUOUS_2 = "(?_#)_(#_?)"

@@ -3,7 +3,6 @@ from typing import List
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Nomenclature,
     ProteinReferenceAgreeClassification,
 )
@@ -12,10 +11,6 @@ from variation.schemas.token_response_schema import Token, TokenType
 
 class ProteinReferenceAgreeClassifier(Classifier):
     """The Reference Agree Classifier class."""
-
-    def classification_type(self) -> ClassificationType:
-        """Return the Reference Agree classification type."""
-        return ClassificationType.PROTEIN_REFERENCE_AGREE
 
     def exact_match_candidates(self) -> List[List[TokenType]]:
         """Return the token match candidates for the protein reference agree

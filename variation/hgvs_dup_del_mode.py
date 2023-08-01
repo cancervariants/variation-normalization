@@ -1,5 +1,5 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
@@ -8,6 +8,9 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
+
+# Define deletion alt types
+DELS = {AltType.DELETION_AMBIGUOUS, AltType.DELETION}
 
 
 class HGVSDupDelMode:
@@ -22,9 +25,13 @@ class HGVSDupDelMode:
 
     def default_mode(
         self,
-        alt_type: AltType,
+        alt_type: Union[
+            AltType.DELETION,
+            AltType.DELETION_AMBIGUOUS,
+            AltType.DUPLICATION,
+            AltType.DUPLICATION_AMBIGUOUS,
+        ],
         pos: Tuple[int, int],
-        del_or_dup: str,
         location: Dict,
         vrs_seq_loc_ac: str,
         baseline_copies: Optional[int] = None,
@@ -41,9 +48,8 @@ class HGVSDupDelMode:
         else:
             literal_seq_expr (normalized LiteralSequenceExpression Allele)
 
-        :param alt_type: Alteration type
+        :param alt_type: The type of alteration
         :param pos: start_pos, end_pos
-        :param del_or_dup: Must be either `del` or `dup`
         :param location: Sequence Location object
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param baseline_copies: Baseline copies for Copy Number Count variation
@@ -53,11 +59,9 @@ class HGVSDupDelMode:
         """
         variation = None
         if not baseline_copies and alt_type in AMBIGUOUS_REGIONS:
-            variation = self.copy_number_change_mode(del_or_dup, location, copy_change)
+            variation = self.copy_number_change_mode(alt_type, location, copy_change)
         elif baseline_copies:
-            variation = self.copy_number_count_mode(
-                del_or_dup, location, baseline_copies
-            )
+            variation = self.copy_number_count_mode(alt_type, location, baseline_copies)
         elif pos and (pos[1] - pos[0] > 100):
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
@@ -65,17 +69,25 @@ class HGVSDupDelMode:
         return variation
 
     def copy_number_count_mode(
-        self, del_or_dup: str, location: Dict, baseline_copies: int
+        self,
+        alt_type: Union[
+            AltType.DELETION,
+            AltType.DELETION_AMBIGUOUS,
+            AltType.DUPLICATION,
+            AltType.DUPLICATION_AMBIGUOUS,
+        ],
+        location: Dict,
+        baseline_copies: int,
     ) -> Optional[Dict]:
         """Return a VRS Copy Number Variation.
 
-        :param str del_or_dup: Must be either `del` or `dup`
-        :param Dict location: VRS SequenceLocation
-        :param int baseline_copies: Baseline copies number
+        :param alt_type: The type of alteration
+        :param location: VRS SequenceLocation
+        :param baseline_copies: Baseline copies number
         :return: VRS Copy Number object represented as a dict
         """
         copies = models.Number(
-            value=baseline_copies - 1 if del_or_dup == "del" else baseline_copies + 1,
+            value=baseline_copies - 1 if alt_type in DELS else baseline_copies + 1,
             type="Number",
         )
         variation = {
@@ -90,17 +102,25 @@ class HGVSDupDelMode:
         return variation
 
     def copy_number_change_mode(
-        self, del_or_dup: str, location: Dict, copy_change: Optional[CopyChange] = None
+        self,
+        alt_type: Union[
+            AltType.DELETION,
+            AltType.DELETION_AMBIGUOUS,
+            AltType.DUPLICATION,
+            AltType.DUPLICATION_AMBIGUOUS,
+        ],
+        location: Dict,
+        copy_change: Optional[CopyChange] = None,
     ) -> Optional[Dict]:
         """Return copy number change variation
 
-        :param str del_or_dup: Must be either `del` or `dup`
+        :param alt_type: The type of alteration
         :param Dict location: VRS SequenceLocation
         :param Optional[CopyChange] copy_change: The copy change
         :return: Copy Number Change variation as a dict
         """
         if not copy_change:
-            if del_or_dup == "del":
+            if alt_type in DELS:
                 copy_change = CopyChange.LOSS.value
             else:
                 copy_change = CopyChange.GAIN.value
@@ -238,17 +258,11 @@ class HGVSDupDelMode:
         :param alt: The alteration
         :return: VRS Variation object
         """
-        if "deletion" in alt_type.value:
-            del_or_dup = "del"
-        else:
-            del_or_dup = "dup"
-
         variation = None
         if hgvs_dup_del_mode == HGVSDupDelModeOption.DEFAULT:
             variation = self.default_mode(
                 alt_type,
                 pos,
-                del_or_dup,
                 location,
                 vrs_seq_loc_ac,
                 baseline_copies=baseline_copies,
@@ -263,7 +277,7 @@ class HGVSDupDelMode:
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
             if baseline_copies:
                 variation = self.copy_number_count_mode(
-                    del_or_dup, location, baseline_copies
+                    alt_type, location, baseline_copies
                 )
             else:
                 errors.append(
@@ -271,7 +285,7 @@ class HGVSDupDelMode:
                 )
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_CHANGE:
             variation = self.copy_number_change_mode(
-                del_or_dup, location, copy_change=copy_change
+                alt_type, location, copy_change=copy_change
             )
 
         if not variation:

@@ -199,10 +199,8 @@ class AmbiguousTranslator(Translator):
         classification = validation_result.classification
         if isinstance(classification, GenomicDeletionAmbiguousClassification):
             alt_type = AltType.DELETION_AMBIGUOUS
-            del_or_dup = "del"
         else:
             alt_type = AltType.DUPLICATION_AMBIGUOUS
-            del_or_dup = "dup"
 
         grch38_data = None
 
@@ -306,17 +304,16 @@ class AmbiguousTranslator(Translator):
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
-                del_or_dup, ambiguous_seq_loc_data.seq_loc, baseline_copies
+                alt_type, ambiguous_seq_loc_data.seq_loc, baseline_copies
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_CHANGE:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_change_mode(
-                del_or_dup, ambiguous_seq_loc_data.seq_loc, copy_change
+                alt_type, ambiguous_seq_loc_data.seq_loc, copy_change
             )
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
                 alt_type,
                 ambiguous_seq_loc_data.outer_coords,
-                del_or_dup,
                 ambiguous_seq_loc_data.seq_loc,
                 ac,
                 baseline_copies=baseline_copies,
