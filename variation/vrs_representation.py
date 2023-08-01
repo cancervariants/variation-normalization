@@ -5,6 +5,8 @@ from bioutils.accessions import coerce_namespace
 from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
+from ga4gh.vrsatile.pydantic.vrs_models import Allele
+from pydantic import ValidationError
 
 from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
 
@@ -151,7 +153,14 @@ class VRSRepresentation:
             allele.location.sequence_id = seq_id
             allele.location._id = ga4gh_identify(allele.location)
             allele._id = ga4gh_identify(allele)
-            return allele.as_dict()
+            allele_dict = allele.as_dict()
+            try:
+                Allele(**allele_dict)
+            except ValidationError as e:
+                errors.append(str(e))
+                return None
+            else:
+                return allele_dict
         else:
             errors.append(w)
             return None
