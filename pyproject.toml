@@ -33,6 +33,8 @@ docstring-quotes = "double"
 # ANN2 - missing-return-type
 # ANN102 - missing-type-cls
 # N805 - invalid-first-argument-name-for-method
+# F821 - undefined-name
+# F401 - unused-import
 "tests/*" = ["ANN001", "ANN2", "ANN102"]
 "setup.py" = ["F821"]
 "*__init__.py" = ["F401"]

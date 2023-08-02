@@ -8,7 +8,11 @@ from ga4gh.vrs import models, normalize
 from ga4gh.vrsatile.pydantic.vrs_models import Allele
 from pydantic import ValidationError
 
-from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
+from variation.schemas.token_response_schema import (
+    AMBIGUOUS_REGIONS,
+    AltType,
+    CoordinateType,
+)
 
 
 class VRSRepresentation:
@@ -170,22 +174,22 @@ class VRSRepresentation:
         ac: str,
         start: int,
         end: int,
-        coordinate: str,
+        coordinate: CoordinateType,
         alt_type: AltType,
-        errors: List,
-        cds_start: int = None,
-        alt: str = None,
+        errors: List[str],
+        cds_start: Optional[int] = None,
+        alt: Optional[str] = None,
     ) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
-        :param str ac: Accession
-        :param int start: Start position change
-        :param int end: End position change
-        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param AltType alt_type: Type of alteration
-        :param List errors: List of errors
-        :param int cds_start: Coding start site
-        :param str alt: Alteration
+        :param ac: Accession
+        :param start: Start position change
+        :param end: End position change
+        :param coordinate: Coordinate used
+        :param alt_type: Type of alteration
+        :param errors: List of errors
+        :param cds_start: Coding start site
+        :param alt: Alteration
         :return: VRS Allele Object
         """
         ival_coords = self.get_ival_start_end(coordinate, start, end, cds_start, errors)
