@@ -752,6 +752,36 @@ def grch38_genomic_delins2():
 
 
 @pytest.fixture(scope="module")
+def genomic_delins_gene():
+    """Create a test fixture for BRAF g.140453135_140453136delinsAT (CA16602419)."""
+    params = {
+        "id": "normalize.variation:BRAF%20g.140453135_140453136delinsAT",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.2Fh3KsXqg67sWFt-7G_gEClzVcgEpPRd",
+        "variation": {
+            "_id": "ga4gh:VA.2Fh3KsXqg67sWFt-7G_gEClzVcgEpPRd",
+            "location": {
+                "_id": "ga4gh:VSL.anshhfdXHywKfgXDS3sG8q-935amSrZx",
+                "interval": {
+                    "start": {"value": 2024, "type": "Number"},
+                    "end": {"value": 2026, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.aKMPEJgmlZXt_F6gRY5cUG3THH2n-GUa",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "AT", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "transcript",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "TG",
+        "gene_context": "hgnc:1097",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
 def grch38_genomic_insertion(grch38_genomic_insertion_variation):
     """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG."""
     params = {
@@ -1005,7 +1035,7 @@ async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
 
 @pytest.mark.asyncio
 async def test_genomic_delins(
-    test_handler, grch38_genomic_delins1, grch38_genomic_delins2
+    test_handler, grch38_genomic_delins1, grch38_genomic_delins2, genomic_delins_gene
 ):
     """Test that Genomic DelIns normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453135_140453136delinsAT")
@@ -1022,8 +1052,9 @@ async def test_genomic_delins(
         "NC_000003.12:g.10149938delinsAA",
     )
 
-    # TODO: Add response
-    resp = await test_handler.normalize("BRAF g.140453135_140453136delinsAT")
+    q = "BRAF g.140453135_140453136delinsAT"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, genomic_delins_gene, q)
 
 
 @pytest.mark.asyncio

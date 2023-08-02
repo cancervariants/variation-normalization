@@ -6,6 +6,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import (
+    CdnaDelInsClassification,
     ClassificationType,
     GenomicDelInsClassification,
 )
@@ -54,9 +55,11 @@ class GenomicDelIns(Translator):
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = "na"
-        # TODO: Need to do g-> c like others
 
         if endpoint_name == Endpoint.NORMALIZE:
+            gene = (
+                classification.gene_token.token if classification.gene_token else None
+            )
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession,
                 classification.pos0,
@@ -64,22 +67,36 @@ class GenomicDelIns(Translator):
                 end_pos=classification.pos1,
                 try_longest_compatible=True,
                 residue_mode=ResidueMode.RESIDUE.value,
-                gene=classification.gene_token.token
-                if classification.gene_token
-                else None,
+                gene=gene,
             )
 
             if mane:
-                vrs_seq_loc_ac = mane["refseq"]
                 vrs_seq_loc_ac_status = mane["status"]
+                if gene:
+                    classification = CdnaDelInsClassification(
+                        matching_tokens=classification.matching_tokens,
+                        nomenclature=classification.nomenclature,
+                        gene_token=classification.gene_token,
+                        pos0=mane["pos"][0] + 1,
+                        pos1=mane["pos"][1] + 1,
+                        inserted_sequence=classification.inserted_sequence,
+                    )
+                    vrs_seq_loc_ac = mane["refseq"]
+                    coord_type = CoordinateType.CDNA
+                    validation_result.classification = classification
+                else:
+                    vrs_seq_loc_ac = mane["alt_ac"]
+                    coord_type = CoordinateType.LINEAR_GENOMIC
+
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac,
                     mane["pos"][0] + 1,
                     mane["pos"][1] + 1,
-                    CoordinateType.LINEAR_GENOMIC,
+                    coord_type,
                     AltType.DELINS,
                     warnings,
                     alt=classification.inserted_sequence,
+                    cds_start=mane["coding_start_site"] if gene else None,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
