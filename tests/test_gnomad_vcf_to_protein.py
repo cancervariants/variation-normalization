@@ -13,475 +13,7 @@ def test_handler(test_query_handler):
 
 
 @pytest.fixture(scope="module")
-def mmel1_gene_context():
-    """Create MMEL1 gene context test fixture"""
-    return {
-        "id": "normalize.gene:HGNC%3A14668",
-        "type": "GeneDescriptor",
-        "label": "MMEL1",
-        "xrefs": ["ensembl:ENSG00000142606", "ncbigene:79258"],
-        "alternate_labels": [
-            "SEP",
-            "NL1",
-            "MMEL2",
-            "MMEL1",
-            "MELL1",
-            "NL2",
-            "NEPII",
-            "NEP2",
-        ],
-        "extensions": [
-            {"type": "Extension", "name": "symbol_status", "value": "approved"},
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "membrane metalloendopeptidase like 1",
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locations",
-                "value": [
-                    {
-                        "species_id": "taxonomy:9606",
-                        "interval": {
-                            "type": "CytobandInterval",
-                            "start": "p36.32",
-                            "end": "p36.32",
-                        },
-                        "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
-                        "type": "ChromosomeLocation",
-                        "chr": "1",
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ensembl_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VSL.IPoku1gYr0vkl-A69vmEQ08MQ69zUqD1",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 2590638},
-                            "end": {"type": "Number", "value": 2633016},
-                            "type": "SequenceInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ncbi_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.euTdJgW7alHXcorcGDFtKB80BLicpDhy",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "1",
-                        "interval": {
-                            "end": "p36.32",
-                            "start": "p36.32",
-                            "type": "CytobandInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.IPoku1gYr0vkl-A69vmEQ08MQ69zUqD1",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 2590638},
-                            "end": {"type": "Number", "value": 2633016},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.XXHohp7WTwnDP6qHi880nc3bfyK4_kOP",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.7_Exoebfll2KSxWkHO_CTYB7L35bVXb8",
-                        "interval": {
-                            "start": {"type": "Number", "value": 141828},
-                            "end": {"type": "Number", "value": 184203},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "uniprot:Q495T6",
-                    "ccds:CCDS30569",
-                    "ucsc:uc001ajy.3",
-                    "merops:M13.008",
-                    "pubmed:11560781",
-                    "pubmed:18539150",
-                    "vega:OTTHUMG00000000846",
-                    "orphanet:239881",
-                    "refseq:NM_033467",
-                    "ena.embl:AF336981",
-                    "omim:618104",
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "previous_symbols",
-                "value": ["MMEL2", "MELL1", "MMEL1"],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locus_type",
-                "value": "gene with protein product",
-            },
-            {"type": "Extension", "name": "ncbi_gene_type", "value": "protein-coding"},
-            {"type": "Extension", "name": "ensembl_biotype", "value": "protein_coding"},
-        ],
-        "gene_id": "hgnc:14668",
-    }
-
-
-@pytest.fixture(scope="module")
-def cdk11a_gene_context():
-    """Create test fixture for CDK11A"""
-    return {
-        "id": "normalize.gene:HGNC%3A1730",
-        "type": "GeneDescriptor",
-        "label": "CDK11A",
-        "xrefs": ["ensembl:ENSG00000008128", "ncbigene:728642"],
-        "alternate_labels": [
-            "LOC100294398",
-            "LOC100134433",
-            "CDC2L3",
-            "CDK11-p46",
-            "CDC2L2",
-            "CDK11-p58",
-            "CDK11-p110",
-            "p58GTA",
-            "PITSLRE",
-        ],
-        "extensions": [
-            {"type": "Extension", "name": "symbol_status", "value": "approved"},
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "cyclin dependent kinase 11A",
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locations",
-                "value": [
-                    {
-                        "species_id": "taxonomy:9606",
-                        "interval": {
-                            "type": "CytobandInterval",
-                            "start": "p36.33",
-                            "end": "p36.33",
-                        },
-                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                        "type": "ChromosomeLocation",
-                        "chr": "1",
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ensembl_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VSL.QRhe6PtLVVYL-0IGwSkJRptqPAvCtX3C",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 1702378},
-                            "end": {"type": "Number", "value": 1724357},
-                            "type": "SequenceInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ncbi_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "1",
-                        "interval": {
-                            "end": "p36.33",
-                            "start": "p36.33",
-                            "type": "CytobandInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.QRhe6PtLVVYL-0IGwSkJRptqPAvCtX3C",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 1702378},
-                            "end": {"type": "Number", "value": 1724357},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "pubmed:9750192",
-                    "pubmed:19884882",
-                    "vega:OTTHUMG00000000703",
-                    "ccds:CCDS44043",
-                    "ccds:CCDS81254",
-                    "ccds:CCDS44042",
-                    "iuphar:1963",
-                    "refseq:NM_024011",
-                    "ucsc:uc009vks.4",
-                    "ena.embl:AF067522",
-                    "omim:116951",
-                    "pubmed:7920654",
-                    "uniprot:Q9UQ88",
-                    "ccds:CCDS81253",
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "previous_symbols",
-                "value": ["LOC100294398", "LOC100134433", "CDC2L2", "CDC2L3"],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locus_type",
-                "value": "gene with protein product",
-            },
-            {"type": "Extension", "name": "ncbi_gene_type", "value": "protein-coding"},
-            {"type": "Extension", "name": "ensembl_biotype", "value": "protein_coding"},
-        ],
-        "gene_id": "hgnc:1730",
-    }
-
-
-@pytest.fixture(scope="module")
-def lrp8_gene_context():
-    """Create LRP8 gene context test fixture"""
-    return {
-        "id": "normalize.gene:HGNC%3A6700",
-        "type": "GeneDescriptor",
-        "label": "LRP8",
-        "xrefs": ["ensembl:ENSG00000157193", "ncbigene:7804"],
-        "alternate_labels": ["APOER2", "LRP-8", "HSZ75190", "LRP8", "MIPS", "MCI1"],
-        "extensions": [
-            {"type": "Extension", "name": "symbol_status", "value": "approved"},
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "LDL receptor related protein 8",
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locations",
-                "value": [
-                    {
-                        "species_id": "taxonomy:9606",
-                        "interval": {
-                            "type": "CytobandInterval",
-                            "start": "p32.3",
-                            "end": "p32.3",
-                        },
-                        "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
-                        "type": "ChromosomeLocation",
-                        "chr": "1",
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ensembl_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VSL.b-ZZhs0dVgSYpFeXUyiZqup1RR2CW54r",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 53242363},
-                            "end": {"type": "Number", "value": 53328469},
-                            "type": "SequenceInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ncbi_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.2z2vSUsZ2_Kh1RdVbIU5_tkwlZW-pBgN",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "1",
-                        "interval": {
-                            "end": "p32.3",
-                            "start": "p32.3",
-                            "type": "CytobandInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.skIG-_HGkK6zid8ZI47evnZnm7PquEd6",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 53242363},
-                            "end": {"type": "Number", "value": 53328070},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "ucsc:uc001cvi.4",
-                    "ccds:CCDS30720",
-                    "ccds:CCDS579",
-                    "uniprot:Q14114",
-                    "ccds:CCDS580",
-                    "vega:OTTHUMG00000008924",
-                    "pubmed:9079678",
-                    "pubmed:8626535",
-                    "ccds:CCDS578",
-                    "refseq:NM_004631",
-                    "ena.embl:D50678",
-                    "omim:602600",
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "previous_symbols",
-                "value": ["HSZ75190", "MIPS", "LRP8"],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locus_type",
-                "value": "gene with protein product",
-            },
-            {"type": "Extension", "name": "ncbi_gene_type", "value": "protein-coding"},
-            {"type": "Extension", "name": "ensembl_biotype", "value": "protein_coding"},
-        ],
-        "gene_id": "hgnc:6700",
-    }
-
-
-@pytest.fixture(scope="module")
-def atad3a_gene_context():
-    """Create ATAD3A gene context test fixture"""
-    return {
-        "id": "normalize.gene:HGNC%3A25567",
-        "type": "GeneDescriptor",
-        "label": "ATAD3A",
-        "xrefs": ["ensembl:ENSG00000197785", "ncbigene:55210"],
-        "alternate_labels": ["HAYOS", "FLJ10709", "PHRINL"],
-        "extensions": [
-            {"type": "Extension", "name": "symbol_status", "value": "approved"},
-            {
-                "type": "Extension",
-                "name": "approved_name",
-                "value": "ATPase family AAA domain containing 3A",
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locations",
-                "value": [
-                    {
-                        "species_id": "taxonomy:9606",
-                        "interval": {
-                            "type": "CytobandInterval",
-                            "start": "p36.33",
-                            "end": "p36.33",
-                        },
-                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                        "type": "ChromosomeLocation",
-                        "chr": "1",
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ensembl_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VSL.fvV1IfQDGo0Du1KyazPB61c5EsmlyNV4",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 1512161},
-                            "end": {"type": "Number", "value": 1534685},
-                            "type": "SequenceInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ncbi_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.DPABdBwKwyUotcGmM7aFYFGQqIK4NpYr",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "1",
-                        "interval": {
-                            "end": "p36.33",
-                            "start": "p36.33",
-                            "type": "CytobandInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.fvV1IfQDGo0Du1KyazPB61c5EsmlyNV4",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
-                        "interval": {
-                            "start": {"type": "Number", "value": 1512161},
-                            "end": {"type": "Number", "value": 1534685},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "ccds:CCDS53259",
-                    "ucsc:uc001aga.3",
-                    "ena.embl:AK025865",
-                    "vega:OTTHUMG00000000575",
-                    "ccds:CCDS31",
-                    "refseq:NM_018188",
-                    "omim:612316",
-                    "ccds:CCDS53260",
-                    "orphanet:469968",
-                    "pubmed:28158749",
-                    "uniprot:Q9NVI7",
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locus_type",
-                "value": "gene with protein product",
-            },
-            {"type": "Extension", "name": "ncbi_gene_type", "value": "protein-coding"},
-            {"type": "Extension", "name": "ensembl_biotype", "value": "protein_coding"},
-        ],
-        "gene_id": "hgnc:25567",
-    }
-
-
-@pytest.fixture(scope="module")
-def mmel1_l30m(mmel1_gene_context):
+def mmel1_l30m():
     """Create test fixture for MMEL1 L30M"""
     params = {
         "id": "normalize.variation:1-2629397-G-T",
@@ -505,13 +37,13 @@ def mmel1_l30m(mmel1_gene_context):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "L",
-        "gene_context": mmel1_gene_context,
+        "gene_context": "hgnc:14668",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def cdk11a_e314del(cdk11a_gene_context):
+def cdk11a_e314del():
     """Create test fixture for CDK11A Glu314del"""
     params = {
         "id": "normalize.variation:1-1708855-TTCC-T",
@@ -535,13 +67,13 @@ def cdk11a_e314del(cdk11a_gene_context):
         "molecule_context": "protein",
         "structural_type": "SO:0001604",
         "vrs_ref_allele_seq": "EEEEEEEEEEEEE",
-        "gene_context": cdk11a_gene_context,
+        "gene_context": "hgnc:1730",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def protein_insertion2(lrp8_gene_context):
+def protein_insertion2():
     """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
     params = {
         "id": "normalize.variation:1-53327836-A-ACGC",
@@ -564,7 +96,7 @@ def protein_insertion2(lrp8_gene_context):
         },
         "molecule_context": "protein",
         "structural_type": "SO:0001605",
-        "gene_context": lrp8_gene_context,
+        "gene_context": "hgnc:6700",
     }
     return VariationDescriptor(**params)
 
@@ -585,7 +117,7 @@ def atad3a_loc():
 
 
 @pytest.fixture(scope="module")
-def atad3a_i7v(atad3a_gene_context, atad3a_loc):
+def atad3a_i7v(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Val"""
     params = {
         "id": "normalize.variation:1-1512287-A-G",
@@ -600,13 +132,13 @@ def atad3a_i7v(atad3a_gene_context, atad3a_loc):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
-        "gene_context": atad3a_gene_context,
+        "gene_context": "hgnc:25567",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def atad3a_i7t(atad3a_gene_context, atad3a_loc):
+def atad3a_i7t(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Thr"""
     params = {
         "id": "normalize.variation:1-1512288-T-C",
@@ -621,13 +153,13 @@ def atad3a_i7t(atad3a_gene_context, atad3a_loc):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
-        "gene_context": atad3a_gene_context,
+        "gene_context": "hgnc:25567",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def atad3a_i7m(atad3a_gene_context, atad3a_loc):
+def atad3a_i7m(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Met"""
     params = {
         "id": "normalize.variation:1-1512289-T-G",
@@ -642,13 +174,13 @@ def atad3a_i7m(atad3a_gene_context, atad3a_loc):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
-        "gene_context": atad3a_gene_context,
+        "gene_context": "hgnc:25567",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="session")
-def braf_v600l(braf_gene_context, braf_600loc):
+def braf_v600l(braf_600loc):
     """Create test fixture for BRAF Val600Leu."""
     params = {
         "id": "normalize.variation:7-140753337-C-A",
@@ -663,13 +195,13 @@ def braf_v600l(braf_gene_context, braf_600loc):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
-        "gene_context": braf_gene_context,
+        "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="session")
-def braf_600_reference_agree(braf_gene_context, braf_600loc):
+def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
         "id": "normalize.variation:7-140753335-C-A",
@@ -684,7 +216,7 @@ def braf_600_reference_agree(braf_gene_context, braf_600loc):
         "molecule_context": "protein",
         "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
-        "gene_context": braf_gene_context,
+        "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
 

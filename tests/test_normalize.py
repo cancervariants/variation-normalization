@@ -17,111 +17,6 @@ def test_handler(test_query_handler):
 
 
 @pytest.fixture(scope="module")
-def limk2_gene_context():
-    """Create LIMK2 gene context test fixture."""
-    return {
-        "id": "normalize.gene:LIMK2",
-        "type": "GeneDescriptor",
-        "label": "LIMK2",
-        "gene_id": "hgnc:6614",
-        "xrefs": ["ncbigene:3985", "ensembl:ENSG00000182541"],
-        "extensions": [
-            {"type": "Extension", "name": "symbol_status", "value": "approved"},
-            {
-                "name": "approved_name",
-                "value": "LIM domain kinase 2",
-                "type": "Extension",
-            },
-            {
-                "type": "Extension",
-                "name": "associated_with",
-                "value": [
-                    "refseq:NM_016733",
-                    "ccds:CCDS33637",
-                    "ccds:CCDS13892",
-                    "ena.embl:D45906",
-                    "uniprot:P53671",
-                    "pubmed:10591208",
-                    "vega:OTTHUMG00000151251",
-                    "omim:601988",
-                    "iuphar:2055",
-                    "pubmed:8537403",
-                    "ccds:CCDS13891",
-                    "ucsc:uc003akh.4",
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "22",
-                        "interval": {
-                            "end": "q12.2",
-                            "start": "q12.2",
-                            "type": "CytobandInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ensembl_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VSL.Mat3OiuXCd7vNWAGB5lOKaSf_ESc_xK9",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
-                        "interval": {
-                            "start": {"type": "Number", "value": 31212238},
-                            "end": {"type": "Number", "value": 31280080},
-                            "type": "SequenceInterval",
-                        },
-                    }
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "ncbi_locations",
-                "value": [
-                    {
-                        "_id": "ga4gh:VCL.IoyhTh4PxvPx8yF9P3IecXDVs_XVbDe9",
-                        "type": "ChromosomeLocation",
-                        "species_id": "taxonomy:9606",
-                        "chr": "22",
-                        "interval": {
-                            "end": "q12.2",
-                            "start": "q12.2",
-                            "type": "CytobandInterval",
-                        },
-                    },
-                    {
-                        "_id": "ga4gh:VSL.N1dI0SlDciU-8OsmdjEfSKdVDp-Q5_lf",
-                        "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.7B7SHsmchAR0dFcDCuSFjJAo7tX87krQ",
-                        "interval": {
-                            "start": {"type": "Number", "value": 31212297},
-                            "end": {"type": "Number", "value": 31280080},
-                            "type": "SequenceInterval",
-                        },
-                    },
-                ],
-            },
-            {
-                "type": "Extension",
-                "name": "hgnc_locus_type",
-                "value": "gene with protein product",
-            },
-            {"type": "Extension", "name": "ncbi_gene_type", "value": "protein-coding"},
-            {"type": "Extension", "name": "ensembl_biotype", "value": "protein_coding"},
-        ],
-    }
-
-
-@pytest.fixture(scope="module")
 def dis3_p63a():
     """Create DIS3 P63A test fixture."""
     params = {
@@ -271,7 +166,7 @@ def dis3_p63a():
 
 
 @pytest.fixture(scope="module")
-def vhl(vhl_gene_context):
+def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
         "id": "normalize.variation:NP_000542.1%3Ap.Tyr185Ter",
@@ -295,13 +190,13 @@ def vhl(vhl_gene_context):
         "molecule_context": "protein",
         "structural_type": "SO:0001587",
         "vrs_ref_allele_seq": "Y",
-        "gene_context": vhl_gene_context,
+        "gene_context": "hgnc:12687",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
+def braf_v600e_nucleotide(braf_nuc_value):
     """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
     variation = copy.deepcopy(braf_nuc_value)
     variation["_id"] = "ga4gh:VA.bsmS0aeGSffgemmymBrpTjTSW2qYeIJE"
@@ -313,13 +208,13 @@ def braf_v600e_nucleotide(braf_gene_context, braf_nuc_value):
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "T",
-        "gene_context": braf_gene_context,
+        "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def nm_004448_cdna_delins(erbb2_context):
+def nm_004448_cdna_delins():
     """Create test fixture for NM_004448.4:c.2326_2327delinsCT."""
     params = {
         "id": "normalize.variation:NM_004448.4%3Ac.2326_2327delinsCT",
@@ -343,13 +238,13 @@ def nm_004448_cdna_delins(erbb2_context):
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "GG",
-        "gene_context": erbb2_context,
+        "gene_context": "hgnc:3430",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def nm_000551(vhl_gene_context):
+def nm_000551():
     """Create test fixture for NM_000551.4:c.615delinsAA."""
     params = {
         "id": "normalize.variation:temp",
@@ -373,7 +268,7 @@ def nm_000551(vhl_gene_context):
         "molecule_context": "transcript",
         "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "C",
-        "gene_context": vhl_gene_context,
+        "gene_context": "hgnc:12687",
     }
     return VariationDescriptor(**params)
 
@@ -398,7 +293,7 @@ def braf_nuc_value():
 
 
 @pytest.fixture(scope="module")
-def cdna_reference_agree(braf_gene_context, braf_nuc_value):
+def cdna_reference_agree(braf_nuc_value):
     """Create test fixture for NM_004333.4:c.1799=."""
     value = copy.deepcopy(braf_nuc_value)
     value["state"]["sequence"] = "T"
@@ -411,13 +306,13 @@ def cdna_reference_agree(braf_gene_context, braf_nuc_value):
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
-        "gene_context": braf_gene_context,
+        "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def nc_000007_reference_agree(braf_gene_context, braf_nuc_value):
+def nc_000007_reference_agree(braf_nuc_value):
     """Create test fixture for NC_000007.13:g.140453136=."""
     value = copy.deepcopy(braf_nuc_value)
     value["state"]["sequence"] = "T"
@@ -430,13 +325,13 @@ def nc_000007_reference_agree(braf_gene_context, braf_nuc_value):
         "molecule_context": "transcript",
         "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
-        "gene_context": braf_gene_context,
+        "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def protein_delins(egfr_context):
+def protein_delins():
     """Create test fixture for protein delins."""
     params = {
         "id": "normalize.variation:NP_001333827.1%3Ap.Leu747_Thr751delinsPro",
@@ -460,13 +355,13 @@ def protein_delins(egfr_context):
         "molecule_context": "protein",
         "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "LREAT",
-        "gene_context": egfr_context,
+        "gene_context": "hgnc:3236",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def cdna_deletion(erbb2_context):
+def cdna_deletion():
     """Create test fixture for cdna deletion range with deleted
     sequence.
     """
@@ -492,7 +387,7 @@ def cdna_deletion(erbb2_context):
         "molecule_context": "transcript",
         "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "TTGAGGGAAAACACAT",
-        "gene_context": erbb2_context,
+        "gene_context": "hgnc:3430",
     }
     return VariationDescriptor(**params)
 
@@ -529,7 +424,7 @@ def genomic_deletion():
 
 
 @pytest.fixture(scope="module")
-def cdna_insertion(limk2_gene_context):
+def cdna_insertion():
     """Create test fixture for cdna insertion."""
     params = {
         "id": "normalize.variation:ENST00000331728.9%3Ac.2049_2050insA",
@@ -552,13 +447,13 @@ def cdna_insertion(limk2_gene_context):
         },
         "molecule_context": "transcript",
         "structural_type": "SO:0000667",
-        "gene_context": limk2_gene_context,
+        "gene_context": "hgnc:6614",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def genomic_insertion(erbb2_context):
+def genomic_insertion():
     """Create a gene insertion test fixture."""
     params = {
         "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
@@ -585,13 +480,13 @@ def genomic_insertion(erbb2_context):
         "molecule_context": "transcript",
         "structural_type": "SO:0000667",
         "vrs_ref_allele_seq": "TACGTGATGGCT",
-        "gene_context": erbb2_context,
+        "gene_context": "hgnc:3430",
     }
     return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
-def genomic_substitution(egfr_context):
+def genomic_substitution():
     """Create a gene insertion test fixture."""
     params = {
         "id": "normalize.variation:NC_000007.13%3Ag.55249071C%3ET",
@@ -615,7 +510,7 @@ def genomic_substitution(egfr_context):
         "molecule_context": "transcript",
         "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "C",
-        "gene_context": egfr_context,
+        "gene_context": "hgnc:3236",
     }
     return VariationDescriptor(**params)
 
