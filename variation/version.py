@@ -1,1 +1,2 @@
-__version__ = "0.5.6"
+"""Module for version of app"""
+__version__ = "0.6.0-dev0"

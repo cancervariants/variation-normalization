@@ -1,121 +1,83 @@
 """The module for Genomic DelIns Validation."""
-import logging
-from typing import List, Optional, Dict
+from typing import List
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-
-from variation.schemas.app_schemas import Endpoint
-from variation.validators.delins_base import DelInsBase
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.schemas.classification_response_schema import (
+    Classification,
+    ClassificationType,
+    GenomicDelInsClassification,
+    Nomenclature,
+)
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
-
-
-class GenomicDelIns(DelInsBase):
+class GenomicDelIns(Validator):
     """The Genomic DelIns Validator class."""
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
-        """Get transcript accessions for a given classification.
-
-        :param List gene_tokens: A list of gene tokens
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
-        """
-        transcripts = await self.get_genomic_transcripts(classification, errors)
-        return transcripts
-
     async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
-    ) -> None:
-        """Add validation result objects to a list of results.
+        self, classification: GenomicDelInsClassification, accessions: List[str]
+    ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
 
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
         """
-        valid_alleles = list()
-        for s in classification_tokens:
-            for t in transcripts:
-                errors = list()
-                t = self.get_accession(t, classification)
-                allele = self.vrs.to_vrs_allele(
-                    t, s.start_pos_del, s.end_pos_del, s.coordinate_type,
-                    s.alt_type, errors, alt=s.inserted_sequence1)
+        invalid_pos_msg = self.validate_5_prime_to_3_prime(
+            classification.pos0, pos1=classification.pos1
+        )
+        if invalid_pos_msg:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[invalid_pos_msg],
+                )
+            ]
 
-                if not errors:
-                    self.check_pos_index(t, s, errors)
+        validation_results = []
 
-                if not errors and endpoint_name == Endpoint.NORMALIZE:
-                    mane = await self.mane_transcript.get_mane_transcript(
-                        t, int(s.start_pos_del), s.coordinate_type,
-                        end_pos=int(s.end_pos_del) if s.end_pos_del else None,
-                        gene=gene_tokens[0].token if gene_tokens else None,
-                        try_longest_compatible=True
-                    )
+        for alt_ac in accessions:
+            errors = []
 
-                    self.add_mane_data(mane, mane_data_found, s.coordinate_type,
-                                       s.alt_type, s, alt=s.inserted_sequence1)
+            invalid_ac_pos = self.validate_ac_and_pos(
+                alt_ac, classification.pos0, end_pos=classification.pos1
+            )
+            if invalid_ac_pos:
+                errors.append(invalid_ac_pos)
 
-                self.add_validation_result(allele, valid_alleles, results,
-                                           classification, s, t, gene_tokens, errors)
+            validation_results.append(
+                ValidationResult(
+                    accession=alt_ac,
+                    classification=classification,
+                    is_valid=not errors,
+                    errors=errors,
+                )
+            )
 
-                if is_identifier:
-                    break
-
-        if endpoint_name == Endpoint.NORMALIZE:
-            self.add_mane_to_validation_results(mane_data_found, valid_alleles, results,
-                                                classification, gene_tokens)
-
-    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_gene_symbol_tokens(classification)
-
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "genomic delins"
-
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Genomic DelIns."""
-        return t.token_type == TokenType.GENOMIC_DELINS
+        return validation_results
 
     def validates_classification_type(
         self, classification_type: ClassificationType
     ) -> bool:
-        """Return whether or not the classification type is
-        Genomic DelIns.
-        """
+        """Return whether or not the classification type is genomic delins"""
         return classification_type == ClassificationType.GENOMIC_DELINS
+
+    async def get_accessions(
+        self, classification: Classification, errors: List
+    ) -> List[str]:
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
+
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
+        """
+        if classification.nomenclature == Nomenclature.HGVS:
+            accessions = [classification.ac]
+        else:
+            accessions = await self.get_genomic_accessions(classification, errors)
+        return accessions

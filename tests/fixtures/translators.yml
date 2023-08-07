@@ -75,81 +75,6 @@ protein_substitution:
           "type": "Allele"
         }
       ]
-    - query: braf v600e
-      variations: [
-        {
-          "_id": "ga4gh:VA.7ys8TiDzrk04O3Upd63__rOBCEhv3P5d",
-          "location": {
-            "_id": "ga4gh:VSL.Vxqx2bv42rWeu08Eg7JpkdQkMCNLskoz",
-            "interval": {
-              "end": { "value": 600, "type": "Number" },
-              "start": { "value": 599, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "E",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.ZDdoQdURgO2Daj2NxLj4pcDnjiiAsfbO",
-          "location": {
-            "_id": "ga4gh:VSL.2cHIgn7iLKk4x9z3zLkSTTFMV0e48DR4",
-            "interval": {
-              "end": { "value": 600, "type": "Number" },
-              "start": { "value": 599, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "E",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.vimwyw0pFTwatfFhi3rhhb153ARWsPrW",
-          "location": {
-            "_id": "ga4gh:VSL.FVmsWpfSOA3B2ryq0k995oHMuSGiFvMa",
-            "interval": {
-              "start": { "value": 599, "type": "Number" },
-              "end": { "value": 600, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "E",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.FzlrH5feNcQ3S9GayMU9EF008j-8Pbz5",
-          "location": {
-            "_id": "ga4gh:VSL.QDLST2nKpPWwIArdO57L2VIWPNZ0DiN3",
-            "interval": {
-              "start": { "value": 599, "type": "Number" },
-              "end": { "value": 600, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "E",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        }
-      ]
     - query: NP_004324.2:p.Val600Glu
       variations: [
         {
@@ -173,9 +98,9 @@ protein_substitution:
       ]
 
 
-polypeptide_truncation:
+protein_stop_gain:
   tests:
-    - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
+    - query: NP_000542.1:p.Tyr185Ter
       variations: [
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
@@ -196,7 +121,7 @@ polypeptide_truncation:
           "type": "Allele"
         }
       ]
-    - query: NP_000542.1:p.Tyr185Ter
+    - query: NP_000542.1:p.Y185*
       variations: [
         {
           "_id": "ga4gh:VA._S0nFwX4Y2FPmv5Radf01DAsxQbxA2cc",
@@ -261,7 +186,7 @@ polypeptide_truncation:
       ]
 
 
-silent_mutation:
+protein_reference_agree:
   tests:
     - query: NP_000542.1:p.Pro154=
       variations: [
@@ -327,7 +252,7 @@ silent_mutation:
         }
       ]
 
-coding_dna_substitution:
+cdna_substitution:
   tests:
     - query: NM_004333.4:c.1799T>A
       variations: [
@@ -440,7 +365,7 @@ genomic_substitution:
         }
       ]
 
-coding_dna_silent_mutation:
+cdna_reference_agree:
   tests:
     - query:  NM_004333.4:c.1799=
       variations: [
@@ -464,7 +389,7 @@ coding_dna_silent_mutation:
         }
       ]
 
-genomic_silent_mutation:
+genomic_reference_agree:
   tests:
     - query: NC_000007.13:g.140453136=
       variations: [
@@ -662,7 +587,7 @@ protein_delins:
         }
       ]
 
-coding_dna_delins:
+cdna_delins:
   tests:
     - query: NM_001289937.1:c.2326_2327delinsCT
       variations: [
@@ -722,81 +647,6 @@ coding_dna_delins:
           },
           "state": {
             "sequence": "AA",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        }
-      ]
-    - query: LRG_542:c.900_901delinsAC
-      variations: [
-        {
-          "_id": "ga4gh:VA.SWkjzPhH7x8ZjjQerjtvBYUoWVnit3hR",
-          "location": {
-            "_id": "ga4gh:VSL.b6Kqyg7cbZeffAIlEeODzin4bhD9Wu-3",
-            "interval": {
-              "start": { "value": 1212, "type": "Number" },
-              "end": { "value": 1214, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.U_uwMjCJru2vU7eBuynumaQJqT0O6cIV",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "AC",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.MMNikmGyviXQcSxByO0_gBkWP47MoE5m",
-          "location": {
-            "_id": "ga4gh:VSL.rM8zd6ur3O_L-4QQbab64Of4k8aY2oNl",
-            "interval": {
-              "start": { "value": 1218, "type": "Number" },
-              "end": { "value": 1220, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.CMHotHdJwhFah2_gNdlwU7DTT4yv-x_1",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "AC",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.G7R1jWMgPBDjGNKpjv7bLdaz-yGMMqdr",
-          "location": {
-            "_id": "ga4gh:VSL.-UM7jf9tD6UAZmNUadMN3dZznWVb_U0C",
-            "interval": {
-              "start": { "value": 1196, "type": "Number" },
-              "end": { "value": 1198, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.xpx15sumYFV5iNvkVnWPR4YQFIzHqXj9",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "AC",
-            "type": "LiteralSequenceExpression"
-          },
-          "type": "Allele"
-        },
-        {
-          "_id": "ga4gh:VA.wCwdKEmS_dZ4JwBcKdrFend2VAKlZ3so",
-          "location": {
-            "_id": "ga4gh:VSL.wzF5mgN7l4RkfKCax0K2LZyU5_JiKzGb",
-            "interval": {
-              "start": { "value": 1295, "type": "Number" },
-              "end": { "value": 1296, "type": "Number" },
-              "type": "SequenceInterval"
-            },
-            "sequence_id": "ga4gh:SQ.U_uwMjCJru2vU7eBuynumaQJqT0O6cIV",
-            "type": "SequenceLocation"
-          },
-          "state": {
-            "sequence": "C",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
@@ -1010,7 +860,7 @@ protein_deletion:
         }
       ]
 
-coding_dna_deletion:
+cdna_deletion:
   tests:
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
       variations: [
@@ -1180,7 +1030,7 @@ protein_insertion:
         }
       ]
 
-coding_dna_insertion:
+cdna_insertion:
   tests:
     - query: NM_007294.3:c.2902_2903insTC
       variations: [
@@ -1206,19 +1056,19 @@ coding_dna_insertion:
     - query: NM_007294.3:c.2902_2903insTCN
       variations: [
         {
-          "_id": "ga4gh:VA.aO_FGkAtSn74_RMPNc69dRgrm2mGf2TB",
+          "_id": "ga4gh:VA.Yn0YPtqMIzDMCtZT8hgZupm1t0gc9CQo",
           "location": {
-            "_id": "ga4gh:VSL.BGvSH62-kdve8MWsjKdwO0eJYc_qVY-k",
+            "_id": "ga4gh:VSL.fZL9UpKuIjC87eqtPCPBLo_ZmsPrBGLg",
             "interval": {
-              "end": { "value": 2904, "type": "Number" },
-              "start": { "value": 2902, "type": "Number" },
+              "end": { "value": 3134, "type": "Number" },
+              "start": { "value": 3134, "type": "Number" },
               "type": "SequenceInterval"
             },
             "sequence_id": "ga4gh:SQ.jj1RAXMGdOU-D39IRYnDX_fXcM7LQvb6",
             "type": "SequenceLocation"
           },
           "state": {
-            "sequence": "TCNTC",
+            "sequence": "TCN",
             "type": "LiteralSequenceExpression"
           },
           "type": "Allele"
@@ -1309,7 +1159,7 @@ genomic_insertion:
         }
       ]
 
-genomic_uncertain_deletion:
+genomic_deletion_ambiguous:
   tests:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
       variations: [
@@ -1460,6 +1310,9 @@ genomic_duplication:
           }
         }
       ]
+
+genomic_duplication_ambiguous:
+  tests:
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
       variations: [
         {
@@ -1535,5 +1388,33 @@ genomic_duplication:
             }
           },
           "copy_change": "efo:0030070"
+        }
+      ]
+
+
+amplification:
+  tests:
+    - query: BRAF Amplification
+      variations: [
+        {
+          "_id": "ga4gh:CX.TZBOQe5xFojvFJ1XjQQD0633rStHtGUs",
+          "type": "CopyNumberChange",
+          "subject": {
+            "_id": "ga4gh:VSL.xZU3kL8F6t2ca6WH_26CWKfNW9-owhR4",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "Number",
+                "value": 140713327
+              },
+              "end": {
+                "type": "Number",
+                "value": 140924929
+              }
+            }
+          },
+          "copy_change": "efo:0030072"
         }
       ]

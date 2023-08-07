@@ -2,11 +2,12 @@
 import logging
 from typing import List, Optional
 
-from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
 
-from variation.schemas.classification_response_schema import Classification
-from variation.schemas.token_response_schema import TokenType
-
+from variation.schemas.classification_response_schema import (
+    Classification,
+    Nomenclature,
+)
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -25,27 +26,27 @@ class GenomicBase:
         self.uta = uta
 
     """The Genomic Base class."""
+
     async def get_nc_accessions(self, classification: Classification) -> List[str]:
         """Get NC accession for a given classification."""
-        hgvs = [t.token for t in classification.all_tokens if
-                t.token_type in [TokenType.HGVS, TokenType.REFERENCE_SEQUENCE]]
-        nc_accessions = []
-        if hgvs:
-            nc_accessions = [hgvs[0].split(":")[0]]
+        if classification.nomenclature == Nomenclature.HGVS:
+            nc_accessions = [classification.ac]
+        elif classification.nomenclature == Nomenclature.FREE_TEXT:
+            nc_accessions = await self.uta.get_ac_from_gene(
+                classification.gene_token.matched_value
+            )
+        elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            gnomad_vcf_token = classification.matching_tokens[0]
+            chromosome = gnomad_vcf_token.chromosome
+            nc_accessions = []
+
+            for assembly in ["GRCh37", "GRCh38"]:
+                ac = self.get_nc_accession(f"{assembly}:{chromosome}")
+                if ac:
+                    nc_accessions.append(ac)
         else:
-            chromosome = [t.token for t in classification.all_tokens if
-                          t.token_type in [TokenType.CHROMOSOME]]
-            if chromosome:
-                chromosome = chromosome[0]
-                for assesmbly in ["GRCh37", "GRCh38"]:
-                    ac = self.get_nc_accession(f"{assesmbly}:{chromosome}")
-                    if ac:
-                        nc_accessions.append(ac)
-            else:
-                gene_tokens = [t.token for t in classification.all_tokens
-                               if t.token_type == TokenType.GENE]
-                if gene_tokens and len(gene_tokens) == 1:
-                    nc_accessions = await self.uta.get_ac_from_gene(gene_tokens[0])
+            raise NotImplementedError
+
         return nc_accessions
 
     def get_nc_accession(self, identifier: str) -> Optional[str]:
@@ -53,10 +54,10 @@ class GenomicBase:
         nc_accession = None
         try:
             translated_identifiers, _ = self.seqrepo_access.translate_identifier(
-                identifier)
+                identifier
+            )
         except KeyError:
-            logger.warning("Data Proxy unable to get metadata"
-                           f"for {identifier}")
+            logger.warning("Data Proxy unable to get metadata" f"for {identifier}")
         else:
             aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
             if aliases:

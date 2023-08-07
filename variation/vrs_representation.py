@@ -1,12 +1,18 @@
 """Module for generating VRS objects"""
-from typing import List, Optional, Tuple, Union, Dict
+from typing import Dict, List, Optional, Tuple, Union
 
-from ga4gh.vrs import models, normalize
-from ga4gh.core import ga4gh_identify
-from cool_seq_tool.data_sources import SeqRepoAccess
 from bioutils.accessions import coerce_namespace
+from cool_seq_tool.data_sources import SeqRepoAccess
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models, normalize
+from ga4gh.vrsatile.pydantic.vrs_models import Allele
+from pydantic import ValidationError
 
-from variation.schemas.token_response_schema import AltType, AMBIGUOUS_REGIONS
+from variation.schemas.token_response_schema import (
+    AMBIGUOUS_REGIONS,
+    AltType,
+    CoordinateType,
+)
 
 
 class VRSRepresentation:
@@ -21,8 +27,8 @@ class VRSRepresentation:
 
     @staticmethod
     def get_ival_start_end(
-            coordinate: str, start: int, end: int, cds_start: int,
-            errors: List) -> Optional[Tuple[int, int]]:
+        coordinate: str, start: int, end: int, cds_start: int, errors: List
+    ) -> Optional[Tuple[int, int]]:
         """Get ival_start and ival_end coordinates.
 
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
@@ -54,8 +60,9 @@ class VRSRepresentation:
         :param int start: Start position (assumes 1-based)
         :return: Indefinite range model
         """
-        return models.IndefiniteRange(value=start - 1, comparator="<=",
-                                      type="IndefiniteRange")
+        return models.IndefiniteRange(
+            value=start - 1, comparator="<=", type="IndefiniteRange"
+        )
 
     @staticmethod
     def get_end_indef_range(end: int) -> models.IndefiniteRange:
@@ -64,12 +71,14 @@ class VRSRepresentation:
         :param int end: End position (assumes 1-based)
         :return: Indefinite range model
         """
-        return models.IndefiniteRange(value=end, comparator=">=",
-                                      type="IndefiniteRange")
+        return models.IndefiniteRange(
+            value=end, comparator=">=", type="IndefiniteRange"
+        )
 
     @staticmethod
-    def get_ival_certain_range(start1: int, start2: int, end1: int,
-                               end2: int) -> models.SequenceInterval:
+    def get_ival_certain_range(
+        start1: int, start2: int, end1: int, end2: int
+    ) -> models.SequenceInterval:
         """Return sequence interval
 
         :param int start1: Start left pos (assumes 1-based)
@@ -79,16 +88,15 @@ class VRSRepresentation:
         :return: Sequence Interval model
         """
         return models.SequenceInterval(
-            start=models.DefiniteRange(min=start1 - 1, max=start2 - 1,
-                                       type="DefiniteRange"),
-            end=models.DefiniteRange(min=end1 + 1, max=end2 + 1,
-                                     type="DefiniteRange"),
-            type="SequenceInterval"
+            start=models.DefiniteRange(
+                min=start1 - 1, max=start2 - 1, type="DefiniteRange"
+            ),
+            end=models.DefiniteRange(min=end1 + 1, max=end2 + 1, type="DefiniteRange"),
+            type="SequenceInterval",
         )
 
     @staticmethod
-    def get_sequence_loc(
-            ac: str, interval: models.SequenceInterval) -> models.Location:
+    def get_sequence_loc(ac: str, interval: models.SequenceInterval) -> models.Location:
         """Return VRS location
 
         :param str ac: Accession
@@ -96,14 +104,21 @@ class VRSRepresentation:
         :return: VRS Location model
         """
         return models.SequenceLocation(
-            sequence_id=coerce_namespace(ac),
-            interval=interval, type="SequenceLocation")
+            sequence_id=coerce_namespace(ac), interval=interval, type="SequenceLocation"
+        )
 
-    def vrs_allele(self, ac: str, interval: models.SequenceInterval,
-                   sstate: Union[models.LiteralSequenceExpression,
-                                 models.DerivedSequenceExpression,
-                                 models.RepeatedSequenceExpression],
-                   alt_type: AltType, errors: List) -> Optional[Dict]:
+    def vrs_allele(
+        self,
+        ac: str,
+        interval: models.SequenceInterval,
+        sstate: Union[
+            models.LiteralSequenceExpression,
+            models.DerivedSequenceExpression,
+            models.RepeatedSequenceExpression,
+        ],
+        alt_type: AltType,
+        errors: List,
+    ) -> Optional[Dict]:
         """Create a VRS Allele object.
 
         :param str ac: Accession
@@ -135,35 +150,49 @@ class VRSRepresentation:
             return None
 
         seq_id, w = self.seqrepo_access.translate_identifier(
-            allele.location.sequence_id._value, "ga4gh")
+            allele.location.sequence_id._value, "ga4gh"
+        )
         if seq_id:
             seq_id = seq_id[0]
             allele.location.sequence_id = seq_id
             allele.location._id = ga4gh_identify(allele.location)
             allele._id = ga4gh_identify(allele)
-            return allele.as_dict()
+            allele_dict = allele.as_dict()
+            try:
+                Allele(**allele_dict)
+            except ValidationError as e:
+                errors.append(str(e))
+                return None
+            else:
+                return allele_dict
         else:
             errors.append(w)
             return None
 
     def to_vrs_allele(
-            self, ac: str, start: int, end: int, coordinate: str,
-            alt_type: AltType, errors: List, cds_start: int = None,
-            alt: str = None) -> Optional[Dict]:
+        self,
+        ac: str,
+        start: int,
+        end: int,
+        coordinate: CoordinateType,
+        alt_type: AltType,
+        errors: List[str],
+        cds_start: Optional[int] = None,
+        alt: Optional[str] = None,
+    ) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
-        :param str ac: Accession
-        :param int start: Start position change
-        :param int end: End position change
-        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param AltType alt_type: Type of alteration
-        :param List errors: List of errors
-        :param int cds_start: Coding start site
-        :param str alt: Alteration
+        :param ac: Accession
+        :param start: Start position change
+        :param end: End position change
+        :param coordinate: Coordinate used
+        :param alt_type: Type of alteration
+        :param errors: List of errors
+        :param cds_start: Coding start site
+        :param alt: Alteration
         :return: VRS Allele Object
         """
-        ival_coords = self.get_ival_start_end(coordinate, start, end,
-                                              cds_start, errors)
+        ival_coords = self.get_ival_start_end(coordinate, start, end, cds_start, errors)
         if not ival_coords:
             return None
         if ival_coords[0] > ival_coords[1]:
@@ -176,25 +205,35 @@ class VRSRepresentation:
         if alt_type == AltType.INSERTION:
             state = alt
             ival_end = ival_start
-        elif alt_type in {AltType.SUBSTITUTION, AltType.DELETION, AltType.DELINS,
-                          AltType.SILENT_MUTATION, AltType.NONSENSE}:
-            if alt_type == AltType.SILENT_MUTATION:
+        elif alt_type in {
+            AltType.SUBSTITUTION,
+            AltType.STOP_GAIN,
+            AltType.DELETION,
+            AltType.DELINS,
+            AltType.REFERENCE_AGREE,
+            AltType.NONSENSE,
+        }:
+            if alt_type == AltType.REFERENCE_AGREE:
                 state, _ = self.seqrepo_access.get_reference_sequence(ac, ival_start)
                 if state is None:
-                    errors.append(f"Unable to get sequence on {ac} from "
-                                  f"{ival_start}")
+                    errors.append(
+                        f"Unable to get sequence on {ac} from " f"{ival_start}"
+                    )
                     return None
             else:
                 state = alt or ""
             ival_start -= 1
         elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
-                ac, ival_start, ival_end + 1)
+                ac, ival_start, ival_end + 1
+            )
             if ref is not None:
                 state = ref + ref
             else:
-                errors.append(f"Unable to get sequence on {ac} from "
-                              f"{ival_start} to {ival_end + 1}")
+                errors.append(
+                    f"Unable to get sequence on {ac} from "
+                    f"{ival_start} to {ival_end + 1}"
+                )
                 return None
             ival_start -= 1
         else:
@@ -204,33 +243,9 @@ class VRSRepresentation:
         interval = models.SequenceInterval(
             start=models.Number(value=ival_start, type="Number"),
             end=models.Number(value=ival_end, type="Number"),
-            type="SequenceInterval")
-        sstate = models.LiteralSequenceExpression(sequence=state,
-                                                  type="LiteralSequenceExpression")
+            type="SequenceInterval",
+        )
+        sstate = models.LiteralSequenceExpression(
+            sequence=state, type="LiteralSequenceExpression"
+        )
         return self.vrs_allele(ac, interval, sstate, alt_type, errors)
-
-    def to_vrs_allele_ranges(
-            self, ac: str, coordinate: str, alt_type: AltType, errors: List,
-            ival: models.SequenceInterval) -> Optional[Dict]:
-        """Translate variation ranges to VRS Allele Object.
-
-        :param str ac: Accession
-        :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
-        :param AltType alt_type: Type of alteration
-        :param List errors: List of errors
-        :param models.SequenceInterval ival: Sequence Interval
-        :return: VRS Allele object
-        """
-        if coordinate == "c":
-            # TODO: Once we add support for ranges on c. coord
-            return None
-        if alt_type in {AltType.UNCERTAIN_DELETION, AltType.UNCERTAIN_DUPLICATION,
-                        AltType.DELETION_RANGE, AltType.DUPLICATION_RANGE}:
-            sstate = models.LiteralSequenceExpression(
-                sequence="", type="LiteralSequenceExpression"
-            )
-        else:
-            errors.append("No state")
-            return None
-
-        return self.vrs_allele(ac, ival, sstate, alt_type, errors)

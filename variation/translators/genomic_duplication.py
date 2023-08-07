@@ -1,18 +1,16 @@
 """Module for Genomic Duplication Translation."""
-from variation.translators.translator import Translator
 from variation.schemas.classification_response_schema import ClassificationType
-from variation.schemas.token_response_schema import \
-    GenomicDuplicationRangeToken, GenomicDuplicationToken, Token
+from variation.translators.genomic_del_dup_base import GenomicDelDupTranslator
 
 
-class GenomicDuplication(Translator):
-    """The Genomic Insertion Translator class."""
+class GenomicDuplication(GenomicDelDupTranslator):
+    """The Genomic Duplication Translator class."""
 
-    def can_translate(self, type: ClassificationType) -> bool:
-        """Return if classification type is Genomic Insertion."""
-        return type == ClassificationType.GENOMIC_DUPLICATION
+    def can_translate(self, classification_type: ClassificationType) -> bool:
+        """Determine if it's possible to translate a classification.
 
-    def is_token_instance(self, token: Token) -> bool:
-        """Return if the token is an Genomic Duplication token instance."""
-        return isinstance(token, (GenomicDuplicationToken,
-                                  GenomicDuplicationRangeToken))
+        :param classification_type: Classification type found
+        :return: `True` if `classification_type` matches translator's classification
+            type. Otherwise, `False`
+        """
+        return classification_type == ClassificationType.GENOMIC_DUPLICATION

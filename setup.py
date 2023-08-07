@@ -2,4 +2,4 @@
 import setuptools
 
 exec(open("variation/version.py").read())
-setuptools.setup(version=__version__)  # noqa: F821
+setuptools.setup(version=__version__)
