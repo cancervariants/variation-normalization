@@ -1264,7 +1264,6 @@ async def test_no_matches(test_handler):
         "NC_000010.11-87925523-C-G",  # invalid format
     ]
     for q in queries:
-        assert isinstance(q, str)
         resp = await test_handler.normalize(q, untranslatable_returns_text=True)
         assert resp.variation_descriptor.type == "VariationDescriptor", q
         assert resp.variation_descriptor.variation.type == "Text", q
