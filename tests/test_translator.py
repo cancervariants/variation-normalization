@@ -76,7 +76,6 @@ async def translator_checks(
         query = x["query"]
         expected = x["variations"]
 
-        assert isinstance(query, str)
         tokens = test_tokenizer.perform(query, [])
         classification = test_classifier.perform(tokens)
         validation_summary = await test_validator.perform(classification)
