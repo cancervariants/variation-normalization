@@ -31,10 +31,11 @@ class GenomicReferenceAgree(Validator):
             if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                 token = classification.matching_tokens[0]
                 ref = token.ref
-                pos = token.pos
+                start_pos = token.pos
+                end_pos = token.pos + len(ref)
 
                 invalid_ref_msg = self.validate_reference_sequence(
-                    alt_ac, pos, pos, ref
+                    alt_ac, start_pos, end_pos, ref
                 )
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)

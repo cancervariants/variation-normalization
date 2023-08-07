@@ -74,11 +74,12 @@ class GenomicDeletion(Validator):
             if not errors:
                 if classification.nomenclature == Nomenclature.GNOMAD_VCF:
                     # Validate reference sequence
+                    ref = classification.matching_tokens[0].ref
                     validate_ref_msg = self.validate_reference_sequence(
                         alt_ac,
                         classification.pos0 - 1,
-                        classification.pos1,
-                        classification.matching_tokens[0].ref,
+                        classification.pos0 - 1 + len(ref),
+                        ref,
                     )
 
                     if validate_ref_msg:

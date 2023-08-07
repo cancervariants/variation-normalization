@@ -43,10 +43,13 @@ genomic_substitution:
     - query: NC_000007.13:g.55259515T>G
     - query: 7-140453136-A-T
     - query: 7-55259515-T-G
+    - query: 5-112175770-GGAA-AGAA
   should_not_match:
     - query: NC_000007.13:g.1436A>T
     - query: NC_000007.13:g.4T>A
     - query: 7-140453136-G-T
+    - query: 5-112175770-TGAA-AGAA
+    - query: 5-112175770-GGAT-AGAA
 
 cdna_reference_agree:
   should_match:
@@ -66,9 +69,12 @@ genomic_reference_agree:
     - query: NC_000007.13:g.55259515=
     - query: 7-140453136-A-A
     - query: 7-55259515-T-T
+    - query: 5-1295250-GAGG-GAGG
   should_not_match:
     - query: NC_000007.13:g.159138664=
     - query: 7-140453136-C-C
+    - query: 5-1295250-GCGG-GAGG
+    - query: 5-1295250-GAGA-GAGG
 
 protein_delins:
   should_match:
@@ -105,12 +111,18 @@ genomic_delins:
     - query: NC_000007.13:g.159138662delinsAT
     - query: NC_000023.11:g.32386323delinsGA
     - query: NC_000003.12:g.10149938delinsAA
+    - query: 3-37050340-AAAAGCTTTA-GAGGCTTT
+    - query: 16-68846036-AG-TGAGTTT
+    - query: X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
     - query: NC_000007.13:g.159138664delinsAT
     - query: NC_000007.13:g.159138663_159138664delinsAT
     - query: NC_000023.11:g.3238646549879323delinsGA
     - query: NC_000007.13:g.140453136_140453134delinsAT
+    - query: 3-37050340-AAAAGCGTTA-GAGGCTTT
+    - query: 16-68846036-AC-TGAGTTT
+    - query: X-70350063-CC-AGGCAGCGCATAAAGCGCATTCTCCG
 
 protein_deletion:
   should_match:
@@ -149,9 +161,12 @@ genomic_deletion:
     - query: NC_000003.11:g.10191495delT
     - query: VHL g.10188279_10188297del
     - query: 16-2138199-GTGAG-G
+    - query: 1-55509715-AC-A
   should_not_match:
     - query: NC_000003.11:g.10191454654654654495delT
     - query: NC_000003.11:g.10188297_10188279del
+    - query: 1-55509715-TC-A
+    - query: 16-2138199-GTGAT-G
 
 protein_insertion:
   should_match:

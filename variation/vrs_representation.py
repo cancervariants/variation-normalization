@@ -222,6 +222,10 @@ class VRSRepresentation:
                     return None
             else:
                 state = alt or ""
+
+            if alt_type == AltType.SUBSTITUTION:
+                ival_end += len(state) - 1
+
             ival_start -= 1
         elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
