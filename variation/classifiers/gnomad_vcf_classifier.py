@@ -26,25 +26,6 @@ class GnomadVcfClassifier(Classifier):
         """
         return [[TokenType.GNOMAD_VCF]]
 
-    @staticmethod
-    def _get_substring_end_index(pattern: str, target_str: str) -> int:
-        """Get end index of the pattern if the pattern starts at the beginning of
-        the string to match
-
-        :param pattern: Pattern to find at the beginning of `string`
-        :param target_str: The target string
-        :return: End index of match if `pattern` found at the beginning of `target_str`.
-            If no match found or match is not found at the beginning of `target_str`,
-            returns 0
-        """
-        matches = [m for m in re.finditer(pattern, target_str)]
-        match_end = 0
-        if matches:
-            match = matches[0]
-            if match.start() == 0:
-                match_end = match.end()
-        return match_end
-
     def match(
         self, token: GnomadVcfToken
     ) -> Optional[
@@ -95,12 +76,15 @@ class GnomadVcfClassifier(Classifier):
                 params["inserted_sequence"] = alt[1:]
                 return GenomicInsertionClassification(**params)
         else:
-            match_end = self._get_substring_end_index(alt, ref)
-            if match_end:
-                params["pos0"] = token.pos + match_end
-                params["deleted_sequence"] = ref[match_end:]
-                params["pos1"] = params["pos0"] + len(params["deleted_sequence"])
-                return GenomicDeletionClassification(**params)
+            matches = [m for m in re.finditer(alt, ref)]
+            if matches:
+                match = matches[0]
+                if match.start() == 0:
+                    match_end = match.end()
+                    params["pos0"] = token.pos + match_end
+                    params["deleted_sequence"] = ref[match_end:]
+                    params["pos1"] = params["pos0"] + len(params["deleted_sequence"])
+                    return GenomicDeletionClassification(**params)
 
         # delins
         params["pos0"] = token.pos
