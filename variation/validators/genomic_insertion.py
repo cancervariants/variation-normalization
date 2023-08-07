@@ -1,52 +1,95 @@
 """The module for Genomic Insertion Validation."""
-from typing import List, Optional
-import logging
+from typing import List
 
-from variation.validators.insertion_base import InsertionBase
-from variation.schemas.classification_response_schema import \
-    Classification, ClassificationType
-from variation.schemas.token_response_schema import Token, TokenType, GeneToken
+from variation.schemas.classification_response_schema import (
+    Classification,
+    ClassificationType,
+    GenomicInsertionClassification,
+    Nomenclature,
+)
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
-
-
-class GenomicInsertion(InsertionBase):
+class GenomicInsertion(Validator):
     """The Genomic Insertion Validator class."""
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
-        """Get transcript accessions for a given classification.
+    async def get_valid_invalid_results(
+        self, classification: GenomicInsertionClassification, accessions: List[str]
+    ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
 
-        :param List gene_tokens: A list of gene tokens
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
         """
-        transcripts = await self.get_genomic_transcripts(classification, errors)
-        return transcripts
+        invalid_pos_msg = self.validate_5_prime_to_3_prime(
+            classification.pos0, pos1=classification.pos1
+        )
+        if invalid_pos_msg:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[invalid_pos_msg],
+                )
+            ]
 
-    def get_gene_tokens(self, classification: Classification) -> List[GeneToken]:
-        """Return gene tokens for a classification.
+        validation_results = []
 
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_gene_symbol_tokens(classification)
+        for alt_ac in accessions:
+            errors = []
 
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "genomic insertion"
+            if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                # gnomAD VCF provides reference, so we should validate this
+                invalid_ref_msg = self.validate_reference_sequence(
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
+                    classification.matching_tokens[0].ref,
+                )
+                if invalid_ref_msg:
+                    errors.append(invalid_ref_msg)
+            else:
+                # Validate ac and pos
+                invalid_ac_pos_msg = self.validate_ac_and_pos(
+                    alt_ac, classification.pos0, end_pos=classification.pos1
+                )
+                if invalid_ac_pos_msg:
+                    errors.append(invalid_ac_pos_msg)
 
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Genomic Insertion."""
-        return t.token_type == TokenType.GENOMIC_INSERTION
+            validation_results.append(
+                ValidationResult(
+                    accession=alt_ac,
+                    classification=classification,
+                    is_valid=not errors,
+                    errors=errors,
+                )
+            )
+
+        return validation_results
 
     def validates_classification_type(
-            self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is
-        Genomic Insertion.
-        """
+        self, classification_type: ClassificationType
+    ) -> bool:
+        """Return whether or not the classification type is genomic insertion"""
         return classification_type == ClassificationType.GENOMIC_INSERTION
+
+    async def get_accessions(
+        self, classification: Classification, errors: List
+    ) -> List[str]:
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
+
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
+        """
+        if classification.nomenclature == Nomenclature.HGVS:
+            accessions = [classification.ac]
+        else:
+            accessions = await self.get_genomic_accessions(classification, errors)
+        return accessions
