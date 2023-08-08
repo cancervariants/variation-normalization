@@ -224,6 +224,7 @@ class VRSRepresentation:
                 state = alt or ""
 
             if alt_type == AltType.SUBSTITUTION:
+                # This accounts for MNVs
                 ival_end += len(state) - 1
 
             ival_start -= 1

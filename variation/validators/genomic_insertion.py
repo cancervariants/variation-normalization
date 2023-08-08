@@ -49,7 +49,7 @@ class GenomicInsertion(Validator):
             if ref:
                 # gnomAD VCF provides reference, so we should validate this
                 invalid_ref_msg = self.validate_reference_sequence(
-                    alt_ac, classification.pos0, classification.pos1 + len(ref) - 1, ref
+                    alt_ac, classification.pos0, classification.pos1, ref
                 )
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)
