@@ -49,6 +49,7 @@ genomic_substitution:
     - query: 7-292-A-C
     - query: chrX-292-A-T
     - query: chromosome10-292-G-A
+    - query: 5-112175770-GGAA-AGAA
   should_not_match:
     - query: V170 (g.509F>A)
     - query: RX_:c.292TC
@@ -68,6 +69,7 @@ genomic_reference_agree:
   should_match:
     - query: NC_000017.10:g.123=
     - query: chr11-252-t-t
+    - query: 5-1295250-GAGG-GAGG
   should_not_match:
     - query: GENOMIC_:g.123=
     - query: c.123=
@@ -103,6 +105,9 @@ genomic_delins:
     - query: NC_000017.10:g.1423_1424delinsGT
     - query: NC_000017.10:g.7330delinsACA
     - query: NC_000003.12:g.10149938delinsAA
+    - query: 3-37050340-AAAAGCTTTA-GAGGCTTT
+    - query: 16-68846036-AG-TGAGTTT
+    - query: X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG
   should_not_match:
     - query:  N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX
@@ -148,6 +153,7 @@ genomic_deletion:
     - query: NC_000003.11:g.10188302delG
     - query: Y-1313-ATTGAC-a
     - query: chr1-2-ca-C
+    - query: 1-55509715-AC-A
   should_not_match:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG

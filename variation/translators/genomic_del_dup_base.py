@@ -131,11 +131,12 @@ class GenomicDelDupTranslator(Translator):
 
                     if alt_type == AltType.DELETION:
                         if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                            ref = classification.matching_tokens[0].ref
                             invalid_ref_msg = self.validate_reference_sequence(
                                 ac,
                                 pos0 - 1,
-                                pos1,
-                                classification.matching_tokens[0].ref,
+                                pos0 - 1 + len(ref),
+                                ref,
                             )
                             if invalid_ref_msg:
                                 warnings.append(invalid_ref_msg)

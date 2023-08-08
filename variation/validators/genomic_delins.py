@@ -38,14 +38,33 @@ class GenomicDelIns(Validator):
 
         validation_results = []
 
+        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            ref = classification.matching_tokens[0].ref
+        else:
+            ref = None
+
         for alt_ac in accessions:
             errors = []
 
-            invalid_ac_pos = self.validate_ac_and_pos(
-                alt_ac, classification.pos0, end_pos=classification.pos1
-            )
-            if invalid_ac_pos:
-                errors.append(invalid_ac_pos)
+            if ref:
+                # gnomAD VCF provides reference, so we should validate this
+                invalid_ref_msg = self.validate_reference_sequence(
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1 + 1
+                    if classification.pos1
+                    else classification.pos0,
+                    ref,
+                )
+                if invalid_ref_msg:
+                    errors.append(invalid_ref_msg)
+            else:
+                # Validate ac and pos
+                invalid_ac_pos = self.validate_ac_and_pos(
+                    alt_ac, classification.pos0, end_pos=classification.pos1
+                )
+                if invalid_ac_pos:
+                    errors.append(invalid_ac_pos)
 
             validation_results.append(
                 ValidationResult(

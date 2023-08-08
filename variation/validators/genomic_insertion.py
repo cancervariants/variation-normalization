@@ -38,16 +38,18 @@ class GenomicInsertion(Validator):
 
         validation_results = []
 
+        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            ref = classification.matching_tokens[0].ref
+        else:
+            ref = None
+
         for alt_ac in accessions:
             errors = []
 
-            if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            if ref:
                 # gnomAD VCF provides reference, so we should validate this
                 invalid_ref_msg = self.validate_reference_sequence(
-                    alt_ac,
-                    classification.pos0,
-                    classification.pos1,
-                    classification.matching_tokens[0].ref,
+                    alt_ac, classification.pos0, classification.pos1, ref
                 )
                 if invalid_ref_msg:
                     errors.append(invalid_ref_msg)
