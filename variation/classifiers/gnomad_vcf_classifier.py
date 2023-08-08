@@ -1,9 +1,11 @@
 """A module for the gnomAD VCF Classifier"""
+import re
 from typing import List, Optional, Union
 
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDeletionClassification,
+    GenomicDelInsClassification,
     GenomicInsertionClassification,
     GenomicReferenceAgreeClassification,
     GenomicSubstitutionClassification,
@@ -68,21 +70,27 @@ class GnomadVcfClassifier(Classifier):
 
                 return GenomicSubstitutionClassification(**params)
         elif len_ref < len_alt:
-            # insertion
-            if len_ref == 1:
-                if ref[0] == alt[0]:
-                    params["pos0"] = token.pos
-                    params["pos1"] = token.pos + 1
-                    params["inserted_sequence"] = alt[1:]
-                    return GenomicInsertionClassification(**params)
+            if len_ref == 1 and alt[0] == ref:
+                params["pos0"] = token.pos
+                params["pos1"] = params["pos0"] + 1
+                params["inserted_sequence"] = alt[1:]
+                return GenomicInsertionClassification(**params)
         else:
-            # deletion
-            if len_alt == 1:
-                if ref[0] == alt[0]:
-                    del_seq = ref[1:]
-                    params["pos0"] = token.pos + 1
-                    params["pos1"] = params["pos0"] + len(del_seq)
-                    params["deleted_sequence"] = del_seq
+            matches = [m for m in re.finditer(alt, ref)]
+            if matches:
+                match = matches[0]
+                if match.start() == 0:
+                    match_end = match.end()
+                    params["pos0"] = token.pos + match_end
+                    params["deleted_sequence"] = ref[match_end:]
+                    params["pos1"] = params["pos0"] + len(params["deleted_sequence"])
                     return GenomicDeletionClassification(**params)
 
-        return None
+        # delins
+        params["pos0"] = token.pos
+        params["pos1"] = (params["pos0"] + len_ref) - 1
+        if params["pos0"] == params["pos1"]:
+            del params["pos1"]
+
+        params["inserted_sequence"] = alt
+        return GenomicDelInsClassification(**params)

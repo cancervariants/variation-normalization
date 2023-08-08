@@ -424,6 +424,35 @@ def genomic_deletion():
 
 
 @pytest.fixture(scope="module")
+def gnomad_vcf_genomic_deletion():
+    """Create test fixture for 1-55509715-AC-A (CA523275412)"""
+    params = {
+        "id": "normalize.variation:1-55509715-AC-A",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.hxb97FXsvNiCMcZO0OGXIN4y8FOE4lfq",
+        "variation": {
+            "_id": "ga4gh:VA.hxb97FXsvNiCMcZO0OGXIN4y8FOE4lfq",
+            "location": {
+                "_id": "ga4gh:VSL.WPfOvroaVMGYPhiqD14QvrrHLjHqldbP",
+                "interval": {
+                    "end": {"value": 55044045, "type": "Number"},
+                    "start": {"value": 55044042, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "CC", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "CCC",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
 def cdna_insertion():
     """Create test fixture for cdna insertion."""
     params = {
@@ -511,6 +540,35 @@ def genomic_substitution():
         "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "C",
         "gene_context": "hgnc:3236",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_sub_mnv():
+    """Create a genomic substitution mnv test fixture for 5-112175770-GGAA-AGAA."""
+    params = {
+        "id": "normalize.variation:5-112175770-GGAA-AGAA",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.rDJBXae4dguYAtZB9Qa39VAgvcoO70gG",
+        "variation": {
+            "_id": "ga4gh:VA.rDJBXae4dguYAtZB9Qa39VAgvcoO70gG",
+            "location": {
+                "_id": "ga4gh:VSL.Uk3aB8vu2WDrTP5eOB1I5X_8pEDwiLXb",
+                "interval": {
+                    "end": {"value": 112840073, "type": "Number"},
+                    "start": {"value": 112840072, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.aUiQCzCPZ2d0csHbMSbh2NzInhonSXwI",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0002007",
+        "vrs_ref_allele_seq": "G",
     }
     return VariationDescriptor(**params)
 
@@ -677,15 +735,124 @@ def genomic_delins_gene():
 
 
 @pytest.fixture(scope="module")
+def gnomad_vcf_genomic_delins1():
+    """Create a test fixture for 3-37050340-AAAAGCTTTA-GAGGCTTT.
+
+    https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/
+    allele?hgvsOrDescriptor=NM_000249.3%3Ac.489_498delinsGAGGCTTT
+    """
+    params = {
+        "id": "normalize.variation:3-37050340-AAAAGCTTTA-GAGGCTTT",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.mfcJG1CAGauyKG4rdBXR9hOj-PeQYYhc",
+        "variation": {
+            "_id": "ga4gh:VA.mfcJG1CAGauyKG4rdBXR9hOj-PeQYYhc",
+            "location": {
+                "_id": "ga4gh:VSL.fYPt_Tz7pk57-N5uQe2vqCrTbt2K0vq5",
+                "interval": {
+                    "start": {"value": 37008848, "type": "Number"},
+                    "end": {"value": 37008858, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "GAGGCTTT", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "AAAAGCTTTA",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_delins2():
+    """Create a test fixture for 16-68846036-AG-TGAGTTT (CA396459910)"""
+    params = {
+        "id": "normalize.variation:16-68846036-AG-TGAGTTT",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.z9sSf45RsscoVFbBZIhAAvByIOurvS8E",
+        "variation": {
+            "_id": "ga4gh:VA.z9sSf45RsscoVFbBZIhAAvByIOurvS8E",
+            "location": {
+                "_id": "ga4gh:VSL.Rw61O6sWhEejqiq9wIs2cjKshcsbxklk",
+                "interval": {
+                    "start": {"value": 68812132, "type": "Number"},
+                    "end": {"value": 68812134, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "TGAGTTT", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "AG",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
 def grch38_genomic_insertion(grch38_genomic_insertion_variation):
     """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG."""
     params = {
         "id": "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG",
         "type": "VariationDescriptor",
-        "variation_id": "ga4gh:VA.tCjV190dUsV7tSjdR8qOLSQIR7Hr8VMe",
+        "variation_id": grch38_genomic_insertion_variation["_id"],
         "variation": grch38_genomic_insertion_variation,
         "molecule_context": "genomic",
         "structural_type": "SO:0000667",
+        "vrs_ref_allele_seq": "TACGTGATGGCT",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_delins3():
+    """Create a test fixture for X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG"""
+    params = {
+        "id": "normalize.variation:X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.xFaxLkfCTqTgfdpcdcWBO65DrE_K1kRt",
+        "variation": {
+            "_id": "ga4gh:VA.xFaxLkfCTqTgfdpcdcWBO65DrE_K1kRt",
+            "location": {
+                "_id": "ga4gh:VSL.6fgSp4jB89WYdAxvwPDT8akBPXptePsp",
+                "interval": {
+                    "start": {"value": 71130213, "type": "Number"},
+                    "end": {"value": 71130215, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+                "type": "SequenceLocation",
+            },
+            "state": {
+                "sequence": "GGCAGCGCATAAAGCGCATTCTCCGG",
+                "type": "LiteralSequenceExpression",
+            },
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
+        "vrs_ref_allele_seq": "GG",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_delins4(grch38_genomic_insertion_variation):
+    """Create a test fixture for 17-37880993-G-GGCTTACGTGATG"""
+    params = {
+        "id": "normalize.variation:17-37880993-G-GGCTTACGTGATG",
+        "type": "VariationDescriptor",
+        "variation_id": grch38_genomic_insertion_variation["_id"],
+        "variation": grch38_genomic_insertion_variation,
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "TACGTGATGGCT",
     }
     return VariationDescriptor(**params)
@@ -748,6 +915,7 @@ async def test_cdna_and_genomic_substitution(
     genomic_substitution,
     genomic_sub_grch38,
     grch38_braf_genom_sub,
+    gnomad_vcf_genomic_sub_mnv,
 ):
     """Test that cdna and genomic substitutions normalize correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
@@ -842,6 +1010,11 @@ async def test_cdna_and_genomic_substitution(
         resp.variation_descriptor, genomic_substitution, "EGFR g.55249071C>T"
     )
 
+    # MNV genomic substitution (CA009580)
+    q = "5-112175770-GGAA-AGAA"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_sub_mnv, q)
+
 
 @pytest.mark.asyncio
 async def test_cdna_reference_agree(test_handler, cdna_reference_agree):
@@ -905,6 +1078,12 @@ async def test_genomic_reference_agree(
         resp.variation_descriptor, grch38_braf_genom_reference_agree, "7-140753336-A-A"
     )
 
+    q = "7-140753336-ACT-ACT"
+    resp = await test_handler.normalize(q)
+    assertion_checks(
+        resp.variation_descriptor, grch38_braf_genom_reference_agree, q, ignore_id=True
+    )
+
     resp = await test_handler.normalize("BRAF g.140453136=")
     assert resp.variation_descriptor.id == "normalize.variation:BRAF%20g.140453136%3D"
     resp.variation_descriptor.id = fixture_id
@@ -930,7 +1109,13 @@ async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
 
 @pytest.mark.asyncio
 async def test_genomic_delins(
-    test_handler, grch38_genomic_delins1, grch38_genomic_delins2, genomic_delins_gene
+    test_handler,
+    grch38_genomic_delins1,
+    grch38_genomic_delins2,
+    genomic_delins_gene,
+    gnomad_vcf_genomic_delins1,
+    gnomad_vcf_genomic_delins2,
+    gnomad_vcf_genomic_delins3,
 ):
     """Test that Genomic DelIns normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453135_140453136delinsAT")
@@ -947,9 +1132,33 @@ async def test_genomic_delins(
         "NC_000003.12:g.10149938delinsAA",
     )
 
+    q = "3-10149938-C-AA"
+    resp = await test_handler.normalize(q)
+    assertion_checks(
+        resp.variation_descriptor, grch38_genomic_delins2, q, ignore_id=True
+    )
+
     q = "BRAF g.140453135_140453136delinsAT"
     resp = await test_handler.normalize(q)
     assertion_checks(resp.variation_descriptor, genomic_delins_gene, q)
+
+    # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/
+    # allele?hgvsOrDescriptor=NM_000249.3%3Ac.489_498delinsGAGGCTTT
+    q = "3-37050340-AAAAGCTTTA-GAGGCTTT"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_delins1, q)
+
+    q = "16-68846036-AG-TGAGTTT"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_delins2, q)
+
+    # NC_000023.10:g.70350063_70350064delinsAGGCAGCGCATAAAGCGCATTCTCCG
+    # NC_000023.10:g.70350063_70350064insGGCAGCGCATAAAGCGCATTCTCC
+    # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/
+    # allele?hgvsOrDescriptor=NC_000023.11%3Ag.71130213_71130214insGGCAGCGCATAAAGCGCATTCTCC noqa: E501
+    q = "X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_delins3, q)
 
 
 @pytest.mark.asyncio
@@ -1069,7 +1278,9 @@ async def test_cdna_deletion(test_handler, cdna_deletion):
 
 
 @pytest.mark.asyncio
-async def test_genomic_deletion(test_handler, genomic_deletion):
+async def test_genomic_deletion(
+    test_handler, genomic_deletion, gnomad_vcf_genomic_deletion
+):
     """Test that genomic deletion normalizes correctly"""
     # CA915940709
     q = "NC_000003.12:g.10146527_10146528del"
@@ -1078,9 +1289,20 @@ async def test_genomic_deletion(test_handler, genomic_deletion):
 
     resp2 = await test_handler.normalize("NC_000003.12:g.10146527_10146528delCT")
     assert (
-        resp1.variation_descriptor.variation.id
+        resp2.variation_descriptor.variation.id
+        == resp1.variation_descriptor.variation.id
+    )
+
+    resp3 = await test_handler.normalize("3-10146526-TCT-T")
+    assert (
+        resp3.variation_descriptor.variation.id
         == resp2.variation_descriptor.variation.id
     )
+
+    # CA523275412
+    q = "1-55509715-AC-A"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_deletion, q)
 
     # incorrect deleted sequence
     resp = await test_handler.normalize("NC_000003.12:g.10146527_10146528delCC")
@@ -1159,29 +1381,22 @@ async def test_genomic_insertion(
         "NC_000017.10:g.37880993_37880994insGCTTACGTGATG",
     )
 
-    fixture_id = "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG"
-    resp = await test_handler.normalize("17-37880993-G-GGCTTACGTGATG")
-    assert (
-        resp.variation_descriptor.id
-        == "normalize.variation:17-37880993-G-GGCTTACGTGATG"
-    )
-    resp.variation_descriptor.id = fixture_id
-    assertion_checks(
-        resp.variation_descriptor,
-        grch38_genomic_insertion,
-        "17-37880993-G-GGCTTACGTGATG",
-    )
-
     resp = await test_handler.normalize("ERBB2 g.37880993_37880994insGCTTACGTGATG")
     assert (
         resp.variation_descriptor.id
         == "normalize.variation:ERBB2%20g.37880993_37880994insGCTTACGTGATG"
     )
-    resp.variation_descriptor.id = fixture_id
+    resp.variation_descriptor.id = "normalize.variation:NC_000017.10%3Ag.37880993_37880994insGCTTACGTGATG"  # noqa: E501
     assertion_checks(
         resp.variation_descriptor,
         genomic_insertion,
         "ERBB2 g.37880993_37880994insGCTTACGTGATG",
+    )
+
+    q = "17-37880993-G-GGCTTACGTGATG"
+    resp = await test_handler.normalize(q)
+    assertion_checks(
+        resp.variation_descriptor, grch38_genomic_insertion, q, ignore_id=True
     )
 
 

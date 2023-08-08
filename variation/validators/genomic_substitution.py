@@ -25,11 +25,17 @@ class GenomicSubstitution(Validator):
         """
         validation_results = []
 
+        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            end_pos = classification.pos + len(classification.alt)
+        else:
+            # HGVS is only 1 nuc
+            end_pos = classification.pos
+
         for alt_ac in accessions:
             errors = []
 
             valid_ref_seq_msg = self.validate_reference_sequence(
-                alt_ac, classification.pos, classification.pos, classification.ref
+                alt_ac, classification.pos, end_pos, classification.ref
             )
             if valid_ref_seq_msg:
                 errors.append(valid_ref_seq_msg)
