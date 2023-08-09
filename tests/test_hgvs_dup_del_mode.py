@@ -312,10 +312,9 @@ def genomic_dup2_rse(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup2_rse2():
-    """Create a test fixture for genomic dup RSE where bp > 100."""
-    _id = "ga4gh:VA.TNA8TBpeIpltnsf9eKUx62-MMo4B3QKc"
-    loc = {
+def seq_loc_gt_100_bp():
+    """Create seq loc for positions 33211290, 33211490 on NC_000023.11"""
+    return {
         "_id": "ga4gh:VSL.lFsAAbWpvpDzjeUE0nKLG_6Usr2Ucgs_",
         "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         "interval": {
@@ -325,6 +324,18 @@ def genomic_dup2_rse2():
         },
         "type": "SequenceLocation",
     }
+
+
+@pytest.fixture(scope="module")
+def vrs_ref_allele_seq_gt_100_bp():
+    """Create vrs_ref_allele_seq for positions 33211290, 33211490 on NC_000023.11"""
+    return "TCTACTTCTTCCCACCAAAGCATTTTGAAAAGTGTATATCAAGGCAGCGATAAAAAAAACCTGGTAAAAGTTCTTCAAACTTTATTGCTCCAGTAGGCTTAAAAACAATGAGAAACCAACAAACTTCAGCAGCTTTAAAAAAAGTAACACTTCAGTTTTTCCTATTCGTTTTTCTCCGAAGGTAATTGCCTCCCAGATCTG"  # noqa: E501
+
+
+@pytest.fixture(scope="module")
+def genomic_dup2_rse2(seq_loc_gt_100_bp, vrs_ref_allele_seq_gt_100_bp):
+    """Create a test fixture for genomic dup RSE where bp > 100."""
+    _id = "ga4gh:VA.TNA8TBpeIpltnsf9eKUx62-MMo4B3QKc"
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.33211290_33211490dup",
         "type": "VariationDescriptor",
@@ -332,12 +343,12 @@ def genomic_dup2_rse2():
         "variation": {
             "type": "Allele",
             "_id": _id,
-            "location": loc,
+            "location": seq_loc_gt_100_bp,
             "state": {
                 "type": "RepeatedSequenceExpression",
                 "seq_expr": {
                     "type": "DerivedSequenceExpression",
-                    "location": loc,
+                    "location": seq_loc_gt_100_bp,
                     "reverse_complement": False,
                 },
                 "count": {"type": "Number", "value": 2},
@@ -345,7 +356,7 @@ def genomic_dup2_rse2():
         },
         "molecule_context": "genomic",
         "structural_type": "SO:1000035",
-        "vrs_ref_allele_seq": "TCTACTTCTTCCCACCAAAGCATTTTGAAAAGTGTATATCAAGGCAGCGATAAAAAAAACCTGGTAAAAGTTCTTCAAACTTTATTGCTCCAGTAGGCTTAAAAACAATGAGAAACCAACAAACTTCAGCAGCTTTAAAAAAAGTAACACTTCAGTTTTTCCTATTCGTTTTTCTCCGAAGGTAATTGCCTCCCAGATCTG",  # noqa: E501
+        "vrs_ref_allele_seq": vrs_ref_allele_seq_gt_100_bp,
     }
     return VariationDescriptor(**params)
 
@@ -1103,6 +1114,29 @@ def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
         "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
     return VariationDescriptor(**genomic_del2)
+
+
+@pytest.fixture(scope="module")
+def genomic_del2_lse2(seq_loc_gt_100_bp, vrs_ref_allele_seq_gt_100_bp):
+    """Create a test fixture for genomic del LSE where bp > 100."""
+    params = {
+        "id": "normalize.variation:NC_000023.11%3Ag.33211290_33211490del",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.6iJ8kdBlRGzvWtNNunNcRSEt3lvn9MRd",
+        "variation": {
+            "type": "Allele",
+            "_id": "ga4gh:VA.6iJ8kdBlRGzvWtNNunNcRSEt3lvn9MRd",
+            "location": seq_loc_gt_100_bp,
+            "state": {
+                "type": "LiteralSequenceExpression",
+                "sequence": "",
+            },
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": vrs_ref_allele_seq_gt_100_bp,
+    }
+    return VariationDescriptor(**params)
 
 
 @pytest.fixture(scope="module")
@@ -2492,6 +2526,7 @@ async def test_genomic_del2(
     genomic_del2_free_text_default,
     genomic_del2_free_text_cnv,
     genomic_del2_free_text_rse,
+    genomic_del2_lse2,
 ):
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
@@ -2557,6 +2592,11 @@ async def test_genomic_del2(
         assertion_checks(
             resp.variation_descriptor, genomic_del2_free_text_default, q, ignore_id=True
         )
+
+    # Check that del > 100 bps returns LSE
+    q = "NC_000023.11:g.33211290_33211490del"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, genomic_del2_lse2, q)
 
     # gnomad vcf
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
