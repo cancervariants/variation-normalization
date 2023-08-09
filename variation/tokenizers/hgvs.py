@@ -2,7 +2,9 @@
 import re
 from typing import Optional
 
-from variation.schemas.token_response_schema import CoordinateType, HgvsToken
+from cool_seq_tool.schemas import AnnotationLayer
+
+from variation.schemas.token_response_schema import HgvsToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -27,7 +29,7 @@ class HGVS(Tokenizer):
                 token=input_string,
                 input_string=input_string,
                 accession=match_dict["accession"],
-                coordinate_type=CoordinateType(match_dict["coordinate"]),
+                coordinate_type=AnnotationLayer(match_dict["coordinate"]),
                 change=match_dict["change"],
             )
         else:

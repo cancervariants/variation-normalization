@@ -1,8 +1,10 @@
 """A module for Cdna Deletion Tokenization."""
 from typing import Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.regex import CNDA_GENOMIC_DELETION
-from variation.schemas.token_response_schema import CdnaDeletionToken, CoordinateType
+from variation.schemas.token_response_schema import CdnaDeletionToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -18,7 +20,7 @@ class CdnaDeletion(Tokenizer):
         """
         og_input_string = input_string
         _, input_string = self.strip_coord_prefix(
-            input_string, match_coord_type=CoordinateType.CDNA
+            input_string, match_coord_type=AnnotationLayer.CDNA
         )
 
         if not input_string:
