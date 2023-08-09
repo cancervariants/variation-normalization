@@ -2,13 +2,15 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
-from variation.schemas.token_response_schema import CoordinateType, Token
+from cool_seq_tool.schemas import AnnotationLayer
+
+from variation.schemas.token_response_schema import Token
 
 
 class Tokenizer(ABC):
     """The tokenizer class."""
 
-    coord_types = {k: v.value for k, v in CoordinateType.__members__.items()}
+    coord_types = {k: v.value for k, v in AnnotationLayer.__members__.items()}
 
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
@@ -20,8 +22,8 @@ class Tokenizer(ABC):
         raise NotImplementedError
 
     def strip_coord_prefix(
-        self, input_string: str, match_coord_type: Optional[CoordinateType] = None
-    ) -> Tuple[Optional[CoordinateType], Optional[str]]:
+        self, input_string: str, match_coord_type: Optional[AnnotationLayer] = None
+    ) -> Tuple[Optional[AnnotationLayer], Optional[str]]:
         """Strip parentheses and coordinate type from string
 
         :param input_string: Input string
@@ -37,7 +39,7 @@ class Tokenizer(ABC):
         def _strip(
             coord_type: str,
             string: str,
-            match_coord_type: Optional[CoordinateType] = None,
+            match_coord_type: Optional[AnnotationLayer] = None,
         ) -> str:
             """Strip parentheses and coordinate type from string
 
@@ -66,7 +68,7 @@ class Tokenizer(ABC):
         else:
             for k, v in self.coord_types.items():
                 if f"{v}." in input_string:
-                    coord_type = CoordinateType[k]
+                    coord_type = AnnotationLayer[k]
                     stripped_str = _strip(v, input_string)
                     break
 

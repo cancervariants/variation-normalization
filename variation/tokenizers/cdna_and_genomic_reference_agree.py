@@ -1,10 +1,11 @@
 """A module for Reference Agree Tokenization on cDNA and genomic reference sequence."""
 from typing import Optional, Union
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
 from variation.schemas.token_response_schema import (
     CdnaReferenceAgreeToken,
-    CoordinateType,
     GenomicReferenceAgreeToken,
 )
 from variation.tokenizers.tokenizer import Tokenizer
@@ -38,7 +39,7 @@ class CdnaGenomicReferenceAgree(Tokenizer):
                 "pos": int(match_dict["pos"]),
             }
 
-            if coordinate_type == CoordinateType.LINEAR_GENOMIC:
+            if coordinate_type == AnnotationLayer.GENOMIC:
                 return GenomicReferenceAgreeToken(**params)
-            elif coordinate_type == CoordinateType.CDNA:
+            elif coordinate_type == AnnotationLayer.CDNA:
                 return CdnaReferenceAgreeToken(**params)

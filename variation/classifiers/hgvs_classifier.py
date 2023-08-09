@@ -2,6 +2,8 @@
 from re import Match, Pattern
 from typing import Dict, List, Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.classifiers.classifier import Classifier
 from variation.regex import (
     CDNA_REGEXPRS,
@@ -36,7 +38,7 @@ from variation.schemas.classification_response_schema import (
     ProteinSubstitutionClassification,
     SequenceOntology,
 )
-from variation.schemas.token_response_schema import CoordinateType, HgvsToken, TokenType
+from variation.schemas.token_response_schema import HgvsToken, TokenType
 from variation.utils import get_ambiguous_type
 
 
@@ -66,14 +68,14 @@ class HgvsClassifier(Classifier):
             "ac": token.accession,
         }
 
-        if token.coordinate_type == CoordinateType.LINEAR_GENOMIC:
+        if token.coordinate_type == AnnotationLayer.GENOMIC:
             classification = self._genomic_classification(token, params)
             if not classification:
                 # Try ambiguous
                 classification = self._genomic_ambiguous_classification(token, params)
-        elif token.coordinate_type == CoordinateType.CDNA:
+        elif token.coordinate_type == AnnotationLayer.CDNA:
             classification = self._cdna_classification(token, params)
-        elif token.coordinate_type == CoordinateType.PROTEIN:
+        elif token.coordinate_type == AnnotationLayer.PROTEIN:
             classification = self._protein_classification(token, params)
 
         return classification

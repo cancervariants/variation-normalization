@@ -1,6 +1,7 @@
 """Module for Protein Insertion Translation."""
 from typing import List, Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
@@ -9,7 +10,7 @@ from variation.schemas.classification_response_schema import (
     ProteinInsertionClassification,
 )
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
@@ -60,7 +61,7 @@ class ProteinInsertion(Translator):
             classification.pos0,
             classification.pos1,
             AltType.INSERTION,
-            CoordinateType.PROTEIN,
+            AnnotationLayer.PROTEIN,
             warnings,
             alt=classification.inserted_sequence,
         )

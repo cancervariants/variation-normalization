@@ -1,8 +1,10 @@
 """A module for Genomic DelIns Tokenization."""
 from typing import Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.regex import CDNA_GENOMIC_DELINS
-from variation.schemas.token_response_schema import CoordinateType, GenomicDelInsToken
+from variation.schemas.token_response_schema import GenomicDelInsToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -20,7 +22,7 @@ class GenomicDelIns(Tokenizer):
         """
         og_input_string = input_string
         _, input_string = self.strip_coord_prefix(
-            input_string, match_coord_type=CoordinateType.LINEAR_GENOMIC
+            input_string, match_coord_type=AnnotationLayer.GENOMIC
         )
         if not input_string:
             return None
