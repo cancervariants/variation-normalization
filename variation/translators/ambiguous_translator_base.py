@@ -299,6 +299,7 @@ class AmbiguousTranslator(Translator):
                 warnings,
                 hgvs_dup_del_mode,
                 ac,
+                pos=ambiguous_seq_loc_data.outer_coords,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
             )
