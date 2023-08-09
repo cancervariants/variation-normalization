@@ -35,7 +35,6 @@ def mmel1_l30m():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "L",
         "gene_context": "hgnc:14668",
     }
@@ -65,7 +64,6 @@ def cdk11a_e314del():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001604",
         "vrs_ref_allele_seq": "EEEEEEEEEEEEE",
         "gene_context": "hgnc:1730",
     }
@@ -95,7 +93,6 @@ def protein_insertion2():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001605",
         "gene_context": "hgnc:6700",
     }
     return VariationDescriptor(**params)
@@ -130,7 +127,6 @@ def atad3a_i7v(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -151,7 +147,6 @@ def atad3a_i7t(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -172,7 +167,6 @@ def atad3a_i7m(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -193,7 +187,6 @@ def braf_v600l(braf_600loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": "hgnc:1097",
     }
@@ -214,7 +207,6 @@ def braf_600_reference_agree(braf_600loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": "hgnc:1097",
     }

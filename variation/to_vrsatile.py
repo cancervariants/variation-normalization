@@ -135,7 +135,6 @@ class ToVRSATILE(ToVRS):
                 variation_id=variation_id,
                 variation=variation,
                 molecule_context=molecule_context,
-                structural_type=valid_result.classification.so_id,
                 vrs_ref_allele_seq=vrs_ref_allele_seq if vrs_ref_allele_seq else None,
                 gene_context=gene_context,
             ),
