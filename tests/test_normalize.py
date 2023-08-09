@@ -39,7 +39,6 @@ def dis3_p63a():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "gene_context": {
             "id": "normalize.gene:DIS3",
             "type": "GeneDescriptor",
@@ -188,7 +187,6 @@ def vhl():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001587",
         "vrs_ref_allele_seq": "Y",
         "gene_context": "hgnc:12687",
     }
@@ -206,7 +204,6 @@ def braf_v600e_nucleotide(braf_nuc_value):
         "variation_id": variation["_id"],
         "variation": variation,
         "molecule_context": "transcript",
-        "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "T",
         "gene_context": "hgnc:1097",
     }
@@ -236,7 +233,6 @@ def nm_004448_cdna_delins():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "GG",
         "gene_context": "hgnc:3430",
     }
@@ -266,7 +262,6 @@ def nm_000551():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "C",
         "gene_context": "hgnc:12687",
     }
@@ -304,7 +299,6 @@ def cdna_reference_agree(braf_nuc_value):
         "variation_id": value["_id"],
         "variation": value,
         "molecule_context": "transcript",
-        "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
         "gene_context": "hgnc:1097",
     }
@@ -323,7 +317,6 @@ def nc_000007_reference_agree(braf_nuc_value):
         "variation_id": value["_id"],
         "variation": value,
         "molecule_context": "transcript",
-        "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "T",
         "gene_context": "hgnc:1097",
     }
@@ -353,7 +346,6 @@ def protein_delins():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "LREAT",
         "gene_context": "hgnc:3236",
     }
@@ -385,7 +377,6 @@ def cdna_deletion():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "TTGAGGGAAAACACAT",
         "gene_context": "hgnc:3430",
     }
@@ -417,7 +408,6 @@ def genomic_deletion():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "CTCT",
     }
     return VariationDescriptor(**params)
@@ -446,7 +436,6 @@ def gnomad_vcf_genomic_deletion():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "CCC",
     }
     return VariationDescriptor(**params)
@@ -475,7 +464,6 @@ def cdna_insertion():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:0000667",
         "gene_context": "hgnc:6614",
     }
     return VariationDescriptor(**params)
@@ -507,7 +495,6 @@ def genomic_insertion():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:0000667",
         "vrs_ref_allele_seq": "TACGTGATGGCT",
         "gene_context": "hgnc:3430",
     }
@@ -537,7 +524,6 @@ def genomic_substitution():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "C",
         "gene_context": "hgnc:3236",
     }
@@ -567,7 +553,6 @@ def gnomad_vcf_genomic_sub_mnv():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0002007",
         "vrs_ref_allele_seq": "G",
     }
     return VariationDescriptor(**params)
@@ -596,7 +581,6 @@ def genomic_sub_grch38():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "C",
     }
     return VariationDescriptor(**params)
@@ -611,7 +595,6 @@ def grch38_braf_genom_sub(braf_v600e_genomic_sub):
         "variation_id": "ga4gh:VA.fZiBjQEolbkL0AxjoTZf4SOkFy9J0ebU",
         "variation": braf_v600e_genomic_sub,
         "molecule_context": "genomic",
-        "structural_type": "SO:0001483",
         "vrs_ref_allele_seq": "A",
     }
     return VariationDescriptor(**params)
@@ -640,7 +623,6 @@ def grch38_braf_genom_reference_agree():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "A",
     }
     return VariationDescriptor(**params)
@@ -669,7 +651,6 @@ def grch38_genomic_delins1():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "CA",
     }
     return VariationDescriptor(**params)
@@ -698,7 +679,6 @@ def grch38_genomic_delins2():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "C",
     }
     return VariationDescriptor(**params)
@@ -727,7 +707,6 @@ def genomic_delins_gene():
             "type": "Allele",
         },
         "molecule_context": "transcript",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "TG",
         "gene_context": "hgnc:1097",
     }
@@ -761,7 +740,6 @@ def gnomad_vcf_genomic_delins1():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "AAAAGCTTTA",
     }
     return VariationDescriptor(**params)
@@ -790,7 +768,6 @@ def gnomad_vcf_genomic_delins2():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "AG",
     }
     return VariationDescriptor(**params)
@@ -805,7 +782,6 @@ def grch38_genomic_insertion(grch38_genomic_insertion_variation):
         "variation_id": grch38_genomic_insertion_variation["_id"],
         "variation": grch38_genomic_insertion_variation,
         "molecule_context": "genomic",
-        "structural_type": "SO:0000667",
         "vrs_ref_allele_seq": "TACGTGATGGCT",
     }
     return VariationDescriptor(**params)
@@ -837,7 +813,6 @@ def gnomad_vcf_genomic_delins3():
             "type": "Allele",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "GG",
     }
     return VariationDescriptor(**params)
@@ -852,7 +827,6 @@ def gnomad_vcf_genomic_delins4(grch38_genomic_insertion_variation):
         "variation_id": grch38_genomic_insertion_variation["_id"],
         "variation": grch38_genomic_insertion_variation,
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "TACGTGATGGCT",
     }
     return VariationDescriptor(**params)

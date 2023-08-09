@@ -103,7 +103,6 @@ class GenomicSubstitution(Translator):
                         pos=mane["pos"][0] + 1,
                         ref=ref,
                         alt=alt,
-                        so_id=classification.so_id,
                     )
                     vrs_seq_loc_ac = mane["refseq"]
                     coord_type = AnnotationLayer.CDNA
