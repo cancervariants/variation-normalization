@@ -1,7 +1,7 @@
 """Module for Genomic Substitution Translation."""
 from typing import List, Optional
 
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
@@ -11,7 +11,7 @@ from variation.schemas.classification_response_schema import (
     GenomicSubstitutionClassification,
 )
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.token_response_schema import AltType, CoordinateType
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
@@ -68,7 +68,7 @@ class GenomicSubstitution(Translator):
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession,
                 classification.pos,
-                CoordinateType.LINEAR_GENOMIC,
+                AnnotationLayer.GENOMIC,
                 end_pos=classification.pos,
                 try_longest_compatible=True,
                 residue_mode=ResidueMode.RESIDUE.value,
@@ -106,11 +106,11 @@ class GenomicSubstitution(Translator):
                         so_id=classification.so_id,
                     )
                     vrs_seq_loc_ac = mane["refseq"]
-                    coord_type = CoordinateType.CDNA
+                    coord_type = AnnotationLayer.CDNA
                     validation_result.classification = classification
                 else:
                     vrs_seq_loc_ac = mane["alt_ac"]
-                    coord_type = CoordinateType.LINEAR_GENOMIC
+                    coord_type = AnnotationLayer.GENOMIC
 
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac,
@@ -128,7 +128,7 @@ class GenomicSubstitution(Translator):
                 vrs_seq_loc_ac,
                 classification.pos,
                 classification.pos,
-                CoordinateType.LINEAR_GENOMIC,
+                AnnotationLayer.GENOMIC,
                 AltType.SUBSTITUTION,
                 errors,
                 alt=classification.alt,
