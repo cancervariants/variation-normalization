@@ -68,12 +68,6 @@ class GnomadVcfClassifier(Classifier):
                 params["alt"] = alt
 
                 return GenomicSubstitutionClassification(**params)
-        elif len_ref < len_alt:
-            if len_ref == 1 and alt[0] == ref:
-                params["pos0"] = token.pos
-                params["pos1"] = params["pos0"] + 1
-                params["inserted_sequence"] = alt[1:]
-                return GenomicInsertionClassification(**params)
 
         # delins
         params["pos0"] = token.pos

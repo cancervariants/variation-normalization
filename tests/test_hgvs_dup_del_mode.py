@@ -1007,6 +1007,7 @@ def genomic_del1_free_text_rse(genomic_del1_free_text, genomic_del1_free_text_se
     genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
 
+
 @pytest.fixture(scope="module")
 def genomic_del2_cn(genomic_del2, genomic_del2_38_cn):
     """Create a test fixture for genomic del copy number count."""

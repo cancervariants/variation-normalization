@@ -324,7 +324,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 alt = dna_to_rna(alt)
             else:
                 alt = alt.replace("T", "U")
-        elif classification_token.classification_type == ClassificationType.GENOMIC_INSERTION:
+        elif (
+            classification_token.classification_type
+            == ClassificationType.GENOMIC_INSERTION
+        ):
             classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
@@ -406,7 +409,11 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         ClassificationType.GENOMIC_INSERTION,
                     }:
                         g_start_pos = classification_token.pos0
-                        g_end_pos = classification_token.pos1 if classification_token.pos1 else classification_token.pos0
+                        g_end_pos = (
+                            classification_token.pos1
+                            if classification_token.pos1
+                            else classification_token.pos0
+                        )
                         if (
                             classification_token.classification_type
                             == ClassificationType.GENOMIC_DELINS
@@ -500,7 +507,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                             mane_p["pos"] = (mane_p["pos"][1], mane_p["pos"][0])
                         p_ac = mane_p["refseq"]
 
-                        if classification_token.classification_type == ClassificationType.GENOMIC_DELINS:
+                        if (
+                            classification_token.classification_type
+                            == ClassificationType.GENOMIC_DELINS
+                        ):
                             # Right now, deletions are classified as delins
                             # Only support simple deletions
                             gnomad_vcf_token = classification_token.matching_tokens[0]
@@ -562,7 +572,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                     ),
                                 )
                         else:
-                            all_warnings.add("Unable to get associated amino acid change")
+                            all_warnings.add(
+                                "Unable to get associated amino acid change"
+                            )
 
                 if all_warnings:
                     vd, warnings = no_variation_resp(

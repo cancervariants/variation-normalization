@@ -8,8 +8,8 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from tests.conftest import assertion_checks
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
-from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.classification_response_schema import SequenceOntology
+from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 
 
 @pytest.fixture(scope="module")
@@ -469,28 +469,18 @@ def gnomad_vcf_genomic_delins5():
                 "type": "SequenceLocation",
                 "sequence_id": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
                 "interval": {
-                "type": "SequenceInterval",
-                "start": {
-                    "type": "Number",
-                    "value": 7675139
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 7675139},
+                    "end": {"type": "Number", "value": 7675141},
                 },
-                "end": {
-                    "type": "Number",
-                    "value": 7675141
-                }
-                }
             },
-            "state": {
-                "type": "LiteralSequenceExpression",
-                "sequence": "G"
-            }
+            "state": {"type": "LiteralSequenceExpression", "sequence": "G"},
         },
         "molecule_context": "genomic",
         "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "GG",
     }
     return VariationDescriptor(**params)
-
 
 
 @pytest.fixture(scope="module")
@@ -1145,7 +1135,7 @@ async def test_genomic_delins(
     gnomad_vcf_genomic_delins4,
     gnomad_vcf_genomic_delins5,
     genomic_del1_lse,
-    genomic_del2_lse
+    genomic_del2_lse,
 ):
     """Test that Genomic DelIns normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453135_140453136delinsAT")
@@ -1219,6 +1209,7 @@ async def test_genomic_delins(
     # gnomad should always return lse even if provided other hgvs dup del mode option
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_COUNT)
     assertion_checks(resp.variation_descriptor, expected_vd, q, ignore_id=True)
+
 
 @pytest.mark.asyncio
 async def test_protein_delins(test_handler, protein_delins):
