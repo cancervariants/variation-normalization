@@ -102,7 +102,6 @@ class NormalizeService(ServiceResponse):
                         "type": "Allele",
                     },
                     "molecule_context": "protein",
-                    "structural_type": "SO:0001606",
                     "vrs_ref_allele_seq": "V",
                     "gene_context": {
                         "id": "normalize.gene:BRAF",

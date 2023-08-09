@@ -23,7 +23,6 @@ def genomic_dup1_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "GG",
     }
     return params
@@ -38,7 +37,6 @@ def genomic_dup1_not_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "G",
     }
     return params
@@ -112,7 +110,6 @@ def genomic_dup1_free_text_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "GG",
         "gene_context": "hgnc:2666",
     }
@@ -128,7 +125,6 @@ def genomic_dup1_free_text_not_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "G",
         "gene_context": "hgnc:2666",
     }
@@ -230,7 +226,6 @@ def genomic_dup2_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "TCTA",
     }
     return params
@@ -245,7 +240,6 @@ def genomic_dup2_not_normalized():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "TCTA",
     }
     return params
@@ -355,7 +349,6 @@ def genomic_dup2_rse2(seq_loc_gt_100_bp, vrs_ref_allele_seq_gt_100_bp):
             },
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": vrs_ref_allele_seq_gt_100_bp,
     }
     return VariationDescriptor(**params)
@@ -370,7 +363,6 @@ def genomic_dup2_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": "TAGA",
         "gene_context": "hgnc:2928",
     }
@@ -453,7 +445,6 @@ def genomic_dup3():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -511,7 +502,6 @@ def genomic_dup3_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:2928",
     }
@@ -585,7 +575,6 @@ def genomic_dup4():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -643,7 +632,6 @@ def genomic_dup4_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:17340",
     }
@@ -717,7 +705,6 @@ def genomic_dup5():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -785,7 +772,6 @@ def genomic_dup5_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:6990",
     }
@@ -830,7 +816,6 @@ def genomic_dup6():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -898,7 +883,6 @@ def genomic_dup6_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:1000035",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:6990",
     }
@@ -943,7 +927,6 @@ def genomic_del1():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "T",
     }
     return params
@@ -1015,7 +998,6 @@ def genomic_del1_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "T",
         "gene_context": "hgnc:12687",
     }
@@ -1096,7 +1078,6 @@ def genomic_del2():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
     }
     return params
@@ -1133,7 +1114,6 @@ def genomic_del2_lse2(seq_loc_gt_100_bp, vrs_ref_allele_seq_gt_100_bp):
             },
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": vrs_ref_allele_seq_gt_100_bp,
     }
     return VariationDescriptor(**params)
@@ -1191,7 +1171,6 @@ def genomic_del2_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "transcript",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
         "gene_context": "hgnc:12687",
     }
@@ -1274,7 +1253,6 @@ def genomic_del3():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -1332,7 +1310,6 @@ def genomic_del3_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:3226",
     }
@@ -1406,7 +1383,6 @@ def genomic_del4():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -1464,7 +1440,6 @@ def genomic_del4_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:2206",
     }
@@ -1564,7 +1539,6 @@ def genomic_uncertain_del_2():
             "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
     }
     return VariationDescriptor(**params)
 
@@ -1600,7 +1574,6 @@ def genomic_uncertain_del_y():
             "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
     }
     return VariationDescriptor(**params)
 
@@ -1614,7 +1587,6 @@ def genomic_del5():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -1682,7 +1654,6 @@ def genomic_del5_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:11411",
     }
@@ -1727,7 +1698,6 @@ def genomic_del6():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
     }
     return params
@@ -1795,7 +1765,6 @@ def genomic_del6_free_text():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": None,
         "gene_context": "hgnc:3522",
     }

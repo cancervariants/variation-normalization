@@ -5,7 +5,6 @@ from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicSubstitutionClassification,
     Nomenclature,
-    SequenceOntology,
 )
 from variation.schemas.token_response_schema import Token, TokenType
 
@@ -40,16 +39,8 @@ class GenomicSubstitutionClassifier(Classifier):
             gene_token, genomic_sub_token = tokens
         else:
             gene_token, _, genomic_sub_token = tokens
-        len_ref = len(genomic_sub_token.ref)
-        len_alt = len(genomic_sub_token.alt)
 
-        so_id = None
-        if len_ref == 1 and len_alt == 1:
-            so_id = SequenceOntology.SNV
-        elif len_ref == len_alt:
-            so_id = SequenceOntology.MNV
-
-        if so_id:
+        if len(genomic_sub_token.ref) == len(genomic_sub_token.alt):
             return GenomicSubstitutionClassification(
                 matching_tokens=tokens,
                 nomenclature=Nomenclature.FREE_TEXT,
@@ -57,5 +48,4 @@ class GenomicSubstitutionClassifier(Classifier):
                 pos=genomic_sub_token.pos,
                 ref=genomic_sub_token.ref,
                 alt=genomic_sub_token.alt,
-                so_id=so_id,
             )
