@@ -323,7 +323,7 @@ def genomic_dup2_rse2():
             "start": {"value": 33211289, "type": "Number"},
             "end": {"value": 33211490, "type": "Number"},
         },
-        "type": "SequenceLocation"
+        "type": "SequenceLocation",
     }
     params = {
         "id": "normalize.variation:NC_000023.11%3Ag.33211290_33211490dup",
@@ -1913,7 +1913,7 @@ async def test_genomic_dup2(
     genomic_dup2_free_text_default,
     genomic_dup2_free_text_cn,
     genomic_dup2_free_text_rse,
-    genomic_dup2_rse2
+    genomic_dup2_rse2,
 ):
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NM_004006.2%3Ac.20_23dup
