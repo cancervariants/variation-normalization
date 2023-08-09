@@ -312,6 +312,45 @@ def genomic_dup2_rse(genomic_dup2_normalized, genomic_dup2_seq_loc_normalized):
 
 
 @pytest.fixture(scope="module")
+def genomic_dup2_rse2():
+    """Create a test fixture for genomic dup RSE where bp > 100."""
+    _id = "ga4gh:VA.TNA8TBpeIpltnsf9eKUx62-MMo4B3QKc"
+    loc = {
+        "_id": "ga4gh:VSL.lFsAAbWpvpDzjeUE0nKLG_6Usr2Ucgs_",
+        "sequence_id": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+        "interval": {
+            "type": "SequenceInterval",
+            "start": {"value": 33211289, "type": "Number"},
+            "end": {"value": 33211490, "type": "Number"},
+        },
+        "type": "SequenceLocation",
+    }
+    params = {
+        "id": "normalize.variation:NC_000023.11%3Ag.33211290_33211490dup",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "type": "Allele",
+            "_id": _id,
+            "location": loc,
+            "state": {
+                "type": "RepeatedSequenceExpression",
+                "seq_expr": {
+                    "type": "DerivedSequenceExpression",
+                    "location": loc,
+                    "reverse_complement": False,
+                },
+                "count": {"type": "Number", "value": 2},
+            },
+        },
+        "molecule_context": "genomic",
+        "structural_type": "SO:1000035",
+        "vrs_ref_allele_seq": "TCTACTTCTTCCCACCAAAGCATTTTGAAAAGTGTATATCAAGGCAGCGATAAAAAAAACCTGGTAAAAGTTCTTCAAACTTTATTGCTCCAGTAGGCTTAAAAACAATGAGAAACCAACAAACTTCAGCAGCTTTAAAAAAAGTAACACTTCAGTTTTTCCTATTCGTTTTTCTCCGAAGGTAATTGCCTCCCAGATCTG",  # noqa: E501
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
 def genomic_dup2_free_text():
     """Create test fixture containing params for genomic dup VD."""
     params = {
@@ -1874,6 +1913,7 @@ async def test_genomic_dup2(
     genomic_dup2_free_text_default,
     genomic_dup2_free_text_cn,
     genomic_dup2_free_text_rse,
+    genomic_dup2_rse2,
 ):
     """Test that genomic duplication works correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NM_004006.2%3Ac.20_23dup
@@ -1936,6 +1976,11 @@ async def test_genomic_dup2(
         assertion_checks(
             resp.variation_descriptor, genomic_dup2_free_text_default, q, ignore_id=True
         )
+
+    # Greater than 100 bps -> rse
+    q = "NC_000023.11:g.33211290_33211490dup"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, genomic_dup2_rse2, q)
 
     # Invalid
     invalid_queries = [
