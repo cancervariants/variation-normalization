@@ -885,35 +885,6 @@ def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
 
 
 @pytest.fixture(scope="module")
-def genomic_del1():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
-        "type": "VariationDescriptor",
-        "variation_id": "",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "T",
-    }
-    return params
-
-
-@pytest.fixture(scope="module")
-def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
-    """Create a test fixture for genomic del LSE."""
-    _id = "ga4gh:VA.jUeT1n4AuBzwtt5TT-Iaac1KasATWjKE"
-    genomic_del1["variation_id"] = _id
-    genomic_del1["variation"] = {
-        "type": "Allele",
-        "_id": _id,
-        "location": genomic_del1_seq_loc,
-        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
-    }
-    return VariationDescriptor(**genomic_del1)
-
-
-@pytest.fixture(scope="module")
 def genomic_del1_cn(genomic_del1, genomic_del1_38_cn):
     """Create a test fixture for genomic del copy number count."""
     genomic_del1["variation"] = genomic_del1_38_cn
@@ -1035,36 +1006,6 @@ def genomic_del1_free_text_rse(genomic_del1_free_text, genomic_del1_free_text_se
     }
     genomic_del1_free_text["variation_id"] = _id
     return VariationDescriptor(**genomic_del1_free_text)
-
-
-@pytest.fixture(scope="module")
-def genomic_del2():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
-        "type": "VariationDescriptor",
-        "variation_id": "",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
-    }
-    return params
-
-
-@pytest.fixture(scope="module")
-def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
-    """Create a test fixture for genomic del LSE."""
-    _id = "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx"
-    genomic_del2["variation_id"] = _id
-    genomic_del2["variation"] = {
-        "type": "Allele",
-        "_id": _id,
-        "location": genomic_del2_seq_loc,
-        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
-    }
-    return VariationDescriptor(**genomic_del2)
-
 
 @pytest.fixture(scope="module")
 def genomic_del2_cn(genomic_del2, genomic_del2_38_cn):
@@ -2419,14 +2360,6 @@ async def test_genomic_del1(
             resp.variation_descriptor, genomic_del1_free_text_lse, q, ignore_id=True
         )
 
-    # gnomad vcf
-    q = "3-10149810-CT-C"  # 38
-    resp = await test_handler.normalize(q)
-    assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
-
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_COUNT)
-    assertion_checks(resp.variation_descriptor, genomic_del1_lse, q, ignore_id=True)
-
     # Invalid
     invalid_queries = [
         "NC_000003.11:g.198022431del",
@@ -2512,15 +2445,6 @@ async def test_genomic_del2(
         assertion_checks(
             resp.variation_descriptor, genomic_del2_free_text_default, q, ignore_id=True
         )
-
-    # gnomad vcf
-    q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
-    resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
-
-    q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
-    resp = await test_handler.normalize(q)
-    assertion_checks(resp.variation_descriptor, genomic_del2_lse, q, ignore_id=True)
 
     # Invalid
     invalid_queries = [

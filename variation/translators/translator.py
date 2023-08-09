@@ -148,37 +148,6 @@ class Translator(ABC):
                         f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"  # noqa: E501
                     )
 
-    def validate_reference_sequence(
-        self,
-        ac: str,
-        start_pos: int,
-        end_pos: int,
-        expected_ref: str,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[str]:
-        """Validate that expected reference sequence matches actual reference sequence
-        This is also in validator, but there is a ticket to have this method be moved
-        to cool-seq-tool. Once added, will be removed
-
-        :param ac: Accession
-        :param start_pos: Start position
-        :param end_pos: End position
-        :param expected_ref: The expected reference sequence (from input string)
-        :param residue_mode: Residue mode for `start_pos` and `end_pos`
-        :return: Invalid message if invalid. If valid, `None`
-        """
-        actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
-            ac, start=start_pos, end=end_pos, residue_mode=residue_mode
-        )
-
-        if not err_msg and (actual_ref != expected_ref):
-            err_msg = (
-                f"Expected to find {expected_ref} at positions ({start_pos}, "
-                f"{end_pos}) on {ac} but found {actual_ref}"
-            )
-
-        return err_msg
-
     async def get_p_or_cdna_translation_result(
         self,
         endpoint_name: Endpoint,

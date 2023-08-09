@@ -128,19 +128,6 @@ class GenomicDelDupTranslator(Translator):
                     pos0 = grch38_data.pos0
                     pos1 = grch38_data.pos1
                     ac = grch38_data.ac
-
-                    if alt_type == AltType.DELETION:
-                        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-                            ref = classification.matching_tokens[0].ref
-                            invalid_ref_msg = self.validate_reference_sequence(
-                                ac,
-                                pos0 - 1,
-                                pos0 - 1 + len(ref),
-                                ref,
-                            )
-                            if invalid_ref_msg:
-                                warnings.append(invalid_ref_msg)
-                                return None
                 else:
                     pos0 = classification.pos0
                     pos1 = classification.pos1
@@ -199,13 +186,6 @@ class GenomicDelDupTranslator(Translator):
             else:
                 return None
 
-        alt = None
-        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-            if alt_type == AltType.DELETION:
-                pos0 -= 1
-                pos1 -= 1
-                alt = classification.matching_tokens[0].alt
-
         outer_coords = (pos0, pos1 if pos1 else pos0)
 
         ival = models.SequenceInterval(
@@ -228,7 +208,6 @@ class GenomicDelDupTranslator(Translator):
                 ac,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
-                alt=alt,
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(

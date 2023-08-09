@@ -1,5 +1,4 @@
 """A module for the gnomAD VCF Classifier"""
-import re
 from typing import List, Optional, Union
 
 from variation.classifiers.classifier import Classifier
@@ -75,16 +74,6 @@ class GnomadVcfClassifier(Classifier):
                 params["pos1"] = params["pos0"] + 1
                 params["inserted_sequence"] = alt[1:]
                 return GenomicInsertionClassification(**params)
-        else:
-            matches = [m for m in re.finditer(alt, ref)]
-            if matches:
-                match = matches[0]
-                if match.start() == 0:
-                    match_end = match.end()
-                    params["pos0"] = token.pos + match_end
-                    params["deleted_sequence"] = ref[match_end:]
-                    params["pos1"] = params["pos0"] + len(params["deleted_sequence"])
-                    return GenomicDeletionClassification(**params)
 
         # delins
         params["pos0"] = token.pos

@@ -1,9 +1,12 @@
 """Module for testing gnomad_vcf_to_protein works correctly"""
+from copy import deepcopy
+
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 from tests.conftest import assertion_checks
 from variation.gnomad_vcf_to_protein_variation import dna_to_rna
+from variation.schemas.classification_response_schema import SequenceOntology
 
 
 @pytest.fixture(scope="module")
@@ -347,16 +350,20 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
     """Test that deletion queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
+    expected = deepcopy(protein_deletion_np_range)
+    expected.structural_type = SequenceOntology.DELINS
     assertion_checks(
         resp.variation_descriptor,
-        protein_deletion_np_range,
+        expected,
         "17-39723966-TTGAGGGAAAACACAT-T",
         ignore_id=True,
     )
     assert resp.warnings == []
 
     resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
-    assertion_checks(resp.variation_descriptor, cdk11a_e314del, "1-1708855-TTCC-T")
+    expected = deepcopy(cdk11a_e314del)
+    expected.structural_type = SequenceOntology.DELINS
+    assertion_checks(resp.variation_descriptor, expected, "1-1708855-TTCC-T")
     assert resp.warnings == []
 
 

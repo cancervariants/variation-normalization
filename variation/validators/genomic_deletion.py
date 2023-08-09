@@ -47,43 +47,25 @@ class GenomicDeletion(Validator):
             if invalid_ac_pos:
                 errors.append(invalid_ac_pos)
             else:
-                if classification.nomenclature in {
-                    Nomenclature.FREE_TEXT,
-                    Nomenclature.HGVS,
-                }:
-                    # Validate deleted sequence
-                    # HGVS deleted sequence includes start and end
-                    if classification.deleted_sequence:
-                        invalid_del_seq_message = self.validate_reference_sequence(
-                            alt_ac,
-                            classification.pos0,
-                            classification.pos1 + 1 if classification.pos1 else None,
-                            classification.deleted_sequence,
-                        )
-
-                        if invalid_del_seq_message:
-                            errors.append(invalid_del_seq_message)
-                    else:
-                        # Validate accession and positions
-                        invalid_ac_pos_msg = self.validate_ac_and_pos(
-                            alt_ac, classification.pos0, end_pos=classification.pos1
-                        )
-                        if invalid_ac_pos_msg:
-                            errors.append(invalid_ac_pos_msg)
-
-            if not errors:
-                if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-                    # Validate reference sequence
-                    ref = classification.matching_tokens[0].ref
-                    validate_ref_msg = self.validate_reference_sequence(
+                # Validate deleted sequence
+                # HGVS deleted sequence includes start and end
+                if classification.deleted_sequence:
+                    invalid_del_seq_message = self.validate_reference_sequence(
                         alt_ac,
-                        classification.pos0 - 1,
-                        classification.pos0 - 1 + len(ref),
-                        ref,
+                        classification.pos0,
+                        classification.pos1 + 1 if classification.pos1 else None,
+                        classification.deleted_sequence,
                     )
 
-                    if validate_ref_msg:
-                        errors.append(validate_ref_msg)
+                    if invalid_del_seq_message:
+                        errors.append(invalid_del_seq_message)
+                else:
+                    # Validate accession and positions
+                    invalid_ac_pos_msg = self.validate_ac_and_pos(
+                        alt_ac, classification.pos0, end_pos=classification.pos1
+                    )
+                    if invalid_ac_pos_msg:
+                        errors.append(invalid_ac_pos_msg)
 
             if not errors and classification.gene_token:
                 # Validate positions exist within gene range
