@@ -247,6 +247,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
     def _get_gnomad_vcf_protein_alt(
         self,
         classification_token: Token,
+        alt_type: AltType,
         reading_frame: int,
         strand: str,
         alt_ac: str,
@@ -255,20 +256,18 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
     ) -> Optional[str]:
         """Return protein alteration that corresponds to gnomad VCF alteration
 
-        :param Token classification_token: Classification token for query
-        :param int reading_frame: cDNA reading frame number (1, 2, 3)
-        :param str strand: Strand for query
-        :param str alt_ac: RefSeq genomic accession
-        :param int g_start_pos: Genomic start position
-        :param int g_end_pos: Genomic end position
+        :param classification_token: Classification token for query
+        :param alt_type: Alteration type
+        :param reading_frame: cDNA reading frame number (1, 2, 3)
+        :param strand: Strand for query
+        :param alt_ac: RefSeq genomic accession
+        :param g_start_pos: Genomic start position
+        :param g_end_pos: Genomic end position
         :return: Amino acid alteration (using 1-letter codes)
         """
         alt = None
         residue_mode = ResidueMode.INTER_RESIDUE
-        if classification_token.classification_type in {
-            ClassificationType.GENOMIC_SUBSTITUTION,
-            ClassificationType.GENOMIC_REFERENCE_AGREE,
-        }:
+        if alt_type in {AltType.SUBSTITUTION, AltType.REFERENCE_AGREE}:
             alt_nuc = classification_token.matching_tokens[0].alt
 
             ref = None
@@ -316,11 +315,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 alt = dna_to_rna(alt)
             else:
                 alt = alt.replace("T", "U")
-        elif (
-            classification_token.classification_type
-            == ClassificationType.GENOMIC_INSERTION
-        ):
-            alt = classification_token.inserted_sequence.replace("T", "U")
+        elif alt_type == AltType.INSERTION:
+            alt = classification_token.inserted_sequence[1:].replace("T", "U")
             if strand == "-":
                 alt = alt[::-1]
         else:
@@ -395,23 +391,32 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                     alt_type = None
                     g_start_pos = None
                     g_end_pos = None
-                    if classification_token.classification_type in {
-                        ClassificationType.GENOMIC_DELINS,
-                        ClassificationType.GENOMIC_INSERTION,
-                    }:
+                    if (
+                        classification_token.classification_type
+                        == ClassificationType.GENOMIC_DELINS
+                    ):
                         g_start_pos = classification_token.pos0
                         g_end_pos = (
                             classification_token.pos1
                             if classification_token.pos1
                             else classification_token.pos0
                         )
-                        if (
-                            classification_token.classification_type
-                            == ClassificationType.GENOMIC_DELINS
-                        ):
-                            alt_type = AltType.DELINS
-                        else:
-                            alt_type = AltType.INSERTION
+
+                        # Right now, deletions and insertions are classified as delins
+                        # Only support simple deletions and insertions
+                        gnomad_vcf_token = classification_token.matching_tokens[0]
+                        ref = gnomad_vcf_token.ref
+                        alt = gnomad_vcf_token.alt
+
+                        if ref[0] == alt[0]:
+                            if len(alt) == 1:
+                                alt_type = AltType.DELETION
+                                g_start_pos += 1
+                                g_end_pos += 1
+                            elif len(ref) == 1:
+                                alt_type = AltType.INSERTION
+                            else:
+                                alt_type = AltType.DELINS
                     elif classification_token.classification_type in {
                         ClassificationType.GENOMIC_SUBSTITUTION,
                         ClassificationType.GENOMIC_REFERENCE_AGREE,
@@ -497,29 +502,17 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                         if mane_p["pos"][0] > mane_p["pos"][1]:
                             mane_p["pos"] = (mane_p["pos"][1], mane_p["pos"][0])
                         p_ac = mane_p["refseq"]
-
-                        if (
-                            classification_token.classification_type
-                            == ClassificationType.GENOMIC_DELINS
-                        ):
-                            # Right now, deletions are classified as delins
-                            # Only support simple deletions
-                            gnomad_vcf_token = classification_token.matching_tokens[0]
-                            ref = gnomad_vcf_token.ref
-                            alt = gnomad_vcf_token.alt
-                            if len(alt) == 1 and ref[0] == alt[0]:
-                                # This is really a deletion
-                                aa_alt = ""
-                        else:
-                            aa_alt = self._get_gnomad_vcf_protein_alt(
-                                classification_token,
-                                reading_frame,
-                                mane_tx_genomic_data["strand"],
-                                alt_ac,
-                                g_start_pos,
-                                g_end_pos,
-                            )
-                        if aa_alt is not None:  # Deletions will be empty string
+                        aa_alt = self._get_gnomad_vcf_protein_alt(
+                            classification_token,
+                            alt_type,
+                            reading_frame,
+                            mane_tx_genomic_data["strand"],
+                            alt_ac,
+                            g_start_pos,
+                            g_end_pos,
+                        )
+                        # Deletions don't have an aa_alt
+                        if aa_alt or alt_type == AltType.DELETION:
                             # mane_p is 0-based, but to_vrs allele takes 1-based
                             variation = self.to_vrs_allele(
                                 p_ac,
