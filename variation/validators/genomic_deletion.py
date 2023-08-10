@@ -59,13 +59,6 @@ class GenomicDeletion(Validator):
 
                     if invalid_del_seq_message:
                         errors.append(invalid_del_seq_message)
-                else:
-                    # Validate accession and positions
-                    invalid_ac_pos_msg = self.validate_ac_and_pos(
-                        alt_ac, classification.pos0, end_pos=classification.pos1
-                    )
-                    if invalid_ac_pos_msg:
-                        errors.append(invalid_ac_pos_msg)
 
             if not errors and classification.gene_token:
                 # Validate positions exist within gene range
