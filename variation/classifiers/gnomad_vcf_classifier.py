@@ -9,7 +9,6 @@ from variation.schemas.classification_response_schema import (
     GenomicReferenceAgreeClassification,
     GenomicSubstitutionClassification,
     Nomenclature,
-    SequenceOntology,
 )
 from variation.schemas.token_response_schema import GnomadVcfToken, TokenType
 
@@ -56,14 +55,8 @@ class GnomadVcfClassifier(Classifier):
             params["pos"] = token.pos
 
             if ref == alt:
-                params["so_id"] = SequenceOntology.NO_SEQUENCE_ALTERATION
                 return GenomicReferenceAgreeClassification(**params)
             else:
-                if len_ref == 1:
-                    params["so_id"] = SequenceOntology.SNV
-                else:
-                    params["so_id"] = SequenceOntology.MNV
-
                 params["ref"] = ref
                 params["alt"] = alt
 

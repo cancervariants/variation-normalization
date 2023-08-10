@@ -1,11 +1,10 @@
 """A module for Cdna Substitution Tokenization."""
 from typing import Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.regex import CDNA_GENOMIC_SUBSTITUTION
-from variation.schemas.token_response_schema import (
-    CdnaSubstitutionToken,
-    CoordinateType,
-)
+from variation.schemas.token_response_schema import CdnaSubstitutionToken
 from variation.tokenizers.tokenizer import Tokenizer
 
 
@@ -21,7 +20,7 @@ class CdnaSubstitution(Tokenizer):
         """
         og_input_string = input_string
         _, input_string = self.strip_coord_prefix(
-            input_string, match_coord_type=CoordinateType.CDNA
+            input_string, match_coord_type=AnnotationLayer.CDNA
         )
         if not input_string:
             return None

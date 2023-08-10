@@ -20,7 +20,6 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import (
     ClassificationType,
     Nomenclature,
-    SequenceOntology,
 )
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
@@ -271,13 +270,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             ClassificationType.GENOMIC_REFERENCE_AGREE,
         }:
             alt_nuc = classification_token.matching_tokens[0].alt
-            if (
-                classification_token.classification_type
-                == ClassificationType.GENOMIC_SUBSTITUTION
-            ):
-                classification_token.so_id = SequenceOntology.PROTEIN_SUBSTITUTION
-            else:
-                classification_token.so_id = SequenceOntology.NO_SEQUENCE_ALTERATION
 
             ref = None
             if reading_frame == 1:
@@ -328,7 +320,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             classification_token.classification_type
             == ClassificationType.GENOMIC_INSERTION
         ):
-            classification_token.so_id = SequenceOntology.PROTEIN_INSERTION
             alt = classification_token.inserted_sequence.replace("T", "U")
             if strand == "-":
                 alt = alt[::-1]

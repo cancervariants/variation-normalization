@@ -43,7 +43,7 @@ class HGVSDupDelMode:
                 copy_change - `efo:0030067` (loss) if del, `efo:0030070` (gain) if dup
         elif baseline_copies provided: copy_number_count
             copies are baseline + 1 for dup, baseline - 1 for del
-        elif len del or dup > 100bp (use outermost coordinates)
+        elif len dup > 100bp (use outermost coordinates)
             repeated_seq_expr with a derived_seq_expr subject (Allele)
         else:
             literal_seq_expr (normalized LiteralSequenceExpression Allele)
@@ -61,7 +61,7 @@ class HGVSDupDelMode:
             variation = self.copy_number_change_mode(alt_type, location, copy_change)
         elif baseline_copies:
             variation = self.copy_number_count_mode(alt_type, location, baseline_copies)
-        elif pos and (pos[1] - pos[0] > 100):
+        elif (alt_type not in DELS) and pos and (pos[1] - pos[0] > 100):
             variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
             variation = self.literal_seq_expr_mode(location, alt_type, vrs_seq_loc_ac)

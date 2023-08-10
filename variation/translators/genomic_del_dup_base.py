@@ -206,6 +206,7 @@ class GenomicDelDupTranslator(Translator):
                 warnings,
                 hgvs_dup_del_mode,
                 ac,
+                pos=outer_coords,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
             )

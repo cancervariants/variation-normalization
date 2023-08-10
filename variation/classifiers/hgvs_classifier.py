@@ -2,6 +2,8 @@
 from re import Match, Pattern
 from typing import Dict, List, Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.classifiers.classifier import Classifier
 from variation.regex import (
     CDNA_REGEXPRS,
@@ -34,9 +36,8 @@ from variation.schemas.classification_response_schema import (
     ProteinReferenceAgreeClassification,
     ProteinStopGainClassification,
     ProteinSubstitutionClassification,
-    SequenceOntology,
 )
-from variation.schemas.token_response_schema import CoordinateType, HgvsToken, TokenType
+from variation.schemas.token_response_schema import HgvsToken, TokenType
 from variation.utils import get_ambiguous_type
 
 
@@ -66,14 +67,14 @@ class HgvsClassifier(Classifier):
             "ac": token.accession,
         }
 
-        if token.coordinate_type == CoordinateType.LINEAR_GENOMIC:
+        if token.coordinate_type == AnnotationLayer.GENOMIC:
             classification = self._genomic_classification(token, params)
             if not classification:
                 # Try ambiguous
                 classification = self._genomic_ambiguous_classification(token, params)
-        elif token.coordinate_type == CoordinateType.CDNA:
+        elif token.coordinate_type == AnnotationLayer.CDNA:
             classification = self._cdna_classification(token, params)
-        elif token.coordinate_type == CoordinateType.PROTEIN:
+        elif token.coordinate_type == AnnotationLayer.PROTEIN:
             classification = self._protein_classification(token, params)
 
         return classification
@@ -167,16 +168,7 @@ class HgvsClassifier(Classifier):
                 params.update(match_dict)
 
                 if classification_type == ClassificationType.CDNA_SUBSTITUTION:
-                    len_ref = len(params["ref"])
-                    len_alt = len(params["alt"])
-
-                    if len_ref == 1 and len_alt == 1:
-                        params["so_id"] = SequenceOntology.SNV
-                    else:
-                        params["so_id"] = SequenceOntology.MNV
-
                     params["pos"] = int(params["pos"])
-
                     return CdnaSubstitutionClassification(**params)
                 elif classification_type == ClassificationType.CDNA_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
@@ -226,16 +218,7 @@ class HgvsClassifier(Classifier):
                 params.update(match_dict)
 
                 if classification_type == ClassificationType.GENOMIC_SUBSTITUTION:
-                    len_ref = len(params["ref"])
-                    len_alt = len(params["alt"])
-
-                    if len_ref == len_alt == 1:
-                        params["so_id"] = SequenceOntology.SNV
-                    else:
-                        params["so_id"] = SequenceOntology.MNV
-
                     params["pos"] = int(params["pos"])
-
                     return GenomicSubstitutionClassification(**params)
                 elif classification_type == ClassificationType.GENOMIC_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])

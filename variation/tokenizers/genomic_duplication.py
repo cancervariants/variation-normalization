@@ -1,6 +1,8 @@
 """A module for Genomic Duplication Tokenization."""
 from typing import Optional
 
+from cool_seq_tool.schemas import AnnotationLayer
+
 from variation.regex import (
     GENOMIC_DUPLICATION,
     GENOMIC_DUPLICATION_AMBIGUOUS_1,
@@ -9,7 +11,6 @@ from variation.regex import (
 )
 from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.token_response_schema import (
-    CoordinateType,
     GenomicDuplicationAmbiguousToken,
     GenomicDuplicationToken,
 )
@@ -28,7 +29,7 @@ class GenomicDuplication(Tokenizer):
         """
         og_input_string = input_string
         _, input_string = self.strip_coord_prefix(
-            input_string, match_coord_type=CoordinateType.LINEAR_GENOMIC
+            input_string, match_coord_type=AnnotationLayer.GENOMIC
         )
         if not input_string:
             return None

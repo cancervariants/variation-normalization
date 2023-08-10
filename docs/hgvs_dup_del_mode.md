@@ -13,7 +13,7 @@ The mode can be set to `default`, `copy_number_count`, `copy_number_change`, `re
 - elif baseline_copies is provided:
     - copy_number_count
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del
-- elif len del or dup > 100bp: (use outermost coordinates)
+- elif len dup > 100bp: (use outermost coordinates)
     - repeated_seq_expr with a derived_seq_expr subject (Allele)
 - else:
     - literal_seq_expr (normalized LiteralSequenceExpression Allele)

@@ -127,7 +127,6 @@ def braf_v600e(braf_600loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": "hgnc:1097",
     }
@@ -157,7 +156,6 @@ def vhl_reference_agree():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0002073",
         "vrs_ref_allele_seq": "P",
         "gene_context": "hgnc:12687",
     }
@@ -187,7 +185,6 @@ def protein_insertion():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001605",
         "gene_context": "hgnc:3236",
     }
     return VariationDescriptor(**params)
@@ -218,7 +215,6 @@ def protein_deletion_np_range():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001604",
         "vrs_ref_allele_seq": "LRENT",
         "gene_context": "hgnc:3430",
     }
@@ -586,7 +582,6 @@ def braf_amplification(braf_ncbi_seq_loc):
             "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0001880",
         "gene_context": "hgnc:1097",
     }
     return VariationDescriptor(**params)
@@ -607,7 +602,6 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
             "type": "CopyNumberChange",
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:0001880",
         "gene_context": "hgnc:17340",
     }
     return VariationDescriptor(**params)
@@ -643,9 +637,6 @@ def assertion_checks(normalize_response, test_variation, label, ignore_id=False)
     assert (
         normalize_response.molecule_context == test_variation.molecule_context
     ), "molecule_context"
-    # assert (
-    #     normalize_response.structural_type == test_variation.structural_type
-    # ), "structural_type"
     assert (
         normalize_response.vrs_ref_allele_seq == test_variation.vrs_ref_allele_seq
     ), "vrs_ref_allele_seq"

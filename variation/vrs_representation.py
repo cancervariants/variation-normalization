@@ -3,6 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from bioutils.accessions import coerce_namespace
 from cool_seq_tool.data_sources import SeqRepoAccess
+from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
 from ga4gh.vrsatile.pydantic.vrs_models import Allele
@@ -11,7 +12,6 @@ from pydantic import ValidationError
 from variation.schemas.token_response_schema import (
     AMBIGUOUS_REGIONS,
     AltType,
-    CoordinateType,
 )
 
 
@@ -174,7 +174,7 @@ class VRSRepresentation:
         ac: str,
         start: int,
         end: int,
-        coordinate: CoordinateType,
+        coordinate: AnnotationLayer,
         alt_type: AltType,
         errors: List[str],
         cds_start: Optional[int] = None,

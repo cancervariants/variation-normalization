@@ -1,12 +1,9 @@
 """Module for testing gnomad_vcf_to_protein works correctly"""
-from copy import deepcopy
-
 import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 from tests.conftest import assertion_checks
 from variation.gnomad_vcf_to_protein_variation import dna_to_rna
-from variation.schemas.classification_response_schema import SequenceOntology
 
 
 @pytest.fixture(scope="module")
@@ -38,7 +35,6 @@ def mmel1_l30m():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "L",
         "gene_context": "hgnc:14668",
     }
@@ -68,7 +64,6 @@ def cdk11a_e314del():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001604",
         "vrs_ref_allele_seq": "EEEEEEEEEEEEE",
         "gene_context": "hgnc:1730",
     }
@@ -98,7 +93,6 @@ def protein_insertion2():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001605",
         "gene_context": "hgnc:6700",
     }
     return VariationDescriptor(**params)
@@ -133,7 +127,6 @@ def atad3a_i7v(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -154,7 +147,6 @@ def atad3a_i7t(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -175,7 +167,6 @@ def atad3a_i7m(atad3a_loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "I",
         "gene_context": "hgnc:25567",
     }
@@ -196,7 +187,6 @@ def braf_v600l(braf_600loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": "hgnc:1097",
     }
@@ -217,7 +207,6 @@ def braf_600_reference_agree(braf_600loc):
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "structural_type": "SO:0001606",
         "vrs_ref_allele_seq": "V",
         "gene_context": "hgnc:1097",
     }
@@ -349,21 +338,16 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 @pytest.mark.asyncio
 async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
     """Test that deletion queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
-    expected = deepcopy(protein_deletion_np_range)
-    expected.structural_type = SequenceOntology.DELINS
+    q = "17-39723966-TTGAGGGAAAACACAT-T"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(
-        resp.variation_descriptor,
-        expected,
-        "17-39723966-TTGAGGGAAAACACAT-T",
-        ignore_id=True,
+        resp.variation_descriptor, protein_deletion_np_range, q, ignore_id=True
     )
     assert resp.warnings == []
 
-    resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
-    expected = deepcopy(cdk11a_e314del)
-    expected.structural_type = SequenceOntology.DELINS
-    assertion_checks(resp.variation_descriptor, expected, "1-1708855-TTCC-T")
+    q = "1-1708855-TTCC-T"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, cdk11a_e314del, q)
     assert resp.warnings == []
 
 

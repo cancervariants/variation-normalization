@@ -3,14 +3,14 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
 from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
-from variation.schemas.token_response_schema import AltType, CoordinateType, GeneToken
+from variation.schemas.token_response_schema import AltType, GeneToken
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.genomic_base import GenomicBase
@@ -155,7 +155,7 @@ class Translator(ABC):
         start_pos: int,
         end_pos: int,
         alt_type: AltType,
-        coordinate_type: Union[CoordinateType.PROTEIN, CoordinateType.CDNA],
+        coordinate_type: Union[AnnotationLayer.PROTEIN, AnnotationLayer.CDNA],
         errors: List[str],
         cds_start: Optional[int] = None,
         ref: Optional[str] = None,
@@ -172,7 +172,7 @@ class Translator(ABC):
         :param coordinate_type: Coordinate type for validation result
         :param errors: List of errors. Will be mutated if errors are found
         :param cds_start: Coding start site. Only required for
-            `coordinate_type == CoordinateType.CDNA`.
+            `coordinate_type == AnnotationLayer.CDNA`.
         :param ref: Expected reference sequence
         :param alt: Expected change
         :return: Translation result if successful. Else, `None`
