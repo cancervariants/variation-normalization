@@ -399,6 +399,35 @@ def genomic_del1_seq_loc():
 
 
 @pytest.fixture(scope="session")
+def genomic_del1():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "T",
+    }
+    return params
+
+
+@pytest.fixture(scope="session")
+def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
+    """Create a test fixture for genomic del LSE."""
+    _id = "ga4gh:VA.jUeT1n4AuBzwtt5TT-Iaac1KasATWjKE"
+    genomic_del1["variation_id"] = _id
+    genomic_del1["variation"] = {
+        "type": "Allele",
+        "_id": _id,
+        "location": genomic_del1_seq_loc,
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
+    }
+    return VariationDescriptor(**genomic_del1)
+
+
+@pytest.fixture(scope="session")
 def genomic_del1_38_cn(genomic_del1_seq_loc):
     """Create test fixture for copy number count del1 on GRCh38"""
     return {
@@ -422,6 +451,35 @@ def genomic_del2_seq_loc():
         },
         "type": "SequenceLocation",
     }
+
+
+@pytest.fixture(scope="session")
+def genomic_del2():
+    """Create test fixture containing params for genomic del VD."""
+    params = {
+        "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
+        "type": "VariationDescriptor",
+        "variation_id": "",
+        "variation": dict(),
+        "molecule_context": "genomic",
+        "structural_type": "SO:0000159",
+        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
+    }
+    return params
+
+
+@pytest.fixture(scope="session")
+def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
+    """Create a test fixture for genomic del LSE."""
+    _id = "ga4gh:VA.CSWNhR5w_geMmJTxkbO3UCLCvT0S2Ypx"
+    genomic_del2["variation_id"] = _id
+    genomic_del2["variation"] = {
+        "type": "Allele",
+        "_id": _id,
+        "location": genomic_del2_seq_loc,
+        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
+    }
+    return VariationDescriptor(**genomic_del2)
 
 
 @pytest.fixture(scope="session")
