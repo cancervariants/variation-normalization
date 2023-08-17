@@ -1,6 +1,6 @@
 """Module for Genomic Validation methods."""
 import logging
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
 
@@ -8,6 +8,7 @@ from variation.schemas.classification_response_schema import (
     Classification,
     Nomenclature,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 
 logger = logging.getLogger("variation")
 logger.setLevel(logging.DEBUG)
@@ -27,23 +28,52 @@ class GenomicBase:
 
     """The Genomic Base class."""
 
-    async def get_nc_accessions(self, classification: Classification) -> List[str]:
-        """Get NC accession for a given classification."""
+    async def get_nc_accessions(
+        self,
+        classification: Classification,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
+    ) -> List[str]:
+        """Get genomic RefSeq accession for a given classification.
+
+        :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
+        :return: List of genomic RefSeq accessions
+        """
         if classification.nomenclature == Nomenclature.HGVS:
             nc_accessions = [classification.ac]
         elif classification.nomenclature == Nomenclature.FREE_TEXT:
             nc_accessions = await self.uta.get_ac_from_gene(
                 classification.gene_token.matched_value
             )
+
+            if input_assembly:
+                updated_nc_accessions = []
+                for alt_ac in nc_accessions:
+                    aliases, _ = self.seqrepo_access.translate_identifier(
+                        alt_ac, input_assembly
+                    )
+                    if aliases:
+                        updated_nc_accessions.append(alt_ac)
+                        break
+
+                nc_accessions = updated_nc_accessions
         elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
             gnomad_vcf_token = classification.matching_tokens[0]
             chromosome = gnomad_vcf_token.chromosome
             nc_accessions = []
 
-            for assembly in ["GRCh37", "GRCh38"]:
-                ac = self.get_nc_accession(f"{assembly}:{chromosome}")
+            if input_assembly:
+                ac = self.get_nc_accession(f"{input_assembly.value}:{chromosome}")
                 if ac:
                     nc_accessions.append(ac)
+            else:
+                for assembly in [ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]:
+                    ac = self.get_nc_accession(f"{assembly.value}:{chromosome}")
+                    if ac:
+                        nc_accessions.append(ac)
         else:
             raise NotImplementedError
 

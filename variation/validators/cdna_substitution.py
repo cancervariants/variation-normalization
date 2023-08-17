@@ -1,5 +1,5 @@
 """The module for cDNA Substitution Validation."""
-from typing import List
+from typing import List, Optional, Union
 
 from variation.schemas.classification_response_schema import (
     CdnaSubstitutionClassification,
@@ -7,6 +7,7 @@ from variation.schemas.classification_response_schema import (
     ClassificationType,
     Nomenclature,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.validator import Validator
 
@@ -60,7 +61,12 @@ class CdnaSubstitution(Validator):
         return classification_type == ClassificationType.CDNA_SUBSTITUTION
 
     async def get_accessions(
-        self, classification: Classification, errors: List
+        self,
+        classification: Classification,
+        errors: List,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
     ) -> List[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
@@ -69,6 +75,8 @@ class CdnaSubstitution(Validator):
 
         :param classification: The classification for list of tokens
         :param errors: List of errors
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
         :return: List of accessions
         """
         if classification.nomenclature == Nomenclature.HGVS:

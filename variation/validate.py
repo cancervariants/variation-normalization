@@ -1,10 +1,11 @@
 """Module for Validation."""
-from typing import List
+from typing import List, Optional, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import Classification
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.validators import (
     Amplification,
@@ -73,11 +74,19 @@ class Validate:
             Amplification(*params),
         ]
 
-    async def perform(self, classification: Classification) -> ValidationSummary:
+    async def perform(
+        self,
+        classification: Classification,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
+    ) -> ValidationSummary:
         """Get validation summary containing invalid and valid results for a
         classification
 
         :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for `q`. Only used when `q` is using
+            genomic free text or gnomad vcf format
         :return: Validation summary for classification containing valid and invalid
             results
         """
@@ -91,7 +100,9 @@ class Validate:
             if validator.validates_classification_type(
                 classification.classification_type
             ):
-                validation_results = await validator.validate(classification)
+                validation_results = await validator.validate(
+                    classification, input_assembly=input_assembly
+                )
                 for validation_result in validation_results:
                     if validation_result.is_valid:
                         found_valid_result = True

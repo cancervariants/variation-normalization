@@ -8,6 +8,7 @@ from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from tests.conftest import assertion_checks
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
+from variation.schemas.service_schema import ClinVarAssembly
 
 
 @pytest.fixture(scope="module")
@@ -559,6 +560,91 @@ def gnomad_vcf_genomic_sub_mnv():
 
 
 @pytest.fixture(scope="module")
+def gnomad_vcf_genomic_sub_input_assembly37():
+    """Create a genomic substitution test fixture for 3-10191647-T-G using GRCh37."""
+    params = {
+        "id": "normalize.variation:3-10191647-T-G",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.7nGd8dgHbqtxMHk_rLxrB6_IMAzJ8XnH",
+        "variation": {
+            "_id": "ga4gh:VA.7nGd8dgHbqtxMHk_rLxrB6_IMAzJ8XnH",
+            "location": {
+                "_id": "ga4gh:VSL.pSGVx7B8xIG42qV_TfXSXkhINDHVwW1L",
+                "interval": {
+                    "start": {"value": 10149962, "type": "Number"},
+                    "end": {"value": 10149963, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "vrs_ref_allele_seq": "T",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_sub_input_assembly38():
+    """Create a genomic substitution test fixture for 3-10191647-T-G using GRCh38."""
+    params = {
+        "id": "normalize.variation:3-10191647-T-G",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.MxbEL0NnlGXBnIiHv7KKjH4Lg0X2Gw-V",
+        "variation": {
+            "_id": "ga4gh:VA.MxbEL0NnlGXBnIiHv7KKjH4Lg0X2Gw-V",
+            "location": {
+                "_id": "ga4gh:VSL.sl5rcObbcolSsMrFDWUAYQmFlXwjIPJ7",
+                "interval": {
+                    "end": {"value": 10191647, "type": "Number"},
+                    "start": {"value": 10191646, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "genomic",
+        "vrs_ref_allele_seq": "T",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def free_text_genomic_sub_input_assembly():
+    """Create a genomic substitution test fixture for VHL g.10191647T>G."""
+    params = {
+        "id": "normalize.variation:VHL%20g.10191647T%3EG",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.V_RCy-Yfqh97VmrxOKVEesKvEqe05bWz",
+        "variation": {
+            "_id": "ga4gh:VA.V_RCy-Yfqh97VmrxOKVEesKvEqe05bWz",
+            "location": {
+                "_id": "ga4gh:VSL.Uoo8Z7gyzy1GWYJPyEepinT0aqhJ0xqm",
+                "interval": {
+                    "end": {"value": 710, "type": "Number"},
+                    "start": {"value": 709, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "transcript",
+        "vrs_ref_allele_seq": "T",
+        "gene_context": "hgnc:12687",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
 def genomic_sub_grch38():
     """Create a genomic substitution GRCh38 test fixture."""
     params = {
@@ -890,6 +976,9 @@ async def test_cdna_and_genomic_substitution(
     genomic_sub_grch38,
     grch38_braf_genom_sub,
     gnomad_vcf_genomic_sub_mnv,
+    gnomad_vcf_genomic_sub_input_assembly37,
+    gnomad_vcf_genomic_sub_input_assembly38,
+    free_text_genomic_sub_input_assembly,
 ):
     """Test that cdna and genomic substitutions normalize correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
@@ -988,6 +1077,43 @@ async def test_cdna_and_genomic_substitution(
     q = "5-112175770-GGAA-AGAA"
     resp = await test_handler.normalize(q)
     assertion_checks(resp.variation_descriptor, gnomad_vcf_genomic_sub_mnv, q)
+
+    # Test gnomad vcf input assembly when both GRCh37 and GRCh38 are valid (CA351756720)
+    q = "3-10191647-T-G"
+    resp = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH37)
+    assertion_checks(
+        resp.variation_descriptor, gnomad_vcf_genomic_sub_input_assembly37, q
+    )
+
+    resp1 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH38)
+    assertion_checks(
+        resp1.variation_descriptor, gnomad_vcf_genomic_sub_input_assembly38, q
+    )
+
+    resp2 = await test_handler.normalize(q)
+    assert (
+        resp2.variation_descriptor.variation.id
+        == resp1.variation_descriptor.variation.id
+    )
+
+    # Test free text input assembly when both GRCh37 and GRCh38 are valid (CA351756720)
+    q = "VHL g.10191647T>G"
+    resp1 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH37)
+    assertion_checks(
+        resp1.variation_descriptor, free_text_genomic_sub_input_assembly, q
+    )
+
+    resp2 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH38)
+    assert (
+        resp2.variation_descriptor.variation.id
+        == resp1.variation_descriptor.variation.id
+    )
+
+    resp3 = await test_handler.normalize(q)
+    assert (
+        resp3.variation_descriptor.variation.id
+        == resp2.variation_descriptor.variation.id
+    )
 
 
 @pytest.mark.asyncio
