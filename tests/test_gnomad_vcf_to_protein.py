@@ -338,17 +338,16 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 @pytest.mark.asyncio
 async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
     """Test that deletion queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
+    q = "17-39723966-TTGAGGGAAAACACAT-T"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(
-        resp.variation_descriptor,
-        protein_deletion_np_range,
-        "17-39723966-TTGAGGGAAAACACAT-T",
-        ignore_id=True,
+        resp.variation_descriptor, protein_deletion_np_range, q, ignore_id=True
     )
     assert resp.warnings == []
 
-    resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
-    assertion_checks(resp.variation_descriptor, cdk11a_e314del, "1-1708855-TTCC-T")
+    q = "1-1708855-TTCC-T"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, cdk11a_e314del, q)
     assert resp.warnings == []
 
 

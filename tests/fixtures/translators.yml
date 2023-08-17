@@ -775,6 +775,33 @@ genomic_delins:
           "type": "Allele"
         }
       ]
+    - query: 17-7578455-CGCGG-CGCG
+      variations: [
+        {
+          "_id": "ga4gh:VA.BFl5Ja-FnzlReimbu_eRTfcyvXHZbjUC",
+          "type": "Allele",
+          "location": {
+            "_id": "ga4gh:VSL.KEPjHEPUVfIwk8R8xyluX8IW5-9pY6TE",
+            "type": "SequenceLocation",
+            "sequence_id": "ga4gh:SQ.AjWXsI7AkTK35XW9pgd3UbjpC3MAevlz",
+            "interval": {
+              "type": "SequenceInterval",
+              "start": {
+                "type": "Number",
+                "value": 7578457
+              },
+              "end": {
+                "type": "Number",
+                "value": 7578459
+              }
+            }
+          },
+          "state": {
+            "type": "LiteralSequenceExpression",
+            "sequence": "G"
+          }
+        }
+      ]
 
 protein_deletion:
   tests:
