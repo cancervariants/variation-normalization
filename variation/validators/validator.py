@@ -172,7 +172,8 @@ class Validator(ABC):
 
         :param classification: Classification for a list of tokens
         :param errors: List of errors
-        :param input_assembly: Assembly used for initial query
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
         :return: List of possible genomic RefSeq accessions for the variation
         """
         accessions = await self.genomic_base.get_nc_accessions(

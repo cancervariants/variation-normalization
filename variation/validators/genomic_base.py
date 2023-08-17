@@ -70,7 +70,7 @@ class GenomicBase:
                 if ac:
                     nc_accessions.append(ac)
             else:
-                for assembly in [ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]:
+                for assembly in [ClinVarAssembly.GRCH38, ClinVarAssembly.GRCH37]:
                     ac = self.get_nc_accession(f"{assembly.value}:{chromosome}")
                     if ac:
                         nc_accessions.append(ac)
