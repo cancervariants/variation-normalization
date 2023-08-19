@@ -1,37 +1,61 @@
 """Module for to copy number variation translation"""
-from typing import Tuple, Optional, List, Union, Dict, Literal, NamedTuple
 from datetime import datetime
+from typing import Dict, List, NamedTuple, Optional, Tuple, Union
+from urllib.parse import unquote
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberCount, CopyNumberChange, \
-    Text, CopyChange, VRSTypes, Comparator
-from ga4gh.vrs import models
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
 from ga4gh.core import ga4gh_identify
-from pydantic import ValidationError
-from gene.schemas import MatchType as GeneMatchType
-from cool_seq_tool.data_sources import UTADatabase, SeqRepoAccess
+from ga4gh.vrs import models
+from ga4gh.vrsatile.pydantic.vrs_models import (
+    Comparator,
+    CopyChange,
+    CopyNumberChange,
+    CopyNumberCount,
+    Text,
+    VRSTypes,
+)
 from gene.query import QueryHandler as GeneQueryHandler
+from gene.schemas import MatchType as GeneMatchType
+from pydantic import ValidationError
 
-from variation.to_vrs import ToVRS
+from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
-from variation.schemas.hgvs_to_copy_number_schema import \
-    HgvsToCopyNumberCountService, HgvsToCopyNumberChangeService, \
-    VALID_COPY_CHANGE
-from variation.schemas.copy_number_schema import AmplificationToCxVarQuery, \
-    AmplificationToCxVarService, ClinVarAssembly, ParsedToCnVarQuery, \
-    ParsedToCnVarService, ParsedToCxVarQuery, ParsedToCxVarService
-from variation.schemas.validation_response_schema import ValidationSummary
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum, ServiceMeta
-from variation.classifiers.classify import Classify
-from variation.tokenizers.tokenize import Tokenize
-from variation.validators.validate import Validate
-from variation.translators.translate import Translate
-from variation.hgvs_dup_del_mode import HGVSDupDelMode
-from variation.utils import get_mane_valid_result, get_priority_sequence_location
+from variation.schemas.classification_response_schema import ClassificationType
+from variation.schemas.copy_number_schema import (
+    AmplificationToCxVarQuery,
+    AmplificationToCxVarService,
+    ParsedToCnVarQuery,
+    ParsedToCnVarService,
+    ParsedToCxVarQuery,
+    ParsedToCxVarService,
+)
+from variation.schemas.hgvs_to_copy_number_schema import (
+    HgvsToCopyNumberChangeService,
+    HgvsToCopyNumberCountService,
+)
+from variation.schemas.normalize_response_schema import (
+    HGVSDupDelModeOption,
+    ServiceMeta,
+)
+from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.token_response_schema import TokenType
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.to_vrs import ToVRS
+from variation.tokenize import Tokenize
+from variation.translate import Translate
+from variation.utils import get_priority_sequence_location
+from variation.validate import Validate
 from variation.version import __version__
 
+VALID_CLASSIFICATION_TYPES = [
+    ClassificationType.GENOMIC_DUPLICATION,
+    ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+    ClassificationType.GENOMIC_DELETION,
+    ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+]
 
-class ToCopyNumberException(Exception):
+
+class ToCopyNumberError(Exception):
     """Custom exceptions when representing copy number"""
 
 
@@ -54,29 +78,31 @@ class ToCopyNumberVariation(ToVRS):
     """Class for representing copy number variation"""
 
     def __init__(
-        self, seqrepo_access: SeqRepoAccess, tokenizer: Tokenize, classifier: Classify,
-        validator: Validate, translator: Translate, hgvs_dup_del_mode: HGVSDupDelMode,
-        gene_normalizer: GeneQueryHandler, uta: UTADatabase
+        self,
+        seqrepo_access: SeqRepoAccess,
+        tokenizer: Tokenize,
+        classifier: Classify,
+        validator: Validate,
+        translator: Translate,
+        gene_normalizer: GeneQueryHandler,
+        uta: UTADatabase,
     ) -> None:
-        """Initialize the to copy number variation class
+        """Initialize theToCopyNumberVariation class
 
-        :param seqrepo_access: Access to SeqRepo via cool-seq-tool
-        :param tokenizer: Tokenizer class for tokenizing
-        :param classifier: Classifier class for classifying tokens
-        :param validator: Validator class for validating valid inputs
-        :param translator: Translating valid inputs
-        :param hgvs_dup_del_mode: Class for handling HGVS dup/del expressions
-        :param gene_normalizer: Gene normalizer query handler instance
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Instance for tokenizing input strings
+        :param classifier: Instance for classifying list of ordered tokens
+        :param validator: Instance for validating classification
+        :param translator: Instance for translating valid results to VRS representations
+        :param gene_normalizer: Client for normalizing gene concepts
         :param uta: Access to UTA queries
         """
-        super().__init__(seqrepo_access, tokenizer, classifier, validator,
-                         translator, hgvs_dup_del_mode, gene_normalizer)
+        super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
+        self.gene_normalizer = gene_normalizer
         self.uta = uta
 
     @staticmethod
-    def _parsed_to_text(
-        params: Dict
-    ) -> Text:
+    def _parsed_to_text(params: Dict) -> Text:
         """Return response for invalid query for parsed_to_cn_var
 
         :param params: Parameters for initial query
@@ -93,37 +119,94 @@ class ToCopyNumberVariation(ToVRS):
         variation = Text(definition=definition, id=_id)
         return variation
 
-    def _hgvs_to_cnv_resp(
-        self, copy_number_type: HGVSDupDelModeEnum, hgvs_expr: str, do_liftover: bool,
-        validations: Tuple[Optional[ValidationSummary], Optional[List[str]]],
-        warnings: List[str], untranslatable_returns_text: bool = False
-    ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:  # noqa: E501
+    async def _get_valid_results(self, q: str) -> Tuple[List[ValidationResult], List]:
+        """Get valid results for to copy number variation endpoint
+
+        :param q: Input query string
+        :return: Valid results and list of warnings
+        """
+        valid_results = None
+        warnings = []
+
+        # Get tokens for input query
+        tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
+        if not tokens:
+            return valid_results, warnings
+
+        # Get classification for list of tokens
+        classification = self.classifier.perform(tokens)
+        if not classification:
+            warnings.append(f"Unable to find classification for: {q}")
+            return valid_results, warnings
+
+        # Ensure that classification is HGVS duplication or deletion
+        tmp_classification = None
+        if all(
+            (
+                classification.classification_type in VALID_CLASSIFICATION_TYPES,
+                TokenType.HGVS
+                in {t.token_type for t in classification.matching_tokens},
+            )
+        ):
+            tmp_classification = classification
+
+        classification = tmp_classification
+        if not classification:
+            warnings = [f"{q} is not a supported HGVS genomic duplication or deletion"]
+            return valid_results, warnings
+
+        # Get validation summary for classification
+        validation_summary = await self.validator.perform(classification)
+        if validation_summary.valid_results:
+            valid_results = validation_summary.valid_results
+        else:
+            warnings = validation_summary.warnings
+            valid_results = []
+
+        return valid_results, warnings
+
+    async def _hgvs_to_cnv_resp(
+        self,
+        copy_number_type: HGVSDupDelModeOption,
+        hgvs_expr: str,
+        do_liftover: bool,
+        valid_results: Tuple[List[ValidationResult], Optional[List[str]]],
+        warnings: List[str],
+        untranslatable_returns_text: bool = False,
+        baseline_copies: Optional[int] = None,
+        copy_change: Optional[CopyChange] = None,
+    ) -> Tuple[Optional[Union[CopyNumberCount, CopyNumberChange, Text]], List[str]]:
         """Return copy number variation and warnings response
 
-        :param HGVSDupDelModeEnum copy_number_type: The type of copy number variation.
-            Must be either `copy_number_count` or `copy_number_change`
-        :param str hgvs_expr: HGVS expression
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
-        :param Tuple[Optional[ValidationSummary], Optional[List[str]]]: Validation
-            summary and warnings for hgvs_expr
-        :param List[str] warnings: List of warnings
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
+        :param copy_number_type: The type of copy number variation. Must be either
+            `copy_number_count` or `copy_number_change`
+        :param hgvs_expr: HGVS expression
+        :param do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param Valid results and warnings for hgvs_expr
+        :param warnings: List of warnings
+        :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+            translate or normalize query. `False` return `None` when unable to translate
+            or normalize query.
         :return: CopyNumberVariation and warnings
         """
         variation = None
-        if do_liftover:
-            valid_result = get_mane_valid_result(hgvs_expr, validations, [])
-            if valid_result:
-                variation = valid_result.variation
+        if valid_results:
+            if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_CHANGE:
+                endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_CHANGE
             else:
-                warnings.append(f"Unable to translate {hgvs_expr} to "
-                                f"copy number variation")
-        else:
-            translations, warnings = self.get_translations(validations, warnings)
+                endpoint_name = Endpoint.HGVS_TO_COPY_NUMBER_COUNT
+
+            translations, warnings = await self.get_translations(
+                valid_results,
+                warnings,
+                hgvs_dup_del_mode=copy_number_type,
+                endpoint_name=endpoint_name,
+                copy_change=copy_change,
+                baseline_copies=baseline_copies,
+                do_liftover=do_liftover,
+            )
             if translations:
-                variation = translations[0]
+                variation = translations[0].vrs_variation
 
         if not variation:
             if hgvs_expr and hgvs_expr.strip() and untranslatable_returns_text:
@@ -131,15 +214,18 @@ class ToCopyNumberVariation(ToVRS):
                 text.id = ga4gh_identify(text)
                 variation = Text(**text.as_dict())
         else:
-            if copy_number_type == HGVSDupDelModeEnum.COPY_NUMBER_COUNT:
+            if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
                 variation = CopyNumberCount(**variation)
             else:
                 variation = CopyNumberChange(**variation)
         return variation, warnings
 
     async def hgvs_to_copy_number_count(
-        self, hgvs_expr: str, baseline_copies: int,
-        do_liftover: bool = False, untranslatable_returns_text: bool = False
+        self,
+        hgvs_expr: str,
+        baseline_copies: int,
+        do_liftover: bool = False,
+        untranslatable_returns_text: bool = False,
     ) -> HgvsToCopyNumberCountService:
         """Given hgvs, return abolute copy number variation
 
@@ -152,28 +238,32 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberCountService containing Copy Number Count
             Variation and warnings
         """
-        validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_COUNT,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_COUNT,
-            baseline_copies=baseline_copies, do_liftover=do_liftover
+        valid_results, warnings = await self._get_valid_results(hgvs_expr)
+        cn_var, warnings = await self._hgvs_to_cnv_resp(
+            HGVSDupDelModeOption.COPY_NUMBER_COUNT,
+            hgvs_expr,
+            do_liftover,
+            valid_results,
+            warnings,
+            untranslatable_returns_text=untranslatable_returns_text,
+            baseline_copies=baseline_copies,
         )
-        cn_var, warnings = self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_COUNT, hgvs_expr, do_liftover, validations,
-            warnings, untranslatable_returns_text)
 
         return HgvsToCopyNumberCountService(
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
+                version=__version__, response_datetime=datetime.now()
             ),
-            copy_number_count=cn_var
+            copy_number_count=cn_var,
         )
 
     async def hgvs_to_copy_number_change(
-        self, hgvs_expr: str, copy_change: Optional[CopyChange],
-        do_liftover: bool = False, untranslatable_returns_text: bool = False
+        self,
+        hgvs_expr: str,
+        copy_change: Optional[CopyChange],
+        do_liftover: bool = False,
+        untranslatable_returns_text: bool = False,
     ) -> HgvsToCopyNumberChangeService:
         """Given hgvs, return copy number change variation
 
@@ -186,28 +276,24 @@ class ToCopyNumberVariation(ToVRS):
         :return: HgvsToCopyNumberChangeService containing Copy Number Change
             Variation and warnings
         """
-        if copy_change and copy_change.lower() not in VALID_COPY_CHANGE:  # noqa: E501
-            return None, [f"{copy_change} is not a valid copy change: "
-                          f"{VALID_COPY_CHANGE}"]
-
-        validations, warnings = await self.get_validations(
-            hgvs_expr, endpoint_name=Endpoint.HGVS_TO_COPY_NUMBER_CHANGE,
-            hgvs_dup_del_mode=HGVSDupDelModeEnum.COPY_NUMBER_CHANGE,
-            copy_change=copy_change, do_liftover=do_liftover
+        valid_results, warnings = await self._get_valid_results(hgvs_expr)
+        cx_var, warnings = await self._hgvs_to_cnv_resp(
+            HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
+            hgvs_expr,
+            do_liftover,
+            valid_results,
+            warnings,
+            untranslatable_returns_text=untranslatable_returns_text,
+            copy_change=copy_change,
         )
-
-        cx_var, warnings = self._hgvs_to_cnv_resp(
-            HGVSDupDelModeEnum.COPY_NUMBER_CHANGE, hgvs_expr, do_liftover, validations,
-            warnings, untranslatable_returns_text)
 
         return HgvsToCopyNumberChangeService(
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
+                version=__version__, response_datetime=datetime.now()
             ),
-            copy_number_change=cx_var
+            copy_number_change=cx_var,
         )
 
     def _get_parsed_ac(
@@ -218,7 +304,7 @@ class ToCopyNumberVariation(ToVRS):
         :param assembly: Assembly
         :param chromosome: Chromosome
         :param use_grch38: Whether or not to use GRCh38 assembly
-        :raises ToCopyNumberException: If unable to translate assembly and chromosome
+        :raises ToCopyNumberError: If unable to translate assembly and chromosome
             to an accession
         :return: ParsedAccessionSummary containing accession and whether or not it was
             lifted over
@@ -245,9 +331,9 @@ class ToCopyNumberVariation(ToVRS):
             if aliases:
                 accession = aliases[0]
             else:
-                raise ToCopyNumberException(str(error))
+                raise ToCopyNumberError(str(error))
         else:
-            raise ToCopyNumberException(
+            raise ToCopyNumberError(
                 f"{og_assembly.value} assembly is not currently supported"
             )
 
@@ -260,7 +346,7 @@ class ToCopyNumberVariation(ToVRS):
 
         :param accession: Genomic accession
         :param do_liftover: Whether or not to liftover to GRCh38 assembly
-        :raises ToCopyNumberException: If unable to translate accession
+        :raises ToCopyNumberError: If unable to translate accession
         :return: ParsedChromosomeSummary containing chromosome, accession, and whether
             or not it was lifted over
         """
@@ -270,9 +356,11 @@ class ToCopyNumberVariation(ToVRS):
 
         aliases, error = self.seqrepo_access.translate_identifier(accession)
         if error:
-            raise ToCopyNumberException(error)
+            raise ToCopyNumberError(error)
 
-        grch_aliases = [a for a in aliases if a.startswith(("GRCh38:chr", "GRCh37:chr"))]  # noqa: E501
+        grch_aliases = [
+            a for a in aliases if a.startswith(("GRCh38:chr", "GRCh37:chr"))
+        ]
 
         if grch_aliases:
             grch_record = grch_aliases[0]
@@ -287,14 +375,12 @@ class ToCopyNumberVariation(ToVRS):
                 )
 
                 if error:
-                    raise ToCopyNumberException(error)
+                    raise ToCopyNumberError(error)
 
                 lifted_over = True
                 new_ac = aliases[0]
         else:
-            raise ToCopyNumberException(
-                f"Not a supported genomic accession: {accession}"
-            )
+            raise ToCopyNumberError(f"Not a supported genomic accession: {accession}")
 
         return ParsedChromosomeSummary(
             accession=new_ac, chromosome=chromosome, lifted_over=lifted_over
@@ -305,30 +391,31 @@ class ToCopyNumberVariation(ToVRS):
 
         :param accession: Genomic accession
         :param pos: Position on accession
-        :raises ToCopyNumberException: If position is not valid on accession or
+        :raises ToCopyNumberError: If position is not valid on accession or
             if accession is not found in seqrepo
         """
         try:
             ref = self.seqrepo_access.sr[accession][pos - 1]
         except ValueError as e:
-            raise ToCopyNumberException(
+            raise ToCopyNumberError(
                 f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
             )
         except KeyError:
-            raise ToCopyNumberException(f"Accession not found in SeqRepo: {accession}")
+            raise ToCopyNumberError(f"Accession not found in SeqRepo: {accession}")
         else:
             if ref == "":
-                raise ToCopyNumberException(
-                    f"Position ({pos}) is not valid on {accession}"
-                )
+                raise ToCopyNumberError(f"Position ({pos}) is not valid on {accession}")
 
     def _get_vrs_loc_start_or_end(
-        self, accession: str, pos0: int,
-        pos_type: Literal[
+        self,
+        accession: str,
+        pos0: int,
+        pos_type: Union[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
-        is_start: bool = True, pos1: Optional[int] = None,
-        comparator: Optional[Comparator] = None
+        is_start: bool = True,
+        pos1: Optional[int] = None,
+        comparator: Optional[Comparator] = None,
     ) -> Union[models.Number, models.DefiniteRange, models.IndefiniteRange]:
         """Get VRS Sequence Location start and end values
 
@@ -343,7 +430,7 @@ class ToCopyNumberVariation(ToVRS):
         :param comparator: Must provide when `pos_type` is an Indefinite Range.
             Indicates which direction the range is indefinite. To represent (#_?), set
             to '<='. To represent (?_#), set to '>='.
-        :raises ToCopyNumberException: If position is not valid on accession when
+        :raises ToCopyNumberError: If position is not valid on accession when
             using definite range
         :return: VRS start or end value for sequence location
         """
@@ -353,24 +440,24 @@ class ToCopyNumberVariation(ToVRS):
             vrs_val = models.DefiniteRange(
                 min=pos0 - 1 if is_start else pos0 + 1,
                 max=pos1 - 1 if is_start else pos1 + 1,
-                type="DefiniteRange"
+                type="DefiniteRange",
             )
         elif pos_type == VRSTypes.NUMBER:
-            vrs_val = models.Number(
-                value=pos0 - 1 if is_start else pos0,
-                type="Number"
-            )
+            vrs_val = models.Number(value=pos0 - 1 if is_start else pos0, type="Number")
         else:
             vrs_val = models.IndefiniteRange(
                 comparator=comparator.value,
                 value=pos0 - 1 if is_start else pos0,
-                type="IndefiniteRange"
+                type="IndefiniteRange",
             )
 
         return vrs_val
 
     def _get_parsed_seq_loc(
-        self, accession: str, chromosome: str, start0: int,
+        self,
+        accession: str,
+        chromosome: str,
+        start0: int,
         start_pos_type: Union[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
@@ -378,10 +465,11 @@ class ToCopyNumberVariation(ToVRS):
         end_pos_type: Union[
             VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
         ],
-        start1: Optional[int] = None, end1: Optional[int] = None,
+        start1: Optional[int] = None,
+        end1: Optional[int] = None,
         liftover_pos: bool = False,
         start_pos_comparator: Optional[Comparator] = None,
-        end_pos_comparator: Optional[Comparator] = None
+        end_pos_comparator: Optional[Comparator] = None,
     ) -> Tuple[Optional[Dict], Optional[str]]:
         """Get sequence location for parsed components. Accession will be validated.
 
@@ -404,7 +492,7 @@ class ToCopyNumberVariation(ToVRS):
         :param end_pos_comparator: Must provide when `end_pos_type` is an Indefinite
             Range. Indicates which direction the range is indefinite. To represent
             (#_?), set to '<='. To represent (?_#), set to '>='.
-        :raises ToCopyNumberException: If error lifting over positions, translating
+        :raises ToCopyNumberError: If error lifting over positions, translating
             accession, positions not valid on accession,
         :return: Tuple containing VRS sequence location represented as dict (if valid)
             and warning (if invalid)
@@ -423,7 +511,7 @@ class ToCopyNumberVariation(ToVRS):
             accession, "ga4gh"
         )
         if error:
-            raise ToCopyNumberException(error)
+            raise ToCopyNumberError(error)
 
         sequence_id = sequence_ids[0]
 
@@ -432,28 +520,40 @@ class ToCopyNumberVariation(ToVRS):
             self._validate_ac_pos(accession, pos)
 
         start_vrs = self._get_vrs_loc_start_or_end(
-            accession, start0, start_pos_type, is_start=True, pos1=start1,
-            comparator=start_pos_comparator
+            accession,
+            start0,
+            start_pos_type,
+            is_start=True,
+            pos1=start1,
+            comparator=start_pos_comparator,
         )
 
         end_vrs = self._get_vrs_loc_start_or_end(
-            accession, end0, end_pos_type, is_start=False, pos1=end1,
-            comparator=end_pos_comparator
+            accession,
+            end0,
+            end_pos_type,
+            is_start=False,
+            pos1=end1,
+            comparator=end_pos_comparator,
         )
 
         seq_loc = models.SequenceLocation(
             type="SequenceLocation",
             sequence_id=sequence_id,
             start=start_vrs,
-            end=end_vrs
+            end=end_vrs,
         )
         seq_loc.id = ga4gh_identify(seq_loc)
 
         return seq_loc.as_dict() if seq_loc else seq_loc
 
     def _liftover_pos(
-        self, chromosome: str, start0: int, end0: int, start1: Optional[int],
-        end1: Optional[int]
+        self,
+        chromosome: str,
+        start0: int,
+        end0: int,
+        start1: Optional[int],
+        end1: Optional[int],
     ) -> Dict:
         """Liftover GRCh37 positions to GRCh38 positions
 
@@ -466,26 +566,24 @@ class ToCopyNumberVariation(ToVRS):
             start position. GRCh37 assembly
         :param end1: Only set when end is a definite range, this will be the max end
             position. GRCh37 assembly
-        :raises ToCopyNumberException: If unable to liftover position
+        :raises ToCopyNumberError: If unable to liftover position
         :return: Dictionary containing lifted over positions
             ('start0', 'end0', 'start1', 'end1')
         """
-        liftover_pos = {
-            "start0": None,
-            "end0": None,
-            "start1": None,
-            "end1": None
-        }
+        liftover_pos = {"start0": None, "end0": None, "start1": None, "end1": None}
 
         for k, pos in [
-            ("start0", start0), ("end0", end0), ("start1", start1), ("end1", end1)
+            ("start0", start0),
+            ("end0", end0),
+            ("start1", start1),
+            ("end1", end1),
         ]:
             if pos is not None:
                 liftover = self.uta.liftover_37_to_38.convert_coordinate(
                     chromosome, pos
                 )
                 if not liftover:
-                    raise ToCopyNumberException(
+                    raise ToCopyNumberError(
                         f"Unable to liftover: {chromosome} with pos {pos}"
                     )
                 else:
@@ -514,8 +612,9 @@ class ToCopyNumberVariation(ToVRS):
         try:
             if not request_body.accession:
                 accession_summary = self._get_parsed_ac(
-                    request_body.assembly, request_body.chromosome,
-                    use_grch38=request_body.do_liftover
+                    request_body.assembly,
+                    request_body.chromosome,
+                    use_grch38=request_body.do_liftover,
                 )
                 chromosome = request_body.chromosome
                 accession = accession_summary.accession
@@ -529,53 +628,51 @@ class ToCopyNumberVariation(ToVRS):
                 lifted_over = chr_summary.lifted_over
 
             seq_loc = self._get_parsed_seq_loc(
-                accession, chromosome, request_body.start0, request_body.start_pos_type,
-                request_body.end0, request_body.end_pos_type,
-                start1=request_body.start1, end1=request_body.end1,
+                accession,
+                chromosome,
+                request_body.start0,
+                request_body.start_pos_type,
+                request_body.end0,
+                request_body.end_pos_type,
+                start1=request_body.start1,
+                end1=request_body.end1,
                 start_pos_comparator=request_body.start_pos_comparator,
                 end_pos_comparator=request_body.end_pos_comparator,
-                liftover_pos=request_body.do_liftover and lifted_over
+                liftover_pos=request_body.do_liftover and lifted_over,
             )
-        except ToCopyNumberException as e:
+        except ToCopyNumberError as e:
             warnings.append(str(e))
         else:
             if is_cx:
                 variation = {
                     "type": "CopyNumberChange",
                     "subject": seq_loc,
-                    "copy_change": request_body.copy_change
+                    "copy_change": request_body.copy_change,
                 }
-                variation["id"] = ga4gh_identify(
-                    models.CopyNumberChange(**variation)
-                )
+                variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
                 variation = CopyNumberChange(**variation)
             else:
                 if request_body.copies_type == VRSTypes.NUMBER:
-                    copies = {
-                        "value": request_body.copies0,
-                        "type": "Number"
-                    }
+                    copies = {"value": request_body.copies0, "type": "Number"}
                 elif request_body.copies_type == VRSTypes.DEFINITE_RANGE:
                     copies = {
                         "min": request_body.copies0,
                         "max": request_body.copies1,
-                        "type": "DefiniteRange"
+                        "type": "DefiniteRange",
                     }
                 else:
                     copies = {
                         "value": request_body.copies0,
                         "comparator": request_body.copies_comparator.value,
-                        "type": "IndefiniteRange"
+                        "type": "IndefiniteRange",
                     }
 
                 variation = {
                     "type": "CopyNumberCount",
                     "subject": seq_loc,
-                    "copies": copies
+                    "copies": copies,
                 }
-                variation["id"] = ga4gh_identify(
-                    models.CopyNumberCount(**variation)
-                )
+                variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
                 variation = CopyNumberCount(**variation)
 
         if warnings and request_body.untranslatable_returns_text:
@@ -584,9 +681,8 @@ class ToCopyNumberVariation(ToVRS):
         service_params = {
             "warnings": warnings,
             "service_meta_": ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()
-            )
+                version=__version__, response_datetime=datetime.now()
+            ),
         }
 
         if is_cx:
@@ -594,11 +690,19 @@ class ToCopyNumberVariation(ToVRS):
         else:
             service_params["copy_number_count"] = variation
 
-        return ParsedToCxVarService(**service_params) if is_cx else ParsedToCnVarService(**service_params)  # noqa: E501
+        return (
+            ParsedToCxVarService(**service_params)
+            if is_cx
+            else ParsedToCnVarService(**service_params)
+        )  # noqa: E501
 
     def amplification_to_cx_var(
-        self, gene: str, sequence_id: Optional[str] = None, start: Optional[int] = None,
-        end: Optional[int] = None, untranslatable_returns_text: bool = False
+        self,
+        gene: str,
+        sequence_id: Optional[str] = None,
+        start: Optional[int] = None,
+        end: Optional[int] = None,
+        untranslatable_returns_text: bool = False,
     ) -> AmplificationToCxVarService:
         """Return Copy Number Change Variation for Amplification query
         Parameter priority:
@@ -623,7 +727,8 @@ class ToCopyNumberVariation(ToVRS):
         variation = None
         try:
             og_query = AmplificationToCxVarQuery(
-                gene=gene, sequence_id=sequence_id, start=start, end=end)
+                gene=gene, sequence_id=sequence_id, start=start, end=end
+            )
         except ValidationError as e:
             warnings.append(str(e))
             og_query = None
@@ -638,43 +743,49 @@ class ToCopyNumberVariation(ToVRS):
                 if all((sequence_id, start, end)):
                     # User provided input to make sequence location
                     seq_id, w = self.seqrepo_access.translate_identifier(
-                        sequence_id, "ga4gh")
+                        sequence_id, "ga4gh"
+                    )
                     if w:
                         warnings.append(w)
                     else:
                         # Validate start/end are actually on the sequence
                         _, w = self.seqrepo_access.get_reference_sequence(
-                            sequence_id, start, end)
+                            sequence_id, start, end
+                        )
                         if w:
                             warnings.append(w)
                         else:
                             vrs_location = models.SequenceLocation(
                                 sequence_id=seq_id[0],
                                 start=models.Number(value=start - 1),
-                                end=models.Number(value=end))
+                                end=models.Number(value=end),
+                            )
                 else:
                     # Use gene normalizer to get sequence location
                     seq_loc = get_priority_sequence_location(
-                        gene_descriptor, self.seqrepo_access)
+                        gene_descriptor, self.seqrepo_access
+                    )
                     if seq_loc:
                         vrs_location = models.SequenceLocation(**seq_loc)
                     else:
                         warnings.append(
                             f"gene-normalizer could not find a priority sequence "
-                            f"location for gene: {gene_norm_label}")
+                            f"location for gene: {gene_norm_label}"
+                        )
 
                 if vrs_location:
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_cx = models.CopyNumberChange(
                         subject=vrs_location,
-                        copy_change=CopyChange.HIGH_LEVEL_GAIN.value)
+                        copy_change=CopyChange.HIGH_LEVEL_GAIN.value,
+                    )
                     vrs_cx.id = ga4gh_identify(vrs_cx)
                     variation = CopyNumberChange(**vrs_cx.as_dict())
             else:
                 warnings.append(f"gene-normalizer returned no match for gene: {gene}")
 
         if not variation and untranslatable_returns_text:
-            text_variation = models.Text(definition=amplification_label)
+            text_variation = models.Text(definition=amplification_label, type="Text")
             text_variation.id = ga4gh_identify(text_variation)
             variation = Text(**text_variation.as_dict())
 
@@ -684,5 +795,6 @@ class ToCopyNumberVariation(ToVRS):
             copy_number_change=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__,
-                response_datetime=datetime.now()))
+                version=__version__, response_datetime=datetime.now()
+            ),
+        )

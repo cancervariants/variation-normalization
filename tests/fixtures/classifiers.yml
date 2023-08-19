@@ -1,228 +1,161 @@
 protein_substitution:
   should_match:
     - query: BRAF V600E
-      confidence: EXACT
-    - query: braf v600e
-      confidence: EXACT
     - query: braf V600E
-      confidence: EXACT
-    - query: V600E BRAF
-      confidence: UNORDERED
-    - query: V600E
-      confidence: EXACT
-    - query: (V600E)
-      confidence: EXACT
-    - query: BRAF V600E foo
-      confidence: SUPERSET
-    - query: BRAF
-      confidence: INTERSECTION
+    - query: BRAF (V600E)
     - query: NRAS G13V
-      confidence: EXACT
     - query: NP_004324.2:p.Val600Glu
-      confidence: EXACT
     - query: NP_065681.1:p.Met918Thr
-      confidence: EXACT
-    - query: NP_065681.1:c.Met918Thr
-      confidence: INTERSECTION
   should_not_match:
     - query: BRAFV600E
     - query: v600z
+    - query: braf v600e
+    - query: V600E BRAF
+    - query: BRAF V600E foo
+    - query: BRAF
+    - query: V600E
+    - query: (V600E)
+    - query: NP_065681.1:c.Met918Thr
 
-polypeptide_truncation:
+protein_stop_gain:
   should_match:
     - query: ENSP00000343204.4:p.Trp690Ter
-      confidence: EXACT
   should_not_match:
     - query: ENS00000343204.4:c.Trp690Ter
 
-silent_mutation:
+protein_reference_agree:
   should_match:
     - query: NP_000213.1:p.Leu862=
-      confidence: EXACT
-    - query: NP_000213.1:p.Leu862==
-      confidence: INTERSECTION
   should_not_match:
     - query: Leu862==
+    - query: NP_000213.1:p.Leu862=="
 
-coding_dna_substitution:
+cdna_substitution:
   should_match:
-    - query: V170D (c.509T>A)
-      confidence: SUPERSET
     - query: NM_000551.3:c.292T>C
-      confidence: EXACT
-    - query: NM_000551.3:c.292TC
-      confidence: INTERSECTION
-    - query: foo Y98H (c.292T>C)
-      confidence: SUPERSET
     - query: BRAF V600E c.23T>A
-      confidence: EXACT
-    - query: LRG_199t1:c.54G>H
-      confidence: INTERSECTION
   should_not_match:
     - query: V170 (c.509F>A)
     - query: RX_:g.292TC
+    - query: V170D (c.509T>A)
+    - query: NM_000551.3:c.292TC
+    - query: foo Y98H (c.292T>C)
+    - query: LRG_199t1:c.54G>H
 
 genomic_substitution:
   should_match:
-    - query: V170D (g.509T>A)
-      confidence: INTERSECTION
-    - query:  NC_000017.10:g.292T>C
-      confidence: EXACT
-    - query:  NC_000017.10:g.292TC
-      confidence: INTERSECTION
-    - query: foo Y98H (g.292T>C)
-      confidence: INTERSECTION
+    - query: NC_000017.10:g.292T>C
     - query: BRAF V600E g.23T>A
-      confidence: EXACT
     - query: 7-292-A-C
-      confidence: EXACT
     - query: chrX-292-A-T
-      confidence: EXACT
     - query: chromosome10-292-G-A
-      confidence: EXACT
+    - query: 5-112175770-GGAA-AGAA
   should_not_match:
     - query: V170 (g.509F>A)
     - query: RX_:c.292TC
+    - query: V170D (g.509T>A)
+    - query: NC_000017.10:g.292TC
+    - query: foo Y98H (g.292T>C)
 
-coding_dna_silent_mutation:
+cdna_reference_agree:
   should_match:
     - query: NM_004006.2:c.123=
-      confidence: EXACT
-    - query: foo VHL c.123=
-      confidence: SUPERSET
   should_not_match:
     - query: CODING_DNA_:c.123=
     - query: g.123=
+    - query: foo VHL c.123=
 
-genomic_silent_mutation:
+genomic_reference_agree:
   should_match:
     - query: NC_000017.10:g.123=
-      confidence: EXACT
-    - query: foo VHL g.123=
-      confidence: SUPERSET
     - query: chr11-252-t-t
-      confidence: EXACT
+    - query: 5-1295250-GAGG-GAGG
   should_not_match:
     - query: GENOMIC_:g.123=
     - query: c.123=
+    - query: foo VHL g.123=
 
 protein_delins:
   should_match:
     - query: NP_001333827.1:p.Leu747_Thr751delinsPro
-      confidence: EXACT
     - query: NP_001333827.1:p.Leu747delinsProArg
-      confidence: EXACT
     - query: NP_005219.2:p.Glu746_Thr751delinsValAla
-      confidence: EXACT
     - query: NP_005219.2:p.G776delinsVC
-      confidence: EXACT
   should_not_match:
     - query: N:p.Leu747_Thr751delinsPro
+    - query: EGFR E709_G719delins11
 
-coding_dna_delins:
+cdna_delins:
   should_match:
     - query: NM_005157.6:c.1423_1424delinsGT
-      confidence: EXACT
     - query: ENST00000277541.6:c.7330delinsACA
-      confidence: EXACT
-    - query: NM_000797.3:c.812_829delins908_925
-      confidence: INTERSECTION
-    - query: foo c.131_234delinsA
-      confidence: SUPERSET
-    - query: foo NM_005157.6:c.1423_1424delinsGT
-      confidence: INTERSECTION
     - query: NM_000551.3:c.615delinsAA
-      confidence: EXACT
-    - query: LRG_199t1:c.79_80delinsTT
-      confidence: EXACT
-    - query: LRG_199:c.79_80delinsTT
-      confidence: EXACT
+    - query: ENST00000257290.5:c.2524_2525delinsAT
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT
     - query: c.1423delinsX
+    - query: LRG_199t1:c.79_80delinsTT
+    - query: LRG_199:c.79_80delinsTT
+    - query: NM_000797.3:c.812_829delins908_925
+    - query: foo c.131_234delinsA
+    - query: foo NM_005157.6:c.1423_1424delinsGT
 
 genomic_delins:
   should_match:
     - query: NC_000017.10:g.1423_1424delinsGT
-      confidence: EXACT
-    - query:  NC_000017.10:g.7330delinsACA
-      confidence: EXACT
-    - query:  NC_000017.10:g.812_829delins908_925
-      confidence: INTERSECTION
-    - query: foo g.131_234delinsA
-      confidence: INTERSECTION
-    - query: foo  NC_000017.10:g.1423_1424delinsGT
-      confidence: INTERSECTION
+    - query: NC_000017.10:g.7330delinsACA
     - query: NC_000003.12:g.10149938delinsAA
-      confidence: EXACT
+    - query: 3-37050340-AAAAGCTTTA-GAGGCTTT
+    - query: 16-68846036-AG-TGAGTTT
+    - query: X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG
+    - query: Y-1313-ATTGAC-a
+    - query: chr1-2-ca-C
+    - query: 1-55509715-AC-A
+    - query: chr17-131543-G-GA
+    - query: 20-14223252-T-TATGCATG
   should_not_match:
-    - query:  N_000017.10:c.1423_1424delinsGT
+    - query: N_000017.10:c.1423_1424delinsGT
     - query: g.1423delinsX
+    - query: NC_000017.10:g.812_829delins908_925
+    - query: foo g.131_234delinsA
+    - query: foo  NC_000017.10:g.1423_1424delinsGT
 
 protein_deletion:
   should_match:
     - query: NP_004439.2:p.Leu755_Thr759del
-      confidence: EXACT
     - query: NP_000213.1:p.Val560del
-      confidence: EXACT
     - query: NP_000213.1:p.Lys550_Lys558del
-      confidence: EXACT
-    - query: LRG_199p1:p.Val7del
-      confidence: EXACT
-    - query: LRG_199p1:p.(Val7del)
-      confidence: EXACT
     - query: KIT D419del
-      confidence: EXACT
     - query: KIT E554_V559del
-      confidence: EXACT
     - query: CTNNB1 Y30_I35del
-      confidence: EXACT
     - query: ENSP00000256474.2:p.Phe76del
-      confidence: EXACT
-    - query: NP_004439.2:c.Leu755_Thr759del
-      confidence: INTERSECTION
     - query: EGFR L747_T751delLREAT
-      confidence: EXACT
   should_not_match:
     - query: fakegene g.Leu755_Thr759delLeu
     - query: GENE c.L755del
+    - query: LRG_199p1:p.Val7del
+    - query: LRG_199p1:p.(Val7del)
+    - query: NP_004439.2:c.Leu755_Thr759del
+    - query: NP_003997.1:p.(Lys23_Val25del
 
-coding_dna_deletion:
+cdna_deletion:
   should_match:
     - query: ENST00000269571.5:c.2263_2277del
-      confidence: EXACT
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
-      confidence: EXACT
     - query: NM_000535.6:c.2117delA
-      confidence: EXACT
     - query: ENST00000256474.2:c.163delG
-      confidence: EXACT
-    - query: NM_004333.4:c.1799_1800delTGinsAT
-      confidence: INTERSECTION
-    - query: ENST00000257290.5:c.2524_2525delinsAT
-      confidence: INTERSECTION
     - query: MLH1 c.1852_1854delAAG
-      confidence: EXACT
   should_not_match:
     - query: GENE c.1799_1800delTGinsAT
     - query: GENE c.2524_2525delinsAT
+    - query: NM_004333.4:c.1799_1800delTGinsAT
 
 genomic_deletion:
   should_match:
     - query: NC_000017.10:g.37880219_37880233del
-      confidence: EXACT
     - query: NC_000004.11:g.55593610_55593615delTTGTTG
-      confidence: EXACT
     - query: NC_000003.11:g.10183645del
-      confidence: EXACT
     - query: NC_000003.11:g.10188302delG
-      confidence: EXACT
-    - query: NC_000006.11:g.152419920_152419921delinsAG
-      confidence: INTERSECTION
-    - query: Y-1313-ATTGAC-a
-      confidence: EXACT
-    - query: chr1-2-ca-C
-      confidence: EXACT
   should_not_match:
     - query: GENE g.152419920_152419921delinsAG
     - query: GENE g.152419920_152419921delAinsG
@@ -230,86 +163,68 @@ genomic_deletion:
 protein_insertion:
   should_match:
     - query: NP_005219.2:p.Cys770_Gly771insGlyLeu
-      confidence: EXACT
     - query: NP_001333827.1:p.Ala763_Tyr764insPheGlnGluAla
-      confidence: EXACT
     - query: BRAF T599_V600insV
-      confidence: EXACT
     - query: EGFR A763_Y764insFQEA
-      confidence: EXACT
   should_not_match:
     - query: GENE p.Lys23insAsp
     - query: GENE Lys23insAsp
     - query: GENE p.His4_Gln5insAlaG
     - query: ACCESSION_23042.2:p.His4_Gln5insAla
 
-coding_dna_insertion:
+cdna_insertion:
   should_match:
-    - query: NM_004006.2:c.849_850ins858_895
-      confidence: EXACT
     - query: NM_000551.3:c.230_231insTCT
-      confidence: EXACT
     - query: NM_000551.3:c.358_359insAC
-      confidence: EXACT
-    - query: NM_000551.3:c.358_359insAC foo
-      confidence: INTERSECTION
   should_not_match:
     - query: GENE 358_359insAC
     - query: accession:c.358_359insAC
+    - query: NM_004006.2:c.849_850ins858_895
+    - query: NM_000551.3:c.358_359insAC foo
 
 genomic_insertion:
   should_match:
     - query: NC_000023.10:g.32867861_32867862insT
-      confidence: EXACT
     - query: NC_000023.10:g.32862923_32862924insCCT
-      confidence: EXACT
     - query: NC_000009.11:g.5070053_5070054insG
-      confidence: EXACT
-    - query: NC_000023.10:g.32867861_32867862insT foo
-      confidence: INTERSECTION
-    - query: chr17-131543-G-GA
-      confidence: EXACT
-    - query: 20-14223252-T-TATGCATG
-      confidence: EXACT
   should_not_match:
     - query: GENE 32867861_32867862insT
     - query: accession:g.32867861_32867862insT
+    - query: NC_000023.10:g.32867861_32867862insT foo
 
-genomic_uncertain_deletion:
+genomic_deletion_ambiguous:
   should_match:
     - query: NC_000023.11:g.(?_31120496)_(33339477_?)del
-      confidence: EXACT
     - query: NC_000023.11:g.(?_155980375)_(156013167_?)del
-      confidence: EXACT
-    - query: NC_000023.11:g.(?_155980375)_(156013167_?)del foo
-      confidence: INTERSECTION
+    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del
+    - query: BRAF g.(31060227_31100351)_(33274278_33417151)del
   should_not_match:
     - query: GENE (?_155980375)_(156013167_?)del
     - query: accession:g.(?_155980375)_(156013167_?)del
+    - query: NC_000023.11:g.(?_155980375)_(156013167_?)del foo
+    - query: GENE (?_31120496)_(33339477_?)del
 
 genomic_duplication:
   should_match:
-    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
-      confidence: EXACT
-    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
-      confidence: EXACT
-    - query: NC_000023.11:g.(?_154021812)_154092209dup
-      confidence: EXACT
     - query: NC_000003.12:g.49531262dup
-      confidence: EXACT
     - query: NC_000016.10:g.2087938_2087948dup
-      confidence: EXACT
     - query: BRAF g.2087938_2087948dup
-      confidence: EXACT
   should_not_match:
-    - query: foo (?_30417576)_(31394018_?)dup
+    - query: foo (?_30417576)_(31394018_?)del
     - query: Accession:g.49531262dup
 
-genomic_deletion_range:
+genomic_duplication_ambiguous:
   should_match:
-    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del
-      confidence: EXACT
-    - query: BRAF g.(31060227_31100351)_(33274278_33417151)del
-      confidence: EXACT
+    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
+    - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
+    - query: NC_000023.11:g.(?_154021812)_154092209dup
   should_not_match:
-    - query: GENE (?_31120496)_(33339477_?)del
+    - query: GENE (?_31120496)_(33339477_?)dup
+    - query: NC_000023.11:g.(31060227_33274278)_(31100351_33417151)
+
+amplification:
+  should_match:
+    - query: BRAF amplification
+    - query: braf AMPLIFICATION
+  should_not_match:
+    - query: gene amplification

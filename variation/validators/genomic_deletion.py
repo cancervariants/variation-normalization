@@ -1,188 +1,125 @@
 """The module for Genomic Deletion Validation."""
-import logging
-from typing import List, Optional, Dict
+from typing import List
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-
-from variation.schemas.app_schemas import Endpoint
-from variation.validators.duplication_deletion_base import\
-    DuplicationDeletionBase
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variation.schemas.token_response_schema import Token, SequenceOntology
-from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
+from variation.schemas.classification_response_schema import (
+    Classification,
+    ClassificationType,
+    GenomicDeletionClassification,
+    Nomenclature,
+)
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
-
-
-class GenomicDeletion(DuplicationDeletionBase):
+class GenomicDeletion(Validator):
     """The Genomic Deletion Validator class."""
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
-        """Get transcript accessions for a given classification.
-
-        :param List gene_tokens: A list of gene tokens
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
-        """
-        transcripts = await self.get_genomic_transcripts(classification, errors)
-        return transcripts
-
     async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
-    ) -> None:
-        """Add validation result objects to a list of results.
+        self, classification: GenomicDeletionClassification, accessions: List[str]
+    ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
 
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
         """
-        valid_alleles = list()
-        for s in classification_tokens:
-            for t in transcripts:
-                errors = list()
-                t = self.get_accession(t, classification)
-                start, end = s.start_pos_del, None
-                if s.end_pos_del is None:
-                    end = start
-                else:
-                    end = s.end_pos_del
-
-                # Validate pos
-                if gene_tokens:
-                    await self.validate_gene_or_accession_pos(
-                        t, [start, end], errors, gene=gene_tokens[0].token)
-                else:
-                    self.check_reference_sequence(t, s, errors)
-
-                if not errors:
-                    allele = self.vrs.to_vrs_allele(
-                        t, s.start_pos_del, s.end_pos_del,
-                        s.coordinate_type, s.alt_type, errors)
-
-                    variation = self.hgvs_dup_del_mode.interpret_variation(
-                        s.alt_type, allele, errors, hgvs_dup_del_mode,
-                        pos=(start, end), copy_change=copy_change,
-                        baseline_copies=baseline_copies
-                    )
-                else:
-                    variation = None
-
-                if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    await self._get_normalize_variation(
-                        gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, start, end,
-                        copy_change=copy_change,
-                        baseline_copies=baseline_copies)
-
-                self.add_validation_result(
-                    variation, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
+        invalid_pos_msg = self.validate_5_prime_to_3_prime(
+            classification.pos0, pos1=classification.pos1
+        )
+        if invalid_pos_msg:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[invalid_pos_msg],
                 )
+            ]
 
-                if is_identifier:
-                    break
+        validation_results = []
 
-        if endpoint_name == Endpoint.NORMALIZE or do_liftover:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
+        for alt_ac in accessions:
+            errors = []
+
+            invalid_ac_pos = self.validate_ac_and_pos(
+                alt_ac, classification.pos0, end_pos=classification.pos1
+            )
+            if invalid_ac_pos:
+                errors.append(invalid_ac_pos)
+            else:
+                if classification.nomenclature in {
+                    Nomenclature.FREE_TEXT,
+                    Nomenclature.HGVS,
+                }:
+                    # Validate deleted sequence
+                    # HGVS deleted sequence includes start and end
+                    if classification.deleted_sequence:
+                        invalid_del_seq_message = self.validate_reference_sequence(
+                            alt_ac,
+                            classification.pos0,
+                            classification.pos1 + 1 if classification.pos1 else None,
+                            classification.deleted_sequence,
+                        )
+
+                        if invalid_del_seq_message:
+                            errors.append(invalid_del_seq_message)
+
+            if not errors:
+                if classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                    # Validate reference sequence
+                    ref = classification.matching_tokens[0].ref
+                    validate_ref_msg = self.validate_reference_sequence(
+                        alt_ac,
+                        classification.pos0 - 1,
+                        classification.pos0 - 1 + len(ref),
+                        ref,
+                    )
+
+                    if validate_ref_msg:
+                        errors.append(validate_ref_msg)
+
+            if not errors and classification.gene_token:
+                # Validate positions exist within gene range
+                invalid_gene_pos_msg = await self._validate_gene_pos(
+                    classification.gene_token.matched_value,
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
+                )
+                if invalid_gene_pos_msg:
+                    errors.append(invalid_gene_pos_msg)
+
+            validation_results.append(
+                ValidationResult(
+                    accession=alt_ac,
+                    classification=classification,
+                    is_valid=not errors,
+                    errors=errors,
+                )
             )
 
-    async def _get_normalize_variation(
-            self, gene_tokens: List, s: Token, t: str, errors: List,
-            hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict,
-            start: int, end: int,
-            copy_change: Optional[CopyChange] = None,
-            baseline_copies: Optional[int] = None) -> None:
-        """Get variation that will be returned in normalize endpoint.
-
-        :param List gene_tokens: List of gene tokens
-        :param Token s: Classification token
-        :param str t: Accession
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
-            interpreting HGVS duplications and deletions
-        :param Dict mane_data_found: MANE Transcript data found for given query
-        :param int start: Start pos change
-        :param int end: End pos change
-        :param Optional[CopyChange] copy_change: The copy change
-        :param Optional[int] baseline_copies: Baseline copies number
-        """
-        if gene_tokens:
-            await self.add_normalized_genomic_dup_del(
-                s, t, s.start_pos_del, s.end_pos_del, gene_tokens[0].token,
-                SequenceOntology.DELETION, errors, hgvs_dup_del_mode,
-                mane_data_found, copy_change=copy_change,
-                baseline_copies=baseline_copies)
-        else:
-            # No gene provided, then use GRCh38 assembly
-            if not self._is_grch38_assembly(t):
-                grch38 = await self.mane_transcript.g_to_grch38(t, start, end)
-            else:
-                grch38 = dict(ac=t, pos=(start, end))
-
-            if grch38:
-                await self.validate_gene_or_accession_pos(
-                    grch38["ac"], [grch38["pos"][0], grch38["pos"][1]], errors)
-                self.add_grch38_to_mane_data(
-                    t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode,
-                    use_vrs_allele_range=False, copy_change=copy_change,
-                    baseline_copies=baseline_copies)
-
-    def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_gene_symbol_tokens(classification)
-
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "genomic deletion"
-
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is Genomic Deletion.
-
-        :param Token t: Classification token
-        """
-        return t.token_type == "GenomicDeletion"
+        return validation_results
 
     def validates_classification_type(
-            self, classification_type: ClassificationType) -> bool:
-        """Return whether or not the classification type is
-        Genomic DelIns.
-
-        :param ClassificationType classification_type: Classification type
-        :return: `True` if classification type matches, `False` otherwise
-        """
+        self, classification_type: ClassificationType
+    ) -> bool:
+        """Return whether or not the classification type is genomic deletion"""
         return classification_type == ClassificationType.GENOMIC_DELETION
+
+    async def get_accessions(
+        self, classification: Classification, errors: List
+    ) -> List[str]:
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
+
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
+        """
+        if classification.nomenclature == Nomenclature.HGVS:
+            accessions = [classification.ac]
+        else:
+            accessions = await self.get_genomic_accessions(classification, errors)
+        return accessions

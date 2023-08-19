@@ -1,9 +1,8 @@
 """Module for Tokenization."""
-import re
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, Union, List
+from typing import Optional, Tuple
 
-from bioutils.sequences import aa3_to_aa1_lut, aa3_to_aa1, aa1_to_aa3
+from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.schemas.token_response_schema import Token
 
@@ -11,206 +10,66 @@ from variation.schemas.token_response_schema import Token
 class Tokenizer(ABC):
     """The tokenizer class."""
 
-    base_nucleotides = {"A", "C", "T", "G", "N"}
-    splitter_char_digit = re.compile("([a-zA-Z]+)([0-9]+)")
-    splitter_paren_digits = re.compile(r"(\d+)")
+    coord_types = {k: v.value for k, v in AnnotationLayer.__members__.items()}
 
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
-        """Return tokens that match the input string."""
+        """Return tokens that match the input string.
+
+        :param input_string: Input string
+        :return: Token if match was found
+        """
         raise NotImplementedError
 
-    def get_amino_acid_and_pos(
-        self, part: List, used_one_letter: bool
-    ) -> Optional[Tuple[str, int, bool]]:
-        """Return amino acid and position.
+    def strip_coord_prefix(
+        self, input_string: str, match_coord_type: Optional[AnnotationLayer] = None
+    ) -> Tuple[Optional[AnnotationLayer], Optional[str]]:
+        """Strip parentheses and coordinate type from string
 
-        :param List part: Tokenized input string
-        :param bool used_one_letter: `True` if used 1 letter AA code.
-            `False` if used 3 letter AA code.
-        :return: Three letter AA code, position, and whether or not
-            one letter AA code was used
+        :param input_string: Input string
+        :param match_coord_type: If set, the input string must have the prefix
+            corresponding to this value to succeed. If this is not set, will attempt
+            to find the first match of a prefix and use that as the coordinate type.
+        :return: Tuple containing coordinate type for input string and stripped string,
+            if successful.
         """
-        try:
-            char_and_digits = self.splitter_char_digit.match(part).groups()
-        except AttributeError:
-            return None
+        coord_type = None
+        stripped_str = None
 
-        if len(char_and_digits) != 2 or len(part) != \
-                (len(char_and_digits[0]) + len(char_and_digits[1])):
-            return None
+        def _strip(
+            coord_type: str,
+            string: str,
+            match_coord_type: Optional[AnnotationLayer] = None,
+        ) -> str:
+            """Strip parentheses and coordinate type from string
 
-        aa = char_and_digits[0]
-        if len(aa) == 1:
-            if not used_one_letter:
-                used_one_letter = True
-
-            try:
-                tmp_aa = aa1_to_aa3(aa.upper())
-            except KeyError:
-                tmp_aa = None
-        else:
-            if aa.capitalize() in aa3_to_aa1_lut:
-                tmp_aa = aa
+            :param input_string: Input string
+            :param match_coord_type: If set, the input string must have the prefix
+                corresponding to this value to succeed
+            :return: Stripped string
+            """
+            if string.startswith(
+                (f"({coord_type}.", f"{coord_type}.(")
+            ) and string.endswith(")"):
+                string = string[3:-1]
+            elif string.startswith(f"{coord_type}."):
+                string = string[2:]
+            elif string[0] == "(" and string[-1] == ")":
+                string = string[1:-1]
             else:
-                tmp_aa = None
-        pos = char_and_digits[1]
+                if match_coord_type:
+                    string = None
 
-        if not tmp_aa or not pos.isdigit():
-            return None
-        return aa.upper(), pos, used_one_letter
+            return string
 
-    def get_protein_inserted_sequence(self, parts: List,
-                                      used_one_letter: bool) -> Optional[str]:
-        """Return inserted sequence for protein reference sequence.
-
-        :param List parts: Tokenized input string
-        :param bool used_one_letter: `True` if used 1 letter AA code.
-            `False` if used 3 letter AA code.
-        :return: Inserted sequence
-        """
-        # Check inserted sequences
-        inserted_sequence = ""
-        if used_one_letter:
-            for i in range(len(parts[1])):
-                aa = parts[1][i:i + 1]
-                if len(aa) != 1:
-                    return None
-                try:
-                    aa3_to_aa1_lut[aa1_to_aa3(aa.upper())]
-                except KeyError:
-                    return None
-                else:
-                    inserted_sequence += aa.upper()
+        if match_coord_type:
+            coord_type = match_coord_type
+            stripped_str = _strip(coord_type.value, input_string, match_coord_type)
         else:
-            for i in range(0, len(parts[1]), 3):
-                aa = parts[1][i:i + 3]
-                if len(aa) != 3 or aa.capitalize() not in aa3_to_aa1_lut:
-                    if aa != "ter":
-                        return None
+            for k, v in self.coord_types.items():
+                if f"{v}." in input_string:
+                    coord_type = AnnotationLayer[k]
+                    stripped_str = _strip(v, input_string)
+                    break
 
-                try:
-                    inserted_sequence += aa3_to_aa1(aa.capitalize())
-                except KeyError:
-                    return None
-
-        return inserted_sequence if inserted_sequence else None
-
-    def get_aa_pos_range(self,
-                         parts: List) -> Optional[Tuple[str, str, str, int, bool]]:
-        """Get amino acid(s) and positions(s) for protein reference sequence.
-
-        :param List parts: Tokenized input string
-        :return: Beginning AA, End AA,  Beginning position, End position,
-            Whether or not one letter code was used
-        """
-        aa_start = None
-        aa_end = None
-        pos_start = None
-        pos_end = None
-        used_one_letter = False
-
-        if "_" in parts[0] and parts[0].count("_") == 1:
-            aa_pos_range = parts[0].split("_")
-            if len(aa_pos_range) != 2 or \
-                    not aa_pos_range[0] or not aa_pos_range[1]:
-                return None
-
-            start_aa_pos = \
-                self.get_amino_acid_and_pos(
-                    aa_pos_range[0], used_one_letter
-                )
-
-            if start_aa_pos:
-                used_one_letter = start_aa_pos[2]
-
-            end_aa_pos = \
-                self.get_amino_acid_and_pos(
-                    aa_pos_range[1], used_one_letter
-                )
-
-            if start_aa_pos and end_aa_pos:
-                aa_start = start_aa_pos[0]
-                pos_start = start_aa_pos[1]
-                aa_end = end_aa_pos[0]
-                pos_end = end_aa_pos[1]
-                used_one_letter = end_aa_pos[2]
-
-        else:
-            aa_and_pos = \
-                self.get_amino_acid_and_pos(
-                    parts[0], used_one_letter
-                )
-            if aa_and_pos:
-                aa_start = aa_and_pos[0]
-                pos_start = aa_and_pos[1]
-                used_one_letter = aa_and_pos[2]
-
-        return aa_start, aa_end, pos_start, pos_end, used_one_letter
-
-    def get_positions_deleted(self, parts: List) -> Optional[Tuple[str, str]]:
-        """Return position(s) deleted for transcript and genomic references.
-
-        :param List parts: Tokenized input string
-        :return: Start position deleted and end position deleted
-        """
-        if "_" in parts[0] and parts[0].count("_") == 1:
-            positions = self.get_valid_digits(parts[0])
-            if not positions:
-                return None
-            start_pos_del, end_pos_del = positions
-            if start_pos_del > end_pos_del:
-                return None
-        else:
-            start_pos_del = parts[0]
-            end_pos_del = None
-            if not start_pos_del.isdigit():
-                return None
-        return start_pos_del, end_pos_del
-
-    def get_transcript_genomic_inserted_sequence(
-        self, parts: List
-    ) -> Optional[Tuple[Union[str, int], Union[str, int]]]:
-        """Return inserted sequence for transcript and genomic references.
-
-        :param List parts: Tokenized input string
-        :return: Start inserted sequence and end inserted sequence
-        """
-        # Check inserted sequences
-        if "_" in parts[1] and parts[1].count("_") == 1:
-            # Replaced by sequence positions
-            inserted_sequences = self.get_valid_digits(parts[1])
-            if not inserted_sequences:
-                return None
-            inserted_sequence1, inserted_sequence2 = inserted_sequences
-            if inserted_sequence1 > inserted_sequence2:
-                return None
-        else:
-            # Replaced by nucleotides
-            inserted_sequence1 = self.get_sequence(parts[1])
-            inserted_sequence2 = None
-        return inserted_sequence1, inserted_sequence2
-
-    def get_sequence(self, part: str) -> Optional[str]:
-        """Return validated sequence for transcript and genomic references.
-
-        :param str part: Sequence to validate
-        :return: Sequence of nucleotides
-        """
-        for char in part:
-            if char.upper() not in self.base_nucleotides:
-                return None
-        return part.upper()
-
-    def get_valid_digits(self, part: str) -> Optional[Tuple[str, str]]:
-        """Return valid digits after splitting on `_`.
-
-        :param str part: Range of digits
-        :return: Digits represented as strings
-        """
-        digits = part.split("_")
-        digit1 = digits[0]
-        digit2 = digits[1]
-        if not digit1.isdigit() or not digit2.isdigit():
-            return None
-        return digit1, digit2
+        return coord_type, stripped_str
