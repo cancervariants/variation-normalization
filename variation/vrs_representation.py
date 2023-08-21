@@ -76,24 +76,6 @@ class VRSRepresentation:
         )
 
     @staticmethod
-    def get_start_end_definite_range(
-        start0: int, start1: int, end0: int, end1: int
-    ) -> Tuple[models.DefiniteRange, models.DefiniteRange]:
-        """Return sequence start and end as definite ranges
-
-        :param start0: Start left pos (assumes 1-based)
-        :paramnt start1: Start right pos (assumes 1-based)
-        :param end0: End left pos (assumes 1-based)
-        :param end1: End right pos (assumes 1-based)
-        :return: Start and end as definite ranges
-        """
-        start = models.DefiniteRange(
-            min=start0 - 1, max=start1 - 1, type="DefiniteRange"
-        )
-        end = models.DefiniteRange(min=end0 + 1, max=end1 + 1, type="DefiniteRange")
-        return start, end
-
-    @staticmethod
     def get_sequence_loc(
         ac: str,
         start: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],

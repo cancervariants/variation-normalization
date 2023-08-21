@@ -354,11 +354,6 @@ async def gnomad_vcf_to_protein(
     return resp
 
 
-complement_descr = (
-    "This field indicates that a categorical variation is defined to "
-    "include (false) or exclude (true) variation concepts matching "
-    "the categorical variation."
-)
 hgvs_dup_del_mode_decsr = (
     "Must be one of: `default`, `copy_number_count`, "
     "`copy_number_change`, `repeated_seq_expr`, "
@@ -563,39 +558,6 @@ async def hgvs_to_copy_number_change(
         untranslatable_returns_text=untranslatable_returns_text,
     )
     return resp
-
-
-start0_descr = (
-    "Start position (residue coords). If start is a definite range, this "
-    "will be the min start position"
-)
-start1_descr = (
-    "Only set when start is a definite range, this will be the max start " "position"
-)
-end0_descr = (
-    "End position (residue coords). If end is a definite range, this will be "
-    "the min end position"
-)
-end1_descr = (
-    "Only set when end is a definite range, this will be the max end " "position"
-)
-start_pos_type = "Type of the start value in VRS Sequence Location"
-end_pos_type = "Type of the end value in VRS Sequence Location"
-assembly_descr = (
-    "Assembly. Ignored, along with `chromosome`, if `accession` is set. "
-    "If `accession` is not set, must provide both `assembly` and "
-    "`chromosome`."
-)
-chr_descr = (
-    "Chromosome.  Must be contain 'chr' prefix, i.e 'chr7'. Must set when "
-    "`assembly` is set."
-)
-accession_descr = (
-    "Genomic accession. If `accession` is set, will ignore `assembly` "
-    "and `chromosome`. If `accession` not set, must provide both "
-    "`assembly` and `chromosome`."
-)
-total_copies_descr = "Total copies for Copy Number Count variation object"
 
 
 @app.post(

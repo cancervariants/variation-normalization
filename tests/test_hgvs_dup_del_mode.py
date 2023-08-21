@@ -853,19 +853,6 @@ def genomic_dup6_free_text_rse_lse(genomic_dup6_free_text):
 
 
 @pytest.fixture(scope="module")
-def genomic_del1():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
-        "type": "VariationDescriptor",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "vrs_ref_allele_seq": "T",
-    }
-    return params
-
-
-@pytest.fixture(scope="module")
 def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = deepcopy(genomic_del1)
@@ -990,19 +977,6 @@ def genomic_del1_free_text_rse(genomic_del1_free_text, genomic_del1_free_text_se
         },
     }
     return VariationDescriptor(**params)
-
-
-@pytest.fixture(scope="module")
-def genomic_del2():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
-        "type": "VariationDescriptor",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
-    }
-    return params
 
 
 @pytest.fixture(scope="module")
