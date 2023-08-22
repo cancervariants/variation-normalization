@@ -465,7 +465,6 @@ def gnomad_vcf_genomic_delins5():
             "state": {"type": "LiteralSequenceExpression", "sequence": "G"},
         },
         "molecule_context": "genomic",
-        "structural_type": "SO:1000032",
         "vrs_ref_allele_seq": "GG",
     }
     return VariationDescriptor(**params)

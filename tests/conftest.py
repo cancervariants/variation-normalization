@@ -407,7 +407,6 @@ def genomic_del1():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "T",
     }
     return params
@@ -462,7 +461,6 @@ def genomic_del2():
         "variation_id": "",
         "variation": dict(),
         "molecule_context": "genomic",
-        "structural_type": "SO:0000159",
         "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
     }
     return params
