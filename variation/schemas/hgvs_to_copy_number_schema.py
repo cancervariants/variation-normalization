@@ -1,7 +1,7 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Optional, Type
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberChange, CopyNumberCount, Text
+from ga4gh.vrs import models
 from pydantic import StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceResponse
@@ -11,13 +11,13 @@ class HgvsToCopyNumberCountService(ServiceResponse):
     """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    copy_number_count: Optional[Union[CopyNumberCount, Text]]
+    copy_number_count: Optional[models.CopyNumberCount] = None
 
     class Config:
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["HgvsToCopyNumberCountService"]
         ) -> None:
             """Configure OpenAPI schema."""
@@ -52,13 +52,13 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
     """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    copy_number_change: Optional[Union[CopyNumberChange, Text]]
+    copy_number_change: Optional[models.CopyNumberChange] = None
 
     class Config:
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["HgvsToCopyNumberChangeService"]
         ) -> None:
             """Configure OpenAPI schema."""

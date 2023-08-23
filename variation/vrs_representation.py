@@ -6,7 +6,6 @@ from cool_seq_tool.data_sources import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
-from ga4gh.vrsatile.pydantic.vrs_models import Allele
 from pydantic import ValidationError
 
 from variation.schemas.token_response_schema import (
@@ -54,32 +53,28 @@ class VRSRepresentation:
         return start, end
 
     @staticmethod
-    def get_start_indef_range(start: int) -> models.IndefiniteRange:
+    def get_start_indef_range(start: int) -> models.Range:
         """Return indefinite range given start coordinate
 
         :param int start: Start position (assumes 1-based)
-        :return: Indefinite range model
+        :return: Range
         """
-        return models.IndefiniteRange(
-            value=start - 1, comparator="<=", type="IndefiniteRange"
-        )
+        return models.Range(root=[None, start - 1])
 
     @staticmethod
-    def get_end_indef_range(end: int) -> models.IndefiniteRange:
+    def get_end_indef_range(end: int) -> models.Range:
         """Return indefinite range given end coordinate
 
         :param int end: End position (assumes 1-based)
-        :return: Indefinite range model
+        :return: Range model
         """
-        return models.IndefiniteRange(
-            value=end, comparator=">=", type="IndefiniteRange"
-        )
+        return models.Range(root=[end, None])
 
     @staticmethod
     def get_sequence_loc(
         ac: str,
-        start: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
-        end: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
+        start: Union[int, models.Range],
+        end: Union[int, models.Range],
     ) -> models.Location:
         """Return VRS location
 
@@ -89,7 +84,7 @@ class VRSRepresentation:
         :return: VRS Location model
         """
         return models.SequenceLocation(
-            sequence_id=coerce_namespace(ac),
+            sequence=coerce_namespace(ac),
             start=start,
             end=end,
             type="SequenceLocation",
@@ -98,13 +93,13 @@ class VRSRepresentation:
     def vrs_allele(
         self,
         ac: str,
-        start: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
-        end: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
-        sstate: Union[
-            models.LiteralSequenceExpression,
-            models.DerivedSequenceExpression,
-            models.RepeatedSequenceExpression,
-        ],
+        start: Union[int, models.Range],
+        end: Union[int, models.Range],
+        sstate: models.LiteralSequenceExpression,
+        # sstate: Union[
+        #     models.LiteralSequenceExpression,
+        #     models.RepeatedSequenceExpression,
+        # ],
         alt_type: AltType,
         errors: List[str],
     ) -> Optional[Dict]:
@@ -137,16 +132,16 @@ class VRSRepresentation:
             return None
 
         seq_id, w = self.seqrepo_access.translate_identifier(
-            allele.location.sequence_id._value, "ga4gh"
+            allele.location.sequence.root, "ga4gh"
         )
         if seq_id:
             seq_id = seq_id[0]
-            allele.location.sequence_id = seq_id
+            allele.location.sequence = seq_id
             allele.location.id = ga4gh_identify(allele.location)
             allele.id = ga4gh_identify(allele)
-            allele_dict = allele.as_dict()
+            allele_dict = allele.dict()
             try:
-                Allele(**allele_dict)
+                models.Allele(**allele_dict)
             except ValidationError as e:
                 errors.append(str(e))
                 return None
@@ -231,9 +226,7 @@ class VRSRepresentation:
             errors.append(f"alt_type not supported: {alt_type}")
             return None
 
-        start_vo = models.Number(value=new_start, type="Number")
-        end_vo = models.Number(value=new_end, type="Number")
         sstate = models.LiteralSequenceExpression(
             sequence=state, type="LiteralSequenceExpression"
         )
-        return self.vrs_allele(ac, start_vo, end_vo, sstate, alt_type, errors)
+        return self.vrs_allele(ac, new_start, new_end, sstate, alt_type, errors)

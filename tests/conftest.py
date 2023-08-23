@@ -1,10 +1,9 @@
 """Create methods used throughout tests."""
 import asyncio
-from copy import deepcopy
 
 import pytest
 from cool_seq_tool import CoolSeqTool
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
+from ga4gh.vrs import models
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -109,68 +108,48 @@ def braf_600loc():
 def braf_v600e(braf_600loc):
     """Create BRAF V600E protein test fixture."""
     params = {
-        "id": "normalize.variation:BRAF%20V600E",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
-            "location": braf_600loc,
-            "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
-            "type": "Allele",
-        },
-        "molecule_context": "protein",
-        "vrs_ref_allele_seq": "V",
-        "gene_context": "hgnc:1097",
+        "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
+        "location": braf_600loc,
+        "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
     }
-    return VariationDescriptor(**params)
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="session")
 def vhl_reference_agree():
     """Create NP_000542.1:p.Pro61 fixture."""
     params = {
-        "id": "normalize.variation:NP_000542.1%3Ap.Pro61%3D",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:VA.hFvpLOEfU4Qtxd1_pdSx-_XnIJng9Xnb",
-            "location": {
-                "id": "ga4gh:SL.Kx99ER-oHCNP3RwwatOYn9IN5LRRxiy-",
-                "end": {"value": 61, "type": "Number"},
-                "start": {"value": 60, "type": "Number"},
-                "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
-                "type": "SequenceLocation",
-            },
-            "state": {"sequence": "P", "type": "LiteralSequenceExpression"},
-            "type": "Allele",
+        "id": "ga4gh:VA.hFvpLOEfU4Qtxd1_pdSx-_XnIJng9Xnb",
+        "location": {
+            "id": "ga4gh:SL.Kx99ER-oHCNP3RwwatOYn9IN5LRRxiy-",
+            "end": {"value": 61, "type": "Number"},
+            "start": {"value": 60, "type": "Number"},
+            "sequence_id": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "type": "SequenceLocation",
         },
-        "molecule_context": "protein",
-        "vrs_ref_allele_seq": "P",
-        "gene_context": "hgnc:12687",
+        "state": {"sequence": "P", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
     }
-    return VariationDescriptor(**params)
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="session")
 def protein_insertion():
     """Create test fixture for NP protein insertion."""
     params = {
-        "id": "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:VA.Daydg17safvIKs_ENTrvKpfoSooKgImP",
-            "location": {
-                "id": "ga4gh:SL.ozw2OUd_hkRUcAo4zUM_jH40Wlbd_lb0",
-                "end": {"value": 770, "type": "Number"},
-                "start": {"value": 770, "type": "Number"},
-                "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
-                "type": "SequenceLocation",
-            },
-            "state": {"sequence": "GL", "type": "LiteralSequenceExpression"},
-            "type": "Allele",
+        "id": "ga4gh:VA.Daydg17safvIKs_ENTrvKpfoSooKgImP",
+        "location": {
+            "id": "ga4gh:SL.ozw2OUd_hkRUcAo4zUM_jH40Wlbd_lb0",
+            "end": {"value": 770, "type": "Number"},
+            "start": {"value": 770, "type": "Number"},
+            "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            "type": "SequenceLocation",
         },
-        "molecule_context": "protein",
-        "gene_context": "hgnc:3236",
+        "state": {"sequence": "GL", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
     }
-    return VariationDescriptor(**params)
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="session")
@@ -179,25 +158,18 @@ def protein_deletion_np_range():
     range for deletion.
     """
     params = {
-        "id": "normalize.variation:NP_004439.2%3Ap.Leu755_Thr759del",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:VA.gb8REjJatcpIgb1B3LKiIDI4DhJd70Bk",
-            "location": {
-                "id": "ga4gh:SL.Ca3e2urICwddGClFXppmmMeGr3Zqg-i8",
-                "end": {"value": 759, "type": "Number"},
-                "start": {"value": 754, "type": "Number"},
-                "sequence_id": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
-                "type": "SequenceLocation",
-            },
-            "state": {"sequence": "", "type": "LiteralSequenceExpression"},
-            "type": "Allele",
+        "id": "ga4gh:VA.gb8REjJatcpIgb1B3LKiIDI4DhJd70Bk",
+        "location": {
+            "id": "ga4gh:SL.Ca3e2urICwddGClFXppmmMeGr3Zqg-i8",
+            "end": {"value": 759, "type": "Number"},
+            "start": {"value": 754, "type": "Number"},
+            "sequence_id": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
+            "type": "SequenceLocation",
         },
-        "molecule_context": "protein",
-        "vrs_ref_allele_seq": "LRENT",
-        "gene_context": "hgnc:3430",
+        "state": {"sequence": "", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
     }
-    return VariationDescriptor(**params)
+    return models.Alleel(**params)
 
 
 @pytest.fixture(scope="session")
@@ -338,29 +310,15 @@ def genomic_del1_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del1():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10149811del",
-        "type": "VariationDescriptor",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "vrs_ref_allele_seq": "T",
-    }
-    return params
-
-
-@pytest.fixture(scope="session")
-def genomic_del1_lse(genomic_del1, genomic_del1_seq_loc):
+def genomic_del1_lse(genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
-    params = deepcopy(genomic_del1)
-    params["variation"] = {
+    params = {
         "type": "Allele",
         "id": "ga4gh:VA.FVRzUwKTV-A-8zvxPUyREBR9mCunjIPO",
         "location": genomic_del1_seq_loc,
         "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
-    return VariationDescriptor(**params)
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="session")
@@ -387,28 +345,15 @@ def genomic_del2_seq_loc():
 
 
 @pytest.fixture(scope="session")
-def genomic_del2():
-    """Create test fixture containing params for genomic del VD."""
-    params = {
-        "id": "normalize.variation:NC_000003.12%3Ag.10146595_10146613del",
-        "type": "VariationDescriptor",
-        "variation": dict(),
-        "molecule_context": "genomic",
-        "vrs_ref_allele_seq": "ATGTTGACGGACAGCCTAT",
-    }
-    return params
-
-
-@pytest.fixture(scope="session")
-def genomic_del2_lse(genomic_del2, genomic_del2_seq_loc):
+def genomic_del2_lse(genomic_del2_seq_loc):
     """Create a test fixture for genomic del LSE."""
-    genomic_del2["variation"] = {
+    params = {
         "type": "Allele",
         "id": "ga4gh:VA.UgJSDSWAaJFwhRm56LA0Gez47_PYqv0k",
         "location": genomic_del2_seq_loc,
         "state": {"type": "LiteralSequenceExpression", "sequence": ""},
     }
-    return VariationDescriptor(**genomic_del2)
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="session")
@@ -488,69 +433,29 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 def braf_amplification(braf_ncbi_seq_loc):
     """Create test fixture for BRAF Amplification"""
     params = {
-        "id": "normalize.variation:BRAF%20Amplification",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:CX.1RJp1zW60x2t4Exc4965_a3CvYFtsL4q",
-            "subject": braf_ncbi_seq_loc,
-            "copy_change": "efo:0030072",
-            "type": "CopyNumberChange",
-        },
-        "molecule_context": "genomic",
-        "gene_context": "hgnc:1097",
+        "id": "ga4gh:CX.1RJp1zW60x2t4Exc4965_a3CvYFtsL4q",
+        "subject": braf_ncbi_seq_loc,
+        "copy_change": "efo:0030072",
+        "type": "CopyNumberChange",
     }
-    return VariationDescriptor(**params)
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="session")
 def prpf8_amplification(prpf8_ncbi_seq_loc):
     """Create test fixture for PRPF8 Amplification"""
     params = {
-        "id": "normalize.variation:PRPF8%20AMPLIFICATION",
-        "type": "VariationDescriptor",
-        "variation": {
-            "id": "ga4gh:CX.juBTsOcCmUPHUAMu-s-Bu0oZhj1VktTL",
-            "subject": prpf8_ncbi_seq_loc,
-            "copy_change": "efo:0030072",
-            "type": "CopyNumberChange",
-        },
-        "molecule_context": "genomic",
-        "gene_context": "hgnc:17340",
+        "id": "ga4gh:CX.juBTsOcCmUPHUAMu-s-Bu0oZhj1VktTL",
+        "subject": prpf8_ncbi_seq_loc,
+        "copy_change": "efo:0030072",
+        "type": "CopyNumberChange",
     }
-    return VariationDescriptor(**params)
+    return models.CopyNumberChange(**params)
 
 
-def assertion_checks(normalize_response, test_variation, label, ignore_id=False):
+def assertion_checks(normalize_response, test_variation):
     """Check that normalize_response and test_variation are equal."""
-    if not ignore_id:
-        assert normalize_response.id == test_variation.id, "id"
-    assert normalize_response.label == label
     assert normalize_response.type == test_variation.type, "type"
-    if test_variation.variation.type != "Text":
-        if test_variation.variation.id:
-            assert (
-                normalize_response.variation.id == test_variation.variation.id
-            ), "variation.id"
-        assert normalize_response.variation == test_variation.variation, "variation"
-    else:
-        if not ignore_id:
-            assert normalize_response.variation.id == test_variation.variation.id
-        assert normalize_response.variation.type == test_variation.variation.type
-        assert (
-            normalize_response.variation.definition
-            == test_variation.variation.definition
-        )
-    assert (
-        normalize_response.molecule_context == test_variation.molecule_context
-    ), "molecule_context"
-    assert (
-        normalize_response.vrs_ref_allele_seq == test_variation.vrs_ref_allele_seq
-    ), "vrs_ref_allele_seq"
-
-    # Don't need to check actual response from gene normalizer
-    # Just check that if it's given in the test fixture, that it's given in the actual
-    resp_gene_context = normalize_response.gene_context
-    if test_variation.gene_context:
-        assert resp_gene_context
-    else:
-        assert not resp_gene_context
+    assert normalize_response.variation.dict(
+        exclude_none=True
+    ) == test_variation.variation.dict(exclude_none=True), "variation"

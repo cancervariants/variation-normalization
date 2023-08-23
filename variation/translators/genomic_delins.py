@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import (
@@ -36,7 +36,7 @@ class GenomicDelIns(Translator):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation

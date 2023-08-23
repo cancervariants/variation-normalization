@@ -3,8 +3,6 @@ from typing import List, NamedTuple, Optional, Union
 
 from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
@@ -83,7 +81,7 @@ class GenomicDelDupTranslator(Translator):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
@@ -195,7 +193,6 @@ class GenomicDelDupTranslator(Translator):
                 vrs_seq_loc_ac_status = mane["status"]
                 pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
                 pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
-                classification.molecule_context = MoleculeContext.TRANSCRIPT
             else:
                 return None
 
@@ -214,7 +211,7 @@ class GenomicDelDupTranslator(Translator):
         if not seq_id:
             return None
 
-        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).as_dict()
+        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).dict()
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(

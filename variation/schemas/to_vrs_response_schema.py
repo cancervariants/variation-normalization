@@ -1,14 +1,7 @@
 """Module for to_vrs endpoint response schema."""
 from typing import Any, Dict, List, Optional, Type, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import (
-    Allele,
-    CopyNumberChange,
-    CopyNumberCount,
-    Haplotype,
-    Text,
-    VariationSet,
-)
+from ga4gh.vrs import models
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 
@@ -22,12 +15,9 @@ class ToVRSService(BaseModel):
     warnings: Optional[List[StrictStr]]
     variations: Optional[
         Union[
-            List[Allele],
-            List[Text],
-            List[Haplotype],
-            List[CopyNumberCount],
-            List[CopyNumberChange],
-            List[VariationSet],
+            List[models.Allele],
+            List[models.CopyNumberCount],
+            List[models.CopyNumberChange],
         ]
     ]
     service_meta_: ServiceMeta
@@ -36,7 +26,9 @@ class ToVRSService(BaseModel):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ToVRSService"]) -> None:
+        def json_schema_extra(
+            schema: Dict[str, Any], model: Type["ToVRSService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)

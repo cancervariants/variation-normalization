@@ -2,7 +2,6 @@
 from typing import Dict, List, Literal, NamedTuple, Optional, Tuple, Union
 
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
@@ -161,7 +160,7 @@ class AmbiguousTranslator(Translator):
         seq_id = self.translate_sequence_identifier(ac, warnings)
 
         return AmbiguousSequenceLocation(
-            seq_loc=self.vrs.get_sequence_loc(seq_id, start, end).as_dict()
+            seq_loc=self.vrs.get_sequence_loc(seq_id, start, end).dict()
             if seq_id
             else None,
             outer_coords=outer_coords,
@@ -174,7 +173,7 @@ class AmbiguousTranslator(Translator):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation

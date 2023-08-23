@@ -4,9 +4,7 @@ from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
 from cool_seq_tool.data_sources import SeqRepoAccess
-from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, Text
 
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
@@ -56,7 +54,7 @@ class ToVRS(VRSRepresentation):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Tuple[List[TranslationResult], List[str]]:
         """Get translation results
@@ -90,16 +88,11 @@ class ToVRS(VRSRepresentation):
 
         return translations, warnings
 
-    async def to_vrs(
-        self, q: str, untranslatable_returns_text: bool = False
-    ) -> ToVRSService:
+    async def to_vrs(self, q: str) -> ToVRSService:
         """Return a VRS-like representation of all validated variations for a query.
 
         :param str q: The variation to translate (HGVS, gnomAD VCF, or free text) on
             GRCh37 or GRCh38 assembly
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` returns empty list when
-            unable to translate or normalize query.
         :return: ToVRSService containing VRS variations and warnings
         """
         warnings = []
@@ -138,12 +131,7 @@ class ToVRS(VRSRepresentation):
             )
 
         if not translations:
-            if untranslatable_returns_text and q and q.strip():
-                text = models.Text(definition=q, type="Text")
-                text.id = ga4gh_identify(text)
-                variations = [Text(**text.as_dict())]
-            else:
-                variations = []
+            variations = []
         else:
             variations = []
             # Ensure only unique VRS variations are in the list of variations returned

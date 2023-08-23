@@ -75,11 +75,7 @@ class QueryHandler:
             translator,
         ]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
-        normalize_params = to_vrs_params + [
-            gene_query_handler,
-            transcript_mappings,
-            uta_db,
-        ]
+        normalize_params = to_vrs_params + [uta_db]
         self.normalize_handler = Normalize(*normalize_params)
 
         mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings

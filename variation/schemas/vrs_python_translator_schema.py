@@ -1,8 +1,8 @@
 """Module for vrs-python translator endpoint response schema"""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Literal, Optional, Type, Union
 
-from ga4gh.vrsatile.pydantic.vrs_models import Allele
+from ga4gh.vrs import models
 from pydantic import BaseModel
 from pydantic.types import StrictStr
 
@@ -12,9 +12,11 @@ from variation.schemas.normalize_response_schema import ServiceMeta
 class VrsPythonMeta(BaseModel):
     """Metadata regarding vrs-python dependency"""
 
-    name = "vrs-python"
+    name: Literal["vrs-python"] = "vrs-python"
     version: StrictStr
-    url = "https://github.com/ga4gh/vrs-python"
+    url: Literal[
+        "https://github.com/ga4gh/vrs-python"
+    ] = "https://github.com/ga4gh/vrs-python"
 
 
 class TranslateFromFormat(str, Enum):
@@ -36,16 +38,16 @@ class TranslateToFormat(str, Enum):
 class TranslateToQuery(BaseModel):
     """Query fields for Translate To Service"""
 
-    variation: Allele
+    variation: models.Allele
     fmt: TranslateToFormat
 
     class Config:
         """Class configs."""
 
-        allow_population_by_field_name = True
+        populate_by_name = True
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["TranslateToQuery"]
         ) -> None:
             """Configure OpenAPI schema"""
@@ -73,16 +75,16 @@ class TranslateToQuery(BaseModel):
 class TranslateToHGVSQuery(BaseModel):
     """Query fields for Translate To HGVS Service"""
 
-    variation: Allele
+    variation: models.Allele
     namespace: Optional[str] = None
 
     class Config:
         """Class configs."""
 
-        allow_population_by_field_name = True
+        populate_by_name = True
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["TranslateToHGVSQuery"]
         ) -> None:
             """Configure OpenAPI schema"""
@@ -126,7 +128,7 @@ class TranslateService(BaseModel):
 class TranslateFromService(TranslateService):
     """Response schema for vrs-python translate from endpoint"""
 
-    variation: Optional[Allele] = None
+    variation: Optional[models.Allele] = None
 
 
 class TranslateToService(TranslateService):

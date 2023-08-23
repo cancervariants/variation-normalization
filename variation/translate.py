@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrs import models
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
@@ -88,7 +88,7 @@ class Translate:
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation

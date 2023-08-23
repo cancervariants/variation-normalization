@@ -28,7 +28,9 @@ class ToCdnaService(ToCdna):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ToCdnaService"]) -> None:
+        def json_schema_extra(
+            schema: Dict[str, Any], model: Type["ToCdnaService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)
@@ -61,7 +63,9 @@ class ToGenomicService(ToGenomic):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ToCdnaService"]) -> None:
+        def json_schema_extra(
+            schema: Dict[str, Any], model: Type["ToCdnaService"]
+        ) -> None:
             """Configure OpenAPI schema."""
             if "title" in schema.keys():
                 schema.pop("title", None)

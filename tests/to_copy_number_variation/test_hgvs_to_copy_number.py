@@ -1287,7 +1287,9 @@ async def test_invalid_cnv(test_cnv_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
-        q, copy_change="efo:0030071", do_liftover=True, untranslatable_returns_text=True
+        q,
+        copy_change="efo:0030071",
+        do_liftover=True,
     )
     assert set(resp.warnings) == {
         "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"

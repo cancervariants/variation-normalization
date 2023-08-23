@@ -1,22 +1,28 @@
 """Module containing schemas for services"""
 import re
 from enum import Enum
-from typing import Any, Dict, Literal, Optional, Type, Union
+from typing import Any, Dict, Literal, Optional, Type
 
-from ga4gh.vrsatile.pydantic.vrs_models import (
-    Comparator,
-    CopyChange,
-    CopyNumberChange,
-    CopyNumberCount,
-    SequenceLocation,
-    Text,
-    VRSTypes,
-)
-from pydantic import BaseModel, Field, StrictBool, StrictInt, StrictStr, root_validator
-from pydantic.main import ModelMetaclass
+from ga4gh.vrs import models
+from pydantic import BaseModel, Field, StrictBool, StrictInt, StrictStr, model_validator
 
 from variation.schemas.normalize_response_schema import ServiceResponse
 from variation.version import __version__
+
+
+class ParsedPosType(str, Enum):
+    """Define position type for parsed to cnv endpoints"""
+
+    NUMBER = "number"
+    DEFINITE_RANGE = "definite_range"
+    INDEFINITE_RANGE = "indefinite_range"
+
+
+class Comparator(str, Enum):
+    """A range comparator."""
+
+    LT_OR_EQUAL = "<="
+    GT_OR_EQUAL = ">="
 
 
 class ClinVarAssembly(str, Enum):
@@ -30,7 +36,7 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+def validate_parsed_fields(cls, v: Dict) -> Dict:
     """Validate base copy number query fields
     - `accession` or both `assembly` and `chromosome` must be provided
     - `start1` is required when `start_pos_type` is a definite
@@ -55,20 +61,20 @@ def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
 
     start0 = v["start0"]
     start1 = v.get("start1")
-    if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
+    if v["start_pos_type"] == "DefiniteRange":
         assert start1 is not None, "`start1` is required for definite ranges"
         assert start1 > start0, "`start0` must be less than `start1`"
-    elif v["start_pos_type"] == VRSTypes.INDEFINITE_RANGE:
+    elif v["start_pos_type"] == "IndefiniteRange":
         assert v.get(
             "start_pos_comparator"
         ), "`start_pos_comparator` is required for indefinite ranges"  # noqa: E501
 
     end0 = v["end0"]
     end1 = v.get("end1")
-    if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
+    if v["end_pos_type"] == "DefiniteRange":
         assert end1 is not None, "`end1` is required for definite ranges"
         assert end1 > end0, "`end0` must be less than `end1`"
-    elif v["end_pos_type"] == VRSTypes.INDEFINITE_RANGE:
+    elif v["end_pos_type"] == "IndefiniteRange":
         assert v.get(
             "end_pos_comparator"
         ), "`end_pos_comparator` is required for indefinite ranges"  # noqa: E501
@@ -134,16 +140,13 @@ class ParsedToCopyNumberQuery(BaseModel):
             "(#_?), set to '<='. To represent (?_#), set to '>='."
         ),
     )
-    start_pos_type: Literal[
-        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ] = Field(
-        VRSTypes.NUMBER,
+    start_pos_type: ParsedPosType = Field(
+        ParsedPosType.NUMBER,
         description="The type of the start value in the VRS SequenceLocation",
     )
-    end_pos_type: Literal[
-        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ] = Field(
-        VRSTypes.NUMBER, description="Type of the end value in the VRS SequenceLocation"
+    end_pos_type: ParsedPosType = Field(
+        ParsedPosType.NUMBER,
+        description="Type of the end value in the VRS SequenceLocation",
     )
     start1: Optional[StrictInt] = Field(
         None,
@@ -161,14 +164,6 @@ class ParsedToCopyNumberQuery(BaseModel):
     )
     do_liftover: StrictBool = Field(
         False, description="Whether or not to liftover to GRCh38 assembly"
-    )
-    untranslatable_returns_text: StrictBool = Field(
-        False,
-        description=(
-            "When set to `True`, return VRS Text Object when unable to "
-            "translate or normalize query. When set to `False`, return `None` "
-            "when unable to translate or normalize query."
-        ),
     )
 
 
@@ -190,9 +185,9 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
             "be the `max` copies."
         ),
     )
-    copies_type: Literal[
-        VRSTypes.NUMBER, VRSTypes.DEFINITE_RANGE, VRSTypes.INDEFINITE_RANGE
-    ] = Field(VRSTypes.NUMBER, description="Type for the `copies` in the `subject`")
+    copies_type: Literal["Number", "DefiniteRange", "IndefiniteRange"] = Field(
+        "Number", description="Type for the `copies` in the `subject`"
+    )
     copies_comparator: Optional[Comparator] = Field(
         None,
         description=(
@@ -201,24 +196,24 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         ),
     )
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+    @model_validator(mode="before")
+    def validate_fields(cls, v: Dict) -> Dict:
         """Validate fields.
 
-        - `copies1` should exist when `copies_type == VRSTypes.DEFINITE_RANGE`
+        - `copies1` should exist when `copies_type == "DefiniteRange"`
         - `copies_comparator` should exist when
-            `copies_type == VRSTypes.INDEFINITE_RANGE`
+            `copies_type == "IndefiniteRange"`
         """
         validate_parsed_fields(cls, v)
         copies1 = v.get("copies1")
         copies_type = v.get("copies_type")
         copies_comparator = v.get("copies_comparator")
 
-        if copies_type == VRSTypes.DEFINITE_RANGE:
+        if copies_type == "DefiniteRange":
             assert (
                 copies1
             ), "`copies1` must be provided for `copies_type == DefiniteRange`"  # noqa: E501
-        elif copies_type == VRSTypes.INDEFINITE_RANGE:
+        elif copies_type == "IndefiniteRange":
             assert (
                 copies_comparator
             ), "`copies_comparator` must be provided for `copies_type == IndefiniteRange`"  # noqa: E501
@@ -229,7 +224,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["ParsedToCnVarQuery"]
         ) -> None:
             """Configure OpenAPI schema."""
@@ -254,20 +249,19 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
                 "start1": None,
                 "end1": None,
                 "do_liftover": False,
-                "untranslatable_returns_text": False,
             }
 
 
 class ParsedToCnVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Count"""
 
-    copy_number_count: Optional[Union[Text, CopyNumberCount]]
+    copy_number_count: Optional[models.CopyNumberCount] = None
 
     class Config:
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["ParsedToCnVarService"]
         ) -> None:
             """Configure OpenAPI schema."""
@@ -308,10 +302,10 @@ class ParsedToCnVarService(ServiceResponse):
 class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
     """Define query for parsed to copy number change variation endpoint"""
 
-    copy_change: CopyChange
+    copy_change: models.CopyChange
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+    @model_validator(mode="before")
+    def validate_fields(cls, v: Dict) -> Dict:
         """Validate fields"""
         validate_parsed_fields(cls, v)
         return v
@@ -320,7 +314,7 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["ParsedToCxVarQuery"]
         ) -> None:
             """Configure OpenAPI schema."""
@@ -340,20 +334,19 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
                 "start1": None,
                 "end1": None,
                 "do_liftover": False,
-                "untranslatable_returns_text": False,
             }
 
 
 class ParsedToCxVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Change"""
 
-    copy_number_change: Optional[Union[Text, CopyNumberChange]]
+    copy_number_change: Optional[models.CopyNumberChange] = None
 
     class Config:
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["ParsedToCxVarService"]
         ) -> None:
             """Configure OpenAPI schema."""
@@ -387,10 +380,10 @@ class AmplificationToCxVarQuery(BaseModel):
     """Define query for amplification to copy number change variation endpoint"""
 
     gene: str
-    sequence_id: Optional[str]
-    start: Optional[int]
-    end: Optional[int]
-    sequence_location: Optional[SequenceLocation]
+    sequence_id: Optional[str] = None
+    start: Optional[int] = None
+    end: Optional[int] = None
+    sequence_location: Optional[models.SequenceLocation] = None
 
 
 class AmplificationToCxVarService(ServiceResponse):
@@ -398,13 +391,13 @@ class AmplificationToCxVarService(ServiceResponse):
 
     query: Optional[AmplificationToCxVarQuery] = None
     amplification_label: Optional[str]
-    copy_number_change: Optional[Union[Text, CopyNumberChange]]
+    copy_number_change: Optional[models.CopyNumberChange]
 
     class Config:
         """Configure model."""
 
         @staticmethod
-        def schema_extra(
+        def json_schema_extra(
             schema: Dict[str, Any], model: Type["AmplificationToCxVarService"]
         ) -> None:
             """Configure OpenAPI schema."""
