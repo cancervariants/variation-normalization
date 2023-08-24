@@ -138,10 +138,8 @@ class AmbiguousTranslator(Translator):
             and outer coordinates
         """
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
-            start = models.DefiniteRange(
-                min=pos0 - 1, max=pos1 - 1, type="DefiniteRange"
-            )
-            end = models.DefiniteRange(min=pos2 + 1, max=pos3 + 1, type="DefiniteRange")
+            start = models.Range([pos0 - 1, pos1 - 1])
+            end = models.Range([pos2 + 1, pos3 + 1])
             outer_coords = (pos0, pos3)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_2:
             start = self.vrs.get_start_indef_range(pos1)
@@ -149,10 +147,10 @@ class AmbiguousTranslator(Translator):
             outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_5:
             start = self.vrs.get_start_indef_range(pos1)
-            end = models.Number(value=pos2, type="Number")
+            end = pos2
             outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_7:
-            start = models.Number(value=pos0 - 1, type="Number")
+            start = pos0 - 1
             end = self.vrs.get_end_indef_range(pos2)
             outer_coords = (pos0, pos2)
         # No else since validator should catch if the ambiguous type is supported or not
@@ -160,7 +158,9 @@ class AmbiguousTranslator(Translator):
         seq_id = self.translate_sequence_identifier(ac, warnings)
 
         return AmbiguousSequenceLocation(
-            seq_loc=self.vrs.get_sequence_loc(seq_id, start, end).dict()
+            seq_loc=self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
+                exclude_none=True
+            )
             if seq_id
             else None,
             outer_coords=outer_coords,

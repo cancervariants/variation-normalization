@@ -1,10 +1,9 @@
 """Module for vrs-python translator endpoint response schema"""
 from enum import Enum
-from typing import Any, Dict, List, Literal, Optional, Type, Union
+from typing import List, Literal, Optional, Union
 
 from ga4gh.vrs import models
-from pydantic import BaseModel
-from pydantic.types import StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceMeta
 
@@ -41,35 +40,25 @@ class TranslateToQuery(BaseModel):
     variation: models.Allele
     fmt: TranslateToFormat
 
-    class Config:
-        """Class configs."""
-
-        populate_by_name = True
-
-        @staticmethod
-        def json_schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateToQuery"]
-        ) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation": {
-                    "id": "ga4gh:VA.SZBa9i7RbGcqpNrKYssI5wJ20-34K2-s",
+                    "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.EIeKWMSblp-B7TgXVm-JrHrbsf9czDhk",
+                        "id": "ga4gh:SL.pCSCIkMctSGDkNIlwmx__4_8o57wi7F-",
                         "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
-                        "start": {"type": "Number", "value": 140453135},
-                        "end": {"type": "Number", "value": 140453136},
+                        "sequence": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "start": 140453135,
+                        "end": 140453136,
                     },
                     "state": {"type": "LiteralSequenceExpression", "sequence": "T"},
                 },
                 "fmt": "hgvs",
             }
+        }
+    )
 
 
 class TranslateToHGVSQuery(BaseModel):
@@ -78,35 +67,25 @@ class TranslateToHGVSQuery(BaseModel):
     variation: models.Allele
     namespace: Optional[str] = None
 
-    class Config:
-        """Class configs."""
-
-        populate_by_name = True
-
-        @staticmethod
-        def json_schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateToHGVSQuery"]
-        ) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation": {
-                    "id": "ga4gh:VA.SZBa9i7RbGcqpNrKYssI5wJ20-34K2-s",
+                    "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.EIeKWMSblp-B7TgXVm-JrHrbsf9czDhk",
+                        "id": "ga4gh:SL.pCSCIkMctSGDkNIlwmx__4_8o57wi7F-",
                         "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
-                        "start": {"type": "Number", "value": 140453135},
-                        "end": {"type": "Number", "value": 140453136},
+                        "sequence": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "start": 140453135,
+                        "end": 140453136,
                     },
                     "state": {"type": "LiteralSequenceExpression", "sequence": "T"},
                 },
                 "namespace": "refseq",
             }
+        }
+    )
 
 
 class TranslateFromQuery(BaseModel):
@@ -120,7 +99,7 @@ class TranslateService(BaseModel):
     """Response schema for vrs-python translator endpoints"""
 
     query: Union[TranslateFromQuery, TranslateToQuery, TranslateToHGVSQuery]
-    warnings: Optional[List[StrictStr]]
+    warnings: List[StrictStr] = []
     service_meta_: ServiceMeta
     vrs_python_meta_: VrsPythonMeta
 

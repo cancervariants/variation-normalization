@@ -76,26 +76,24 @@ class Translator(ABC):
         """
 
     def translate_sequence_identifier(
-        self, sequence_id: str, errors: List[str]
+        self, sequence: str, errors: List[str]
     ) -> Optional[str]:
-        """Translate `sequence_id` to ga4gh identifier
+        """Translate `sequence` to ga4gh identifier
 
-        :param sequence_id: Sequence ID to translate
+        :param sequence: Sequence ID to translate
         :param errors: List of errors. This will get mutated if an error occurs when
             attempting to get ga4gh identifier
         :return: GA4GH Sequence Identifier if successful, else `None`
         """
         ga4gh_seq_id = None
         try:
-            ids = self.seqrepo_access.translate_sequence_identifier(
-                sequence_id, "ga4gh"
-            )
+            ids = self.seqrepo_access.translate_sequence_identifier(sequence, "ga4gh")
         except KeyError as e:
             errors.append(str(e))
         else:
             if not ids:
                 errors.append(
-                    f"Unable to find ga4gh sequence identifiers for: {sequence_id}"
+                    f"Unable to find ga4gh sequence identifiers for: {sequence}"
                 )
 
             ga4gh_seq_id = ids[0]
@@ -130,8 +128,8 @@ class Translator(ABC):
             if ext.name == "ensembl_locations":
                 if ext.value:
                     ensembl_loc = ext.value[0]
-                    gene_start = ensembl_loc["start"]["value"]
-                    gene_end = ensembl_loc["end"]["value"] - 1
+                    gene_start = ensembl_loc["start"]
+                    gene_end = ensembl_loc["end"] - 1
 
         if gene_start is None and gene_end is None:
             errors.append(

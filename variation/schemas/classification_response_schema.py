@@ -58,7 +58,7 @@ class Classification(BaseModel):
     """Classification for a list of tokens."""
 
     classification_type: ClassificationType
-    matching_tokens: List[Token]
+    matching_tokens: List[Token] = []
     nomenclature: Nomenclature
     gene_token: Optional[GeneToken] = None
     ac: Optional[StrictStr] = None

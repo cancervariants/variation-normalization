@@ -101,7 +101,7 @@ class ToCopyNumberVariation(ToVRS):
         :param q: Input query string
         :return: Valid results and list of warnings
         """
-        valid_results = None
+        valid_results = []
         warnings = []
 
         # Get tokens for input query
@@ -145,7 +145,7 @@ class ToCopyNumberVariation(ToVRS):
         self,
         copy_number_type: HGVSDupDelModeOption,
         do_liftover: bool,
-        valid_results: Tuple[List[ValidationResult], Optional[List[str]]],
+        valid_results: Tuple[List[ValidationResult], List[str]],
         warnings: List[str],
         baseline_copies: Optional[int] = None,
         copy_change: Optional[models.CopyChange] = None,
@@ -369,9 +369,7 @@ class ToCopyNumberVariation(ToVRS):
         pos_type: ParsedPosType,
         is_start: bool = True,
         pos1: Optional[int] = None,
-        # TODO: Fix me
-        comparator: Optional[int] = None,
-        # comparator: Optional[Comparator] = None,
+        comparator: Optional[Comparator] = None,
     ) -> Union[int, models.Range]:
         """Get VRS Sequence Location start and end values
 
@@ -390,16 +388,18 @@ class ToCopyNumberVariation(ToVRS):
             using definite range
         :return: VRS start or end value for sequence location
         """
-        if pos_type == "Number":
-            vrs_val = models.Number(value=pos0 - 1 if is_start else pos0, type="Number")
+        if pos_type == ParsedPosType.NUMBER:
+            vrs_val = pos0 - 1 if is_start else pos0
+        elif pos_type == ParsedPosType.DEFINITE_RANGE:
+            self._validate_ac_pos(accession, pos1)
+            vrs_val = models.Range(
+                [pos0 - 1 if is_start else pos0 + 1, pos1 - 1 if is_start else pos1 + 1]
+            )
         else:
-            # TODO: Fix this
-            vrs_val = models.Range(root=[None, None])
-            # vrs_val = models.IndefiniteRange(
-            #     comparator=comparator.value,
-            #     value=pos0 - 1 if is_start else pos0,
-            #     type="IndefiniteRange",
-            # )
+            if comparator == Comparator.LT_OR_EQUAL:
+                vrs_val = models.Range([None, pos0 - 1 if is_start else pos0])
+            else:
+                vrs_val = models.Range([pos0 - 1 if is_start else pos0, None])
 
         return vrs_val
 
@@ -453,13 +453,11 @@ class ToCopyNumberVariation(ToVRS):
             start1 = liftover_pos["start1"]
             end1 = liftover_pos["end1"]
 
-        sequence_ids, error = self.seqrepo_access.translate_identifier(
-            accession, "ga4gh"
-        )
+        sequences, error = self.seqrepo_access.translate_identifier(accession, "ga4gh")
         if error:
             raise ToCopyNumberError(error)
 
-        sequence_id = sequence_ids[0]
+        sequence = sequences[0]
 
         for pos in [start0, end0]:
             # validate start0 and end0 since they're always required
@@ -485,13 +483,13 @@ class ToCopyNumberVariation(ToVRS):
 
         seq_loc = models.SequenceLocation(
             type="SequenceLocation",
-            sequence_id=sequence_id,
+            sequence=sequence,
             start=start_vrs,
             end=end_vrs,
         )
         seq_loc.id = ga4gh_identify(seq_loc)
 
-        return seq_loc.dict() if seq_loc else seq_loc
+        return seq_loc.model_dump(exclude_none=True) if seq_loc else seq_loc
 
     def _liftover_pos(
         self,
@@ -590,27 +588,22 @@ class ToCopyNumberVariation(ToVRS):
             warnings.append(str(e))
         else:
             if is_cx:
-                variation = {
-                    "type": "CopyNumberChange",
-                    "subject": seq_loc,
-                    "copy_change": request_body.copy_change,
-                }
-                variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
-                variation = models.CopyNumberChange(**variation)
+                variation = models.CopyNumberChange(
+                    subject=seq_loc, copyChange=request_body.copy_change
+                )
+                variation.id = ga4gh_identify(variation)
             else:
-                if request_body.copies_type == "Number":
-                    copies = {"value": request_body.copies0, "type": "Number"}
-                elif request_body.copies_type == "Range":
-                    # TODO: Check this
-                    copies = [request_body.copies0, request_body.copies1]
-
-                variation = {
-                    "type": "CopyNumberCount",
-                    "subject": seq_loc,
-                    "copies": copies,
-                }
-                variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
-                variation = models.CopyNumberCount(**variation)
+                if request_body.copies_type == ParsedPosType.NUMBER:
+                    copies = request_body.copies0
+                elif request_body.copies_type == ParsedPosType.DEFINITE_RANGE:
+                    copies = models.Range([request_body.copies0, request_body.copies1])
+                else:
+                    if request_body.copies_comparator == Comparator.LT_OR_EQUAL:
+                        copies = models.Range([None, request_body.copies0])
+                    else:
+                        copies = models.Range([request_body.copies0, None])
+                variation = models.CopyNumberCount(subject=seq_loc, copies=copies)
+                variation.id = ga4gh_identify(variation)
 
         service_params = {
             "warnings": warnings,
@@ -628,27 +621,27 @@ class ToCopyNumberVariation(ToVRS):
             ParsedToCxVarService(**service_params)
             if is_cx
             else ParsedToCnVarService(**service_params)
-        )  # noqa: E501
+        )
 
     def amplification_to_cx_var(
         self,
         gene: str,
-        sequence_id: Optional[str] = None,
+        sequence: Optional[str] = None,
         start: Optional[int] = None,
         end: Optional[int] = None,
     ) -> AmplificationToCxVarService:
         """Return Copy Number Change Variation for Amplification query
         Parameter priority:
-            1. sequence_id, start, end (must provide ALL)
+            1. sequence, start, end (must provide ALL)
             2. use the gene-normalizer to get the SequenceLocation
 
         :param gene: Gene query
-        :param sequence_id: Sequence ID for the location. If set, must also provide
+        :param sequence: Sequence ID for the location. If set, must also provide
             `start` and `end`
         :param start: Start position as residue coordinate for the sequence location. If
-            set, must also provide `sequence_id` and `end`
+            set, must also provide `sequence` and `end`
         :param end: End position as residue coordinate for the sequence location. If
-            set, must also provide `sequence_id` and `start`
+            set, must also provide `sequence` and `start`
         :return: AmplificationToCxVarService containing Copy Number Change and
             list of warnings
         """
@@ -657,7 +650,7 @@ class ToCopyNumberVariation(ToVRS):
         variation = None
         try:
             og_query = AmplificationToCxVarQuery(
-                gene=gene, sequence_id=sequence_id, start=start, end=end
+                gene=gene, sequence=sequence, start=start, end=end
             )
         except ValidationError as e:
             warnings.append(str(e))
@@ -670,25 +663,25 @@ class ToCopyNumberVariation(ToVRS):
                 gene_descriptor = gene_norm_resp.gene_descriptor
                 gene_norm_label = gene_descriptor.label
                 amplification_label = f"{gene_norm_label} Amplification"
-                if all((sequence_id, start, end)):
+                if all((sequence, start, end)):
                     # User provided input to make sequence location
                     seq_id, w = self.seqrepo_access.translate_identifier(
-                        sequence_id, "ga4gh"
+                        sequence, "ga4gh"
                     )
                     if w:
                         warnings.append(w)
                     else:
                         # Validate start/end are actually on the sequence
                         _, w = self.seqrepo_access.get_reference_sequence(
-                            sequence_id, start, end
+                            sequence, start, end
                         )
                         if w:
                             warnings.append(w)
                         else:
                             vrs_location = models.SequenceLocation(
-                                sequence_id=seq_id[0],
-                                start=models.Number(value=start - 1),
-                                end=models.Number(value=end),
+                                sequence=seq_id[0],
+                                start=start - 1,
+                                end=end,
                             )
                 else:
                     # Use gene normalizer to get sequence location
@@ -707,10 +700,12 @@ class ToCopyNumberVariation(ToVRS):
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_cx = models.CopyNumberChange(
                         subject=vrs_location,
-                        copy_change=models.CopyChange.efo_0030072.value,
+                        copyChange=models.CopyChange.efo_0030072.value,
                     )
                     vrs_cx.id = ga4gh_identify(vrs_cx)
-                    variation = models.CopyNumberChange(**vrs_cx.dict())
+                    variation = models.CopyNumberChange(
+                        **vrs_cx.model_dump(exclude_none=True)
+                    )
             else:
                 warnings.append(f"gene-normalizer returned no match for gene: {gene}")
 

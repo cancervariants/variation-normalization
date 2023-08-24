@@ -10,10 +10,10 @@ from variation.schemas.validation_response_schema import ValidationResult
 class TranslationResult(BaseModel):
     """Translation Result"""
 
-    vrs_variation: Optional[Dict]
-    vrs_seq_loc_ac: Optional[StrictStr]
+    vrs_variation: Optional[Dict] = {}
+    vrs_seq_loc_ac: Optional[StrictStr] = None
     vrs_seq_loc_ac_status: StrictStr = "na"
-    og_ac: Optional[StrictStr]
+    og_ac: Optional[StrictStr] = None
     validation_result: ValidationResult
 
 

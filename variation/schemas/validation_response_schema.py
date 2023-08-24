@@ -1,8 +1,7 @@
 """Module for Validation Response Schema."""
 from typing import List, Optional
 
-from pydantic import BaseModel
-from pydantic.types import StrictBool, StrictInt, StrictStr
+from pydantic import BaseModel, StrictBool, StrictInt, StrictStr
 
 from variation.schemas.classification_response_schema import Classification
 

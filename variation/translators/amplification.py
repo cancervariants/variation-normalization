@@ -55,10 +55,10 @@ class Amplification(Translator):
         if priority_seq_loc:
             vrs_cx = models.CopyNumberChange(
                 subject=models.SequenceLocation(**priority_seq_loc),
-                copy_change=models.CopyChange.efo_0030072.value,
+                copyChange=models.CopyChange.efo_0030072,
             )
             vrs_cx.id = ga4gh_identify(vrs_cx)
-            vrs_cx = vrs_cx.dict()
+            vrs_cx = vrs_cx.model_dump(exclude_none=True)
         else:
             vrs_cx = None
             warnings.append(

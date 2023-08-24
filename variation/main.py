@@ -276,7 +276,7 @@ def vrs_python_translate_from(
     except BioutilsError as e:
         warnings.append(f"bioutils raised {type(e).__name__}: {e}")
     else:
-        vrs_variation = resp.dict()
+        vrs_variation = resp.model_dump(exclude_none=True)
 
     return TranslateFromService(
         query=TranslateFromQuery(variation=variation_query, fmt=fmt),
@@ -368,7 +368,7 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
         if valid VRS Allele, and warnings if found
     """
     query = request_body
-    request_body = request_body.dict(by_alias=True)
+    request_body = request_body.model_dump(by_alias=True)
     warnings = list()
 
     allele = _get_allele(request_body, warnings)
@@ -425,7 +425,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
         if valid VRS Allele, and warnings if found
     """
     query = request_body
-    request_body = request_body.dict(by_alias=True)
+    request_body = request_body.model_dump(by_alias=True)
     warnings = list()
 
     allele = _get_allele(request_body, warnings)
@@ -586,7 +586,7 @@ def parsed_to_cx_var(request_body: ParsedToCxVarQuery) -> ParsedToCxVarService:
 
 amplification_to_cx_var_descr = (
     "Translate amplification to VRS Copy Number Change "
-    "Variation. If `sequence_id`, `start`, and `end` are "
+    "Variation. If `sequence`, `start`, and `end` are "
     "all provided, will return a SequenceLocation with "
     "those properties. Else, gene-normalizer will be "
     "used to retrieve the SequenceLocation."
@@ -604,7 +604,7 @@ amplification_to_cx_var_descr = (
 )
 def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
-    sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
+    sequence: Optional[str] = Query(None, description="Sequence identifier"),
     start: Optional[int] = Query(
         None, description="Start position as residue coordinate"
     ),
@@ -612,22 +612,22 @@ def amplification_to_cx_var(
 ) -> AmplificationToCxVarService:
     """Given amplification query, return Copy Number Change Variation
     Parameter priority:
-        1. sequence_id, start, end (must provide ALL)
+        1. sequence, start, end (must provide ALL)
         2. use the gene-normalizer to get the SequenceLocation
 
     :param gene: Gene query
-    :param sequence_id: Sequence ID for the location. If set, must also provide `start`
+    :param sequence: Sequence ID for the location. If set, must also provide `start`
         and `end`
     :param start: Start position as residue coordinate for the sequence location.
-        If set, must also provide `sequence_id` and `end`
+        If set, must also provide `sequence` and `end`
     :param end: End position as residue coordinate for the sequence location. If set,
-        must also provide `sequence_id` and `start`
+        must also provide `sequence` and `start`
     :return: AmplificationToCxVarService containing Copy Number Change and
         list of warnings
     """
     resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
         gene=gene,
-        sequence_id=sequence_id,
+        sequence=sequence,
         start=start,
         end=end,
     )

@@ -59,7 +59,7 @@ class VRSRepresentation:
         :param int start: Start position (assumes 1-based)
         :return: Range
         """
-        return models.Range(root=[None, start - 1])
+        return models.Range([None, start - 1])
 
     @staticmethod
     def get_end_indef_range(end: int) -> models.Range:
@@ -68,7 +68,7 @@ class VRSRepresentation:
         :param int end: End position (assumes 1-based)
         :return: Range model
         """
-        return models.Range(root=[end, None])
+        return models.Range([end, None])
 
     @staticmethod
     def get_sequence_loc(
@@ -95,11 +95,9 @@ class VRSRepresentation:
         ac: str,
         start: Union[int, models.Range],
         end: Union[int, models.Range],
-        sstate: models.LiteralSequenceExpression,
-        # sstate: Union[
-        #     models.LiteralSequenceExpression,
-        #     models.RepeatedSequenceExpression,
-        # ],
+        sstate: Union[
+            models.LiteralSequenceExpression, models.ReferenceLengthExpression
+        ],
         alt_type: AltType,
         errors: List[str],
     ) -> Optional[Dict]:
@@ -135,11 +133,10 @@ class VRSRepresentation:
             allele.location.sequence.root, "ga4gh"
         )
         if seq_id:
-            seq_id = seq_id[0]
-            allele.location.sequence = seq_id
+            allele.location.sequence = models.IRI(seq_id[0])
             allele.location.id = ga4gh_identify(allele.location)
             allele.id = ga4gh_identify(allele)
-            allele_dict = allele.dict()
+            allele_dict = allele.model_dump(exclude_none=True)
             try:
                 models.Allele(**allele_dict)
             except ValidationError as e:

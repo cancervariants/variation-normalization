@@ -175,13 +175,13 @@ class GnomadVcfToProteinVariation(ToVRS):
         return valid_results
 
     def _get_refseq_alt_ac_from_variation(self, variation: Dict) -> str:
-        """Get genomic ac from variation sequence_id
+        """Get genomic ac from variation sequence
 
         :param Dict variation: VRS variation object
         :return: RefSeq genomic accession
         """
         # genomic ac should always be in 38
-        alt_ac = variation["location"]["sequence_id"]
+        alt_ac = variation["location"]["sequence"]
         aliases = self.seqrepo_access.sr.translate_identifier(
             alt_ac, target_namespaces="refseq"
         )

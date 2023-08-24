@@ -204,14 +204,16 @@ class GenomicDelDupTranslator(Translator):
                 alt = classification.matching_tokens[0].alt
 
         outer_coords = (pos0, pos1 if pos1 else pos0)
-        start = models.Number(value=pos0 - 1, type="Number")
-        end = models.Number(value=pos1 if pos1 else pos0, type="Number")
+        start = pos0 - 1
+        end = pos1 if pos1 else pos0
 
         seq_id = self.translate_sequence_identifier(ac, warnings)
         if not seq_id:
             return None
 
-        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).dict()
+        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
+            exclude_none=True
+        )
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(

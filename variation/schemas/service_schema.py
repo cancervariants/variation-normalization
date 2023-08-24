@@ -1,11 +1,12 @@
 """Module containing schemas for services"""
 from enum import Enum
-from typing import Any, Dict, Type
 
 from cool_seq_tool.schemas import ToCdnaService as ToCdna
 from cool_seq_tool.schemas import ToGenomicService as ToGenomic
+from pydantic import ConfigDict
 
 from variation.schemas.normalize_response_schema import ServiceMeta
+from variation.version import __version__
 
 
 class ClinVarAssembly(str, Enum):
@@ -24,19 +25,9 @@ class ToCdnaService(ToCdna):
 
     service_meta: ServiceMeta
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def json_schema_extra(
-            schema: Dict[str, Any], model: Type["ToCdnaService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "c_data": {
                     "c_ac": "NM_004333.6",
                     "c_start_pos": 1797,
@@ -44,14 +35,16 @@ class ToCdnaService(ToCdna):
                     "cds_start": 226,
                     "residue_mode": "inter-residue",
                 },
-                "warnings": list(),
+                "warnings": [],
                 "service_meta": {
-                    "version": "0.5.4",
+                    "version": __version__,
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class ToGenomicService(ToGenomic):
@@ -59,30 +52,22 @@ class ToGenomicService(ToGenomic):
 
     service_meta: ServiceMeta
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def json_schema_extra(
-            schema: Dict[str, Any], model: Type["ToCdnaService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "g_data": {
                     "g_ac": "NC_000007.13",
                     "g_start_pos": 140453134,
                     "g_end_pos": 140453137,
                     "residue_mode": "inter-residue",
                 },
-                "warnings": list(),
+                "warnings": [],
                 "service_meta": {
-                    "version": "0.5.4",
+                    "version": __version__,
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

@@ -2,27 +2,31 @@
 import copy
 
 import pytest
+from ga4gh.vrs import models
+
+from tests.conftest import cnv_assertion_checks
 
 
 @pytest.fixture(scope="module")
 def genomic_dup1_cx_38(genomic_dup1_seq_loc_not_normalized):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.ZZY--6eqtK9AVqxFpjGSW6VIrDADfqJB",
+        "id": "ga4gh:CX.8GScA3atWKldpyaCkglqmMW5j4DkJO2a",
         "subject": genomic_dup1_seq_loc_not_normalized,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup1_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.ppeF8R8M_I21kT6EvmHYMFW99ieBPZhG",
-        "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "start": {"value": 49568694, "type": "Number"},
-        "end": {"value": 49568695, "type": "Number"},
+        "id": "ga4gh:SL.7YabErC1ILGrve59Y8N6cOqhF7b2er4v",
+        "sequence": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
+        "start": 49568694,
+        "end": 49568695,
         "type": "SequenceLocation",
     }
 
@@ -30,44 +34,47 @@ def genomic_dup1_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup1_cn_37(genomic_dup1_37_loc):
     """Create test fixture copy number count variation (not normalized)"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.eOYBWrgITvZ0Rsf8q_fpZnsSOkvOBB1v",
+        "id": "ga4gh:CN.g7A0uaj_-VEV90tUW2g4VAnW690YNXeA",
         "subject": genomic_dup1_37_loc,
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup1_cx_37(genomic_dup1_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.NKYonqhqFZEqVxXJYoQQXf98FM618OP_",
+        "id": "ga4gh:CX.QYFu49s3GBXjvWgkRrTYnSXRx3izj9dY",
         "subject": genomic_dup1_37_loc,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup2_cx_38(genomic_dup2_seq_loc_normalized):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.dY9cDcR2xhOC1N9lEKuggXxBny42teDF",
+        "id": "ga4gh:CX.bswUIc9CeAntdH9-d7jJv92iFpKy9o7d",
         "subject": genomic_dup2_seq_loc_normalized,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup2_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.m2vBWKNkl-LU5mIJVCS7VoEeRyj5yxpf",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"value": 33229406, "type": "Number"},
-        "end": {"value": 33229410, "type": "Number"},
+        "id": "ga4gh:SL.32CVFHZY7OtujZPT08RU3F5LyqmBjsGn",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": 33229406,
+        "end": 33229410,
         "type": "SequenceLocation",
     }
 
@@ -75,55 +82,59 @@ def genomic_dup2_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup2_cn_37(genomic_dup2_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.8SMv30enQyCLcbey8b5P4Zc_xolCle93",
+        "id": "ga4gh:CN.ky8FZkw6mvpTbL7FOJyBhY9h-A99-eZt",
         "subject": genomic_dup2_37_loc,
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup2_cx_37(genomic_dup2_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.lKn0mkjm3OPx2IqbSYGSBxDiIXtthC1h",
+        "id": "ga4gh:CX.evtjNtc7abS7fGQNLdrwelVUoAb4lxJK",
         "subject": genomic_dup2_37_loc,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.a2-YlA01Q-y2zAOgn4r-cP9hiIEGaaqq",
+        "id": "ga4gh:CN.s0IG7djsMJhfP-RfuUMP9sArG6yABGTL",
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup3_cx_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.MGhVuAEVskM_cAhATCYT_tRcOsqDbHNd",
+        "id": "ga4gh:CX.muSgNlXbctZ4tUfjHO4Z_R6oRvQmiv6B",
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copy_change": "efo:0030072",
+        "copyChange": "efo:0030072",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup3_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.MmBA0qlC0J6yxWTyqhpsd4H_oErccpUD",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"min": 31078343, "max": 31118467, "type": "DefiniteRange"},
-        "end": {"min": 33292396, "max": 33435269, "type": "DefiniteRange"},
+        "id": "ga4gh:SL.412An18pXfftZhNIsf3uzIO8yGwUiU2v",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": [31078343, 31118467],
+        "end": [33292396, 33435269],
         "type": "SequenceLocation",
     }
 
@@ -131,55 +142,59 @@ def genomic_dup3_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup3_cn_37(genomic_dup3_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.GOhhUsvbhFqaXgq3hNH3nuJldMIwVMpO",
+        "id": "ga4gh:CN.pSMP4c6tFLc2GTpfuAs6VPnQmT1N0tXv",
         "subject": genomic_dup3_37_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup3_cx_37(genomic_dup3_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.fpx5MzUfd0Lll7kOwHxQ_znt5k-KJBau",
+        "id": "ga4gh:CX.fWhKH9pjazIuHwPB-LGQQLyUuocRUy9G",
         "subject": genomic_dup3_37_loc,
-        "copy_change": "efo:0030072",
+        "copyChange": "efo:0030072",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup4_cn_38(genomic_dup4_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Fvt2VSCSLNROTjZd20vKZUzdMYxz-cfZ",
+        "id": "ga4gh:CN.J1YKi-YzLjS1-BSGNrvXmk1ny8Xa-R5A",
         "subject": genomic_dup4_loc,
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup4_cx_38(genomic_dup4_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.WlcvrOPHx67R2Qyw8O_s3MyHTJLX8uJD",
+        "id": "ga4gh:CX.3Fga1qCQXHP2_kmLcDliH2CyZV4X7P9f",
         "subject": genomic_dup4_loc,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup4_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.RUcHRUFPNBJhkwXz-WzUZLbT7XOlddAv",
-        "sequence_id": "ga4gh:SQ.iy_UbUrvECxFRX5LPTH_KPojdlT7BKsf",
-        "start": {"value": 29652251, "comparator": "<=", "type": "IndefiniteRange"},
-        "end": {"value": 29981821, "comparator": ">=", "type": "IndefiniteRange"},
+        "id": "ga4gh:SL.X_DGlcQ7MdEGL6qp8_K-V_jxLr_5obLl",
+        "sequence": "ga4gh:SQ.iy_UbUrvECxFRX5LPTH_KPojdlT7BKsf",
+        "start": [None, 29652251],
+        "end": [29981821, None],
         "type": "SequenceLocation",
     }
 
@@ -187,55 +202,59 @@ def genomic_dup4_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup4_cn_37(genomic_dup4_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN._KLpF-U9nyddrZvZott7sQpJmdMRAh9E",
+        "id": "ga4gh:CN.a-P2c5-6SXjwHkuQosgSvK-6mC1-7KpR",
         "subject": genomic_dup4_37_loc,
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup4_cx_37(genomic_dup4_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.q0kxeY8Nm8I9hLkrlOldryNy8Qv7prje",
+        "id": "ga4gh:CX.5D9lKosOsJcyra3ll4a_x3X4O1UMBTB5",
         "subject": genomic_dup4_37_loc,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_cn_38(genomic_dup5_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.cegGbGJ5faMNTnlr6Oc4r93BOgklfftc",
+        "id": "ga4gh:CN.i9rCqRSvXSFNsUf65g54Zh1G-cp-WqeS",
         "subject": genomic_dup5_loc,
-        "copies": {"type": "Number", "value": 4},
+        "copies": 4,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_cx_38(genomic_dup5_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.OetWeFHjI2_WQ_2FIdmxE0KWdkw22TYL",
+        "id": "ga4gh:CX.ivbv2JfqPLnf99e0xdfHxBfRDMav8wUS",
         "subject": genomic_dup5_loc,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.1ELvCCFb5kq7_k47XzpatrJMgtvW74Co",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"value": 153287262, "comparator": "<=", "type": "IndefiniteRange"},
-        "end": {"value": 153357667, "type": "Number"},
+        "id": "ga4gh:SL.syVEBRrdR_BEM70UTDRglclDKsnkxcB3",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": [None, 153287262],
+        "end": 153357667,
         "type": "SequenceLocation",
     }
 
@@ -243,55 +262,59 @@ def genomic_dup5_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup5_cn_37(genomic_dup5_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.wWg3b2U9qwdvS7ASQaG-6Gh6rhBIS5AA",
+        "id": "ga4gh:CN.YJPXMzBfc1dFt_nF6w76pclkZ4SwgbGu",
         "subject": genomic_dup5_37_loc,
-        "copies": {"type": "Number", "value": 4},
+        "copies": 4,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup5_cx_37(genomic_dup5_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.scvCnG-ZfmUdGn3TBMMFysuv8xRq0VG1",
+        "id": "ga4gh:CX.pnWcJ6hCG463Sdm7_S09buc7OYBLQtLV",
         "subject": genomic_dup5_37_loc,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_cn_38(genomic_dup6_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Tuvj2C1xYVUF0UL3CSB1GZjCRC6K_eSt",
+        "id": "ga4gh:CN.5RLW5eq2NW-oLvszAvJmg2_2QnqGYvKb",
         "subject": genomic_dup6_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_cx_38(genomic_dup6_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.zjYLwGA9ICJ1quFCO7rVvDHcwCCX9uNF",
+        "id": "ga4gh:CX.L2UM699rAKlzdTKGkUx4WTU9CXnXnyqt",
         "subject": genomic_dup6_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_37_loc():
     """Create test fixture GRCh37 duplication subject"""
     return {
-        "id": "ga4gh:SL.GdeHSPT6RDTaMycAXoD_rqhMjumKGd-4",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"value": 153287262, "type": "Number"},
-        "end": {"value": 153357667, "comparator": ">=", "type": "IndefiniteRange"},
+        "id": "ga4gh:SL.wBR6YIurIYwlEi5n2MzyZDC5auO9JkIO",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": 153287262,
+        "end": [153357667, None],
         "type": "SequenceLocation",
     }
 
@@ -299,44 +322,47 @@ def genomic_dup6_37_loc():
 @pytest.fixture(scope="module")
 def genomic_dup6_cn_37(genomic_dup6_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.JvO8QAavKtd38hFB-wpzsm_9JCrFCM7i",
+        "id": "ga4gh:CN.T1q-ngv4nvfItg2Cj1MUmNSzsCTTlw-B",
         "subject": genomic_dup6_37_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_dup6_cx_37(genomic_dup6_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.2mfbKzavCrZA50piqh5tauTNWLkuZSCq",
+        "id": "ga4gh:CX.LDMRe4O_Mf7muelwWn8VYR0VF2kmK-sT",
         "subject": genomic_dup6_37_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del1_cx_38(genomic_del1_seq_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.p8k6YurGbJALwJRjvKfq156CRUetenB6",
+        "id": "ga4gh:CX.WkRsG6w5UfrBXNOS2yHk6VlI10Y-VeSE",
         "subject": genomic_del1_seq_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del1_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.QtY9ACIT6TJAae_KDSAZKJfBLerBbFfq",
-        "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "start": {"value": 10191494, "type": "Number"},
-        "end": {"value": 10191495, "type": "Number"},
+        "id": "ga4gh:SL.pIzhJvbahc_sELvQlgd8h4NKXBgStfyx",
+        "sequence": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
+        "start": 10191494,
+        "end": 10191495,
         "type": "SequenceLocation",
     }
 
@@ -344,44 +370,47 @@ def genomic_del1_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del1_cn_37(genomic_del1_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.rkgfXxRiPAPhf8b8M_7JZ_Sd_v--xTSp",
+        "id": "ga4gh:CN.ELYZsSswa0uRwNkO6jxB-iM-d7bmivaI",
         "subject": genomic_del1_37_loc,
-        "copies": {"type": "Number", "value": 1},
+        "copies": 1,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del1_cx_37(genomic_del1_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.ES3st8kvfHmoaGjX3pCsNqnVunz8-prn",
+        "id": "ga4gh:CX.krxGdPCUUdl3QY3l7okgYRDULGeemnIA",
         "subject": genomic_del1_37_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del2_cx_38(genomic_del2_seq_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.Y_94z-QmAZgbQfSRRFxBbaBe1GZ4TBCG",
+        "id": "ga4gh:CX.3kx1MS2vjs5lhy50AbxW5gfG20Xt5iDE",
         "subject": genomic_del2_seq_loc,
-        "copy_change": "efo:0030071",
+        "copyChange": "efo:0030071",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del2_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.XXW-NlnipMp1hTv0xGdTY-RsjDUUZWht",
-        "sequence_id": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
-        "start": {"value": 10188278, "type": "Number"},
-        "end": {"value": 10188297, "type": "Number"},
+        "id": "ga4gh:SL.5soMcT3HXUuNrOUlh5aDZ9JMjEgL7twY",
+        "sequence": "ga4gh:SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
+        "start": 10188278,
+        "end": 10188297,
         "type": "SequenceLocation",
     }
 
@@ -389,55 +418,59 @@ def genomic_del2_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del2_cn_37(genomic_del2_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.pn37YpWXjDcIPLhuTUtAb9-pwFKrnM4M",
+        "id": "ga4gh:CN.7LhqNGXQVrPpuhdkucNovfmTRixp07L7",
         "subject": genomic_del2_37_loc,
-        "copies": {"type": "Number", "value": 1},
+        "copies": 1,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del2_cx_37(genomic_del2_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.pWZIXKKaRGj8LwUJBcdEPnJKtMzLAUJ_",
+        "id": "ga4gh:CX.KgVgL2txdV5GFYVvR0MezDSTBIfKk2-n",
         "subject": genomic_del2_37_loc,
-        "copy_change": "efo:0030071",
+        "copyChange": "efo:0030071",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del3_cn_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.a2-YlA01Q-y2zAOgn4r-cP9hiIEGaaqq",
+        "id": "ga4gh:CN.s0IG7djsMJhfP-RfuUMP9sArG6yABGTL",
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del3_cx_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.Xffhy7i-ZkZtQSoMz6eytI6QQlShmfPo",
+        "id": "ga4gh:CX.p4r77sGjW2uZUsWreZu9_QbldmmZCQ_Y",
         "subject": genomic_del3_dup3_loc_not_normalized,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del3_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.MmBA0qlC0J6yxWTyqhpsd4H_oErccpUD",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"min": 31078343, "max": 31118467, "type": "DefiniteRange"},
-        "end": {"min": 33292396, "max": 33435269, "type": "DefiniteRange"},
+        "id": "ga4gh:SL.412An18pXfftZhNIsf3uzIO8yGwUiU2v",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": [31078343, 31118467],
+        "end": [33292396, 33435269],
         "type": "SequenceLocation",
     }
 
@@ -445,55 +478,59 @@ def genomic_del3_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del3_cn_37(genomic_del3_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.GOhhUsvbhFqaXgq3hNH3nuJldMIwVMpO",
+        "id": "ga4gh:CN.pSMP4c6tFLc2GTpfuAs6VPnQmT1N0tXv",
         "subject": genomic_del3_37_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del3_cx_37(genomic_del3_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.5xJqmmaJTg0gv_BVa5gFHW_krgAGXviI",
+        "id": "ga4gh:CX.WcaUFEEEFwveQnTSX62zdPvnYhPAeuA6",
         "subject": genomic_del3_37_loc,
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del4_cn_38(genomic_del4_seq_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.R0U1Bg1lhPYRVyJx_4LVE3JmR_5V7e8e",
+        "id": "ga4gh:CN.QeImfnMeJu1XlRY5yDlUUMdoCzeH3tux",
         "subject": genomic_del4_seq_loc,
-        "copies": {"type": "Number", "value": 4},
+        "copies": 4,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del4_cx_38(genomic_del4_seq_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.fYi0dG6Q8kACkyY-ICBzzvslv-ONWrPF",
+        "id": "ga4gh:CX.FalxH2l6ld0FAcF69ylzOguaDPdp_mKJ",
         "subject": genomic_del4_seq_loc,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del4_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.ghgq_DzgZ93L1gVXbnHKEQwBzwnNdfSJ",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"value": 31138612, "comparator": "<=", "type": "IndefiniteRange"},
-        "end": {"value": 33357594, "comparator": ">=", "type": "IndefiniteRange"},
+        "id": "ga4gh:SL.uTvw_gJLMS3I9j6IjhzsQqY0Yx6HUZ9g",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": [None, 31138612],
+        "end": [33357594, None],
         "type": "SequenceLocation",
     }
 
@@ -501,55 +538,59 @@ def genomic_del4_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del4_cn_37(genomic_del4_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.lI6I5Tf7rRjN4P_T1euZgAn0YucxrMj4",
+        "id": "ga4gh:CN.dNcALkFlv6tm0MJTqfc7xREUvvB-KTW7",
         "subject": genomic_del4_37_loc,
-        "copies": {"type": "Number", "value": 4},
+        "copies": 4,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del4_cx_37(genomic_del4_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.PcA3_b1KEy4vXkhfUHr5lM5WeWBY4UQY",
+        "id": "ga4gh:CX.BzLCu4la3PUs6uvxQhBbEEAb3GXl_Dw_",
         "subject": genomic_del4_37_loc,
-        "copy_change": "efo:0030067",
+        "copyChange": "efo:0030067",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_cn_38(genomic_del5_seq_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.UhXP8ENfA3T-FhNvKSqu-9UwrL5GZFvF",
+        "id": "ga4gh:CN.Jv2-gjHlHkHw-UG-FXFG24KBeStB4oz7",
         "subject": genomic_del5_seq_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_cx_38(genomic_del5_seq_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.BpxaMFwIjonSNZaS8hYdgeGngz4bOlkV",
+        "id": "ga4gh:CX.hJI3MKVVfQ-IZuOnQ7BUbTi1rZ7cUEAz",
         "subject": genomic_del5_seq_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.kJXgk4nQIwS53UN5gxgIFIPcNSt53n8O",
-        "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-        "start": {"value": 18593473, "comparator": "<=", "type": "IndefiniteRange"},
-        "end": {"value": 18671749, "type": "Number"},
+        "id": "ga4gh:SL.mLDP5XN1HEr13tpKGmjMEnb1joojz-_d",
+        "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+        "start": [None, 18593473],
+        "end": 18671749,
         "type": "SequenceLocation",
     }
 
@@ -557,55 +598,59 @@ def genomic_del5_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del5_cn_37(genomic_del5_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.3Yu1OOpMjnzt6yrt0OLjKWnhD2YD9pkg",
+        "id": "ga4gh:CN.X8rLxAHB7V5eL4aa0rgczlR1tViay_dK",
         "subject": genomic_del5_37_loc,
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del5_cx_37(genomic_del5_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.gEe40vGaYb0D0rdWwtmX2ODJepkSJv15",
+        "id": "ga4gh:CX.Y0e06LvtrQVte3TB_kgZrUA1QVNG_qt8",
         "subject": genomic_del5_37_loc,
-        "copy_change": "efo:0030064",
+        "copyChange": "efo:0030064",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_cn_38(genomic_del6_seq_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.lfI0nj_cOjRwul_R_4tohZK_vqiZ-LSz",
+        "id": "ga4gh:CN.z-cD_rqwLYx1dEmNtpM7t-27cEx7DPep",
         "subject": genomic_del6_seq_loc,
-        "copies": {"type": "Number", "value": 1},
+        "copies": 1,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_cx_38(genomic_del6_seq_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.HbonS2GEi_jBQA_2gvaiwONy_KHqN_G0",
+        "id": "ga4gh:CX.iSNMsibFyqI4kSIB-C-OQFjIb41haGZt",
         "subject": genomic_del6_seq_loc,
-        "copy_change": "efo:0030071",
+        "copyChange": "efo:0030071",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_37_loc():
     """Create test fixture GRCh37 deletion subject"""
     return {
-        "id": "ga4gh:SL.LU0WrrgeZ-HIG7f0LF_eS0yGvhDtiHuT",
-        "sequence_id": "ga4gh:SQ.KqaUhJMW3CDjhoVtBetdEKT1n6hM-7Ek",
-        "start": {"value": 133783901, "type": "Number"},
-        "end": {"value": 133785996, "comparator": ">=", "type": "IndefiniteRange"},
+        "id": "ga4gh:SL.DQ0Y1rdwcUevAxueB1_qH029AcwLwnS-",
+        "sequence": "ga4gh:SQ.KqaUhJMW3CDjhoVtBetdEKT1n6hM-7Ek",
+        "start": 133783901,
+        "end": [133785996, None],
         "type": "SequenceLocation",
     }
 
@@ -613,23 +658,25 @@ def genomic_del6_37_loc():
 @pytest.fixture(scope="module")
 def genomic_del6_cn_37(genomic_del6_37_loc):
     """Create test fixture copy number count variation"""
-    return {
+    params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.UclTlSHjepPFKjkBdZjTPquoStwlr24H",
+        "id": "ga4gh:CN.nLZ_2pSNzw8aM8kfc3ga4RaU6uO_ZfYe",
         "subject": genomic_del6_37_loc,
-        "copies": {"type": "Number", "value": 1},
+        "copies": 1,
     }
+    return models.CopyNumberCount(**params)
 
 
 @pytest.fixture(scope="module")
 def genomic_del6_cx_37(genomic_del6_37_loc):
     """Create test fixture copy number change variation"""
-    return {
+    params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.j6BFcKCBMSfz3Vh-ekevUx8GqLCGJCU6",
+        "id": "ga4gh:CX.GP51Wy7zQmwgRCfB8E_Ifd6vBIk9P1XT",
         "subject": genomic_del6_37_loc,
-        "copy_change": "efo:0030071",
+        "copyChange": "efo:0030071",
     }
+    return models.CopyNumberChange(**params)
 
 
 @pytest.mark.asyncio
@@ -643,26 +690,26 @@ async def test_genomic_dup1_copy_number_count(
         baseline_copies=2,
         do_liftover=False,
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
+    cnv_assertion_checks(resp, genomic_dup1_38_cn)
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_cn_37
+    cnv_assertion_checks(resp, genomic_dup1_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
+    cnv_assertion_checks(resp, genomic_dup1_38_cn)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup1_38_cn)
-    expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:CN.AjWJMk7pirTUVxS0yiSnhnfLg_ql79X1"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.gZmQQZBNf4SwopDTEx87ggIYkUhu06Rb"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -674,18 +721,18 @@ async def test_genomic_dup1_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
+    cnv_assertion_checks(resp, genomic_dup1_cx_38)
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_37
+    cnv_assertion_checks(resp, genomic_dup1_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
+    cnv_assertion_checks(resp, genomic_dup1_cx_38)
 
 
 @pytest.mark.asyncio
@@ -697,26 +744,26 @@ async def test_genomic_dup2_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
+    cnv_assertion_checks(resp, genomic_dup2_38_cn)
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_cn_37
+    cnv_assertion_checks(resp, genomic_dup2_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
+    cnv_assertion_checks(resp, genomic_dup2_38_cn)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup2_38_cn)
-    expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:CN.-MMzWFQXvQJg1_b3wwCyIre2KhN2Nbso"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.bP3qlci2dIJNmI8L1cqfxRE97U3oVvmc"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -728,18 +775,18 @@ async def test_genomic_dup2_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
+    cnv_assertion_checks(resp, genomic_dup2_cx_38)
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_37
+    cnv_assertion_checks(resp, genomic_dup2_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
+    cnv_assertion_checks(resp, genomic_dup2_cx_38)
 
 
 @pytest.mark.asyncio
@@ -751,26 +798,26 @@ async def test_genomic_dup3_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
+    cnv_assertion_checks(resp, genomic_dup3_cn_38)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_37
+    cnv_assertion_checks(resp, genomic_dup3_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
+    cnv_assertion_checks(resp, genomic_dup3_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup3_cn_38)
-    expected["copies"] = {"value": 3, "type": "Number"}
-    expected["id"] = "ga4gh:CN.-4AcyJ5imRkXzgeULrzWVTraqAe4YRYc"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 3
+    expected.id = "ga4gh:CN.IddtKtPorUXk4dIRenAn7Yj-zJv_wEyX"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -782,18 +829,18 @@ async def test_genomic_dup3_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
+    cnv_assertion_checks(resp, genomic_dup3_cx_38)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_37
+    cnv_assertion_checks(resp, genomic_dup3_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
+    cnv_assertion_checks(resp, genomic_dup3_cx_38)
 
 
 @pytest.mark.asyncio
@@ -805,26 +852,26 @@ async def test_genomic_dup4_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
+    cnv_assertion_checks(resp, genomic_dup4_cn_38)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_37
+    cnv_assertion_checks(resp, genomic_dup4_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
+    cnv_assertion_checks(resp, genomic_dup4_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup4_cn_38)
-    expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:CN.ObqoAUmFaGiMknzr8GurBYuoBNeE2HtV"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.ItTxiV7Ctua6Gi17JEClouBC3hbDOy5P"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -836,18 +883,18 @@ async def test_genomic_dup4_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
+    cnv_assertion_checks(resp, genomic_dup4_cx_38)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_37
+    cnv_assertion_checks(resp, genomic_dup4_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
+    cnv_assertion_checks(resp, genomic_dup4_cx_38)
 
 
 @pytest.mark.asyncio
@@ -859,26 +906,26 @@ async def test_genomic_dup5_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
+    cnv_assertion_checks(resp, genomic_dup5_cn_38)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_37
+    cnv_assertion_checks(resp, genomic_dup5_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
+    cnv_assertion_checks(resp, genomic_dup5_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup5_cn_38)
-    expected["copies"] = {"value": 5, "type": "Number"}
-    expected["id"] = "ga4gh:CN.KxU8n8a8UXCQnnwHDX9daUXd0zdxtFtB"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 5
+    expected.id = "ga4gh:CN.nnLG0bgtgrcL-E2jhm_bZOl589vvC76G"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -890,18 +937,18 @@ async def test_genomic_dup5_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
+    cnv_assertion_checks(resp, genomic_dup5_cx_38)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_37
+    cnv_assertion_checks(resp, genomic_dup5_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
+    cnv_assertion_checks(resp, genomic_dup5_cx_38)
 
 
 @pytest.mark.asyncio
@@ -913,26 +960,26 @@ async def test_genomic_dup6_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
+    cnv_assertion_checks(resp, genomic_dup6_cn_38)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_37
+    cnv_assertion_checks(resp, genomic_dup6_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
+    cnv_assertion_checks(resp, genomic_dup6_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     expected = copy.deepcopy(genomic_dup6_cn_38)
-    expected["copies"] = {"value": 3, "type": "Number"}
-    expected["id"] = "ga4gh:CN.TQ36aHJOnfKG3a8hpVMR1POBTOVBgYcS"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 3
+    expected.id = "ga4gh:CN.BWEXvQ-rjeKaylhUNXYvAEGrMw97ZgDx"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -944,18 +991,18 @@ async def test_genomic_dup6_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
+    cnv_assertion_checks(resp, genomic_dup6_cx_38)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_37
+    cnv_assertion_checks(resp, genomic_dup6_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
+    cnv_assertion_checks(resp, genomic_dup6_cx_38)
 
 
 @pytest.mark.asyncio
@@ -967,26 +1014,26 @@ async def test_genomic_del1_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
+    cnv_assertion_checks(resp, genomic_del1_38_cn)
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_cn_37
+    cnv_assertion_checks(resp, genomic_del1_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
+    cnv_assertion_checks(resp, genomic_del1_38_cn)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del1_38_cn)
-    expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:CN.WwgB7O1Ztcn6QqN2hjfjHucKOaWXic8n"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.eQv1lrBI0S1WLw95eRieuvSHRffWXNmS"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -998,18 +1045,18 @@ async def test_genomic_del1_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
+    cnv_assertion_checks(resp, genomic_del1_cx_38)
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_37
+    cnv_assertion_checks(resp, genomic_del1_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
+    cnv_assertion_checks(resp, genomic_del1_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1021,26 +1068,26 @@ async def test_genomic_del2_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
+    cnv_assertion_checks(resp, genomic_del2_38_cn)
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_cn_37
+    cnv_assertion_checks(resp, genomic_del2_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
+    cnv_assertion_checks(resp, genomic_del2_38_cn)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del2_38_cn)
-    expected["copies"]["value"] = 3
-    expected["id"] = "ga4gh:CN.GiZEIUkpM1Yl_O9v0Xz3X9Uza1BzdYwn"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 3
+    expected.id = "ga4gh:CN.C_wesdHpdhAB4aNRoCI87tHoUBTDwmDx"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -1052,18 +1099,18 @@ async def test_genomic_del2_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
+    cnv_assertion_checks(resp, genomic_del2_cx_38)
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_37
+    cnv_assertion_checks(resp, genomic_del2_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
+    cnv_assertion_checks(resp, genomic_del2_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1075,26 +1122,26 @@ async def test_genomic_del3_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
+    cnv_assertion_checks(resp, genomic_del3_cn_38)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_37
+    cnv_assertion_checks(resp, genomic_del3_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
+    cnv_assertion_checks(resp, genomic_del3_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del3_cn_38)
-    expected["copies"] = {"value": 1, "type": "Number"}
-    expected["id"] = "ga4gh:CN.a7prdJg9CK7KAFug-0VMjZC7xDxiSByV"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 1
+    expected.id = "ga4gh:CN.K4DEqpFr_80NtRAbjSnTTXvQqsYJJxIv"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -1106,18 +1153,18 @@ async def test_genomic_del3_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
+    cnv_assertion_checks(resp, genomic_del3_cx_38)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_37
+    cnv_assertion_checks(resp, genomic_del3_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
+    cnv_assertion_checks(resp, genomic_del3_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1129,26 +1176,26 @@ async def test_genomic_del4_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
+    cnv_assertion_checks(resp, genomic_del4_cn_38)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_37
+    cnv_assertion_checks(resp, genomic_del4_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
+    cnv_assertion_checks(resp, genomic_del4_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del4_cn_38)
-    expected["copies"] = {"value": 2, "type": "Number"}
-    expected["id"] = "ga4gh:CN.PlqY0WzSBD2KV2mD0L9QkyOGf1z2zZLu"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.bQkERTvaMlQ635IamrQXjNSK3qamIYK5"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -1160,18 +1207,18 @@ async def test_genomic_del4_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
+    cnv_assertion_checks(resp, genomic_del4_cx_38)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_37
+    cnv_assertion_checks(resp, genomic_del4_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
+    cnv_assertion_checks(resp, genomic_del4_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1183,26 +1230,26 @@ async def test_genomic_del5_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
+    cnv_assertion_checks(resp, genomic_del5_cn_38)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_37
+    cnv_assertion_checks(resp, genomic_del5_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
+    cnv_assertion_checks(resp, genomic_del5_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del5_cn_38)
-    expected["copies"] = {"value": 1, "type": "Number"}
-    expected["id"] = "ga4gh:CN.HzpGrUmI6mfMtPGC0H8ElVcNc0-V1ldA"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 1
+    expected.id = "ga4gh:CN.jvwmKulUMO6WKNyxL1tB9IEaZsKM8Lu3"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -1214,18 +1261,18 @@ async def test_genomic_del5_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
+    cnv_assertion_checks(resp, genomic_del5_cx_38)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_37
+    cnv_assertion_checks(resp, genomic_del5_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
+    cnv_assertion_checks(resp, genomic_del5_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1237,26 +1284,26 @@ async def test_genomic_del6_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
+    cnv_assertion_checks(resp, genomic_del6_cn_38)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_37
+    cnv_assertion_checks(resp, genomic_del6_cn_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
+    cnv_assertion_checks(resp, genomic_del6_cn_38)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
     expected = copy.deepcopy(genomic_del6_cn_38)
-    expected["copies"]["value"] = 2
-    expected["id"] = "ga4gh:CN.NWXsPHBTkOaY0LgfZK6bWFoJ3lvf3fOH"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    expected.copies = 2
+    expected.id = "ga4gh:CN.03lwEhXRvdNopMxHg0OsQFyizzO1Dabe"
+    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio
@@ -1268,18 +1315,18 @@ async def test_genomic_del6_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
+    cnv_assertion_checks(resp, genomic_del6_cx_38)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_37
+    cnv_assertion_checks(resp, genomic_del6_cx_37)
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
+    cnv_assertion_checks(resp, genomic_del6_cx_38)
 
 
 @pytest.mark.asyncio
@@ -1294,7 +1341,7 @@ async def test_invalid_cnv(test_cnv_handler):
     assert set(resp.warnings) == {
         "DAG1 g.49568695dup is not a supported HGVS genomic duplication or deletion"
     }
-    assert resp.copy_number_change.type == "Text"
+    assert resp.copy_number_change is None
 
     q = "braf V600E"
     resp = await test_cnv_handler.hgvs_to_copy_number_change(

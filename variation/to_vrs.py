@@ -129,6 +129,9 @@ class ToVRS(VRSRepresentation):
                 hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT,
                 do_liftover=False,
             )
+        else:
+            warnings.append("No valid results found")
+            translations = []
 
         if not translations:
             variations = []

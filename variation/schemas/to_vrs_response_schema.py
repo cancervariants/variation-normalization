@@ -1,95 +1,103 @@
 """Module for to_vrs endpoint response schema."""
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import List, Union
 
 from ga4gh.vrs import models
-from pydantic import BaseModel
-from pydantic.types import StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceMeta
+from variation.version import __version__
 
 
 class ToVRSService(BaseModel):
     """Define model for translation response."""
 
     search_term: StrictStr
-    warnings: Optional[List[StrictStr]]
-    variations: Optional[
-        Union[
-            List[models.Allele],
-            List[models.CopyNumberCount],
-            List[models.CopyNumberChange],
-        ]
-    ]
+    warnings: List[StrictStr] = []
+    variations: Union[
+        List[models.Allele],
+        List[models.CopyNumberCount],
+        List[models.CopyNumberChange],
+    ] = []
     service_meta_: ServiceMeta
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def json_schema_extra(
-            schema: Dict[str, Any], model: Type["ToVRSService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    # FIXME:
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "search_term": "BRAF V600E",
+                "warnings": [],
                 "variations": [
                     {
-                        "id": "ga4gh:VA.Lado-KeGuXLnOX2-j920r67p9Z-3TCzb",
+                        "id": "ga4gh:VA.JKi4CDlXNAIfxn-VxPTFSRvamGqBBXbi",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.x5j9BVC93gA1W7YrmMzFIP1Iyk4ipaal",
+                            "id": "ga4gh:SL.pnvvgXpxPek5MU0dChggjPZC18wxcvTY",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
-                            "start": {"type": "Number", "value": 599},
-                            "end": {"type": "Number", "value": 600},
+                            "sequence": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                            "start": 599,
+                            "end": 600,
                         },
-                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
+                        "state": {
+                            "type": "ReferenceLengthExpression",
+                            "length": 1,
+                            "repeatSubunitLength": 0,
+                        },
                     },
                     {
-                        "id": "ga4gh:VA.YZ6lbo8JEu_JdGCQYZ2_emQUBZjCxA4z",
+                        "id": "ga4gh:VA.dpSeCSWRpr5-nR_IWbtMzFigbCb1_pn1",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.cxWCch3FsZlYpW3xpPknj4WltsZedn4B",
+                            "id": "ga4gh:SL.ko4RJfU-2fvZrbCDpo6i-Ljcfi59TcQI",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
-                            "start": {"type": "Number", "value": 599},
-                            "end": {"type": "Number", "value": 600},
+                            "sequence": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                            "start": 599,
+                            "end": 600,
                         },
-                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
+                        "state": {
+                            "type": "ReferenceLengthExpression",
+                            "length": 1,
+                            "repeatSubunitLength": 0,
+                        },
                     },
                     {
-                        "id": "ga4gh:VA.Ej4bIR7tJHGvVHrWkYTC0Jv7AlGfSnyc",
+                        "id": "ga4gh:VA.27lvBV4CP0pNPw_nM-fpJOprookDojhs",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.3ZYFXkQ-98YRuh0PQ1E42W2Ex5J6DMHS",
+                            "id": "ga4gh:SL.VtMGH5nBT3MtxEM46Q3Dflw0UhkdXbeX",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
-                            "start": {"type": "Number", "value": 599},
-                            "end": {"type": "Number", "value": 600},
+                            "sequence": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+                            "start": 599,
+                            "end": 600,
                         },
-                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
+                        "state": {
+                            "type": "ReferenceLengthExpression",
+                            "length": 1,
+                            "repeatSubunitLength": 0,
+                        },
                     },
                     {
-                        "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
+                        "id": "ga4gh:VA.WB9SKyyLApRCl0yteR_j1daCfh4QcNJN",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.xfBTztcmMstx8jrrdgPiE_BUoLHLFMMS",
+                            "id": "ga4gh:SL.2fANtMDFqO2luhgUkVEP9-XAxPCLWRHv",
                             "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
-                            "start": {"type": "Number", "value": 599},
-                            "end": {"type": "Number", "value": 600},
+                            "sequence": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+                            "start": 599,
+                            "end": 600,
                         },
-                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
+                        "state": {
+                            "type": "ReferenceLengthExpression",
+                            "length": 1,
+                            "repeatSubunitLength": 0,
+                        },
                     },
                 ],
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.17",
-                    "response_datetime": "2022-01-26T22:23:41.821673",
+                    "version": __version__,
+                    "response_datetime": "2023-08-24T09:05:03.622667",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

@@ -39,7 +39,7 @@ def _get_priority_sequence_location(
         if len(locs) > 1:
             loc38, loc37 = None, None
             for loc in locs:
-                seq_id = loc["sequence_id"]
+                seq_id = loc["sequence"]
                 aliases, _ = seqrepo_access.translate_identifier(seq_id)
                 if aliases:
                     grch_aliases = [
@@ -58,8 +58,7 @@ def _get_priority_sequence_location(
         if location:
             # DynamoDB stores as Decimal, so need to convert to int
             for k in {"start", "end"}:
-                if location[k]["type"] == "Number":
-                    location[k]["value"] = int(location[k]["value"])
+                location[k] = int(location[k])
     return location
 
 

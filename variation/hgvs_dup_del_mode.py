@@ -90,7 +90,7 @@ class HGVSDupDelMode:
         seq_loc.id = ga4gh_identify(seq_loc)
         cn = models.CopyNumberCount(copies=copies, subject=seq_loc)
         cn.id = ga4gh_identify(cn)
-        return cn.dict()
+        return cn.model_dump(exclude_none=True)
 
     def copy_number_change_mode(
         self,
@@ -115,12 +115,13 @@ class HGVSDupDelMode:
                 models.CopyChange.efo_0030067
                 if alt_type in DELS
                 else models.CopyChange.efo_0030070
-            )  # noqa: E501
+            )
 
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
-        cx = models.CopyNumberChange(subject=seq_loc, copy_change=copy_change)
-        return cx.dict()
+        cx = models.CopyNumberChange(subject=seq_loc, copyChange=copy_change)
+        cx.id = ga4gh_identify(cx)
+        return cx.model_dump(exclude_none=True)
 
     def ref_len_expr_mode(self, alt_type: AltType, location: Dict) -> Optional[Dict]:
         """Return a VRS Allele with a ReferenceLengthExpression.
@@ -154,7 +155,7 @@ class HGVSDupDelMode:
         else:
             allele.location.id = ga4gh_identify(allele.location)
             allele.id = ga4gh_identify(allele)
-            return allele.dict()
+            return allele.model_dump(exclude_none=True)
 
     def literal_seq_expr_mode(
         self,
@@ -178,8 +179,8 @@ class HGVSDupDelMode:
             # start is start - 1, end is end
             ref, _ = self.seqrepo_access.get_reference_sequence(
                 vrs_seq_loc_ac,
-                location["start"]["value"] + 1,
-                location["end"]["value"] + 1,
+                location["start"] + 1,
+                location["end"] + 1,
             )
 
             if ref:
@@ -201,7 +202,7 @@ class HGVSDupDelMode:
         else:
             allele.location.id = ga4gh_identify(allele.location)
             allele.id = ga4gh_identify(allele)
-            return allele.dict()
+            return allele.model_dump(exclude_none=True)
 
     def interpret_variation(
         self,
@@ -239,7 +240,7 @@ class HGVSDupDelMode:
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
             )
-        elif hgvs_dup_del_mode == HGVSDupDelModeOption.REPEATED_SEQ_EXPR:
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.REFERENCE_LEN_EXPR:
             variation = self.ref_len_expr_mode(alt_type, location)
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.LITERAL_SEQ_EXPR:
             variation = self.literal_seq_expr_mode(
