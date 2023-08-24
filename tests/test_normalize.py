@@ -804,7 +804,7 @@ async def test_valid_queries(test_handler):
     resp = await test_handler.normalize("NC_000002.12:g.73448098_73448100delCTC")
     assert resp
     assert resp.variation.state.sequence.root == "CTC"
-    assert resp.variation.id == "ga4gh:VA.jEH9V8caYWiIc4bsij8hEI-p5T-WxFVa"
+    assert resp.variation.id == "ga4gh:VA.rr4kgycSnU0VyPKjdFetgcvHk2oGPii1"
 
     # Test ambiguous IUPAC code N
     for q in [

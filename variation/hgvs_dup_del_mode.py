@@ -35,6 +35,7 @@ class HGVSDupDelMode:
         vrs_seq_loc_ac: str,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[models.CopyChange] = None,
+        alt: Optional[str] = None,
     ) -> Optional[Dict]:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous - copy_number_change
@@ -54,6 +55,7 @@ class HGVSDupDelMode:
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param baseline_copies: Baseline copies for Copy Number Count variation
         :param copy_change: copy change for Copy Number Change Variation
+        :param alt: Alteration
         :return: VRS Variation object represented as a dict
         """
         variation = None
@@ -62,7 +64,7 @@ class HGVSDupDelMode:
         elif baseline_copies:
             variation = self.copy_number_count_mode(alt_type, location, baseline_copies)
         elif (alt_type not in DELS) and pos and (pos[1] - pos[0] > 100):
-            variation = self.ref_len_expr_mode(alt_type, location)
+            variation = self.ref_len_expr_mode(alt_type, location, alt)
         else:
             variation = self.literal_seq_expr_mode(location, alt_type, vrs_seq_loc_ac)
         return variation
@@ -123,11 +125,14 @@ class HGVSDupDelMode:
         cx.id = ga4gh_identify(cx)
         return cx.model_dump(exclude_none=True)
 
-    def ref_len_expr_mode(self, alt_type: AltType, location: Dict) -> Optional[Dict]:
+    def ref_len_expr_mode(
+        self, alt_type: AltType, location: Dict, alt: str
+    ) -> Optional[Dict]:
         """Return a VRS Allele with a ReferenceLengthExpression.
 
         :param alt_type: Alteration type
         :param location: VRS SequenceLocation
+        :param alt: Alteration
         :return: VRS Allele object represented as a dict
         """
         if "range" in alt_type.value:
@@ -138,9 +143,11 @@ class HGVSDupDelMode:
             return None
 
         seq_loc = models.SequenceLocation(**location)
-        start = location["start"]
-        end = location["end"]
-        repeat_subunit_len = end - start
+        if alt_type == AltType.DELETION:
+            repeat_subunit_len = location["end"] - location["start"]
+        else:
+            repeat_subunit_len = len(alt)
+
         state = models.ReferenceLengthExpression(
             length=0 if alt_type == AltType.DELETION else repeat_subunit_len * 2,
             repeatSubunitLength=repeat_subunit_len,
@@ -241,7 +248,7 @@ class HGVSDupDelMode:
                 copy_change=copy_change,
             )
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.REFERENCE_LEN_EXPR:
-            variation = self.ref_len_expr_mode(alt_type, location)
+            variation = self.ref_len_expr_mode(alt_type, location, alt)
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.LITERAL_SEQ_EXPR:
             variation = self.literal_seq_expr_mode(
                 location, alt_type, vrs_seq_loc_ac, alt=alt

@@ -203,6 +203,9 @@ class GenomicDelDupTranslator(Translator):
                 pos1 -= 1
                 alt = classification.matching_tokens[0].alt
 
+        if alt_type == AltType.INSERTION:
+            alt = classification.inserted_sequence
+
         outer_coords = (pos0, pos1 if pos1 else pos0)
         start = pos0 - 1
         end = pos1 if pos1 else pos0
@@ -243,6 +246,7 @@ class GenomicDelDupTranslator(Translator):
                 ac,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
+                alt=alt,
             )
 
         if vrs_variation:
