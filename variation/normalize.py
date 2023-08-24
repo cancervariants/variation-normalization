@@ -1,6 +1,6 @@
 """Module for Variation Normalization."""
 from datetime import datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from urllib.parse import quote, unquote
 
 from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
@@ -14,6 +14,7 @@ from variation.schemas.normalize_response_schema import (
     NormalizeService,
     ServiceMeta,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import GnomadVcfToken, Token
 from variation.schemas.translation_response_schema import (
     AC_PRIORITY_LABELS,
@@ -146,28 +147,32 @@ class Normalize(ToVRSATILE):
         hgvs_dup_del_mode: Optional[
             HGVSDupDelModeOption
         ] = HGVSDupDelModeOption.DEFAULT,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[CopyChange] = None,
         untranslatable_returns_text: bool = False,
     ) -> NormalizeService:
-        """Normalize a given variation.
+        """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
+        or GRCh38 assembly to a single VRSATILE Variation Descriptor. Performs
+        fully-justified allele normalization. Will liftover to GRCh38 and aligns to a
+        priority transcript. Will make inferences about the query.
 
-        :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38
-            assembly
-        :param Optional[HGVSDupDelModeOption] hgvs_dup_del_mode:
-            Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `copy_number_count`, `copy_number_change`,
-            `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
-            interpret HGVS dup/del expressions in VRS.
-        :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
-            deletions
-        :param Optional[CopyChange] copy_change: The copy change
-            for HGVS duplications and deletions represented as Copy Number Change
-            Variation.
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
-        :return: NormalizeService with variation descriptor and warnings
+        :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
+        :param hgvs_dup_del_mode: This parameter determines how to interpret HGVS dup/del
+            expressions in VRS.
+        :param input_assembly: Assembly used for `q`. Only used when `q` is using
+            genomic free text or gnomad vcf format
+        :param baseline_copies: Baseline copies for HGVS duplications and deletions.
+            Required when `hgvs_dup_del_mode` is set to `copy_number_count`.
+        :param copy_change: The copy change for HGVS duplications and deletions represented
+            as Copy Number Change Variation. If not set, will use default `copy_change` for
+            query.
+        :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+            translate or normalize query. `False` return `None` when unable to translate or
+            normalize query.
+        :return: NormalizeService for variation
         """
         label = q.strip()
         _id = f"normalize.variation:{quote(' '.join(label.split()))}"
@@ -217,7 +222,9 @@ class Normalize(ToVRSATILE):
             return NormalizeService(**params)
 
         # Get validation summary for classification
-        validation_summary = await self.validator.perform(classification)
+        validation_summary = await self.validator.perform(
+            classification, input_assembly=input_assembly
+        )
         if not validation_summary:
             vd, warnings = no_variation_resp(
                 label, _id, validation_summary.warnings, untranslatable_returns_text

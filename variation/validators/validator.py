@@ -19,6 +19,7 @@ from variation.schemas.classification_response_schema import (
     ProteinStopGainClassification,
     ProteinSubstitutionClassification,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
@@ -50,7 +51,12 @@ class Validator(ABC):
 
     @abstractmethod
     async def get_accessions(
-        self, classification: Classification, errors: List
+        self,
+        classification: Classification,
+        errors: List,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
     ) -> List[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
@@ -59,6 +65,8 @@ class Validator(ABC):
 
         :param classification: The classification for list of tokens
         :param errors: List of errors
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
         :return: List of accessions
         """
 
@@ -84,20 +92,29 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
 
-    async def validate(self, classification: Classification) -> List[ValidationResult]:
+    async def validate(
+        self,
+        classification: Classification,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
+    ) -> List[ValidationResult]:
         """Get list of associated accessions for a classification. Use these accessions
         to perform validation checks (pos exists, accession is valid, reference sequence
         matches expected, etc). Gets list of validation results for a given
         classification
 
         :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for initial input query
         :return: List of validation results containing invalid and valid results
         """
         errors = []
 
         try:
             # NC_ queries do not have gene tokens
-            accessions = await self.get_accessions(classification, errors)
+            accessions = await self.get_accessions(
+                classification, errors, input_assembly=input_assembly
+            )
         except IndexError:
             accessions = []
 
@@ -144,15 +161,24 @@ class Validator(ABC):
         return accessions
 
     async def get_genomic_accessions(
-        self, classification: Classification, errors: List
+        self,
+        classification: Classification,
+        errors: List,
+        input_assembly: Optional[
+            Union[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        ] = None,
     ) -> List[str]:
         """Get genomic RefSeq accessions for variations with genomic reference sequence.
 
         :param classification: Classification for a list of tokens
         :param errors: List of errors
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
         :return: List of possible genomic RefSeq accessions for the variation
         """
-        accessions = await self.genomic_base.get_nc_accessions(classification)
+        accessions = await self.genomic_base.get_nc_accessions(
+            classification, input_assembly=input_assembly
+        )
         if not accessions:
             errors.append("No genomic accessions found")
         return accessions
