@@ -1,7 +1,7 @@
 """Main application for FastAPI."""
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Literal, Optional, Union
 from urllib.parse import unquote
 
 import pkg_resources
@@ -167,6 +167,12 @@ async def normalize(
     hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = Query(
         HGVSDupDelModeOption.DEFAULT, description=hgvs_dup_del_mode_decsr
     ),
+    input_assembly: Optional[
+        Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+    ] = Query(
+        None,
+        description="Assembly used for `q`. Only used when `q` is using genomic free text or gnomad vcf format",
+    ),
     baseline_copies: Optional[int] = Query(
         None,
         description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",  # noqa: E501
@@ -182,24 +188,25 @@ async def normalize(
     fully-justified allele normalization. Will liftover to GRCh38 and aligns to a
     priority transcript. Will make inferences about the query.
 
-    :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
-    :param Optional[HGVSDupDelModeOption] hgvs_dup_del_mode: Must be: `default`,
-        `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-        `literal_seq_expr`. This parameter determines how to interpret HGVS dup/del
+    :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
+    :param hgvs_dup_del_mode: This parameter determines how to interpret HGVS dup/del
         expressions in VRS.
-    :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
-        deletions. Required when `hgvs_dup_del_mode` is set to `copy_number_count`.
-    :param Optional[CopyChange] copy_change: The copy change
-        for HGVS duplications and deletions represented as Copy Number Change
-        Variation. If not set, will use default `copy_change` for query.
-    :param bool untranslatable_returns_text: `True` return VRS Text Object when
-        unable to translate or normalize query. `False` return `None` when
-        unable to translate or normalize query.
+    :param input_assembly: Assembly used for `q`. Only used when `q` is using genomic
+        free text or gnomad vcf format
+    :param baseline_copies: Baseline copies for HGVS duplications and deletions.
+        Required when `hgvs_dup_del_mode` is set to `copy_number_count`.
+    :param copy_change: The copy change for HGVS duplications and deletions represented
+        as Copy Number Change Variation. If not set, will use default `copy_change` for
+        query.
+    :param untranslatable_returns_text: `True` return VRS Text Object when unable to
+        translate or normalize query. `False` return `None` when unable to translate or
+        normalize query.
     :return: NormalizeService for variation
     """
     normalize_resp = await query_handler.normalize_handler.normalize(
         unquote(q),
         hgvs_dup_del_mode=hgvs_dup_del_mode,
+        input_assembly=input_assembly,
         baseline_copies=baseline_copies,
         copy_change=copy_change,
         untranslatable_returns_text=untranslatable_returns_text,
