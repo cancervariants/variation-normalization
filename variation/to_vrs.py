@@ -136,6 +136,9 @@ class ToVRS(VRSRepresentation):
                 hgvs_dup_del_mode=HGVSDupDelModeOption.DEFAULT,
                 do_liftover=False,
             )
+        else:
+            translations = []
+            warnings = validation_summary.warnings
 
         if not translations:
             if untranslatable_returns_text and q and q.strip():
