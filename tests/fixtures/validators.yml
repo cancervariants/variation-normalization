@@ -1,8 +1,6 @@
 protein_substitution:
   should_match:
     - query: BRAF V600E
-    - query: BRAF v600e
-    - query: braf v600e
     - query: NP_004324.2:p.Val600Glu
     - query: NP_005219.2:p.Thr790Met
     - query: EGFR Leu858Arg
@@ -12,39 +10,32 @@ protein_substitution:
     - query: NP_005148.2:p.Leu2733Gln
     - query: NP_000000000542.1:p.Val66Gly
     - query: BRAF V9999999999999999999999999999999E
-    - query: BRAF V600E 33
 
-polpeptide_truncation:
+protein_stop_gain:
   should_match:
     - query: NP_060842.3:p.Tyr365Ter
     - query: NP_000542.1:p.Tyr185Ter
-    - query: NP_000542.1:p.Tyr185Ter (p.Tyr185*)
+    - query: NP_000542.1:p.Tyr185*
   should_not_match:
     - query: NP_060842.3:p.Tyr3650000000000Ter
 
-silent_mutation:
+protein_reference_agree:
   should_match:
     - query: NP_000542.1:p.Pro61=
     - query: NP_000918.2:p.Ile1145=
   should_not_match:
     - query: NP_000542.1:p.Pro62=
 
-coding_dna_substitution:
+cdna_substitution:
   should_match:
     - query: NM_004333.4:c.1799T>A
     - query: ENST00000288602.10:c.1799T>A
     - query: BRAF (c.1799T>A)
     - query: BRAF c.1799T>A
     - query: BRAF V600E c.1799T>A
-    - query: LRG_199t1:c.54G>N
-    - query: LRG_199p1:c.54G>N
-    - query: LRG_199:c.54G>N
   should_not_match:
     - query: BRAF c.18000000000000T>A
     - query: NM_004333.4:c.17699T>A
-    - query: LRG_199t1:c.54G>H
-    - query: LRG_199p1:c.54G>H
-    - query: LRG_199:c.54G>H
 
 genomic_substitution:
   should_match:
@@ -52,12 +43,15 @@ genomic_substitution:
     - query: NC_000007.13:g.55259515T>G
     - query: 7-140453136-A-T
     - query: 7-55259515-T-G
+    - query: 5-112175770-GGAA-AGAA
   should_not_match:
     - query: NC_000007.13:g.1436A>T
     - query: NC_000007.13:g.4T>A
     - query: 7-140453136-G-T
+    - query: 5-112175770-TGAA-AGAA
+    - query: 5-112175770-GGAT-AGAA
 
-coding_dna_silent_mutation:
+cdna_reference_agree:
   should_match:
     - query: NM_004006.2:c.123=
     - query: NM_004333.4:c.1799=
@@ -67,17 +61,20 @@ coding_dna_silent_mutation:
   should_not_match:
     - query: NM_004006.2:c.13994=
     - query: BRAF c.18000000000000=
+    - query: NM_000412.5:c.1930= # pos out of index
 
-genomic_silent_mutation:
+genomic_reference_agree:
   should_match:
     - query: NC_000007.13:g.140453136=
     - query: NC_000007.13:g.55259515=
     - query: 7-140453136-A-A
     - query: 7-55259515-T-T
+    - query: 5-1295250-GAGG-GAGG
   should_not_match:
     - query: NC_000007.13:g.159138664=
-    - query: NP_005219.2:p.Glu746_Thr751delinsValAla
     - query: 7-140453136-C-C
+    - query: 5-1295250-GCGG-GAGG
+    - query: 5-1295250-GAGA-GAGG
 
 protein_delins:
   should_match:
@@ -87,28 +84,26 @@ protein_delins:
     - query: ERBB2 G776delinsVC
     - query: KIT P577_W582delinsPYD
   should_not_match:
-    - query: EGFR E709_G719delins11
+    - query: ERBB2 K776delinsVC
+    - query: NP_001333827.1:p.Cys747_Thr751delinsPro
+    - query: NP_001333827.1:p.Leu747_Pro751delinsPro
 
-coding_dna_delins:
+cdna_delins:
   should_match:
     - query: NM_001289937.1:c.2326_2327delinsCT
     - query: NM_000551.3:c.615delinsAA
-    - query: NM_000551.3:c.4559delinsAA
     - query: ENST00000440973.5:c.1607_1608delinsAG
-      # TODO: Find this gene symbol
-#    - query: ENST00000277541.6:c.7330delinsACA
     - query: ENST00000318560.5:c.1423_1424delinsGT
     - query: ENST00000256474.2:c.364_365delinsAT
     - query: NM_000551.3:c.615delinsAA
-    - query: LRG_199t1:c.79_80delinsTT
-    - query: LRG_199p1:c.79_80delinsTT
-    - query: LRG_199:c.79_80delinsTT
   should_not_match:
     - query: NM_005228:c.2237_2253delinsTTGCT
     - query: ENST00000277541.6:c.7330479587395delinsACA
     - query: NM_000551.3:c.4561delinsAA
     - query: NM_000551.3:c.4561_4562delinsAA
     - query: NM_000551.3:c.4560_4561delinsAA
+    - query: NM_001289937.1:c.2327_2326delinsCT
+    - query: NM_000551.3:c.4559delinsAA # pos out of index
 
 genomic_delins:
   should_match:
@@ -116,11 +111,22 @@ genomic_delins:
     - query: NC_000007.13:g.159138662delinsAT
     - query: NC_000023.11:g.32386323delinsGA
     - query: NC_000003.12:g.10149938delinsAA
+    - query: 3-37050340-AAAAGCTTTA-GAGGCTTT
+    - query: 16-68846036-AG-TGAGTTT
+    - query: X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG
+    - query: 16-2138199-GTGAG-G
+    - query: 1-55509715-AC-A
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
     - query: NC_000007.13:g.159138664delinsAT
     - query: NC_000007.13:g.159138663_159138664delinsAT
     - query: NC_000023.11:g.3238646549879323delinsGA
+    - query: NC_000007.13:g.140453136_140453134delinsAT
+    - query: 3-37050340-AAAAGCGTTA-GAGGCTTT
+    - query: 16-68846036-AC-TGAGTTT
+    - query: X-70350063-CC-AGGCAGCGCATAAAGCGCATTCTCCG
+    - query: 1-55509715-TC-A
+    - query: 16-2138199-GTGAT-G
 
 protein_deletion:
   should_match:
@@ -132,18 +138,13 @@ protein_deletion:
     - query: ENSP00000256474.2:p.Phe76del
     - query: KIT D419del
     - query: KIT E554_V559del
-    - query: LRG_322p1:p.Leu128del
-    - query: LRG_199p1:p.Val7del
-    - query: LRG_199p1:p.(Val7del)
-    - query: LRG_199p1:p.Trp4del
-    - query: LRG_232p1:p.(Pro458_Gly460del)
     - query: EGFR L747_T751del
     - query: EGFR L747_T751delLREAT
   should_not_match:
-    - query: LRG_199p1:p.Ala7del
-    - query: LRG_199p1:p.Val78848498879del
+    - query: EGFR L747_T751delLREATS
+    - query: KIT V419del
 
-coding_dna_deletion:
+cdna_deletion:
   should_match:
     - query: ENST00000269571.9:c.2263_2277del
     - query: NM_004448.3:c.2263_2277delTTGAGGGAAAACACA
@@ -154,6 +155,7 @@ coding_dna_deletion:
   should_not_match:
     - query: NM_000535.6:c.21174568delT
     - query: NM_000535.6:c.21145457delA
+    - query: ENST00000269571.9:c.2277_2263del
 
 genomic_deletion:
   should_match:
@@ -162,9 +164,9 @@ genomic_deletion:
     - query: NC_000003.12:g.10146527_10146528del
     - query: NC_000003.11:g.10191495delT
     - query: VHL g.10188279_10188297del
-    - query: 16-2138199-GTGAG-G
   should_not_match:
     - query: NC_000003.11:g.10191454654654654495delT
+    - query: NC_000003.11:g.10188297_10188279del
 
 protein_insertion:
   should_match:
@@ -176,8 +178,11 @@ protein_insertion:
   should_not_match:
     - query: NP_005219.2:p.Gly1209_Gly1211insGlyLeu
     - query: NP_005219.2:p.Cys1211_Gly1256insGlyLeu
+    - query: NP_005219.2:p.Asn770_Gly771insGlyLeu
+    - query: NP_005219.2:p.Asp770_Gly771insGlyLeu
+    - query: BRAF E599_V600insV
 
-coding_dna_insertion:
+cdna_insertion:
   should_match:
     - query: ENST00000000442.11:c.426_500insT
     - query: NM_007294.3:c.2902_2903insTC
@@ -197,23 +202,34 @@ genomic_insertion:
     - query: NC_000022.10:g.51304566_51304567insT
     - query: NC_000022.10:g.51304567_51304568insT
 
-genomic_uncertain_deletion:
+genomic_deletion_ambiguous:
   should_match:
     - query: NC_000023.11:g.(?_155980375)_(156013167_?)del
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
   should_not_match:
-    - query: NC_000012.12:g.123256943_123256947del
-    - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
+    - query: NC_000023.11:g.(?_156013167)_(155980375_?)del
+    - query: NC_000024.10:g.(14076805_14076804)_(14076803_14076802)del
 
 genomic_duplication:
   should_match:
     - query: NC_000003.12:g.49531262dup
     - query: NC_000016.10:g.2087938_2087948dup
+  should_not_match:
+    - query: NC_000003.12:g.495312625165465465465dup
+    - query: NC_000016.10:g.2087948_2087938dup
+
+genomic_duplication_ambiguous:
+  should_match:
     - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
     - query: NC_000023.11:g.(?_154021812)_154092209dup
     - query: NC_000023.11:g.154021812_(154092209_?)dup
     - query: NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup
     - query: NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup
   should_not_match:
-    - query: NC_000003.12:g.495312625165465465465dup
+    - query: NC_000023.11:g.(?_154092209)_154021812dup
+
+amplification:
+  should_match:
+    - query: BRAF Amplification
+    - query: egfr amplification

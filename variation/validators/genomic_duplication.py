@@ -1,353 +1,95 @@
 """The module for Genomic Duplication Validation."""
-import logging
-from typing import List, Optional, Dict, Tuple, Union
+from typing import List, Optional
 
-from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-
-from variation.schemas.app_schemas import Endpoint
-from variation.validators.duplication_deletion_base import\
-    DuplicationDeletionBase
-from variation.schemas.classification_response_schema import \
-    ClassificationType, Classification
-from variation.schemas.token_response_schema import \
-    TokenType, DuplicationAltType, Token, SequenceOntology
-from variation.schemas.token_response_schema import GeneMatchToken
-from variation.schemas.normalize_response_schema\
-    import HGVSDupDelMode as HGVSDupDelModeEnum
-
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
+from variation.schemas.classification_response_schema import (
+    Classification,
+    ClassificationType,
+    GenomicDuplicationClassification,
+    Nomenclature,
+)
+from variation.schemas.validation_response_schema import ValidationResult
+from variation.validators.validator import Validator
 
 
-class GenomicDuplication(DuplicationDeletionBase):
+class GenomicDuplication(Validator):
     """The Genomic Duplication Validator class."""
 
-    async def get_transcripts(self, gene_tokens: List, classification: Classification,
-                              errors: List) -> Optional[List[str]]:
-        """Get transcript accessions for a given classification.
-
-        :param List gene_tokens: A list of gene tokens
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List errors: List of errors
-        :return: List of transcript accessions
-        """
-        transcripts = await self.get_genomic_transcripts(classification, errors)
-        return transcripts
-
     async def get_valid_invalid_results(
-        self, classification_tokens: List, transcripts: List,
-        classification: Classification, results: List, gene_tokens: List,
-        mane_data_found: Dict, is_identifier: bool,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum,
-        endpoint_name: Optional[Endpoint] = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        do_liftover: bool = False
-    ) -> None:
-        """Add validation result objects to a list of results.
+        self, classification: GenomicDuplicationClassification, accessions: List[str]
+    ) -> List[ValidationResult]:
+        """Get list of validation results for a given classification and accessions
 
-        :param List classification_tokens: A list of classification Tokens
-        :param List transcripts: A list of transcript accessions
-        :param Classification classification: A classification for a list of
-            tokens
-        :param List results: Stores validation result objects
-        :param List gene_tokens: List of GeneMatchTokens for a classification
-        :param Dict mane_data_found: MANE Transcript information found
-        :param bool is_identifier: `True` if identifier is given for exact
-            location. `False` otherwise.
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Must be: `default`,
-            `copy_number_count`, `copy_number_change`, `repeated_seq_expr`,
-            `literal_seq_expr`. This parameter determines how to represent HGVS dup/del
-            expressions as VRS objects.
-        :param Optional[Endpoint] endpoint_name: Then name of the endpoint being used
-        :param Optional[int] baseline_copies: Baseline copies number
-        :param Optional[CopyChange] copy_change: The copy change
-        :param bool do_liftover: Whether or not to liftover to GRCh38 assembly
+        :param classification: A classification for a list of tokens
+        :param accessions: A list of accessions for a classification
+        :return: List of validation results containing invalid and valid results
         """
-        valid_alleles = list()
-        for s in classification_tokens:
-            for t in transcripts:
-                errors = list()
-                t = self.get_accession(t, classification)
+        invalid_pos_msg = self.validate_5_prime_to_3_prime(
+            classification.pos0, pos1=classification.pos1
+        )
 
-                result = await self._get_variation(
-                    s, t, errors, gene_tokens, hgvs_dup_del_mode,
-                    gene=gene_tokens[0].token if gene_tokens else None,
-                    baseline_copies=baseline_copies,
-                    copy_change=copy_change)
-                variation = result["variation"]
-                start = result["start"]
-                end = result["end"]
-
-                if not errors and (endpoint_name == Endpoint.NORMALIZE or do_liftover):
-                    await self._get_normalize_variation(
-                        gene_tokens, s, t, errors, hgvs_dup_del_mode,
-                        mane_data_found, start, end,
-                        copy_change=copy_change,
-                        baseline_copies=baseline_copies)
-
-                self.add_validation_result(
-                    variation, valid_alleles, results,
-                    classification, s, t, gene_tokens, errors
+        if invalid_pos_msg:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=[invalid_pos_msg],
                 )
+            ]
 
-                if is_identifier:
-                    break
+        validation_results = []
 
-        if endpoint_name == Endpoint.NORMALIZE or do_liftover:
-            self.add_mane_to_validation_results(
-                mane_data_found, valid_alleles, results,
-                classification, gene_tokens
+        for alt_ac in accessions:
+            errors = []
+
+            if classification.gene_token:
+                invalid_gene_pos_msg = await self._validate_gene_pos(
+                    classification.gene_token.matched_value,
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1,
+                )
+                if invalid_gene_pos_msg:
+                    errors.append(invalid_gene_pos_msg)
+
+            if not errors:
+                invalid_ac_pos = self.validate_ac_and_pos(
+                    alt_ac, classification.pos0, end_pos=classification.pos1
+                )
+                if invalid_ac_pos:
+                    errors.append(invalid_ac_pos)
+
+            validation_results.append(
+                ValidationResult(
+                    accession=alt_ac,
+                    classification=classification,
+                    is_valid=not errors,
+                    errors=errors,
+                )
             )
 
-    async def _get_variation(
-        self, s: Token, t: str, errors: List, gene_tokens: List,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum, gene: str = None,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None
-    ) -> Optional[Dict]:
-        """Get variation data.
-
-        :param Token s: Classification token
-        :param str t: Accession
-        :param List errors: List of errors
-        :param HGVSDupDelMode hgvs_dup_del_mode: Mode to use for interpreting
-            HGVS duplications and deletions
-        :param str gene: Gene symbol token
-        :return: Dictionary containing start/end position changes and variation
-        """
-        variation, start, end = None, None, None
-        if s.token_type == TokenType.GENOMIC_DUPLICATION:
-            start = s.start_pos1_dup
-            if s.start_pos2_dup is None:
-                # Format: #dup
-                end = s.start_pos1_dup
-            else:
-                # Format: #_#dup
-                end = s.start_pos2_dup
-
-            await self.validate_gene_or_accession_pos(
-                t, [start, end], errors, gene=gene)
-
-            if not errors:
-                allele = self.vrs.to_vrs_allele(
-                    t, start, end, s.coordinate_type,
-                    s.alt_type, errors)
-                variation = self.hgvs_dup_del_mode.interpret_variation(
-                    s.alt_type, allele, errors, hgvs_dup_del_mode,
-                    pos=(start, end), baseline_copies=baseline_copies,
-                    copy_change=copy_change)
-        elif s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            ival, grch38 = await self._get_ival(t, s, errors, gene_tokens)
-
-            if not errors:
-                if grch38:
-                    t = grch38["ac"]
-
-                allele = self.vrs.to_vrs_allele_ranges(
-                    t, s.coordinate_type, s.alt_type, errors, ival[0], ival[1])
-                if start is not None and end is not None:
-                    pos = (start, end)
-                else:
-                    pos = None
-                variation = self.hgvs_dup_del_mode.interpret_variation(
-                    s.alt_type, allele, errors,
-                    hgvs_dup_del_mode, pos=pos, baseline_copies=baseline_copies,
-                    copy_change=copy_change)
-        else:
-            errors.append(f"Token type not supported: {s.token_type}")
-
-        return {
-            "start": start,
-            "end": end,
-            "variation": variation
-        }
-
-    async def _get_normalize_variation(
-        self, gene_tokens: List, s: Token, t: str, errors: List,
-        hgvs_dup_del_mode: HGVSDupDelModeEnum, mane_data_found: Dict, start: int,
-        end: int, baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None
-    ) -> None:
-        """Get variation that will be returned in normalize endpoint.
-
-        :param List gene_tokens: List of gene tokens
-        :param Token s: Classification token
-        :param str t: Accession
-        :param HGVSDupDelModeEnum hgvs_dup_del_mode: Mode to use for
-            interpreting HGVS duplications and deletions
-        :param Dict mane_data_found: MANE Transcript data found for given query
-        :param int start: Start pos change
-        :param int end: End pos change
-        :param Optional[CopyChange] copy_change: The copy change
-        :param Optional[int] baseline_copies: Baseline copies number
-        """
-        if s.token_type == TokenType.GENOMIC_DUPLICATION_RANGE:
-            # (#_#)_(#_#)
-            ival, grch38 = await self._get_ival(t, s, errors, gene_tokens, is_norm=True)
-            self.add_grch38_to_mane_data(
-                t, s, errors, grch38, mane_data_found, hgvs_dup_del_mode, start=ival[0],
-                end=ival[1], baseline_copies=baseline_copies,
-                copy_change=copy_change)
-        else:
-            # #dup or #_#dup
-            if gene_tokens:
-                gene = gene_tokens[0].token
-
-                # Validate position
-                await self._validate_gene_pos(gene, t, start, end, errors)
-                if errors:
-                    return
-
-                await self.add_normalized_genomic_dup_del(
-                    s, t, start, end, gene_tokens[0].token,
-                    SequenceOntology.DUPLICATION, errors, hgvs_dup_del_mode,
-                    mane_data_found, baseline_copies=baseline_copies,
-                    copy_change=copy_change)
-            else:
-                grch38 = await self.mane_transcript.g_to_grch38(
-                    t, start, end)
-
-                if grch38:
-                    await self.validate_gene_or_accession_pos(
-                        grch38["ac"], [grch38["pos"][0], grch38["pos"][1]],
-                        errors)
-                    self.add_grch38_to_mane_data(
-                        t, s, errors, grch38, mane_data_found,
-                        hgvs_dup_del_mode, use_vrs_allele_range=False,
-                        baseline_copies=baseline_copies,
-                        copy_change=copy_change
-                    )
-
-    async def _get_ival(
-        self, t: str, s: Token, errors: List, gene_tokens: List, is_norm: bool = False
-    ) -> Optional[Tuple[Tuple[Union[models.Number, models.DefiniteRange, models.IndefiniteRange],  # noqa: E501
-                              Union[models.Number, models.DefiniteRange, models.IndefiniteRange]],  # noqa: E501
-                        Dict]]:
-        """Get ival for variations with ranges.
-
-        :param str t: Accession
-        :param Token t: Classification token
-        :param List gene_tokens: List of gene tokens
-        :param List errors: List of errors
-        :param bool is_norm: `True` if normalize endpoint is being used.
-            `False` otherwise.
-        :return: (Start, End)  and GRCh38 data if normalize endpoint
-            is being used
-        """
-        ival, start, end, grch38 = None, None, None, None
-        gene = gene_tokens[0].token if gene_tokens else None
-        if s.alt_type != DuplicationAltType.UNCERTAIN_DUPLICATION:
-            # (#_#)_(#_#)
-            if is_norm:
-                t, start1, start2, end1, end2, grch38 = await self.get_grch38_pos_ac(
-                    t, s.start_pos1_dup, s.start_pos2_dup, pos3=s.end_pos1_dup,
-                    pos4=s.end_pos2_dup
-                )
-            else:
-                start1 = s.start_pos1_dup
-                start2 = s.start_pos2_dup
-                end1 = s.end_pos1_dup
-                end2 = s.end_pos2_dup
-
-            if start1 and start2 and end1 and end2:
-                await self.validate_gene_or_accession_pos(
-                    t, [start1, start2, end1, end2], errors, gene=gene)
-
-                if not errors:
-                    ival = self.vrs.get_start_end_definite_range(
-                        start1, start2, end1, end2)
-            else:
-                errors.append("Not yet supported")
-        else:
-            if s.start_pos1_dup == "?" and s.end_pos2_dup == "?":
-                # format: (?_#)_(#_?)
-                if is_norm:
-                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
-                        t, s.start_pos2_dup, s.end_pos1_dup
-                    )
-                else:
-                    start = s.start_pos2_dup
-                    end = s.end_pos1_dup
-
-                # Validate positions
-                await self.validate_gene_or_accession_pos(
-                    t, [start, end], errors, gene=gene)
-
-                if not errors and start and end:
-                    ival = (self.vrs.get_start_indef_range(start),
-                            self.vrs.get_end_indef_range(end))
-            elif s.start_pos1_dup == "?" and \
-                    s.start_pos2_dup != "?" and \
-                    s.end_pos1_dup != "?" and \
-                    s.end_pos2_dup is None:
-                # format: (?_#)_#
-                if is_norm:
-                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
-                        t, s.start_pos2_dup, s.end_pos1_dup)
-                else:
-                    start = s.start_pos2_dup
-                    end = s.end_pos1_dup
-
-                # Validate positions
-                await self.validate_gene_or_accession_pos(
-                    t, [start, end], errors, gene=gene)
-
-                if not errors and start and end:
-                    ival = (self.vrs.get_start_indef_range(start),
-                            models.Number(value=end, type="Number"))
-            elif s.start_pos1_dup != "?" and \
-                    s.start_pos2_dup is None and \
-                    s.end_pos1_dup != "?" and \
-                    s.end_pos2_dup == "?":
-                # format: #_(#_?)
-                if is_norm:
-                    t, start, end, _, _, grch38 = await self.get_grch38_pos_ac(
-                        t, s.start_pos1_dup, s.end_pos1_dup
-                    )
-                else:
-                    start = s.start_pos1_dup
-                    end = s.end_pos1_dup
-                start -= 1
-
-                await self.validate_gene_or_accession_pos(
-                    t, [start, end], errors, gene=gene)
-
-                if not errors and start and end:
-                    ival = (models.Number(value=start, type="Number"),
-                            self.vrs.get_end_indef_range(end))
-            else:
-                errors.append("Not yet supported")
-        return ival, grch38
-
-    def get_gene_tokens(
-            self, classification: Classification) -> List[GeneMatchToken]:
-        """Return gene tokens for a classification.
-
-        :param Classification classification: The classification for tokens
-        :return: A list of Gene Match Tokens in the classification
-        """
-        return self.get_gene_symbol_tokens(classification)
-
-    def variation_name(self) -> str:
-        """Return the variation name."""
-        return "genomic duplication"
-
-    def is_token_instance(self, t: Token) -> bool:
-        """Check that token is an instance of Genomic Duplication."""
-        return t.token_type in ["GenomicDuplication",
-                                "GenomicDuplicationRange"]
+        return validation_results
 
     def validates_classification_type(
         self, classification_type: ClassificationType
     ) -> bool:
-        """Return whether or not the classification type is
-        Genomic Duplication.
+        """Return whether or not the classification type is genomic duplication"""
+        return classification_type == ClassificationType.GENOMIC_DUPLICATION
 
-        :param ClassificationType classification_type: Classification type
-        :return: `True` if classification type matches, `False` otherwise
+    async def get_accessions(
+        self, classification: Classification, errors: List
+    ) -> Optional[List[str]]:
+        """Get accessions for a given classification.
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
+
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :return: List of accessions
         """
-        return classification_type == \
-            ClassificationType.GENOMIC_DUPLICATION
+        if classification.nomenclature == Nomenclature.HGVS:
+            accessions = [classification.ac]
+        else:
+            accessions = await self.get_genomic_accessions(classification, errors)
+        return accessions

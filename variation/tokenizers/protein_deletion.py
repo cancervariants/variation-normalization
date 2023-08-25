@@ -1,105 +1,94 @@
 """A module for tokenizing Protein Deletions."""
-from typing import Optional
 import re
+from typing import Optional
 
-from pydantic.error_wrappers import ValidationError
-from bioutils.sequences import aa3_to_aa1_lut, aa1_to_aa3
+from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
-from variation.schemas.token_response_schema import ProteinDeletionToken, \
-    TokenMatchType
-from .tokenizer import Tokenizer
+from variation.regex import PROTEIN_DELETION
+from variation.schemas.token_response_schema import ProteinDeletionToken
+from variation.tokenizers.tokenizer import Tokenizer
 
 
 class ProteinDeletion(Tokenizer):
     """Class for tokenizing Deletions on the protein reference sequence."""
 
-    pattern = r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)" \
-              r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
+    pattern = (
+        r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)"
+        r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
+    )
     splitter = re.compile(pattern)
 
     def match(self, input_string: str) -> Optional[ProteinDeletionToken]:
-        """Return token that match the input string
+        """Return a ProteinDeletionToken match if one exists.
 
-        :param str input_str: Input string to tokenize
-        :return: `ProteinDeletionToken` if a match is found, else `None`
+        :param input_string: The input string to match
+        :return: A ProteinDeletionToken if a match exists.
+            Otherwise, None.
         """
-        parts = {
-            "used_one_letter": False,
-            "token": input_string,
-            "input_string": input_string,
-            "match_type": TokenMatchType.UNSPECIFIED.value,
-            "start_aa_del": None,
-            "start_pos_del": None,
-            "end_aa_del": None,
-            "end_pos_del": None,
-            "deleted_aa": None
-        }
+        og_input_string = input_string
 
-        input_str_l = str(input_string).lower()
+        if input_string.startswith(("(p.", "p.(")) and input_string.endswith(")"):
+            input_string = input_string[3:-1]
+        elif input_string.startswith("p."):
+            input_string = input_string[2:]
+        elif input_string[0] == "(" and input_string[-1] == ")":
+            input_string = input_string[1:-1]
 
-        if input_str_l.startswith(("c.", "g.")):
-            return None
+        match = PROTEIN_DELETION.match(input_string)
+        if match:
+            match_dict = match.groupdict()
 
-        if input_str_l.startswith("p."):
-            input_str_l = input_str_l[2:]
+            aa0 = match_dict["aa0"]
+            pos0 = int(match_dict["pos0"])
+            aa1 = match_dict["aa1"]
+            pos1 = int(match_dict["pos1"]) if match_dict["pos1"] else None
+            deleted_sequence = match_dict["deleted_sequence"]
 
-        if input_str_l.startswith("(") and input_str_l.endswith(")"):
-            input_str_l = input_str_l[1:-1]
+            # One letter codes for aa0, aa1, and inserted sequence
+            one_letter_aa0 = None
+            one_letter_aa1 = None
+            one_letter_del_seq = None
 
-        match = self.splitter.match(input_str_l)
-        if not match:
-            return None
+            # Should use the same 1 or 3 letter AA codes
+            try:
+                # see if it's 1 AA already
+                aa1_to_aa3(aa0)
 
-        params = match.groupdict()
-        one_letter_aa = False  # Whether or not 1 letter AA code was used
+                if aa1:
+                    aa1_to_aa3(aa1)
 
-        parts["start_aa_del"] = params["start_aa"]
-        parts["start_pos_del"] = params["start_pos"]
-        parts["end_aa_del"] = params["end_aa"]
-        parts["end_pos_del"] = params["end_pos"]
-        parts["deleted_aa"] = params["deleted_aa"]
+                if deleted_sequence:
+                    aa1_to_aa3(deleted_sequence)
+            except KeyError:
+                # maybe 3 letter AA code was used
+                try:
+                    one_letter_aa0 = aa3_to_aa1(aa0)
 
-        # This ensures that start/end/deleted AA use consistent 1 or 3 AA codes
-        if len(parts["start_aa_del"]) == 1:
-            one_letter_aa = True
+                    if aa1:
+                        one_letter_aa1 = aa3_to_aa1(aa1)
 
-        # Validate start and end deleted amino acids (if given)
-        for key in ["start_aa_del", "end_aa_del"]:
-            aa = parts[key]
-            if aa:
-                if one_letter_aa:
-                    try:
-                        parts[key] = aa1_to_aa3(aa.upper())
-                    except KeyError:
-                        return None
-                else:
-                    if aa.capitalize() not in aa3_to_aa1_lut:
-                        return None
-                    else:
-                        parts[key] = aa.capitalize()
-
-        # Validate deleted amino acid sequence
-        if parts["deleted_aa"]:
-            deleted_aa = ""
-            if one_letter_aa:
-                for i in range(len(parts["deleted_aa"])):
-                    aa = parts["deleted_aa"][i:i + 1]
-                    try:
-                        deleted_aa += aa3_to_aa1_lut[aa1_to_aa3(aa.upper())]
-                    except KeyError:
-                        return None
+                    if deleted_sequence:
+                        one_letter_del_seq = aa3_to_aa1(deleted_sequence)
+                except KeyError:
+                    pass
             else:
-                for i in range(0, len(parts["deleted_aa"]), 3):
-                    aa = parts["deleted_aa"][i:i + 3]
-                    cap_aa = aa.capitalize()
+                one_letter_aa0 = aa0
+                one_letter_aa1 = aa1
+                one_letter_del_seq = deleted_sequence
 
-                    if len(cap_aa) != 3 or cap_aa not in aa3_to_aa1_lut:
-                        if cap_aa != "Ter":
-                            return None
-                    deleted_aa += cap_aa
-            parts["deleted_aa"] = deleted_aa
-
-        try:
-            return ProteinDeletionToken(**parts)
-        except ValidationError:
-            return None
+            if all(
+                (
+                    type(aa0) == type(one_letter_aa0),
+                    type(aa1) == type(one_letter_aa1),
+                    type(deleted_sequence) == type(one_letter_del_seq),
+                )
+            ):
+                return ProteinDeletionToken(
+                    input_string=og_input_string,
+                    token=og_input_string,
+                    aa0=one_letter_aa0,
+                    pos0=pos0,
+                    aa1=one_letter_aa1,
+                    pos1=pos1,
+                    deleted_sequence=one_letter_del_seq,
+                )
