@@ -1,5 +1,5 @@
 """Module for translating genomic ambiguous deletions and duplications"""
-from typing import Dict, List, Literal, NamedTuple, Optional, Tuple, Union
+from typing import Dict, List, Literal, NamedTuple, Optional, Union
 
 from ga4gh.vrs import models
 from pydantic import StrictInt, StrictStr, ValidationError
@@ -28,13 +28,6 @@ class AmbiguousData(NamedTuple):
     pos1: Optional[Union[StrictInt, Literal["?"]]]
     pos2: Union[StrictInt, Literal["?"]]
     pos3: Optional[Union[StrictInt, Literal["?"]]]
-
-
-class AmbiguousSequenceLocation(NamedTuple):
-    """Represents ambiguous dup/del sequence location info"""
-
-    seq_loc: Optional[Dict]
-    outer_coords: Tuple[int, int]
 
 
 class AmbiguousTranslator(Translator):
@@ -123,9 +116,8 @@ class AmbiguousTranslator(Translator):
         pos2: Union[int, Literal["?"]],
         pos3: Optional[Union[int, Literal["?"]]],
         warnings: List[str],
-    ) -> AmbiguousSequenceLocation:
-        """Get VRS Sequence Location and outer coords for genomic ambiguous duplication
-        or deletion
+    ) -> Dict:
+        """Get VRS Sequence Location
 
         :param ambiguous_type: Type of ambiguous expression used
         :param ac: Genomic RefSeq accession
@@ -134,36 +126,25 @@ class AmbiguousTranslator(Translator):
         :param pos2: Position 2 (residue)
         :param pos3: Position 3 (residue)
         :param warnings: List of warnings
-        :return: Ambiguous sequence location data containing VRS Sequence Location
-            and outer coordinates
+        :return:VRS Sequence Location as a dictionary
         """
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             start = models.Range([pos0 - 1, pos1 - 1])
             end = models.Range([pos2 + 1, pos3 + 1])
-            outer_coords = (pos0, pos3)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_2:
             start = self.vrs.get_start_indef_range(pos1)
             end = self.vrs.get_end_indef_range(pos2)
-            outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_5:
             start = self.vrs.get_start_indef_range(pos1)
             end = pos2
-            outer_coords = (pos1, pos2)
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_7:
             start = pos0 - 1
             end = self.vrs.get_end_indef_range(pos2)
-            outer_coords = (pos0, pos2)
         # No else since validator should catch if the ambiguous type is supported or not
 
         seq_id = self.translate_sequence_identifier(ac, warnings)
-
-        return AmbiguousSequenceLocation(
-            seq_loc=self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
-                exclude_none=True
-            )
-            if seq_id
-            else None,
-            outer_coords=outer_coords,
+        return self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
+            exclude_none=True
         )
 
     async def translate(
@@ -281,34 +262,32 @@ class AmbiguousTranslator(Translator):
                 warnings += errors
                 return None
 
-        ambiguous_seq_loc_data = self.get_dup_del_ambiguous_seq_loc(
+        seq_loc = self.get_dup_del_ambiguous_seq_loc(
             classification.ambiguous_type, ac, pos0, pos1, pos2, pos3, warnings
         )
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
                 alt_type,
-                ambiguous_seq_loc_data.seq_loc,
+                seq_loc,
                 warnings,
                 hgvs_dup_del_mode,
                 ac,
-                pos=ambiguous_seq_loc_data.outer_coords,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(
-                alt_type, ambiguous_seq_loc_data.seq_loc, baseline_copies
+                alt_type, seq_loc, baseline_copies
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_CHANGE:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_change_mode(
-                alt_type, ambiguous_seq_loc_data.seq_loc, copy_change
+                alt_type, seq_loc, copy_change
             )
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
                 alt_type,
-                ambiguous_seq_loc_data.outer_coords,
-                ambiguous_seq_loc_data.seq_loc,
+                seq_loc,
                 ac,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,

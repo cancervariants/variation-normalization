@@ -146,7 +146,7 @@ def cdna_deletion():
     sequence.
     """
     params = {
-        "id": "ga4gh:VA.1Khy-rTsx64H15py5vfhJyQUOaL1jCUH",
+        "id": "ga4gh:VA.bM8kEbQCUg0dxyt_gwG3JHKldHohnAio",
         "location": {
             "id": "ga4gh:SL.bry-Y_Z-XEJWbAxdi6Txl4GHSgQesvfT",
             "end": 2453,
@@ -154,7 +154,12 @@ def cdna_deletion():
             "sequence": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
+        "state": {
+            "length": 1,
+            "repeatSubunitLength": 15,
+            "sequence": "T",
+            "type": "ReferenceLengthExpression",
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -166,7 +171,7 @@ def genomic_deletion():
     (CA915940709)
     """
     params = {
-        "id": "ga4gh:VA.OTT6pBrjH3fkfVeMP1sUAj_s3-K9v-rA",
+        "id": "ga4gh:VA.q96pW8eD17vNcJ-OQmJB9WSfMXLVihSQ",
         "location": {
             "id": "ga4gh:SL.ZcUsDwkeZQKbeeEHK-GgqSrpEtVUfZFV",
             "end": 10146528,
@@ -174,7 +179,12 @@ def genomic_deletion():
             "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "CT", "type": "LiteralSequenceExpression"},
+        "state": {
+            "length": "2",
+            "repeatSubunitLength": 2,
+            "sequence": "CT",
+            "type": "ReferenceLengthExpression",
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -202,7 +212,7 @@ def cdna_insertion():
 def genomic_insertion():
     """Create a gene insertion test fixture."""
     params = {
-        "id": "ga4gh:VA.U6MAww85kPg0oovw7hsFbscT4f_4n_2N",
+        "id": "ga4gh:VA.tucTDF6gu-OpgyVfJcnhcCR5jobIV1fL",
         "location": {
             "id": "ga4gh:SL.doaqZtlQYh108Ct7PAbiEC8WH4MeG6Sh",
             "end": 2500,
@@ -211,8 +221,10 @@ def genomic_insertion():
             "type": "SequenceLocation",
         },
         "state": {
+            "length": 24,
+            "repeatSubunitLength": 12,
             "sequence": "TACGTGATGGCTTACGTGATGGCT",
-            "type": "LiteralSequenceExpression",
+            "type": "ReferenceLengthExpression",
         },
         "type": "Allele",
     }
@@ -389,7 +401,7 @@ def gnomad_vcf_genomic_delins2():
 def gnomad_vcf_genomic_delins3():
     """Create a test fixture for X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG"""
     params = {
-        "id": "ga4gh:VA.1oe2iczwHQaE1WvFRNDRCs2u2Iw8lXim",
+        "id": "ga4gh:VA.lv2MkUfJ6gGR7bcw8E11khTzsEKo6P8e",
         "location": {
             "id": "ga4gh:SL.iStfHeIOACHNA5MlWX9RbaG-8gjzn6xT",
             "start": 71130213,
@@ -398,8 +410,10 @@ def gnomad_vcf_genomic_delins3():
             "type": "SequenceLocation",
         },
         "state": {
+            "length": 26,
+            "repeatSubunitLength": 24,
             "sequence": "GGCAGCGCATAAAGCGCATTCTCCGG",
-            "type": "LiteralSequenceExpression",
+            "type": "ReferenceLengthExpression",
         },
         "type": "Allele",
     }
@@ -410,7 +424,7 @@ def gnomad_vcf_genomic_delins3():
 def gnomad_vcf_genomic_delins4():
     """Create a test fixture for 1-55509715-AC-A"""
     params = {
-        "id": "ga4gh:VA.t1Y0btbT6XYX1CIaUp5kX0nlHDfoo0_d",
+        "id": "ga4gh:VA.d5k4EP2zG3gJurtVrKM3I2xRprSCmJZi",
         "location": {
             "id": "ga4gh:SL._-CxWxxGtqykQa4O4D7iZj_PP1SQRN7z",
             "end": 55044045,
@@ -418,7 +432,12 @@ def gnomad_vcf_genomic_delins4():
             "sequence": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "CC", "type": "LiteralSequenceExpression"},
+        "state": {
+            "length": 2,
+            "repeatSubunitLength": 1,
+            "sequence": "CC",
+            "type": "ReferenceLengthExpression",
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -428,7 +447,7 @@ def gnomad_vcf_genomic_delins4():
 def gnomad_vcf_genomic_delins5():
     """Create test fixture for 17-7578455-CGCGG-CGCG (CA497925643)"""
     params = {
-        "id": "ga4gh:VA.5BuinncphRfF2klH9SzLlN08XypRSKt6",
+        "id": "ga4gh:VA.3mnuk0GOSDtlYkaBsz3d5iumacfw9gbf",
         "type": "Allele",
         "location": {
             "id": "ga4gh:SL.jvGY9Lk18DGlztfAkJuIAtQQ9QgyW4lE",
@@ -437,7 +456,12 @@ def gnomad_vcf_genomic_delins5():
             "start": 7675139,
             "end": 7675141,
         },
-        "state": {"type": "LiteralSequenceExpression", "sequence": "G"},
+        "state": {
+            "type": "ReferenceLengthExpression",
+            "sequence": "G",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
     }
     return models.Allele(**params)
 

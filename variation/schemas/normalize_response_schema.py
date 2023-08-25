@@ -17,8 +17,7 @@ class HGVSDupDelModeOption(str, Enum):
     DEFAULT = "default"
     COPY_NUMBER_COUNT = "copy_number_count"
     COPY_NUMBER_CHANGE = "copy_number_change"
-    REFERENCE_LEN_EXPR = "ref_len_expr"  # VRS Allele
-    LITERAL_SEQ_EXPR = "literal_seq_expr"  # VRS Allele
+    ALLELE = "allele"
 
 
 class ServiceMeta(BaseModel):

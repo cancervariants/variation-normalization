@@ -158,7 +158,7 @@ def protein_deletion_np_range():
     range for deletion.
     """
     params = {
-        "id": "ga4gh:VA.uV8vtTCRJGA__U16rXYJX8QmIDlyXwcw",
+        "id": "ga4gh:VA.7CwrGKWx_d6hkIJDBvC8-V4AUISUl3H5",
         "location": {
             "id": "ga4gh:SL.xfIpKI77izLOuEFvJewyQ-VncDr6q059",
             "end": 759,
@@ -166,7 +166,12 @@ def protein_deletion_np_range():
             "sequence": "ga4gh:SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "", "type": "LiteralSequenceExpression"},
+        "state": {
+            "length": 0,
+            "repeatSubunitLength": 5,
+            "sequence": "",
+            "type": "ReferenceLengthExpression",
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -317,9 +322,14 @@ def genomic_del1_lse(genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.Kt_0JCbABYTiBhQAYLz0RlxTw-HUHPas",
+        "id": "ga4gh:VA.OoLLJD5r1wlD2jvhSOixB2U_DFSh832H",
         "location": genomic_del1_seq_loc,
-        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
+        "state": {
+            "length": 0,
+            "repeatSubunitLength": 1,
+            "type": "ReferenceLengthExpression",
+            "sequence": "",
+        },
     }
     return models.Allele(**params)
 
@@ -353,9 +363,14 @@ def genomic_del2_lse(genomic_del2_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.OhVKf_ePMH0ptie44HofAV_H1rCr-7wC",
+        "id": "ga4gh:VA.IzN1_rp0YfpwnnBT3uRwwUhDp-jS6g-U",
         "location": genomic_del2_seq_loc,
-        "state": {"type": "LiteralSequenceExpression", "sequence": ""},
+        "state": {
+            "type": "ReferenceLengthExpression",
+            "sequence": "",
+            "length": 0,
+            "repeatSubunitLength": 19,
+        },
     }
     return models.Allele(**params)
 
@@ -424,11 +439,13 @@ def grch38_genomic_insertion_seq_loc():
 def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
     """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
     params = {
-        "id": "ga4gh:VA.stx0NrRIPFsy8hBXsx2lVyA6Ewhz7ytI",
+        "id": "ga4gh:VA.pAtycW9rbIrVkHHfCCJBnTbu7k24X42R",
         "location": grch38_genomic_insertion_seq_loc,
         "state": {
+            "length": 24,
+            "repeatSubunitLength": 12,
             "sequence": "TACGTGATGGCTTACGTGATGGCT",
-            "type": "LiteralSequenceExpression",
+            "type": "ReferenceLengthExpression",
         },
         "type": "Allele",
     }

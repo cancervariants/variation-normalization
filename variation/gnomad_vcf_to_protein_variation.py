@@ -332,7 +332,7 @@ class GnomadVcfToProteinVariation(ToVRS):
                 valid_results,
                 warnings,
                 Endpoint.NORMALIZE,
-                hgvs_dup_del_mode=HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
+                hgvs_dup_del_mode=HGVSDupDelModeOption.ALLELE,
             )
 
             if translations:
@@ -510,7 +510,7 @@ class GnomadVcfToProteinVariation(ToVRS):
                                 tr_copy.vrs_seq_loc_ac_status = mane_p["status"]
 
                                 try:
-                                    vrs_variation = tr_copy.variation
+                                    vrs_variation = tr_copy.vrs_variation
                                 except AttributeError as e:
                                     warnings.append(str(e))
                                     vrs_variation = None
@@ -521,7 +521,7 @@ class GnomadVcfToProteinVariation(ToVRS):
                                 return NormalizeService(
                                     variation_query=q,
                                     variation=vrs_variation,
-                                    warnings=warnings,
+                                    warnings=[],
                                     service_meta_=ServiceMeta(
                                         version=__version__,
                                         response_datetime=datetime.now(),
@@ -533,7 +533,7 @@ class GnomadVcfToProteinVariation(ToVRS):
                             )
 
                 if all_warnings:
-                    update_warnings_for_no_resp(q, list(all_warnings))
+                    warnings = all_warnings
                 else:
                     warnings = [f"Unable to get protein variation for {q}"]
             else:

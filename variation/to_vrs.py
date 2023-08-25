@@ -130,8 +130,8 @@ class ToVRS(VRSRepresentation):
                 do_liftover=False,
             )
         else:
-            warnings.append("No valid results found")
             translations = []
+            warnings = validation_summary.warnings
 
         if not translations:
             variations = []

@@ -115,14 +115,14 @@ class Normalize(ToVRS):
         :param tokens: List of tokens found in an input query
         :param hgvs_dup_del_mode: The hgvs dup del mode option provided in the input
             query. Mode to use for interpreting HGVS duplications and deletions.
-            gnomad vcf token will always set to `HGVSDupDelModeOption.LITERAL_SEQ_EXPR`.
+            gnomad vcf token will always set to `HGVSDupDelModeOption.ALLELE`.
         :param baseline_copies: The baseline copies provided in the input query.
             Required when `hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT`.
         :return: Tuple containing the hgvs dup del mode option and warnings
         """
         warning = None
         if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
-            hgvs_dup_del_mode = HGVSDupDelModeOption.LITERAL_SEQ_EXPR
+            hgvs_dup_del_mode = HGVSDupDelModeOption.ALLELE
         else:
             if not hgvs_dup_del_mode:
                 hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
