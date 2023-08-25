@@ -96,9 +96,9 @@ class Normalize(ToVRS):
                     key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
                     reverse=True,
                 )
-                translation_result = translations[0]
+                translation_result = preferred_translations[0]
         elif len_preferred_translations == 1:
-            translation_result = translations[0]
+            translation_result = preferred_translations[0]
         else:
             translation_result = None
 
