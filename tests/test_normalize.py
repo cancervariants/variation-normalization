@@ -1563,7 +1563,6 @@ async def test_valid_queries(test_handler):
     assert await test_handler.normalize("CCND1 Y44D")
 
     resp = await test_handler.normalize("NC_000002.12:g.73448098_73448100delCTC")
-    assert resp
     assert resp.variation_descriptor.variation.state.sequence == "CTC"
     assert (
         resp.variation_descriptor.variation.id
@@ -1581,6 +1580,11 @@ async def test_valid_queries(test_handler):
     ]:
         resp = await test_handler.normalize(q)
         assert resp.variation_descriptor, q
+
+    # Test where Mane data not found
+    resp = await test_handler.normalize("ALK p.A1280V")
+    assert resp.variation_descriptor.variation
+    assert resp.warnings == ["Unable to find MANE representation"]
 
 
 @pytest.mark.asyncio

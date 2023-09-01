@@ -11,7 +11,10 @@ from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AltType, GeneToken
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.translation_response_schema import (
+    TranslationResult,
+    VrsSeqLocAcStatus,
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.genomic_base import GenomicBase
 from variation.vrs_representation import VRSRepresentation
@@ -179,7 +182,7 @@ class Translator(ABC):
         """
         vrs_allele = None
         vrs_seq_loc_ac = None
-        vrs_seq_loc_ac_status = "na"
+        vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
@@ -205,7 +208,8 @@ class Translator(ABC):
                     cds_start=mane.get("coding_start_site", None),
                     alt=alt,
                 )
-        else:
+
+        if not vrs_allele:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
                 vrs_seq_loc_ac,
