@@ -89,6 +89,10 @@ class Normalize(ToVRSATILE):
         # Different `og_ac`'s can lead to different translation results.
         # We must be consistent in what we return in /normalize
         if len_preferred_translations > 1:
+            preferred_translations.sort(
+                key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
+                reverse=True,
+            )
             og_ac_preferred_match = (
                 [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac]
                 or [None]
@@ -101,10 +105,6 @@ class Normalize(ToVRSATILE):
             if og_ac_preferred_match:
                 translation_result = og_ac_preferred_match
             else:
-                preferred_translations.sort(
-                    key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
-                    reverse=True,
-                )
                 translation_result = preferred_translations[0]
         elif len_preferred_translations == 1:
             translation_result = preferred_translations[0]

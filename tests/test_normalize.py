@@ -41,127 +41,37 @@ def dis3_p63a():
             "type": "Allele",
         },
         "molecule_context": "protein",
-        "gene_context": {
-            "id": "normalize.gene:DIS3",
-            "type": "GeneDescriptor",
-            "label": "DIS3",
-            "xrefs": ["ensembl:ENSG00000083520", "ncbigene:22894"],
-            "alternate_labels": [
-                "dis3p",
-                "RRP44",
-                "KIAA1008",
-                "2810028N01Rik",
-                "EXOSC11",
-            ],
-            "extensions": [
-                {"name": "symbol_status", "value": "approved", "type": "Extension"},
-                {
-                    "name": "approved_name",
-                    "value": "DIS3 homolog, exosome endoribonuclease and 3'-5' exoribonuclease",  # noqa: E501
-                    "type": "Extension",
-                },
-                {
-                    "name": "hgnc_locations",
-                    "value": [
-                        {
-                            "species_id": "taxonomy:9606",
-                            "interval": {
-                                "type": "CytobandInterval",
-                                "start": "q21.33",
-                                "end": "q21.33",
-                            },
-                            "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
-                            "type": "ChromosomeLocation",
-                            "chr": "13",
-                        }
-                    ],
-                    "type": "Extension",
-                },
-                {
-                    "type": "Extension",
-                    "name": "ensembl_locations",
-                    "value": [
-                        {
-                            "_id": "ga4gh:VSL.HZtod8n11kD7jCAbtsJLDGwLKCEhRWO1",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
-                            "interval": {
-                                "start": {"type": "Number", "value": 72752168},
-                                "end": {"type": "Number", "value": 72782096},
-                                "type": "SequenceInterval",
-                            },
-                        }
-                    ],
-                },
-                {
-                    "type": "Extension",
-                    "name": "ncbi_locations",
-                    "value": [
-                        {
-                            "_id": "ga4gh:VCL.84IPub_nKl33cWX9pNoPeGsyeVuJnyra",
-                            "type": "ChromosomeLocation",
-                            "species_id": "taxonomy:9606",
-                            "chr": "13",
-                            "interval": {
-                                "end": "q21.33",
-                                "start": "q21.33",
-                                "type": "CytobandInterval",
-                            },
-                        },
-                        {
-                            "_id": "ga4gh:VSL.BIRwPLT8rtyOnhd3aUXaz4xlHC4P4zA8",
-                            "type": "SequenceLocation",
-                            "sequence_id": "ga4gh:SQ._0wi-qoDrvram155UmcSC-zA5ZK4fpLT",
-                            "interval": {
-                                "start": {"type": "Number", "value": 72752168},
-                                "end": {"type": "Number", "value": 72781900},
-                                "type": "SequenceInterval",
-                            },
-                        },
-                    ],
-                },
-                {
-                    "name": "associated_with",
-                    "value": [
-                        "vega:OTTHUMG00000017070",
-                        "ccds:CCDS9447",
-                        "orphanet:470196",
-                        "ena.embl:AB023225",
-                        "ccds:CCDS45057",
-                        "omim:607533",
-                        "pubmed:11935316",
-                        "refseq:NM_014953",
-                        "uniprot:Q9Y2L1",
-                        "ccds:CCDS81772",
-                        "ucsc:uc001vix.6",
-                        "pubmed:9562621",
-                    ],
-                    "type": "Extension",
-                },
-                {
-                    "name": "previous_symbols",
-                    "value": ["KIAA1008"],
-                    "type": "Extension",
-                },
-                {
-                    "type": "Extension",
-                    "name": "hgnc_locus_type",
-                    "value": "gene with protein product",
-                },
-                {
-                    "type": "Extension",
-                    "name": "ncbi_gene_type",
-                    "value": "protein-coding",
-                },
-                {
-                    "type": "Extension",
-                    "name": "ensembl_biotype",
-                    "value": "protein_coding",
-                },
-            ],
-            "gene_id": "hgnc:20604",
-        },
+        "gene_context": "hgnc:20604",
         "vrs_ref_allele_seq": "P",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def tp53_g262c():
+    """Create TP53 G262C test fixture."""
+    params = {
+        "id": "normalize.variation:TP53%20G262C",
+        "type": "VariationDescriptor",
+        "variation_id": "ga4gh:VA.M_aggPZhA47fKQbmDhajHujncmFjMtB7",
+        "variation": {
+            "_id": "ga4gh:VA.M_aggPZhA47fKQbmDhajHujncmFjMtB7",
+            "location": {
+                "_id": "ga4gh:VSL.2rV8a3PeziQSLNLBzmXMlRHX-vxYRLpS",
+                "interval": {
+                    "end": {"value": 262, "type": "Number"},
+                    "start": {"value": 261, "type": "Number"},
+                    "type": "SequenceInterval",
+                },
+                "sequence_id": "ga4gh:SQ.YIlmVwD0rxIqnlvb-8WujHPbR0j3WEGI",
+                "type": "SequenceLocation",
+            },
+            "state": {"sequence": "C", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "protein",
+        "gene_context": "hgnc:11998",
+        "vrs_ref_allele_seq": "G",
     }
     return VariationDescriptor(**params)
 
@@ -934,7 +844,7 @@ def gnomad_vcf_genomic_delins3():
 
 
 @pytest.mark.asyncio
-async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
+async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a, tp53_g262c):
     """Test that protein substitutions normalize correctly."""
     resp = await test_handler.normalize("     BRAF      V600E    ")
     assertion_checks(resp.variation_descriptor, braf_v600e, "BRAF      V600E")
@@ -965,6 +875,11 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
 
     resp = await test_handler.normalize("DIS3 P63A")
     assertion_checks(resp.variation_descriptor, dis3_p63a, "DIS3 P63A")
+
+    # Case where NA priority
+    q = "TP53 G262C"
+    resp = await test_handler.normalize(q)
+    assertion_checks(resp.variation_descriptor, tp53_g262c, q)
 
 
 @pytest.mark.asyncio
