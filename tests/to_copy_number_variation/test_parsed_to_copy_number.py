@@ -23,11 +23,14 @@ def cn_gain1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.fhnp2e-Pu8KmZ6mOPifqm3AeMEwUMpv6",
+        "id": "ga4gh:CN.VVV2dbQpCd_HA2kcYDLQn-bcJNHmgFtk",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.hugmhnt6aLbh-qNiYxAxe36r3L-c3yML",
-            "sequence": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            "id": "ga4gh:SL.CSGKn-RY7VVbqvc_AKNs4sWpQLDVyVI8",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            },
             "start": [None, 143134062],
             "end": [143284670, None],
         },
@@ -43,11 +46,14 @@ def cn_gain2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.5BoCkDL72dQUE-p4CyIrwuo-piqW26_6",
+        "id": "ga4gh:CN.6gPh7KONRHD6zZAsgJT2rZkruBVcnJTX",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.EjhOr0T_qlLtjkDLvPvW8Bw0qXovEffJ",
-            "sequence": "ga4gh:SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
+            "id": "ga4gh:SL.Ffx4BT3IjIK5WxaZVNKmUeoFDaOfWP86",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
+            },
             "start": [None, 31738808],
             "end": [32217725, None],
         },
@@ -63,11 +69,14 @@ def cn_gain2_37():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.K_zvYHJTHqKk2NSf4DcYnEbknWpH4Nho",
+        "id": "ga4gh:CN.ZJhomr1JEO4TDkhBcCXUF_qCKYbybu8A",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.cexiOZUN5abMIzfl3OMOttAam1I29Wr4",
-            "sequence": "ga4gh:SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
+            "id": "ga4gh:SL.jp4K2S5zvmAzmY59_3jGVPvWuhjoYYaK",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
+            },
             "start": [None, 32031011],
             "end": [32509926, None],
         },
@@ -83,11 +92,14 @@ def cn_loss1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.WdFmz5pOt-KWLgbaBFbxInnsCG0iU_Tl",
+        "id": "ga4gh:CN.atarDIZuqucRA4nKVW2ZAn6ULxhcUoRd",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.xBBWHeNrFpd6t-fAy3_QGp6ORQZ0wdbl",
-            "sequence": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+            "id": "ga4gh:SL.hqsOIzAT2PpapM-o3prjarM0h6zc5dUG",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+            },
             "start": [None, 10491131],
             "end": [10535643, None],
         },
@@ -103,11 +115,14 @@ def cn_loss2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.2RhYjaIVo96H1GjhVMl23eXr_K1a1H-B",
+        "id": "ga4gh:CN.qk84Qvcee6n15qWmC-023gB-xUr1368y",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.UmTJfm4LdIoXFA4LNDnMkJepe7tCAsB6",
-            "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "id": "ga4gh:SL.cgFgAGGBdOnHxqf0QkBlRrAaenZ3n9pU",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
             "start": [None, 10000],
             "end": [1223133, None],
         },
@@ -123,15 +138,15 @@ def cn_definite_number():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.mQo59YfLQmruHt4AK_HgA8d6qiHBfyGM",
+        "id": "ga4gh:CN.6tdwkovurhRPmyZ4gSUtn0Sv4VR3MA4S",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.dFNi1jnnTqnC1_OKrKxGdZVZWPsHlzeL",
-            "sequence": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-            "start": [
-                143134062,
-                143134064,
-            ],
+            "id": "ga4gh:SL.up_lKdFK8IakqsYTobUNVFnTZ5fGyDUB",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            },
+            "start": [143134062, 143134064],
             "end": 143284670,
         },
         "copies": 3,
@@ -144,11 +159,14 @@ def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.lJV-wxDzq2BlvNbYQlkpw4nXtqfgDE3Q",
+        "id": "ga4gh:CX.drBX25s9U7MiZSC2H2C6fl091I3fVGR1",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.fnPHrJv-I6ch1HryHtk0SylEb6LWYR7W",
-            "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "id": "ga4gh:SL.t89j1jS3xh47Ali0pPusruVzHhKdT9SB",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
             "start": 10000,
             "end": 1223133,
         },
@@ -164,11 +182,14 @@ def cx_definite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.y5yxsuT6lfmQ1QgVCEO5YtwOSik7QmOX",
+        "id": "ga4gh:CX.KxNIWjbUfLlPC7uJhxsTBQa-qA_ENtsR",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.55i7shEk5ld8nYBVC7Gx1sgkYRKiKyYL",
-            "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "id": "ga4gh:SL.feyXnsp_noG54kqAP7hY7p6AWdc2MZHf",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
             "start": [10000, 10005],
             "end": [1223131, 1223134],
         },
@@ -184,11 +205,14 @@ def cx_indefinite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.PMmoR7CVZYRoYg3TCgTnVZ7Lrz6MXDLQ",
+        "id": "ga4gh:CX.TyVFOUwR76bJCESEaCSU5u9aDVe0dDsp",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.IkbPeolRbKjZyNJYM5KQm85cNX1yKNkZ",
-            "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "id": "ga4gh:SL.2hVJKGiC6ycnTavijdKfJQwoyzIJncIL",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
             "start": [None, 10000],
             "end": [1223130, None],
         },
@@ -204,11 +228,14 @@ def cx_number_indefinite():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.2Davrf-CG5myvgHCIXguAW7L2zky5rB_",
+        "id": "ga4gh:CX.jEy548hCZ0JlYbvFSXBxbxieiuk11sF8",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.JIV0aTtpK-paH_3iS__ULFKKQ1kJaBYe",
-            "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            "id": "ga4gh:SL.uemVC8h9E4WEhp9owRDJ-TWa5QBboy9V",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
             "start": 10000,
             "end": [1223130, None],
         },
@@ -690,7 +717,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([3, 5])
-    expected.id = "ga4gh:CN.8WxvZQlOwd08BpSOoCiABSRe0avpMaaC"
+    expected.id = "ga4gh:CN.rL4cQUApYijbcYFXg2FleKP8-_uX6IBJ"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range <=
@@ -708,7 +735,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([None, 3])
-    expected.id = "ga4gh:CN._3gAbO3T5HHr4eIdDmYQAPc2GnqaqEzm"
+    expected.id = "ga4gh:CN.BuCZOhc00Va-9yscZRDazxW4ThZHHC0H"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range >=
@@ -726,7 +753,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = [3, None]
-    expected.id = "ga4gh:CN.NORFpdUYseOPM7RGM1DjxcNT8ZcGlLdj"
+    expected.id = "ga4gh:CN.BmRCHbGTXzonlA6mTA7tnhalsLUrqapx"
     cnv_assertion_checks(resp, expected)
 
     # start_pos and end_pos indefinite range
@@ -744,11 +771,14 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.model_dump(exclude_none=True) == {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.CAyLOhsngZ_FOltYuYfqrI-JzwnGU17O",
+        "id": "ga4gh:CN.rsiBwahYriYFgEjKVWpac25nAWWPCQAT",
         "subject": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.2fW6ZqIuo9_PEAOkoIxWhAvm5USkBtJa",
-            "sequence": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            "id": "ga4gh:SL.9Z-s6E8gLuhoy8SQPfUAJU2SCieScH21",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            },
             "start": [143134062, None],
             "end": [None, 143284670],
         },

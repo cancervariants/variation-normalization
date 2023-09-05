@@ -1,5 +1,4 @@
 """Module for testing the normalize endpoint."""
-import copy
 from datetime import datetime
 
 import pytest
@@ -21,12 +20,15 @@ def test_handler(test_query_handler):
 def dis3_p63a():
     """Create DIS3 P63A test fixture."""
     params = {
-        "id": "ga4gh:VA.Firb663fuUVIgiHI0HHEHQXcZPG09Kaq",
+        "id": "ga4gh:VA.ElDybIX6wWCLgs6H5-q5M09fRgpghKIx",
         "location": {
-            "id": "ga4gh:SL.NDImt2aNbeWtYzzVYce-Wxa-1TjNXFVG",
+            "id": "ga4gh:SL.kolhuhSCLaZh1rLSb5DItfVQ2wIgznmu",
             "end": 63,
             "start": 62,
-            "sequence": "ga4gh:SQ.mlWsxfPKINN3o300stAI8oqN5U7P6kEu",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.mlWsxfPKINN3o300stAI8oqN5U7P6kEu",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
@@ -39,12 +41,15 @@ def dis3_p63a():
 def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
-        "id": "ga4gh:VA.1pMYEAUEgVyehK1Cc64YF2RfGa54CIsH",
+        "id": "ga4gh:VA.yGFbK79MdGPU9Q_9vuQEKkL7YzPHdi1Z",
         "location": {
-            "id": "ga4gh:SL.lTisPm8tmxS0sJmROtX2m5elUAFAv4fF",
+            "id": "ga4gh:SL.wrCd0fxJMAqjeU_5smckChEx1ufgiEP4",
             "end": 185,
             "start": 184,
-            "sequence": "ga4gh:SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "*", "type": "LiteralSequenceExpression"},
@@ -54,23 +59,18 @@ def vhl():
 
 
 @pytest.fixture(scope="module")
-def braf_v600e_nucleotide(braf_nuc_value):
-    """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
-    variation = copy.deepcopy(braf_nuc_value)
-    variation["id"] = "ga4gh:VA.X7YPS2mcsfRvPjzVuuBQkspmpv6ip7js"
-    return models.Allele(**variation)
-
-
-@pytest.fixture(scope="module")
 def nm_004448_cdna_delins():
     """Create test fixture for NM_004448.4:c.2326_2327delinsCT."""
     params = {
-        "id": "ga4gh:VA.xYgK3CrjWLHXZGEmc0YsE69X2Z5Bznw6",
+        "id": "ga4gh:VA.gmARowenlV9WRpT6iSdDa6j0FFeSZJeZ",
         "location": {
-            "id": "ga4gh:SL.fNzNBM8ZjkOIVZUYFT65PiZUnQbY-d3i",
+            "id": "ga4gh:SL.D8YlsY7uIM3wTGaeC-Qcptmh9JalF33E",
             "end": 2502,
             "start": 2500,
-            "sequence": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "CT", "type": "LiteralSequenceExpression"},
@@ -83,12 +83,15 @@ def nm_004448_cdna_delins():
 def nm_000551():
     """Create test fixture for NM_000551.4:c.615delinsAA."""
     params = {
-        "id": "ga4gh:VA.y3yZYOOYlpDKJhhwgl8Lv2Oz9QE1m6wy",
+        "id": "ga4gh:VA.vPJMNjXDkV9V-3aVaAn7xQExzGVsZ9AU",
         "location": {
-            "id": "ga4gh:SL.ENrWsh_J9cc2S0ZX5e1eeuVLekbZW9vR",
+            "id": "ga4gh:SL.We1y_MIyn3WurxyqeBHW2jl_MmXSaqxc",
             "end": 685,
             "start": 684,
-            "sequence": "ga4gh:SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "AA", "type": "LiteralSequenceExpression"},
@@ -98,40 +101,57 @@ def nm_000551():
 
 
 @pytest.fixture(scope="module")
-def braf_nuc_value():
-    """Create test fixture for BRAF V600E value on c. coordinate."""
+def braf_cdna_seq_loc():
+    """Create test fixture for BRAF V600E cDNA representation sequence location"""
     return {
-        "location": {
-            "id": "ga4gh:SL.aYiJkv-7VIcMYHV3b3n_qpQOs3rxgQ-9",
-            "end": 2025,
-            "start": 2024,
-            "sequence": "ga4gh:SQ.aKMPEJgmlZXt_F6gRY5cUG3THH2n-GUa",
-            "type": "SequenceLocation",
+        "id": "ga4gh:SL.EnmdgHfczfkewWrZX1xFzCJSizBD0_fJ",
+        "end": 2025,
+        "start": 2024,
+        "sequenceReference": {
+            "type": "SequenceReference",
+            "refgetAccession": "SQ.aKMPEJgmlZXt_F6gRY5cUG3THH2n-GUa",
         },
-        "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
-        "type": "Allele",
+        "type": "SequenceLocation",
     }
 
 
 @pytest.fixture(scope="module")
-def cdna_reference_agree(braf_nuc_value):
+def braf_v600e_nucleotide(braf_cdna_seq_loc):
+    """Create a test fixture for BRAF V600E MANE select nucleotide hgvs."""
+    params = {
+        "id": "ga4gh:VA.j3hWhBz4trOJRTnDlXIPG_Vi2YOuNL9M",
+        "location": braf_cdna_seq_loc,
+        "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def cdna_reference_agree(braf_cdna_seq_loc):
     """Create test fixture for NM_004333.4:c.1799=."""
-    value = copy.deepcopy(braf_nuc_value)
-    value["state"]["sequence"] = "T"
-    value["id"] = "ga4gh:VA.tvJL4gSZd7_5XZxBxC1VFrw71W4gpJiz"
-    return models.Allele(**value)
+    params = {
+        "id": "ga4gh:VA.QpgVitwJSJfInjBpUQoygoQ8NNGn50uf",
+        "location": braf_cdna_seq_loc,
+        "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
 
 
 @pytest.fixture(scope="module")
 def protein_delins():
     """Create test fixture for protein delins."""
     params = {
-        "id": "ga4gh:VA.yKy4K4yCQrzxUDq9-C0Yv_ZjbIbs2K5u",
+        "id": "ga4gh:VA.UAcpUhRMuNxWb8wWwYuuY6-O7puwZufv",
         "location": {
-            "id": "ga4gh:SL.vdK2LhK3Fk5c7gxM6xs2ivcViXDZbZCL",
+            "id": "ga4gh:SL.2C9JxGTdYFqx3NlZb6kb1I1g6U5XF74M",
             "end": 751,
             "start": 746,
-            "sequence": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "P", "type": "LiteralSequenceExpression"},
@@ -146,12 +166,15 @@ def cdna_deletion():
     sequence.
     """
     params = {
-        "id": "ga4gh:VA.bM8kEbQCUg0dxyt_gwG3JHKldHohnAio",
+        "id": "ga4gh:VA.2y4w5q29Yjzv5dA2rChQ5DM5b6uU4WGZ",
         "location": {
-            "id": "ga4gh:SL.bry-Y_Z-XEJWbAxdi6Txl4GHSgQesvfT",
+            "id": "ga4gh:SL.RqjVqfhcaIGl1g6bR7QmPeGJg9aRnjRW",
             "end": 2453,
             "start": 2437,
-            "sequence": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            },
             "type": "SequenceLocation",
         },
         "state": {
@@ -171,12 +194,15 @@ def genomic_deletion():
     (CA915940709)
     """
     params = {
-        "id": "ga4gh:VA.q96pW8eD17vNcJ-OQmJB9WSfMXLVihSQ",
+        "id": "ga4gh:VA.1eD9aNdnbDMiAk9zAvjNAVCIrH2Cc9ye",
         "location": {
-            "id": "ga4gh:SL.ZcUsDwkeZQKbeeEHK-GgqSrpEtVUfZFV",
+            "id": "ga4gh:SL.5oHtI_xyCmqNiebz7ticeYNfKqWMBGf4",
             "end": 10146528,
             "start": 10146524,
-            "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            },
             "type": "SequenceLocation",
         },
         "state": {
@@ -194,12 +220,15 @@ def genomic_deletion():
 def cdna_insertion():
     """Create test fixture for coding DNA insertion."""
     params = {
-        "id": "ga4gh:VA.8M4pujzetYpLADKc-NM1hab5mF9BzDhu",
+        "id": "ga4gh:VA.l4aeLw3GS5ULJ3K4qS50x1l8i28yt1sA",
         "location": {
-            "id": "ga4gh:SL.QdZya5aHWvF8y71LXksoB5lo5_V3R4M1",
+            "id": "ga4gh:SL.RXRiCvoLAtgeTzZQDS_qVFapMYVKZ398",
             "end": 2160,
             "start": 2160,
-            "sequence": "ga4gh:SQ.7_mlQyDN-uWH0RlxTQFvFEv6ykd2D-xF",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.7_mlQyDN-uWH0RlxTQFvFEv6ykd2D-xF",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
@@ -212,12 +241,15 @@ def cdna_insertion():
 def genomic_insertion():
     """Create a gene insertion test fixture."""
     params = {
-        "id": "ga4gh:VA.tucTDF6gu-OpgyVfJcnhcCR5jobIV1fL",
+        "id": "ga4gh:VA.hWPFS8WnajJptuFfW_rpmUrrCQUOjDZv",
         "location": {
-            "id": "ga4gh:SL.doaqZtlQYh108Ct7PAbiEC8WH4MeG6Sh",
+            "id": "ga4gh:SL.MmkZ2tIkZ8mSC1MEEm90SWkGNejAT4EM",
             "end": 2500,
             "start": 2488,
-            "sequence": "ga4gh:SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.y9b4LVMiCXpZxOg9Xt1NwRtssA03MwWM",
+            },
             "type": "SequenceLocation",
         },
         "state": {
@@ -235,12 +267,15 @@ def genomic_insertion():
 def genomic_substitution():
     """Create a gene insertion test fixture."""
     params = {
-        "id": "ga4gh:VA.TM4PBSbll2OQFtnBtRnG3W92WwcS_-_B",
+        "id": "ga4gh:VA.6HtVufEy6LOp0Mkc6hJG6sC92kVKhJl3",
         "location": {
-            "id": "ga4gh:SL.zI2UEoIKmwiRPTa7DOF-yAYJGGlSMWNq",
+            "id": "ga4gh:SL.-CNjTSFEXz5uAeHRnHNt298dMw-vpPEZ",
             "end": 2630,
             "start": 2629,
-            "sequence": "ga4gh:SQ.d_QsP29RWJi6bac7GOC9cJ9AO7s_HUMN",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.d_QsP29RWJi6bac7GOC9cJ9AO7s_HUMN",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
@@ -253,12 +288,15 @@ def genomic_substitution():
 def gnomad_vcf_genomic_sub_mnv():
     """Create a genomic substitution mnv test fixture for 5-112175770-GGAA-AGAA."""
     params = {
-        "id": "ga4gh:VA.ObKZgkiIXlEvpCKRdSRU5newD7-Qy5Fd",
+        "id": "ga4gh:VA.FtWJduV5fEfhZfxm6nX3A0i3tcWH5fh0",
         "location": {
-            "id": "ga4gh:SL.b4dx32Llqi4q7OCx8OMDkSiZXpBrxsVp",
+            "id": "ga4gh:SL.qmzsG4DZ-_gbKuZvZzH5MbLVXYeS3FaY",
             "end": 112840073,
             "start": 112840072,
-            "sequence": "ga4gh:SQ.aUiQCzCPZ2d0csHbMSbh2NzInhonSXwI",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.aUiQCzCPZ2d0csHbMSbh2NzInhonSXwI",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
@@ -271,12 +309,15 @@ def gnomad_vcf_genomic_sub_mnv():
 def genomic_sub_grch38():
     """Create a genomic substitution GRCh38 test fixture."""
     params = {
-        "id": "ga4gh:VA.XZelh8iOTaifb4iezhv5iAOhE_37LXLl",
+        "id": "ga4gh:VA.SvHYhtO9312RN2GeET3bIlo0rotQM39_",
         "location": {
-            "id": "ga4gh:SL.Rj_Hi3p8HwNwKfm3Felsuz_DvcwxqhfE",
+            "id": "ga4gh:SL.S7t54jBFJeMplA2-gJdbf0sPmU8mWEg8",
             "end": 55181378,
             "start": 55181377,
-            "sequence": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
@@ -289,12 +330,15 @@ def genomic_sub_grch38():
 def grch38_braf_genom_reference_agree():
     """Create a genomic reference agree GRCh38 test fixture for BRAF."""
     params = {
-        "id": "ga4gh:VA.O4zd1lJS-OwKukrx6q1n1r4IUUavgZqy",
+        "id": "ga4gh:VA.mABXTqFgMvuTLyS6m7s1X8Mq3yJ4bT6C",
         "location": {
-            "id": "ga4gh:SL.j9b9mPXETlWMYDjZ62S9DIXATtt-vY_e",
+            "id": "ga4gh:SL.q4OIseiFvw2R0noLIpOQ743VsqyDumZ4",
             "end": 140753336,
             "start": 140753335,
-            "sequence": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
@@ -307,12 +351,15 @@ def grch38_braf_genom_reference_agree():
 def grch38_genomic_delins1():
     """Create a test fixture for NC_000007.13:g.140453135_140453136delinsAT."""
     params = {
-        "id": "ga4gh:VA.F4m9x5Z73pjeVbrPiO44o_gJElLfc4Xt",
+        "id": "ga4gh:VA.X9NXq0oXh4qxJmvhIijkWkFPqRqHqy4M",
         "location": {
-            "id": "ga4gh:SL.Xy7o78eUOMPhpI79TDWYy4-a_x83AFC4",
+            "id": "ga4gh:SL.auHUQwXTAxWbmuYsFNrtbwmBzKcT3do0",
             "end": 140753336,
             "start": 140753334,
-            "sequence": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "AT", "type": "LiteralSequenceExpression"},
@@ -325,12 +372,15 @@ def grch38_genomic_delins1():
 def grch38_genomic_delins2():
     """Create a test fixture for NC_000003.12:g.10149938delinsAA."""
     params = {
-        "id": "ga4gh:VA.WWqzHzKMaEZ3g8KXIjf0uhxMEHz06vy6",
+        "id": "ga4gh:VA.0kaRysU_ySgQbisukNjyFGPkg8kREkvx",
         "location": {
-            "id": "ga4gh:SL.TvXHMKWMfYtS-a6c3_ywW59WOOMxcO5M",
+            "id": "ga4gh:SL.ZhXA_BrejQ7_50TzzPTWcI1d76dfp0Kl",
             "start": 10149937,
             "end": 10149938,
-            "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "AA", "type": "LiteralSequenceExpression"},
@@ -343,12 +393,15 @@ def grch38_genomic_delins2():
 def genomic_delins_gene():
     """Create a test fixture for BRAF g.140453135_140453136delinsAT (CA16602419)."""
     params = {
-        "id": "ga4gh:VA.AkXi7lrmLzjAAD6jQBHbl9tEfYb9anaV",
+        "id": "ga4gh:VA.b5uwU9d6o1uLjpTSXbt84b7b_ltQMO4b",
         "location": {
-            "id": "ga4gh:SL.zE-4ig0O2S3q9pmKdtyM57ONXgiOGAtM",
+            "id": "ga4gh:SL.7UfoMOJet4MfufxD49jD9angefbR95EC",
             "start": 2024,
             "end": 2026,
-            "sequence": "ga4gh:SQ.aKMPEJgmlZXt_F6gRY5cUG3THH2n-GUa",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.aKMPEJgmlZXt_F6gRY5cUG3THH2n-GUa",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "AT", "type": "LiteralSequenceExpression"},
@@ -365,12 +418,15 @@ def gnomad_vcf_genomic_delins1():
     allele?hgvsOrDescriptor=NM_000249.3%3Ac.489_498delinsGAGGCTTT
     """
     params = {
-        "id": "ga4gh:VA.QgSSPDvaSQXc9SOWH5NxiY6jGyhjMUcA",
+        "id": "ga4gh:VA.lFZskgND0K9ccAIwcgFw3xoNCpC5MZqQ",
         "location": {
-            "id": "ga4gh:SL.VF8R5QN_WMl3XKUNTYq_cq5mFfc8yB-J",
+            "id": "ga4gh:SL.jrS05NdDV1SuCp5Sb1PSwbAK36GTgvgR",
             "start": 37008848,
             "end": 37008858,
-            "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "GAGGCTTT", "type": "LiteralSequenceExpression"},
@@ -383,12 +439,15 @@ def gnomad_vcf_genomic_delins1():
 def gnomad_vcf_genomic_delins2():
     """Create a test fixture for 16-68846036-AG-TGAGTTT (CA396459910)"""
     params = {
-        "id": "ga4gh:VA.hb5lqeSL-4BGunjhqrL1ePPDPfTCbbIL",
+        "id": "ga4gh:VA.NSyt9ysuzKjh2jQjCMzAoTL7KB1xz8MN",
         "location": {
-            "id": "ga4gh:SL.zBZ0KyedHbgR5ElXXweOjKDu0bQQ8tVJ",
+            "id": "ga4gh:SL.HgI76VS-VF2tJhx7ky6EKWNl5B7_war_",
             "start": 68812132,
             "end": 68812134,
-            "sequence": "ga4gh:SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.yC_0RBj3fgBlvgyAuycbzdubtLxq-rE0",
+            },
             "type": "SequenceLocation",
         },
         "state": {"sequence": "TGAGTTT", "type": "LiteralSequenceExpression"},
@@ -401,12 +460,15 @@ def gnomad_vcf_genomic_delins2():
 def gnomad_vcf_genomic_delins3():
     """Create a test fixture for X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG"""
     params = {
-        "id": "ga4gh:VA.lv2MkUfJ6gGR7bcw8E11khTzsEKo6P8e",
+        "id": "ga4gh:VA.ClervUhxX6EJUJmZWZgEV4FXSh_9yUdi",
         "location": {
-            "id": "ga4gh:SL.iStfHeIOACHNA5MlWX9RbaG-8gjzn6xT",
+            "id": "ga4gh:SL.PSpWYR-0LBbG2n4MSCWNIono-PNlE2-O",
             "start": 71130213,
             "end": 71130215,
-            "sequence": "ga4gh:SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
+            },
             "type": "SequenceLocation",
         },
         "state": {
@@ -424,12 +486,15 @@ def gnomad_vcf_genomic_delins3():
 def gnomad_vcf_genomic_delins4():
     """Create a test fixture for 1-55509715-AC-A"""
     params = {
-        "id": "ga4gh:VA.d5k4EP2zG3gJurtVrKM3I2xRprSCmJZi",
+        "id": "ga4gh:VA.s91Pt6F-FfiQSgliq2SiF8lbKXSa_3K1",
         "location": {
-            "id": "ga4gh:SL._-CxWxxGtqykQa4O4D7iZj_PP1SQRN7z",
+            "id": "ga4gh:SL.lOZMlq_tnO_y_mE_LIyZ09U5F_EHOiyS",
             "end": 55044045,
             "start": 55044042,
-            "sequence": "ga4gh:SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Ya6Rs7DHhDeg7YaOSg1EoNi3U_nQ9SvO",
+            },
             "type": "SequenceLocation",
         },
         "state": {
@@ -447,12 +512,15 @@ def gnomad_vcf_genomic_delins4():
 def gnomad_vcf_genomic_delins5():
     """Create test fixture for 17-7578455-CGCGG-CGCG (CA497925643)"""
     params = {
-        "id": "ga4gh:VA.3mnuk0GOSDtlYkaBsz3d5iumacfw9gbf",
+        "id": "ga4gh:VA.nltctBsehZuixxvH2f1c0XAWVZojX9uX",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.jvGY9Lk18DGlztfAkJuIAtQQ9QgyW4lE",
+            "id": "ga4gh:SL.Weocfv85KawhsL8UpqnQWEcwIeDhO2I_",
             "type": "SequenceLocation",
-            "sequence": "ga4gh:SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
+            },
             "start": 7675139,
             "end": 7675141,
         },
@@ -828,7 +896,7 @@ async def test_valid_queries(test_handler):
     resp = await test_handler.normalize("NC_000002.12:g.73448098_73448100delCTC")
     assert resp
     assert resp.variation.state.sequence.root == "CTC"
-    assert resp.variation.id == "ga4gh:VA.rr4kgycSnU0VyPKjdFetgcvHk2oGPii1"
+    assert resp.variation.id == "ga4gh:VA.LfjuBB23Mt-Ano1KhB5kQ0eaYwZrH6H1"
 
     # Test ambiguous IUPAC code N
     for q in [

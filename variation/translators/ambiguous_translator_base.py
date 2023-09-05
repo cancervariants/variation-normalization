@@ -17,7 +17,7 @@ from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
-from variation.utils import get_assembly
+from variation.utils import get_assembly, get_refget_accession
 
 
 class AmbiguousData(NamedTuple):
@@ -142,10 +142,14 @@ class AmbiguousTranslator(Translator):
             end = self.vrs.get_end_indef_range(pos2)
         # No else since validator should catch if the ambiguous type is supported or not
 
-        seq_id = self.translate_sequence_identifier(ac, warnings)
-        return self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
-            exclude_none=True
-        )
+        refget_accession = get_refget_accession(self.seqrepo_access, ac, warnings)
+        if refget_accession:
+            seq_loc = self.vrs.get_sequence_loc(
+                refget_accession, start, end
+            ).model_dump(exclude_none=True)
+        else:
+            seq_loc = {}
+        return seq_loc
 
     async def translate(
         self,
@@ -265,6 +269,8 @@ class AmbiguousTranslator(Translator):
         seq_loc = self.get_dup_del_ambiguous_seq_loc(
             classification.ambiguous_type, ac, pos0, pos1, pos2, pos3, warnings
         )
+        if not seq_loc:
+            return None
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(

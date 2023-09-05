@@ -20,7 +20,6 @@ class ToVRSService(BaseModel):
     ] = []
     service_meta_: ServiceMeta
 
-    # FIXME:
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
@@ -28,68 +27,64 @@ class ToVRSService(BaseModel):
                 "warnings": [],
                 "variations": [
                     {
-                        "id": "ga4gh:VA.JKi4CDlXNAIfxn-VxPTFSRvamGqBBXbi",
+                        "id": "ga4gh:VA.kY8XpXZ4ueOQoPbYxx5nvj0zGXvsmZg7",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.pnvvgXpxPek5MU0dChggjPZC18wxcvTY",
+                            "id": "ga4gh:SL.lekHz-yBPRgkcIWIYoYum5xNkdQ-H9D-",
                             "type": "SequenceLocation",
-                            "sequence": "ga4gh:SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                            "sequenceReference": {
+                                "type": "SequenceReference",
+                                "refgetAccession": "SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+                            },
                             "start": 599,
                             "end": 600,
                         },
-                        "state": {
-                            "type": "ReferenceLengthExpression",
-                            "length": 1,
-                            "repeatSubunitLength": 0,
-                        },
+                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
                     },
                     {
-                        "id": "ga4gh:VA.dpSeCSWRpr5-nR_IWbtMzFigbCb1_pn1",
+                        "id": "ga4gh:VA.s79REj1tC9sM5mhsc1m_yuXcJF3SH3su",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.ko4RJfU-2fvZrbCDpo6i-Ljcfi59TcQI",
+                            "id": "ga4gh:SL.pFtHSvBcQqv2jZYMg5BkXwGNBRpL_kvQ",
                             "type": "SequenceLocation",
-                            "sequence": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                            "sequenceReference": {
+                                "type": "SequenceReference",
+                                "refgetAccession": "SQ.ZJwurRo2HLY018wghYjDKSfIlEH0Y8At",
+                            },
                             "start": 599,
                             "end": 600,
                         },
-                        "state": {
-                            "type": "ReferenceLengthExpression",
-                            "length": 1,
-                            "repeatSubunitLength": 0,
-                        },
+                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
                     },
                     {
-                        "id": "ga4gh:VA.27lvBV4CP0pNPw_nM-fpJOprookDojhs",
+                        "id": "ga4gh:VA.tJ7kARp1YlxgcUesm7DXSj_SDXjXg3-u",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.VtMGH5nBT3MtxEM46Q3Dflw0UhkdXbeX",
+                            "id": "ga4gh:SL.pqBCJoUGtDNLKib8F5ke3cyqqrkZzfud",
                             "type": "SequenceLocation",
-                            "sequence": "ga4gh:SQ.0Q-SgJX1V3seUUIu3qVUtEa55CQsGmEU",
+                            "sequenceReference": {
+                                "type": "SequenceReference",
+                                "refgetAccession": "SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
+                            },
                             "start": 599,
                             "end": 600,
                         },
-                        "state": {
-                            "type": "ReferenceLengthExpression",
-                            "length": 1,
-                            "repeatSubunitLength": 0,
-                        },
+                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
                     },
                     {
-                        "id": "ga4gh:VA.WB9SKyyLApRCl0yteR_j1daCfh4QcNJN",
+                        "id": "ga4gh:VA.KpFlKus-2m141vUNdFlOC1ejisAo4CTv",
                         "type": "Allele",
                         "location": {
-                            "id": "ga4gh:SL.2fANtMDFqO2luhgUkVEP9-XAxPCLWRHv",
+                            "id": "ga4gh:SL.mtXl9xjWA8YmN-3LyCeJtvZtNznAIhWo",
                             "type": "SequenceLocation",
-                            "sequence": "ga4gh:SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+                            "sequenceReference": {
+                                "type": "SequenceReference",
+                                "refgetAccession": "SQ.lKdPZpuT-VNvRuKDjsUItNgutfWYgWQd",
+                            },
                             "start": 599,
                             "end": 600,
                         },
-                        "state": {
-                            "type": "ReferenceLengthExpression",
-                            "length": 1,
-                            "repeatSubunitLength": 0,
-                        },
+                        "state": {"type": "LiteralSequenceExpression", "sequence": "E"},
                     },
                 ],
                 "service_meta_": {

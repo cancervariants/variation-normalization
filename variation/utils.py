@@ -39,7 +39,7 @@ def _get_priority_sequence_location(
         if len(locs) > 1:
             loc38, loc37 = None, None
             for loc in locs:
-                seq_id = loc["sequence"]
+                seq_id = f"ga4gh:{loc['sequenceReference']['refgetAccession']}"
                 aliases, _ = seqrepo_access.translate_identifier(seq_id)
                 if aliases:
                     grch_aliases = [
@@ -181,3 +181,26 @@ def get_assembly(
         warning = f"Unable to get GRCh37/GRCh38 assembly for: {alt_ac}"
 
     return assembly, warning
+
+
+def get_refget_accession(
+    seqrepo_access: SeqRepoAccess, alias: str, errors: List[str]
+) -> Optional[str]:
+    """Get refget accession for a given alias
+
+    :param seqrepo_access: Access to SeqRepo client
+    :param alias: Alias to translate
+    :param errors: List of errors. This will get mutated if an error occurs.
+    :return: RefGet Accession if successful, else `None`
+    """
+    refget_accession = None
+    try:
+        ids = seqrepo_access.translate_sequence_identifier(alias, "ga4gh")
+    except KeyError as e:
+        errors.append(str(e))
+    else:
+        if not ids:
+            errors.append(f"Unable to find ga4gh sequence identifiers for: {alias}")
+
+        refget_accession = ids[0].split("ga4gh:")[-1]
+    return refget_accession

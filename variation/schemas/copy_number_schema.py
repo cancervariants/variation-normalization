@@ -259,12 +259,15 @@ class ParsedToCnVarService(ServiceResponse):
         json_schema_extra={
             "example": {
                 "copy_number_count": {
-                    "id": "ga4gh:CN.fhnp2e-Pu8KmZ6mOPifqm3AeMEwUMpv6",
+                    "id": "ga4gh:CN.VVV2dbQpCd_HA2kcYDLQn-bcJNHmgFtk",
                     "type": "CopyNumberCount",
                     "subject": {
-                        "id": "ga4gh:SL.hugmhnt6aLbh-qNiYxAxe36r3L-c3yML",
+                        "id": "ga4gh:SL.CSGKn-RY7VVbqvc_AKNs4sWpQLDVyVI8",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+                        },
                         "start": [None, 143134062],
                         "end": [143284670, None],
                     },
@@ -321,11 +324,14 @@ class ParsedToCxVarService(ServiceResponse):
             "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
-                    "id": "ga4gh:CX.lJV-wxDzq2BlvNbYQlkpw4nXtqfgDE3Q",
+                    "id": "ga4gh:CX.drBX25s9U7MiZSC2H2C6fl091I3fVGR1",
                     "subject": {
                         "type": "SequenceLocation",
-                        "id": "ga4gh:SL.fnPHrJv-I6ch1HryHtk0SylEb6LWYR7W",
-                        "sequence": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                        "id": "ga4gh:SL.t89j1jS3xh47Ali0pPusruVzHhKdT9SB",
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+                        },
                         "start": 10000,
                         "end": 1223133,
                     },
@@ -371,12 +377,15 @@ class AmplificationToCxVarService(ServiceResponse):
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.qhzBsMy5O_xODtSBLSbfut6NHa-cQtpU",
+                    "id": "ga4gh:CX.o8ffM6gQYxFAEY4X0u2a65FqaYCapXmM",
                     "type": "CopyNumberChange",
                     "subject": {
-                        "id": "ga4gh:SL.I6Hn1A9YViUPq37PgWuSNnL-BJmU6XgF",
+                        "id": "ga4gh:SL.rXzVqqlchBvUef98MNQA77FvwSJgiOf5",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                        },
                         "start": 140713327,
                         "end": 140924929,
                     },

@@ -47,9 +47,12 @@ class TranslateToQuery(BaseModel):
                     "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.pCSCIkMctSGDkNIlwmx__4_8o57wi7F-",
+                        "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        },
                         "start": 140453135,
                         "end": 140453136,
                     },
@@ -74,9 +77,12 @@ class TranslateToHGVSQuery(BaseModel):
                     "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.pCSCIkMctSGDkNIlwmx__4_8o57wi7F-",
+                        "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86",
+                        },
                         "start": 140453135,
                         "end": 140453136,
                     },

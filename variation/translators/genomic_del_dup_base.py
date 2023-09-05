@@ -17,7 +17,7 @@ from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
-from variation.utils import get_assembly
+from variation.utils import get_assembly, get_refget_accession
 
 
 class DelDupData(NamedTuple):
@@ -209,11 +209,11 @@ class GenomicDelDupTranslator(Translator):
         start = pos0 - 1
         end = pos1 if pos1 else pos0
 
-        seq_id = self.translate_sequence_identifier(ac, warnings)
-        if not seq_id:
+        refget_accession = get_refget_accession(self.seqrepo_access, ac, warnings)
+        if not refget_accession:
             return None
 
-        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).model_dump(
+        seq_loc = self.vrs.get_sequence_loc(refget_accession, start, end).model_dump(
             exclude_none=True
         )
 

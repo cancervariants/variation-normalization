@@ -181,9 +181,10 @@ class GnomadVcfToProteinVariation(ToVRS):
         :return: RefSeq genomic accession
         """
         # genomic ac should always be in 38
-        alt_ac = variation["location"]["sequence"]
+        refget_accession = variation["location"]["sequenceReference"]["refgetAccession"]
+        ga4gh_alias = f"ga4gh:{refget_accession}"
         aliases = self.seqrepo_access.sr.translate_identifier(
-            alt_ac, target_namespaces="refseq"
+            ga4gh_alias, target_namespaces="refseq"
         )
         return aliases[0].split("refseq:")[-1]
 

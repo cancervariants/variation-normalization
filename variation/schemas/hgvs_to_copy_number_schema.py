@@ -14,19 +14,21 @@ class HgvsToCopyNumberCountService(ServiceResponse):
     hgvs_expr: StrictStr
     copy_number_count: Optional[models.CopyNumberCount] = None
 
-    # FIXME: This might change due to vrs-python normalize
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "id": "ga4gh:CN.5Ft6N62SSDslmYFdyaurhWYfSlsfidUl",
+                    "id": "ga4gh:CN.ZelwbEDATHfNcECE25OspdQw9zRW0c4G",
                     "type": "CopyNumberCount",
                     "subject": {
-                        "id": "ga4gh:SL.LC-4oEU03VAX1bJD4pQii8tEYl9UbiBw",
+                        "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                        "start": 49531260,
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        },
+                        "start": 49531261,
                         "end": 49531262,
                     },
                     "copies": 3,
@@ -48,19 +50,21 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
     hgvs_expr: StrictStr
     copy_number_change: Optional[models.CopyNumberChange] = None
 
-    # FIXME: This might change due to vrs-python normalize
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.rLoNInslL4_U4MEze31LHZ6hqMBeRo52",
+                    "id": "ga4gh:CX.t2ng-5-owqfItCFyz1uA_xNw3FSZTlYo",
                     "type": "CopyNumberChange",
                     "subject": {
-                        "id": "ga4gh:SL.LC-4oEU03VAX1bJD4pQii8tEYl9UbiBw",
+                        "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
                         "type": "SequenceLocation",
-                        "sequence": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                        "start": 49531260,
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        },
+                        "start": 49531261,
                         "end": 49531262,
                     },
                     "copyChange": "efo:0030069",

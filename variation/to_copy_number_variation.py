@@ -457,7 +457,7 @@ class ToCopyNumberVariation(ToVRS):
         if error:
             raise ToCopyNumberError(error)
 
-        sequence = sequences[0]
+        sequence = sequences[0].split("ga4gh:")[-1]
 
         for pos in [start0, end0]:
             # validate start0 and end0 since they're always required
@@ -482,8 +482,7 @@ class ToCopyNumberVariation(ToVRS):
         )
 
         seq_loc = models.SequenceLocation(
-            type="SequenceLocation",
-            sequence=sequence,
+            sequenceReference=models.SequenceReference(refgetAccession=sequence),
             start=start_vrs,
             end=end_vrs,
         )
@@ -679,7 +678,9 @@ class ToCopyNumberVariation(ToVRS):
                             warnings.append(w)
                         else:
                             vrs_location = models.SequenceLocation(
-                                sequence=seq_id[0],
+                                sequenceReference=models.SequenceReference(
+                                    refgetAccession=seq_id[0].split("ga4gh:")[-1]
+                                ),
                                 start=start - 1,
                                 end=end,
                             )

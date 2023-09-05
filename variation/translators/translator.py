@@ -75,30 +75,6 @@ class Translator(ABC):
             not successful, `None`
         """
 
-    def translate_sequence_identifier(
-        self, sequence: str, errors: List[str]
-    ) -> Optional[str]:
-        """Translate `sequence` to ga4gh identifier
-
-        :param sequence: Sequence ID to translate
-        :param errors: List of errors. This will get mutated if an error occurs when
-            attempting to get ga4gh identifier
-        :return: GA4GH Sequence Identifier if successful, else `None`
-        """
-        ga4gh_seq_id = None
-        try:
-            ids = self.seqrepo_access.translate_sequence_identifier(sequence, "ga4gh")
-        except KeyError as e:
-            errors.append(str(e))
-        else:
-            if not ids:
-                errors.append(
-                    f"Unable to find ga4gh sequence identifiers for: {sequence}"
-                )
-
-            ga4gh_seq_id = ids[0]
-        return ga4gh_seq_id
-
     def is_valid(
         self,
         gene_token: GeneToken,
