@@ -12,7 +12,10 @@ from variation.schemas.classification_response_schema import (
 )
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AltType
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.translation_response_schema import (
+    TranslationResult,
+    VrsSeqLocAcStatus,
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
 
@@ -54,7 +57,7 @@ class GenomicDelIns(Translator):
         classification: GenomicDelInsClassification = validation_result.classification
         vrs_allele = None
         vrs_seq_loc_ac = None
-        vrs_seq_loc_ac_status = "na"
+        vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
 
         if endpoint_name == Endpoint.NORMALIZE:
             gene = (
