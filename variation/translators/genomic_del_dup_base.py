@@ -16,7 +16,10 @@ from variation.schemas.classification_response_schema import (
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.translation_response_schema import (
+    TranslationResult,
+    VrsSeqLocAcStatus,
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
 from variation.utils import get_assembly
@@ -107,7 +110,7 @@ class GenomicDelDupTranslator(Translator):
 
         grch38_data = None
         vrs_variation = None
-        vrs_seq_loc_ac_status = "na"
+        vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
