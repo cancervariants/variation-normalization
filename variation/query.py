@@ -91,5 +91,5 @@ class QueryHandler:
             *to_protein_params
         )
         self.to_copy_number_handler = ToCopyNumberVariation(
-            *to_vrs_params + [gene_query_handler]
+            *to_vrs_params + [gene_query_handler, uta_db]
         )
