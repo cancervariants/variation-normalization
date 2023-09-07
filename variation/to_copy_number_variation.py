@@ -794,9 +794,13 @@ class ToCopyNumberVariation(ToVRS):
                 warnings.append(f"gene-normalizer returned no match for gene: {gene}")
 
         if not variation and untranslatable_returns_text:
-            text_variation = models.Text(definition=amplification_label, type="Text")
-            text_variation._id = ga4gh_identify(text_variation)
-            variation = Text(**text_variation.as_dict())
+            params = {
+                "gene": gene,
+                "sequence_id": sequence_id,
+                "start": start,
+                "end": end,
+            }
+            variation = self._parsed_to_text(params)
 
         return AmplificationToCxVarService(
             query=og_query,
