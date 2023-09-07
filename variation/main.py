@@ -1,4 +1,5 @@
 """Main application for FastAPI."""
+import traceback
 from datetime import datetime
 from enum import Enum
 from typing import List, Literal, Optional, Union
@@ -17,6 +18,13 @@ from pydantic import ValidationError
 from variation import logger
 from variation.query import QueryHandler
 from variation.schemas import NormalizeService, ServiceMeta, ToVRSService
+from variation.schemas.copy_number_schema import (
+    AmplificationToCxVarService,
+    ParsedToCnVarQuery,
+    ParsedToCnVarService,
+    ParsedToCxVarQuery,
+    ParsedToCxVarService,
+)
 from variation.schemas.hgvs_to_copy_number_schema import (
     HgvsToCopyNumberChangeService,
     HgvsToCopyNumberCountService,
@@ -26,9 +34,7 @@ from variation.schemas.normalize_response_schema import (
     TranslateIdentifierService,
 )
 from variation.schemas.service_schema import (
-    AmplificationToCxVarService,
     ClinVarAssembly,
-    ParsedToCnVarService,
     ToCdnaService,
     ToGenomicService,
 )
@@ -567,66 +573,70 @@ async def hgvs_to_copy_number_change(
     return resp
 
 
-assembly_descr = (
-    "Assembly. If `accession` is set, will ignore `assembly` and `chr`. "
-    "If `accession` not set, must provide both `assembly` and `chr`."
-)
-chr_descr = "Chromosome. Must set when `assembly` is set."
-accession_descr = (
-    "Accession. If `accession` is set, will ignore `assembly` and "
-    "`chr`. If `accession` not set, must provide both `assembly` and `chr`."
-)
-start_descr = "Start position as residue coordinate"
-end_descr = "End position as residue coordinate"
-total_copies_descr = "Total copies for Copy Number Count variation object"
-
-
-@app.get(
+@app.post(
     "/variation/parsed_to_cn_var",
-    summary="Given parsed ClinVar Copy Number Gain/Loss components, return "
-    "VRS Copy Number Count Variation",
+    summary="Given parsed genomic components, return VRS Copy Number Count "
+    "Variation",
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
     response_model=ParsedToCnVarService,
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
-def parsed_to_cn_var(
-    assembly: Optional[ClinVarAssembly] = Query(None, description=assembly_descr),
-    chr: Optional[str] = Query(None, description=chr_descr),
-    accession: Optional[str] = Query(None, description=accession_descr),
-    start: int = Query(..., description=start_descr),
-    end: int = Query(..., description=end_descr),
-    total_copies: int = Query(..., description=total_copies_descr),
-    untranslatable_returns_text: bool = Query(False, description=untranslatable_descr),
-) -> ParsedToCnVarService:
-    """Given parsed ClinVar Copy Number Gain/Loss components, return Copy Number Count
-    Variation
+def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
+    """Given parsed genomic components, return Copy Number Count Variation.
 
-    :param int start: Start position as residue coordinate
-    :param int end: End position as residue coordinate
-    :param int total_copies: Total copies for Copy Number Count variation object
-    :param Optional[ClinVarAssembly] assembly: Assembly. If `accession` is set,
-        will ignore `assembly` and `chr`. If `accession` not set, must provide
-        both `assembly` and `chr`.
-    :param Optional[str] chr: Chromosome. Must set when `assembly` is set.
-    :param Optional[str] accession: Accession. If `accession` is set,
-        will ignore `assembly` and `chr`. If `accession` not set, must provide
-        both `assembly` and `chr`.
-    :param bool untranslatable_returns_text: `True` return VRS Text Object when
-        unable to translate or normalize query. `False` return `None` when
-        unable to translate or normalize query.
-    :return: Tuple containing Copy Number Count variation and list of warnings
+    :param request_body: Request body
+    :return: ParsedToCnVarService containing Copy Number Count variation and list of
+        warnings
     """
-    resp = query_handler.to_copy_number_handler.parsed_to_cn_var(
-        start,
-        end,
-        total_copies,
-        assembly,
-        chr,
-        accession,
-        untranslatable_returns_text=untranslatable_returns_text,
-    )
-    return resp
+    try:
+        resp = query_handler.to_copy_number_handler.parsed_to_copy_number(request_body)
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        return ParsedToCnVarService(
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__, response_datetime=datetime.now()
+            ),
+        )
+    else:
+        return resp
+
+
+@app.post(
+    "/variation/parsed_to_cx_var",
+    summary="Given parsed genomic components, return VRS Copy Number Change "
+    "Variation",
+    response_description="A response to a validly-formed query.",
+    description="Return VRS Copy Number Change Variation",
+    response_model=ParsedToCxVarService,
+    tags=[Tag.TO_COPY_NUMBER_VARIATION],
+)
+def parsed_to_cx_var(request_body: ParsedToCxVarQuery) -> ParsedToCxVarService:
+    """Given parsed genomic components, return Copy Number Change Variation
+
+    :param request_body: Request body
+    :return: ParsedToCxVarService containing Copy Number Change variation and list of
+        warnings
+    """
+    try:
+        resp = query_handler.to_copy_number_handler.parsed_to_copy_number(request_body)
+    except Exception:
+        traceback_resp = traceback.format_exc().splitlines()
+        logger.exception(traceback_resp)
+
+        return ParsedToCxVarService(
+            copy_number_count=None,
+            warnings=["Unhandled exception. See logs for more details."],
+            service_meta_=ServiceMeta(
+                version=__version__, response_datetime=datetime.now()
+            ),
+        )
+    else:
+        return resp
 
 
 amplification_to_cx_var_descr = (
