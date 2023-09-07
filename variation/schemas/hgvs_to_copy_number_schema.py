@@ -28,15 +28,15 @@ class HgvsToCopyNumberCountService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "_id": "ga4gh:CN.wIUwSQ9MQdv-2dsoDo-RjI97iK3Mn5m6",
+                    "_id": "ga4gh:CN.lxbM1jOtrVgrwy_SHSSd3o2QkCRRswyf",
                     "type": "CopyNumberCount",
                     "subject": {
-                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "_id": "ga4gh:VSL.0dgeuVKngTm5HWjNjcZ9PO-fnbNmKmBv",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                         "interval": {
                             "type": "SequenceInterval",
-                            "start": {"type": "Number", "value": 49531260},
+                            "start": {"type": "Number", "value": 49531261},
                             "end": {"type": "Number", "value": 49531262},
                         },
                     },
@@ -72,15 +72,15 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
             schema["example"] = {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "_id": "ga4gh:CX.hGuvyiJmDtx4-MRjsLja0fb_DqOE2chN",
+                    "_id": "ga4gh:CX.49PTi3fDMxTdYRLp-svfrHrHc_pIAWT3",
                     "type": "CopyNumberChange",
                     "subject": {
-                        "_id": "ga4gh:VSL.G_J9WrfooiONRgjbmGPuCBYbBYFQnYOg",
+                        "_id": "ga4gh:VSL.0dgeuVKngTm5HWjNjcZ9PO-fnbNmKmBv",
                         "type": "SequenceLocation",
                         "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
                         "interval": {
                             "type": "SequenceInterval",
-                            "start": {"type": "Number", "value": 49531260},
+                            "start": {"type": "Number", "value": 49531261},
                             "end": {"type": "Number", "value": 49531262},
                         },
                     },
