@@ -17,6 +17,7 @@ from variation.schemas.token_response_schema import GnomadVcfToken, Token
 from variation.schemas.translation_response_schema import (
     AC_PRIORITY_LABELS,
     TranslationResult,
+    VrsSeqLocAcStatus,
 )
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
@@ -58,7 +59,7 @@ class Normalize(ToVRS):
 
     @staticmethod
     def _get_priority_translation_result(
-        translations: List[TranslationResult], ac_status: str
+        translations: List[TranslationResult], ac_status: VrsSeqLocAcStatus
     ) -> Optional[TranslationResult]:
         """Get prioritized translation result. Tries to find translation results with
         the same `vrs_seq_loc_ac_status` as `ac_status`. If more than one translation
@@ -80,6 +81,10 @@ class Normalize(ToVRS):
         # Different `og_ac`'s can lead to different translation results.
         # We must be consistent in what we return in /normalize
         if len_preferred_translations > 1:
+            preferred_translations.sort(
+                key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
+                reverse=True,
+            )
             og_ac_preferred_match = (
                 [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac]
                 or [None]
@@ -92,10 +97,6 @@ class Normalize(ToVRS):
             if og_ac_preferred_match:
                 translation_result = og_ac_preferred_match
             else:
-                preferred_translations.sort(
-                    key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
-                    reverse=True,
-                )
                 translation_result = preferred_translations[0]
         elif len_preferred_translations == 1:
             translation_result = preferred_translations[0]
@@ -215,6 +216,16 @@ class Normalize(ToVRS):
                         translations, ac_status
                     )
                     if translation_result:
+                        if (
+                            translation_result.vrs_seq_loc_ac_status
+                            == VrsSeqLocAcStatus.NA
+                        ):
+                            classification_type = (
+                                translation_result.validation_result.classification.classification_type.value
+                            )
+                            if classification_type.startswith(("protein", "cdna")):
+                                # Only supports protein/cDNA at the moment
+                                warnings.append("Unable to find MANE representation")
                         break
 
                 try:

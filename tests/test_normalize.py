@@ -38,6 +38,27 @@ def dis3_p63a():
 
 
 @pytest.fixture(scope="module")
+def tp53_g262c():
+    """Create TP53 G262C test fixture."""
+    params = {
+        "id": "ga4gh:VA.8-8shZX9n7l-FkArNL0BA6D2XpEHqtBb",
+        "location": {
+            "id": "ga4gh:SL.u0_DGeazboSGCDktsYYWgS1vSIRmTllE",
+            "start": 261,
+            "end": 262,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.YIlmVwD0rxIqnlvb-8WujHPbR0j3WEGI",
+            },
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "C", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
 def vhl():
     """Create VHL Tyr185Ter fixture."""
     params = {
@@ -535,7 +556,7 @@ def gnomad_vcf_genomic_delins5():
 
 
 @pytest.mark.asyncio
-async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
+async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a, tp53_g262c):
     """Test that protein substitutions normalize correctly."""
     resp = await test_handler.normalize("     BRAF      V600E    ")
     assertion_checks(resp, braf_v600e)
@@ -551,6 +572,10 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
 
     resp = await test_handler.normalize("DIS3 P63A")
     assertion_checks(resp, dis3_p63a)
+
+    # Case where NA priority
+    resp = await test_handler.normalize("TP53 G262C")
+    assertion_checks(resp, tp53_g262c)
 
 
 @pytest.mark.asyncio
