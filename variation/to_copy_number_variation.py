@@ -652,7 +652,12 @@ class ToCopyNumberVariation(ToVRS):
                     "copy_change": request_body.copy_change,
                 }
                 variation["_id"] = ga4gh_identify(models.CopyNumberChange(**variation))
-                variation = CopyNumberChange(**variation)
+
+                try:
+                    variation = CopyNumberChange(**variation)
+                except ValidationError as e:
+                    variation = None
+                    warnings.append(str(e))
             else:
                 if request_body.copies_type == VRSTypes.NUMBER:
                     copies = {"value": request_body.copies0, "type": "Number"}
@@ -675,7 +680,12 @@ class ToCopyNumberVariation(ToVRS):
                     "copies": copies,
                 }
                 variation["_id"] = ga4gh_identify(models.CopyNumberCount(**variation))
-                variation = CopyNumberCount(**variation)
+
+                try:
+                    variation = CopyNumberCount(**variation)
+                except ValidationError as e:
+                    variation = None
+                    warnings.append(str(e))
 
         if warnings and request_body.untranslatable_returns_text:
             variation = self._parsed_to_text(request_body.dict())
