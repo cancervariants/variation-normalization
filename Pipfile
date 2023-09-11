@@ -19,9 +19,9 @@ black = "*"
 "biocommons.seqrepo" = "*"
 fastapi = "*"
 uvicorn = "*"
-pydantic = "==2.1.1"
-"ga4gh.vrs" = {editable = true, path = "ga4gh/vrs-python"}
-gene-normalizer = {editable = true, path = "cancervariants/gene-normalization"}
+pydantic = "*"
+"ga4gh.vrs" = {version = "~=2.0.0.dev0", extras = ["extras"]}
+gene-normalizer = "~=0.3.0.dev0"
 boto3 = "*"
-cool-seq-tool = {editable = true, path = "genomic_med_lab/cool-seq-tool"}
+cool-seq-tool = "~=0.2.0.dev0"
 bioutils = "*"
