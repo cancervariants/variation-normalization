@@ -126,7 +126,7 @@ class AmbiguousTranslator(Translator):
         :param pos2: Position 2 (residue)
         :param pos3: Position 3 (residue)
         :param warnings: List of warnings
-        :return:VRS Sequence Location as a dictionary
+        :return: VRS Sequence Location as a dictionary
         """
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             start = models.Range([pos0 - 1, pos1 - 1])

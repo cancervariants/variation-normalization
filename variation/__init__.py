@@ -28,8 +28,3 @@ if "VARIATION_NORM_EB_PROD" in environ:
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
-
-
-UTA_DB_URL = environ.get(
-    "UTA_DB_URL", "postgresql://uta_admin@localhost:5433/uta/uta_20210129"
-)

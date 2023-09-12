@@ -322,7 +322,7 @@ class GnomadVcfToProteinVariation(ToVRS):
         Assumes using GRCh38 coordinates
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
-        :return: Normalize Service containing variation descriptor and warnings
+        :return: Normalize Service containing variation and warnings
         """
         q = q.strip()
         warnings = []

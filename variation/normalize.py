@@ -152,7 +152,7 @@ class Normalize(ToVRS):
         :param baseline_copies: Baseline copies for HGVS duplications and deletions
         :param copy_change: The copy change for HGVS duplications and deletions
             represented as Copy Number Change Variation.
-        :return: NormalizeService with variation descriptor and warnings
+        :return: NormalizeService with variation and warnings
         """
         label = q.strip()
         variation = None

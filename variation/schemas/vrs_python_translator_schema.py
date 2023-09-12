@@ -44,10 +44,10 @@ class TranslateToQuery(BaseModel):
         json_schema_extra={
             "example": {
                 "variation": {
-                    "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
+                    "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                        "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -74,10 +74,10 @@ class TranslateToHGVSQuery(BaseModel):
         json_schema_extra={
             "example": {
                 "variation": {
-                    "id": "ga4gh:VA.3kjzg_sEIm5gkzewI0g19cLlF4r-vGaB",
+                    "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                        "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",

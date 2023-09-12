@@ -1,5 +1,5 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
@@ -46,7 +46,6 @@ class HGVSDupDelMode:
             allele
 
         :param alt_type: The type of alteration
-        :param pos: start_pos, end_pos
         :param location: Sequence Location object
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param baseline_copies: Baseline copies for Copy Number Count variation
@@ -132,6 +131,7 @@ class HGVSDupDelMode:
         :param location: VRS Location
         :param alt_type: Alteration type
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
+        :param alt: Alteration
         :return: VRS Allele object represented as a dict
         """
         if alt_type in AMBIGUOUS_REGIONS:
@@ -173,7 +173,6 @@ class HGVSDupDelMode:
         errors: List,
         hgvs_dup_del_mode: HGVSDupDelModeOption,
         vrs_seq_loc_ac: str,
-        pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
         copy_change: Optional[models.CopyChange] = None,
         alt: Optional[str] = None,
@@ -186,7 +185,6 @@ class HGVSDupDelMode:
         :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
             deletions
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
-        :param pos: Position changes
         :param baseline_copies: Baseline copies number
         :param copy_change: The copy change
         :param alt: The alteration

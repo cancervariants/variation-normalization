@@ -259,10 +259,10 @@ class ParsedToCnVarService(ServiceResponse):
         json_schema_extra={
             "example": {
                 "copy_number_count": {
-                    "id": "ga4gh:CN.VVV2dbQpCd_HA2kcYDLQn-bcJNHmgFtk",
+                    "id": "ga4gh:CN.Qrs0TaGCcJiibMvhcML6BTSCVtX95FBl",
                     "type": "CopyNumberCount",
                     "location": {
-                        "id": "ga4gh:SL.CSGKn-RY7VVbqvc_AKNs4sWpQLDVyVI8",
+                        "id": "ga4gh:SL.g6xj5oKF99OysSxcfHyGYbh8NFNn2r61",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -303,7 +303,7 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
                 "accession": None,
                 "start0": 10001,
                 "end0": 1223133,
-                "copyChange": "efo:0030069",
+                "copy_change": "efo:0030069",
                 "start_pos_type": "number",
                 "end_pos_type": "number",
                 "start1": None,
@@ -324,10 +324,10 @@ class ParsedToCxVarService(ServiceResponse):
             "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
-                    "id": "ga4gh:CX.drBX25s9U7MiZSC2H2C6fl091I3fVGR1",
+                    "id": "ga4gh:CX.BTNwndSs3RylLhtL9Y45GePsVX35eeTT",
                     "location": {
                         "type": "SequenceLocation",
-                        "id": "ga4gh:SL.t89j1jS3xh47Ali0pPusruVzHhKdT9SB",
+                        "id": "ga4gh:SL.Pu3oAKHColJSZ3zY_Xu5MeezINaTFlNq",
                         "sequenceReference": {
                             "type": "SequenceReference",
                             "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -352,7 +352,7 @@ class AmplificationToCxVarQuery(BaseModel):
     """Define query for amplification to copy number change variation endpoint"""
 
     gene: str
-    sequence: Optional[str] = None
+    sequence_id: Optional[str] = None
     start: Optional[int] = None
     end: Optional[int] = None
     sequence_location: Optional[models.SequenceLocation] = None
@@ -370,17 +370,17 @@ class AmplificationToCxVarService(ServiceResponse):
             "example": {
                 "query": {
                     "gene": "braf",
-                    "sequence": None,
+                    "sequence_id": None,
                     "start": None,
                     "end": None,
                     "sequence_location": None,
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.o8ffM6gQYxFAEY4X0u2a65FqaYCapXmM",
+                    "id": "ga4gh:CX.89PECTeQjhhXnNW9yg24DheWOQMgmKk2",
                     "type": "CopyNumberChange",
                     "location": {
-                        "id": "ga4gh:SL.rXzVqqlchBvUef98MNQA77FvwSJgiOf5",
+                        "id": "ga4gh:SL.uNBZoxhjhohl24VlIut-JxPJAGfJ7EQE",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",

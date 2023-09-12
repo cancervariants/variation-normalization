@@ -52,9 +52,9 @@ def test_amplification_to_cx_var(
         "gene-normalizer could not find a priority sequence " "location for gene: IFNR"
     ]
 
-    # Using sequence, start, end
+    # Using sequence_id, start, end
     resp = test_cnv_handler.amplification_to_cx_var(
-        gene="KIT", sequence="NC_000004.11", start=55599321, end=55599321
+        gene="KIT", sequence_id="NC_000004.11", start=55599321, end=55599321
     )
     assert resp.copy_number_change.model_dump(
         exclude_none=True
@@ -64,7 +64,7 @@ def test_amplification_to_cx_var(
 
     # Sequence_id not found in seqrepo
     resp = test_cnv_handler.amplification_to_cx_var(
-        gene="BRAF", sequence="NC_000007", start=140453136, end=140453136
+        gene="BRAF", sequence_id="NC_000007", start=140453136, end=140453136
     )
     assert resp.copy_number_change is None
     assert resp.amplification_label == "BRAF Amplification"
@@ -72,9 +72,9 @@ def test_amplification_to_cx_var(
         "SeqRepo unable to get translated identifiers for " "NC_000007"
     ]
 
-    # pos not on valid sequence
+    # pos not on valid sequence_id
     resp = test_cnv_handler.amplification_to_cx_var(
-        gene="braf", sequence="NC_000007.13", start=55599321, end=9955599321
+        gene="braf", sequence_id="NC_000007.13", start=55599321, end=9955599321
     )
     assert resp.copy_number_change is None
     assert resp.amplification_label == "BRAF Amplification"

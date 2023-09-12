@@ -1,7 +1,7 @@
 # HGVS Dup Del Mode
 
 This mode helps us interpret deletions and duplications that are represented as HGVS expressions.\
-The mode can be set to `default`, `copy_number_count`, `copy_number_change`, `ref_len_expr`, or `literal_seq_expr`.
+The mode can be set to `default`, `copy_number_count`, `copy_number_change`, or `allele`
 
 
 ## Default Characteristics

@@ -70,9 +70,7 @@ class ServiceResponse(BaseModel):
 
 
 class NormalizeService(ServiceResponse):
-    """A response to normalizing a variation to a single GA4GH Value Object
-    Descriptor.
-    """
+    """A response to normalizing a variation to a single GA4GH VRS Variation"""
 
     variation_query: StrictStr
     variation: Optional[
@@ -84,9 +82,9 @@ class NormalizeService(ServiceResponse):
             "example": {
                 "variation_query": "BRAF V600E",
                 "variation": {
-                    "id": "ga4gh:VA.tJ7kARp1YlxgcUesm7DXSj_SDXjXg3-u",
+                    "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
                     "location": {
-                        "id": "ga4gh:SL.pqBCJoUGtDNLKib8F5ke3cyqqrkZzfud",
+                        "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
                         "end": 600,
                         "start": 599,
                         "sequenceReference": {

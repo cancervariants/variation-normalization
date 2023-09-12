@@ -625,7 +625,7 @@ class ToCopyNumberVariation(ToVRS):
     def amplification_to_cx_var(
         self,
         gene: str,
-        sequence: Optional[str] = None,
+        sequence_id: Optional[str] = None,
         start: Optional[int] = None,
         end: Optional[int] = None,
     ) -> AmplificationToCxVarService:
@@ -635,7 +635,7 @@ class ToCopyNumberVariation(ToVRS):
             2. use the gene-normalizer to get the SequenceLocation
 
         :param gene: Gene query
-        :param sequence: Sequence ID for the location. If set, must also provide
+        :param sequence_id: Sequence ID for the location. If set, must also provide
             `start` and `end`
         :param start: Start position as residue coordinate for the sequence location. If
             set, must also provide `sequence` and `end`
@@ -649,7 +649,7 @@ class ToCopyNumberVariation(ToVRS):
         variation = None
         try:
             og_query = AmplificationToCxVarQuery(
-                gene=gene, sequence=sequence, start=start, end=end
+                gene=gene, sequence_id=sequence_id, start=start, end=end
             )
         except ValidationError as e:
             warnings.append(str(e))
@@ -662,17 +662,17 @@ class ToCopyNumberVariation(ToVRS):
                 gene_descriptor = gene_norm_resp.gene_descriptor
                 gene_norm_label = gene_descriptor.label
                 amplification_label = f"{gene_norm_label} Amplification"
-                if all((sequence, start, end)):
+                if all((sequence_id, start, end)):
                     # User provided input to make sequence location
                     seq_id, w = self.seqrepo_access.translate_identifier(
-                        sequence, "ga4gh"
+                        sequence_id, "ga4gh"
                     )
                     if w:
                         warnings.append(w)
                     else:
                         # Validate start/end are actually on the sequence
                         _, w = self.seqrepo_access.get_reference_sequence(
-                            sequence, start, end
+                            sequence_id, start, end
                         )
                         if w:
                             warnings.append(w)

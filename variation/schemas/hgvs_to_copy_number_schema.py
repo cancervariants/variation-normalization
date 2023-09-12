@@ -19,10 +19,10 @@ class HgvsToCopyNumberCountService(ServiceResponse):
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "id": "ga4gh:CN.ZelwbEDATHfNcECE25OspdQw9zRW0c4G",
+                    "id": "ga4gh:CN.07iM14yvZ80N_AiaM7G_V4f1pCkmFYz4",
                     "type": "CopyNumberCount",
                     "location": {
-                        "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
+                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -55,10 +55,10 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.t2ng-5-owqfItCFyz1uA_xNw3FSZTlYo",
+                    "id": "ga4gh:CX.d8BWSLNKN0K4n8ySG0jWPCr4cJIqEf5g",
                     "type": "CopyNumberChange",
                     "location": {
-                        "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
+                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",

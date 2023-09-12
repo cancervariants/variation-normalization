@@ -117,17 +117,14 @@ async def to_vrs(
 
 
 normalize_summary = (
-    "Normalizes and translates a HGVS, gnomAD VCF or Free Text "
-    "description on GRCh37 or GRCh38 assembly to a single VRSATILE "
-    "Variation Descriptor."
+    "Normalizes and translates a HGVS, gnomAD VCF or Free Text description on GRCh37 "
+    "or GRCh38 assembly to a single VRS Variation."
 )
 normalize_response_description = "A response to a validly-formed query."
 normalize_description = (
-    "Normalizes and translates a human readable variation "
-    "description to a single VRSATILE Variation Descriptor. "
-    "Performs fully-justified allele normalization. Will liftover"
-    " to GRCh38 and aligns to a priority transcript. Will make "
-    "inferences about the query."
+    "Normalizes and translates a human readable variation description to a single VRS "
+    "Variation. Performs fully-justified allele normalization. Will liftover to GRCh38 "
+    "and aligns to a priority transcript. Will make inferences about the query."
 )
 q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly"
 hgvs_dup_del_mode_decsr = (
@@ -159,9 +156,9 @@ async def normalize(
     ),
 ) -> NormalizeService:
     """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
-    or GRCh38 assembly to a single VRSATILE Variation Descriptor. Performs
-    fully-justified allele normalization. Will liftover to GRCh38 and aligns to a
-    priority transcript. Will make inferences about the query.
+    or GRCh38 assembly to a single VRS Variation. Performs fully-justified allele
+    normalization. Will liftover to GRCh38 and aligns to a priority transcript. Will
+    make inferences about the query.
 
     :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
     :param hgvs_dup_del_mode: This parameter determines how to interpret HGVS dup/del
@@ -205,7 +202,7 @@ def translate_identifier(
     :return: TranslateIdentifierService data
     """
     aliases = []
-    warnings = None
+    warnings = []
     identifier = identifier.strip()
     try:
         aliases = query_handler.seqrepo_access.sr.translate_identifier(
@@ -291,10 +288,10 @@ def vrs_python_translate_from(
     )
 
 
-g_to_p_summary = "Given GRCh38 gnomAD VCF, return VRSATILE object on MANE protein coordinate."  # noqa: E501
+g_to_p_summary = "Given GRCh38 gnomAD VCF, return VRS Variation object on MANE protein coordinate."  # noqa: E501
 g_to_p_response_description = "A response to a validly-formed query."
 g_to_p_description = (
-    "Return VRSATILE object on protein coordinate for variation provided."
+    "Return VRS Variation object on protein coordinate for variation provided."
 )
 q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."  # noqa: E501
 
@@ -311,7 +308,7 @@ q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protei
 async def gnomad_vcf_to_protein(
     q: str = Query(..., description=q_description),
 ) -> NormalizeService:
-    """Return Value Object Descriptor for variation on protein coordinate.
+    """Return VRS representation for variation on protein coordinate.
 
     :param q: gnomad VCF to normalize to protein variation.
     :return: NormalizeService for variation
@@ -604,7 +601,7 @@ amplification_to_cx_var_descr = (
 )
 def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
-    sequence: Optional[str] = Query(None, description="Sequence identifier"),
+    sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
     start: Optional[int] = Query(
         None, description="Start position as residue coordinate"
     ),
@@ -616,7 +613,7 @@ def amplification_to_cx_var(
         2. use the gene-normalizer to get the SequenceLocation
 
     :param gene: Gene query
-    :param sequence: Sequence ID for the location. If set, must also provide `start`
+    :param sequence_id: Sequence ID for the location. If set, must also provide `start`
         and `end`
     :param start: Start position as residue coordinate for the sequence location.
         If set, must also provide `sequence` and `end`
@@ -627,7 +624,7 @@ def amplification_to_cx_var(
     """
     resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
         gene=gene,
-        sequence=sequence,
+        sequence_id=sequence_id,
         start=start,
         end=end,
     )
