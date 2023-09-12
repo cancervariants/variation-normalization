@@ -21,7 +21,7 @@ class HgvsToCopyNumberCountService(ServiceResponse):
                 "copy_number_count": {
                     "id": "ga4gh:CN.ZelwbEDATHfNcECE25OspdQw9zRW0c4G",
                     "type": "CopyNumberCount",
-                    "subject": {
+                    "location": {
                         "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
                         "type": "SequenceLocation",
                         "sequenceReference": {
@@ -57,7 +57,7 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
                 "copy_number_change": {
                     "id": "ga4gh:CX.t2ng-5-owqfItCFyz1uA_xNw3FSZTlYo",
                     "type": "CopyNumberChange",
-                    "subject": {
+                    "location": {
                         "id": "ga4gh:SL.L7dW0LicGFRwVQzj30aYac_vdy36Idvk",
                         "type": "SequenceLocation",
                         "sequenceReference": {

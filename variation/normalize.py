@@ -246,9 +246,8 @@ class Normalize(ToVRS):
                     #     if variation_type in {
                     #         "Allele", "CopyNumberChange", "CopyNumberCount"
                     #     }:
-                    #         key = "location" if variation_type == "Allele" else "subject"
                     #         vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    #             variation[key], translation_result.vrs_seq_loc_ac
+                    #             variation["location"], translation_result.vrs_seq_loc_ac
                     #         )
                     # else:
                     #     vrs_ref_allele_seq = None

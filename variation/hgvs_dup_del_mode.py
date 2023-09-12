@@ -84,7 +84,7 @@ class HGVSDupDelMode:
         copies = baseline_copies - 1 if alt_type in DELS else baseline_copies + 1
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
-        cn = models.CopyNumberCount(copies=copies, subject=seq_loc)
+        cn = models.CopyNumberCount(copies=copies, location=seq_loc)
         cn.id = ga4gh_identify(cn)
         return cn.model_dump(exclude_none=True)
 
@@ -108,14 +108,14 @@ class HGVSDupDelMode:
         """
         if not copy_change:
             copy_change = (
-                models.CopyChange.efo_0030067
+                models.CopyChange.EFO_0030067
                 if alt_type in DELS
-                else models.CopyChange.efo_0030070
+                else models.CopyChange.EFO_0030070
             )
 
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
-        cx = models.CopyNumberChange(subject=seq_loc, copyChange=copy_change)
+        cx = models.CopyNumberChange(location=seq_loc, copyChange=copy_change)
         cx.id = ga4gh_identify(cx)
         return cx.model_dump(exclude_none=True)
 

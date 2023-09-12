@@ -23,10 +23,10 @@ def cn_gain1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.VVV2dbQpCd_HA2kcYDLQn-bcJNHmgFtk",
-        "subject": {
+        "id": "ga4gh:CN.Qrs0TaGCcJiibMvhcML6BTSCVtX95FBl",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.CSGKn-RY7VVbqvc_AKNs4sWpQLDVyVI8",
+            "id": "ga4gh:SL.g6xj5oKF99OysSxcfHyGYbh8NFNn2r61",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -46,10 +46,10 @@ def cn_gain2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.6gPh7KONRHD6zZAsgJT2rZkruBVcnJTX",
-        "subject": {
+        "id": "ga4gh:CN.-SqT6JTz0WpKfGQjdHnuJnyK8YMcAmez",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.Ffx4BT3IjIK5WxaZVNKmUeoFDaOfWP86",
+            "id": "ga4gh:SL.2f5wWnJ52UShqq0wRTahKWH-YFCFTixG",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
@@ -69,10 +69,10 @@ def cn_gain2_37():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.ZJhomr1JEO4TDkhBcCXUF_qCKYbybu8A",
-        "subject": {
+        "id": "ga4gh:CN.gtS4om__GNKDFZxdtno7Cwiv_8Tv0_As",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.jp4K2S5zvmAzmY59_3jGVPvWuhjoYYaK",
+            "id": "ga4gh:SL.knW3_K9Kj2bvgGvnW3uorAEhZ9lnBD4F",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
@@ -92,10 +92,10 @@ def cn_loss1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.atarDIZuqucRA4nKVW2ZAn6ULxhcUoRd",
-        "subject": {
+        "id": "ga4gh:CN.ckk73c3GG4x-P0uL5Iv1tzBPxYea1V03",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.hqsOIzAT2PpapM-o3prjarM0h6zc5dUG",
+            "id": "ga4gh:SL.S_YZii49zAuWk8hA71OD5Ud1mtQRpw5T",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -115,10 +115,10 @@ def cn_loss2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.qk84Qvcee6n15qWmC-023gB-xUr1368y",
-        "subject": {
+        "id": "ga4gh:CN.6vQIGMEa94FNmLBwQLHRTHaf_yrjMnBz",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.cgFgAGGBdOnHxqf0QkBlRrAaenZ3n9pU",
+            "id": "ga4gh:SL.xeLChE7XHqLtLjrVEBnHpxvtdWjRA0Aw",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -138,10 +138,10 @@ def cn_definite_number():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.6tdwkovurhRPmyZ4gSUtn0Sv4VR3MA4S",
-        "subject": {
+        "id": "ga4gh:CN.8xU8MDlKeD7kyhiVJmSwvi3iV78ReIc5",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.up_lKdFK8IakqsYTobUNVFnTZ5fGyDUB",
+            "id": "ga4gh:SL.NqQ42igO9R3BBbA7q7jQ_81rfZOjpzGg",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -159,10 +159,10 @@ def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.drBX25s9U7MiZSC2H2C6fl091I3fVGR1",
-        "subject": {
+        "id": "ga4gh:CX.BTNwndSs3RylLhtL9Y45GePsVX35eeTT",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.t89j1jS3xh47Ali0pPusruVzHhKdT9SB",
+            "id": "ga4gh:SL.Pu3oAKHColJSZ3zY_Xu5MeezINaTFlNq",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -182,10 +182,10 @@ def cx_definite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.KxNIWjbUfLlPC7uJhxsTBQa-qA_ENtsR",
-        "subject": {
+        "id": "ga4gh:CX.pAvWqzj0yKdETBy_rjApb2j3A_5o213Z",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.feyXnsp_noG54kqAP7hY7p6AWdc2MZHf",
+            "id": "ga4gh:SL.1ZWJdPDJHP1XwDZcI1JHU2Obf9-3AYpz",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -205,10 +205,10 @@ def cx_indefinite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.TyVFOUwR76bJCESEaCSU5u9aDVe0dDsp",
-        "subject": {
+        "id": "ga4gh:CX.2lbeFEsxiN9sdMRtqiaYaM0HPy2UJWEC",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.2hVJKGiC6ycnTavijdKfJQwoyzIJncIL",
+            "id": "ga4gh:SL.-XBGqDkrHG7D19jCYuvNfEeJoBSBEHFA",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -228,10 +228,10 @@ def cx_number_indefinite():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.jEy548hCZ0JlYbvFSXBxbxieiuk11sF8",
-        "subject": {
+        "id": "ga4gh:CX.38jEUd5AhCbQk9hB36hS6mEqRKlY7ugj",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.uemVC8h9E4WEhp9owRDJ-TWa5QBboy9V",
+            "id": "ga4gh:SL.XuivAIjbPg8CLUUz7TZXO6mJWfAfU6HJ",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -717,7 +717,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([3, 5])
-    expected.id = "ga4gh:CN.rL4cQUApYijbcYFXg2FleKP8-_uX6IBJ"
+    expected.id = "ga4gh:CN.Z-nHquCOaZ9-7qlEiHJjTCNTun8rphs5"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range <=
@@ -735,7 +735,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([None, 3])
-    expected.id = "ga4gh:CN.BuCZOhc00Va-9yscZRDazxW4ThZHHC0H"
+    expected.id = "ga4gh:CN.ATCEmOahCspjTUZwYcg3hZVEhonOxqZ0"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range >=
@@ -753,7 +753,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = [3, None]
-    expected.id = "ga4gh:CN.BmRCHbGTXzonlA6mTA7tnhalsLUrqapx"
+    expected.id = "ga4gh:CN.sXOp5QcykicrYTyRgzJvk4O9ha6ignDd"
     cnv_assertion_checks(resp, expected)
 
     # start_pos and end_pos indefinite range
@@ -771,10 +771,10 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     assert resp.copy_number_count.model_dump(exclude_none=True) == {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.rsiBwahYriYFgEjKVWpac25nAWWPCQAT",
-        "subject": {
+        "id": "ga4gh:CN.Hw32hEhUrWYl1j3Nty4cmrZlbveSw8oF",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.9Z-s6E8gLuhoy8SQPfUAJU2SCieScH21",
+            "id": "ga4gh:SL.nXrqjadKZikhhdHvDmgVovb0HiKoXRq7",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -798,7 +798,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223133,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.NUMBER,
@@ -811,7 +811,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.DEFINITE_RANGE,
@@ -826,7 +826,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.INDEFINITE_RANGE,
@@ -841,7 +841,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.NUMBER,
@@ -868,7 +868,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=models.CopyChange.efo_0030070,
+        copy_change=models.CopyChange.EFO_0030070,
         assembly=ClinVarAssembly.NCBI36,
         chromosome="chr1",
     )
@@ -879,7 +879,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=models.CopyChange.efo_0030070,
+        copy_change=models.CopyChange.EFO_0030070,
         assembly=ClinVarAssembly.HG18,
         chromosome="chr1",
     )
@@ -893,7 +893,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.efo_0030070,
+            copy_change=models.CopyChange.EFO_0030070,
             assembly="hg38",
         )
     assert ac_assembly_chr_msg in str(e.value)
@@ -903,7 +903,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.efo_0030070,
+            copy_change=models.CopyChange.EFO_0030070,
             chromosome="chr15",
         )
     assert ac_assembly_chr_msg in str(e.value)
@@ -913,7 +913,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.efo_0030070,
+            copy_change=models.CopyChange.EFO_0030070,
         )
     assert ac_assembly_chr_msg in str(e.value)
 
@@ -922,7 +922,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223133,
-            copy_change=models.CopyChange.efo_0030070,
+            copy_change=models.CopyChange.EFO_0030070,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="z",
         )
@@ -935,7 +935,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223133,
-            copy_change=models.CopyChange.efo_0030070,
+            copy_change=models.CopyChange.EFO_0030070,
             assembly="GRCh99",
         )
     assert "Input should be 'GRCh38'," in str(e.value)
@@ -944,7 +944,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=10491132,
         end0=10535643,
-        copy_change=models.CopyChange.efo_0030070,
+        copy_change=models.CopyChange.EFO_0030070,
         accession="NC_00002310",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -957,7 +957,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=31738809,
         end0=2302991250,
-        copy_change=models.CopyChange.efo_0030070,
+        copy_change=models.CopyChange.EFO_0030070,
         accession="NC_000015.10",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -969,7 +969,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=models.CopyChange.efo_0030069,
+            copy_change=models.CopyChange.EFO_0030069,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
             start_pos_type=ParsedPosType.DEFINITE_RANGE,
@@ -984,7 +984,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=models.CopyChange.efo_0030069,
+            copy_change=models.CopyChange.EFO_0030069,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
             start_pos_type=ParsedPosType.DEFINITE_RANGE,

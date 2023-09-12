@@ -16,9 +16,9 @@ def test_handler(test_query_handler):
 def mmel1_l30m():
     """Create test fixture for MMEL1 L30M"""
     params = {
-        "id": "ga4gh:VA.sGX_W3i312cxWvqGYj_div8fFUugGeH5",
+        "id": "ga4gh:VA.OqqETz467CITELOZsYDukkab7JaOWiZf",
         "location": {
-            "id": "ga4gh:SL.5BWeLMV5w3kSDuVRn_CGqB1pv-bvtfiH",
+            "id": "ga4gh:SL.Q7kfcqUWpIyEOgxcgPK1sRfgWPDv7zKA",
             "end": 30,
             "start": 29,
             "sequenceReference": {
@@ -37,9 +37,9 @@ def mmel1_l30m():
 def cdk11a_e314del():
     """Create test fixture for CDK11A Glu314del"""
     params = {
-        "id": "ga4gh:VA.gfbJjmclFVhtVMaxxLMfa1F2i9FfAOep",
+        "id": "ga4gh:VA._CVnGazN6KosqrFnDx7kny-rb6yAZWtB",
         "location": {
-            "id": "ga4gh:SL.GJ8TILAERnHsxrY5GhXqniyoa7JyAjN8",
+            "id": "ga4gh:SL.VqI6HuIFmm4XP3ocOTaobGxwqg4m6Ooi",
             "end": 321,
             "start": 308,
             "sequenceReference": {
@@ -63,9 +63,9 @@ def cdk11a_e314del():
 def protein_insertion2():
     """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
     params = {
-        "id": "ga4gh:VA.H-wcQzLt-208d3Ei6DRAQUT577U9q-hU",
+        "id": "ga4gh:VA.5KWhsli69ac5zyoGf40Owu4CVNKy27So",
         "location": {
-            "id": "ga4gh:SL.UYSguaueahjsOgMgKkqmS5BfdzZoyob-",
+            "id": "ga4gh:SL.I4c4NL0g3vBajHe44faZFQtrcqrbA14d",
             "end": 25,
             "start": 25,
             "sequenceReference": {
@@ -84,7 +84,7 @@ def protein_insertion2():
 def atad3a_loc():
     """Create test fixture for ATAD3A location"""
     return {
-        "id": "ga4gh:SL.StCbjQ0WjVvuvvmD-OnCfpMa7SS_4h4m",
+        "id": "ga4gh:SL.xiP3uciIfJy_f44wNKCBvtsb35BC330Q",
         "end": 7,
         "start": 6,
         "sequenceReference": {
@@ -99,7 +99,7 @@ def atad3a_loc():
 def atad3a_i7v(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Val"""
     params = {
-        "id": "ga4gh:VA.klNGINC4VbOhZilK-NYN-lF5hG-gyfXS",
+        "id": "ga4gh:VA.i_L_bjPfI4XLMIKmVklV6eDLKEl1f7PD",
         "location": atad3a_loc,
         "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -111,7 +111,7 @@ def atad3a_i7v(atad3a_loc):
 def atad3a_i7t(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Thr"""
     params = {
-        "id": "ga4gh:VA.9e52K3SrQQBX_52QkKT7zWP6aORGnyxi",
+        "id": "ga4gh:VA.C8QO-YAfG66yj7cEwjEhkEfSd-oCSKfc",
         "location": atad3a_loc,
         "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -123,7 +123,7 @@ def atad3a_i7t(atad3a_loc):
 def atad3a_i7m(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Met"""
     params = {
-        "id": "ga4gh:VA.9F98BB6VnTubExjaPJAqHtmnX_3bLX15",
+        "id": "ga4gh:VA.Fhmv3GK3bcIJRXOkigS9QNMzAWGW3WGa",
         "location": atad3a_loc,
         "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -135,7 +135,7 @@ def atad3a_i7m(atad3a_loc):
 def braf_v600l(braf_600loc):
     """Create test fixture for BRAF Val600Leu."""
     params = {
-        "id": "ga4gh:VA.bGtIuS6rtu3u2eqw6FNaPnzDXLqCHLYP",
+        "id": "ga4gh:VA.c6f1MPfquVRPZO46wVzCaGaU8QnXoHNN",
         "location": braf_600loc,
         "state": {"sequence": "L", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -147,7 +147,7 @@ def braf_v600l(braf_600loc):
 def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
-        "id": "ga4gh:VA.XpzE3SAsDcgUgF2VDe1xCr7tgJQa_PA-",
+        "id": "ga4gh:VA.wS6kJNbPkRJDIWg8F4CjOMQ5mcJzD_X4",
         "location": braf_600loc,
         "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -159,10 +159,10 @@ def braf_600_reference_agree(braf_600loc):
 def kras_g12d():
     """Fixture for KRAS G12C"""
     params = {
-        "id": "ga4gh:VA.h0c-_cVnrFoDYmuD6xSfvd6nyFSnY4hM",
+        "id": "ga4gh:VA.CB571ja_KfZM_Hjn9zjjgV1an3tDWRcl",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.GOP-blEPJgmnOcz0vt7UH31JhINZrgw9",
+            "id": "ga4gh:SL.OndkjmujtyUEZSjjCv0C-gpwnVbRgfj8",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",

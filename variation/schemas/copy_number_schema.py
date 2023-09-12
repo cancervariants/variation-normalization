@@ -192,7 +192,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
     )
     copies_type: ParsedPosType = Field(
         default=ParsedPosType.NUMBER,
-        description="Type for the `copies` in the `subject`",
+        description="Type for the `copies` in the `location`",
     )
     copies_comparator: Optional[Comparator] = Field(
         default=None,
@@ -261,7 +261,7 @@ class ParsedToCnVarService(ServiceResponse):
                 "copy_number_count": {
                     "id": "ga4gh:CN.VVV2dbQpCd_HA2kcYDLQn-bcJNHmgFtk",
                     "type": "CopyNumberCount",
-                    "subject": {
+                    "location": {
                         "id": "ga4gh:SL.CSGKn-RY7VVbqvc_AKNs4sWpQLDVyVI8",
                         "type": "SequenceLocation",
                         "sequenceReference": {
@@ -325,7 +325,7 @@ class ParsedToCxVarService(ServiceResponse):
                 "copy_number_change": {
                     "type": "CopyNumberChange",
                     "id": "ga4gh:CX.drBX25s9U7MiZSC2H2C6fl091I3fVGR1",
-                    "subject": {
+                    "location": {
                         "type": "SequenceLocation",
                         "id": "ga4gh:SL.t89j1jS3xh47Ali0pPusruVzHhKdT9SB",
                         "sequenceReference": {
@@ -379,7 +379,7 @@ class AmplificationToCxVarService(ServiceResponse):
                 "copy_number_change": {
                     "id": "ga4gh:CX.o8ffM6gQYxFAEY4X0u2a65FqaYCapXmM",
                     "type": "CopyNumberChange",
-                    "subject": {
+                    "location": {
                         "id": "ga4gh:SL.rXzVqqlchBvUef98MNQA77FvwSJgiOf5",
                         "type": "SequenceLocation",
                         "sequenceReference": {

@@ -588,7 +588,7 @@ class ToCopyNumberVariation(ToVRS):
         else:
             if is_cx:
                 variation = models.CopyNumberChange(
-                    subject=seq_loc, copyChange=request_body.copy_change
+                    location=seq_loc, copyChange=request_body.copy_change
                 )
                 variation.id = ga4gh_identify(variation)
             else:
@@ -601,7 +601,7 @@ class ToCopyNumberVariation(ToVRS):
                         copies = models.Range([None, request_body.copies0])
                     else:
                         copies = models.Range([request_body.copies0, None])
-                variation = models.CopyNumberCount(subject=seq_loc, copies=copies)
+                variation = models.CopyNumberCount(location=seq_loc, copies=copies)
                 variation.id = ga4gh_identify(variation)
 
         service_params = {
@@ -700,8 +700,8 @@ class ToCopyNumberVariation(ToVRS):
                 if vrs_location:
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_cx = models.CopyNumberChange(
-                        subject=vrs_location,
-                        copyChange=models.CopyChange.efo_0030072.value,
+                        location=vrs_location,
+                        copyChange=models.CopyChange.EFO_0030072.value,
                     )
                     vrs_cx.id = ga4gh_identify(vrs_cx)
                     variation = models.CopyNumberChange(

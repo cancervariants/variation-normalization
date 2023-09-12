@@ -4,10 +4,10 @@ protein_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.s79REj1tC9sM5mhsc1m_yuXcJF3SH3su",
+            "id": "ga4gh:VA.PJu8CCaVzEyqXMAEcMNegyDWyvT_jzNn",
             "location":
               {
-                "id": "ga4gh:SL.pFtHSvBcQqv2jZYMg5BkXwGNBRpL_kvQ",
+                "id": "ga4gh:SL.EpHaD2ygDuPMvyURI9L4yetEwF3W0G7G",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -21,10 +21,10 @@ protein_substitution:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.tJ7kARp1YlxgcUesm7DXSj_SDXjXg3-u",
+            "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
             "location":
               {
-                "id": "ga4gh:SL.pqBCJoUGtDNLKib8F5ke3cyqqrkZzfud",
+                "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -38,10 +38,10 @@ protein_substitution:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.KpFlKus-2m141vUNdFlOC1ejisAo4CTv",
+            "id": "ga4gh:VA.c-oRhbu7nDrBrSW2fPbFlDM15V6jiaho",
             "location":
               {
-                "id": "ga4gh:SL.mtXl9xjWA8YmN-3LyCeJtvZtNznAIhWo",
+                "id": "ga4gh:SL.gkevJbLNOScKXhxhzOZXiG3hW8zeyo-q",
                 "start": 599,
                 "end": 600,
                 "sequenceReference":
@@ -55,10 +55,10 @@ protein_substitution:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.kY8XpXZ4ueOQoPbYxx5nvj0zGXvsmZg7",
+            "id": "ga4gh:VA.3ex0cvKXjHbq8NLuitOAfVwSPzqZUFrR",
             "location":
               {
-                "id": "ga4gh:SL.lekHz-yBPRgkcIWIYoYum5xNkdQ-H9D-",
+                "id": "ga4gh:SL.Q4MXez2kHFPQqGJKLP8quVHAskuCrOAA",
                 "start": 599,
                 "end": 600,
                 "sequenceReference":
@@ -76,10 +76,10 @@ protein_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.tJ7kARp1YlxgcUesm7DXSj_SDXjXg3-u",
+            "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
             "location":
               {
-                "id": "ga4gh:SL.pqBCJoUGtDNLKib8F5ke3cyqqrkZzfud",
+                "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -100,10 +100,10 @@ protein_stop_gain:
       variations:
         [
           {
-            "id": "ga4gh:VA.yGFbK79MdGPU9Q_9vuQEKkL7YzPHdi1Z",
+            "id": "ga4gh:VA.KsGULBqRCUFNA89_9LErBWStMsBIXvlt",
             "location":
               {
-                "id": "ga4gh:SL.wrCd0fxJMAqjeU_5smckChEx1ufgiEP4",
+                "id": "ga4gh:SL.1qfXpIQd0Z4bAIpanqdhGpXmFd8_-Hb9",
                 "start": 184,
                 "end": 185,
                 "sequenceReference":
@@ -121,10 +121,10 @@ protein_stop_gain:
       variations:
         [
           {
-            "id": "ga4gh:VA.yGFbK79MdGPU9Q_9vuQEKkL7YzPHdi1Z",
+            "id": "ga4gh:VA.KsGULBqRCUFNA89_9LErBWStMsBIXvlt",
             "location":
               {
-                "id": "ga4gh:SL.wrCd0fxJMAqjeU_5smckChEx1ufgiEP4",
+                "id": "ga4gh:SL.1qfXpIQd0Z4bAIpanqdhGpXmFd8_-Hb9",
                 "start": 184,
                 "end": 185,
                 "sequenceReference":
@@ -142,10 +142,10 @@ protein_stop_gain:
       variations:
         [
           {
-            "id": "ga4gh:VA.yGFbK79MdGPU9Q_9vuQEKkL7YzPHdi1Z",
+            "id": "ga4gh:VA.KsGULBqRCUFNA89_9LErBWStMsBIXvlt",
             "location":
               {
-                "id": "ga4gh:SL.wrCd0fxJMAqjeU_5smckChEx1ufgiEP4",
+                "id": "ga4gh:SL.1qfXpIQd0Z4bAIpanqdhGpXmFd8_-Hb9",
                 "start": 184,
                 "end": 185,
                 "sequenceReference":
@@ -163,10 +163,10 @@ protein_stop_gain:
       variations:
         [
           {
-            "id": "ga4gh:VA.Sfop203BRWPlAnaEOoJjrS4G8ciJe1XE",
+            "id": "ga4gh:VA.sGxJmxbzTpw6qqz2Kij3aXSZAPOge_G8",
             "location":
               {
-                "id": "ga4gh:SL.-4cQbTxrdisT5iIxUfgF2evFdfnXPqMH",
+                "id": "ga4gh:SL.oGuWLVOr5Rdgradq5GJpMXEfcU7JQMDd",
                 "start": 1177,
                 "end": 1178,
                 "sequenceReference":
@@ -187,10 +187,10 @@ protein_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA.euo4iiNaASv7qPsy-QhVB8CUk0LEfj2Q",
+            "id": "ga4gh:VA.bBwytVniGA1kDz3eIh99tpaPR_RcJnEC",
             "location":
               {
-                "id": "ga4gh:SL.aB-Qy2H1Cm_6jC--NXDXE-wPnDbBqdJD",
+                "id": "ga4gh:SL.4jSgOyI22QGrwXaC3MaGeqF7A4JAg2-r",
                 "start": 153,
                 "end": 154,
                 "sequenceReference":
@@ -208,10 +208,10 @@ protein_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA.u107jl5_bx268nr2E6VJjmRflj4wQMOG",
+            "id": "ga4gh:VA.RMmwTvhrPVwfMZ6knsf5zMWQn_F1ukYh",
             "location":
               {
-                "id": "ga4gh:SL.OiKH3aqBpAjG2vMytW1tNwslBdBkThMr",
+                "id": "ga4gh:SL.8TZYB8Oqqn93q07zrsNhvRW1JjNpaQXc",
                 "start": 60,
                 "end": 61,
                 "sequenceReference":
@@ -229,10 +229,10 @@ protein_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA.C2hrp3-vBIDM9kXfHn7ww8HPsGPZetsx",
+            "id": "ga4gh:VA.149Sy4H4lHbL_l3Gy1G2z5hghz_1JNI2",
             "location":
               {
-                "id": "ga4gh:SL.AH8H-51xn2NqZkWtLyL8_hoph8FfFla3",
+                "id": "ga4gh:SL.-kQnuBxB3QrbbZBSTAoAbz0azJT821Sk",
                 "start": 54,
                 "end": 55,
                 "sequenceReference":
@@ -253,10 +253,10 @@ cdna_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.QogzvBlPzuJimKrednzl6JLk_8QksCLl",
+            "id": "ga4gh:VA.toS6q-Htpv6CpLPtbSo9E_zi8E7jFLqL",
             "location":
               {
-                "id": "ga4gh:SL.KoaPHI42Wgkbb34lU7dIo5eUk9o-uQVv",
+                "id": "ga4gh:SL.brDsydg4aD2TZqwqc3wZWKxWRx144A89",
                 "start": 1859,
                 "end": 1860,
                 "sequenceReference":
@@ -274,10 +274,10 @@ cdna_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.QHsxHP0EKTUmawObwLyGv63ugiDEk5sX",
+            "id": "ga4gh:VA.u4IphDRcnedzHjNGRx_yFJGD3JtOc_db",
             "location":
               {
-                "id": "ga4gh:SL.0FbPxXE7EML2hH5U4BUrmn97bte4qvQq",
+                "id": "ga4gh:SL.jRkp8fqzOE6Z1az_hmeDvmhzKVbCL6j-",
                 "start": 1859,
                 "end": 1860,
                 "sequenceReference":
@@ -300,10 +300,10 @@ genomic_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.PdaLkloJsvUc0E8OKS1vOFTWakJBDD4a",
+            "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
             "location":
               {
-                "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -321,10 +321,10 @@ genomic_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.PdaLkloJsvUc0E8OKS1vOFTWakJBDD4a",
+            "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
             "location":
               {
-                "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -342,10 +342,10 @@ genomic_substitution:
       variations:
         [
           {
-            "id": "ga4gh:VA.PdaLkloJsvUc0E8OKS1vOFTWakJBDD4a",
+            "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
             "location":
               {
-                "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -366,10 +366,10 @@ cdna_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA.XWUGY7gBG_dveSKIgEmqR64tcS2JdGeT",
+            "id": "ga4gh:VA.7UUAyVS_YyU4DLlP6RiVB268ZAy8zyyY",
             "location":
               {
-                "id": "ga4gh:SL.KoaPHI42Wgkbb34lU7dIo5eUk9o-uQVv",
+                "id": "ga4gh:SL.brDsydg4aD2TZqwqc3wZWKxWRx144A89",
                 "start": 1859,
                 "end": 1860,
                 "sequenceReference":
@@ -390,10 +390,10 @@ genomic_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA._bJLB4ejwb_j5R7Zh72yo8sD93NLFKtG",
+            "id": "ga4gh:VA.kEu66A38U6zxpNXCXqc6Dmuezir1S6Tu",
             "location":
               {
-                "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -411,10 +411,10 @@ genomic_reference_agree:
       variations:
         [
           {
-            "id": "ga4gh:VA.8kOj5eqNfVxnkVGFLLwiTxeuDr5QdJhH",
+            "id": "ga4gh:VA.JcLZ2KGaPcO1LEFYcjkmdAdo-CgsYhig",
             "location":
               {
-                "id": "ga4gh:SL.XstRjuQBy_or_V9Wtf9-6UBk-rCqseJ9",
+                "id": "ga4gh:SL.GXZ4UlQBqqfn29XEHoCllU7T7OIlkMVS",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -428,10 +428,10 @@ genomic_reference_agree:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA._bJLB4ejwb_j5R7Zh72yo8sD93NLFKtG",
+            "id": "ga4gh:VA.kEu66A38U6zxpNXCXqc6Dmuezir1S6Tu",
             "location":
               {
-                "id": "ga4gh:SL.GrGgjE-XKlxWvBDwnCgq1XTs_e-vC_jN",
+                "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
                 "start": 140453135,
                 "end": 140453136,
                 "sequenceReference":
@@ -452,10 +452,10 @@ protein_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.eY4LJenQdAmGGg6FzvsHUuk_0jPWAyLo",
+            "id": "ga4gh:VA.92P0i1m5gfT85HTuCXfintN2xFESjnB-",
             "location":
               {
-                "id": "ga4gh:SL.KTCoK8FV8uyhtEvMc00zTxOrVHuTSb49",
+                "id": "ga4gh:SL.3Ap3XAZC0N5mHCgqbtdiwWOLjGFqbIep",
                 "end": 751,
                 "start": 746,
                 "sequenceReference":
@@ -473,10 +473,10 @@ protein_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.aXQ5IilXmN8KtLMqIYnocWYgIFSaAlaU",
+            "id": "ga4gh:VA.sm7fIUxzDjOAM2acs5f_7lz4vaTfRiZQ",
             "location":
               {
-                "id": "ga4gh:SL.3fkvJChl2dcFF7SY-arY50K0OHc_kbKY",
+                "id": "ga4gh:SL.ajzD3sda-U5t75BQFVSTbSjnpB_JIhGW",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -490,10 +490,10 @@ protein_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.NGDOhit5-yxfXmcX85oD8kElqeUdQc70",
+            "id": "ga4gh:VA.r6Mt7QqHNHoCAP0BYkIdowDyo_Qd39HO",
             "location":
               {
-                "id": "ga4gh:SL.4n9_KiWIUkmnnjMDNaOWtjRFhCzQRs9J",
+                "id": "ga4gh:SL.tQGMp_RLZJAzG7vHXSlzAe3PdWin8z6Y",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -507,10 +507,10 @@ protein_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.nwH2OKspLNa3CpYScHpRiDj-CDl8rQy-",
+            "id": "ga4gh:VA.fYIoRKYHJB8h6G7U1T-hh6Cbhm7MNred",
             "location":
               {
-                "id": "ga4gh:SL.JM9j7Dz45Z_4EZ-oyLAGvwTHp1pFQtuJ",
+                "id": "ga4gh:SL.-TJqX5psxFSUnviBkufV7UndtWgiMWmf",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -524,10 +524,10 @@ protein_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.XPDdAwEMdvJC6k4epNyDLKHf7fX9OtNb",
+            "id": "ga4gh:VA.-B8y2zJ9sD1DF_Mz0HQWb0IJpBKNPjjF",
             "location":
               {
-                "id": "ga4gh:SL.JR3q0oYxVIYLBnWUgyHzUaWwDzsoqOTZ",
+                "id": "ga4gh:SL.eE9ee9uUCHtyeXFsTz2vSqJqy2f1IY-T",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -541,10 +541,10 @@ protein_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.qEX7VR6yGSeAR3R3Hd1sWjzgdU9ia02l",
+            "id": "ga4gh:VA.iHwbQmIlhwkMjfPHESDwsnC8ZStgM7vq",
             "location":
               {
-                "id": "ga4gh:SL.QBaHULlzYG3vC_ULpYKkVOMi8NQUX53f",
+                "id": "ga4gh:SL.8XQgBX5Olmnf96S7LhxaLyokCJ48PNcm",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -558,10 +558,10 @@ protein_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.72c9ZyQbLw7bSYP_VRw86KZR7enonhCp",
+            "id": "ga4gh:VA.l0EUqPsxH4Xg43ifUnsDTcB_cc9uTTOT",
             "location":
               {
-                "id": "ga4gh:SL.8uxqFlqueQ_7M93x3Tb9ZlWp9n9qUBl1",
+                "id": "ga4gh:SL.26fpCjMjI8UpsE-Vt0ADOfXbr-nfa4o4",
                 "end": 776,
                 "start": 775,
                 "sequenceReference":
@@ -582,10 +582,10 @@ cdna_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.Zj5X3Vkv1fII7zQu_LvaRH_-mTC6RQFZ",
+            "id": "ga4gh:VA.GjDWdDFru9m7P-xYI9rTRxq3upJ4bI20",
             "location":
               {
-                "id": "ga4gh:SL.BtkFXd2SCPx0iGHNcI6-v8rQWpUMxMYz",
+                "id": "ga4gh:SL.GIfFNwrm6SZMeaGqqnSobxtr0kZGgGAl",
                 "start": 2586,
                 "end": 2588,
                 "sequenceReference":
@@ -603,10 +603,10 @@ cdna_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.ESmhD8bFPGGgoL2VPPRWBZ5b1-5NZGd7",
+            "id": "ga4gh:VA.iQjEr3dKDMX1n2FWweAvIca6QWoDEOv9",
             "location":
               {
-                "id": "ga4gh:SL.szTIC3CQlB4F7tL_E5ubzYL4EbjU8yqD",
+                "id": "ga4gh:SL.hQQhl1lEB8c9jZYvMAlp7597fbIZhRzE",
                 "start": 1203,
                 "end": 1205,
                 "sequenceReference":
@@ -624,10 +624,10 @@ cdna_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.JKpjy1E7Jk8tt1DGH_FHtOEmfX04CJ10",
+            "id": "ga4gh:VA.C8ciS2eoX3gN2pPixmhBi2o-u0r0RTN0",
             "location":
               {
-                "id": "ga4gh:SL.t7FzcpB8RAuvVZsFyM8jRH3jKFTJeqyJ",
+                "id": "ga4gh:SL.vPHmwGWL5xXR9fFJA4Ksv4s2ziyOf1nF",
                 "start": 827,
                 "end": 828,
                 "sequenceReference":
@@ -648,10 +648,10 @@ genomic_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.uFdveTk4tfSVv_6tr5MychXiSjDGyoYw",
+            "id": "ga4gh:VA.LkWsKQZid3ELe70zT_msZ0ML_OxHrjXO",
             "location":
               {
-                "id": "ga4gh:SL.6EdIIqKHLXi3WQynyLoCa_Kockehvcc5",
+                "id": "ga4gh:SL.XmwKDUQWWIGs3XDkRMvsTAH8gL_jey6E",
                 "start": 140453134,
                 "end": 140453136,
                 "sequenceReference":
@@ -669,10 +669,10 @@ genomic_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.uFdveTk4tfSVv_6tr5MychXiSjDGyoYw",
+            "id": "ga4gh:VA.LkWsKQZid3ELe70zT_msZ0ML_OxHrjXO",
             "location":
               {
-                "id": "ga4gh:SL.6EdIIqKHLXi3WQynyLoCa_Kockehvcc5",
+                "id": "ga4gh:SL.XmwKDUQWWIGs3XDkRMvsTAH8gL_jey6E",
                 "start": 140453134,
                 "end": 140453136,
                 "sequenceReference":
@@ -686,10 +686,10 @@ genomic_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.0cEch26y3lC5QdBkaYDUTovUlDvNAMrN",
+            "id": "ga4gh:VA.nWJAMU9SIxAjVXvf6hjy7CdOoRYpFKo-",
             "location":
               {
-                "id": "ga4gh:SL.Fptl9Awd1TDnc4kk79MncxuPWarg4s1V",
+                "id": "ga4gh:SL.ECL9ksWf3zttFix7aFjLk3oMGIT2r1T_",
                 "start": 140453134,
                 "end": 140453135,
                 "sequenceReference":
@@ -707,10 +707,10 @@ genomic_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.0kaRysU_ySgQbisukNjyFGPkg8kREkvx",
+            "id": "ga4gh:VA.m3N5EEDcudS3thzXlwRDxiffKNgGukzv",
             "location":
               {
-                "id": "ga4gh:SL.ZhXA_BrejQ7_50TzzPTWcI1d76dfp0Kl",
+                "id": "ga4gh:SL.acAqImEWvHwbUHaJi7L8yOyrSsc1DlW-",
                 "start": 10149937,
                 "end": 10149938,
                 "sequenceReference":
@@ -728,10 +728,10 @@ genomic_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.0kaRysU_ySgQbisukNjyFGPkg8kREkvx",
+            "id": "ga4gh:VA.m3N5EEDcudS3thzXlwRDxiffKNgGukzv",
             "location":
               {
-                "id": "ga4gh:SL.ZhXA_BrejQ7_50TzzPTWcI1d76dfp0Kl",
+                "id": "ga4gh:SL.acAqImEWvHwbUHaJi7L8yOyrSsc1DlW-",
                 "start": 10149937,
                 "end": 10149938,
                 "sequenceReference":
@@ -745,10 +745,10 @@ genomic_delins:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.ad-MuKNVtx-O3EoSAX6Fux0IjKM7ijDH",
+            "id": "ga4gh:VA.4B9dWHwIS_Nek8yIC7rcVpsTyklMSmTK",
             "location":
               {
-                "id": "ga4gh:SL.q-_ay7TWNZ148-R5_hhu3Q7mXpyA8pQi",
+                "id": "ga4gh:SL.mLNGrp5jlDKQRw3d4-XklOHh8DBGggMI",
                 "start": 10149937,
                 "end": 10149938,
                 "sequenceReference":
@@ -766,11 +766,11 @@ genomic_delins:
       variations:
         [
           {
-            "id": "ga4gh:VA.ALPX7fD8RZdbPEsocq4NGOAE-_UWU13m",
+            "id": "ga4gh:VA.3Q0qa7xolRvjtdm7HsJdhwnARl40PZQC",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.WuJ4tf9JbR36HVaeVxVBEKBL4M7CD-oN",
+                "id": "ga4gh:SL.ayQ3u0mtegVPCcfwjOtn1I1w8-kNm3jM",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -796,10 +796,10 @@ protein_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.RBPkvrnmjaIlctqOAoGl-EgdRjGDyJfc",
+            "id": "ga4gh:VA.Cd6Z8tjYtsg60dO7xxaWDoTyXoS6SAc7",
             "location":
               {
-                "id": "ga4gh:SL.QrJsuT9fK2XCJEr49fxd37LUni3Y2swm",
+                "id": "ga4gh:SL.-l_WRD5XcRkY4frBSeQdljLrUTzYUAxE",
                 "end": 76,
                 "start": 75,
                 "sequenceReference":
@@ -823,10 +823,10 @@ protein_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.CfZ7CT5yK89Itoyw6lxvhy4Emhan6OI4",
+            "id": "ga4gh:VA.PWbmz24TupE8h8g2Vw-gLWAjLiBw85N0",
             "location":
               {
-                "id": "ga4gh:SL.9r3Y7fiBE2DtiFYcOy4TxJ4kW5aKixIq",
+                "id": "ga4gh:SL.NzcGLbsfRAy4bLNS88kyjzUdqDGRVGd4",
                 "end": 84,
                 "start": 81,
                 "sequenceReference":
@@ -850,10 +850,10 @@ protein_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.KZ5lQhf9uiPkfAArd34nRazxEqbvCq4_",
+            "id": "ga4gh:VA.N7F0WqJs4dqp9ndh2YW7u0t6xRiHccpQ",
             "location":
               {
-                "id": "ga4gh:SL.2C9JxGTdYFqx3NlZb6kb1I1g6U5XF74M",
+                "id": "ga4gh:SL.RKZW47OI5rv2-9gU3rJKV9dMfq7BYT_u",
                 "start": 746,
                 "end": 751,
                 "sequenceReference":
@@ -872,10 +872,10 @@ protein_deletion:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.rUkatTPW0NAHMiR5jE2eEhJnLwDqWAVY",
+            "id": "ga4gh:VA.zyl9zFPjMMOtIdsfCDIUHvpyoQrDlRc7",
             "location":
               {
-                "id": "ga4gh:SL.KTCoK8FV8uyhtEvMc00zTxOrVHuTSb49",
+                "id": "ga4gh:SL.3Ap3XAZC0N5mHCgqbtdiwWOLjGFqbIep",
                 "start": 746,
                 "end": 751,
                 "sequenceReference":
@@ -901,10 +901,10 @@ cdna_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.p4BdBw7FTnbdk7fJneuuNe9DpHVap5Of",
+            "id": "ga4gh:VA.ts4dehcMOYyN7u7CKO8fF4C80rZxALBY",
             "location":
               {
-                "id": "ga4gh:SL.Z3d3qVB18yVAMcxzJp_GcUP_kA4GMwJD",
+                "id": "ga4gh:SL.8Buo3uzjQAY2kwIsaeiJgQLYqJc9wAVX",
                 "end": 2539,
                 "start": 2523,
                 "sequenceReference":
@@ -931,10 +931,10 @@ genomic_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.hWW7Yx9sXfOV0sWuhXeHjqfS3xPXj4Z2",
+            "id": "ga4gh:VA.oPjzfyjE7AmkHxvgVKFm3fr8Etu0Mp9b",
             "location":
               {
-                "id": "ga4gh:SL.snsqP006V4qwvS_gdGr6UsJRchTCC6nO",
+                "id": "ga4gh:SL.cxEFtsg09n8eNXIWuRetrmWTUV1nm8_f",
                 "end": 10191487,
                 "start": 10191483,
                 "sequenceReference":
@@ -958,10 +958,10 @@ genomic_deletion:
       variations:
         [
           {
-            "id": "ga4gh:VA.hWW7Yx9sXfOV0sWuhXeHjqfS3xPXj4Z2",
+            "id": "ga4gh:VA.oPjzfyjE7AmkHxvgVKFm3fr8Etu0Mp9b",
             "location":
               {
-                "id": "ga4gh:SL.snsqP006V4qwvS_gdGr6UsJRchTCC6nO",
+                "id": "ga4gh:SL.cxEFtsg09n8eNXIWuRetrmWTUV1nm8_f",
                 "end": 10191487,
                 "start": 10191483,
                 "sequenceReference":
@@ -989,10 +989,10 @@ protein_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.1izVhuyd_6XaNxPIPMwwIB0KeqYrCTUD",
+            "id": "ga4gh:VA.AOCCh_BU5wKkdgoDNqkORF_x4GQwWh1T",
             "location":
               {
-                "id": "ga4gh:SL.qOc3iBPVW7NK7p9yvW1Q6jlZkOTI9Avl",
+                "id": "ga4gh:SL.ciWb1ylkqUxiviU1djijiuYVZcgsnQnV",
                 "end": 770,
                 "start": 770,
                 "sequenceReference":
@@ -1010,10 +1010,10 @@ protein_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.Asn7WuTgiu2UYgNSXW5eY5N9yMu4zABC",
+            "id": "ga4gh:VA.5WCguhOtzU0gZGEW9mAlqtzROgJaEr5w",
             "location":
               {
-                "id": "ga4gh:SL.pFtHSvBcQqv2jZYMg5BkXwGNBRpL_kvQ",
+                "id": "ga4gh:SL.EpHaD2ygDuPMvyURI9L4yetEwF3W0G7G",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -1033,10 +1033,10 @@ protein_insertion:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.a8fpvpxxj_0P1yreGq6a7O8LZekhNvyU",
+            "id": "ga4gh:VA.Di6aHQPATSe_jG54fI2ZtLDtvrqWn1U0",
             "location":
               {
-                "id": "ga4gh:SL.lekHz-yBPRgkcIWIYoYum5xNkdQ-H9D-",
+                "id": "ga4gh:SL.Q4MXez2kHFPQqGJKLP8quVHAskuCrOAA",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -1056,10 +1056,10 @@ protein_insertion:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.s3sawNM6jC7gr3QN4VHxUkUP-Mdpl_iP",
+            "id": "ga4gh:VA.7ApUCILWJUCNIZcKq4oUurWEqyL3gyi9",
             "location":
               {
-                "id": "ga4gh:SL.mtXl9xjWA8YmN-3LyCeJtvZtNznAIhWo",
+                "id": "ga4gh:SL.gkevJbLNOScKXhxhzOZXiG3hW8zeyo-q",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -1079,10 +1079,10 @@ protein_insertion:
             "type": "Allele",
           },
           {
-            "id": "ga4gh:VA.vtQFs3U9GQh71NtsW9Z0FF8bBBaiysOc",
+            "id": "ga4gh:VA.adBs3KK7T1yz8i9kfh1NFsGQQoaSLHJK",
             "location":
               {
-                "id": "ga4gh:SL.pqBCJoUGtDNLKib8F5ke3cyqqrkZzfud",
+                "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
                 "end": 600,
                 "start": 599,
                 "sequenceReference":
@@ -1109,10 +1109,10 @@ cdna_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.xNm5GDfJwKtP5wCAiBsNm-erforCc1L_",
+            "id": "ga4gh:VA.rUAwTHwBYQRPXbzBWTi6QbqoF1bAUjtn",
             "location":
               {
-                "id": "ga4gh:SL.ktYn4KvezdlHlNiPW8fflGjA8CxrPPRJ",
+                "id": "ga4gh:SL.-qRr3HfBajBTmzAVJPwyMb6wo9qfHqgm",
                 "end": 3134,
                 "start": 3131,
                 "sequenceReference":
@@ -1136,10 +1136,10 @@ cdna_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.jH5Xy_wQn1EofpByiIP3eTSFZbjq9jfE",
+            "id": "ga4gh:VA.I4EqcfOYhpPRgeNbwM1HhKqcA-gdmsrB",
             "location":
               {
-                "id": "ga4gh:SL.l9fEwTQr8gyMGdCE7Uk8oa8_P-iQjGM9",
+                "id": "ga4gh:SL.sFsPhPS3JCJkA_LObVXnrYeTSHp8GGT2",
                 "end": 3134,
                 "start": 3134,
                 "sequenceReference":
@@ -1160,11 +1160,11 @@ genomic_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.GbtshHD0R3JPUJYBjk_5JebQ52NLyhYg",
+            "id": "ga4gh:VA.cY1c7lbwhHmg_b7cAxMpjQT6X-UYmcK9",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.seihqL3iOFAvs5-w3FNoV-EjsCMhVyCa",
+                "id": "ga4gh:SL.7zWWbLgDc_VzA3G3oIdEu1v8EbKNd5Um",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1187,11 +1187,11 @@ genomic_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.GbtshHD0R3JPUJYBjk_5JebQ52NLyhYg",
+            "id": "ga4gh:VA.cY1c7lbwhHmg_b7cAxMpjQT6X-UYmcK9",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.seihqL3iOFAvs5-w3FNoV-EjsCMhVyCa",
+                "id": "ga4gh:SL.7zWWbLgDc_VzA3G3oIdEu1v8EbKNd5Um",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1210,11 +1210,11 @@ genomic_insertion:
               },
           },
           {
-            "id": "ga4gh:VA.1sIGkKoU4lgLfB8XPn2frJLq2WbYWvhB",
+            "id": "ga4gh:VA.PqonQkZk4h0bkVplJPZEBRUjUqY2fxXn",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.YipuJiicz2JDN2B3qpjXHZHOj81Zpu90",
+                "id": "ga4gh:SL.VGXyaPw8eXR1ut445bprXOX6WHmh-bXa",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1231,11 +1231,11 @@ genomic_insertion:
       variations:
         [
           {
-            "id": "ga4gh:VA.cEkaoct49mdYGp3Ms6a78oDAr88l4sWL",
+            "id": "ga4gh:VA.cxPRxlfPGzZD0pIdxu9EhAPhLZTzDNT0",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL._jA5bRCNh1F7IigUoHNtaw6XJS7vIi9m",
+                "id": "ga4gh:SL.LyA3prPbL8U0xJ3P6tO1w295QvRGxYnK",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1256,11 +1256,11 @@ genomic_deletion_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.4gr9Ar1_evzZ6Q1f51oP7DkGM0LfxqGS",
+            "id": "ga4gh:CX.1DiUzraiKZLJb8oF8ynARS816fthsJpV",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.kUqkUmhq2dK4uIjUkKwdCjs2ku_5Ey4K",
+                "id": "ga4gh:SL.bWbNmdT__ptImBwTAIYdyNfazhwvEtXD",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1277,11 +1277,11 @@ genomic_deletion_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.q_iLtX3wYfg8TeNI9JTR4pdoiJMzgtNN",
+            "id": "ga4gh:CX.CJdXMZXSEE4hCIwjGxke4EWY7lMENYPj",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.JJ04d-LYT8qrReNiZDdvj8J_uoBVwL0n",
+                "id": "ga4gh:SL.2ORImLGRcezhWXDYI9sZvLwFGPDH9WKS",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1298,11 +1298,11 @@ genomic_deletion_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.PO3tGwlnIdb-mdAX-BGmzFAcSxO4FnoC",
+            "id": "ga4gh:CX.q3OPPp2fWM5uM60RNHY_jDThCyxV3URW",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.szN7VMzs18-pma_-lMZIk7IOB12qiG0z",
+                "id": "ga4gh:SL.aRKiRW6-lS9CCLfcPJpQIGihZqoIOCZ_",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1319,11 +1319,11 @@ genomic_deletion_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.LaFZ_a7i5PgsJB8ZBTnKMjUykmK0k6jP",
+            "id": "ga4gh:CX.vR12PHS1zCnoYUi9CSX3ZwhGG38xa-RA",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.A6RWqfqz_2kTq5d9s0hpr_9dNMSPT6z1",
+                "id": "ga4gh:SL.N44ez-5301ZoNdLoiblcUvm__BS4-4Jv",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1343,11 +1343,11 @@ genomic_duplication:
       variations:
         [
           {
-            "id": "ga4gh:VA.UoHutLvbtPj0zV-EKUw8QRZ4pdCjiEaM",
+            "id": "ga4gh:VA.CHNQRjx52keAGF5WcbvKORtfLiitZKE4",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.ymeWuZvaNt5QpFeq3vC15S_3syWfQVjK",
+                "id": "ga4gh:SL.f0nAiaxOC3rPToQEYRRhbVBNO6HKutyc",
                 "sequenceReference":
                   {
                     "type": "SequenceReference",
@@ -1370,11 +1370,11 @@ genomic_duplication:
       variations:
         [
           {
-            "id": "ga4gh:VA.ajllSm235a0ewaXtL3shCOEFRpDRrcF7",
+            "id": "ga4gh:VA.X_j-DHSSrgaCw1gfXzpIyG-I5e0PMGL3",
             "type": "Allele",
             "location":
               {
-                "id": "ga4gh:SL.hK9TZoCZ_ABLrIdZhyuzzKSb7qM0mped",
+                "id": "ga4gh:SL.1_LGkYC5Ytn5Vreye8dEPLM_uGKrvuAA",
                 "sequenceReference":
                   {
                     "type": "SequenceReference",
@@ -1400,11 +1400,11 @@ genomic_duplication_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.cj5gnO_lW3SngpLo3Bv1hxeGO6QzSQb-",
+            "id": "ga4gh:CX.Gq5d-uH01bgf7m703dOSfSp_29wFqpsb",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.gABz8yV6pFIY5kMY6O8BqvdNcfXt8ulQ",
+                "id": "ga4gh:SL.NbjuicGHnxcERd1t0hGkzlw93YX1p3Y7",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1421,11 +1421,11 @@ genomic_duplication_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.zXjD1QpYmm8UbnXssfqOw-_jJRbSaKuc",
+            "id": "ga4gh:CX.6KvwSUu1Vp3FcC2VzbZxqpLAouOMCPi9",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.bF_LzXeTaYlX9EafOpu0l27rkoNZpgU1",
+                "id": "ga4gh:SL.O__pyYq_u7R__2NUbI3koxxkeCBL7WXq",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1442,11 +1442,11 @@ genomic_duplication_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.XEznGLw-iNVBblikFAA-L-LzdwIa3YRs",
+            "id": "ga4gh:CX.4JLs2ICAAvj5JgG0xHJk1voSKLb8gNQ9",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.3VRKy0qXlEvL2PZSqLBHchE5TIeJYHhx",
+                "id": "ga4gh:SL.o8sCaAaW2a2f_HsNBTsHOCnWRvIyru0y",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1466,11 +1466,11 @@ amplification:
       variations:
         [
           {
-            "id": "ga4gh:CX.o8ffM6gQYxFAEY4X0u2a65FqaYCapXmM",
+            "id": "ga4gh:CX.89PECTeQjhhXnNW9yg24DheWOQMgmKk2",
             "type": "CopyNumberChange",
-            "subject":
+            "location":
               {
-                "id": "ga4gh:SL.rXzVqqlchBvUef98MNQA77FvwSJgiOf5",
+                "id": "ga4gh:SL.uNBZoxhjhohl24VlIut-JxPJAGfJ7EQE",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {

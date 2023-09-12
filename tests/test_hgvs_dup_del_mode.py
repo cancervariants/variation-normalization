@@ -17,7 +17,7 @@ def genomic_dup1_lse(genomic_dup1_seq_loc_normalized):
     """Create a test fixture for genomic dup LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.UoHutLvbtPj0zV-EKUw8QRZ4pdCjiEaM",
+        "id": "ga4gh:VA.CHNQRjx52keAGF5WcbvKORtfLiitZKE4",
         "location": genomic_dup1_seq_loc_normalized,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -34,8 +34,8 @@ def genomic_dup1_cx(genomic_dup1_seq_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.Z5VHkdxd6B5HpbnB6domiKfHTzC8FfoR",
-        "subject": genomic_dup1_seq_loc_not_normalized,
+        "id": "ga4gh:CX.7WKEz2E_jwZZdyRc2Gw-_LIbHDJyRXwr",
+        "location": genomic_dup1_seq_loc_not_normalized,
         "copyChange": "efo:0030072",
     }
     return models.CopyNumberChange(**params)
@@ -43,9 +43,9 @@ def genomic_dup1_cx(genomic_dup1_seq_loc_not_normalized):
 
 @pytest.fixture(scope="module")
 def genomic_dup1_free_text_seq_loc_normalized():
-    """Create genomic dup1 free text sequence subject"""
+    """Create genomic dup1 free text sequence location"""
     return {
-        "id": "ga4gh:SL.h68bbn3x0UhHLdkXkiOkJrL13_LA8ksS",
+        "id": "ga4gh:SL.iyddzpD5lYY2Ayv87Np462l6P8QH7rH9",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.tpvbnWsfEGqip8gJQZnWJAF8-bWDUDKd",
@@ -58,9 +58,9 @@ def genomic_dup1_free_text_seq_loc_normalized():
 
 @pytest.fixture(scope="module")
 def genomic_dup1_free_text_seq_loc_not_normalized():
-    """Create genomic dup1 free text sequence subject"""
+    """Create genomic dup1 free text sequence location"""
     return {
-        "id": "ga4gh:SL.noYrnqq1LAvGzNcQrrtsAPWUugIV54UK",
+        "id": "ga4gh:SL.L89XFOyAxF-wdQHXUV8OAAkx80Mltokc",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.tpvbnWsfEGqip8gJQZnWJAF8-bWDUDKd",
@@ -76,7 +76,7 @@ def genomic_dup1_free_text_lse(genomic_dup1_free_text_seq_loc_normalized):
     """Create a test fixture for genomic dup LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.5TFNL5wUwj8WKqkopzNuPE6OOnh8eTQD",
+        "id": "ga4gh:VA.muSdvI3Q126oFLKx3DrVkbzGfQ40kFhx",
         "location": genomic_dup1_free_text_seq_loc_normalized,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -93,8 +93,8 @@ def genomic_dup1_free_text_cn(genomic_dup1_free_text_seq_loc_not_normalized):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.SaqN2AFw0Oi7_G6qjuUNNOTcCWQQyWIT",
-        "subject": genomic_dup1_free_text_seq_loc_not_normalized,
+        "id": "ga4gh:CN.-97yN7Nq98gCVA7s0VslwuNdDVFLW6Af",
+        "location": genomic_dup1_free_text_seq_loc_not_normalized,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -105,7 +105,7 @@ def genomic_dup2_lse(genomic_dup2_seq_loc_normalized):
     """Create a test fixture for genomic dup LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.A0ZAXE3h9z2esBv53qFjhExDJnICbmmv",
+        "id": "ga4gh:VA.u4ffOvroo0SV1X13zWMA41EOdu1QSO9B",
         "location": genomic_dup2_seq_loc_normalized,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -122,8 +122,8 @@ def genomic_dup2_cx(genomic_dup2_seq_loc_normalized):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.I1BjRutTBvL2Cket4WNXYV1JrO8YtKHi",
-        "subject": genomic_dup2_seq_loc_normalized,
+        "id": "ga4gh:CX.g4l6d1hb3Rd1slsYWSe4Z4x3ocKdCB3w",
+        "location": genomic_dup2_seq_loc_normalized,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -133,7 +133,7 @@ def genomic_dup2_cx(genomic_dup2_seq_loc_normalized):
 def seq_loc_gt_100_bp():
     """Create seq loc for positions 33211290, 33211490 on NC_000023.11"""
     return {
-        "id": "ga4gh:SL.p91E9XGuiV1d_gNqd3VIzjWHZ8h5srCN",
+        "id": "ga4gh:SL.HYv7UB8dh8paRuy_Sb3g4sHQaTqJ3m8Q",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -149,7 +149,7 @@ def genomic_dup2_rle2(seq_loc_gt_100_bp):
     """Create a test fixture for genomic dup RSE where bp > 100."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.uCR_pQlztwan9vAmB92fij0sBMS_zKT_",
+        "id": "ga4gh:VA.gOA4L7Juk4KcUZnq4CBOk32-gkuz5keM",
         "location": seq_loc_gt_100_bp,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -162,9 +162,9 @@ def genomic_dup2_rle2(seq_loc_gt_100_bp):
 
 @pytest.fixture(scope="module")
 def genomic_dup2_free_text_seq_loc():
-    """Create genomic dup2 free text sequence subject"""
+    """Create genomic dup2 free text sequence location"""
     return {
-        "id": "ga4gh:SL.qnzDCerc1bcvDSw0Fy_AnbiM6oh-AHv1",
+        "id": "ga4gh:SL.D4MxySRp4-wlbC3whkRZIhcfON2pKKgx",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.1DeZLYHMnd-smp3GDlpRxETb9_0AokO7",
@@ -180,7 +180,7 @@ def genomic_dup2_free_text_default(genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup default and LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA._x_mZotM1i1kV_I3NReOyvHKqW2XqONE",
+        "id": "ga4gh:VA.rEgZI-6A3SdNKhqqNapVYlcF_mzUeUGg",
         "location": genomic_dup2_free_text_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -197,8 +197,8 @@ def genomic_dup2_free_text_cn(genomic_dup2_free_text_seq_loc):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.NMc6p_ZVFwOrVaxTHfuNbf-81ipO19Vx",
-        "subject": genomic_dup2_free_text_seq_loc,
+        "id": "ga4gh:CN.Dg3jMd1lsFKpXiJAPfzrh_50PQM2g1C3",
+        "location": genomic_dup2_free_text_seq_loc,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -209,8 +209,8 @@ def genomic_dup3_cn(genomic_del3_dup3_loc_not_normalized):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.BEAOoq3yyFS_3Mjy7u2d557vfS_EEtuM",
-        "subject": genomic_del3_dup3_loc_not_normalized,
+        "id": "ga4gh:CN.Ka-Wsibx4GHmHgurHCdk0W4deqZt26y4",
+        "location": genomic_del3_dup3_loc_not_normalized,
         "copies": 2,
     }
     return models.CopyNumberCount(**params)
@@ -221,8 +221,8 @@ def genomic_dup3_cx(genomic_del3_dup3_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.cj5gnO_lW3SngpLo3Bv1hxeGO6QzSQb-",
-        "subject": genomic_del3_dup3_loc_not_normalized,
+        "id": "ga4gh:CX.Gq5d-uH01bgf7m703dOSfSp_29wFqpsb",
+        "location": genomic_del3_dup3_loc_not_normalized,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -230,9 +230,9 @@ def genomic_dup3_cx(genomic_del3_dup3_loc_not_normalized):
 
 @pytest.fixture(scope="module")
 def genomic_dup3_free_text_subject():
-    """Create test fixture for genomic dup3 free text subject"""
+    """Create test fixture for genomic dup3 free text location"""
     return {
-        "id": "ga4gh:SL.wRbwoGno4D1UUn3TgZ035-uQNs8bDdCZ",
+        "id": "ga4gh:SL.h-0akgFon48yzCHKVdRwU5ImXRux4huN",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -248,8 +248,8 @@ def genomic_dup3_free_text_cx(genomic_dup3_free_text_subject):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.clSNjdLBtQZDpV08ZxMtQ4h04hAoytiv",
-        "subject": genomic_dup3_free_text_subject,
+        "id": "ga4gh:CX.aJYe9oIrxrwI0VTkEnvC0fKIT5x-vIne",
+        "location": genomic_dup3_free_text_subject,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -260,8 +260,8 @@ def genomic_dup3_free_text_cn(genomic_dup3_free_text_subject):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.hLrPKmLiNEuJ0miEtum3VPB5ZADG_RZV",
-        "subject": genomic_dup3_free_text_subject,
+        "id": "ga4gh:CN.KXh3T716GG9uGwq9ejGmflT_67fNN8n3",
+        "location": genomic_dup3_free_text_subject,
         "copies": 4,
     }
     return models.CopyNumberCount(**params)
@@ -272,8 +272,8 @@ def genomic_dup4_cx(genomic_dup4_loc):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.XEznGLw-iNVBblikFAA-L-LzdwIa3YRs",
-        "subject": genomic_dup4_loc,
+        "id": "ga4gh:CX.4JLs2ICAAvj5JgG0xHJk1voSKLb8gNQ9",
+        "location": genomic_dup4_loc,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -284,8 +284,8 @@ def genomic_dup4_cn(genomic_dup4_loc):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.IGupUKw7D4ErAXoMIL9gcuE-aIhqGHCn",
-        "subject": genomic_dup4_loc,
+        "id": "ga4gh:CN.KqbQewUgZYfmottbgn1xYq58DiPVU5SZ",
+        "location": genomic_dup4_loc,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -293,9 +293,9 @@ def genomic_dup4_cn(genomic_dup4_loc):
 
 @pytest.fixture(scope="module")
 def genomic_dup4_free_text_subject():
-    """Create test fixture for genomic dup4 free text subject"""
+    """Create test fixture for genomic dup4 free text location"""
     return {
-        "id": "ga4gh:SL.hDYji0Vn2YnXHZJjwtWyBR2_fDGCiXse",
+        "id": "ga4gh:SL.SIeDb2iPT5pM-1SDKM9ew8NjzZAgF8nb",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
@@ -311,8 +311,8 @@ def genomic_dup4_free_text_cx(genomic_dup4_free_text_subject):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.3M0s5TXmhMP4EbbxWeSu3hqkGnnHjzba",
-        "subject": genomic_dup4_free_text_subject,
+        "id": "ga4gh:CX.A7iAltzEFjlPJPCBfdMwjsis-vt51o3L",
+        "location": genomic_dup4_free_text_subject,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -323,8 +323,8 @@ def genomic_dup4_free_text_cn(genomic_dup4_free_text_subject):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.zhEUbctB-UFy0dbxzdYITbBDjEZrlhuY",
-        "subject": genomic_dup4_free_text_subject,
+        "id": "ga4gh:CN.hnSfHkympkuTJQlfJHjHUqvUMU-EM2_Z",
+        "location": genomic_dup4_free_text_subject,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -335,8 +335,8 @@ def genomic_dup5_cx(genomic_dup5_loc):
     """Create a test fixture for genomic dup5 copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.zXjD1QpYmm8UbnXssfqOw-_jJRbSaKuc",
-        "subject": genomic_dup5_loc,
+        "id": "ga4gh:CX.6KvwSUu1Vp3FcC2VzbZxqpLAouOMCPi9",
+        "location": genomic_dup5_loc,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -347,8 +347,8 @@ def genomic_dup5_cn(genomic_dup5_loc):
     """Create a test fixture for genomic dup5 copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.f18sKPQThJa_09By9thg6-ryL4_cjSl1",
-        "subject": genomic_dup5_loc,
+        "id": "ga4gh:CN.nlDhmSyOYeLZ8Fv2_F0niIraPbHUvpOU",
+        "location": genomic_dup5_loc,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -359,8 +359,8 @@ def genomic_dup6_cx(genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.gXfK27ypU7sWdW1BsLwE2LjBYssiNn6O",
-        "subject": genomic_dup6_loc,
+        "id": "ga4gh:CX.yMUFkF1QBwq3mA2tUS8wTLH3--dEHJJD",
+        "location": genomic_dup6_loc,
         "copyChange": "efo:0030070",
     }
     return models.CopyNumberChange(**params)
@@ -371,8 +371,8 @@ def genomic_dup6_cn(genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.6tOzN9-2xi301VUy0Rf_X7UzhS5rx5VS",
-        "subject": genomic_dup6_loc,
+        "id": "ga4gh:CN.KSFn5KQIPuPVJ6FjWaF0vzl7eRwwHbX9",
+        "location": genomic_dup6_loc,
         "copies": 2,
     }
     return models.CopyNumberCount(**params)
@@ -383,7 +383,7 @@ def genomic_del1_lse(genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.5nh4ErMaI1FPhhoqFD60G8aa4pFEk6Ua",
+        "id": "ga4gh:VA.gztc0BFS6p5V1_QVnEYIJ6DwzZQeDCd2",
         "location": genomic_del1_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -400,8 +400,8 @@ def genomic_del1_cx(genomic_del1_seq_loc):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.yG6nbQytOHuPMn3Jx8Av2bJBK3qvjhNF",
-        "subject": genomic_del1_seq_loc,
+        "id": "ga4gh:CX.LWRBNtBgcETMXEKezrr7WUPjO9WoOaqL",
+        "location": genomic_del1_seq_loc,
         "copyChange": "efo:0030064",
     }
     return models.CopyNumberChange(**params)
@@ -412,7 +412,7 @@ def genomic_del1_rle(genomic_del1_seq_loc):
     """Create a test fixture for genomic del RSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.Ir2WTSomFSE0nahdr5AsMlwK3N3QtSHz",
+        "id": "ga4gh:VA.Kg0FrJBjKRtIDsIKO0LxAwOPiXIOowoc",
         "location": genomic_del1_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -425,9 +425,9 @@ def genomic_del1_rle(genomic_del1_seq_loc):
 
 @pytest.fixture(scope="module")
 def genomic_del1_free_text_seq_loc():
-    """Create genomic del1 free text sequence subject"""
+    """Create genomic del1 free text sequence location"""
     return {
-        "id": "ga4gh:SL.8KMhv5LuHn9e6C1pFsl1lwE3aOQeREOZ",
+        "id": "ga4gh:SL.072FoTQ7ZWLfOOOdyTI3Vj5pc2qwDii6",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
@@ -443,7 +443,7 @@ def genomic_del1_free_text_lse(genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.dXIUfdcSslNd4QiOlJKTf_0g-M3Dh4MV",
+        "id": "ga4gh:VA.8xbobLhnVeBLQ6ANUur7BcPNdXrLsSja",
         "location": genomic_del1_free_text_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -460,8 +460,8 @@ def genomic_del1_free_text_cn(genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.o7k0zjAqExGVzyOFzAwdru5EkNJonFl6",
-        "subject": genomic_del1_free_text_seq_loc,
+        "id": "ga4gh:CN.OakJW5ITpO4m1ffP4tGoBK72_IIqEBM6",
+        "location": genomic_del1_free_text_seq_loc,
         "copies": 1,
     }
     return models.CopyNumberCount(**params)
@@ -472,7 +472,7 @@ def genomic_del1_free_text_rle(genomic_del1_free_text_seq_loc):
     """Create a test fixture for genomic del RSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.e6PBLpkbLra08q8bs0Y8NTXTT0WsEVuj",
+        "id": "ga4gh:VA.XZMMF_xhn76bLMxN5RnewNgrXkYuK-ni",
         "location": genomic_del1_free_text_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -488,7 +488,7 @@ def genomic_del2_lse(genomic_del2_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.9P3LU5sMg5oQgIop5k0aeiV_og2AtfDW",
+        "id": "ga4gh:VA.9NmH0sRYerurt-CE6WlF9UaxZiujByIE",
         "location": genomic_del2_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -505,7 +505,7 @@ def genomic_del2_lse2(seq_loc_gt_100_bp):
     """Create a test fixture for genomic del LSE where bp > 100."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.ehWlZxL1HlTeIw0nCJSpSGqdVHjRAX44",
+        "id": "ga4gh:VA.1_cveYe6e74MEUt8EdTQmEtW5t6nA5bU",
         "location": seq_loc_gt_100_bp,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -522,8 +522,8 @@ def genomic_del2_cx(genomic_del2_seq_loc):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.A0acCofaMsLRaOiy0W-2fX-nf9LUEo4V",
-        "subject": genomic_del2_seq_loc,
+        "id": "ga4gh:CX.xOZeCpcgWTj-xTYJdIeXbRy8h48qfbQ5",
+        "location": genomic_del2_seq_loc,
         "copyChange": "efo:0030069",
     }
     return models.CopyNumberChange(**params)
@@ -534,7 +534,7 @@ def genomic_del2_rle(genomic_del2_seq_loc):
     """Create a test fixture for genomic del RSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.-mXHOcEV1zArs-ijv6HPfYUb-Iet-NyA",
+        "id": "ga4gh:VA.J6hHiLw-qq27H8CZ8aQRdJwBGHqd3BvB",
         "location": genomic_del2_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -547,9 +547,9 @@ def genomic_del2_rle(genomic_del2_seq_loc):
 
 @pytest.fixture(scope="module")
 def genomic_del2_free_text_seq_loc():
-    """Create genomic del2 free text sequence subject"""
+    """Create genomic del2 free text sequence location"""
     return {
-        "id": "ga4gh:SL.9n1lQXUCLkoWVWbdldiyuKZdqZ0jHYAG",
+        "id": "ga4gh:SL.b06yJ2UPwSSo-4bmYE8ZqHkDfo6_KZuu",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
@@ -565,7 +565,7 @@ def genomic_del2_free_text_default(genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del default and LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.3Kb6sptw53XJrHyw5DffBDe3o9X2yBu0",
+        "id": "ga4gh:VA.ZmmZ_3it-b0nl8pdxaIG5ROYwTYhhRfk",
         "location": genomic_del2_free_text_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -582,8 +582,8 @@ def genomic_del2_free_text_cnv(genomic_del2_free_text_seq_loc):
     """Create a test fixture for genomic del CNV."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Mk1TBtMUlaC7I8RGtSO49JZnNv5aILS3",
-        "subject": genomic_del2_free_text_seq_loc,
+        "id": "ga4gh:CN.DdDmUshRGGSxugHHqGI8agdffFmvwjFm",
+        "location": genomic_del2_free_text_seq_loc,
         "copies": 1,
     }
     return models.CopyNumberCount(**params)
@@ -594,8 +594,8 @@ def genomic_del3_cx(genomic_del3_dup3_loc_not_normalized):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.I3Ro_Oz7oGwth9pAns5PVx4SxtbC69BL",
-        "subject": genomic_del3_dup3_loc_not_normalized,
+        "id": "ga4gh:CX.h9krodUtVK--XmizkspBdOrptRNqrDHm",
+        "location": genomic_del3_dup3_loc_not_normalized,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -606,8 +606,8 @@ def genomic_del3_cn(genomic_del3_dup3_loc_not_normalized):
     """Create a test fixture for genomic del copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.BEAOoq3yyFS_3Mjy7u2d557vfS_EEtuM",
-        "subject": genomic_del3_dup3_loc_not_normalized,
+        "id": "ga4gh:CN.Ka-Wsibx4GHmHgurHCdk0W4deqZt26y4",
+        "location": genomic_del3_dup3_loc_not_normalized,
         "copies": 2,
     }
     return models.CopyNumberCount(**params)
@@ -615,9 +615,9 @@ def genomic_del3_cn(genomic_del3_dup3_loc_not_normalized):
 
 @pytest.fixture(scope="module")
 def genomic_del3_free_text_subject():
-    """Create test fixture for genomic del3 free text subject"""
+    """Create test fixture for genomic del3 free text location"""
     return {
-        "id": "ga4gh:SL.M6RRwILUDEe6oDBzhY4z5Og-yAY62uGh",
+        "id": "ga4gh:SL.HMjpquCLV9iYib972N0_3tn9TvnevIga",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -633,8 +633,8 @@ def genomic_del3_free_text_cx(genomic_del3_free_text_subject):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.hiCi6COOygCrsi12jqWal3prGS_iC8gg",
-        "subject": genomic_del3_free_text_subject,
+        "id": "ga4gh:CX.qHYL7nZaKXl-h9D7d4JvEmXDZtfV9M2A",
+        "location": genomic_del3_free_text_subject,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -645,8 +645,8 @@ def genomic_del3_free_text_cn(genomic_del3_free_text_subject):
     """Create a test fixture for genomic del copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.kpcgcJPvhMJ3e9nRDuxbyQ0YsOUV6JRs",
-        "subject": genomic_del3_free_text_subject,
+        "id": "ga4gh:CN.ESfNw8Y3Vil7UpRiV2UY-zfMoZNRchA3",
+        "location": genomic_del3_free_text_subject,
         "copies": 2,
     }
     return models.CopyNumberCount(**params)
@@ -657,8 +657,8 @@ def genomic_del4_cx(genomic_del4_seq_loc):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.4gr9Ar1_evzZ6Q1f51oP7DkGM0LfxqGS",
-        "subject": genomic_del4_seq_loc,
+        "id": "ga4gh:CX.1DiUzraiKZLJb8oF8ynARS816fthsJpV",
+        "location": genomic_del4_seq_loc,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -669,8 +669,8 @@ def genomic_del4_cn(genomic_del4_seq_loc):
     """Create a test fixture for genomic del copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.NhrYgCAgysT7uLe-FD-m-SwAdSukfHpJ",
-        "subject": genomic_del4_seq_loc,
+        "id": "ga4gh:CN.6RKML7P4zTx1U8EpJ1q7L23OXDEKFihS",
+        "location": genomic_del4_seq_loc,
         "copies": 1,
     }
     return models.CopyNumberCount(**params)
@@ -678,9 +678,9 @@ def genomic_del4_cn(genomic_del4_seq_loc):
 
 @pytest.fixture(scope="module")
 def genomic_del4_free_text_subject():
-    """Create test fixture for genomic del4 free text subject"""
+    """Create test fixture for genomic del4 free text location"""
     return {
-        "id": "ga4gh:SL.xW3sorzm_rw7ITEKMNUKwPS8AVozhbIc",
+        "id": "ga4gh:SL.ebOW5blAtyPPVH512rIYi6cGsyKI2990",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
@@ -696,8 +696,8 @@ def genomic_del4_free_text_cx(genomic_del4_free_text_subject):
     """Create a test fixture for genomic del copy number change."""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.gmAtSrWk72sI8kYjSQ8zyrTI65XWiUVN",
-        "subject": genomic_del4_free_text_subject,
+        "id": "ga4gh:CX.iI0rwBfPht6XCBhYPsfWUUbTwDIRycFi",
+        "location": genomic_del4_free_text_subject,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -708,8 +708,8 @@ def genomic_del4_free_text_cn(genomic_del4_free_text_subject):
     """Create a test fixture for genomic del copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.PV9lNXZQCu4rraNeBpj5_T6Qn8_Tw_uQ",
-        "subject": genomic_del4_free_text_subject,
+        "id": "ga4gh:CN.ps-GD4HSeJZjxnS1dhQrn4ntJFaA97a3",
+        "location": genomic_del4_free_text_subject,
         "copies": 1,
     }
     return models.CopyNumberCount(**params)
@@ -719,9 +719,9 @@ def genomic_del4_free_text_cn(genomic_del4_free_text_subject):
 def genomic_uncertain_del_2():
     """Create a genomic uncertain deletion on chr 2 test fixture."""
     params = {
-        "id": "ga4gh:CX.PO3tGwlnIdb-mdAX-BGmzFAcSxO4FnoC",
-        "subject": {
-            "id": "ga4gh:SL.szN7VMzs18-pma_-lMZIk7IOB12qiG0z",
+        "id": "ga4gh:CX.q3OPPp2fWM5uM60RNHY_jDThCyxV3URW",
+        "location": {
+            "id": "ga4gh:SL.aRKiRW6-lS9CCLfcPJpQIGihZqoIOCZ_",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.pnAqCRBrTsUoBghSD1yp_jXWSmlbdh4g",
@@ -740,9 +740,9 @@ def genomic_uncertain_del_2():
 def genomic_uncertain_del_y():
     """Create a genomic uncertain deletion on chr Y test fixture."""
     params = {
-        "id": "ga4gh:CX.LaFZ_a7i5PgsJB8ZBTnKMjUykmK0k6jP",
-        "subject": {
-            "id": "ga4gh:SL.A6RWqfqz_2kTq5d9s0hpr_9dNMSPT6z1",
+        "id": "ga4gh:CX.vR12PHS1zCnoYUi9CSX3ZwhGG38xa-RA",
+        "location": {
+            "id": "ga4gh:SL.N44ez-5301ZoNdLoiblcUvm__BS4-4Jv",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -762,8 +762,8 @@ def genomic_del5_cn_var(genomic_del5_seq_loc):
     """Create genomic del5 copy number count"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.-64pIZtfB7lzEhRQvVX-Yf7hx6nyCzqQ",
-        "subject": genomic_del5_seq_loc,
+        "id": "ga4gh:CN.B2qGS47pqvyvBjFRQEj3MjdsqfXpnhhC",
+        "location": genomic_del5_seq_loc,
         "copies": 3,
     }
     return models.CopyNumberCount(**params)
@@ -774,8 +774,8 @@ def genomic_del5_cx_var(genomic_del5_seq_loc):
     """Create genomic del5 copy number change"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.7Svg1kQlWMnDsk9YkHYg1dcAKfUnJmvS",
-        "subject": genomic_del5_seq_loc,
+        "id": "ga4gh:CX.oUhToHxDGpH5NkuFaQmKTmbijF9z_Esb",
+        "location": genomic_del5_seq_loc,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -786,8 +786,8 @@ def genomic_del6_cx_var(genomic_del6_seq_loc):
     """Create genomic del6 copy number change"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.UCbvOoQSmGunhteDWysWYXI8BNSEOC8Z",
-        "subject": genomic_del6_seq_loc,
+        "id": "ga4gh:CX.gmwszbknrMmklvVuu2yOqu5nOKV_fp72",
+        "location": genomic_del6_seq_loc,
         "copyChange": "efo:0030067",
     }
     return models.CopyNumberChange(**params)
@@ -798,8 +798,8 @@ def genomic_del6_cn_var(genomic_del6_seq_loc):
     """Create genomic del6 copy number count"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.UoYMn-iOOJRz5OF1IdS1fJDhlHhAH-oR",
-        "subject": genomic_del6_seq_loc,
+        "id": "ga4gh:CN.CZEc44pX7Dh9yJARvvz6EW9oQvgkbwYf",
+        "location": genomic_del6_seq_loc,
         "copies": 1,
     }
     return models.CopyNumberCount(**params)
@@ -844,7 +844,7 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030072,
+        copy_change=models.CopyChange.EFO_0030072,
     )
     assertion_checks(resp, genomic_dup1_cx)
 
@@ -863,7 +863,7 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030072,
+        copy_change=models.CopyChange.EFO_0030072,
     )
     assertion_checks(resp, genomic_dup1_cx)
 
@@ -987,7 +987,7 @@ async def test_genomic_dup3(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030070,
+        copy_change=models.CopyChange.EFO_0030070,
     )
     assertion_checks(resp, genomic_dup3_cx)
 
@@ -1245,7 +1245,7 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030064,
+        copy_change=models.CopyChange.EFO_0030064,
     )
     assertion_checks(resp, genomic_del1_cx)
 
@@ -1264,7 +1264,7 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030064,
+        copy_change=models.CopyChange.EFO_0030064,
     )
     assertion_checks(resp, genomic_del1_cx)
 
@@ -1317,7 +1317,7 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
     )
     assertion_checks(resp, genomic_del2_cx)
 
@@ -1336,7 +1336,7 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.efo_0030069,
+        copy_change=models.CopyChange.EFO_0030069,
     )
     assertion_checks(resp, genomic_del2_cx)
 
