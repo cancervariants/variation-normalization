@@ -20,7 +20,7 @@ black = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
-"ga4gh.vrs" = {version = "~=2.0.0.dev0", extras = ["extras"]}
+"ga4gh.vrs" = {version = "~=2.0.0.dev1", extras = ["extras"]}
 gene-normalizer = "~=0.3.0.dev0"
 boto3 = "*"
 cool-seq-tool = "~=0.2.0.dev0"
