@@ -631,7 +631,7 @@ class ToCopyNumberVariation(ToVRS):
     ) -> AmplificationToCxVarService:
         """Return Copy Number Change Variation for Amplification query
         Parameter priority:
-            1. sequence, start, end (must provide ALL)
+            1. sequence_id, start, end (must provide ALL)
             2. use the gene-normalizer to get the SequenceLocation
 
         :param gene: Gene query
