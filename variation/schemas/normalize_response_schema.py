@@ -1,11 +1,12 @@
 """Module for normalize endpoint response schema."""
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type
+from typing import List, Literal, Optional, Union
 
-from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
-from pydantic import BaseModel, root_validator
-from pydantic.types import StrictStr
+from ga4gh.vrs import models
+from pydantic import BaseModel, ConfigDict, StrictStr, model_validator
+
+from variation.version import __version__
 
 
 class HGVSDupDelModeOption(str, Enum):
@@ -16,193 +17,107 @@ class HGVSDupDelModeOption(str, Enum):
     DEFAULT = "default"
     COPY_NUMBER_COUNT = "copy_number_count"
     COPY_NUMBER_CHANGE = "copy_number_change"
-    REPEATED_SEQ_EXPR = "repeated_seq_expr"  # VRS Allele
-    LITERAL_SEQ_EXPR = "literal_seq_expr"  # VRS Allele
+    ALLELE = "allele"
 
 
 class ServiceMeta(BaseModel):
     """Metadata regarding the variation-normalization service."""
 
-    name = "variation-normalizer"
+    name: Literal["variation-normalizer"] = "variation-normalizer"
     version: StrictStr
     response_datetime: datetime
-    url = "https://github.com/cancervariants/variation-normalization"
+    url: Literal[
+        "https://github.com/cancervariants/variation-normalization"
+    ] = "https://github.com/cancervariants/variation-normalization"
 
-    class Config:
-        """Configure schema example."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ServiceMeta"]) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "name": "variation-normalizer",
-                "version": "0.1.0",
+                "version": __version__,
                 "response_datetime": "2021-04-05T16:44:15.367831",
                 "url": "https://github.com/cancervariants/variation-normalization",
             }
+        }
+    )
 
 
 class ServiceResponse(BaseModel):
     """Base response model for services"""
 
-    warnings: Optional[List[StrictStr]] = []
+    warnings: List[StrictStr] = []
     service_meta_: ServiceMeta
 
-    @root_validator(pre=False)
-    def unique_warnings(cls, values):
+    @model_validator(mode="after")
+    def unique_warnings(cls, v):
         """Ensure unique warnings"""
-        values["warnings"] = list(set(values["warnings"]))
-        return values
+        v.warnings = list(set(v.warnings))
+        return v
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "warnings": [],
+                "service_meta_": {
+                    "name": "variation-normalizer",
+                    "version": __version__,
+                    "response_datetime": "2021-04-05T16:44:15.367831",
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
+            }
+        }
+    )
 
 
 class NormalizeService(ServiceResponse):
-    """A response to normalizing a variation to a single GA4GH Value Object
-    Descriptor.
-    """
+    """A response to normalizing a variation to a single GA4GH VRS Variation"""
 
     variation_query: StrictStr
-    variation_descriptor: Optional[VariationDescriptor]
+    variation: Optional[
+        Union[models.Allele, models.CopyNumberCount, models.CopyNumberChange]
+    ] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["NormalizeService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation_query": "BRAF V600E",
-                "variation_descriptor": {
-                    "id": "normalize.variation:BRAF%20V600E",
-                    "label": "BRAF V600E",
-                    "type": "VariationDescriptor",
-                    "variation": {
-                        "id": "ga4gh:VA.h313H4CQh6pogbbSJ3H5pI1cPoh9YMm_",
-                        "location": {
-                            "id": "ga4gh:SL.xfBTztcmMstx8jrrdgPiE_BUoLHLFMMS",
-                            "end": {"value": 600, "type": "Number"},
-                            "start": {"value": 599, "type": "Number"},
-                            "sequence_id": "ga4gh:SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
-                            "type": "SequenceLocation",
+                "variation": {
+                    "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
+                    "location": {
+                        "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
+                        "end": 600,
+                        "start": 599,
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
                         },
-                        "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
-                        "type": "Allele",
+                        "type": "SequenceLocation",
                     },
-                    "molecule_context": "protein",
-                    "vrs_ref_allele_seq": "V",
-                    "gene_context": {
-                        "id": "normalize.gene:BRAF",
-                        "type": "GeneDescriptor",
-                        "label": "BRAF",
-                        "gene_id": "hgnc:1097",
-                        "xrefs": ["ncbigene:673", "ensembl:ENSG00000157764"],
-                        "alternate_labels": [
-                            "BRAF1",
-                            "RAFB1",
-                            "B-raf",
-                            "B-RAF1",
-                            "NS7",
-                            "BRAF-1",
-                        ],
-                        "extensions": [
-                            {
-                                "type": "Extension",
-                                "name": "symbol_status",
-                                "value": "approved",
-                            },
-                            {
-                                "type": "Extension",
-                                "name": "approved_name",
-                                "value": "B-Raf proto-oncogene, serine/threonine kinase",  # noqa: E501
-                            },
-                            {
-                                "type": "Extension",
-                                "name": "associated_with",
-                                "value": [
-                                    "ucsc:uc003vwc.5",
-                                    "pubmed:1565476",
-                                    "omim:164757",
-                                    "vega:OTTHUMG00000157457",
-                                    "ccds:CCDS5863",
-                                    "iuphar:1943",
-                                    "ccds:CCDS87555",
-                                    "orphanet:119066",
-                                    "refseq:NM_004333",
-                                    "ena.embl:M95712",
-                                    "pubmed:2284096",
-                                    "uniprot:P15056",
-                                    "cosmic:BRAF",
-                                ],
-                            },
-                            {
-                                "name": "chromosome_location",
-                                "value": {
-                                    "id": "ga4gh:CL.ZZZYpOwuW1BLLJXc_Dm4eVZ5E0smVYCc",
-                                    "type": "ChromosomeLocation",
-                                    "species_id": "taxonomy:9606",
-                                    "chr": "7",
-                                    "end": "q34",
-                                    "start": "q34",
-                                },
-                                "type": "Extension",
-                            },
-                            {
-                                "type": "Extension",
-                                "name": "hgnc_locus_type",
-                                "value": "gene with protein product",
-                            },
-                            {
-                                "type": "Extension",
-                                "name": "ncbi_gene_type",
-                                "value": "protein-coding",
-                            },
-                            {
-                                "type": "Extension",
-                                "name": "ensembl_biotype",
-                                "value": "protein_coding",
-                            },
-                        ],
-                    },
+                    "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
+                    "type": "Allele",
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.17",
+                    "version": __version__,
                     "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class TranslateIdentifierService(ServiceResponse):
     """A response to translating identifiers."""
 
     identifier_query: StrictStr
-    aliases: List[StrictStr]
+    aliases: List[StrictStr] = []
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateIdentifierService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "identifier_query": "NP_004324.2",
-                "warnings": None,
+                "warnings": [],
                 "aliases": [
                     "Ensembl:ENSP00000288602.6",
                     "ensembl:ENSP00000288602.6",
@@ -219,8 +134,10 @@ class TranslateIdentifierService(ServiceResponse):
                 ],
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.14",
+                    "version": __version__,
                     "response_datetime": "2021-11-18T14:10:53.909158",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

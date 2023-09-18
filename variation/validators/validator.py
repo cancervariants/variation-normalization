@@ -185,8 +185,8 @@ class Validator(ABC):
             ensembl_resp = resp.source_matches[0]
             if ensembl_resp.records[0].locations:
                 ensembl_loc = ensembl_resp.records[0].locations[0]
-                gene_start_end["start"] = ensembl_loc.start.value
-                gene_start_end["end"] = ensembl_loc.end.value - 1
+                gene_start_end["start"] = ensembl_loc.start
+                gene_start_end["end"] = ensembl_loc.end - 1
 
         if gene_start_end["start"] is None and gene_start_end["end"] is None:
             return f"gene-normalizer unable to find Ensembl location for gene: {gene}"

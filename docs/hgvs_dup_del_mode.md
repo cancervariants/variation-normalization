@@ -1,7 +1,7 @@
 # HGVS Dup Del Mode
 
 This mode helps us interpret deletions and duplications that are represented as HGVS expressions.\
-The mode can be set to `default`, `copy_number_count`, `copy_number_change`, `repeated_seq_expr`, or `literal_seq_expr`.
+The mode can be set to `default`, `copy_number_count`, `copy_number_change`, or `allele`
 
 
 ## Default Characteristics
@@ -13,10 +13,8 @@ The mode can be set to `default`, `copy_number_count`, `copy_number_change`, `re
 - elif baseline_copies is provided:
     - copy_number_count
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del
-- elif len dup > 100bp: (use outermost coordinates)
-    - repeated_seq_expr with a derived_seq_expr subject (Allele)
-- else:
-    - literal_seq_expr (normalized LiteralSequenceExpression Allele)
+  else:
+    - allele
 
 # Notes
 

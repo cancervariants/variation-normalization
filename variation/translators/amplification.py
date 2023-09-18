@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
@@ -33,7 +32,7 @@ class Amplification(Translator):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
@@ -55,11 +54,11 @@ class Amplification(Translator):
 
         if priority_seq_loc:
             vrs_cx = models.CopyNumberChange(
-                subject=models.SequenceLocation(**priority_seq_loc),
-                copy_change=CopyChange.HIGH_LEVEL_GAIN.value,
+                location=models.SequenceLocation(**priority_seq_loc),
+                copyChange=models.CopyChange.EFO_0030072,
             )
             vrs_cx.id = ga4gh_identify(vrs_cx)
-            vrs_cx = vrs_cx.as_dict()
+            vrs_cx = vrs_cx.model_dump(exclude_none=True)
         else:
             vrs_cx = None
             warnings.append(

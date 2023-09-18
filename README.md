@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5894937.svg)](https://doi.org/10.5281/zenodo.5894937)
 
-Services and guidelines for normalizing variation terms into [VRS](https://vrs.ga4gh.org/en/latest) and [VRSATILE](https://vrsatile.readthedocs.io/en/latest/) compatible representations.
+Services and guidelines for normalizing variation terms to [VRS](https://vrs.ga4gh.org/en/latest) compatible representations.
 
 Public OpenAPI endpoint: <https://normalize.cancervariants.org/variation>
 
@@ -12,12 +12,12 @@ Installing with pip:
 pip install variation-normalizer
 ```
 
-The variation-normalization repo depends on VRS and VRSATILE models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS and VRSATILE. The correspondences between packages may be summarized as:
+The variation-normalization repo depends on VRS models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS. The correspondences between packages may be summarized as:
 
-| variation-normalization branch | variation-normalizer version | gene-normalizer version | ga4gh.vrsatile.pydantic version | VRS version | VRSATILE version |
-| ---- | --- | ---- | --- | --- | --- |
-| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | 0.0.X | [1.X.X](https://github.com/ga4gh/vrs) | [main](https://github.com/ga4gh/vrsatile/tree/main)
-| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.7.X | 0.2.X | 0.1.X | [metaschema-update](https://github.com/ga4gh/vrs/tree/metaschema-update) | [metaschema-update](https://github.com/ga4gh/vrsatile/tree/metaschema-update)
+| variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
+| ---- | --- | ---- | --- |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
+| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.8.X | 0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
 
 ## About
 
@@ -44,7 +44,7 @@ Returns a list of validated VRS [Variations](https://vrs.ga4gh.org/en/stable/ter
 
 #### `/normalize`
 
-Feturns a [Variation Descriptor](https://vrsatile.readthedocs.io/en/latest/value_object_descriptor/vod_index.html#variation-descriptor) aligned to the prioritized transcript. The Variation Normalizer relies on [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) for retrieving the prioritized transcript data. More information on the transcript selection algorithm can be found [here](https://github.com/GenomicMedLab/cool-seq-tool/blob/main/docs/TranscriptSelectionPriority.md).
+Returns a VRS Variation aligned to the prioritized transcript. The Variation Normalizer relies on [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) for retrieving the prioritized transcript data. More information on the transcript selection algorithm can be found [here](https://github.com/GenomicMedLab/cool-seq-tool/blob/main/docs/TranscriptSelectionPriority.md).
 
 If a genomic variation query _is_ given a gene (E.g. `BRAF g.140753336A>T`), the associated cDNA representation will be returned. This is because the gene provides additional strand context. If a genomic variation query is _not_ given a gene, the GRCh38 representation will be returned.
 

@@ -5,41 +5,21 @@ from typing import Dict, List, Literal, Optional, Tuple, Union
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
 from cool_seq_tool.data_sources import SeqRepoAccess
-from ga4gh.core import ga4gh_identify
-from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import Text
-from ga4gh.vrsatile.pydantic.vrsatile_models import GeneDescriptor, VariationDescriptor
+from gene.schemas import GeneDescriptor
 
 from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
 
 
-def no_variation_resp(
-    label: str, _id: str, warnings: List, untranslatable_returns_text: bool = False
-) -> Tuple[Optional[VariationDescriptor], List]:
-    """Return Variation Descriptor with variation set as Text or return `None` for
-    queries that could not be normalized
+def update_warnings_for_no_resp(label: str, warnings: List[str]) -> None:
+    """Mutate `warnings` when unable to return a response
 
-    :param str label: Initial input query
-    :param str _id: _id field for variation descriptor
-    :param List warnings: List of warnings
-    :param bool untranslatable_returns_text: `True` return VRS Text Object when
-        unable to translate or normalize query. `False` return `None` when
-        unable to translate or normalize query.
-    :return: Variation descriptor or `None`, warnings
+    :param label: Initial input query
+    :param warnings: List of warnings to mutate
     """
-    if untranslatable_returns_text:
-        text = models.Text(definition=label, type="Text")
-        text.id = ga4gh_identify(text)
-        variation = Text(**text.as_dict())
-        resp = VariationDescriptor(id=_id, label=label, variation=variation)
-    else:
-        resp = None
-
     if not warnings:
         warnings.append(f"Unable to translate {label}")
-    return resp, warnings
 
 
 def _get_priority_sequence_location(
@@ -59,7 +39,7 @@ def _get_priority_sequence_location(
         if len(locs) > 1:
             loc38, loc37 = None, None
             for loc in locs:
-                seq_id = loc["sequence_id"]
+                seq_id = f"ga4gh:{loc['sequenceReference']['refgetAccession']}"
                 aliases, _ = seqrepo_access.translate_identifier(seq_id)
                 if aliases:
                     grch_aliases = [
@@ -78,8 +58,7 @@ def _get_priority_sequence_location(
         if location:
             # DynamoDB stores as Decimal, so need to convert to int
             for k in {"start", "end"}:
-                if location[k]["type"] == "Number":
-                    location[k]["value"] = int(location[k]["value"])
+                location[k] = int(location[k])
     return location
 
 
@@ -202,3 +181,26 @@ def get_assembly(
         warning = f"Unable to get GRCh37/GRCh38 assembly for: {alt_ac}"
 
     return assembly, warning
+
+
+def get_refget_accession(
+    seqrepo_access: SeqRepoAccess, alias: str, errors: List[str]
+) -> Optional[str]:
+    """Get refget accession for a given alias
+
+    :param seqrepo_access: Access to SeqRepo client
+    :param alias: Alias to translate
+    :param errors: List of errors. This will get mutated if an error occurs.
+    :return: RefGet Accession if successful, else `None`
+    """
+    refget_accession = None
+    try:
+        ids = seqrepo_access.translate_sequence_identifier(alias, "ga4gh")
+    except KeyError as e:
+        errors.append(str(e))
+    else:
+        if not ids:
+            errors.append(f"Unable to find ga4gh sequence identifiers for: {alias}")
+
+        refget_accession = ids[0].split("ga4gh:")[-1]
+    return refget_accession

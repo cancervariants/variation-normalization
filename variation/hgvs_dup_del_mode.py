@@ -1,10 +1,9 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 from cool_seq_tool.data_sources import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
@@ -31,11 +30,11 @@ class HGVSDupDelMode:
             AltType.DUPLICATION,
             AltType.DUPLICATION_AMBIGUOUS,
         ],
-        pos: Tuple[int, int],
         location: Dict,
         vrs_seq_loc_ac: str,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
+        alt: Optional[str] = None,
     ) -> Optional[Dict]:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous - copy_number_change
@@ -43,18 +42,15 @@ class HGVSDupDelMode:
                 copy_change - `efo:0030067` (loss) if del, `efo:0030070` (gain) if dup
         elif baseline_copies provided: copy_number_count
             copies are baseline + 1 for dup, baseline - 1 for del
-        elif len dup > 100bp (use outermost coordinates)
-            repeated_seq_expr with a derived_seq_expr subject (Allele)
-        else:
-            literal_seq_expr (normalized LiteralSequenceExpression Allele)
+        else
+            allele
 
         :param alt_type: The type of alteration
-        :param pos: start_pos, end_pos
         :param location: Sequence Location object
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param baseline_copies: Baseline copies for Copy Number Count variation
-        :param Optional[CopyChange] copy_change: copy change
-            for Copy Number Change Variation
+        :param copy_change: copy change for Copy Number Change Variation
+        :param alt: Alteration
         :return: VRS Variation object represented as a dict
         """
         variation = None
@@ -62,10 +58,8 @@ class HGVSDupDelMode:
             variation = self.copy_number_change_mode(alt_type, location, copy_change)
         elif baseline_copies:
             variation = self.copy_number_count_mode(alt_type, location, baseline_copies)
-        elif (alt_type not in DELS) and pos and (pos[1] - pos[0] > 100):
-            variation = self.repeated_seq_expr_mode(alt_type, location)
         else:
-            variation = self.literal_seq_expr_mode(location, alt_type, vrs_seq_loc_ac)
+            variation = self.allele_mode(location, alt_type, vrs_seq_loc_ac, alt)
         return variation
 
     def copy_number_count_mode(
@@ -78,7 +72,7 @@ class HGVSDupDelMode:
         ],
         location: Dict,
         baseline_copies: int,
-    ) -> Optional[Dict]:
+    ) -> Dict:
         """Return a VRS Copy Number Variation.
 
         :param alt_type: The type of alteration
@@ -86,18 +80,12 @@ class HGVSDupDelMode:
         :param baseline_copies: Baseline copies number
         :return: VRS Copy Number object represented as a dict
         """
-        copies = models.Number(
-            value=baseline_copies - 1 if alt_type in DELS else baseline_copies + 1,
-            type="Number",
-        )
-        variation = {
-            "type": "CopyNumberCount",
-            "subject": location,
-            "copies": copies.as_dict(),
-        }
-        variation["subject"]["id"] = ga4gh_identify(models.SequenceLocation(**location))
-        variation["id"] = ga4gh_identify(models.CopyNumberCount(**variation))
-        return variation
+        copies = baseline_copies - 1 if alt_type in DELS else baseline_copies + 1
+        seq_loc = models.SequenceLocation(**location)
+        seq_loc.id = ga4gh_identify(seq_loc)
+        cn = models.CopyNumberCount(copies=copies, location=seq_loc)
+        cn.id = ga4gh_identify(cn)
+        return cn.model_dump(exclude_none=True)
 
     def copy_number_change_mode(
         self,
@@ -108,86 +96,40 @@ class HGVSDupDelMode:
             AltType.DUPLICATION_AMBIGUOUS,
         ],
         location: Dict,
-        copy_change: Optional[CopyChange] = None,
-    ) -> Optional[Dict]:
+        copy_change: Optional[models.CopyChange] = None,
+    ) -> Dict:
         """Return copy number change variation
 
         :param alt_type: The type of alteration
-        :param Dict location: VRS SequenceLocation
-        :param Optional[CopyChange] copy_change: The copy change
+        :param location: VRS SequenceLocation
+        :param copy_change: The copy change
         :return: Copy Number Change variation as a dict
         """
         if not copy_change:
-            if alt_type in DELS:
-                copy_change = CopyChange.LOSS.value
-            else:
-                copy_change = CopyChange.GAIN.value
-        variation = {
-            "type": "CopyNumberChange",
-            "subject": location,
-            "copy_change": copy_change,
-        }
-        variation["subject"]["id"] = ga4gh_identify(models.SequenceLocation(**location))
-        variation["id"] = ga4gh_identify(models.CopyNumberChange(**variation))
-        return variation
+            copy_change = (
+                models.CopyChange.EFO_0030067
+                if alt_type in DELS
+                else models.CopyChange.EFO_0030070
+            )
 
-    def repeated_seq_expr_mode(
-        self, alt_type: AltType, location: Dict
-    ) -> Optional[Dict]:
-        """Return a VRS Allele with a RepeatedSequenceExpression.
-        The RepeatedSequenceExpression subject will be a
-            DerivedSequenceExpression.
+        seq_loc = models.SequenceLocation(**location)
+        seq_loc.id = ga4gh_identify(seq_loc)
+        cx = models.CopyNumberChange(location=seq_loc, copyChange=copy_change)
+        cx.id = ga4gh_identify(cx)
+        return cx.model_dump(exclude_none=True)
 
-        :param AltType alt_type: Alteration type
-        :param Dict location: VRS SequenceLocation
-        :return: VRS Allele object represented as a dict
-        """
-        if "range" in alt_type.value:
-            # Ranges should return an error
-            return None
-
-        if alt_type == AltType.DUPLICATION:
-            count = models.Number(value=2, type="Number")
-        elif alt_type == AltType.DELETION:
-            count = models.Number(value=0, type="Number")
-        else:
-            return None
-
-        location["id"] = ga4gh_identify(models.SequenceLocation(**location))
-
-        seq_expr = models.RepeatedSequenceExpression(
-            seq_expr=models.DerivedSequenceExpression(
-                location=location,
-                reverse_complement=False,
-                type="DerivedSequenceExpression",
-            ),
-            count=count,
-            type="RepeatedSequenceExpression",
-        )
-
-        allele = models.Allele(location=location, state=seq_expr, type="Allele")
-
-        try:
-            allele = normalize(allele, self.seqrepo_access)
-        except (KeyError, AttributeError):
-            return None
-        else:
-            allele.state.seq_expr.location = allele.location
-            allele.location.id = ga4gh_identify(allele.location)
-            allele.id = ga4gh_identify(allele)
-            return allele.as_dict()
-
-    def literal_seq_expr_mode(
+    def allele_mode(
         self,
         location: Dict,
         alt_type: AltType,
         vrs_seq_loc_ac: str,
-        alt: Optional[str] = None,
+        alt: str,
     ) -> Optional[Dict]:
-        """Return a VRS Allele with a normalized LiteralSequenceExpression.
+        """Return a VRS Allele with a normalized LiteralSequenceExpression or
+        ReferenceLengthExpression.
 
-        :param Dict location: VRS Location
-        :param AltType alt_type: Alteration type
+        :param location: VRS Location
+        :param alt_type: Alteration type
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param alt: Alteration
         :return: VRS Allele object represented as a dict
@@ -199,8 +141,8 @@ class HGVSDupDelMode:
             # start is start - 1, end is end
             ref, _ = self.seqrepo_access.get_reference_sequence(
                 vrs_seq_loc_ac,
-                location["start"]["value"] + 1,
-                location["end"]["value"] + 1,
+                location["start"] + 1,
+                location["end"] + 1,
             )
 
             if ref:
@@ -211,13 +153,8 @@ class HGVSDupDelMode:
             state = alt or ""
 
         allele = models.Allele(
-            **{
-                "type": "Allele",
-                "location": location,
-                "state": models.LiteralSequenceExpression(
-                    sequence=state, type="LiteralSequenceExpression"
-                ).as_dict(),
-            }
+            location=models.SequenceLocation(**location),
+            state=models.LiteralSequenceExpression(sequence=state),
         )
 
         try:
@@ -227,7 +164,7 @@ class HGVSDupDelMode:
         else:
             allele.location.id = ga4gh_identify(allele.location)
             allele.id = ga4gh_identify(allele)
-            return allele.as_dict()
+            return allele.model_dump(exclude_none=True)
 
     def interpret_variation(
         self,
@@ -236,9 +173,8 @@ class HGVSDupDelMode:
         errors: List,
         hgvs_dup_del_mode: HGVSDupDelModeOption,
         vrs_seq_loc_ac: str,
-        pos: Optional[Tuple[int, int]] = None,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         alt: Optional[str] = None,
     ) -> Dict:
         """Interpret variation using HGVSDupDelMode
@@ -249,7 +185,6 @@ class HGVSDupDelMode:
         :param hgvs_dup_del_mode: Mode to use for interpreting HGVS duplications and
             deletions
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
-        :param pos: Position changes
         :param baseline_copies: Baseline copies number
         :param copy_change: The copy change
         :param alt: The alteration
@@ -259,18 +194,14 @@ class HGVSDupDelMode:
         if hgvs_dup_del_mode == HGVSDupDelModeOption.DEFAULT:
             variation = self.default_mode(
                 alt_type,
-                pos,
                 location,
                 vrs_seq_loc_ac,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
+                alt=alt,
             )
-        elif hgvs_dup_del_mode == HGVSDupDelModeOption.REPEATED_SEQ_EXPR:
-            variation = self.repeated_seq_expr_mode(alt_type, location)
-        elif hgvs_dup_del_mode == HGVSDupDelModeOption.LITERAL_SEQ_EXPR:
-            variation = self.literal_seq_expr_mode(
-                location, alt_type, vrs_seq_loc_ac, alt=alt
-            )
+        elif hgvs_dup_del_mode == HGVSDupDelModeOption.ALLELE:
+            variation = self.allele_mode(location, alt_type, vrs_seq_loc_ac, alt)
         elif hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
             if baseline_copies:
                 variation = self.copy_number_count_mode(

@@ -2,18 +2,14 @@
 from copy import deepcopy
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-from urllib.parse import quote
 
 from cool_seq_tool.data_sources import (
     MANETranscript,
     MANETranscriptMappings,
     SeqRepoAccess,
-    TranscriptMappings,
     UTADatabase,
 )
 from cool_seq_tool.schemas import ResidueMode
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
-from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
@@ -29,10 +25,10 @@ from variation.schemas.normalize_response_schema import (
 from variation.schemas.token_response_schema import AltType, Token
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.to_vrsatile import ToVRSATILE
+from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import no_variation_resp
+from variation.utils import update_warnings_for_no_resp
 from variation.validate import Validate
 from variation.version import __version__
 
@@ -119,7 +115,7 @@ def dna_to_rna(dna_codon: str) -> str:
     return rna_codon
 
 
-class GnomadVcfToProteinVariation(ToVRSATILE):
+class GnomadVcfToProteinVariation(ToVRS):
     """Class for translating gnomAD VCF representation to protein representation"""
 
     def __init__(
@@ -129,35 +125,22 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         classifier: Classify,
         validator: Validate,
         translator: Translate,
-        gene_normalizer: GeneQueryHandler,
-        transcript_mappings: TranscriptMappings,
         uta: UTADatabase,
         mane_transcript: MANETranscript,
         mane_transcript_mappings: MANETranscriptMappings,
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param Tokenize tokenizer: Tokenizer class for tokenizing
-        :param Classify classifier: Classifier class for classifying tokens
-        :param Validate validator: Validator class for validating valid inputs
-        :param Translate translator: Translating valid inputs
-        :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
-        :param UTADatabase uta: Access to db containing alignment data
-        :param MANETranscript mane_transcript: Access MANE Transcript
-            information
-        :param MANETranscriptMappings mane_transcript_mappings: Mappings for
-            MANE Transcript data
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
+        :param uta: Access to db containing alignment data
+        :param mane_transcript: Access MANE Transcript information
+        :param mane_transcript_mappings: Mappings for MANE Transcript data
         """
-        super().__init__(
-            seqrepo_access,
-            tokenizer,
-            classifier,
-            validator,
-            translator,
-            gene_normalizer,
-            transcript_mappings,
-        )
+        super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
         self.uta = uta
         self.mane_transcript = mane_transcript
         self.mane_transcript_mappings = mane_transcript_mappings
@@ -192,15 +175,16 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         return valid_results
 
     def _get_refseq_alt_ac_from_variation(self, variation: Dict) -> str:
-        """Get genomic ac from variation sequence_id
+        """Get genomic ac from variation sequence
 
         :param Dict variation: VRS variation object
         :return: RefSeq genomic accession
         """
         # genomic ac should always be in 38
-        alt_ac = variation["location"]["sequence_id"]
+        refget_accession = variation["location"]["sequenceReference"]["refgetAccession"]
+        ga4gh_alias = f"ga4gh:{refget_accession}"
         aliases = self.seqrepo_access.sr.translate_identifier(
-            alt_ac, target_namespaces="refseq"
+            ga4gh_alias, target_namespaces="refseq"
         )
         return aliases[0].split("refseq:")[-1]
 
@@ -333,22 +317,15 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 aa_alt += CODON_TABLE[alt[3 * i : (3 * i) + 3]]
             return aa_alt
 
-    async def gnomad_vcf_to_protein(
-        self, q: str, untranslatable_returns_text: bool = False
-    ) -> NormalizeService:
+    async def gnomad_vcf_to_protein(self, q: str) -> NormalizeService:
         """Get MANE protein consequence for gnomad vcf (chr-pos-ref-alt).
         Assumes using GRCh38 coordinates
 
         :param str q: gnomad vcf (chr-pos-ref-alt)
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
-        :return: Normalize Service containing variation descriptor and warnings
+        :return: Normalize Service containing variation and warnings
         """
         q = q.strip()
-        vd = None
         warnings = []
-        _id = f"normalize.variation:{quote(' '.join(q.split()))}"
 
         valid_results = await self._get_valid_results(q, warnings)
         if valid_results:
@@ -356,7 +333,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 valid_results,
                 warnings,
                 Endpoint.NORMALIZE,
-                hgvs_dup_del_mode=HGVSDupDelModeOption.LITERAL_SEQ_EXPR,
+                hgvs_dup_del_mode=HGVSDupDelModeOption.ALLELE,
             )
 
             if translations:
@@ -533,23 +510,19 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                                 tr_copy.vrs_seq_loc_ac = p_ac
                                 tr_copy.vrs_seq_loc_ac_status = mane_p["status"]
 
-                                vd, warnings = self.get_variation_descriptor(
-                                    q,
-                                    tr_copy,
-                                    validation_result,
-                                    _id,
-                                    warnings,
-                                    gene=current_mane_data["HGNC_ID"],
-                                )
-                                if not vd:
-                                    continue
+                                try:
+                                    vrs_variation = tr_copy.vrs_variation
+                                except AttributeError as e:
+                                    warnings.append(str(e))
+                                    vrs_variation = None
 
-                                vd.molecule_context = MoleculeContext.PROTEIN
+                                if not vrs_variation:
+                                    continue
 
                                 return NormalizeService(
                                     variation_query=q,
-                                    variation_descriptor=vd,
-                                    warnings=warnings,
+                                    variation=vrs_variation,
+                                    warnings=[],
                                     service_meta_=ServiceMeta(
                                         version=__version__,
                                         response_datetime=datetime.now(),
@@ -561,28 +534,17 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                             )
 
                 if all_warnings:
-                    vd, warnings = no_variation_resp(
-                        q, _id, list(all_warnings), untranslatable_returns_text
-                    )
+                    warnings = all_warnings
                 else:
-                    vd, warnings = no_variation_resp(
-                        q,
-                        _id,
-                        [f"Unable to get protein variation for {q}"],
-                        untranslatable_returns_text,
-                    )
+                    warnings = [f"Unable to get protein variation for {q}"]
             else:
-                vd, warnings = no_variation_resp(
-                    q, _id, warnings, untranslatable_returns_text
-                )
+                update_warnings_for_no_resp(q, warnings)
         else:
-            vd, warnings = no_variation_resp(
-                q, _id, warnings, untranslatable_returns_text
-            )
+            update_warnings_for_no_resp(q, warnings)
 
         return NormalizeService(
             variation_query=q,
-            variation_descriptor=vd,
+            variation=None,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__, response_datetime=datetime.now()

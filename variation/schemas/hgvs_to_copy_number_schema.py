@@ -1,89 +1,80 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
-from typing import Any, Dict, Optional, Type, Union
+from typing import Optional
 
-from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberChange, CopyNumberCount, Text
-from pydantic import StrictStr
+from ga4gh.vrs import models
+from pydantic import ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceResponse
+from variation.version import __version__
 
 
 class HgvsToCopyNumberCountService(ServiceResponse):
     """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    copy_number_count: Optional[Union[CopyNumberCount, Text]]
+    copy_number_count: Optional[models.CopyNumberCount] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["HgvsToCopyNumberCountService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "id": "ga4gh:CN._qniTzHEtNOc6CNjb5bhlV5bf527692Q",
+                    "id": "ga4gh:CN.07iM14yvZ80N_AiaM7G_V4f1pCkmFYz4",
                     "type": "CopyNumberCount",
-                    "subject": {
-                        "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
+                    "location": {
+                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
                         "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                        "start": {"type": "Number", "value": 49531260},
-                        "end": {"type": "Number", "value": 49531262},
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        },
+                        "start": 49531261,
+                        "end": 49531262,
                     },
-                    "copies": {"type": "Number", "value": 3},
+                    "copies": 3,
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.17",
+                    "version": __version__,
                     "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class HgvsToCopyNumberChangeService(ServiceResponse):
     """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    copy_number_change: Optional[Union[CopyNumberChange, Text]]
+    copy_number_change: Optional[models.CopyNumberChange] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["HgvsToCopyNumberChangeService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.ENQD2_J-4FE964fFrO9cjBDBee09ORWH",
+                    "id": "ga4gh:CX.d8BWSLNKN0K4n8ySG0jWPCr4cJIqEf5g",
                     "type": "CopyNumberChange",
-                    "subject": {
-                        "id": "ga4gh:SL.KefUQwlqEBGtzoNO-MzOozx7_H1uP-fD",
+                    "location": {
+                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
                         "type": "SequenceLocation",
-                        "sequence_id": "ga4gh:SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
-                        "start": {"type": "Number", "value": 49531260},
-                        "end": {"type": "Number", "value": 49531262},
+                        "sequenceReference": {
+                            "type": "SequenceReference",
+                            "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+                        },
+                        "start": 49531261,
+                        "end": 49531262,
                     },
-                    "copy_change": "efo:0030069",
+                    "copyChange": "efo:0030069",
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
-                    "version": "0.2.17",
+                    "version": __version__,
                     "response_datetime": "2022-01-26T22:23:41.821673",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

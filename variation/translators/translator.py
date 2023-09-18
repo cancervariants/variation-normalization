@@ -4,14 +4,17 @@ from typing import List, Optional, Union
 
 from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
+from ga4gh.vrs import models
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AltType, GeneToken
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.translation_response_schema import (
+    TranslationResult,
+    VrsSeqLocAcStatus,
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.validators.genomic_base import GenomicBase
 from variation.vrs_representation import VRSRepresentation
@@ -59,7 +62,7 @@ class Translator(ABC):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
@@ -74,32 +77,6 @@ class Translator(ABC):
         :return: Translation result if translation was successful. If translation was
             not successful, `None`
         """
-
-    def translate_sequence_identifier(
-        self, sequence_id: str, errors: List[str]
-    ) -> Optional[str]:
-        """Translate `sequence_id` to ga4gh identifier
-
-        :param sequence_id: Sequence ID to translate
-        :param errors: List of errors. This will get mutated if an error occurs when
-            attempting to get ga4gh identifier
-        :return: GA4GH Sequence Identifier if successful, else `None`
-        """
-        ga4gh_seq_id = None
-        try:
-            ids = self.seqrepo_access.translate_sequence_identifier(
-                sequence_id, "ga4gh"
-            )
-        except KeyError as e:
-            errors.append(str(e))
-        else:
-            if not ids:
-                errors.append(
-                    f"Unable to find ga4gh sequence identifiers for: {sequence_id}"
-                )
-
-            ga4gh_seq_id = ids[0]
-        return ga4gh_seq_id
 
     def is_valid(
         self,
@@ -130,8 +107,8 @@ class Translator(ABC):
             if ext.name == "ensembl_locations":
                 if ext.value:
                     ensembl_loc = ext.value[0]
-                    gene_start = ensembl_loc["start"]["value"]
-                    gene_end = ensembl_loc["end"]["value"] - 1
+                    gene_start = ensembl_loc["start"]
+                    gene_end = ensembl_loc["end"] - 1
 
         if gene_start is None and gene_end is None:
             errors.append(
@@ -210,7 +187,7 @@ class Translator(ABC):
         """
         vrs_allele = None
         vrs_seq_loc_ac = None
-        vrs_seq_loc_ac_status = "na"
+        vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
 
         if endpoint_name == Endpoint.NORMALIZE:
             mane = await self.mane_transcript.get_mane_transcript(
@@ -236,7 +213,8 @@ class Translator(ABC):
                     cds_start=mane.get("coding_start_site", None),
                     alt=alt,
                 )
-        else:
+
+        if not vrs_allele:
             vrs_seq_loc_ac = validation_result.accession
             vrs_allele = self.vrs.to_vrs_allele(
                 vrs_seq_loc_ac,

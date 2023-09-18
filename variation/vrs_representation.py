@@ -1,18 +1,17 @@
 """Module for generating VRS objects"""
 from typing import Dict, List, Optional, Tuple, Union
 
-from bioutils.accessions import coerce_namespace
 from cool_seq_tool.data_sources import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
-from ga4gh.vrsatile.pydantic.vrs_models import Allele
 from pydantic import ValidationError
 
 from variation.schemas.token_response_schema import (
     AMBIGUOUS_REGIONS,
     AltType,
 )
+from variation.utils import get_refget_accession
 
 
 class VRSRepresentation:
@@ -54,56 +53,51 @@ class VRSRepresentation:
         return start, end
 
     @staticmethod
-    def get_start_indef_range(start: int) -> models.IndefiniteRange:
+    def get_start_indef_range(start: int) -> models.Range:
         """Return indefinite range given start coordinate
 
         :param int start: Start position (assumes 1-based)
-        :return: Indefinite range model
+        :return: Range
         """
-        return models.IndefiniteRange(
-            value=start - 1, comparator="<=", type="IndefiniteRange"
-        )
+        return models.Range([None, start - 1])
 
     @staticmethod
-    def get_end_indef_range(end: int) -> models.IndefiniteRange:
+    def get_end_indef_range(end: int) -> models.Range:
         """Return indefinite range given end coordinate
 
         :param int end: End position (assumes 1-based)
-        :return: Indefinite range model
+        :return: Range model
         """
-        return models.IndefiniteRange(
-            value=end, comparator=">=", type="IndefiniteRange"
-        )
+        return models.Range([end, None])
 
     @staticmethod
     def get_sequence_loc(
-        ac: str,
-        start: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
-        end: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
+        refget_accession: str,
+        start: Union[int, models.Range],
+        end: Union[int, models.Range],
     ) -> models.Location:
         """Return VRS location
 
-        :param ac: Accession
+        :param refget_accession: Refget accession (SQ.)
         :param start: start pos
         :param end: end pos
         :return: VRS Location model
         """
         return models.SequenceLocation(
-            sequence_id=coerce_namespace(ac),
+            sequenceReference=models.SequenceReference(
+                refgetAccession=refget_accession
+            ),
             start=start,
             end=end,
-            type="SequenceLocation",
         )
 
     def vrs_allele(
         self,
         ac: str,
-        start: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
-        end: Union[models.Number, models.DefiniteRange, models.IndefiniteRange],
+        start: Union[int, models.Range],
+        end: Union[int, models.Range],
         sstate: Union[
-            models.LiteralSequenceExpression,
-            models.DerivedSequenceExpression,
-            models.RepeatedSequenceExpression,
+            models.LiteralSequenceExpression, models.ReferenceLengthExpression
         ],
         alt_type: AltType,
         errors: List[str],
@@ -118,12 +112,16 @@ class VRSRepresentation:
         :param errors: List of errors
         :return: VRS Allele object represented as a Dict
         """
+        refget_accession = get_refget_accession(self.seqrepo_access, ac, errors)
+        if not refget_accession:
+            return None
+
         try:
-            location = self.get_sequence_loc(ac, start, end)
+            location = self.get_sequence_loc(refget_accession, start, end)
         except ValueError as e:
             errors.append(f"Unable to get sequence location: {e}")
             return None
-        allele = models.Allele(location=location, state=sstate, type="Allele")
+        allele = models.Allele(location=location, state=sstate)
         # Ambiguous regions do not get normalized
         if alt_type not in AMBIGUOUS_REGIONS:
             try:
@@ -136,25 +134,16 @@ class VRSRepresentation:
             errors.append("Unable to get allele")
             return None
 
-        seq_id, w = self.seqrepo_access.translate_identifier(
-            allele.location.sequence_id._value, "ga4gh"
-        )
-        if seq_id:
-            seq_id = seq_id[0]
-            allele.location.sequence_id = seq_id
-            allele.location.id = ga4gh_identify(allele.location)
-            allele.id = ga4gh_identify(allele)
-            allele_dict = allele.as_dict()
-            try:
-                Allele(**allele_dict)
-            except ValidationError as e:
-                errors.append(str(e))
-                return None
-            else:
-                return allele_dict
-        else:
-            errors.append(w)
+        allele.location.id = ga4gh_identify(allele.location)
+        allele.id = ga4gh_identify(allele)
+        allele_dict = allele.model_dump(exclude_none=True)
+        try:
+            models.Allele(**allele_dict)
+        except ValidationError as e:
+            errors.append(str(e))
             return None
+        else:
+            return allele_dict
 
     def to_vrs_allele(
         self,
@@ -231,9 +220,5 @@ class VRSRepresentation:
             errors.append(f"alt_type not supported: {alt_type}")
             return None
 
-        start_vo = models.Number(value=new_start, type="Number")
-        end_vo = models.Number(value=new_end, type="Number")
-        sstate = models.LiteralSequenceExpression(
-            sequence=state, type="LiteralSequenceExpression"
-        )
-        return self.vrs_allele(ac, start_vo, end_vo, sstate, alt_type, errors)
+        sstate = models.LiteralSequenceExpression(sequence=state)
+        return self.vrs_allele(ac, new_start, new_end, sstate, alt_type, errors)

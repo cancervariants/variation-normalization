@@ -3,8 +3,6 @@ from typing import List, NamedTuple, Optional, Union
 
 from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from pydantic import StrictInt, StrictStr, ValidationError
 
 from variation.schemas.app_schemas import Endpoint
@@ -16,10 +14,13 @@ from variation.schemas.classification_response_schema import (
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.translation_response_schema import (
+    TranslationResult,
+    VrsSeqLocAcStatus,
+)
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.translators.translator import Translator
-from variation.utils import get_assembly
+from variation.utils import get_assembly, get_refget_accession
 
 
 class DelDupData(NamedTuple):
@@ -83,7 +84,7 @@ class GenomicDelDupTranslator(Translator):
         endpoint_name: Optional[Endpoint] = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
+        copy_change: Optional[models.CopyChange] = None,
         do_liftover: bool = False,
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
@@ -107,7 +108,7 @@ class GenomicDelDupTranslator(Translator):
 
         grch38_data = None
         vrs_variation = None
-        vrs_seq_loc_ac_status = "na"
+        vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
@@ -195,7 +196,6 @@ class GenomicDelDupTranslator(Translator):
                 vrs_seq_loc_ac_status = mane["status"]
                 pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
                 pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
-                classification.molecule_context = MoleculeContext.TRANSCRIPT
             else:
                 return None
 
@@ -206,15 +206,19 @@ class GenomicDelDupTranslator(Translator):
                 pos1 -= 1
                 alt = classification.matching_tokens[0].alt
 
-        outer_coords = (pos0, pos1 if pos1 else pos0)
-        start = models.Number(value=pos0 - 1, type="Number")
-        end = models.Number(value=pos1 if pos1 else pos0, type="Number")
+        if alt_type == AltType.INSERTION:
+            alt = classification.inserted_sequence
 
-        seq_id = self.translate_sequence_identifier(ac, warnings)
-        if not seq_id:
+        start = pos0 - 1
+        end = pos1 if pos1 else pos0
+
+        refget_accession = get_refget_accession(self.seqrepo_access, ac, warnings)
+        if not refget_accession:
             return None
 
-        seq_loc = self.vrs.get_sequence_loc(seq_id, start, end).as_dict()
+        seq_loc = self.vrs.get_sequence_loc(refget_accession, start, end).model_dump(
+            exclude_none=True
+        )
 
         if endpoint_name == Endpoint.NORMALIZE:
             vrs_variation = self.hgvs_dup_del_mode.interpret_variation(
@@ -223,7 +227,6 @@ class GenomicDelDupTranslator(Translator):
                 warnings,
                 hgvs_dup_del_mode,
                 ac,
-                pos=outer_coords,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
                 alt=alt,
@@ -239,11 +242,11 @@ class GenomicDelDupTranslator(Translator):
         else:
             vrs_variation = self.hgvs_dup_del_mode.default_mode(
                 alt_type,
-                outer_coords,
                 seq_loc,
                 ac,
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
+                alt=alt,
             )
 
         if vrs_variation:

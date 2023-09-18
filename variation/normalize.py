@@ -1,11 +1,10 @@
 """Module for Variation Normalization."""
 from datetime import datetime
 from typing import List, Optional, Tuple
-from urllib.parse import quote, unquote
+from urllib.parse import unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
-from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
-from gene.query import QueryHandler as GeneQueryHandler
+from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from ga4gh.vrs import models
 
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
@@ -18,16 +17,17 @@ from variation.schemas.token_response_schema import GnomadVcfToken, Token
 from variation.schemas.translation_response_schema import (
     AC_PRIORITY_LABELS,
     TranslationResult,
+    VrsSeqLocAcStatus,
 )
-from variation.to_vrsatile import ToVRSATILE
+from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import no_variation_resp
+from variation.utils import update_warnings_for_no_resp
 from variation.validate import Validate
 from variation.version import __version__
 
 
-class Normalize(ToVRSATILE):
+class Normalize(ToVRS):
     """The Normalize class used to normalize a given variation."""
 
     def __init__(
@@ -37,18 +37,15 @@ class Normalize(ToVRSATILE):
         classifier: Classify,
         validator: Validate,
         translator: Translate,
-        gene_normalizer: GeneQueryHandler,
-        transcript_mappings: TranscriptMappings,
         uta: UTADatabase,
     ) -> None:
         """Initialize Normalize class.
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param Tokenize tokenizer: Tokenizer class for tokenizing
-        :param Classify classifier: Classifier class for classifying tokens
-        :param Validate validator: Validator class for validating valid inputs
-        :param Translate translator: Translating valid inputs
-        :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
         :param UTADatabase uta: Access to db containing alignment data
         """
         super().__init__(
@@ -57,14 +54,12 @@ class Normalize(ToVRSATILE):
             classifier,
             validator,
             translator,
-            gene_normalizer,
-            transcript_mappings,
         )
         self.uta = uta
 
     @staticmethod
     def _get_priority_translation_result(
-        translations: List[TranslationResult], ac_status: str
+        translations: List[TranslationResult], ac_status: VrsSeqLocAcStatus
     ) -> Optional[TranslationResult]:
         """Get prioritized translation result. Tries to find translation results with
         the same `vrs_seq_loc_ac_status` as `ac_status`. If more than one translation
@@ -86,6 +81,10 @@ class Normalize(ToVRSATILE):
         # Different `og_ac`'s can lead to different translation results.
         # We must be consistent in what we return in /normalize
         if len_preferred_translations > 1:
+            preferred_translations.sort(
+                key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
+                reverse=True,
+            )
             og_ac_preferred_match = (
                 [t for t in preferred_translations if t.og_ac == t.vrs_seq_loc_ac]
                 or [None]
@@ -98,13 +97,9 @@ class Normalize(ToVRSATILE):
             if og_ac_preferred_match:
                 translation_result = og_ac_preferred_match
             else:
-                preferred_translations.sort(
-                    key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
-                    reverse=True,
-                )
-                translation_result = translations[0]
+                translation_result = preferred_translations[0]
         elif len_preferred_translations == 1:
-            translation_result = translations[0]
+            translation_result = preferred_translations[0]
         else:
             translation_result = None
 
@@ -121,14 +116,14 @@ class Normalize(ToVRSATILE):
         :param tokens: List of tokens found in an input query
         :param hgvs_dup_del_mode: The hgvs dup del mode option provided in the input
             query. Mode to use for interpreting HGVS duplications and deletions.
-            gnomad vcf token will always set to `HGVSDupDelModeOption.LITERAL_SEQ_EXPR`.
+            gnomad vcf token will always set to `HGVSDupDelModeOption.ALLELE`.
         :param baseline_copies: The baseline copies provided in the input query.
             Required when `hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT`.
         :return: Tuple containing the hgvs dup del mode option and warnings
         """
         warning = None
         if len(tokens) == 1 and isinstance(tokens[0], GnomadVcfToken):
-            hgvs_dup_del_mode = HGVSDupDelModeOption.LITERAL_SEQ_EXPR
+            hgvs_dup_del_mode = HGVSDupDelModeOption.ALLELE
         else:
             if not hgvs_dup_del_mode:
                 hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
@@ -147,35 +142,24 @@ class Normalize(ToVRSATILE):
             HGVSDupDelModeOption
         ] = HGVSDupDelModeOption.DEFAULT,
         baseline_copies: Optional[int] = None,
-        copy_change: Optional[CopyChange] = None,
-        untranslatable_returns_text: bool = False,
+        copy_change: Optional[models.CopyChange] = None,
     ) -> NormalizeService:
         """Normalize a given variation.
 
-        :param str q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38
-            assembly
-        :param Optional[HGVSDupDelModeOption] hgvs_dup_del_mode:
-            Must be set when querying HGVS dup/del expressions.
-            Must be: `default`, `copy_number_count`, `copy_number_change`,
-            `repeated_seq_expr`, `literal_seq_expr`. This parameter determines how to
-            interpret HGVS dup/del expressions in VRS.
-        :param Optional[int] baseline_copies: Baseline copies for HGVS duplications and
-            deletions
-        :param Optional[CopyChange] copy_change: The copy change
-            for HGVS duplications and deletions represented as Copy Number Change
-            Variation.
-        :param bool untranslatable_returns_text: `True` return VRS Text Object when
-            unable to translate or normalize query. `False` return `None` when
-            unable to translate or normalize query.
-        :return: NormalizeService with variation descriptor and warnings
+        :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
+        :param hgvs_dup_del_mode: This parameter determines how to interpret HGVS
+            dup/del expressions in VRS.
+        :param baseline_copies: Baseline copies for HGVS duplications and deletions
+        :param copy_change: The copy change for HGVS duplications and deletions
+            represented as Copy Number Change Variation.
+        :return: NormalizeService with variation and warnings
         """
         label = q.strip()
-        _id = f"normalize.variation:{quote(' '.join(label.split()))}"
-        vd = None
-        warnings = list()
+        variation = None
+        warnings = []
         params = {
             "variation_query": q,
-            "variation_descriptor": vd,
+            "variation": variation,
             "warnings": warnings,
             "service_meta_": ServiceMeta(
                 version=__version__, response_datetime=datetime.now()
@@ -185,10 +169,7 @@ class Normalize(ToVRSATILE):
         # Get tokens for input query
         tokens = self.tokenizer.perform(unquote(q.strip()), warnings)
         if warnings:
-            vd, warnings = no_variation_resp(
-                label, _id, warnings, untranslatable_returns_text
-            )
-            params["variation_descriptor"] = vd
+            update_warnings_for_no_resp(label, warnings)
             params["warnings"] = warnings
             return NormalizeService(**params)
 
@@ -198,10 +179,7 @@ class Normalize(ToVRSATILE):
         )
         if warning:
             warnings.append(warning)
-            vd, warnings = no_variation_resp(
-                label, _id, warnings, untranslatable_returns_text
-            )
-            params["variation_descriptor"] = vd
+            update_warnings_for_no_resp(label, warnings)
             params["warnings"] = warnings
             return NormalizeService(**params)
 
@@ -209,23 +187,17 @@ class Normalize(ToVRSATILE):
         classification = self.classifier.perform(tokens)
         if not classification:
             warnings.append(f"Unable to find classification for: {q}")
-            vd, warnings = no_variation_resp(
-                label, _id, warnings, untranslatable_returns_text
-            )
-            params["variation_descriptor"] = vd
             params["warnings"] = warnings
             return NormalizeService(**params)
 
         # Get validation summary for classification
         validation_summary = await self.validator.perform(classification)
         if not validation_summary:
-            vd, warnings = no_variation_resp(
-                label, _id, validation_summary.warnings, untranslatable_returns_text
-            )
-            params["variation_descriptor"] = vd
+            update_warnings_for_no_resp(label, validation_summary.warnings)
             params["warnings"] = warnings
             return NormalizeService(**params)
 
+        variation = None
         if validation_summary.valid_results:
             # Get translated VRS representations for valid results
             translations, warnings = await self.get_translations(
@@ -244,28 +216,68 @@ class Normalize(ToVRSATILE):
                         translations, ac_status
                     )
                     if translation_result:
+                        if (
+                            translation_result.vrs_seq_loc_ac_status
+                            == VrsSeqLocAcStatus.NA
+                        ):
+                            classification_type = (
+                                translation_result.validation_result.classification.classification_type.value
+                            )
+                            if classification_type.startswith(("protein", "cdna")):
+                                # Only supports protein/cDNA at the moment
+                                warnings.append("Unable to find MANE representation")
                         break
 
-                # Get variation descriptor information
-                valid_result = validation_summary.valid_results[0]
-                vd, warnings = self.get_variation_descriptor(
-                    label, translation_result, valid_result, _id, warnings
-                )
+                try:
+                    variation = translation_result.vrs_variation
+                except AttributeError as e:
+                    # vrs_ref_allele_seq = None
+                    warnings.append(str(e))
+                else:
+                    pass
+                    # valid_result = validation_summary.valid_results[0]
+                    # classification_type = valid_result.classification.classification_type
+                    # if classification_type not in {
+                    #     ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+                    #     ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+                    #     ClassificationType.AMPLIFICATION,
+                    # }:
+                    #     variation_type = variation["type"]
+                    #     if variation_type in {
+                    #         "Allele", "CopyNumberChange", "CopyNumberCount"
+                    #     }:
+                    #         vrs_ref_allele_seq = self.get_ref_allele_seq(
+                    #             variation["location"], translation_result.vrs_seq_loc_ac
+                    #         )
+                    # else:
+                    #     vrs_ref_allele_seq = None
 
-                if not vd:
-                    vd, warnings = no_variation_resp(
-                        label, _id, warnings, untranslatable_returns_text
-                    )
+                if not variation:
+                    update_warnings_for_no_resp(label, warnings)
             else:
-                vd, warnings = no_variation_resp(
-                    label, _id, warnings, untranslatable_returns_text
-                )
+                update_warnings_for_no_resp(label, warnings)
         else:
             # No valid results were found for input query
-            vd, warnings = no_variation_resp(
-                label, _id, warnings, untranslatable_returns_text
-            )
+            update_warnings_for_no_resp(label, warnings)
 
-        params["variation_descriptor"] = vd
+        params["variation"] = variation
         params["warnings"] = warnings
         return NormalizeService(**params)
+
+    # def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
+    #     """Return ref allele seq for transcript.
+
+    #     :param location: VRS Location object
+    #     :param identifier: Identifier for allele
+    #     :return: Ref seq allele
+    #     """
+    #     ref = None
+    #     start = location["start"]
+    #     end = location["end"]
+    #     if isinstance(start, int) and isinstance(end, int):
+    #         if start != end:
+    #             ref, _ = self.seqrepo_access.get_reference_sequence(
+    #                 ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+    #             )
+
+    #     return ref

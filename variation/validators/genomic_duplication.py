@@ -1,5 +1,5 @@
 """The module for Genomic Duplication Validation."""
-from typing import List, Optional
+from typing import List
 
 from variation.schemas.classification_response_schema import (
     Classification,
@@ -78,7 +78,7 @@ class GenomicDuplication(Validator):
 
     async def get_accessions(
         self, classification: Classification, errors: List
-    ) -> Optional[List[str]]:
+    ) -> List[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

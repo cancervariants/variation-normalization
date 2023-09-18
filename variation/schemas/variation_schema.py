@@ -22,15 +22,15 @@ class Deletion(BaseModel):
     """Define model for deletion variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt]
-    deleted_sequence: Optional[StrictStr]
+    pos1: Optional[StrictInt] = None
+    deleted_sequence: Optional[StrictStr] = None
 
 
 class ProteinDeletion(Deletion):
     """Define model for protein deletion"""
 
     aa0: StrictStr
-    aa1: Optional[StrictStr]
+    aa1: Optional[StrictStr] = None
 
 
 class Insertion(BaseModel):
@@ -64,7 +64,7 @@ class DelIns(BaseModel):
     """Define model for delins variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt]
+    pos1: Optional[StrictInt] = None
     inserted_sequence: StrictStr
 
 
@@ -72,20 +72,20 @@ class ProteinDelIns(DelIns):
     """Define model for protein delins variation"""
 
     aa0: StrictStr
-    aa1: Optional[StrictStr]
+    aa1: Optional[StrictStr] = None
 
 
 class Duplication(BaseModel):
     """Define model for duplication variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt]
+    pos1: Optional[StrictInt] = None
 
 
 class DupDelAmbiguous(BaseModel):
     """Define model for duplication/deletion ambiguous variation"""
 
     pos0: Union[StrictInt, Literal["?"]]
-    pos1: Optional[Union[StrictInt, Literal["?"]]]
+    pos1: Optional[Union[StrictInt, Literal["?"]]] = None
     pos2: Union[StrictInt, Literal["?"]]
-    pos3: Optional[Union[StrictInt, Literal["?"]]]
+    pos3: Optional[Union[StrictInt, Literal["?"]]] = None

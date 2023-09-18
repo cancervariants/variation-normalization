@@ -3,17 +3,13 @@ from copy import deepcopy
 
 import pytest
 from ga4gh.vrs import models
-from ga4gh.vrsatile.pydantic.vrs_models import (
-    Comparator,
-    CopyChange,
-    CopyNumberChange,
-    CopyNumberCount,
-    VRSTypes,
-)
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 
+from tests.conftest import cnv_assertion_checks
 from variation.schemas.copy_number_schema import (
     ClinVarAssembly,
+    Comparator,
+    ParsedPosType,
     ParsedToCnVarQuery,
     ParsedToCxVarQuery,
 )
@@ -27,21 +23,20 @@ def cn_gain1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN._IYaKE4CoDa01tkcgOuqPhnYbZ5RuPcj",
-        "subject": {
+        "id": "ga4gh:CN.Qrs0TaGCcJiibMvhcML6BTSCVtX95FBl",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.RIgksXkT_kWCJv3poK4WQ9PK5_YSRBuh",
-            "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-            "start": {
-                "type": "IndefiniteRange",
-                "value": 143134062,
-                "comparator": "<=",
+            "id": "ga4gh:SL.g6xj5oKF99OysSxcfHyGYbh8NFNn2r61",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
             },
-            "end": {"type": "IndefiniteRange", "value": 143284670, "comparator": ">="},
+            "start": [None, 143134062],
+            "end": [143284670, None],
         },
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -51,17 +46,20 @@ def cn_gain2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.CrBtCqTLNhQEHVNxYeC1orEMs_jYki8-",
-        "subject": {
+        "id": "ga4gh:CN.-SqT6JTz0WpKfGQjdHnuJnyK8YMcAmez",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.xBw2DuIlDmgOswPardadgzXmVdJmrLZF",
-            "sequence_id": "ga4gh:SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
-            "start": {"type": "IndefiniteRange", "value": 31738808, "comparator": "<="},
-            "end": {"type": "IndefiniteRange", "value": 32217725, "comparator": ">="},
+            "id": "ga4gh:SL.2f5wWnJ52UShqq0wRTahKWH-YFCFTixG",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
+            },
+            "start": [None, 31738808],
+            "end": [32217725, None],
         },
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -71,17 +69,20 @@ def cn_gain2_37():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.J2BzX2gg87q75lkCuFV7HylE_uG_cQJN",
-        "subject": {
+        "id": "ga4gh:CN.gtS4om__GNKDFZxdtno7Cwiv_8Tv0_As",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.PZFhnd9S3DxnhQvMUuWd1b3kFqQe937p",
-            "sequence_id": "ga4gh:SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
-            "start": {"type": "IndefiniteRange", "value": 32031011, "comparator": "<="},
-            "end": {"type": "IndefiniteRange", "value": 32509926, "comparator": ">="},
+            "id": "ga4gh:SL.knW3_K9Kj2bvgGvnW3uorAEhZ9lnBD4F",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
+            },
+            "start": [None, 32031011],
+            "end": [32509926, None],
         },
-        "copies": {"type": "Number", "value": 2},
+        "copies": 2,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -91,17 +92,20 @@ def cn_loss1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.g1agp3no_7j9ekdTmrpmijhcfC7qvrPC",
-        "subject": {
+        "id": "ga4gh:CN.ckk73c3GG4x-P0uL5Iv1tzBPxYea1V03",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.aIbLtN8y8GbKG91n5_sJR3f2dVUrydeD",
-            "sequence_id": "ga4gh:SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
-            "start": {"type": "IndefiniteRange", "value": 10491131, "comparator": "<="},
-            "end": {"type": "IndefiniteRange", "value": 10535643, "comparator": ">="},
+            "id": "ga4gh:SL.S_YZii49zAuWk8hA71OD5Ud1mtQRpw5T",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
+            },
+            "start": [None, 10491131],
+            "end": [10535643, None],
         },
-        "copies": {"type": "Number", "value": 1},
+        "copies": 1,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -111,17 +115,20 @@ def cn_loss2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.DwoLZiCB408oqbW2gZNTpvME14tVwNHX",
-        "subject": {
+        "id": "ga4gh:CN.6vQIGMEa94FNmLBwQLHRTHaf_yrjMnBz",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.n35LAVyENzd6BVllBUUxzI2p5TgJpKAl",
-            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "start": {"type": "IndefiniteRange", "value": 10000, "comparator": "<="},
-            "end": {"type": "IndefiniteRange", "value": 1223133, "comparator": ">="},
+            "id": "ga4gh:SL.xeLChE7XHqLtLjrVEBnHpxvtdWjRA0Aw",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
+            "start": [None, 10000],
+            "end": [1223133, None],
         },
-        "copies": {"type": "Number", "value": 0},
+        "copies": 0,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -131,17 +138,20 @@ def cn_definite_number():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.uzKJQTAw2pYuAGaeHclKATjgPJQHjwmk",
-        "subject": {
+        "id": "ga4gh:CN.8xU8MDlKeD7kyhiVJmSwvi3iV78ReIc5",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.wfI7pH2g6czJN8dWwgF1gH9BD4pnJCFG",
-            "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-            "start": {"type": "DefiniteRange", "min": 143134062, "max": 143134064},
-            "end": {"type": "Number", "value": 143284670},
+            "id": "ga4gh:SL.NqQ42igO9R3BBbA7q7jQ_81rfZOjpzGg",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
+            },
+            "start": [143134062, 143134064],
+            "end": 143284670,
         },
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
-    return CopyNumberCount(**variation)
+    return models.CopyNumberCount(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -149,17 +159,20 @@ def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.UirzxujWnAIklYHh4VxSnFglfDROHYv6",
-        "subject": {
+        "id": "ga4gh:CX.BTNwndSs3RylLhtL9Y45GePsVX35eeTT",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.x075Sp6tCfGZcpHHmJ1e5oUdAW0CvN0X",
-            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "start": {"type": "Number", "value": 10000},
-            "end": {"type": "Number", "value": 1223133},
+            "id": "ga4gh:SL.Pu3oAKHColJSZ3zY_Xu5MeezINaTFlNq",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
+            "start": 10000,
+            "end": 1223133,
         },
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
-    return CopyNumberChange(**variation)
+    return models.CopyNumberChange(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -169,17 +182,20 @@ def cx_definite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.Z_1wvmOraI1iAxCKHseVhejBGKI27Yw1",
-        "subject": {
+        "id": "ga4gh:CX.pAvWqzj0yKdETBy_rjApb2j3A_5o213Z",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.VLcZT6AA5puGaCd45BPUiRJBwrGXx9mF",
-            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "start": {"type": "DefiniteRange", "min": 10000, "max": 10005},
-            "end": {"type": "DefiniteRange", "min": 1223131, "max": 1223134},
+            "id": "ga4gh:SL.1ZWJdPDJHP1XwDZcI1JHU2Obf9-3AYpz",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
+            "start": [10000, 10005],
+            "end": [1223131, 1223134],
         },
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
-    return CopyNumberChange(**variation)
+    return models.CopyNumberChange(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -189,17 +205,20 @@ def cx_indefinite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.AwFAe7hc5-ACPE6jeJpx7qvk25pw9tmK",
-        "subject": {
+        "id": "ga4gh:CX.2lbeFEsxiN9sdMRtqiaYaM0HPy2UJWEC",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.xKiefTSlYZBCI0621dLUMJib8XmFzzrC",
-            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "start": {"type": "IndefiniteRange", "comparator": "<=", "value": 10000},
-            "end": {"type": "IndefiniteRange", "comparator": ">=", "value": 1223130},
+            "id": "ga4gh:SL.-XBGqDkrHG7D19jCYuvNfEeJoBSBEHFA",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
+            "start": [None, 10000],
+            "end": [1223130, None],
         },
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
-    return CopyNumberChange(**variation)
+    return models.CopyNumberChange(**variation)
 
 
 @pytest.fixture(scope="module")
@@ -209,17 +228,20 @@ def cx_number_indefinite():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.CA02DMUPXNWDbj47UPVyrTzcNLNJP2sl",
-        "subject": {
+        "id": "ga4gh:CX.38jEUd5AhCbQk9hB36hS6mEqRKlY7ugj",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.674YRNtetAqnFCg9k_8uB1eBzXGKwVPe",
-            "sequence_id": "ga4gh:SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
-            "start": {"type": "Number", "value": 10000},
-            "end": {"type": "IndefiniteRange", "comparator": ">=", "value": 1223130},
+            "id": "ga4gh:SL.XuivAIjbPg8CLUUz7TZXO6mJWfAfU6HJ",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
+            },
+            "start": 10000,
+            "end": [1223130, None],
         },
-        "copy_change": "efo:0030069",
+        "copyChange": "efo:0030069",
     }
-    return CopyNumberChange(**variation)
+    return models.CopyNumberChange(**variation)
 
 
 def test_get_parsed_ac(test_cnv_handler):
@@ -313,55 +335,47 @@ def test_get_vrs_loc_start_or_end(test_cnv_handler):
 
     # Number start
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
-        ac, pos0, VRSTypes.NUMBER, is_start=True
+        ac, pos0, ParsedPosType.NUMBER, is_start=True
     )
-    assert resp == models.Number(value=140753335, type="Number")
+    assert resp == 140753335
 
     # Number end
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
-        ac, pos0, VRSTypes.NUMBER, is_start=False
+        ac, pos0, ParsedPosType.NUMBER, is_start=False
     )
-    assert resp == models.Number(value=140753336, type="Number")
+    assert resp == 140753336
 
     # Definite Range start
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
-        ac, pos0, VRSTypes.DEFINITE_RANGE, is_start=True, pos1=pos1
+        ac, pos0, ParsedPosType.DEFINITE_RANGE, is_start=True, pos1=pos1
     )
-    assert resp == models.DefiniteRange(
-        min=140753335, max=140753349, type="DefiniteRange"
-    )
+    assert resp == models.Range([140753335, 140753349])
 
     # Definite Range end
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
-        ac, pos0, VRSTypes.DEFINITE_RANGE, is_start=False, pos1=pos1
+        ac, pos0, ParsedPosType.DEFINITE_RANGE, is_start=False, pos1=pos1
     )
-    assert resp == models.DefiniteRange(
-        min=140753337, max=140753351, type="DefiniteRange"
-    )
+    assert resp == models.Range([140753337, 140753351])
 
     # Indefinite Range start
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
         ac,
         pos0,
-        VRSTypes.INDEFINITE_RANGE,
+        ParsedPosType.INDEFINITE_RANGE,
         is_start=True,
         comparator=Comparator.LT_OR_EQUAL,
     )
-    assert resp == models.IndefiniteRange(
-        comparator="<=", value=140753335, type="IndefiniteRange"
-    )
+    assert resp == models.Range([None, 140753335])
 
     # Indefinite Range end
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
         ac,
         pos0,
-        VRSTypes.INDEFINITE_RANGE,
+        ParsedPosType.INDEFINITE_RANGE,
         is_start=False,
         comparator=Comparator.GT_OR_EQUAL,
     )
-    assert resp == models.IndefiniteRange(
-        comparator=">=", value=140753336, type="IndefiniteRange"
-    )
+    assert resp == models.Range([140753336, None])
 
 
 def test_liftover_pos(test_cnv_handler):
@@ -399,14 +413,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=3,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain1)
 
     rb = ParsedToCnVarQuery(
         start0=143134063,
@@ -414,28 +427,26 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=3,
         assembly=ClinVarAssembly.HG19,
         chromosome="chr1",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain1)
 
     rb = ParsedToCnVarQuery(
         start0=143134063,
         end0=143284670,
         copies0=3,
         accession="NC_000001.10",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain1)
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
     # 38
@@ -445,14 +456,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=2,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chr15",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 38 with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
@@ -462,14 +472,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chr15",
         do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 38 with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
@@ -479,14 +488,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         assembly=ClinVarAssembly.HG38,
         chromosome="chr15",
         do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 38
     rb = ParsedToCnVarQuery(
@@ -495,14 +503,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=2,
         assembly=ClinVarAssembly.HG38,
         chromosome="chr15",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 38 accession
     rb = ParsedToCnVarQuery(
@@ -510,14 +517,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end0=32217725,
         copies0=2,
         accession="NC_000015.10",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 38 accession with liftover (shouldnt do anything)
     rb = ParsedToCnVarQuery(
@@ -525,14 +531,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end0=32217725,
         copies0=2,
         accession="NC_000015.10",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 37 with liftover
     rb = ParsedToCnVarQuery(
@@ -541,14 +546,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=2,
         accession="NC_000015.9",
         do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 37 chr+accession with liftover
     rb = ParsedToCnVarQuery(
@@ -558,14 +562,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         chromosome="chr15",
         assembly=ClinVarAssembly.GRCH37,
         do_liftover=True,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2)
 
     # 37 with no liftover
     rb = ParsedToCnVarQuery(
@@ -573,14 +576,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end0=32509926,
         copies0=2,
         accession="NC_000015.9",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2_37.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2_37)
 
     # 37 chr+accession with no liftover
     rb = ParsedToCnVarQuery(
@@ -589,14 +591,13 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         copies0=2,
         chromosome="chr15",
         assembly=ClinVarAssembly.GRCH37,
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2_37.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_gain2_37)
 
 
 def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
@@ -608,14 +609,13 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         copies0=1,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chrX",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss1)
 
     rb = ParsedToCnVarQuery(
         start0=10491132,
@@ -623,28 +623,26 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         copies0=1,
         assembly=ClinVarAssembly.HG19,
         chromosome="chrX",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss1)
 
     rb = ParsedToCnVarQuery(
         start0=10491132,
         end0=10535643,
         copies0=1,
         accession="NC_000023.10",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss1)
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/148425/?new_evidence=true
     rb = ParsedToCnVarQuery(
@@ -653,14 +651,13 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         copies0=0,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss2)
 
     rb = ParsedToCnVarQuery(
         start0=10001,
@@ -668,28 +665,26 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         copies0=0,
         assembly=ClinVarAssembly.HG38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss2)
 
     rb = ParsedToCnVarQuery(
         start0=10001,
         end0=1223133,
         copies0=0,
         accession="NC_000024.10",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_loss2)
 
 
 def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
@@ -701,12 +696,11 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         copies0=3,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.DEFINITE_RANGE,
+        start_pos_type=ParsedPosType.DEFINITE_RANGE,
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_definite_number.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cn_definite_number)
 
     # copies is definite range
     rb = ParsedToCnVarQuery(
@@ -714,18 +708,17 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         end0=143284670,
         copies0=3,
         copies1=5,
-        copies_type=VRSTypes.DEFINITE_RANGE,
+        copies_type=ParsedPosType.DEFINITE_RANGE,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.DEFINITE_RANGE,
+        start_pos_type=ParsedPosType.DEFINITE_RANGE,
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] = {"type": "DefiniteRange", "min": 3, "max": 5}
-    expected["id"] = "ga4gh:CN.abS9SjAfusSTVgdX3kIUOGV8q8bmr5uO"
-    assert resp.copy_number_count.dict() == expected
-    assert resp.warnings == []
+    expected = deepcopy(cn_definite_number)
+    expected.copies = models.Range([3, 5])
+    expected.id = "ga4gh:CN.Z-nHquCOaZ9-7qlEiHJjTCNTun8rphs5"
+    cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range <=
     rb = ParsedToCnVarQuery(
@@ -733,18 +726,17 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         end0=143284670,
         copies0=3,
         copies_comparator=Comparator.LT_OR_EQUAL,
-        copies_type=VRSTypes.INDEFINITE_RANGE,
+        copies_type=ParsedPosType.INDEFINITE_RANGE,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.DEFINITE_RANGE,
+        start_pos_type=ParsedPosType.DEFINITE_RANGE,
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] = {"type": "IndefiniteRange", "comparator": "<=", "value": 3}
-    expected["id"] = "ga4gh:CN.2aMndMYx2uVCN-XcG-uLimeXkRRHGDCs"
-    assert resp.copy_number_count.dict() == expected
-    assert resp.warnings == []
+    expected = deepcopy(cn_definite_number)
+    expected.copies = models.Range([None, 3])
+    expected.id = "ga4gh:CN.ATCEmOahCspjTUZwYcg3hZVEhonOxqZ0"
+    cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range >=
     rb = ParsedToCnVarQuery(
@@ -752,18 +744,17 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         end0=143284670,
         copies0=3,
         copies_comparator=Comparator.GT_OR_EQUAL,
-        copies_type=VRSTypes.INDEFINITE_RANGE,
+        copies_type=ParsedPosType.INDEFINITE_RANGE,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.DEFINITE_RANGE,
+        start_pos_type=ParsedPosType.DEFINITE_RANGE,
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict())
-    expected["copies"] = {"type": "IndefiniteRange", "comparator": ">=", "value": 3}
-    expected["id"] = "ga4gh:CN.UDIZLBzw7TiaM7Q7Ani4BPoWyVbstlKu"
-    assert resp.copy_number_count.dict() == expected
-    assert resp.warnings == []
+    expected = deepcopy(cn_definite_number)
+    expected.copies = [3, None]
+    expected.id = "ga4gh:CN.sXOp5QcykicrYTyRgzJvk4O9ha6ignDd"
+    cnv_assertion_checks(resp, expected)
 
     # start_pos and end_pos indefinite range
     rb = ParsedToCnVarQuery(
@@ -772,27 +763,26 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         copies0=3,
         assembly=ClinVarAssembly.GRCH37,
         chromosome="chr1",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.GT_OR_EQUAL,
         end_pos_comparator=Comparator.LT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == {
+    assert resp.copy_number_count.model_dump(exclude_none=True) == {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.wHCfVMPVV1AZI6-eURZgAKbNr2srugdL",
-        "subject": {
+        "id": "ga4gh:CN.Hw32hEhUrWYl1j3Nty4cmrZlbveSw8oF",
+        "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.xHA8jY9-PauRA-3kfu3_RkP-SW4poqiI",
-            "sequence_id": "ga4gh:SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
-            "start": {
-                "type": "IndefiniteRange",
-                "value": 143134062,
-                "comparator": ">=",
+            "id": "ga4gh:SL.nXrqjadKZikhhdHvDmgVovb0HiKoXRq7",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
             },
-            "end": {"type": "IndefiniteRange", "value": 143284670, "comparator": "<="},
+            "start": [143134062, None],
+            "end": [None, 143284670],
         },
-        "copies": {"type": "Number", "value": 3},
+        "copies": 3,
     }
 
 
@@ -808,66 +798,62 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223133,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.NUMBER,
-        end_pos_type=VRSTypes.NUMBER,
+        start_pos_type=ParsedPosType.NUMBER,
+        end_pos_type=ParsedPosType.NUMBER,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_numbers.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cx_numbers)
 
     # start and end use definite ranges
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.DEFINITE_RANGE,
-        end_pos_type=VRSTypes.DEFINITE_RANGE,
+        start_pos_type=ParsedPosType.DEFINITE_RANGE,
+        end_pos_type=ParsedPosType.DEFINITE_RANGE,
         start1=10006,
         end1=1223133,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_definite_ranges.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cx_definite_ranges)
 
     # start and end use indefinite ranges
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.INDEFINITE_RANGE,
         start_pos_comparator=Comparator.LT_OR_EQUAL,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_indefinite_ranges.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cx_indefinite_ranges)
 
     # start uses number and end use indefinite range
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+        copy_change=models.CopyChange.EFO_0030069,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
-        start_pos_type=VRSTypes.NUMBER,
-        end_pos_type=VRSTypes.INDEFINITE_RANGE,
+        start_pos_type=ParsedPosType.NUMBER,
+        end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_number_indefinite.dict()
-    assert resp.warnings == []
+    cnv_assertion_checks(resp, cx_number_indefinite)
 
 
 def test_invalid(test_cnv_handler):
-    """Test invalid copy number queries returns Text variation and warnings"""
+    """Test invalid copy number queries returns no variation and warnings"""
     # Invalid Copy Change
     with pytest.raises(ValidationError) as e:
         ParsedToCxVarQuery(
@@ -876,31 +862,29 @@ def test_invalid(test_cnv_handler):
             copy_change="efo:1234",
             accession="NC_000001.10",
         )
-    assert "value is not a valid enumeration member" in str(e.value)
+    assert "Input should be 'efo:" in str(e.value)
 
     # NCBI36/hg18 assembly
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=CopyChange.GAIN,
+        copy_change=models.CopyChange.EFO_0030070,
         assembly=ClinVarAssembly.NCBI36,
         chromosome="chr1",
-        untranslatable_returns_text=True,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.type == "Text"
+    assert resp.copy_number_change is None
     assert resp.warnings == ["NCBI36 assembly is not currently supported"]
 
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=CopyChange.GAIN,
+        copy_change=models.CopyChange.EFO_0030070,
         assembly=ClinVarAssembly.HG18,
         chromosome="chr1",
-        untranslatable_returns_text=True,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.type == "Text"
+    assert resp.copy_number_change is None
     assert resp.warnings == ["hg18 assembly is not currently supported"]
 
     # Must give both assembly + chromosome or accession
@@ -909,9 +893,8 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=CopyChange.GAIN,
+            copy_change=models.CopyChange.EFO_0030070,
             assembly="hg38",
-            untranslatable_returns_text=True,
         )
     assert ac_assembly_chr_msg in str(e.value)
 
@@ -920,9 +903,8 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=CopyChange.GAIN,
+            copy_change=models.CopyChange.EFO_0030070,
             chromosome="chr15",
-            untranslatable_returns_text=True,
         )
     assert ac_assembly_chr_msg in str(e.value)
 
@@ -931,8 +913,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=CopyChange.GAIN,
-            untranslatable_returns_text=True,
+            copy_change=models.CopyChange.EFO_0030070,
         )
     assert ac_assembly_chr_msg in str(e.value)
 
@@ -941,26 +922,29 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223133,
-            copy_change=CopyChange.GAIN,
+            copy_change=models.CopyChange.EFO_0030070,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="z",
         )
     assert "`chromosome`, z, does not match r'^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$'" in str(
         e.value
-    )  # noqa: E501
+    )
 
     # invalid assembly
     with pytest.raises(ValidationError) as e:
         ParsedToCxVarQuery(
-            start0=10001, end0=1223133, copy_change=CopyChange.GAIN, assembly="GRCh99"
+            start0=10001,
+            end0=1223133,
+            copy_change=models.CopyChange.EFO_0030070,
+            assembly="GRCh99",
         )
-    assert "value is not a valid enumeration member" in str(e.value)
+    assert "Input should be 'GRCh38'," in str(e.value)
 
     # invalid accession
     rb = ParsedToCxVarQuery(
         start0=10491132,
         end0=10535643,
-        copy_change=CopyChange.GAIN,
+        copy_change=models.CopyChange.EFO_0030070,
         accession="NC_00002310",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -973,7 +957,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=31738809,
         end0=2302991250,
-        copy_change=CopyChange.GAIN,
+        copy_change=models.CopyChange.EFO_0030070,
         accession="NC_000015.10",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -985,11 +969,11 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+            copy_change=models.CopyChange.EFO_0030069,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
-            start_pos_type=VRSTypes.DEFINITE_RANGE,
-            end_pos_type=VRSTypes.DEFINITE_RANGE,
+            start_pos_type=ParsedPosType.DEFINITE_RANGE,
+            end_pos_type=ParsedPosType.DEFINITE_RANGE,
             start1=1223132,
             end1=1223133,
         )
@@ -1000,10 +984,10 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=CopyChange.COMPLETE_GENOMIC_LOSS,
+            copy_change=models.CopyChange.EFO_0030069,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
-            start_pos_type=VRSTypes.DEFINITE_RANGE,
+            start_pos_type=ParsedPosType.DEFINITE_RANGE,
         )
     assert "`start1` is required for definite ranges" in str(e.value)
 
@@ -1013,17 +997,18 @@ def test_invalid(test_cnv_handler):
             start0=143134063,
             end0=143284670,
             copies0=3,
-            copies_type=VRSTypes.DEFINITE_RANGE,
+            copies_type=ParsedPosType.DEFINITE_RANGE,
             assembly=ClinVarAssembly.GRCH37,
             chromosome="chr1",
-            start_pos_type=VRSTypes.INDEFINITE_RANGE,
+            start_pos_type=ParsedPosType.INDEFINITE_RANGE,
             start_pos_comparator=Comparator.LT_OR_EQUAL,
-            end_pos_type=VRSTypes.INDEFINITE_RANGE,
+            end_pos_type=ParsedPosType.INDEFINITE_RANGE,
             end_pos_comparator=Comparator.GT_OR_EQUAL,
         )
-    assert "`copies1` must be provided for `copies_type == DefiniteRange`" in str(
-        e.value
-    )  # noqa: E501
+    assert (
+        "`copies1` must be provided for `copies_type == ParsedPosType.DEFINITE_RANGE`"
+        in str(e.value)
+    )
 
     # copies_comparator not provided when copies_type is IndefiniteRange
     with pytest.raises(ValidationError) as e:
@@ -1031,18 +1016,18 @@ def test_invalid(test_cnv_handler):
             start0=143134063,
             end0=143284670,
             copies0=3,
-            copies_type=VRSTypes.INDEFINITE_RANGE,
+            copies_type=ParsedPosType.INDEFINITE_RANGE,
             assembly=ClinVarAssembly.GRCH37,
             chromosome="chr1",
-            start_pos_type=VRSTypes.INDEFINITE_RANGE,
+            start_pos_type=ParsedPosType.INDEFINITE_RANGE,
             start_pos_comparator=Comparator.LT_OR_EQUAL,
-            end_pos_type=VRSTypes.INDEFINITE_RANGE,
+            end_pos_type=ParsedPosType.INDEFINITE_RANGE,
             end_pos_comparator=Comparator.GT_OR_EQUAL,
         )
     assert (
-        "`copies_comparator` must be provided for `copies_type == IndefiniteRange`"
+        "`copies_comparator` must be provided for `copies_type == ParsedPosType.INDEFINITE_RANGE`"
         in str(e.value)
-    )  # noqa: E501
+    )
 
     # `start_pos_comparator` not provided when start_pos_type is Indefinite Range
     with pytest.raises(ValidationError) as e:
@@ -1052,8 +1037,8 @@ def test_invalid(test_cnv_handler):
             copies0=2,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chr15",
-            start_pos_type=VRSTypes.INDEFINITE_RANGE,
-            end_pos_type=VRSTypes.NUMBER,
+            start_pos_type=ParsedPosType.INDEFINITE_RANGE,
+            end_pos_type=ParsedPosType.NUMBER,
         )
     assert "`start_pos_comparator` is required for indefinite ranges" in str(e.value)
 
@@ -1065,7 +1050,7 @@ def test_invalid(test_cnv_handler):
             copies0=2,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chr15",
-            start_pos_type=VRSTypes.NUMBER,
-            end_pos_type=VRSTypes.INDEFINITE_RANGE,
+            start_pos_type=ParsedPosType.NUMBER,
+            end_pos_type=ParsedPosType.INDEFINITE_RANGE,
         )
     assert "`end_pos_comparator` is required for indefinite ranges" in str(e.value)
