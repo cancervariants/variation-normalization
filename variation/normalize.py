@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import List, Optional, Tuple, Union
 from urllib.parse import quote, unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import TranscriptMappings, UTADatabase
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from gene.query import QueryHandler as GeneQueryHandler

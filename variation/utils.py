@@ -4,7 +4,7 @@ from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
-from cool_seq_tool.data_sources import SeqRepoAccess
+from cool_seq_tool.handlers import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import Text

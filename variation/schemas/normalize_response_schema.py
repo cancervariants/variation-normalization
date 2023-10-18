@@ -1,11 +1,10 @@
 """Module for normalize endpoint response schema."""
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type
+from typing import List, Literal, Optional
 
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
-from pydantic import BaseModel, root_validator
-from pydantic.types import StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr, model_validator
 
 
 class HGVSDupDelModeOption(str, Enum):
@@ -23,27 +22,23 @@ class HGVSDupDelModeOption(str, Enum):
 class ServiceMeta(BaseModel):
     """Metadata regarding the variation-normalization service."""
 
-    name = "variation-normalizer"
+    name: Literal["variation-normalizer"] = "variation-normalizer"
     version: StrictStr
     response_datetime: datetime
-    url = "https://github.com/cancervariants/variation-normalization"
+    url: Literal[
+        "https://github.com/cancervariants/variation-normalization"
+    ] = "https://github.com/cancervariants/variation-normalization"
 
-    class Config:
-        """Configure schema example."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ServiceMeta"]) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "name": "variation-normalizer",
                 "version": "0.1.0",
                 "response_datetime": "2021-04-05T16:44:15.367831",
                 "url": "https://github.com/cancervariants/variation-normalization",
             }
+        }
+    )
 
 
 class ServiceResponse(BaseModel):
@@ -52,10 +47,10 @@ class ServiceResponse(BaseModel):
     warnings: Optional[List[StrictStr]] = []
     service_meta_: ServiceMeta
 
-    @root_validator(pre=False)
+    @model_validator(mode="after")
     def unique_warnings(cls, values):
         """Ensure unique warnings"""
-        values["warnings"] = list(set(values["warnings"]))
+        values.warnings = list(set(values.warnings))
         return values
 
 
@@ -65,21 +60,11 @@ class NormalizeService(ServiceResponse):
     """
 
     variation_query: StrictStr
-    variation_descriptor: Optional[VariationDescriptor]
+    variation_descriptor: Optional[VariationDescriptor] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["NormalizeService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation_query": "BRAF V600E",
                 "variation_descriptor": {
                     "id": "normalize.variation:BRAF%20V600E",
@@ -244,6 +229,8 @@ class NormalizeService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class TranslateIdentifierService(ServiceResponse):
@@ -252,19 +239,9 @@ class TranslateIdentifierService(ServiceResponse):
     identifier_query: StrictStr
     aliases: List[StrictStr]
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateIdentifierService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "identifier_query": "NP_004324.2",
                 "warnings": None,
                 "aliases": [
@@ -288,3 +265,5 @@ class TranslateIdentifierService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

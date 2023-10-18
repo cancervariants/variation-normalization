@@ -2,9 +2,11 @@
 from abc import ABC, abstractmethod
 from typing import List, Literal, Optional, Tuple, Union
 
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.sources import TranscriptMappings, UTADatabase
 from gene.query import QueryHandler as GeneQueryHandler
+from gene.schemas import SourceName
 
 from variation.schemas.classification_response_schema import (
     AmbiguousType,
@@ -206,10 +208,12 @@ class Validator(ABC):
         :return: Invalid error message if invalid. Else, `None`
         """
         gene_start_end = {"start": None, "end": None}
-        resp = self.gene_normalizer.search(gene, incl="Ensembl")
+        resp = self.gene_normalizer.search(gene, incl=SourceName.ENSEMBL.value)
         if resp.source_matches:
-            ensembl_resp = resp.source_matches[0]
-            if ensembl_resp.records[0].locations:
+            ensembl_resp = resp.source_matches[SourceName.ENSEMBL]
+            if all(
+                (ensembl_resp, ensembl_resp.records, ensembl_resp.records[0].locations)
+            ):
                 ensembl_loc = ensembl_resp.records[0].locations[0]
                 gene_start_end["start"] = ensembl_loc.interval.start.value
                 gene_start_end["end"] = ensembl_loc.interval.end.value - 1

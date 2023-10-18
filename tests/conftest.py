@@ -2,7 +2,7 @@
 import asyncio
 
 import pytest
-from cool_seq_tool import CoolSeqTool
+from cool_seq_tool.app import CoolSeqTool
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 from gene.database.dynamodb import DynamoDbDatabase
 from gene.query import QueryHandler as GeneQueryHandler

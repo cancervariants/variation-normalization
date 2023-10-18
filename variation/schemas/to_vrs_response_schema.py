@@ -1,5 +1,5 @@
 """Module for to_vrs endpoint response schema."""
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import List, Optional, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import (
     Allele,
@@ -9,8 +9,7 @@ from ga4gh.vrsatile.pydantic.vrs_models import (
     Text,
     VariationSet,
 )
-from pydantic import BaseModel
-from pydantic.types import StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceMeta
 
@@ -19,7 +18,7 @@ class ToVRSService(BaseModel):
     """Define model for translation response."""
 
     search_term: StrictStr
-    warnings: Optional[List[StrictStr]]
+    warnings: Optional[List[StrictStr]] = None
     variations: Optional[
         Union[
             List[Allele],
@@ -29,20 +28,12 @@ class ToVRSService(BaseModel):
             List[CopyNumberChange],
             List[VariationSet],
         ]
-    ]
+    ] = None
     service_meta_: ServiceMeta
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type["ToVRSService"]) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "search_term": "BRAF V600E",
                 "variations": [
                     {
@@ -113,3 +104,5 @@ class ToVRSService(BaseModel):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

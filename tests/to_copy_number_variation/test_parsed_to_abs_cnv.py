@@ -478,7 +478,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain1.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -493,7 +493,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain1.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -507,7 +507,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain1.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain1.model_dump()
     assert resp.warnings == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/146181/?new_evidence=true
@@ -524,7 +524,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 38 with liftover (shouldnt do anything)
@@ -541,7 +541,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 38 with liftover (shouldnt do anything)
@@ -558,7 +558,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 38
@@ -574,7 +574,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 38 accession
@@ -589,7 +589,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 38 accession with liftover (shouldnt do anything)
@@ -604,7 +604,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 37 with liftover
@@ -620,7 +620,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 37 chr+accession with liftover
@@ -637,7 +637,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2.model_dump()
     assert resp.warnings == []
 
     # 37 with no liftover
@@ -652,7 +652,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2_37.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2_37.model_dump()
     assert resp.warnings == []
 
     # 37 chr+accession with no liftover
@@ -668,7 +668,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_gain2_37.dict()
+    assert resp.copy_number_count.model_dump() == cn_gain2_37.model_dump()
     assert resp.warnings == []
 
 
@@ -687,7 +687,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss1.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -702,7 +702,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss1.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -716,7 +716,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss1.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss1.model_dump()
     assert resp.warnings == []
 
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/148425/?new_evidence=true
@@ -732,7 +732,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss2.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -747,7 +747,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss2.model_dump()
     assert resp.warnings == []
 
     rb = ParsedToCnVarQuery(
@@ -761,7 +761,7 @@ def test_parsed_copy_number_loss(test_cnv_handler, cn_loss1, cn_loss2):
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_loss2.dict()
+    assert resp.copy_number_count.model_dump() == cn_loss2.model_dump()
     assert resp.warnings == []
 
 
@@ -778,7 +778,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict() == cn_definite_number.dict()
+    assert resp.copy_number_count.model_dump() == cn_definite_number.model_dump()
     assert resp.warnings == []
 
     # copies is definite range
@@ -794,10 +794,10 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict(by_alias=True))
+    expected = deepcopy(cn_definite_number.model_dump(by_alias=True))
     expected["copies"] = {"type": "DefiniteRange", "min": 3, "max": 5}
     expected["_id"] = "ga4gh:CN.a4afOf1fvsbTeJchw0-Pu0IKcl3qg4Gx"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
     assert resp.warnings == []
 
     # copies is indefinite range <=
@@ -813,10 +813,10 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict(by_alias=True))
+    expected = deepcopy(cn_definite_number.model_dump(by_alias=True))
     expected["copies"] = {"type": "IndefiniteRange", "comparator": "<=", "value": 3}
     expected["_id"] = "ga4gh:CN.-Mzi9_FMDbTCSxaiK_FeScOWL4Hk_ewE"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
     assert resp.warnings == []
 
     # copies is indefinite range >=
@@ -832,10 +832,10 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         start1=143134065,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    expected = deepcopy(cn_definite_number.dict(by_alias=True))
+    expected = deepcopy(cn_definite_number.model_dump(by_alias=True))
     expected["copies"] = {"type": "IndefiniteRange", "comparator": ">=", "value": 3}
     expected["_id"] = "ga4gh:CN.y6QsEjqm13HDr7OpV0tcHvX_7vTpNiuO"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
     assert resp.warnings == []
 
     # start_pos and end_pos indefinite range
@@ -851,7 +851,7 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         end_pos_comparator=Comparator.LT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.dict(by_alias=True) == {
+    assert resp.copy_number_count.model_dump(by_alias=True) == {
         "type": "CopyNumberCount",
         "_id": "ga4gh:CN.mrldOoV1cPJScJNU-q9gWxxviJdjYYyA",
         "subject": {
@@ -895,7 +895,7 @@ def test_parsed_to_cx_var(
         end_pos_type=VRSTypes.NUMBER,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_numbers.dict()
+    assert resp.copy_number_change.model_dump() == cx_numbers.model_dump()
     assert resp.warnings == []
 
     # start and end use definite ranges
@@ -911,7 +911,7 @@ def test_parsed_to_cx_var(
         end1=1223133,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_definite_ranges.dict()
+    assert resp.copy_number_change.model_dump() == cx_definite_ranges.model_dump()
     assert resp.warnings == []
 
     # start and end use indefinite ranges
@@ -927,7 +927,7 @@ def test_parsed_to_cx_var(
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_indefinite_ranges.dict()
+    assert resp.copy_number_change.model_dump() == cx_indefinite_ranges.model_dump()
     assert resp.warnings == []
 
     # start uses number and end use indefinite range
@@ -942,7 +942,7 @@ def test_parsed_to_cx_var(
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_change.dict() == cx_number_indefinite.dict()
+    assert resp.copy_number_change.model_dump() == cx_number_indefinite.model_dump()
     assert resp.warnings == []
 
 
@@ -956,7 +956,7 @@ def test_invalid(test_cnv_handler):
             copy_change="efo:1234",
             accession="NC_000001.10",
         )
-    assert "value is not a valid enumeration member" in str(e.value)
+    assert "Input should be 'efo:" in str(e.value)
 
     # NCBI36/hg18 assembly
     rb = ParsedToCxVarQuery(
@@ -1034,7 +1034,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001, end0=1223133, copy_change=CopyChange.GAIN, assembly="GRCh99"
         )
-    assert "value is not a valid enumeration member" in str(e.value)
+    assert "Input should be 'GRCh38'," in str(e.value)
 
     # invalid accession
     rb = ParsedToCxVarQuery(

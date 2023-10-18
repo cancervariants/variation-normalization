@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import UTADatabase
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import (
@@ -688,7 +689,7 @@ class ToCopyNumberVariation(ToVRS):
                     warnings.append(str(e))
 
         if warnings and request_body.untranslatable_returns_text:
-            variation = self._parsed_to_text(request_body.dict())
+            variation = self._parsed_to_text(request_body.model_dump())
 
         service_params = {
             "warnings": warnings,

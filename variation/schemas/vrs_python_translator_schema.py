@@ -1,10 +1,9 @@
 """Module for vrs-python translator endpoint response schema"""
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import List, Literal, Optional, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import Allele
-from pydantic import BaseModel
-from pydantic.types import StrictStr
+from pydantic import BaseModel, ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceMeta
 
@@ -12,9 +11,11 @@ from variation.schemas.normalize_response_schema import ServiceMeta
 class VrsPythonMeta(BaseModel):
     """Metadata regarding vrs-python dependency"""
 
-    name = "vrs-python"
+    name: Literal["vrs-python"] = "vrs-python"
     version: StrictStr
-    url = "https://github.com/ga4gh/vrs-python"
+    url: Literal[
+        "https://github.com/ga4gh/vrs-python"
+    ] = "https://github.com/ga4gh/vrs-python"
 
 
 class TranslateFromFormat(str, Enum):
@@ -39,21 +40,9 @@ class TranslateToQuery(BaseModel):
     variation: Allele
     fmt: TranslateToFormat
 
-    class Config:
-        """Class configs."""
-
-        allow_population_by_field_name = True
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateToQuery"]
-        ) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation": {
                     "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
                     "type": "Allele",
@@ -71,6 +60,8 @@ class TranslateToQuery(BaseModel):
                 },
                 "fmt": "hgvs",
             }
+        }
+    )
 
 
 class TranslateToHGVSQuery(BaseModel):
@@ -79,21 +70,9 @@ class TranslateToHGVSQuery(BaseModel):
     variation: Allele
     namespace: Optional[str] = None
 
-    class Config:
-        """Class configs."""
-
-        allow_population_by_field_name = True
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["TranslateToHGVSQuery"]
-        ) -> None:
-            """Configure OpenAPI schema"""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "variation": {
                     "_id": "ga4gh:VA.jCQx4yBcU6u6u1RcT9Tp0PjhaQ6ynicY",
                     "type": "Allele",
@@ -111,6 +90,8 @@ class TranslateToHGVSQuery(BaseModel):
                 },
                 "namespace": "refseq",
             }
+        }
+    )
 
 
 class TranslateFromQuery(BaseModel):
@@ -124,7 +105,7 @@ class TranslateService(BaseModel):
     """Response schema for vrs-python translator endpoints"""
 
     query: Union[TranslateFromQuery, TranslateToQuery, TranslateToHGVSQuery]
-    warnings: Optional[List[StrictStr]]
+    warnings: Optional[List[StrictStr]] = None
     service_meta_: ServiceMeta
     vrs_python_meta_: VrsPythonMeta
 

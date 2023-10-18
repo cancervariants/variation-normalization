@@ -2,7 +2,8 @@
 import logging
 from typing import List, Optional, Union
 
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import UTADatabase
 
 from variation.schemas.classification_response_schema import (
     Classification,

@@ -1,8 +1,8 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
-from typing import Any, Dict, Optional, Type, Union
+from typing import Optional, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import CopyNumberChange, CopyNumberCount, Text
-from pydantic import StrictStr
+from pydantic import ConfigDict, StrictStr
 
 from variation.schemas.normalize_response_schema import ServiceResponse
 
@@ -11,21 +11,11 @@ class HgvsToCopyNumberCountService(ServiceResponse):
     """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    copy_number_count: Optional[Union[CopyNumberCount, Text]]
+    copy_number_count: Optional[Union[CopyNumberCount, Text]] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["HgvsToCopyNumberCountService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
                     "_id": "ga4gh:CN.lxbM1jOtrVgrwy_SHSSd3o2QkCRRswyf",
@@ -49,27 +39,19 @@ class HgvsToCopyNumberCountService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class HgvsToCopyNumberChangeService(ServiceResponse):
     """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    copy_number_change: Optional[Union[CopyNumberChange, Text]]
+    copy_number_change: Optional[Union[CopyNumberChange, Text]] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["HgvsToCopyNumberChangeService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
                     "_id": "ga4gh:CX.49PTi3fDMxTdYRLp-svfrHrHc_pIAWT3",
@@ -93,3 +75,5 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

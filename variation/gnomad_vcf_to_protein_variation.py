@@ -4,14 +4,14 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 from urllib.parse import quote
 
-from cool_seq_tool.data_sources import (
-    MANETranscript,
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import MANETranscript
+from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.sources import (
     MANETranscriptMappings,
-    SeqRepoAccess,
     TranscriptMappings,
     UTADatabase,
 )
-from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from gene.query import QueryHandler as GeneQueryHandler
 

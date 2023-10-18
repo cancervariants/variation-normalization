@@ -2,8 +2,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
-from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import MANETranscript
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
+from cool_seq_tool.sources import UTADatabase
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode

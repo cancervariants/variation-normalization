@@ -1,8 +1,9 @@
 """Module for representing VRSATILE objects"""
 from typing import Callable, Dict, List, Optional, Tuple
 
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings
+from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.sources import TranscriptMappings
 from ga4gh.vrsatile.pydantic.vrs_models import VRSTypes
 from ga4gh.vrsatile.pydantic.vrsatile_models import (
     GeneDescriptor,

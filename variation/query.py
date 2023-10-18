@@ -1,11 +1,11 @@
 """Module for providing methods for handling queries."""
 from typing import Optional
 
-from cool_seq_tool import CoolSeqTool
+from cool_seq_tool.app import CoolSeqTool
 from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
+from gene.database import create_db
 from gene.query import QueryHandler as GeneQueryHandler
 
-from variation import UTA_DB_URL
 from variation.classify import Classify
 from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -23,29 +23,19 @@ class QueryHandler:
 
     def __init__(
         self,
-        dynamodb_url: str = "",
-        dynamodb_region: str = "us-east-2",
         gene_query_handler: Optional[GeneQueryHandler] = None,
-        uta_db_url: str = UTA_DB_URL,
     ) -> None:
         """Initialize QueryHandler instance.
-        :param str dynamodb_url: URL to gene normalizer dynamodb. Only used when
-            `gene_query_handler` is `None`.
-        :param str dynamodb_region: AWS region for gene normalizer db. Only used when
-            `gene_query_handler` is `None`.
-        :param Optional[GeneQueryHandler] gene_query_handler: Gene normalizer query
-            handler instance. If this is provided, will use a current instance. If this
-            is not provided, will create a new instance.
-        :param str uta_db_url: URL for UTA database
+        :param gene_query_handler: Gene normalizer query handler instance. If this is
+            provided, will use a current instance. If this is not provided, will create
+            a new instance.
+        :param uta_db_url: URL for UTA database
         """
-        cool_seq_tool = CoolSeqTool(
-            db_url=uta_db_url,
-            gene_query_handler=gene_query_handler,
-            gene_db_url=dynamodb_url,
-            gene_db_region=dynamodb_region,
-        )
+        cool_seq_tool = CoolSeqTool()
         self.seqrepo_access = cool_seq_tool.seqrepo_access
-        gene_query_handler = cool_seq_tool.gene_query_handler
+
+        if not gene_query_handler:
+            gene_query_handler = GeneQueryHandler(create_db())
 
         vrs_representation = VRSRepresentation(self.seqrepo_access)
         gene_symbol = GeneSymbol(gene_query_handler)

@@ -1,7 +1,7 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 from typing import Dict, List, Optional, Tuple, Union
 
-from cool_seq_tool.data_sources import SeqRepoAccess
+from cool_seq_tool.handlers import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange

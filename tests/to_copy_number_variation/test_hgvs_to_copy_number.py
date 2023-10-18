@@ -683,18 +683,18 @@ async def test_genomic_dup1_copy_number_count(
         baseline_copies=2,
         do_liftover=False,
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup1_38_cn
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup1_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup1_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup1_38_cn
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
@@ -702,7 +702,7 @@ async def test_genomic_dup1_copy_number_count(
     expected = copy.deepcopy(genomic_dup1_38_cn)
     expected["copies"]["value"] = 2
     expected["_id"] = "ga4gh:CN.j6wkkplSyDrYNisU8L7UFXLFLzRwL3bL"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -714,18 +714,18 @@ async def test_genomic_dup1_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup1_cx_38
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup1_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup1_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup1_cx_38
 
 
 @pytest.mark.asyncio
@@ -737,18 +737,18 @@ async def test_genomic_dup2_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup2_38_cn
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup2_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup2_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup2_38_cn
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
@@ -756,7 +756,7 @@ async def test_genomic_dup2_copy_number_count(
     expected = copy.deepcopy(genomic_dup2_38_cn)
     expected["copies"]["value"] = 2
     expected["_id"] = "ga4gh:CN.gQzX8KWIj51ySV1oyNtLapeTO6_U89pt"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -768,18 +768,18 @@ async def test_genomic_dup2_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup2_cx_38
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup2_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup2_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup2_cx_38
 
 
 @pytest.mark.asyncio
@@ -791,18 +791,18 @@ async def test_genomic_dup3_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup3_cn_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup3_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup3_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup3_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
@@ -810,7 +810,7 @@ async def test_genomic_dup3_copy_number_count(
     expected = copy.deepcopy(genomic_dup3_cn_38)
     expected["copies"] = {"value": 3, "type": "Number"}
     expected["_id"] = "ga4gh:CN.nSFsagp2K8It3Pg-UbIMLAG3o7sAlwF8"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -822,18 +822,18 @@ async def test_genomic_dup3_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup3_cx_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup3_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030072", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup3_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup3_cx_38
 
 
 @pytest.mark.asyncio
@@ -845,18 +845,18 @@ async def test_genomic_dup4_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup4_cn_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup4_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup4_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup4_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
@@ -864,7 +864,7 @@ async def test_genomic_dup4_copy_number_count(
     expected = copy.deepcopy(genomic_dup4_cn_38)
     expected["copies"]["value"] = 2
     expected["_id"] = "ga4gh:CN.V4cTNZe00EJzrR8VIRacCAQUhZc3wWuD"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -876,18 +876,18 @@ async def test_genomic_dup4_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup4_cx_38
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup4_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup4_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup4_cx_38
 
 
 @pytest.mark.asyncio
@@ -899,18 +899,18 @@ async def test_genomic_dup5_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup5_cn_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup5_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup5_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup5_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True
@@ -918,7 +918,7 @@ async def test_genomic_dup5_copy_number_count(
     expected = copy.deepcopy(genomic_dup5_cn_38)
     expected["copies"] = {"value": 5, "type": "Number"}
     expected["_id"] = "ga4gh:CN.5M3WmbZb-DJSHCX59VpEqoKjQXFws7Kz"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -930,18 +930,18 @@ async def test_genomic_dup5_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup5_cx_38
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup5_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup5_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup5_cx_38
 
 
 @pytest.mark.asyncio
@@ -953,18 +953,18 @@ async def test_genomic_dup6_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup6_cn_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup6_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_dup6_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_dup6_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
@@ -972,7 +972,7 @@ async def test_genomic_dup6_copy_number_count(
     expected = copy.deepcopy(genomic_dup6_cn_38)
     expected["copies"] = {"value": 3, "type": "Number"}
     expected["_id"] = "ga4gh:CN.BfAbxCE8G4Ag3BDhwE0xU7z7l1eTOBtF"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -984,18 +984,18 @@ async def test_genomic_dup6_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup6_cx_38
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup6_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_dup6_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_dup6_cx_38
 
 
 @pytest.mark.asyncio
@@ -1007,18 +1007,18 @@ async def test_genomic_del1_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del1_38_cn
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del1_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del1_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del1_38_cn
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
@@ -1026,7 +1026,7 @@ async def test_genomic_del1_copy_number_count(
     expected = copy.deepcopy(genomic_del1_38_cn)
     expected["copies"]["value"] = 2
     expected["_id"] = "ga4gh:CN.V-JXhJ2ZmmZR2IxfXyvcVY3jbyJkv0Ku"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1038,18 +1038,18 @@ async def test_genomic_del1_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del1_cx_38
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del1_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del1_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del1_cx_38
 
 
 @pytest.mark.asyncio
@@ -1061,18 +1061,18 @@ async def test_genomic_del2_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del2_38_cn
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del2_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del2_38_cn
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del2_38_cn
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=4, do_liftover=True
@@ -1080,7 +1080,7 @@ async def test_genomic_del2_copy_number_count(
     expected = copy.deepcopy(genomic_del2_38_cn)
     expected["copies"]["value"] = 3
     expected["_id"] = "ga4gh:CN.LnafQdwGW6J8wxSQUZ7VHB69mYvX5fnq"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1092,18 +1092,18 @@ async def test_genomic_del2_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del2_cx_38
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del2_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del2_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del2_cx_38
 
 
 @pytest.mark.asyncio
@@ -1115,18 +1115,18 @@ async def test_genomic_del3_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del3_cn_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del3_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del3_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del3_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
@@ -1134,7 +1134,7 @@ async def test_genomic_del3_copy_number_count(
     expected = copy.deepcopy(genomic_del3_cn_38)
     expected["copies"] = {"value": 1, "type": "Number"}
     expected["_id"] = "ga4gh:CN.9ydcgFUfIXFnCbzke6Iu1Cg7VssMRawR"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1146,18 +1146,18 @@ async def test_genomic_del3_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del3_cx_38
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del3_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del3_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del3_cx_38
 
 
 @pytest.mark.asyncio
@@ -1169,18 +1169,18 @@ async def test_genomic_del4_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del4_cn_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del4_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=5, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del4_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del4_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
@@ -1188,7 +1188,7 @@ async def test_genomic_del4_copy_number_count(
     expected = copy.deepcopy(genomic_del4_cn_38)
     expected["copies"] = {"value": 2, "type": "Number"}
     expected["_id"] = "ga4gh:CN.y2oNmJM4XzlVbAxcPWPq4JgCPuFQKGYQ"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1200,18 +1200,18 @@ async def test_genomic_del4_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del4_cx_38
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del4_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030067", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del4_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del4_cx_38
 
 
 @pytest.mark.asyncio
@@ -1223,18 +1223,18 @@ async def test_genomic_del5_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del5_cn_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del5_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del5_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del5_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
@@ -1242,7 +1242,7 @@ async def test_genomic_del5_copy_number_count(
     expected = copy.deepcopy(genomic_del5_cn_38)
     expected["copies"] = {"value": 1, "type": "Number"}
     expected["_id"] = "ga4gh:CN.KuWPcxhww7j1W7nwDs5741_6d_TgJOlf"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1254,18 +1254,18 @@ async def test_genomic_del5_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del5_cx_38
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del5_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030064", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del5_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del5_cx_38
 
 
 @pytest.mark.asyncio
@@ -1277,18 +1277,18 @@ async def test_genomic_del6_copy_number_count(
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del6_cn_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=False
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_37
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del6_cn_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
-    assert resp.copy_number_count.dict(by_alias=True) == genomic_del6_cn_38
+    assert resp.copy_number_count.model_dump(by_alias=True) == genomic_del6_cn_38
 
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
         q, baseline_copies=3, do_liftover=True
@@ -1296,7 +1296,7 @@ async def test_genomic_del6_copy_number_count(
     expected = copy.deepcopy(genomic_del6_cn_38)
     expected["copies"]["value"] = 2
     expected["_id"] = "ga4gh:CN.vfPoDhlxDQsLJaxA9WiIbRtyUCgD3y1k"
-    assert resp.copy_number_count.dict(by_alias=True) == expected
+    assert resp.copy_number_count.model_dump(by_alias=True) == expected
 
 
 @pytest.mark.asyncio
@@ -1308,18 +1308,18 @@ async def test_genomic_del6_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del6_cx_38
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=False
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_37
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del6_cx_37
 
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030071", do_liftover=True
     )
-    assert resp.copy_number_change.dict(by_alias=True) == genomic_del6_cx_38
+    assert resp.copy_number_change.model_dump(by_alias=True) == genomic_del6_cx_38
 
 
 @pytest.mark.asyncio

@@ -1,7 +1,7 @@
 """Module containing schemas for services"""
 import re
 from enum import Enum
-from typing import Any, Dict, Literal, Optional, Type, Union
+from typing import Dict, Literal, Optional, Union
 
 from ga4gh.vrsatile.pydantic.vrs_models import (
     Comparator,
@@ -12,8 +12,15 @@ from ga4gh.vrsatile.pydantic.vrs_models import (
     Text,
     VRSTypes,
 )
-from pydantic import BaseModel, Field, StrictBool, StrictInt, StrictStr, root_validator
-from pydantic.main import ModelMetaclass
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StrictBool,
+    StrictInt,
+    StrictStr,
+    model_validator,
+)
 
 from variation.schemas.normalize_response_schema import ServiceResponse
 from variation.version import __version__
@@ -30,7 +37,7 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+def validate_parsed_fields(cls, v: Dict) -> Dict:
     """Validate base copy number query fields
     - `accession` or both `assembly` and `chromosome` must be provided
     - `start1` is required when `start_pos_type` is a definite
@@ -42,10 +49,10 @@ def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
     - End positions must be greater than start positions
     """
     ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
-    assembly = v.get("assembly")
-    chromosome = v.get("chromosome")
+    assembly = v.assembly
+    chromosome = v.chromosome
     assembly_chr_set = assembly and chromosome
-    assert v.get("accession") or assembly_chr_set, ac_assembly_chr_msg
+    assert v.accession or assembly_chr_set, ac_assembly_chr_msg
 
     if assembly_chr_set:
         pattern = r"^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$"
@@ -53,24 +60,24 @@ def validate_parsed_fields(cls: ModelMetaclass, v: Dict) -> Dict:
             pattern, chromosome
         ), f"`chromosome`, {chromosome}, does not match r'{pattern}'"
 
-    start0 = v["start0"]
-    start1 = v.get("start1")
-    if v["start_pos_type"] == VRSTypes.DEFINITE_RANGE:
+    start0 = v.start0
+    start1 = v.start1
+    if v.start_pos_type == VRSTypes.DEFINITE_RANGE:
         assert start1 is not None, "`start1` is required for definite ranges"
         assert start1 > start0, "`start0` must be less than `start1`"
-    elif v["start_pos_type"] == VRSTypes.INDEFINITE_RANGE:
-        assert v.get(
-            "start_pos_comparator"
+    elif v.start_pos_type == VRSTypes.INDEFINITE_RANGE:
+        assert (
+            v.start_pos_comparator
         ), "`start_pos_comparator` is required for indefinite ranges"
 
-    end0 = v["end0"]
-    end1 = v.get("end1")
-    if v["end_pos_type"] == VRSTypes.DEFINITE_RANGE:
+    end0 = v.end0
+    end1 = v.end1
+    if v.end_pos_type == VRSTypes.DEFINITE_RANGE:
         assert end1 is not None, "`end1` is required for definite ranges"
         assert end1 > end0, "`end0` must be less than `end1`"
-    elif v["end_pos_type"] == VRSTypes.INDEFINITE_RANGE:
-        assert v.get(
-            "end_pos_comparator"
+    elif v.end_pos_type == VRSTypes.INDEFINITE_RANGE:
+        assert (
+            v.end_pos_comparator
         ), "`end_pos_comparator` is required for indefinite ranges"
 
     err_msg = "end positions must be greater than start"
@@ -201,8 +208,8 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         ),
     )
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+    @model_validator(mode="after")
+    def validate_fields(cls, v: Dict) -> Dict:
         """Validate fields.
 
         - `copies1` should exist when `copies_type == VRSTypes.DEFINITE_RANGE`
@@ -210,9 +217,9 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
             `copies_type == VRSTypes.INDEFINITE_RANGE`
         """
         validate_parsed_fields(cls, v)
-        copies1 = v.get("copies1")
-        copies_type = v.get("copies_type")
-        copies_comparator = v.get("copies_comparator")
+        copies1 = v.copies1
+        copies_type = v.copies_type
+        copies_comparator = v.copies_comparator
 
         if copies_type == VRSTypes.DEFINITE_RANGE:
             assert (
@@ -225,19 +232,9 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
 
         return v
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["ParsedToCnVarQuery"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "assembly": "GRCh37",
                 "chromosome": "chr1",
                 "accession": None,
@@ -256,26 +253,18 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
                 "do_liftover": False,
                 "untranslatable_returns_text": False,
             }
+        }
+    )
 
 
 class ParsedToCnVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Count"""
 
-    copy_number_count: Optional[Union[Text, CopyNumberCount]]
+    copy_number_count: Optional[Union[Text, CopyNumberCount]] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["ParsedToCnVarService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "copy_number_count": {
                     "_id": "ga4gh:CN.N6C9rWBjrNuiIhJkPxdPlRKvSGKoFynr",
                     "type": "CopyNumberCount",
@@ -305,6 +294,8 @@ class ParsedToCnVarService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
@@ -312,25 +303,15 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
 
     copy_change: CopyChange
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_fields(cls: ModelMetaclass, v: Dict) -> Dict:
+    @model_validator(mode="after")
+    def validate_fields(cls, v: Dict) -> Dict:
         """Validate fields"""
         validate_parsed_fields(cls, v)
         return v
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["ParsedToCxVarQuery"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "assembly": "GRCh38",
                 "chromosome": "chrY",
                 "accession": None,
@@ -344,26 +325,18 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
                 "do_liftover": False,
                 "untranslatable_returns_text": False,
             }
+        }
+    )
 
 
 class ParsedToCxVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Change"""
 
-    copy_number_change: Optional[Union[Text, CopyNumberChange]]
+    copy_number_change: Optional[Union[Text, CopyNumberChange]] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["ParsedToCxVarService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
                     "_id": "ga4gh:CX.KYAQwf8-DQu23LsDbFHP0BiRzrCmu46x",
@@ -385,38 +358,30 @@ class ParsedToCxVarService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )
 
 
 class AmplificationToCxVarQuery(BaseModel):
     """Define query for amplification to copy number change variation endpoint"""
 
     gene: str
-    sequence_id: Optional[str]
-    start: Optional[int]
-    end: Optional[int]
-    sequence_location: Optional[SequenceLocation]
+    sequence_id: Optional[str] = None
+    start: Optional[int] = None
+    end: Optional[int] = None
+    sequence_location: Optional[SequenceLocation] = None
 
 
 class AmplificationToCxVarService(ServiceResponse):
     """A response for translating Amplification queries to Copy Number Change"""
 
     query: Optional[AmplificationToCxVarQuery] = None
-    amplification_label: Optional[str]
-    copy_number_change: Optional[Union[Text, CopyNumberChange]]
+    amplification_label: Optional[str] = None
+    copy_number_change: Optional[Union[Text, CopyNumberChange]] = None
 
-    class Config:
-        """Configure model."""
-
-        @staticmethod
-        def schema_extra(
-            schema: Dict[str, Any], model: Type["AmplificationToCxVarService"]
-        ) -> None:
-            """Configure OpenAPI schema."""
-            if "title" in schema.keys():
-                schema.pop("title", None)
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            schema["example"] = {
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
                 "query": {
                     "gene": "braf",
                     "sequence_id": None,
@@ -446,3 +411,5 @@ class AmplificationToCxVarService(ServiceResponse):
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
+        }
+    )

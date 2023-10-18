@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess
+from cool_seq_tool.handlers import SeqRepoAccess
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange, Text

@@ -418,7 +418,7 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
         if valid VRS Allele, and warnings if found
     """
     query = request_body
-    request_body = request_body.dict(by_alias=True)
+    request_body = request_body.model_dump(by_alias=True)
     warnings = list()
 
     allele = _get_allele(request_body, warnings)
@@ -474,7 +474,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
         if valid VRS Allele, and warnings if found
     """
     query = request_body
-    request_body = request_body.dict(by_alias=True)
+    request_body = request_body.model_dump(by_alias=True)
     warnings = list()
 
     allele = _get_allele(request_body, warnings)

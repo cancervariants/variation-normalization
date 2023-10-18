@@ -303,7 +303,7 @@ async def test_substitution(
 
     resp = await test_handler.gnomad_vcf_to_protein("12-25245350-C-T")
     assert resp
-    variation = resp.variation_descriptor.dict(by_alias=True)["variation"]
+    variation = resp.variation_descriptor.model_dump(by_alias=True)["variation"]
     assert variation == kras_g12d
 
 
