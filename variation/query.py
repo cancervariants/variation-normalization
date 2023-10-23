@@ -29,7 +29,6 @@ class QueryHandler:
         :param gene_query_handler: Gene normalizer query handler instance. If this is
             provided, will use a current instance. If this is not provided, will create
             a new instance.
-        :param uta_db_url: URL for UTA database
         """
         cool_seq_tool = CoolSeqTool()
         self.seqrepo_access = cool_seq_tool.seqrepo_access
