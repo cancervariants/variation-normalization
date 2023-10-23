@@ -15,7 +15,7 @@ line-length = 88
 # isort (I)
 select = ["E", "W", "F", "ANN", "Q", "D", "N", "I"]
 
-fixable = ["I", "F401"]
+fixable = ["I"]
 
 # D205 - blank-line-after-summary
 # D400 - ends-in-period
