@@ -19,7 +19,7 @@ black = "*"
 "biocommons.seqrepo" = "*"
 fastapi = "*"
 uvicorn = "*"
-pydantic = "~=2.4.2"
+pydantic = "== 2.*"
 "ga4gh.vrs" = {version = "~=0.8.4", extras = ["extras"]}
 gene-normalizer = "~=0.1.40-dev1"
 boto3 = "*"
