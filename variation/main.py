@@ -242,16 +242,18 @@ def translate_identifier(
     :return: TranslateIdentifierService data
     """
     aliases = []
-    warnings = None
+    warnings = []
     identifier = identifier.strip()
     try:
         aliases = query_handler.seqrepo_access.sr.translate_identifier(
             identifier, target_namespaces=target_namespaces
         )
     except KeyError:
-        warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
+        warnings.append(f"Identifier, {identifier}, does not exist in SeqRepo")
     except Exception as e:
-        warnings = [f"SeqRepo could not translate identifier, {identifier}:" f" {e}"]
+        warnings.append(
+            f"SeqRepo could not translate identifier, {identifier}:" f" {e}"
+        )
 
     return TranslateIdentifierService(
         identifier_query=identifier,
