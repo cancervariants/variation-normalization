@@ -1,7 +1,8 @@
 """Module for Validation."""
 from typing import List
 
-from cool_seq_tool.data_sources import SeqRepoAccess, TranscriptMappings, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import TranscriptMappings, UTADatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import Classification

@@ -27,13 +27,13 @@ class GeneSymbol(Tokenizer):
         norm_match_type = norm_resp.match_type
 
         if norm_match_type != 0:
-            gene_descriptor = norm_resp.gene_descriptor
-            label = gene_descriptor.label
+            gene = norm_resp.gene
+            label = gene.label
             gene_match_token = GeneToken(
                 token=label,
                 input_string=input_string,
                 matched_value=label,
-                gene_descriptor=gene_descriptor,
+                gene=gene,
             )
             return gene_match_token
 

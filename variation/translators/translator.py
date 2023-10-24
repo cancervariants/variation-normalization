@@ -2,8 +2,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
-from cool_seq_tool.data_sources import MANETranscript, SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import MANETranscript
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
+from cool_seq_tool.sources import UTADatabase
 from ga4gh.vrs import models
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -103,7 +105,7 @@ class Translator(ABC):
         gene_start = None
         gene_end = None
 
-        for ext in gene_token.gene_descriptor.extensions:
+        for ext in gene_token.gene.extensions:
             if ext.name == "ensembl_locations":
                 if ext.value:
                     ensembl_loc = ext.value[0]

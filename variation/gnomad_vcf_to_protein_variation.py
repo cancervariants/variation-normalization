@@ -3,13 +3,13 @@ from copy import deepcopy
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
-from cool_seq_tool.data_sources import (
-    MANETranscript,
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import MANETranscript
+from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.sources import (
     MANETranscriptMappings,
-    SeqRepoAccess,
     UTADatabase,
 )
-from cool_seq_tool.schemas import ResidueMode
 
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint

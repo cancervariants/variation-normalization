@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import UTADatabase
 from ga4gh.vrs import models
 
 from variation.classify import Classify
