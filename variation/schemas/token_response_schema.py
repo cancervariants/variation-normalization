@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Literal, Optional
 
 from cool_seq_tool.schemas import AnnotationLayer
-from gene.schemas import GeneDescriptor
+from ga4gh.core import core_models
 from pydantic import BaseModel, StrictInt, StrictStr
 
 from variation.schemas.app_schemas import AmbiguousRegexType
@@ -254,4 +254,4 @@ class GeneToken(Token):
 
     matched_value: StrictStr
     token_type: Literal[TokenType.GENE] = TokenType.GENE
-    gene_descriptor: Optional[GeneDescriptor] = None
+    gene: Optional[core_models.Gene] = None

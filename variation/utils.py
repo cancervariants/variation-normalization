@@ -4,8 +4,8 @@ from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
-from cool_seq_tool.data_sources import SeqRepoAccess
-from gene.schemas import GeneDescriptor
+from cool_seq_tool.handlers import SeqRepoAccess
+from ga4gh.core import core_models
 
 from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.classification_response_schema import AmbiguousType
@@ -63,16 +63,16 @@ def _get_priority_sequence_location(
 
 
 def get_priority_sequence_location(
-    gene_descriptor: GeneDescriptor, seqrepo_access: SeqRepoAccess
+    gene: core_models.Gene, seqrepo_access: SeqRepoAccess
 ) -> Optional[Dict]:
-    """Get prioritized sequence location from a gene descriptor
+    """Get prioritized sequence location from a gene
     Will prioritize NCBI and then Ensembl. GRCh38 will be chosen over GRCh37.
 
-    :param GeneDescriptor gene_descriptor: Gene descriptor
-    :param SeqRepoAccess seqrepo_access: Client to access seqrepo
+    :param gene: GA4GH Core Gene
+    :param seqrepo_access: Client to access seqrepo
     :return: Prioritized sequence location represented as a dictionary if found
     """
-    extensions = gene_descriptor.extensions or []
+    extensions = gene.extensions or []
 
     # HGNC only provides ChromosomeLocation
     ensembl_loc, ncbi_loc = None, None

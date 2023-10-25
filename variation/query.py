@@ -1,8 +1,9 @@
 """Module for providing methods for handling queries."""
 from typing import Optional
 
-from cool_seq_tool import CoolSeqTool
+from cool_seq_tool.app import CoolSeqTool
 from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
+from gene.database import create_db
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classify import Classify
@@ -29,9 +30,11 @@ class QueryHandler:
             provided, will use a current instance. If this is not provided, will create
             a new instance.
         """
-        cool_seq_tool = CoolSeqTool(gene_query_handler=gene_query_handler)
+        cool_seq_tool = CoolSeqTool()
         self.seqrepo_access = cool_seq_tool.seqrepo_access
-        gene_query_handler = cool_seq_tool.gene_query_handler
+
+        if not gene_query_handler:
+            gene_query_handler = GeneQueryHandler(create_db())
 
         vrs_representation = VRSRepresentation(self.seqrepo_access)
         gene_symbol = GeneSymbol(gene_query_handler)

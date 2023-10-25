@@ -47,10 +47,8 @@ class Amplification(Translator):
         :return: Translation result if translation was successful. If translation was
             not successful, `None`
         """
-        gene_descriptor = validation_result.classification.gene_token.gene_descriptor
-        priority_seq_loc = get_priority_sequence_location(
-            gene_descriptor, self.seqrepo_access
-        )
+        gene = validation_result.classification.gene_token.gene
+        priority_seq_loc = get_priority_sequence_location(gene, self.seqrepo_access)
 
         if priority_seq_loc:
             vrs_cx = models.CopyNumberChange(
@@ -61,9 +59,7 @@ class Amplification(Translator):
             vrs_cx = vrs_cx.model_dump(exclude_none=True)
         else:
             vrs_cx = None
-            warnings.append(
-                f"No VRS SequenceLocation found for gene: {gene_descriptor.gene}"
-            )
+            warnings.append(f"No VRS SequenceLocation found for gene: {gene.label}")
 
         if vrs_cx:
             return TranslationResult(

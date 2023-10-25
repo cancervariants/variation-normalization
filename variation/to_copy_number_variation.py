@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote
 
-from cool_seq_tool.data_sources import SeqRepoAccess, UTADatabase
+from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.sources import UTADatabase
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
@@ -659,8 +660,8 @@ class ToCopyNumberVariation(ToVRS):
             gene_norm_resp = self.gene_normalizer.normalize(gene)
             if gene_norm_resp.match_type != GeneMatchType.NO_MATCH:
                 vrs_location = None
-                gene_descriptor = gene_norm_resp.gene_descriptor
-                gene_norm_label = gene_descriptor.label
+                gene = gene_norm_resp.gene
+                gene_norm_label = gene.label
                 amplification_label = f"{gene_norm_label} Amplification"
                 if all((sequence_id, start, end)):
                     # User provided input to make sequence location
@@ -686,9 +687,7 @@ class ToCopyNumberVariation(ToVRS):
                             )
                 else:
                     # Use gene normalizer to get sequence location
-                    seq_loc = get_priority_sequence_location(
-                        gene_descriptor, self.seqrepo_access
-                    )
+                    seq_loc = get_priority_sequence_location(gene, self.seqrepo_access)
                     if seq_loc:
                         vrs_location = models.SequenceLocation(**seq_loc)
                     else:

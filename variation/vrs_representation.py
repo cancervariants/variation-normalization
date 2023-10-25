@@ -1,7 +1,7 @@
 """Module for generating VRS objects"""
 from typing import Dict, List, Optional, Tuple, Union
 
-from cool_seq_tool.data_sources import SeqRepoAccess
+from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
