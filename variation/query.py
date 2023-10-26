@@ -2,7 +2,7 @@
 from typing import Optional
 
 from cool_seq_tool.app import CoolSeqTool
-from ga4gh.vrs.extras.translator import Translator as VrsPythonTranslator
+from ga4gh.vrs.extras.translator import AlleleTranslator as VrsPythonTranslator
 from gene.database import create_db
 from gene.query import QueryHandler as GeneQueryHandler
 
