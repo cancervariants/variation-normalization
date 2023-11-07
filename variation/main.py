@@ -8,6 +8,10 @@ from urllib.parse import unquote
 import pkg_resources
 import python_jsonschema_objects
 from bioutils.exceptions import BioutilsError
+from cool_seq_tool.data_sources.feature_overlap import (
+    FeatureOverlap,
+    FeatureOverlapError,
+)
 from cool_seq_tool.schemas import Assembly, ResidueMode
 from fastapi import FastAPI, Query
 from ga4gh.vrs import models
@@ -35,6 +39,7 @@ from variation.schemas.normalize_response_schema import (
 )
 from variation.schemas.service_schema import (
     ClinVarAssembly,
+    FeatureOverlapService,
     ToCdnaService,
     ToGenomicService,
 )
@@ -59,9 +64,11 @@ class Tag(Enum):
     VRS_PYTHON = "VRS-Python"
     TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
     ALIGNMENT_MAPPER = "Alignment Mapper"
+    FEATURE_OVERLAP = "Feature Overlap"
 
 
 query_handler = QueryHandler()
+feature_overlap = FeatureOverlap(query_handler.seqrepo_access)
 
 
 app = FastAPI(
@@ -840,4 +847,71 @@ async def p_to_g(
         g_data=g_data,
         warnings=[w] if w else [],
         service_meta=ServiceMeta(version=__version__, response_datetime=datetime.now()),
+    )
+
+
+@app.get(
+    "/variation/feature_overlap",
+    summary="Given GRCh38 genomic data, find the overlapping MANE features (gene and cds)",
+    response_description="A response to a validly-formed query.",
+    description="The genomic data is specified as a sequence location by `chromosome`, `start`, `end`. All CDS regions with which the input sequence location has nonzero base pair overlap will be returned.",
+    response_model=FeatureOverlapService,
+    tags=[Tag.FEATURE_OVERLAP],
+)
+def get_feature_overlap(
+    start: int = Query(..., description="GRCh38 start position"),
+    end: int = Query(..., description="GRCh38 end position"),
+    chromosome: Optional[str] = Query(
+        None,
+        description="Chromosome. 1..22, X, or Y. If not provided, must provide `identifier`. If both `chromosome` and `identifier` are provided, `chromosome` will be used.",
+    ),
+    identifier: Optional[str] = Query(
+        None,
+        description="Genomic identifier on GRCh38 assembly. If not provided, must provide `chromosome`. If both `chromosome` and `identifier` are provided, `chromosome` will be used.",
+    ),
+    residue_mode: ResidueMode = Query(
+        ResidueMode.RESIDUE, description="Residue mode for `start` and `end`"
+    ),
+) -> FeatureOverlapService:
+    """Given GRCh38 genomic data, find the overlapping MANE features (gene and cds)
+    The genomic data is specified as a sequence location by `chromosome`, `start`,
+    `end`. All CDS regions with which the input sequence location has nonzero base
+    pair overlap will be returned.
+
+    :param start: GRCh38 start position
+    :param end: GRCh38 end position
+    :param chromosome: Chromosome. 1..22, X, or Y. If not provided, must provide
+        `identifier`. If both `chromosome` and `identifier` are provided,
+        `chromosome` will be used.
+    :param identifier: Genomic identifier on GRCh38 assembly. If not provided, must
+        provide `chromosome`. If both `chromosome` and `identifier` are provided,
+        `chromosome` will be used.
+    :param residue_mode: Residue mode for `start` and `end`
+    :return: MANE feature (gene/cds) overlap data represented as a dict. The
+        dictionary will be keyed by genes which overlap the input sequence location.
+        Each gene contains a list of the overlapping CDS regions with the beginning
+        and end of the input sequence location's overlap with each
+    """
+    try:
+        overlap_data = feature_overlap.get_grch38_mane_gene_cds_overlap(
+            start=start,
+            end=end,
+            chromosome=chromosome,
+            identifier=identifier,
+            residue_mode=residue_mode,
+        )
+        errors = []
+    except FeatureOverlapError as e:
+        errors = [str(e)]
+        overlap_data = None
+    except Exception as e:
+        logger.error("Unhandled exception: %s", str(e))
+        errors = ["Unhandled exception. See logs for more information."]
+        overlap_data = None
+    return FeatureOverlapService(
+        feature_overlap=overlap_data,
+        warnings=errors,
+        service_meta_=ServiceMeta(
+            version=__version__, response_datetime=datetime.now()
+        ),
     )
