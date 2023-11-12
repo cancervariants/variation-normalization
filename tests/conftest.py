@@ -536,6 +536,18 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
     return models.CopyNumberChange(**params)
 
 
+@pytest.fixture(scope="module")
+def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
+    """Create test fixture CN variation for del/dup 3 on GRCh38"""
+    params = {
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",
+        "location": genomic_del3_dup3_loc_not_normalized,
+        "copies": 2,
+    }
+    return models.CopyNumberCount(**params)
+
+
 def assertion_checks(normalize_response, test_variation):
     """Check that normalize_response and test_variation are equal."""
     actual = normalize_response.variation.model_dump(exclude_none=True)

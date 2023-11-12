@@ -205,18 +205,6 @@ def genomic_dup2_free_text_cn(genomic_dup2_free_text_seq_loc):
 
 
 @pytest.fixture(scope="module")
-def genomic_dup3_cn(genomic_del3_dup3_loc_not_normalized):
-    """Create a test fixture for genomic dup copy number count."""
-    params = {
-        "type": "CopyNumberCount",
-        "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",
-        "location": genomic_del3_dup3_loc_not_normalized,
-        "copies": 2,
-    }
-    return models.CopyNumberCount(**params)
-
-
-@pytest.fixture(scope="module")
 def genomic_dup3_cx(genomic_del3_dup3_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
     params = {
@@ -602,18 +590,6 @@ def genomic_del3_cx(genomic_del3_dup3_loc_not_normalized):
 
 
 @pytest.fixture(scope="module")
-def genomic_del3_cn(genomic_del3_dup3_loc_not_normalized):
-    """Create a test fixture for genomic del copy number count."""
-    params = {
-        "type": "CopyNumberCount",
-        "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",
-        "location": genomic_del3_dup3_loc_not_normalized,
-        "copies": 2,
-    }
-    return models.CopyNumberCount(**params)
-
-
-@pytest.fixture(scope="module")
 def genomic_del3_free_text_subject():
     """Create test fixture for genomic del3 free text location"""
     return {
@@ -970,7 +946,7 @@ async def test_genomic_dup2(
 async def test_genomic_dup3(
     test_handler,
     genomic_dup3_cx,
-    genomic_dup3_cn,
+    genomic_del3_dup3_cn_38,
     genomic_dup3_free_text_cn,
     genomic_dup3_free_text_cx,
 ):
@@ -982,7 +958,7 @@ async def test_genomic_dup3(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_dup3_cn)
+    assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(
         q,
@@ -1001,7 +977,7 @@ async def test_genomic_dup3(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_dup3_cn)
+    assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp, genomic_dup3_cx)
@@ -1383,7 +1359,7 @@ async def test_genomic_del2(
 @pytest.mark.asyncio
 async def test_genomic_del3(
     test_handler,
-    genomic_del3_cn,
+    genomic_del3_dup3_cn_38,
     genomic_del3_cx,
     genomic_del3_free_text_cn,
     genomic_del3_free_text_cx,
@@ -1396,7 +1372,7 @@ async def test_genomic_del3(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
     )
-    assertion_checks(resp, genomic_del3_cn)
+    assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp, genomic_del3_cx)
@@ -1411,7 +1387,7 @@ async def test_genomic_del3(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
     )
-    assertion_checks(resp, genomic_del3_cn)
+    assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
     assertion_checks(resp, genomic_del3_cx)
