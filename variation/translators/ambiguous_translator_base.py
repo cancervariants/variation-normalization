@@ -130,7 +130,7 @@ class AmbiguousTranslator(Translator):
         """
         if ambiguous_type == AmbiguousType.AMBIGUOUS_1:
             start = models.Range([pos0 - 1, pos1 - 1])
-            end = models.Range([pos2 + 1, pos3 + 1])
+            end = models.Range([pos2, pos3])
         elif ambiguous_type == AmbiguousType.AMBIGUOUS_2:
             start = self.vrs.get_start_indef_range(pos1)
             end = self.vrs.get_end_indef_range(pos2)

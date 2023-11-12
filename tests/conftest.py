@@ -291,13 +291,13 @@ def genomic_dup2_38_cn(genomic_dup2_seq_loc_normalized):
 def genomic_del3_dup3_loc_not_normalized():
     """Create genomic del3 dup3 sequence location"""
     return {
-        "id": "ga4gh:SL.NbjuicGHnxcERd1t0hGkzlw93YX1p3Y7",
+        "id": "ga4gh:SL.-zCp7JBaKQ0niPDueJkuCgQhRIQ50hKw",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         },
         "start": [31060226, 31100350],
-        "end": [33274279, 33417152],
+        "end": [33274278, 33417151],
         "type": "SequenceLocation",
     }
 

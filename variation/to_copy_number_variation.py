@@ -394,7 +394,7 @@ class ToCopyNumberVariation(ToVRS):
         elif pos_type == ParsedPosType.DEFINITE_RANGE:
             self._validate_ac_pos(accession, pos1)
             vrs_val = models.Range(
-                [pos0 - 1 if is_start else pos0 + 1, pos1 - 1 if is_start else pos1 + 1]
+                [pos0 - 1 if is_start else pos0, pos1 - 1 if is_start else pos1]
             )
         else:
             if comparator == Comparator.LT_OR_EQUAL:

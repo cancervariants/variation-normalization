@@ -182,16 +182,16 @@ def cx_definite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.pAvWqzj0yKdETBy_rjApb2j3A_5o213Z",
+        "id": "ga4gh:CX.gn7z-74PrlvMWAVK7jsP9oYnp0pCezee",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.1ZWJdPDJHP1XwDZcI1JHU2Obf9-3AYpz",
+            "id": "ga4gh:SL.jOyDc0XwpyvY-SqxowgWxb7N5ODEYc4I",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
             },
             "start": [10000, 10005],
-            "end": [1223131, 1223134],
+            "end": [1223130, 1223133],
         },
         "copyChange": "efo:0030069",
     }
@@ -355,7 +355,7 @@ def test_get_vrs_loc_start_or_end(test_cnv_handler):
     resp = test_cnv_handler._get_vrs_loc_start_or_end(
         ac, pos0, ParsedPosType.DEFINITE_RANGE, is_start=False, pos1=pos1
     )
-    assert resp == models.Range([140753337, 140753351])
+    assert resp == models.Range([pos0, pos1])
 
     # Indefinite Range start
     resp = test_cnv_handler._get_vrs_loc_start_or_end(

@@ -1400,11 +1400,11 @@ genomic_duplication_ambiguous:
       variations:
         [
           {
-            "id": "ga4gh:CX.Gq5d-uH01bgf7m703dOSfSp_29wFqpsb",
+            "id": "ga4gh:CX.gsV4KrWvNQ_c0UT8M31mqa0HJ-IAHL8q",
             "type": "CopyNumberChange",
             "location":
               {
-                "id": "ga4gh:SL.NbjuicGHnxcERd1t0hGkzlw93YX1p3Y7",
+                "id": "ga4gh:SL.-zCp7JBaKQ0niPDueJkuCgQhRIQ50hKw",
                 "type": "SequenceLocation",
                 "sequenceReference":
                   {
@@ -1412,7 +1412,7 @@ genomic_duplication_ambiguous:
                     "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
                   },
                 "start": [31060226, 31100350],
-                "end": [33274279, 33417152],
+                "end": [33274278, 33417151],
               },
             "copyChange": "efo:0030070",
           },
