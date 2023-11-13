@@ -538,7 +538,7 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
 
 @pytest.fixture(scope="module")
 def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
-    """Create test fixture CN variation for del/dup 3 on GRCh38"""
+    """Create test fixture copy number variation for del/dup 3 on GRCh38"""
     params = {
         "type": "CopyNumberCount",
         "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",

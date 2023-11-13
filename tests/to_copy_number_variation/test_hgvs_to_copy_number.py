@@ -138,7 +138,7 @@ def genomic_dup3_37_loc():
 
 @pytest.fixture(scope="module")
 def genomic_del3_dup3_cn_37(genomic_dup3_37_loc):
-    """Create test fixture CN + CX variation for del/dup 3 on GRCh37"""
+    """Create test fixture copy number variation for del/dup 3 on GRCh37"""
     params = {
         "type": "CopyNumberCount",
         "id": "ga4gh:CN.TFwnv4Lv7f2ZvboyqSBygWbC57QzuQ8R",
