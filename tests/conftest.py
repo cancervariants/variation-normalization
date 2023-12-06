@@ -291,13 +291,13 @@ def genomic_dup2_38_cn(genomic_dup2_seq_loc_normalized):
 def genomic_del3_dup3_loc_not_normalized():
     """Create genomic del3 dup3 sequence location"""
     return {
-        "id": "ga4gh:SL.NbjuicGHnxcERd1t0hGkzlw93YX1p3Y7",
+        "id": "ga4gh:SL.-zCp7JBaKQ0niPDueJkuCgQhRIQ50hKw",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
         },
         "start": [31060226, 31100350],
-        "end": [33274279, 33417152],
+        "end": [33274278, 33417151],
         "type": "SequenceLocation",
     }
 
@@ -534,6 +534,18 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
+
+
+@pytest.fixture(scope="module")
+def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
+    """Create test fixture copy number variation for del/dup 3 on GRCh38"""
+    params = {
+        "type": "CopyNumberCount",
+        "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",
+        "location": genomic_del3_dup3_loc_not_normalized,
+        "copies": 2,
+    }
+    return models.CopyNumberCount(**params)
 
 
 def assertion_checks(normalize_response, test_variation):
