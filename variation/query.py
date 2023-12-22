@@ -70,14 +70,8 @@ class QueryHandler:
             uta_db,
         ]
         self.normalize_handler = Normalize(*normalize_params)
-
-        mane_transcript_mappings = cool_seq_tool.mane_transcript_mappings
-        to_protein_params = normalize_params + [
-            mane_transcript,
-            mane_transcript_mappings,
-        ]
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
-            *to_protein_params
+            *normalize_params[:-1] + [mane_transcript]
         )
         self.to_copy_number_handler = ToCopyNumberVariation(
             *to_vrs_params + [gene_query_handler, uta_db]

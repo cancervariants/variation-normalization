@@ -48,19 +48,19 @@ class GnomadVcfClassifier(Classifier):
         alt = token.alt
 
         len_ref = len(ref)
-        len_alt = len(alt)
+        # len_alt = len(alt)
 
-        if len_ref == len_alt:
-            # substitution
-            params["pos"] = token.pos
+        # if len_ref == len_alt:
+        #     # substitution
+        #     params["pos"] = token.pos
 
-            if ref == alt:
-                return GenomicReferenceAgreeClassification(**params)
-            else:
-                params["ref"] = ref
-                params["alt"] = alt
+        #     if ref == alt:
+        #         return GenomicReferenceAgreeClassification(**params)
+        #     else:
+        #         params["ref"] = ref
+        #         params["alt"] = alt
 
-                return GenomicSubstitutionClassification(**params)
+        #         return GenomicSubstitutionClassification(**params)
 
         # delins
         params["pos0"] = token.pos

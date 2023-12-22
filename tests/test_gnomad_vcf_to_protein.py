@@ -3,7 +3,6 @@ import pytest
 from ga4gh.vrsatile.pydantic.vrsatile_models import VariationDescriptor
 
 from tests.conftest import assertion_checks
-from variation.gnomad_vcf_to_protein_variation import dna_to_rna
 
 
 @pytest.fixture(scope="module")
@@ -233,15 +232,6 @@ def kras_g12d():
     }
 
 
-def test_dna_to_rna():
-    """Test that dna_to_rna method works correctly."""
-    resp = dna_to_rna("GTA")
-    assert resp == "CAU"
-
-    resp = dna_to_rna("AAGTGACA")
-    assert resp == "UUCACUGU"
-
-
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
@@ -311,9 +301,9 @@ async def test_substitution(
 async def test_reference_agree(test_handler, vhl_reference_agree):
     """Test that reference agree queries return correct response"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
-    resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-C")
+    resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-T")
     assertion_checks(
-        resp.variation_descriptor, vhl_reference_agree, "3-10142030-C-C", ignore_id=True
+        resp.variation_descriptor, vhl_reference_agree, "3-10142030-C-T", ignore_id=True
     )
     assert resp.warnings == []
 

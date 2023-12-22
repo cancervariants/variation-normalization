@@ -27,7 +27,7 @@ class GenomicSubstitution(Validator):
         validation_results = []
 
         if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-            end_pos = classification.pos + len(classification.alt)
+            end_pos = (classification.pos + len(classification.ref)) - 1
         else:
             # HGVS is only 1 nuc
             end_pos = classification.pos
