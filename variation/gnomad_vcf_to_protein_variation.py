@@ -278,30 +278,30 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             alt = ref[:start_ix] + g_alt
         else:
             alt = ref[:start_ix] + g_alt[::-1]
-
         alt += ref[len(alt) :]
 
         aa_alt = self._dna_to_aa(alt, strand)
+        aa_ref = self._dna_to_aa(ref, strand)
 
-        if g_start_pos == g_end_pos:
-            # need to do this for single nuc change
-            aa_ref = self._dna_to_aa(ref, strand)
-            if aa_ref != aa_alt:
-                aa_match = 0
-                for i in range(len(aa_ref)):
-                    if aa_ref[i] == aa_alt[i]:
-                        aa_match += 1
-                    else:
-                        break
-                aa_alt = aa_alt[aa_match:]
+        aa_start_pos = p_data.pos[0]
+        if aa_ref != aa_alt:
+            aa_match = 0
+            for i in range(len(aa_ref)):
+                if aa_ref[i] == aa_alt[i]:
+                    aa_match += 1
+                else:
+                    break
+            aa_start_pos += aa_match
+            aa_alt = aa_alt[aa_match:]
 
         seq_id = p_data.refseq or p_data.ensembl
         ga4gh_seq_id, _ = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
+
         a = models.Allele(
             location=models.SequenceLocation(
                 sequence_id=ga4gh_seq_id[0],
                 interval=models.SequenceInterval(
-                    start=models.Number(value=p_data.pos[0]),
+                    start=models.Number(value=aa_start_pos),
                     end=models.Number(value=p_data.pos[1]),
                 ),
             ),
