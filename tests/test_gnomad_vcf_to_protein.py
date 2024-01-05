@@ -232,6 +232,70 @@ def kras_g12d():
     }
 
 
+@pytest.fixture(scope="module")
+def multi_nuc_sub_pos():
+    """Create test fixture for substitution with more than 1 nucleotide change on the
+    positive strand (CA16042245)
+    """
+    _id = "ga4gh:VA.wOrtLZ3NwK2B8WOmnbsuZ8a5jiBXi6NW"
+    params = {
+        "id": "normalize.variation:2-74530927-TGC-CAT",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "location": {
+                "_id": "ga4gh:VSL.nqAPFXVscdsKKLtGyxRnTkjgCvfj7B7v",
+                "type": "SequenceLocation",
+                "sequence_id": "ga4gh:SQ.HtNf7YrmmFih3cwRwYMlylPFMAs7-l9B",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 242},
+                    "end": {"type": "Number", "value": 244},
+                },
+            },
+            "state": {"sequence": "PS", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "protein",
+        "vrs_ref_allele_seq": "LP",
+        "gene_context": "hgnc:14348",
+    }
+    return VariationDescriptor(**params)
+
+
+@pytest.fixture(scope="module")
+def multi_nuc_sub_neg():
+    """Create test fixture for substitution with more than 1 nucleotide change on the
+    negative strand (CA1139661942)
+    """
+    _id = "ga4gh:VA.BDbTcgXlHiAXCdiVXxQlhA3Exkq6nY68"
+    params = {
+        "id": "normalize.variation:11-47348490-TG-CA",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "location": {
+                "_id": "ga4gh:VSL.zPAfkMq9zQczgSFiRx4P9uG1hlT-6PV7",
+                "type": "SequenceLocation",
+                "sequence_id": "ga4gh:SQ.bg8P_l39rOUQVLwsW3Dme-946Od8-3rB",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 235},
+                    "end": {"type": "Number", "value": 236},
+                },
+            },
+            "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "protein",
+        "vrs_ref_allele_seq": "S",
+        "gene_context": "hgnc:7551",
+    }
+    return VariationDescriptor(**params)
+
+
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
@@ -243,6 +307,8 @@ async def test_substitution(
     atad3a_i7t,
     atad3a_i7m,
     kras_g12d,
+    multi_nuc_sub_pos,
+    multi_nuc_sub_neg,
 ):
     """Test that substitution queries return correct response"""
     # Reading Frame 1, Negative Strand
@@ -295,6 +361,16 @@ async def test_substitution(
     assert resp
     variation = resp.variation_descriptor.model_dump(by_alias=True)["variation"]
     assert variation == kras_g12d
+
+    # multi nucleotide ref/alt on positive strand (CA16042245)
+    q = "2-74530927-TGC-CAT"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, multi_nuc_sub_pos, q)
+
+    # multi nucleotide ref/alt on negative strand ( CA1139661942)
+    q = "11-47348490-TG-CA"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, multi_nuc_sub_neg, q)
 
 
 @pytest.mark.asyncio
