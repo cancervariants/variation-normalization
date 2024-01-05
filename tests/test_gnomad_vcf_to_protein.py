@@ -296,6 +296,36 @@ def multi_nuc_sub_neg():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope="module")
+def delins_pos():
+    """Create test fixture for delins on positive strand (CA645561524)"""
+    _id = "ga4gh:VA.1N9WlPYnTAObq0SX1BtH8533F4o6w4qy"
+    params = {
+        "id": "normalize.variation:7-55174776-TTAAGAGAAGCAACATCT-CAA",
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "location": {
+                "_id": "ga4gh:VSL.ESU0sx4enWbnmWkfobfyT4QWoiQpIAYZ",
+                "type": "SequenceLocation",
+                "sequence_id": "ga4gh:SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 746},
+                    "end": {"type": "Number", "value": 752},
+                },
+            },
+            "state": {"sequence": "Q", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "protein",
+        "vrs_ref_allele_seq": "LREATS",
+        "gene_context": "hgnc:3236",
+    }
+    return VariationDescriptor(**params)
+
+
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
@@ -418,6 +448,15 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
     resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(resp.variation_descriptor, cdk11a_e314del, q)
     assert resp.warnings == []
+
+
+@pytest.mark.asyncio
+async def test_delins(test_handler, delins_pos):
+    """Test that delins queries return correct response"""
+    # CA645561524
+    q = "7-55174776-TTAAGAGAAGCAACATCT-CAA"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, delins_pos, q)
 
 
 @pytest.mark.asyncio

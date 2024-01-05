@@ -204,6 +204,24 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             aa += CODON_TABLE[rna_seq[3 * i : (3 * i) + 3]]
         return aa
 
+    @staticmethod
+    def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
+        """Get the count of matched sequential prefixes
+
+        :param min_length: Length of the shortest sequence (using ``ref`` or ``alt``)
+        :param ref: Reference sequence
+        :param alt: Alternate sequence
+        :return: The number of sequential characters that were the same in ``ref`` and
+            ``alt``
+        """
+        matched = 0
+        for i in range(min_length):
+            if alt[i] == ref[i]:
+                matched += 1
+            else:
+                break
+        return matched
+
     async def gnomad_vcf_to_protein(
         self, q: str, untranslatable_returns_text: bool = False
     ) -> NormalizeService:
@@ -248,17 +266,33 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         len_g_ref = len(g_ref)
         len_g_alt = len(g_alt)
 
+        # Determine the type of alteration and the number of prefixes matched
         if len_g_ref == len_g_alt:
+            num_prefix_matched = self._get_prefix_match_count(len_g_ref, g_ref, g_alt)
             alt_type = "sub"
-        elif len_g_ref > len_g_alt:
-            alt_type = "del"
         else:
-            alt_type = "ins"
+            if len_g_ref > len_g_alt:
+                num_prefix_matched = self._get_prefix_match_count(
+                    len_g_alt, g_ref, g_alt
+                )
+                if num_prefix_matched == len_g_alt:
+                    alt_type = "del"
+                else:
+                    alt_type = "delins"
+            else:
+                num_prefix_matched = self._get_prefix_match_count(
+                    len_g_ref, g_ref, g_alt
+                )
+                if num_prefix_matched == len_g_ref:
+                    alt_type = "ins"
+                else:
+                    alt_type = "delins"
 
         g_start_pos = token.pos
-        # FIXME: I think we subtract 1 because all of our cases have
-        # g_ref[0] == g_alt[0]
-        g_end_pos = g_start_pos + (len_g_ref - 1)
+        if alt_type == "sub":
+            g_end_pos = g_start_pos + (len_g_ref - (num_prefix_matched + 1))
+        else:
+            g_end_pos = g_start_pos + (len_g_ref - num_prefix_matched)
 
         # Given genomic data, get associated cDNA and protein representation
         p_c_data = await self.mane_transcript.grch38_to_mane_c_p(
