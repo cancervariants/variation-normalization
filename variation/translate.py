@@ -2,8 +2,8 @@
 from typing import List, Optional
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.mappers import MANETranscript
-from cool_seq_tool.sources import UTADatabase
+from cool_seq_tool.mappers import ManeTranscript
+from cool_seq_tool.sources import UtaDatabase
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -43,8 +43,8 @@ class Translate:
     def __init__(
         self,
         seqrepo_access: SeqRepoAccess,
-        mane_transcript: MANETranscript,
-        uta: UTADatabase,
+        mane_transcript: ManeTranscript,
+        uta: UtaDatabase,
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode,
     ) -> None:

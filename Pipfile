@@ -9,6 +9,7 @@ pytest-asyncio = "*"
 pytest-cov = "*"
 pre-commit = "*"
 variation-normalizer = {editable = true, path = "."}
+"cool-seq-tool" = {editable = true, path = "genomic_med_lab/cool-seq-tool"}
 jupyter = "*"
 ipykernel = "*"
 psycopg2-binary = "*"
@@ -24,4 +25,3 @@ pydantic = "== 2.*"
 gene-normalizer = "~=0.1.40-dev1"
 boto3 = "*"
 "ga4gh.vrsatile.pydantic" = "~=0.2.0"
-"cool-seq-tool" = "~=0.3.0.dev1"

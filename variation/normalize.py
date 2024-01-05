@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple, Union
 from urllib.parse import quote, unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.sources import TranscriptMappings, UTADatabase
+from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from ga4gh.vrsatile.pydantic.vrs_models import CopyChange
 from ga4gh.vrsatile.pydantic.vrsatile_models import MoleculeContext
 from gene.query import QueryHandler as GeneQueryHandler
@@ -43,7 +43,7 @@ class Normalize(ToVRSATILE):
         translator: Translate,
         gene_normalizer: GeneQueryHandler,
         transcript_mappings: TranscriptMappings,
-        uta: UTADatabase,
+        uta: UtaDatabase,
     ) -> None:
         """Initialize Normalize class.
 
@@ -53,7 +53,7 @@ class Normalize(ToVRSATILE):
         :param Validate validator: Validator class for validating valid inputs
         :param Translate translator: Translating valid inputs
         :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
-        :param UTADatabase uta: Access to db containing alignment data
+        :param UtaDatabase uta: Access to db containing alignment data
         """
         super().__init__(
             seqrepo_access,

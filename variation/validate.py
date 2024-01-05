@@ -2,7 +2,7 @@
 from typing import List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.sources import TranscriptMappings, UTADatabase
+from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import Classification
@@ -40,7 +40,7 @@ class Validate:
         self,
         seqrepo_access: SeqRepoAccess,
         transcript_mappings: TranscriptMappings,
-        uta: UTADatabase,
+        uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
     ) -> None:
         """Initialize the validate class. Will create an instance variable,

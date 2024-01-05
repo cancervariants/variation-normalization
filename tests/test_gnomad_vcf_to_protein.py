@@ -71,9 +71,9 @@ def cdk11a_e314del():
 
 @pytest.fixture(scope="module")
 def protein_insertion2():
-    """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
+    """Create test fixture for LRP8 p.Gln25_Leu26insArg (CA860540)"""
     params = {
-        "id": "normalize.variation:1-53327836-A-ACGC",
+        "id": "normalize.variation:1-53327836-A-AGCC",
         "type": "VariationDescriptor",
         "variation_id": "ga4gh:VA.O1MlG0mAJcxpAfd-dRZ_ZXhMdbm3OHHx",
         "variation": {
@@ -367,7 +367,7 @@ async def test_substitution(
     resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(resp.variation_descriptor, multi_nuc_sub_pos, q)
 
-    # multi nucleotide ref/alt on negative strand ( CA1139661942)
+    # multi nucleotide ref/alt on negative strand (CA1139661942)
     q = "11-47348490-TG-CA"
     resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(resp.variation_descriptor, multi_nuc_sub_neg, q)
@@ -387,17 +387,20 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
 @pytest.mark.asyncio
 async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     """Test that insertion queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    # positive strand (CA645561585)
+    resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTA")
     assertion_checks(
         resp.variation_descriptor,
         protein_insertion,
-        "7-55181319-C-CGGGTTG",
+        "7-55181319-C-CGGGTTA",
         ignore_id=True,
     )
     assert resp.warnings == []
 
-    resp = await test_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
-    assertion_checks(resp.variation_descriptor, protein_insertion2, "1-53327836-A-ACGC")
+    # negative strand (CA860540)
+    q = "1-53327836-A-AGCC"
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, protein_insertion2, q)
     assert resp.warnings == []
 
 
@@ -435,9 +438,7 @@ async def test_invalid(test_handler):
     )
     assert resp.variation_descriptor.variation.type == "Text"
     assert resp.variation_descriptor.label == "7-140753336-T-G"
-    assert set(resp.warnings) == {
-        "Expected T but found A on NC_000007.14 at position 140753336"
-    }
+    assert set(resp.warnings) == {"7-140753336-T-G is not a valid gnomad vcf query"}
 
     resp = await test_handler.gnomad_vcf_to_protein(
         "20-2-TC-TG", untranslatable_returns_text=True

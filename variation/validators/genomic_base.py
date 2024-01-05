@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.sources import UTADatabase
+from cool_seq_tool.sources import UtaDatabase
 
 from variation.schemas.classification_response_schema import (
     Classification,
@@ -18,11 +18,11 @@ logger.setLevel(logging.DEBUG)
 class GenomicBase:
     """Genomic Base class for validation methods."""
 
-    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UTADatabase) -> None:
+    def __init__(self, seqrepo_access: SeqRepoAccess, uta: UtaDatabase) -> None:
         """Initialize the Genomic base class.
 
         :param SeqRepoAccess seqrepo_access: Access to seqrepo
-        :param UTADatabase uta: Access to UTA queries
+        :param UtaDatabase uta: Access to UTA queries
         """
         self.seqrepo_access = seqrepo_access
         self.uta = uta

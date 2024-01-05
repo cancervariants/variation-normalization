@@ -5,7 +5,7 @@ from typing import List
 from urllib.parse import quote
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.mappers import MANETranscript
+from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import Strand
 from cool_seq_tool.sources import TranscriptMappings
 from ga4gh.core import ga4gh_identify
@@ -27,6 +27,7 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrsatile import ToVRSATILE
 from variation.tokenize import Tokenize
 from variation.translate import Translate
+from variation.utils import no_variation_resp
 from variation.validate import Validate
 from variation.version import __version__
 
@@ -115,17 +116,17 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         translator: Translate,
         gene_normalizer: GeneQueryHandler,
         transcript_mappings: TranscriptMappings,
-        mane_transcript: MANETranscript,
+        mane_transcript: ManeTranscript,
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
-        :param SeqRepoAccess seqrepo_access: Access to SeqRepo
-        :param Tokenize tokenizer: Tokenizer class for tokenizing
-        :param Classify classifier: Classifier class for classifying tokens
-        :param Validate validator: Validator class for validating valid inputs
-        :param Translate translator: Translating valid inputs
-        :parm GeneQueryHandler gene_normalizer: Client for normalizing gene concepts
-        :param MANETranscript mane_transcript: Access MANE Transcript information
+        :param seqrepo_access: Access to SeqRepo
+        :param tokenizer: Tokenizer class for tokenizing
+        :param classifier: Classifier class for classifying tokens
+        :param validator: Validator class for validating valid inputs
+        :param translator: Translating valid inputs
+        :parm gene_normalizer: Client for normalizing gene concepts
+        :param mane_transcript: Access MANE Transcript information
         """
         super().__init__(
             seqrepo_access,
@@ -181,6 +182,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         """
         rna_seq = ""
         if strand == strand.NEGATIVE:
+            # Since it's on the negative strand, we need to flip
             for char in dna_seq:
                 if char == "A":
                     rna_seq += "U"
@@ -193,8 +195,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 else:
                     raise ValueError
         else:
+            # We only need to replace T/U for DNA->RNA
             rna_seq = dna_seq.replace("T", "U")
 
+        # RNA -> Protein
         aa = ""
         for i in range(int(len(rna_seq) / 3)):
             aa += CODON_TABLE[rna_seq[3 * i : (3 * i) + 3]]
@@ -215,12 +219,16 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         q = q.strip()
         vd = None
         warnings = []
-        _id = f"normalize.variation:{quote(' '.join(q.split()))}"
+        _id = f"normalize.variation:{quote(q)}"
 
+        # First we need to validate the input query
         try:
             valid_result = await self._get_valid_result(q, warnings)
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
+            vd, warnings = no_variation_resp(
+                q, _id, warnings, untranslatable_returns_text
+            )
             return NormalizeService(
                 variation_query=q,
                 variation_descriptor=vd,
@@ -230,19 +238,37 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 ),
             )
 
+        # Get relevant information from query
         classification = valid_result.classification
         token = classification.matching_tokens[0]
         g_ac = valid_result.accession
         g_ref = token.ref
         g_alt = token.alt
-        g_start_pos = token.pos
-        g_end_pos = g_start_pos + (len(g_ref) - 1)
 
+        len_g_ref = len(g_ref)
+        len_g_alt = len(g_alt)
+
+        if len_g_ref == len_g_alt:
+            alt_type = "sub"
+        elif len_g_ref > len_g_alt:
+            alt_type = "del"
+        else:
+            alt_type = "ins"
+
+        g_start_pos = token.pos
+        # FIXME: I think we subtract 1 because all of our cases have
+        # g_ref[0] == g_alt[0]
+        g_end_pos = g_start_pos + (len_g_ref - 1)
+
+        # Given genomic data, get associated cDNA and protein representation
         p_c_data = await self.mane_transcript.grch38_to_mane_c_p(
             g_ac, g_start_pos, g_end_pos, try_longest_compatible=True
         )
         if not p_c_data:
             warnings.append("Unable to get MANE cDNA and protein representation")
+            vd, warnings = no_variation_resp(
+                q, _id, warnings, untranslatable_returns_text
+            )
             return NormalizeService(
                 variation_query=q,
                 variation_descriptor=vd,
@@ -267,9 +293,18 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             new_g_start_pos = g_start_pos - (start_reading_frame - 1)
             new_g_end_pos = g_end_pos + (3 - end_reading_frame)
 
-        ref, _ = self.seqrepo_access.get_reference_sequence(
-            g_ac, new_g_start_pos, new_g_end_pos
-        )
+        if alt_type == "sub":
+            ref, _ = self.seqrepo_access.get_reference_sequence(
+                g_ac, new_g_start_pos, new_g_end_pos
+            )
+        elif alt_type == "ins":
+            ref, _ = self.seqrepo_access.get_reference_sequence(
+                g_ac, new_g_start_pos, g_start_pos + len_g_alt
+            )
+        else:
+            ref, _ = self.seqrepo_access.get_reference_sequence(
+                g_ac, new_g_start_pos, g_start_pos + len_g_ref
+            )
 
         if strand == Strand.NEGATIVE:
             ref = ref[::-1]
@@ -278,10 +313,14 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             alt = ref[:start_ix] + g_alt
         else:
             alt = ref[:start_ix] + g_alt[::-1]
-        alt += ref[len(alt) :]
 
-        aa_alt = self._dna_to_aa(alt, strand)
+        if not ref[len(alt) :]:
+            alt += ref[start_ix:]
+        else:
+            alt += ref[len(alt) :]
+
         aa_ref = self._dna_to_aa(ref, strand)
+        aa_alt = self._dna_to_aa(alt, strand)
 
         aa_start_pos = p_data.pos[0]
         if aa_ref != aa_alt:
@@ -295,17 +334,37 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             aa_alt = aa_alt[aa_match:]
 
         seq_id = p_data.refseq or p_data.ensembl
-        ga4gh_seq_id, _ = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
+        ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
+        if w:
+            warnings.append(w)
+            vd, warnings = no_variation_resp(
+                q, _id, warnings, untranslatable_returns_text
+            )
+            return NormalizeService(
+                variation_query=q,
+                variation_descriptor=vd,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
+            )
+
+        state = aa_alt
+        aa_end_pos = p_data.pos[1]
+        if alt_type == "del":
+            if aa_alt == aa_ref:
+                state = ""
+            aa_end_pos = aa_start_pos + len(aa_alt)
 
         a = models.Allele(
             location=models.SequenceLocation(
                 sequence_id=ga4gh_seq_id[0],
                 interval=models.SequenceInterval(
                     start=models.Number(value=aa_start_pos),
-                    end=models.Number(value=p_data.pos[1]),
+                    end=models.Number(value=aa_end_pos),
                 ),
             ),
-            state=models.LiteralSequenceExpression(sequence=aa_alt),
+            state=models.LiteralSequenceExpression(sequence=state),
         )
         a = normalize(a, self.seqrepo_access)
         a._id = ga4gh_identify(a)

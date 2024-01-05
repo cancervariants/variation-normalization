@@ -164,7 +164,7 @@ def vhl_reference_agree():
 
 @pytest.fixture(scope="session")
 def protein_insertion():
-    """Create test fixture for NP protein insertion."""
+    """Create test fixture for NP protein insertion (CA645561585)."""
     params = {
         "id": "normalize.variation:NP_005219.2%3Ap.Asp770_Asn771insGlyLeu",
         "type": "VariationDescriptor",
