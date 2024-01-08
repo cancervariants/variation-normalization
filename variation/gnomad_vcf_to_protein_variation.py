@@ -294,6 +294,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         else:
             g_end_pos = g_start_pos + (len_g_ref - num_prefix_matched)
 
+            if num_prefix_matched == 0:
+                g_end_pos -= 1
+
         # Given genomic data, get associated cDNA and protein representation
         p_c_data = await self.mane_transcript.grch38_to_mane_c_p(
             g_ac, g_start_pos, g_end_pos, try_longest_compatible=True
@@ -327,7 +330,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             new_g_start_pos = g_start_pos - (start_reading_frame - 1)
             new_g_end_pos = g_end_pos + (3 - end_reading_frame)
 
-        if alt_type == "sub":
+        if alt_type in {"sub", "delins"}:
             ref, _ = self.seqrepo_access.get_reference_sequence(
                 g_ac, new_g_start_pos, new_g_end_pos
             )
@@ -359,13 +362,45 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         aa_start_pos = p_data.pos[0]
         if aa_ref != aa_alt:
             aa_match = 0
-            for i in range(len(aa_ref)):
+            len_aa_ref = len(aa_ref)
+            len_aa_alt = len(aa_alt)
+
+            # Trim prefixes
+            if len_aa_ref < len_aa_alt:
+                range_len = len_aa_ref
+            else:
+                range_len = len_aa_alt
+
+            for i in range(range_len):
                 if aa_ref[i] == aa_alt[i]:
                     aa_match += 1
                 else:
                     break
-            aa_start_pos += aa_match
-            aa_alt = aa_alt[aa_match:]
+
+            if aa_match:
+                aa_start_pos += aa_match
+                aa_alt = aa_alt[aa_match:]
+
+            if alt_type == "delins":
+                # Trim suffixes
+                aa_match = 0
+                len_aa_ref = len(aa_ref)
+                len_aa_alt = len(aa_alt)
+
+                # Trim prefixes
+                if len_aa_ref < len_aa_alt:
+                    range_len = len_aa_ref
+                else:
+                    range_len = len_aa_alt
+
+                for i in reversed(range(range_len)):
+                    if aa_ref[i] == aa_alt[i]:
+                        aa_match += 1
+                    else:
+                        break
+
+                if aa_match:
+                    aa_alt = aa_alt[:-aa_match]
 
         seq_id = p_data.refseq or p_data.ensembl
         ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
