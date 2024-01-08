@@ -435,7 +435,21 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             ),
             state=models.LiteralSequenceExpression(sequence=state),
         )
-        a = normalize(a, self.seqrepo_access)
+        try:
+            a = normalize(a, self.seqrepo_access)
+        except (KeyError, AttributeError) as e:
+            warnings.append(f"VRS-Python unable to normalize allele: {e}")
+            vd, warnings = no_variation_resp(
+                q, _id, warnings, untranslatable_returns_text
+            )
+            return NormalizeService(
+                variation_query=q,
+                variation_descriptor=vd,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
+            )
         a._id = ga4gh_identify(a)
         a.location._id = ga4gh_identify(a.location)
 
