@@ -326,6 +326,36 @@ def delins_pos():
     return VariationDescriptor(**params)
 
 
+@pytest.fixture(scope="module")
+def delins_neg():
+    """Create test fixture for delins on negative strand (ClinVar ID 1217291)"""
+    _id = "ga4gh:VA.8CN3G5wIEVpOF8C_-VN2SlevekyJJKzx"
+    params = {
+        "id": "normalize.variation:X-153870419-GCTGCCCCTGCAAGGCCACCAGGTGGCTGCTGGAGTTGGTGGGGAAGAGCAGGCGCGG-CTGTCAATGT",  # noqa: E501
+        "type": "VariationDescriptor",
+        "variation_id": _id,
+        "variation": {
+            "_id": _id,
+            "location": {
+                "_id": "ga4gh:VSL.mltb78wSC0WxBWaK295UuL7miEtNHAUL",
+                "type": "SequenceLocation",
+                "sequence_id": "ga4gh:SQ.aDZLb9cs0cYskMKDIK-AXhaevHRA86JS",
+                "interval": {
+                    "type": "SequenceInterval",
+                    "start": {"type": "Number", "value": 239},
+                    "end": {"type": "Number", "value": 259},
+                },
+            },
+            "state": {"sequence": "TLTA", "type": "LiteralSequenceExpression"},
+            "type": "Allele",
+        },
+        "molecule_context": "protein",
+        "vrs_ref_allele_seq": "PRLLFPTNSSSHLVALQGQP",
+        "gene_context": "hgnc:6470",
+    }
+    return VariationDescriptor(**params)
+
+
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
@@ -451,12 +481,17 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
 
 
 @pytest.mark.asyncio
-async def test_delins(test_handler, delins_pos):
+async def test_delins(test_handler, delins_pos, delins_neg):
     """Test that delins queries return correct response"""
-    # CA645561524
+    # CA645561524, Positive Strand
     q = "7-55174776-TTAAGAGAAGCAACATCT-CAA"
     resp = await test_handler.gnomad_vcf_to_protein(q)
     assertion_checks(resp.variation_descriptor, delins_pos, q)
+
+    # ClinVar ID 1217291, Negative Strand
+    q = "X-153870419-GCTGCCCCTGCAAGGCCACCAGGTGGCTGCTGGAGTTGGTGGGGAAGAGCAGGCGCGG-CTGTCAATGT"  # noqa: E501
+    resp = await test_handler.gnomad_vcf_to_protein(q)
+    assertion_checks(resp.variation_descriptor, delins_neg, q)
 
 
 @pytest.mark.asyncio
