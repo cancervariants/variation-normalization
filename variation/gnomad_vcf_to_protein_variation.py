@@ -266,7 +266,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         len_g_ref = len(g_ref)
         len_g_alt = len(g_alt)
 
-        # Determine the type of alteration and the number of prefixes matched
+        # Determine the type of alteration and the number of nucleotide prefixes matched
         if len_g_ref == len_g_alt:
             num_prefix_matched = self._get_prefix_match_count(len_g_ref, g_ref, g_alt)
             alt_type = "sub"
@@ -288,6 +288,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 else:
                     alt_type = "delins"
 
+        # Get genomic position change
         g_start_pos = token.pos
         if alt_type == "sub":
             g_end_pos = g_start_pos + (len_g_ref - (num_prefix_matched + 1))
@@ -318,9 +319,11 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         p_data = p_c_data.protein
         c_data = p_c_data.cdna
 
+        # Get reading frame
         start_reading_frame = self.mane_transcript._get_reading_frame(c_data.pos[0] + 1)
         end_reading_frame = self.mane_transcript._get_reading_frame(c_data.pos[1])
 
+        # Get genomic position range change
         strand = c_data.strand
         start_ix = start_reading_frame - 1
         if strand == Strand.NEGATIVE:
@@ -330,18 +333,9 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             new_g_start_pos = g_start_pos - (start_reading_frame - 1)
             new_g_end_pos = g_end_pos + (3 - end_reading_frame)
 
-        if alt_type in {"sub", "delins"}:
-            ref, _ = self.seqrepo_access.get_reference_sequence(
-                g_ac, new_g_start_pos, new_g_end_pos
-            )
-        elif alt_type == "ins":
-            ref, _ = self.seqrepo_access.get_reference_sequence(
-                g_ac, new_g_start_pos, g_start_pos + len_g_alt
-            )
-        else:
-            ref, _ = self.seqrepo_access.get_reference_sequence(
-                g_ac, new_g_start_pos, g_start_pos + len_g_ref
-            )
+        ref, _ = self.seqrepo_access.get_reference_sequence(
+            g_ac, new_g_start_pos, new_g_end_pos
+        )
 
         if strand == Strand.NEGATIVE:
             ref = ref[::-1]
@@ -351,10 +345,21 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         else:
             alt = ref[:start_ix] + g_alt[::-1]
 
-        if not ref[len(alt) :]:
-            alt += ref[start_ix:]
-        else:
+        if alt_type == "sub":
             alt += ref[len(alt) :]
+        else:
+            len_ref = len(ref)
+            alt += ref[len_ref - start_ix :]
+
+        if alt_type == "delins":
+            len_alt = len(alt)
+            rem_alt = len_alt % 3
+            if rem_alt != 0:
+                tmp_g_end_pos = new_g_end_pos + (3 - rem_alt)
+                tmp_ref, _ = self.seqrepo_access.get_reference_sequence(
+                    g_ac, new_g_end_pos, tmp_g_end_pos
+                )
+                alt += tmp_ref
 
         aa_ref = self._dna_to_aa(ref, strand)
         aa_alt = self._dna_to_aa(alt, strand)
@@ -423,7 +428,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         if alt_type == "del":
             if aa_alt == aa_ref:
                 state = ""
-            aa_end_pos = aa_start_pos + len(aa_alt)
+            aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
 
         a = models.Allele(
             location=models.SequenceLocation(
