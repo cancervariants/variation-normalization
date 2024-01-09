@@ -1,7 +1,7 @@
 """Module for going from gnomAD VCF to VRS variation on the protein coordinate"""
 from copy import deepcopy
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 from urllib.parse import quote
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -35,6 +35,62 @@ from variation.version import __version__
 
 class GnomadVcfToProteinError(Exception):
     """Custom exception for Gnomad VCF To Protein"""
+
+
+def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
+    """Get the count of matched sequential prefixes
+
+    :param min_length: Length of the shortest sequence (using ``ref`` or ``alt``)
+    :param ref: Reference sequence
+    :param alt: Alternate sequence
+    :return: The number of sequential characters that were the same in ``ref`` and
+        ``alt``
+    """
+    matched = 0
+    for i in range(min_length):
+        if alt[i] == ref[i]:
+            matched += 1
+        else:
+            break
+    return matched
+
+
+def _trim_prefix_suffix(
+    aa_ref: str, aa_alt: str, aa_start_pos: int = 0, trim_prefix: bool = True
+) -> Tuple[str, str, int]:
+    """Trim prefix or suffix matches
+
+    :param aa_ref: Amino acid reference sequence
+    :param aa_alt: Amino acid altered sequence
+    :param aa_start_pos: Amino acid start position. Only required when ``trim_prefix``
+        is ``True``
+    :param trim_prefix: ``True`` if trimming prefixes. ``False`` if trimming suffixes
+    :return: Tuple containing trimmed ``aa_ref``, trimmed `aa_alt``, and `
+        `aa_start_pos`` after trimming
+    """
+    if (aa_ref and aa_alt) and (aa_ref != aa_alt):
+        aa_match = 0
+        len_aa_ref = len(aa_ref)
+        len_aa_alt = len(aa_alt)
+
+        # Trim prefixes
+        if len_aa_ref < len_aa_alt:
+            range_len = len_aa_ref
+        else:
+            range_len = len_aa_alt
+
+        aa_match = _get_prefix_match_count(range_len, aa_ref, aa_alt)
+        if aa_match:
+            aa_start_pos += aa_match
+
+            if trim_prefix:
+                aa_alt = aa_alt[aa_match:]
+                aa_ref = aa_ref[aa_match:]
+            else:
+                aa_alt = aa_alt[:-aa_match]
+                aa_ref = aa_ref[:-aa_ref]
+
+    return aa_ref, aa_alt, aa_start_pos
 
 
 CODON_TABLE = {
@@ -205,24 +261,6 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             aa += CODON_TABLE[rna_seq[3 * i : (3 * i) + 3]]
         return aa
 
-    @staticmethod
-    def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
-        """Get the count of matched sequential prefixes
-
-        :param min_length: Length of the shortest sequence (using ``ref`` or ``alt``)
-        :param ref: Reference sequence
-        :param alt: Alternate sequence
-        :return: The number of sequential characters that were the same in ``ref`` and
-            ``alt``
-        """
-        matched = 0
-        for i in range(min_length):
-            if alt[i] == ref[i]:
-                matched += 1
-            else:
-                break
-        return matched
-
     async def gnomad_vcf_to_protein(
         self, q: str, untranslatable_returns_text: bool = False
     ) -> NormalizeService:
@@ -269,21 +307,17 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
 
         # Determine the type of alteration and the number of nucleotide prefixes matched
         if len_g_ref == len_g_alt:
-            num_prefix_matched = self._get_prefix_match_count(len_g_ref, g_ref, g_alt)
+            num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
             alt_type = AltType.SUBSTITUTION
         else:
             if len_g_ref > len_g_alt:
-                num_prefix_matched = self._get_prefix_match_count(
-                    len_g_alt, g_ref, g_alt
-                )
+                num_prefix_matched = _get_prefix_match_count(len_g_alt, g_ref, g_alt)
                 if num_prefix_matched == len_g_alt:
                     alt_type = AltType.DELETION
                 else:
                     alt_type = AltType.DELINS
             else:
-                num_prefix_matched = self._get_prefix_match_count(
-                    len_g_ref, g_ref, g_alt
-                )
+                num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
                 if num_prefix_matched == len_g_ref:
                     alt_type = AltType.INSERTION
                 else:
@@ -378,49 +412,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         # Get protein start position
         # We need to trim prefixes / suffixes and update the position accordingly
         aa_start_pos = p_data.pos[0]
-        if (aa_ref and aa_alt) and (aa_ref != aa_alt):
-            aa_match = 0
-            len_aa_ref = len(aa_ref)
-            len_aa_alt = len(aa_alt)
-
-            # Trim prefixes
-            if len_aa_ref < len_aa_alt:
-                range_len = len_aa_ref
-            else:
-                range_len = len_aa_alt
-
-            for i in range(range_len):
-                if aa_ref[i] == aa_alt[i]:
-                    aa_match += 1
-                else:
-                    break
-
-            if aa_match:
-                aa_start_pos += aa_match
-                aa_alt = aa_alt[aa_match:]
-                aa_ref = aa_ref[aa_match:]
-
-            if (aa_ref and aa_alt) and (aa_ref != aa_alt):
-                # Trim suffixes
-                aa_match = 0
-                len_aa_ref = len(aa_ref)
-                len_aa_alt = len(aa_alt)
-
-                # Trim prefixes
-                if len_aa_ref < len_aa_alt:
-                    range_len = len_aa_ref
-                else:
-                    range_len = len_aa_alt
-
-                for i in reversed(range(range_len)):
-                    if aa_ref[i] == aa_alt[i]:
-                        aa_match += 1
-                    else:
-                        break
-
-                if aa_match:
-                    aa_alt = aa_alt[:-aa_match]
-                    aa_ref = aa_ref[:-aa_ref]
+        aa_ref, aa_alt, aa_start_pos = _trim_prefix_suffix(
+            aa_ref, aa_alt, aa_start_pos=aa_start_pos, trim_prefix=True
+        )
+        aa_ref, aa_alt, _ = _trim_prefix_suffix(aa_ref, aa_alt, trim_prefix=False)
 
         seq_id = p_data.refseq or p_data.ensembl
         ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
