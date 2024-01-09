@@ -334,6 +334,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             new_g_start_pos = g_start_pos - (start_reading_frame - 1)
             new_g_end_pos = g_end_pos + (3 - end_reading_frame)
 
+        # Get reference sequence
         ref, _ = self.seqrepo_access.get_reference_sequence(
             g_ac, new_g_start_pos, new_g_end_pos
         )
@@ -341,6 +342,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         if strand == Strand.NEGATIVE:
             ref = ref[::-1]
 
+        # Get altered sequence
         if strand == Strand.POSITIVE:
             alt = ref[:start_ix] + g_alt
         else:
@@ -352,7 +354,10 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
             len_ref = len(ref)
             alt += ref[len_ref - start_ix :]
 
+        # TODO: Is there a reason this is only done for delins
         if alt_type == AltType.DELINS:
+            # We need to get the entire inserted sequence. It needs to be a factor of 3
+            # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa)
             len_alt = len(alt)
             rem_alt = len_alt % 3
             if rem_alt != 0:
@@ -362,9 +367,12 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 )
                 alt += tmp_ref
 
+        # Get protein sequence
         aa_ref = self._dna_to_aa(ref, strand)
         aa_alt = self._dna_to_aa(alt, strand)
 
+        # Get protein start position
+        # We need to trim prefixes / suffixes and update the position accordingly
         aa_start_pos = p_data.pos[0]
         if aa_ref != aa_alt:
             aa_match = 0
@@ -387,6 +395,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 aa_start_pos += aa_match
                 aa_alt = aa_alt[aa_match:]
 
+            # TODO: Is there a reason this is only done for delins
             if alt_type == AltType.DELINS:
                 # Trim suffixes
                 aa_match = 0
@@ -427,6 +436,8 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         state = aa_alt
         aa_end_pos = p_data.pos[1]
         if alt_type == AltType.DELETION:
+            # Deletion will always have empty state, since the alteration is deletion
+            # We need to update the end position accordingly
             if aa_alt == aa_ref:
                 state = ""
             aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
