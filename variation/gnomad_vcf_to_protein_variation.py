@@ -22,6 +22,7 @@ from variation.schemas.normalize_response_schema import (
     ServiceMeta,
 )
 from variation.schemas.service_schema import ClinVarAssembly
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrsatile import ToVRSATILE
@@ -269,28 +270,28 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         # Determine the type of alteration and the number of nucleotide prefixes matched
         if len_g_ref == len_g_alt:
             num_prefix_matched = self._get_prefix_match_count(len_g_ref, g_ref, g_alt)
-            alt_type = "sub"
+            alt_type = AltType.SUBSTITUTION
         else:
             if len_g_ref > len_g_alt:
                 num_prefix_matched = self._get_prefix_match_count(
                     len_g_alt, g_ref, g_alt
                 )
                 if num_prefix_matched == len_g_alt:
-                    alt_type = "del"
+                    alt_type = AltType.DELETION
                 else:
-                    alt_type = "delins"
+                    alt_type = AltType.DELINS
             else:
                 num_prefix_matched = self._get_prefix_match_count(
                     len_g_ref, g_ref, g_alt
                 )
                 if num_prefix_matched == len_g_ref:
-                    alt_type = "ins"
+                    alt_type = AltType.INSERTION
                 else:
-                    alt_type = "delins"
+                    alt_type = AltType.DELINS
 
         # Get genomic position change
         g_start_pos = token.pos
-        if alt_type == "sub":
+        if alt_type == AltType.SUBSTITUTION:
             g_end_pos = g_start_pos + (len_g_ref - (num_prefix_matched + 1))
         else:
             g_end_pos = g_start_pos + (len_g_ref - num_prefix_matched)
@@ -345,13 +346,13 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
         else:
             alt = ref[:start_ix] + g_alt[::-1]
 
-        if alt_type == "sub":
+        if alt_type == AltType.SUBSTITUTION:
             alt += ref[len(alt) :]
         else:
             len_ref = len(ref)
             alt += ref[len_ref - start_ix :]
 
-        if alt_type == "delins":
+        if alt_type == AltType.DELINS:
             len_alt = len(alt)
             rem_alt = len_alt % 3
             if rem_alt != 0:
@@ -386,7 +387,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
                 aa_start_pos += aa_match
                 aa_alt = aa_alt[aa_match:]
 
-            if alt_type == "delins":
+            if alt_type == AltType.DELINS:
                 # Trim suffixes
                 aa_match = 0
                 len_aa_ref = len(aa_ref)
@@ -425,7 +426,7 @@ class GnomadVcfToProteinVariation(ToVRSATILE):
 
         state = aa_alt
         aa_end_pos = p_data.pos[1]
-        if alt_type == "del":
+        if alt_type == AltType.DELETION:
             if aa_alt == aa_ref:
                 state = ""
             aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
