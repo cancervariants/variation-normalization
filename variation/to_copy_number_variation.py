@@ -4,7 +4,7 @@ from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.sources import UTADatabase
+from cool_seq_tool.sources import UtaDatabase
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
@@ -80,7 +80,7 @@ class ToCopyNumberVariation(ToVRS):
         validator: Validate,
         translator: Translate,
         gene_normalizer: GeneQueryHandler,
-        uta: UTADatabase,
+        uta: UtaDatabase,
     ) -> None:
         """Initialize theToCopyNumberVariation class
 
@@ -673,7 +673,7 @@ class ToCopyNumberVariation(ToVRS):
                     else:
                         # Validate start/end are actually on the sequence
                         _, w = self.seqrepo_access.get_reference_sequence(
-                            sequence_id, start, end
+                            sequence_id, start=start, end=end
                         )
                         if w:
                             warnings.append(w)

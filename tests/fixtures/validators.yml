@@ -116,6 +116,7 @@ genomic_delins:
     - query: X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG
     - query: 16-2138199-GTGAG-G
     - query: 1-55509715-AC-A
+    - query: chr6-31239170-C-CA
   should_not_match:
     - query: NC_000023.21:g.32386323delinsGA
     - query: NC_000007.13:g.159138664delinsAT
@@ -197,7 +198,6 @@ genomic_insertion:
     - query: NC_000022.10:g.30051593_30051594insT
     - query: NC_000017.10:g.37880993_37880994insGCTTACGTGATG
     - query: ERBB2 g.37880993_37880994insGCTTACGTGATG
-    - query: chr6-31239170-C-CA
   should_not_match:
     - query: NC_000022.10:g.51304566_51304567insT
     - query: NC_000022.10:g.51304567_51304568insT

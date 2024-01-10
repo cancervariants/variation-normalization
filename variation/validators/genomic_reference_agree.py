@@ -32,8 +32,7 @@ class GenomicReferenceAgree(Validator):
                 token = classification.matching_tokens[0]
                 ref = token.ref
                 start_pos = token.pos
-                end_pos = token.pos + len(ref)
-
+                end_pos = token.pos + (len(ref) - 1)
                 invalid_ref_msg = self.validate_reference_sequence(
                     alt_ac, start_pos, end_pos, ref
                 )

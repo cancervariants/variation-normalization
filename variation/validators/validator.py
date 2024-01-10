@@ -4,7 +4,7 @@ from typing import List, Literal, Optional, Tuple, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
-from cool_seq_tool.sources import TranscriptMappings, UTADatabase
+from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import SourceName
 
@@ -34,7 +34,7 @@ class Validator(ABC):
         self,
         seqrepo_access: SeqRepoAccess,
         transcript_mappings: TranscriptMappings,
-        uta: UTADatabase,
+        uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
     ) -> None:
         """Initialize the DelIns validator.

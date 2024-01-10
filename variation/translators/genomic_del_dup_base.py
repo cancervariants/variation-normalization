@@ -109,6 +109,7 @@ class GenomicDelDupTranslator(Translator):
         grch38_data = None
         vrs_variation = None
         vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
+        residue_mode = ResidueMode.RESIDUE
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
@@ -126,8 +127,12 @@ class GenomicDelDupTranslator(Translator):
                         warnings += errors
                         return None
 
-                    pos0 = grch38_data.pos0
-                    pos1 = grch38_data.pos1
+                    pos0 = grch38_data.pos0 - 1
+                    if grch38_data.pos1 is None:
+                        pos1 = grch38_data.pos0
+                    else:
+                        pos1 = grch38_data.pos1
+                    residue_mode = ResidueMode.INTER_RESIDUE
                     ac = grch38_data.ac
 
                     if alt_type == AltType.DELETION:
@@ -135,9 +140,10 @@ class GenomicDelDupTranslator(Translator):
                             ref = classification.matching_tokens[0].ref
                             invalid_ref_msg = self.validate_reference_sequence(
                                 ac,
-                                pos0 - 1,
-                                pos0 - 1 + len(ref),
+                                pos0,
+                                pos0 + (len(ref) - 1),
                                 ref,
+                                residue_mode=residue_mode,
                             )
                             if invalid_ref_msg:
                                 warnings.append(invalid_ref_msg)
@@ -146,6 +152,7 @@ class GenomicDelDupTranslator(Translator):
                     pos0 = classification.pos0
                     pos1 = classification.pos1
                     ac = validation_result.accession
+                    grch38_data = DelDupData(ac=ac, pos0=pos0, pos1=pos1)
 
                 assembly = ClinVarAssembly.GRCH38
         else:
@@ -168,10 +175,13 @@ class GenomicDelDupTranslator(Translator):
                     warnings += errors
                     return None
 
-                pos0 = grch38_data.pos0
+            ac = grch38_data.ac
+            pos0 = grch38_data.pos0 - 1
+            if grch38_data.pos1 is None:
+                pos1 = grch38_data.pos0
+            else:
                 pos1 = grch38_data.pos1
-                ac = grch38_data.ac
-
+            residue_mode = ResidueMode.INTER_RESIDUE
             self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 
             if errors:
@@ -181,10 +191,10 @@ class GenomicDelDupTranslator(Translator):
             mane = await self.mane_transcript.get_mane_transcript(
                 ac,
                 pos0,
+                pos1,
                 "g",
-                end_pos=pos1,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE,
+                residue_mode=residue_mode,
                 gene=classification.gene_token.token
                 if classification.gene_token
                 else None,
@@ -192,10 +202,11 @@ class GenomicDelDupTranslator(Translator):
 
             if mane:
                 # mane is 0 - based, but we are using residue
-                ac = mane["refseq"]
-                vrs_seq_loc_ac_status = mane["status"]
-                pos0 = mane["pos"][0] + mane["coding_start_site"] + 1
-                pos1 = mane["pos"][1] + mane["coding_start_site"] + 1
+                ac = mane.refseq
+                vrs_seq_loc_ac_status = mane.status
+                pos0 = mane.pos[0] + mane.coding_start_site
+                pos1 = mane.pos[1] + mane.coding_start_site
+                residue_mode = ResidueMode.INTER_RESIDUE
             else:
                 return None
 
@@ -209,7 +220,7 @@ class GenomicDelDupTranslator(Translator):
         if alt_type == AltType.INSERTION:
             alt = classification.inserted_sequence
 
-        start = pos0 - 1
+        start = pos0 if residue_mode == ResidueMode.INTER_RESIDUE else pos0 - 1
         end = pos1 if pos1 else pos0
 
         refget_accession = get_refget_accession(self.seqrepo_access, ac, warnings)

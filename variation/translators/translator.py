@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.mappers import MANETranscript
+from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
-from cool_seq_tool.sources import UTADatabase
+from cool_seq_tool.sources import UtaDatabase
 from ga4gh.vrs import models
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -28,8 +28,8 @@ class Translator(ABC):
     def __init__(
         self,
         seqrepo_access: SeqRepoAccess,
-        mane_transcript: MANETranscript,
-        uta: UTADatabase,
+        mane_transcript: ManeTranscript,
+        uta: UtaDatabase,
         vrs: VRSRepresentation,
         hgvs_dup_del_mode: HGVSDupDelMode,
     ) -> None:
@@ -195,25 +195,32 @@ class Translator(ABC):
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession,
                 start_pos,
+                end_pos if end_pos is not None else start_pos,
                 coordinate_type,
-                end_pos=end_pos,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE.value,
+                residue_mode=ResidueMode.RESIDUE,
                 ref=ref,
             )
 
             if mane:
-                vrs_seq_loc_ac = mane["refseq"]
-                vrs_seq_loc_ac_status = mane["status"]
+                vrs_seq_loc_ac = mane.refseq
+                vrs_seq_loc_ac_status = mane.status
+
+                try:
+                    cds_start = mane.coding_start_site
+                except AttributeError:
+                    cds_start = None
+
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac,
-                    mane["pos"][0] + 1,
-                    mane["pos"][1] + 1,
+                    mane.pos[0],
+                    mane.pos[1],
                     coordinate_type,
                     alt_type,
                     errors,
-                    cds_start=mane.get("coding_start_site", None),
+                    cds_start=cds_start,
                     alt=alt,
+                    residue_mode=ResidueMode.INTER_RESIDUE,
                 )
 
         if not vrs_allele:
@@ -227,6 +234,7 @@ class Translator(ABC):
                 errors,
                 cds_start=cds_start,
                 alt=alt,
+                residue_mode=ResidueMode.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

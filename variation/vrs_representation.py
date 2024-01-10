@@ -2,7 +2,7 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.schemas import AnnotationLayer
+from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
 from pydantic import ValidationError
@@ -155,6 +155,7 @@ class VRSRepresentation:
         errors: List[str],
         cds_start: Optional[int] = None,
         alt: Optional[str] = None,
+        residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> Optional[Dict]:
         """Translate accession and position to VRS Allele Object.
 
@@ -166,6 +167,7 @@ class VRSRepresentation:
         :param errors: List of errors
         :param cds_start: Coding start site
         :param alt: Alteration
+        :param residue_mode: Residue mode for ``start`` and ``end`` positions
         :return: VRS Allele Object
         """
         coords = self.get_start_end(coordinate, start, end, cds_start, errors)
@@ -176,10 +178,15 @@ class VRSRepresentation:
         else:
             new_start, new_end = coords
 
+        if residue_mode == ResidueMode.RESIDUE:
+            new_start -= 1
+            residue_mode = ResidueMode.INTER_RESIDUE
+
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
         if alt_type == AltType.INSERTION:
             state = alt
+            new_start += 1
             new_end = new_start
         elif alt_type in {
             AltType.SUBSTITUTION,
@@ -190,7 +197,9 @@ class VRSRepresentation:
             AltType.NONSENSE,
         }:
             if alt_type == AltType.REFERENCE_AGREE:
-                state, _ = self.seqrepo_access.get_reference_sequence(ac, new_start)
+                state, _ = self.seqrepo_access.get_reference_sequence(
+                    ac, start=new_start, end=new_end, residue_mode=residue_mode
+                )
                 if state is None:
                     errors.append(
                         f"Unable to get sequence on {ac} from " f"{new_start}"
@@ -203,10 +212,9 @@ class VRSRepresentation:
                 # This accounts for MNVs
                 new_end += len(state) - 1
 
-            new_start -= 1
         elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
-                ac, new_start, new_end + 1
+                ac, start=new_start, end=new_end, residue_mode=residue_mode
             )
             if ref is not None:
                 state = ref + ref
@@ -215,7 +223,6 @@ class VRSRepresentation:
                     f"Unable to get sequence on {ac} from {new_start} to {new_end + 1}"
                 )
                 return None
-            new_start -= 1
         else:
             errors.append(f"alt_type not supported: {alt_type}")
             return None

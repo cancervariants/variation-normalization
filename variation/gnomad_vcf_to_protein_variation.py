@@ -4,11 +4,11 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.mappers import MANETranscript
+from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import ResidueMode
 from cool_seq_tool.sources import (
-    MANETranscriptMappings,
-    UTADatabase,
+    ManeTranscriptMappings,
+    UtaDatabase,
 )
 
 from variation.classify import Classify
@@ -125,9 +125,9 @@ class GnomadVcfToProteinVariation(ToVRS):
         classifier: Classify,
         validator: Validate,
         translator: Translate,
-        uta: UTADatabase,
-        mane_transcript: MANETranscript,
-        mane_transcript_mappings: MANETranscriptMappings,
+        uta: UtaDatabase,
+        mane_transcript: ManeTranscript,
+        mane_transcript_mappings: ManeTranscriptMappings,
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
@@ -401,7 +401,7 @@ class GnomadVcfToProteinVariation(ToVRS):
                         g_start_pos = classification_token.pos
                         g_end_pos = classification_token.pos
                         ref_seq, w = self.seqrepo_access.get_reference_sequence(
-                            alt_ac, g_start_pos
+                            alt_ac, start=g_start_pos, end=g_start_pos
                         )
                         if not ref_seq:
                             all_warnings.add(w)
@@ -476,9 +476,9 @@ class GnomadVcfToProteinVariation(ToVRS):
                             current_mane_data,
                             (mane_c_pos_change[0] + 1, mane_c_pos_change[1] + 1),
                         )
-                        if mane_p["pos"][0] > mane_p["pos"][1]:
-                            mane_p["pos"] = (mane_p["pos"][1], mane_p["pos"][0])
-                        p_ac = mane_p["refseq"]
+                        if mane_p.pos[0] > mane_p.pos[1]:
+                            mane_p.pos = (mane_p.pos[1], mane_p.pos[0])
+                        p_ac = mane_p.refseq
                         aa_alt = self._get_gnomad_vcf_protein_alt(
                             classification_token,
                             alt_type,
@@ -493,12 +493,13 @@ class GnomadVcfToProteinVariation(ToVRS):
                             # mane_p is 0-based, but to_vrs allele takes 1-based
                             variation = self.to_vrs_allele(
                                 p_ac,
-                                mane_p["pos"][0],
-                                mane_p["pos"][1],
+                                mane_p.pos[0],
+                                mane_p.pos[1],
                                 "p",
                                 alt_type,
                                 [],
                                 alt=aa_alt,
+                                residue_mode=ResidueMode.INTER_RESIDUE,
                             )
                             if variation:
                                 translation_result = TranslationResult(
@@ -508,7 +509,7 @@ class GnomadVcfToProteinVariation(ToVRS):
 
                                 tr_copy = deepcopy(translation_result)
                                 tr_copy.vrs_seq_loc_ac = p_ac
-                                tr_copy.vrs_seq_loc_ac_status = mane_p["status"]
+                                tr_copy.vrs_seq_loc_ac_status = mane_p.status
 
                                 try:
                                     vrs_variation = tr_copy.vrs_variation
