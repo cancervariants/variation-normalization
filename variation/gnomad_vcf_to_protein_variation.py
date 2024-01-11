@@ -82,7 +82,7 @@ def _trim_prefix_or_suffix(
     return aa_ref, aa_alt, aa_start_pos
 
 
-CODON_TABLE = {
+RNA_CODON_TO_1AA = {
     "AUA": "I",
     "AUC": "I",
     "AUU": "I",
@@ -237,7 +237,7 @@ class GnomadVcfToProteinVariation:
         # RNA -> Protein
         aa = ""
         for i in range(int(len(rna_seq) / 3)):
-            aa += CODON_TABLE[rna_seq[3 * i : (3 * i) + 3]]
+            aa += RNA_CODON_TO_1AA[rna_seq[3 * i : (3 * i) + 3]]
         return aa
 
     async def gnomad_vcf_to_protein(self, q: str) -> NormalizeService:
