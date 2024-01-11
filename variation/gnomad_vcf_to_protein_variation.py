@@ -1,4 +1,4 @@
-"""Module for going from gnomAD VCF to VRS variation on the protein coordinate"""
+"""Module for translating VCF-like to protein VRS Allele representation"""
 from datetime import datetime
 from typing import List, Tuple
 from urllib.parse import quote
@@ -29,17 +29,21 @@ class GnomadVcfToProteinError(Exception):
     """Custom exception for Gnomad VCF To Protein"""
 
 
-def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
+def _get_char_match_count(
+    min_length: int, ref: str, alt: str, trim_prefix: bool = True
+) -> int:
     """Get the count of matched sequential prefixes
 
     :param min_length: Length of the shortest sequence (using ``ref`` or ``alt``)
     :param ref: Reference sequence
     :param alt: Alternate sequence
+    :param trim_prefix: ``True`` if trimming prefixes. ``False`` if trimming suffixes
     :return: The number of sequential characters that were the same in ``ref`` and
         ``alt``
     """
     matched = 0
-    for i in range(min_length):
+    num_seq = range(min_length) if trim_prefix else reversed(range(min_length))
+    for i in num_seq:
         if alt[i] == ref[i]:
             matched += 1
         else:
@@ -47,18 +51,18 @@ def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
     return matched
 
 
-def _trim_prefix_suffix(
+def _trim_prefix_or_suffix(
     aa_ref: str, aa_alt: str, aa_start_pos: int = 0, trim_prefix: bool = True
 ) -> Tuple[str, str, int]:
     """Trim prefix or suffix matches
 
     :param aa_ref: Amino acid reference sequence
-    :param aa_alt: Amino acid altered sequence
+    :param aa_alt: Amino acid alternate sequence
     :param aa_start_pos: Amino acid start position. Only required when ``trim_prefix``
         is ``True``
     :param trim_prefix: ``True`` if trimming prefixes. ``False`` if trimming suffixes
-    :return: Tuple containing trimmed ``aa_ref``, trimmed `aa_alt``, and `
-        `aa_start_pos`` after trimming
+    :return: Tuple containing trimmed ``aa_ref``, trimmed `aa_alt``, and
+        ``aa_start_pos`` after trimming
     """
     if (aa_ref and aa_alt) and (aa_ref != aa_alt):
         aa_match = 0
@@ -66,21 +70,14 @@ def _trim_prefix_suffix(
         len_aa_alt = len(aa_alt)
 
         # Trim prefixes
-        if len_aa_ref < len_aa_alt:
-            range_len = len_aa_ref
-        else:
-            range_len = len_aa_alt
-
-        aa_match = _get_prefix_match_count(range_len, aa_ref, aa_alt)
+        range_len = len_aa_ref if len_aa_ref < len_aa_alt else len_aa_alt
+        aa_match = _get_char_match_count(
+            range_len, aa_ref, aa_alt, trim_prefix=trim_prefix
+        )
         if aa_match:
             aa_start_pos += aa_match
-
-            if trim_prefix:
-                aa_alt = aa_alt[aa_match:]
-                aa_ref = aa_ref[aa_match:]
-            else:
-                aa_alt = aa_alt[:-aa_match]
-                aa_ref = aa_ref[:-aa_ref]
+            aa_alt = aa_alt[aa_match:] if trim_prefix else aa_alt[:-aa_match]
+            aa_ref = aa_ref[aa_match:] if trim_prefix else aa_ref[:-aa_ref]
 
     return aa_ref, aa_alt, aa_start_pos
 
@@ -281,17 +278,23 @@ class GnomadVcfToProteinVariation:
 
         # Determine the type of alteration and the number of nucleotide prefixes matched
         if len_g_ref == len_g_alt:
-            num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
+            num_prefix_matched = _get_char_match_count(
+                len_g_ref, g_ref, g_alt, trim_prefix=True
+            )
             alt_type = AltType.SUBSTITUTION
         else:
             if len_g_ref > len_g_alt:
-                num_prefix_matched = _get_prefix_match_count(len_g_alt, g_ref, g_alt)
+                num_prefix_matched = _get_char_match_count(
+                    len_g_alt, g_ref, g_alt, trim_prefix=True
+                )
                 if num_prefix_matched == len_g_alt:
                     alt_type = AltType.DELETION
                 else:
                     alt_type = AltType.DELINS
             else:
-                num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
+                num_prefix_matched = _get_char_match_count(
+                    len_g_ref, g_ref, g_alt, trim_prefix=True
+                )
                 if num_prefix_matched == len_g_ref:
                     alt_type = AltType.INSERTION
                 else:
@@ -383,10 +386,10 @@ class GnomadVcfToProteinVariation:
         # Get protein start position
         # We need to trim prefixes / suffixes and update the position accordingly
         aa_start_pos = p_data.pos[0]
-        aa_ref, aa_alt, aa_start_pos = _trim_prefix_suffix(
+        aa_ref, aa_alt, aa_start_pos = _trim_prefix_or_suffix(
             aa_ref, aa_alt, aa_start_pos=aa_start_pos, trim_prefix=True
         )
-        aa_ref, aa_alt, _ = _trim_prefix_suffix(aa_ref, aa_alt, trim_prefix=False)
+        aa_ref, aa_alt, _ = _trim_prefix_or_suffix(aa_ref, aa_alt, trim_prefix=False)
 
         seq_id = p_data.refseq or p_data.ensembl
         ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
