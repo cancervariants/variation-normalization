@@ -377,16 +377,15 @@ async def test_delins(test_handler, delins_pos, delins_neg):
 @pytest.mark.asyncio
 async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("dummy")
-    assert resp.variation is None
-
     resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation is None
-    assert resp.warnings == ["BRAF V600E is not a supported gnomad vcf query"]
+    assert resp.warnings == [
+        "BRAF V600E is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
+    ]
 
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation is None
-    assert set(resp.warnings) == {"Unable to get MANE cDNA and protein representation"}
+    assert set(resp.warnings) == {"Unable to get cDNA and protein representation"}
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation is None
