@@ -1,38 +1,89 @@
 """Module for going from gnomAD VCF to VRS variation on the protein coordinate"""
-from copy import deepcopy
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import List, Tuple
+from urllib.parse import quote
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
-from cool_seq_tool.schemas import ResidueMode
-from cool_seq_tool.sources import (
-    ManeTranscriptMappings,
-    UtaDatabase,
-)
+from cool_seq_tool.schemas import Strand
+from ga4gh.core import ga4gh_identify
+from ga4gh.vrs import models, normalize
 
 from variation.classify import Classify
-from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import (
-    ClassificationType,
     Nomenclature,
 )
 from variation.schemas.normalize_response_schema import (
-    HGVSDupDelModeOption,
     NormalizeService,
     ServiceMeta,
 )
-from variation.schemas.token_response_schema import AltType, Token
-from variation.schemas.translation_response_schema import TranslationResult
+from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import update_warnings_for_no_resp
 from variation.validate import Validate
 from variation.version import __version__
 
-DNA_TO_RNA = {"T": "A", "A": "U", "G": "C", "C": "G"}
+
+class GnomadVcfToProteinError(Exception):
+    """Custom exception for Gnomad VCF To Protein"""
+
+
+def _get_prefix_match_count(min_length: int, ref: str, alt: str) -> int:
+    """Get the count of matched sequential prefixes
+
+    :param min_length: Length of the shortest sequence (using ``ref`` or ``alt``)
+    :param ref: Reference sequence
+    :param alt: Alternate sequence
+    :return: The number of sequential characters that were the same in ``ref`` and
+        ``alt``
+    """
+    matched = 0
+    for i in range(min_length):
+        if alt[i] == ref[i]:
+            matched += 1
+        else:
+            break
+    return matched
+
+
+def _trim_prefix_suffix(
+    aa_ref: str, aa_alt: str, aa_start_pos: int = 0, trim_prefix: bool = True
+) -> Tuple[str, str, int]:
+    """Trim prefix or suffix matches
+
+    :param aa_ref: Amino acid reference sequence
+    :param aa_alt: Amino acid altered sequence
+    :param aa_start_pos: Amino acid start position. Only required when ``trim_prefix``
+        is ``True``
+    :param trim_prefix: ``True`` if trimming prefixes. ``False`` if trimming suffixes
+    :return: Tuple containing trimmed ``aa_ref``, trimmed `aa_alt``, and `
+        `aa_start_pos`` after trimming
+    """
+    if (aa_ref and aa_alt) and (aa_ref != aa_alt):
+        aa_match = 0
+        len_aa_ref = len(aa_ref)
+        len_aa_alt = len(aa_alt)
+
+        # Trim prefixes
+        if len_aa_ref < len_aa_alt:
+            range_len = len_aa_ref
+        else:
+            range_len = len_aa_alt
+
+        aa_match = _get_prefix_match_count(range_len, aa_ref, aa_alt)
+        if aa_match:
+            aa_start_pos += aa_match
+
+            if trim_prefix:
+                aa_alt = aa_alt[aa_match:]
+                aa_ref = aa_ref[aa_match:]
+            else:
+                aa_alt = aa_alt[:-aa_match]
+                aa_ref = aa_ref[:-aa_ref]
+
+    return aa_ref, aa_alt, aa_start_pos
+
 
 CODON_TABLE = {
     "AUA": "I",
@@ -102,20 +153,7 @@ CODON_TABLE = {
 }
 
 
-def dna_to_rna(dna_codon: str) -> str:
-    """Convert DNA codon to RNA codon.
-
-    :param str dna_codon: DNA codon
-    :return: RNA codon
-    """
-    dna_codon_list = list(dna_codon)
-    rna_codon = ""
-    for char in dna_codon_list:
-        rna_codon += DNA_TO_RNA[char]
-    return rna_codon
-
-
-class GnomadVcfToProteinVariation(ToVRS):
+class GnomadVcfToProteinVariation:
     """Class for translating gnomAD VCF representation to protein representation"""
 
     def __init__(
@@ -125,9 +163,7 @@ class GnomadVcfToProteinVariation(ToVRS):
         classifier: Classify,
         validator: Validate,
         translator: Translate,
-        uta: UtaDatabase,
         mane_transcript: ManeTranscript,
-        mane_transcript_mappings: ManeTranscriptMappings,
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
@@ -136,18 +172,16 @@ class GnomadVcfToProteinVariation(ToVRS):
         :param classifier: Classifier class for classifying tokens
         :param validator: Validator class for validating valid inputs
         :param translator: Translating valid inputs
-        :param uta: Access to db containing alignment data
         :param mane_transcript: Access MANE Transcript information
-        :param mane_transcript_mappings: Mappings for MANE Transcript data
         """
-        super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
-        self.uta = uta
+        self.seqrepo_access = seqrepo_access
+        self.tokenizer = tokenizer
+        self.classifier = classifier
+        self.validator = validator
+        self.translator = translator
         self.mane_transcript = mane_transcript
-        self.mane_transcript_mappings = mane_transcript_mappings
 
-    async def _get_valid_results(
-        self, q: str, warnings: List
-    ) -> List[ValidationResult]:
+    async def _get_valid_result(self, q: str, warnings: List) -> List[ValidationResult]:
         """Get gnomad vcf validation summary
 
         :param q: gnomad vcf input query
@@ -156,396 +190,250 @@ class GnomadVcfToProteinVariation(ToVRS):
         """
         tokens = self.tokenizer.perform(q.strip(), warnings)
         if not tokens:
-            return None
+            raise GnomadVcfToProteinError("Unable to get tokens")
 
         classification = self.classifier.perform(tokens)
         if not classification:
-            return None
+            raise GnomadVcfToProteinError("Unable to get classification")
 
         if classification.nomenclature != Nomenclature.GNOMAD_VCF:
-            warnings.append(f"{q} is not a supported gnomad vcf query")
-            return None
+            raise GnomadVcfToProteinError(f"{q} is not a supported gnomad vcf query")
 
         validation_summary = await self.validator.perform(classification)
-        if validation_summary.valid_results:
-            valid_results = validation_summary.valid_results
-        else:
-            warnings.append(f"{q} is not a valid gnomad vcf query")
-            valid_results = []
-        return valid_results
-
-    def _get_refseq_alt_ac_from_variation(self, variation: Dict) -> str:
-        """Get genomic ac from variation sequence
-
-        :param Dict variation: VRS variation object
-        :return: RefSeq genomic accession
-        """
-        # genomic ac should always be in 38
-        refget_accession = variation["location"]["sequenceReference"]["refgetAccession"]
-        ga4gh_alias = f"ga4gh:{refget_accession}"
-        aliases = self.seqrepo_access.sr.translate_identifier(
-            ga4gh_alias, target_namespaces="refseq"
-        )
-        return aliases[0].split("refseq:")[-1]
-
-    def _update_gnomad_vcf_mane_c_pos(
-        self,
-        reading_frame: int,
-        mane_c_ac: str,
-        mane_c_pos_change: Tuple[int, int],
-        coding_start_site: int,
-        warnings: List,
-    ) -> Optional[Tuple[int, int]]:
-        """Return updated mane c position change for a gnomad vcf variation
-        depending on reading frame base
-
-        :param int reading_frame: reading frame base
-        :param str mane_c_ac: Mane transcript accession
-        :param Tuple[int, int] mane_c_pos_change: Mane transcript position
-            change
-        :param int coding_start_site: Coding start site
-        :param List warnings: List of warnings
-        :return: Mane c pos start and end
-        """
-        if reading_frame == 1:
-            # first pos
-            mane_c_pos_change = mane_c_pos_change[0], mane_c_pos_change[0] + 2
-        elif reading_frame == 2:
-            # middle pos
-            mane_c_pos_change = mane_c_pos_change[0] - 1, mane_c_pos_change[0] + 1
-        elif reading_frame == 3:
-            # last pos
-            mane_c_pos_change = mane_c_pos_change[0] - 2, mane_c_pos_change[0]
-
-        if not self.mane_transcript._validate_index(
-            mane_c_ac, mane_c_pos_change, coding_start_site
-        ):
-            warnings.append(
-                f"{mane_c_pos_change} are not valid positions on "
-                f"{mane_c_ac} with coding start site "
-                f"{coding_start_site}"
+        valid_results = validation_summary.valid_results
+        if valid_results:
+            # Temporary work around until issue-490 complete
+            valid_results.sort(
+                key=lambda v: (v.accession.split(".")[0]),
+                reverse=True,
             )
-            return None
-        return mane_c_pos_change
+            return valid_results[-1]
+        else:
+            raise GnomadVcfToProteinError(f"{q} is not a valid gnomad vcf query")
 
-    def _get_gnomad_vcf_protein_alt(
-        self,
-        classification_token: Token,
-        alt_type: AltType,
-        reading_frame: int,
-        strand: str,
-        alt_ac: str,
-        g_start_pos: int,
-        g_end_pos: int,
-    ) -> Optional[str]:
-        """Return protein alteration that corresponds to gnomad VCF alteration
+    @staticmethod
+    def _dna_to_aa(dna_seq: str, strand: Strand) -> str:
+        """Get amino acid(s) from dna sequence
 
-        :param classification_token: Classification token for query
-        :param alt_type: Alteration type
-        :param reading_frame: cDNA reading frame number (1, 2, 3)
-        :param strand: Strand for query
-        :param alt_ac: RefSeq genomic accession
-        :param g_start_pos: Genomic start position
-        :param g_end_pos: Genomic end position
-        :return: Amino acid alteration (using 1-letter codes)
+        :param dna_seq: DNA sequence
+        :raises ValueError: If DNA character is not supported
+        :return: Amino acid(s)
         """
-        alt = None
-        residue_mode = ResidueMode.INTER_RESIDUE
-        if alt_type in {AltType.SUBSTITUTION, AltType.REFERENCE_AGREE}:
-            alt_nuc = classification_token.matching_tokens[0].alt
-
-            ref = None
-            if reading_frame == 1:
-                # first pos
-                if strand == "-":
-                    ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac,
-                        g_start_pos - 2,
-                        g_end_pos + 1,
-                        residue_mode=residue_mode,
-                    )
-                    alt = alt_nuc + ref[1] + ref[0]
+        rna_seq = ""
+        if strand == strand.NEGATIVE:
+            # Since it's on the negative strand, we need to flip
+            for char in dna_seq:
+                if char == "A":
+                    rna_seq += "U"
+                elif char == "T":
+                    rna_seq += "A"
+                elif char == "G":
+                    rna_seq += "C"
+                elif char == "C":
+                    rna_seq += "G"
                 else:
-                    ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos, g_end_pos + 3, residue_mode=residue_mode
-                    )
-                    alt = alt_nuc + ref[1] + ref[2]
-            elif reading_frame == 2:
-                # middle pos
-                ref, _ = self.seqrepo_access.get_reference_sequence(
-                    alt_ac, g_start_pos - 1, g_end_pos + 2, residue_mode=residue_mode
-                )
-
-                if strand == "-":
-                    alt = ref[2] + alt_nuc + ref[0]
-                else:
-                    alt = ref[0] + alt_nuc + ref[2]
-            elif reading_frame == 3:
-                # last pos
-                if strand == "-":
-                    ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac, g_start_pos, g_end_pos + 3, residue_mode=residue_mode
-                    )
-                    alt = ref[2] + ref[1] + alt_nuc
-                else:
-                    ref, _ = self.seqrepo_access.get_reference_sequence(
-                        alt_ac,
-                        g_start_pos - 2,
-                        g_end_pos + 1,
-                        residue_mode=residue_mode,
-                    )
-                    alt = ref[0] + ref[1] + alt_nuc
-            if alt and strand == "-":
-                alt = dna_to_rna(alt)
-            else:
-                alt = alt.replace("T", "U")
-        elif alt_type == AltType.INSERTION:
-            alt = classification_token.inserted_sequence[1:].replace("T", "U")
-            if strand == "-":
-                alt = alt[::-1]
+                    raise ValueError
         else:
-            return None
+            # We only need to replace T/U for DNA->RNA
+            rna_seq = dna_seq.replace("T", "U")
 
-        if alt is None:
-            return None
-        else:
-            if len(alt) % 3 != 0:
-                return None
-
-            aa_alt = ""
-            for i in range(int(len(alt) / 3)):
-                aa_alt += CODON_TABLE[alt[3 * i : (3 * i) + 3]]
-            return aa_alt
+        # RNA -> Protein
+        aa = ""
+        for i in range(int(len(rna_seq) / 3)):
+            aa += CODON_TABLE[rna_seq[3 * i : (3 * i) + 3]]
+        return aa
 
     async def gnomad_vcf_to_protein(self, q: str) -> NormalizeService:
         """Get MANE protein consequence for gnomad vcf (chr-pos-ref-alt).
         Assumes using GRCh38 coordinates
 
-        :param str q: gnomad vcf (chr-pos-ref-alt)
-        :return: Normalize Service containing variation and warnings
+        :param q: gnomad vcf (chr-pos-ref-alt)
+        :return: Normalize Service containing variation descriptor and warnings
         """
         q = q.strip()
+        variation = None
         warnings = []
+        _id = f"normalize.variation:{quote(q)}"
 
-        valid_results = await self._get_valid_results(q, warnings)
-        if valid_results:
-            translations, warnings = await self.get_translations(
-                valid_results,
-                warnings,
-                Endpoint.NORMALIZE,
-                hgvs_dup_del_mode=HGVSDupDelModeOption.ALLELE,
+        # First we need to validate the input query
+        try:
+            valid_result = await self._get_valid_result(q, warnings)
+        except GnomadVcfToProteinError as e:
+            warnings.append(str(e))
+            return NormalizeService(
+                variation_query=q,
+                variation=variation,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
             )
 
-            if translations:
-                translations.sort(
-                    key=lambda t: (t.og_ac.split(".")[0], int(t.og_ac.split(".")[1])),
-                    reverse=True,
-                )
+        # Get relevant information from query
+        classification = valid_result.classification
+        token = classification.matching_tokens[0]
+        g_ac = valid_result.accession
+        g_ref = token.ref
+        g_alt = token.alt
 
-                all_warnings = set()
-                checked_valid_results = []
-                for translation in translations:
-                    warnings = []
-                    # all gnomad vcf will be alleles with a literal seq expression
-                    variation = translation.vrs_variation
-                    validation_result = translation.validation_result
-                    classification_token = validation_result.classification
+        len_g_ref = len(g_ref)
+        len_g_alt = len(g_alt)
 
-                    # We do not need to check the same variation that has the same
-                    # classification
-                    checked_tuple = (
-                        variation["id"],
-                        translation.vrs_seq_loc_ac,
-                        classification_token.classification_type.value,
-                    )
-                    if checked_tuple in checked_valid_results:
-                        continue
-
-                    checked_valid_results.append(checked_tuple)
-                    alt_ac = self._get_refseq_alt_ac_from_variation(variation)
-
-                    # 0-based
-                    alt_type = None
-                    g_start_pos = None
-                    g_end_pos = None
-                    if (
-                        classification_token.classification_type
-                        == ClassificationType.GENOMIC_DELINS
-                    ):
-                        g_start_pos = classification_token.pos0
-                        g_end_pos = (
-                            classification_token.pos1
-                            if classification_token.pos1
-                            else classification_token.pos0
-                        )
-
-                        # Right now, deletions and insertions are classified as delins
-                        # Only support simple deletions and insertions
-                        gnomad_vcf_token = classification_token.matching_tokens[0]
-                        ref = gnomad_vcf_token.ref
-                        alt = gnomad_vcf_token.alt
-
-                        if ref[0] == alt[0]:
-                            if len(alt) == 1:
-                                alt_type = AltType.DELETION
-                                g_start_pos += 1
-                                g_end_pos += 1
-                            elif len(ref) == 1:
-                                alt_type = AltType.INSERTION
-                            else:
-                                alt_type = AltType.DELINS
-                    elif classification_token.classification_type in {
-                        ClassificationType.GENOMIC_SUBSTITUTION,
-                        ClassificationType.GENOMIC_REFERENCE_AGREE,
-                    }:
-                        g_start_pos = classification_token.pos
-                        g_end_pos = classification_token.pos
-                        ref_seq, w = self.seqrepo_access.get_reference_sequence(
-                            alt_ac, start=g_start_pos, end=g_start_pos
-                        )
-                        if not ref_seq:
-                            all_warnings.add(w)
-                        else:
-                            if ref_seq != classification_token.matching_tokens[0].ref:
-                                all_warnings.add(
-                                    f"Expected {classification_token.ref} but found "
-                                    f"{ref_seq} on {alt_ac} at position {g_start_pos}"
-                                )
-                                continue
-
-                        if (
-                            classification_token.classification_type
-                            == ClassificationType.GENOMIC_SUBSTITUTION
-                        ):
-                            alt_type = AltType.SUBSTITUTION
-                        else:
-                            alt_type = AltType.REFERENCE_AGREE
-                    else:
-                        all_warnings.add(
-                            f"{classification_token.classification_type} classification_type not supported"  # noqa: E501
-                        )
-                        continue
-
-                    mane_data = self.mane_transcript_mappings.get_mane_data_from_chr_pos(  # noqa: E501
-                        alt_ac, g_start_pos, g_end_pos
-                    )
-
-                    mane_data_len = len(mane_data)
-                    g_start_pos -= 1
-                    g_end_pos -= 1
-
-                    for i in range(mane_data_len):
-                        current_mane_data = mane_data[i]
-                        mane_c_ac = current_mane_data["RefSeq_nuc"]
-                        mane_tx_genomic_data = await self.uta.get_mane_c_genomic_data(
-                            mane_c_ac, alt_ac, g_start_pos, g_end_pos
-                        )
-                        if not mane_tx_genomic_data:
-                            all_warnings.add(
-                                f"Unable to get MANE data for {mane_c_ac} using "
-                                f"{alt_ac} at positions {g_start_pos} to {g_end_pos}"
-                            )
-                            continue
-
-                        coding_start_site = mane_tx_genomic_data["coding_start_site"]
-                        mane_c_pos_change = self.mane_transcript.get_mane_c_pos_change(
-                            mane_tx_genomic_data, coding_start_site
-                        )
-
-                        # We use 1-based
-                        reading_frame = self.mane_transcript._get_reading_frame(
-                            mane_c_pos_change[0] + 1
-                        )
-                        if classification_token.classification_type in {
-                            ClassificationType.GENOMIC_SUBSTITUTION,
-                            ClassificationType.GENOMIC_REFERENCE_AGREE,
-                        }:
-                            mane_c_pos_change = self._update_gnomad_vcf_mane_c_pos(
-                                reading_frame,
-                                mane_c_ac,
-                                mane_c_pos_change,
-                                coding_start_site,
-                                warnings,
-                            )
-                            if mane_c_pos_change is None:
-                                if len(warnings) > 0:
-                                    all_warnings.add(warnings[0])
-                                continue
-
-                        mane_p = self.mane_transcript._get_mane_p(
-                            current_mane_data,
-                            (mane_c_pos_change[0] + 1, mane_c_pos_change[1] + 1),
-                        )
-                        if mane_p.pos[0] > mane_p.pos[1]:
-                            mane_p.pos = (mane_p.pos[1], mane_p.pos[0])
-                        p_ac = mane_p.refseq
-                        aa_alt = self._get_gnomad_vcf_protein_alt(
-                            classification_token,
-                            alt_type,
-                            reading_frame,
-                            mane_tx_genomic_data["strand"],
-                            alt_ac,
-                            g_start_pos,
-                            g_end_pos,
-                        )
-                        # Deletions don't have an aa_alt
-                        if aa_alt or alt_type == AltType.DELETION:
-                            # mane_p is 0-based, but to_vrs allele takes 1-based
-                            variation = self.to_vrs_allele(
-                                p_ac,
-                                mane_p.pos[0],
-                                mane_p.pos[1],
-                                "p",
-                                alt_type,
-                                [],
-                                alt=aa_alt,
-                                residue_mode=ResidueMode.INTER_RESIDUE,
-                            )
-                            if variation:
-                                translation_result = TranslationResult(
-                                    vrs_variation=variation,
-                                    validation_result=validation_result,
-                                )
-
-                                tr_copy = deepcopy(translation_result)
-                                tr_copy.vrs_seq_loc_ac = p_ac
-                                tr_copy.vrs_seq_loc_ac_status = mane_p.status
-
-                                try:
-                                    vrs_variation = tr_copy.vrs_variation
-                                except AttributeError as e:
-                                    warnings.append(str(e))
-                                    vrs_variation = None
-
-                                if not vrs_variation:
-                                    continue
-
-                                return NormalizeService(
-                                    variation_query=q,
-                                    variation=vrs_variation,
-                                    warnings=[],
-                                    service_meta_=ServiceMeta(
-                                        version=__version__,
-                                        response_datetime=datetime.now(),
-                                    ),
-                                )
-                        else:
-                            all_warnings.add(
-                                "Unable to get associated amino acid change"
-                            )
-
-                if all_warnings:
-                    warnings = all_warnings
-                else:
-                    warnings = [f"Unable to get protein variation for {q}"]
-            else:
-                update_warnings_for_no_resp(q, warnings)
+        # Determine the type of alteration and the number of nucleotide prefixes matched
+        if len_g_ref == len_g_alt:
+            num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
+            alt_type = AltType.SUBSTITUTION
         else:
-            update_warnings_for_no_resp(q, warnings)
+            if len_g_ref > len_g_alt:
+                num_prefix_matched = _get_prefix_match_count(len_g_alt, g_ref, g_alt)
+                if num_prefix_matched == len_g_alt:
+                    alt_type = AltType.DELETION
+                else:
+                    alt_type = AltType.DELINS
+            else:
+                num_prefix_matched = _get_prefix_match_count(len_g_ref, g_ref, g_alt)
+                if num_prefix_matched == len_g_ref:
+                    alt_type = AltType.INSERTION
+                else:
+                    alt_type = AltType.DELINS
+
+        # Get genomic position change
+        g_start_pos = token.pos
+        if alt_type == AltType.SUBSTITUTION:
+            g_end_pos = g_start_pos + (len_g_ref - (num_prefix_matched + 1))
+        else:
+            g_end_pos = g_start_pos + (len_g_ref - num_prefix_matched)
+
+            if num_prefix_matched == 0:
+                g_end_pos -= 1
+
+        # Given genomic data, get associated cDNA and protein representation
+        p_c_data = await self.mane_transcript.grch38_to_mane_c_p(
+            g_ac, g_start_pos, g_end_pos, try_longest_compatible=True
+        )
+        if not p_c_data:
+            warnings.append("Unable to get MANE cDNA and protein representation")
+            return NormalizeService(
+                variation_query=q,
+                variation=variation,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
+            )
+
+        p_data = p_c_data.protein
+        c_data = p_c_data.cdna
+
+        # Get reading frame
+        start_reading_frame = self.mane_transcript._get_reading_frame(c_data.pos[0] + 1)
+        end_reading_frame = self.mane_transcript._get_reading_frame(c_data.pos[1])
+
+        # Get genomic position range change
+        strand = c_data.strand
+        start_ix = start_reading_frame - 1
+        if strand == Strand.NEGATIVE:
+            new_g_end_pos = g_end_pos + (start_reading_frame - 1)
+            new_g_start_pos = g_start_pos - (3 - end_reading_frame)
+        else:
+            new_g_start_pos = g_start_pos - (start_reading_frame - 1)
+            new_g_end_pos = g_end_pos + (3 - end_reading_frame)
+
+        # Get reference sequence
+        ref, _ = self.seqrepo_access.get_reference_sequence(
+            g_ac, new_g_start_pos, new_g_end_pos
+        )
+
+        if strand == Strand.NEGATIVE:
+            ref = ref[::-1]
+
+        # Get altered sequence. Deletion will always be empty string
+        if alt_type == AltType.DELETION:
+            alt = ""
+        else:
+            if strand == Strand.POSITIVE:
+                alt = ref[:start_ix] + g_alt
+            else:
+                alt = ref[:start_ix] + g_alt[::-1]
+
+            if alt_type == AltType.SUBSTITUTION:
+                alt += ref[len(alt) :]
+            else:
+                len_ref = len(ref)
+                alt += ref[len_ref - start_ix :]
+
+            # We need to get the entire inserted sequence. It needs to be a factor of 3
+            # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa). The reason why we
+            # DO NOT do this for insertions, is because we only want the provided
+            # insertion sequence and do not want to mess with it
+            if alt_type != AltType.INSERTION:
+                len_alt = len(alt)
+                rem_alt = len_alt % 3
+                if rem_alt != 0:
+                    tmp_g_end_pos = new_g_end_pos + (3 - rem_alt)
+                    tmp_ref, _ = self.seqrepo_access.get_reference_sequence(
+                        g_ac, new_g_end_pos, tmp_g_end_pos
+                    )
+                    alt += tmp_ref
+
+        # Get protein sequence
+        aa_ref = self._dna_to_aa(ref, strand)
+        aa_alt = self._dna_to_aa(alt, strand)
+
+        # Get protein start position
+        # We need to trim prefixes / suffixes and update the position accordingly
+        aa_start_pos = p_data.pos[0]
+        aa_ref, aa_alt, aa_start_pos = _trim_prefix_suffix(
+            aa_ref, aa_alt, aa_start_pos=aa_start_pos, trim_prefix=True
+        )
+        aa_ref, aa_alt, _ = _trim_prefix_suffix(aa_ref, aa_alt, trim_prefix=False)
+
+        seq_id = p_data.refseq or p_data.ensembl
+        ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(seq_id, "ga4gh")
+        if w:
+            warnings.append(w)
+            return NormalizeService(
+                variation_query=q,
+                variation=variation,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
+            )
+
+        if alt_type == AltType.DELETION:
+            aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
+        else:
+            aa_end_pos = p_data.pos[1]
+
+        variation = models.Allele(
+            location=models.SequenceLocation(
+                sequenceReference=models.SequenceReference(
+                    refgetAccession=ga4gh_seq_id[0].split("ga4gh:")[-1]
+                ),
+                start=aa_start_pos,
+                end=aa_end_pos,
+            ),
+            state=models.LiteralSequenceExpression(sequence=aa_alt),
+        )
+        try:
+            variation = normalize(variation, self.seqrepo_access)
+        except (KeyError, AttributeError) as e:
+            warnings.append(f"VRS-Python unable to normalize allele: {e}")
+            return NormalizeService(
+                variation_query=q,
+                variation=variation,
+                warnings=warnings,
+                service_meta_=ServiceMeta(
+                    version=__version__, response_datetime=datetime.now()
+                ),
+            )
+        variation.id = ga4gh_identify(variation)
+        variation.location.id = ga4gh_identify(variation.location)
 
         return NormalizeService(
             variation_query=q,
-            variation=None,
+            variation=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__, response_datetime=datetime.now()

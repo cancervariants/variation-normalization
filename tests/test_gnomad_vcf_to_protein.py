@@ -3,7 +3,6 @@ import pytest
 from ga4gh.vrs import models
 
 from tests.conftest import assertion_checks
-from variation.gnomad_vcf_to_protein_variation import dna_to_rna
 
 
 @pytest.fixture(scope="module")
@@ -61,7 +60,7 @@ def cdk11a_e314del():
 
 @pytest.fixture(scope="module")
 def protein_insertion2():
-    """Create test fixture for LRP8 p.Gln25_Leu26insArg"""
+    """Create test fixture for LRP8 p.Gln25_Leu26insArg (CA860540)"""
     params = {
         "id": "ga4gh:VA.5KWhsli69ac5zyoGf40Owu4CVNKy27So",
         "location": {
@@ -176,13 +175,92 @@ def kras_g12d():
     return models.Allele(**params)
 
 
-def test_dna_to_rna():
-    """Test that dna_to_rna method works correctly."""
-    resp = dna_to_rna("GTA")
-    assert resp == "CAU"
+@pytest.fixture(scope="module")
+def multi_nuc_sub_pos():
+    """Create test fixture for substitution with more than 1 nucleotide change on the
+    positive strand (CA16042245)
+    """
+    params = {
+        "id": "ga4gh:VA.q_fhdDFpLT38y6TPU1EMtc2StwRGRVx0",
+        "type": "Allele",
+        "location": {
+            "id": "ga4gh:SL.xcqWKkKU83UBmLq5Q1yrH6IyLvWkMcWk",
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.HtNf7YrmmFih3cwRwYMlylPFMAs7-l9B",
+            },
+            "start": 242,
+            "end": 244,
+        },
+        "state": {"type": "LiteralSequenceExpression", "sequence": "PS"},
+    }
+    return models.Allele(**params)
 
-    resp = dna_to_rna("AAGTGACA")
-    assert resp == "UUCACUGU"
+
+@pytest.fixture(scope="module")
+def multi_nuc_sub_neg():
+    """Create test fixture for substitution with more than 1 nucleotide change on the
+    negative strand (CA1139661942)
+    """
+    params = {
+        "id": "ga4gh:VA.6K950oAyNXfIkPTmSHzX8f8wpNUroBGK",
+        "type": "Allele",
+        "location": {
+            "id": "ga4gh:SL.RiO0HagK846MBCJZK7NVcDtlYPkdaXC4",
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.bg8P_l39rOUQVLwsW3Dme-946Od8-3rB",
+            },
+            "start": 235,
+            "end": 236,
+        },
+        "state": {"type": "LiteralSequenceExpression", "sequence": "G"},
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def delins_pos():
+    """Create test fixture for delins on positive strand (CA645561524)"""
+    params = {
+        "id": "ga4gh:VA.vBQ2TCfRHiG3ud_vqE88BNZEK7Qw28kg",
+        "type": "Allele",
+        "location": {
+            "id": "ga4gh:SL.1btwhKRj0zZQwo-_CalR-WavTB019t-V",
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            },
+            "start": 746,
+            "end": 752,
+        },
+        "state": {"type": "LiteralSequenceExpression", "sequence": "Q"},
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def delins_neg():
+    """Create test fixture for delins on negative strand (ClinVar ID 1217291)"""
+    params = {
+        "id": "ga4gh:VA.iSDLORgPGz21BetTQM5grpXyB3tIfZwl",
+        "type": "Allele",
+        "location": {
+            "id": "ga4gh:SL.cmPqZ9vkQlmV_eWEW3MFKFeVtT_n1-yc",
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.aDZLb9cs0cYskMKDIK-AXhaevHRA86JS",
+            },
+            "start": 239,
+            "end": 259,
+        },
+        "state": {"type": "LiteralSequenceExpression", "sequence": "TLTA"},
+    }
+    return models.Allele(**params)
 
 
 @pytest.mark.asyncio
@@ -196,6 +274,8 @@ async def test_substitution(
     atad3a_i7t,
     atad3a_i7m,
     kras_g12d,
+    multi_nuc_sub_pos,
+    multi_nuc_sub_neg,
 ):
     """Test that substitution queries return correct response"""
     # Reading Frame 1, Negative Strand
@@ -236,12 +316,20 @@ async def test_substitution(
     resp = await test_handler.gnomad_vcf_to_protein("12-25245350-C-T")
     assertion_checks(resp, kras_g12d)
 
+    # multi nucleotide ref/alt on positive strand (CA16042245)
+    resp = await test_handler.gnomad_vcf_to_protein("2-74530927-TGC-CAT")
+    assertion_checks(resp, multi_nuc_sub_pos)
+
+    # multi nucleotide ref/alt on negative strand (CA1139661942)
+    resp = await test_handler.gnomad_vcf_to_protein("11-47348490-TG-CA")
+    assertion_checks(resp, multi_nuc_sub_neg)
+
 
 @pytest.mark.asyncio
 async def test_reference_agree(test_handler, vhl_reference_agree):
     """Test that reference agree queries return correct response"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
-    resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-C")
+    resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-T")
     assertion_checks(resp, vhl_reference_agree)
     assert resp.warnings == []
 
@@ -249,11 +337,13 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
 @pytest.mark.asyncio
 async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     """Test that insertion queries return correct response"""
-    resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTG")
+    # positive strand (CA645561585)
+    resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTA")
     assertion_checks(resp, protein_insertion)
     assert resp.warnings == []
 
-    resp = await test_handler.gnomad_vcf_to_protein("1-53327836-A-ACGC")
+    # negative strand (CA860540)
+    resp = await test_handler.gnomad_vcf_to_protein("1-53327836-A-AGCC")
     assertion_checks(resp, protein_insertion2)
     assert resp.warnings == []
 
@@ -271,6 +361,20 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
 
 
 @pytest.mark.asyncio
+async def test_delins(test_handler, delins_pos, delins_neg):
+    """Test that delins queries return correct response"""
+    # CA645561524, Positive Strand
+    resp = await test_handler.gnomad_vcf_to_protein("7-55174776-TTAAGAGAAGCAACATCT-CAA")
+    assertion_checks(resp, delins_pos)
+
+    # ClinVar ID 1217291, Negative Strand
+    resp = await test_handler.gnomad_vcf_to_protein(
+        "X-153870419-GCTGCCCCTGCAAGGCCACCAGGTGGCTGCTGGAGTTGGTGGGGAAGAGCAGGCGCGG-CTGTCAATGT"
+    )  # noqa: E501
+    assertion_checks(resp, delins_neg)
+
+
+@pytest.mark.asyncio
 async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("dummy")
@@ -282,9 +386,7 @@ async def test_invalid(test_handler):
 
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation is None
-    assert set(resp.warnings) == {
-        "Expected T but found A on NC_000007.14 at position 140753336"
-    }
+    assert set(resp.warnings) == {"Unable to get MANE cDNA and protein representation"}
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation is None
