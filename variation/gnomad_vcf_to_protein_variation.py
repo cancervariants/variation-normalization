@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
-from cool_seq_tool.schemas import Strand
+from cool_seq_tool.schemas import ResidueMode, Strand
 from ga4gh.core import core_models, ga4gh_identify
 from ga4gh.vrs import models, normalize
 from gene.query import QueryHandler as GeneQueryHandler
@@ -418,6 +418,25 @@ class GnomadVcfToProteinVariation:
             else None
         )
 
+    def _get_vrs_ref_allele_seq(
+        self, location: models.SequenceLocation, p_ac: str
+    ) -> Optional[str]:
+        """Return reference sequence given a VRS location.
+
+        :param location: VRS Location object
+        :param identifier: Identifier for allele
+        :return: VRS ref seq allele
+        """
+        start = location.start
+        end = location.end
+        if isinstance(start, int) and isinstance(end, int) and (start != end):
+            ref, _ = self.seqrepo_access.get_reference_sequence(
+                p_ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+            )
+        else:
+            ref = None
+        return ref
+
     async def gnomad_vcf_to_protein(self, vcf_query: str) -> GnomadVcfToProteinService:
         """Get protein consequence for gnomAD-VCF like expression
         Assumes input query uses GRCh38 representation
@@ -438,7 +457,6 @@ class GnomadVcfToProteinVariation:
             return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
-                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -478,7 +496,6 @@ class GnomadVcfToProteinVariation:
             return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
-                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -497,7 +514,6 @@ class GnomadVcfToProteinVariation:
             return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
-                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -520,7 +536,6 @@ class GnomadVcfToProteinVariation:
             return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
-                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -561,9 +576,10 @@ class GnomadVcfToProteinVariation:
             warnings.append(str(e))
 
         return GnomadVcfToProteinService(
-            gene_context=self._get_gene_context(p_data.gene),
             variation_query=vcf_query,
             variation=variation,
+            vrs_ref_allele_seq=self._get_vrs_ref_allele_seq(variation.location, p_ac),
+            gene_context=self._get_gene_context(p_data.gene),
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__, response_datetime=datetime.now()
