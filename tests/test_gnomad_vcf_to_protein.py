@@ -286,6 +286,7 @@ async def test_substitution(
     # Reading Frame 2, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-A-T")
     assertion_checks(resp, braf_v600e)
+    assert resp.gene_context
     assert resp.warnings == []
 
     # Reading Frame 3, Negative Strand
@@ -331,6 +332,7 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
     resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-T")
     assertion_checks(resp, vhl_reference_agree)
+    assert resp.gene_context
     assert resp.warnings == []
 
 
@@ -340,11 +342,13 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     # positive strand (CA645561585)
     resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTA")
     assertion_checks(resp, protein_insertion)
+    assert resp.gene_context
     assert resp.warnings == []
 
     # negative strand (CA860540)
     resp = await test_handler.gnomad_vcf_to_protein("1-53327836-A-AGCC")
     assertion_checks(resp, protein_insertion2)
+    assert resp.gene_context
     assert resp.warnings == []
 
 
@@ -353,10 +357,12 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
     """Test that deletion queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range)
+    assert resp.gene_context
     assert resp.warnings == []
 
     resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
     assertion_checks(resp, cdk11a_e314del)
+    assert resp.gene_context
     assert resp.warnings == []
 
 
@@ -366,12 +372,14 @@ async def test_delins(test_handler, delins_pos, delins_neg):
     # CA645561524, Positive Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-55174776-TTAAGAGAAGCAACATCT-CAA")
     assertion_checks(resp, delins_pos)
+    assert resp.gene_context
 
     # ClinVar ID 1217291, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein(
         "X-153870419-GCTGCCCCTGCAAGGCCACCAGGTGGCTGCTGGAGTTGGTGGGGAAGAGCAGGCGCGG-CTGTCAATGT"
-    )  # noqa: E501
+    )
     assertion_checks(resp, delins_neg)
+    assert resp.gene_context
 
 
 @pytest.mark.asyncio
@@ -379,14 +387,17 @@ async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation is None
+    assert resp.gene_context is None
     assert resp.warnings == [
         "BRAF V600E is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
     ]
 
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation is None
+    assert resp.gene_context is None
     assert set(resp.warnings) == {"Unable to get cDNA and protein representation"}
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation is None
+    assert resp.gene_context is None
     assert resp.warnings == ["20-2-TC-TG is not a valid gnomad vcf query"]

@@ -1,21 +1,19 @@
 """Module for translating VCF-like to protein VRS Allele representation"""
 from datetime import datetime
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import Strand
-from ga4gh.core import ga4gh_identify
+from ga4gh.core import core_models, ga4gh_identify
 from ga4gh.vrs import models, normalize
+from gene.query import QueryHandler as GeneQueryHandler
+from gene.schemas import MatchType as GeneMatchType
 
 from variation.classify import Classify
-from variation.schemas.classification_response_schema import (
-    Nomenclature,
-)
-from variation.schemas.normalize_response_schema import (
-    NormalizeService,
-    ServiceMeta,
-)
+from variation.schemas.classification_response_schema import Nomenclature
+from variation.schemas.gnomad_vcf_to_protein_schema import GnomadVcfToProteinService
+from variation.schemas.normalize_response_schema import ServiceMeta
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
@@ -162,6 +160,7 @@ class GnomadVcfToProteinVariation:
         validator: Validate,
         translator: Translate,
         mane_transcript: ManeTranscript,
+        gene_normalizer: GeneQueryHandler,
     ) -> None:
         """Initialize the GnomadVcfToProteinVariation class
 
@@ -171,6 +170,7 @@ class GnomadVcfToProteinVariation:
         :param validator: Validator class for validating valid inputs
         :param translator: Translating valid inputs
         :param mane_transcript: Access MANE Transcript information
+        :param gene_normalizer: Client for normalizing gene concepts
         """
         self.seqrepo_access = seqrepo_access
         self.tokenizer = tokenizer
@@ -178,6 +178,7 @@ class GnomadVcfToProteinVariation:
         self.validator = validator
         self.translator = translator
         self.mane_transcript = mane_transcript
+        self.gene_normalizer = gene_normalizer
 
     async def _get_valid_result(
         self, vcf_query: str, warnings: List
@@ -404,14 +405,27 @@ class GnomadVcfToProteinVariation:
         variation.location.id = ga4gh_identify(variation.location)
         return variation
 
-    async def gnomad_vcf_to_protein(self, vcf_query: str) -> NormalizeService:
+    def _get_gene_context(self, gene: str) -> Optional[core_models.Gene]:
+        """Get additional gene information from gene-normalizer
+
+        :param gene: Gene symbol
+        :return: Gene data from gene-normalizer if match found
+        """
+        gene_norm_resp = self.gene_normalizer.normalize(gene)
+        return (
+            gene_norm_resp.gene
+            if gene_norm_resp.match_type != GeneMatchType.NO_MATCH
+            else None
+        )
+
+    async def gnomad_vcf_to_protein(self, vcf_query: str) -> GnomadVcfToProteinService:
         """Get protein consequence for gnomAD-VCF like expression
         Assumes input query uses GRCh38 representation
 
         :param vcf_query: gnomAD VCF-like expression (``chr-pos-ref-alt``) on the GRCh38
             assembly
-        :return: Normalize Service containing protein VRS Allele, if translation was
-            successful
+        :return: GnomadVcfToProteinService containing protein VRS Allele, if translation
+            was successful
         """
         variation = None
         warnings = []
@@ -421,9 +435,10 @@ class GnomadVcfToProteinVariation:
             valid_result = await self._get_valid_result(vcf_query, warnings)
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
-            return NormalizeService(
+            return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
+                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -460,9 +475,10 @@ class GnomadVcfToProteinVariation:
         )
         if not p_c_data:
             warnings.append("Unable to get cDNA and protein representation")
-            return NormalizeService(
+            return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
+                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -478,9 +494,10 @@ class GnomadVcfToProteinVariation:
         p_ga4gh_seq_id, w = self.seqrepo_access.translate_identifier(p_ac, "ga4gh")
         if w:
             warnings.append(w)
-            return NormalizeService(
+            return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
+                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -500,9 +517,10 @@ class GnomadVcfToProteinVariation:
         )
         if w:
             warnings.append(w)
-            return NormalizeService(
+            return GnomadVcfToProteinService(
                 variation_query=vcf_query,
                 variation=variation,
+                gene_context=None,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
                     version=__version__, response_datetime=datetime.now()
@@ -542,7 +560,8 @@ class GnomadVcfToProteinVariation:
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
 
-        return NormalizeService(
+        return GnomadVcfToProteinService(
+            gene_context=self._get_gene_context(p_data.gene),
             variation_query=vcf_query,
             variation=variation,
             warnings=warnings,

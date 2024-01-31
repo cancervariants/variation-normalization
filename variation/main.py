@@ -23,6 +23,7 @@ from variation.schemas.copy_number_schema import (
     ParsedToCxVarQuery,
     ParsedToCxVarService,
 )
+from variation.schemas.gnomad_vcf_to_protein_schema import GnomadVcfToProteinService
 from variation.schemas.hgvs_to_copy_number_schema import (
     HgvsToCopyNumberChangeService,
     HgvsToCopyNumberCountService,
@@ -302,16 +303,16 @@ q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protei
     response_description=g_to_p_response_description,
     response_model_exclude_none=True,
     description=g_to_p_description,
-    response_model=NormalizeService,
+    response_model=GnomadVcfToProteinService,
     tags=[Tag.TO_PROTEIN_VARIATION],
 )
 async def gnomad_vcf_to_protein(
     q: str = Query(..., description=q_description),
-) -> NormalizeService:
+) -> GnomadVcfToProteinService:
     """Return VRS representation for variation on protein coordinate.
 
     :param q: gnomad VCF to normalize to protein variation.
-    :return: NormalizeService for variation
+    :return: GnomadVcfToProteinService for variation
     """
     q = unquote(q.strip())
     resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)

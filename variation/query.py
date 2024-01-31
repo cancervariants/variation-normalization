@@ -67,7 +67,7 @@ class QueryHandler:
         normalize_params = to_vrs_params + [uta_db]
         self.normalize_handler = Normalize(*normalize_params)
         self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
-            *to_vrs_params + [mane_transcript]
+            *to_vrs_params + [mane_transcript, gene_query_handler]
         )
         self.to_copy_number_handler = ToCopyNumberVariation(
             *to_vrs_params + [gene_query_handler, uta_db]
