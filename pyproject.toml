@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta:__legacy__"
 line-length = 88
 
 [tool.ruff]
+exclude = ["docs/source/conf.py"]
 # pycodestyle (E, W)
 # Pyflakes (F)
 # flake8-annotations (ANN)
