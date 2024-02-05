@@ -79,7 +79,7 @@ def test_amplification_to_cx_var(
     assert resp.copy_number_change is None
     assert resp.amplification_label == "BRAF Amplification"
     assert resp.warnings == [
-        "End inter-residue coordinate (9955599320) is out of " "index on NC_000007.13"
+        "End inter-residue coordinate (9955599321) is out of index on NC_000007.13"
     ]
 
     # invalid gene

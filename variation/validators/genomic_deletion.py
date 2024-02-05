@@ -57,7 +57,9 @@ class GenomicDeletion(Validator):
                         invalid_del_seq_message = self.validate_reference_sequence(
                             alt_ac,
                             classification.pos0,
-                            classification.pos1 + 1 if classification.pos1 else None,
+                            classification.pos1
+                            if classification.pos1
+                            else classification.pos0,
                             classification.deleted_sequence,
                         )
 
@@ -71,8 +73,8 @@ class GenomicDeletion(Validator):
                     validate_ref_msg = self.validate_reference_sequence(
                         alt_ac,
                         classification.pos0 - 1,
-                        classification.pos0 - 1 + len(ref),
-                        ref,
+                        end_pos=classification.pos0 + (len(ref) - 1),
+                        expected_ref=ref,
                     )
 
                     if validate_ref_msg:

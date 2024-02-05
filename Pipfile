@@ -20,8 +20,8 @@ black = "*"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "==2.*"
-"ga4gh.vrs" = {version = "~=2.0.0a1", extras = ["extras"]}
+"ga4gh.vrs" = {version = "~=2.0.0a2", extras = ["extras"]}
 gene-normalizer = "~=0.3.0.dev1"
 boto3 = "*"
-cool-seq-tool = "~=0.3.0.dev1"
+cool-seq-tool = "~=0.4.0.dev1"
 bioutils = "*"

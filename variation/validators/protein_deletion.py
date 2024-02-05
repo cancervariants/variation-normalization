@@ -84,7 +84,7 @@ class ProteinDeletion(Validator):
                         invalid_del_seq_msg = self.validate_reference_sequence(
                             p_ac,
                             classification.pos0,
-                            classification.pos1 + 1,
+                            classification.pos1,
                             classification.deleted_sequence,
                         )
 

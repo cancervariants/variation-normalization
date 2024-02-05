@@ -51,14 +51,18 @@ class CdnaDeletion(Validator):
                 }:
                     # # validate deleted sequence
                     # HGVS deleted sequence includes start and end
+                    start = cds_start + classification.pos0
+                    end = (
+                        cds_start + classification.pos1
+                        if classification.pos1 is not None
+                        else start
+                    )
                     if classification.deleted_sequence:
                         invalid_del_seq_msg = self.validate_reference_sequence(
                             c_ac,
-                            cds_start + classification.pos0,
-                            cds_start + classification.pos1 + 1
-                            if classification.pos1
-                            else None,
-                            classification.deleted_sequence,
+                            start,
+                            end_pos=end,
+                            expected_ref=classification.deleted_sequence,
                         )
 
                         if invalid_del_seq_msg:
@@ -67,10 +71,8 @@ class CdnaDeletion(Validator):
                         # Validate accession and positions
                         invalid_ac_pos_msg = self.validate_ac_and_pos(
                             c_ac,
-                            cds_start + classification.pos0,
-                            end_pos=cds_start + classification.pos1
-                            if classification.pos1
-                            else None,
+                            start,
+                            end_pos=end,
                         )
                         if invalid_ac_pos_msg:
                             errors.append(invalid_ac_pos_msg)

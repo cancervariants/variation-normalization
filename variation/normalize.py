@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.sources import UTADatabase
+from cool_seq_tool.sources import UtaDatabase
 from ga4gh.vrs import models
 
 from variation.classify import Classify
@@ -38,7 +38,7 @@ class Normalize(ToVRS):
         classifier: Classify,
         validator: Validate,
         translator: Translate,
-        uta: UTADatabase,
+        uta: UtaDatabase,
     ) -> None:
         """Initialize Normalize class.
 
@@ -47,7 +47,7 @@ class Normalize(ToVRS):
         :param classifier: Classifier class for classifying tokens
         :param validator: Validator class for validating valid inputs
         :param translator: Translating valid inputs
-        :param UTADatabase uta: Access to db containing alignment data
+        :param UtaDatabase uta: Access to db containing alignment data
         """
         super().__init__(
             seqrepo_access,

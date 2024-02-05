@@ -68,38 +68,39 @@ class GenomicReferenceAgree(Translator):
             mane = await self.mane_transcript.get_mane_transcript(
                 validation_result.accession,
                 classification.pos,
+                classification.pos,
                 AnnotationLayer.GENOMIC,
-                end_pos=classification.pos,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE.value,
+                residue_mode=ResidueMode.RESIDUE,
                 gene=gene,
             )
 
             if mane:
-                vrs_seq_loc_ac_status = mane["status"]
+                vrs_seq_loc_ac_status = mane.status
 
                 if gene:
                     classification = CdnaReferenceAgreeClassification(
                         matching_tokens=classification.matching_tokens,
                         nomenclature=classification.nomenclature,
                         gene_token=classification.gene_token,
-                        pos=mane["pos"][0] + 1,
+                        pos=mane.pos[0] + 1,  # 1-based for classification
                     )
-                    vrs_seq_loc_ac = mane["refseq"]
+                    vrs_seq_loc_ac = mane.refseq
                     coord_type = AnnotationLayer.CDNA
                     validation_result.classification = classification
                 else:
-                    vrs_seq_loc_ac = mane["alt_ac"]
+                    vrs_seq_loc_ac = mane.alt_ac
                     coord_type = AnnotationLayer.GENOMIC
 
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac,
-                    mane["pos"][0] + 1,
-                    mane["pos"][1] + 1,
+                    mane.pos[0],
+                    mane.pos[1],
                     coord_type,
                     AltType.REFERENCE_AGREE,
                     warnings,
-                    cds_start=mane["coding_start_site"] if gene else None,
+                    cds_start=mane.coding_start_site if gene else None,
+                    residue_mode=ResidueMode.INTER_RESIDUE,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession
@@ -110,6 +111,7 @@ class GenomicReferenceAgree(Translator):
                 AnnotationLayer.GENOMIC,
                 AltType.REFERENCE_AGREE,
                 warnings,
+                residue_mode=ResidueMode.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

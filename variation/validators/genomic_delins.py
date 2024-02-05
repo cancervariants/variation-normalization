@@ -51,9 +51,7 @@ class GenomicDelIns(Validator):
                 invalid_ref_msg = self.validate_reference_sequence(
                     alt_ac,
                     classification.pos0,
-                    classification.pos1 + 1
-                    if classification.pos1
-                    else classification.pos0,
+                    classification.pos1 if classification.pos1 else classification.pos0,
                     ref,
                 )
                 if invalid_ref_msg:

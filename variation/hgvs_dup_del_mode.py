@@ -2,6 +2,7 @@
 from typing import Dict, List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.schemas import ResidueMode
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models, normalize
 
@@ -138,11 +139,11 @@ class HGVSDupDelMode:
             return None
 
         if alt_type == AltType.DUPLICATION:
-            # start is start - 1, end is end
             ref, _ = self.seqrepo_access.get_reference_sequence(
                 vrs_seq_loc_ac,
-                location["start"] + 1,
-                location["end"] + 1,
+                start=location["start"],
+                end=location["end"],
+                residue_mode=ResidueMode.INTER_RESIDUE,
             )
 
             if ref:

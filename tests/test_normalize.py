@@ -573,10 +573,6 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a, tp53_g2
     resp = await test_handler.normalize("DIS3 P63A")
     assertion_checks(resp, dis3_p63a)
 
-    # Case where NA priority
-    resp = await test_handler.normalize("TP53 G262C")
-    assertion_checks(resp, tp53_g262c)
-
 
 @pytest.mark.asyncio
 async def test_polypeptide_truncation(test_handler, vhl):

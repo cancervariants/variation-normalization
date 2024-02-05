@@ -296,28 +296,6 @@ g_to_p_description = (
 q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."  # noqa: E501
 
 
-@app.get(
-    "/variation/gnomad_vcf_to_protein",
-    summary=g_to_p_summary,
-    response_description=g_to_p_response_description,
-    response_model_exclude_none=True,
-    description=g_to_p_description,
-    response_model=NormalizeService,
-    tags=[Tag.TO_PROTEIN_VARIATION],
-)
-async def gnomad_vcf_to_protein(
-    q: str = Query(..., description=q_description),
-) -> NormalizeService:
-    """Return VRS representation for variation on protein coordinate.
-
-    :param q: gnomad VCF to normalize to protein variation.
-    :return: NormalizeService for variation
-    """
-    q = unquote(q.strip())
-    resp = await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
-    return resp
-
-
 hgvs_dup_del_mode_decsr = (
     "This parameter determines how to interpret HGVS dup/del expressions in VRS."
 )
