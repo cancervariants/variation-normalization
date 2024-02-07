@@ -148,7 +148,7 @@ def vhl_reference_agree():
 
 @pytest.fixture(scope="session")
 def protein_insertion():
-    """Create test fixture for NP protein insertion."""
+    """Create test fixture for NP protein insertion (CA645561585)."""
     params = {
         "id": "ga4gh:VA.AOCCh_BU5wKkdgoDNqkORF_x4GQwWh1T",
         "location": {
