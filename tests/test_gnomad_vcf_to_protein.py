@@ -200,7 +200,7 @@ def multi_nuc_sub_pos():
 
 @pytest.fixture(scope="module")
 def multi_nuc_sub_neg():
-    """Create test fixture for substitution with more than 1 nucleotide change on the
+    """Create test fixture for the protein consequence of a multinucleotide substitution on the
     negative strand (CA1139661942)
     """
     params = {
