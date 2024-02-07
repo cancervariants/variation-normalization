@@ -244,7 +244,7 @@ def delins_pos():
 
 @pytest.fixture(scope="module")
 def delins_neg():
-    """Create test fixture for delins on negative strand (ClinVar ID 1217291)"""
+    """Create test fixture for the protein consequence of a delins on negative strand (ClinVar ID 1217291)"""
     params = {
         "id": "ga4gh:VA.iSDLORgPGz21BetTQM5grpXyB3tIfZwl",
         "type": "Allele",
