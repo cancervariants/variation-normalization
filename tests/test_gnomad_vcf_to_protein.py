@@ -177,7 +177,7 @@ def kras_g12d():
 
 @pytest.fixture(scope="module")
 def multi_nuc_sub_pos():
-    """Create test fixture for substitution with more than 1 nucleotide change on the
+    """Create test fixture for the protein consequence of a multinucleotide substitution on the
     positive strand (CA16042245)
     """
     params = {
