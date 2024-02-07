@@ -348,7 +348,7 @@ class GnomadVcfToProteinVariation:
         # DNA -> RNA
         rna_seq = ""
         if strand == strand.NEGATIVE:
-            # Since it's on the negative strand, we need to reverse
+            # Since it's on the negative strand, we need to get the nucleic acid complement
             for char in dna_seq:
                 if char == "A":
                     rna_seq += "U"
