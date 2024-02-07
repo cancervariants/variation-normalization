@@ -264,21 +264,3 @@ class Normalize(ToVRS):
         params["variation"] = variation
         params["warnings"] = warnings
         return NormalizeService(**params)
-
-    # def get_ref_allele_seq(self, location: Dict, ac: str) -> Optional[str]:
-    #     """Return ref allele seq for transcript.
-
-    #     :param location: VRS Location object
-    #     :param identifier: Identifier for allele
-    #     :return: Ref seq allele
-    #     """
-    #     ref = None
-    #     start = location["start"]
-    #     end = location["end"]
-    #     if isinstance(start, int) and isinstance(end, int):
-    #         if start != end:
-    #             ref, _ = self.seqrepo_access.get_reference_sequence(
-    #                 ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
-    #             )
-
-    #     return ref

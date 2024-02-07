@@ -7,6 +7,7 @@ from gene.database import create_db
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classify import Classify
+from variation.gnomad_vcf_to_protein_variation import GnomadVcfToProteinVariation
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.normalize import Normalize
 from variation.to_copy_number_variation import ToCopyNumberVariation
@@ -65,6 +66,9 @@ class QueryHandler:
         self.to_vrs_handler = ToVRS(*to_vrs_params)
         normalize_params = to_vrs_params + [uta_db]
         self.normalize_handler = Normalize(*normalize_params)
+        self.gnomad_vcf_to_protein_handler = GnomadVcfToProteinVariation(
+            *to_vrs_params + [mane_transcript, gene_query_handler]
+        )
         self.to_copy_number_handler = ToCopyNumberVariation(
             *to_vrs_params + [gene_query_handler, uta_db]
         )
