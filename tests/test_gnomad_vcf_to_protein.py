@@ -223,7 +223,7 @@ def multi_nuc_sub_neg():
 
 @pytest.fixture(scope="module")
 def delins_pos():
-    """Create test fixture for delins on positive strand (CA645561524)"""
+    """Create test fixture for the protein consequence of a delins on positive strand (CA645561524)"""
     params = {
         "id": "ga4gh:VA.vBQ2TCfRHiG3ud_vqE88BNZEK7Qw28kg",
         "type": "Allele",
