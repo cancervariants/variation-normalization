@@ -108,7 +108,7 @@ class Validate:
 
         if not found_valid_result:
             warnings = [
-                f"Unable to find valid result for classification: {invalid_classification}"  # noqa: E501
+                f"Unable to find valid result for classification: {invalid_classification}"
             ]
         else:
             warnings = []

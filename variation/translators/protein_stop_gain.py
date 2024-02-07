@@ -53,7 +53,7 @@ class ProteinStopGain(Translator):
         # First will translate valid result to VRS Allele
         classification: ProteinStopGainClassification = validation_result.classification
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos,
@@ -63,4 +63,3 @@ class ProteinStopGain(Translator):
             warnings,
             alt=classification.alt,
         )
-        return translation_result

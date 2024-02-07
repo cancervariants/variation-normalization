@@ -29,12 +29,11 @@ class GeneSymbol(Tokenizer):
         if norm_match_type != 0:
             gene = norm_resp.gene
             label = gene.label
-            gene_match_token = GeneToken(
+            return GeneToken(
                 token=label,
                 input_string=input_string,
                 matched_value=label,
                 gene=gene,
             )
-            return gene_match_token
 
         return None

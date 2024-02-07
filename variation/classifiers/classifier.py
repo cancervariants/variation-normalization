@@ -25,7 +25,6 @@ class Classifier(ABC):
         :return: List of list of tokens, where order matters, that represent a given
             classification.
         """
-        pass
 
     def can_classify(self, tokens: List[Token]) -> bool:
         """Return whether or not a list of tokens can be classified by a given
@@ -35,7 +34,7 @@ class Classifier(ABC):
         :return: `True` if a list of tokens matches the tokens needed, where order
             matters, to represent a given classification. `False`, otherwise.
         """
-        token_types = list(map(lambda t: t.token_type, tokens))
+        token_types = [t.token_type for t in tokens]
         exact_matches: List[List[str]] = []
 
         for candidate in self.exact_match_candidates():

@@ -53,7 +53,7 @@ class CdnaDelIns(Translator):
         cds_start = validation_result.cds_start
         classification: CdnaDelInsClassification = validation_result.classification
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos0,
@@ -64,4 +64,3 @@ class CdnaDelIns(Translator):
             cds_start=cds_start,
             alt=classification.inserted_sequence,
         )
-        return translation_result

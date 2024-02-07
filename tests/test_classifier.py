@@ -1,4 +1,6 @@
 """Module for testing classifiers"""
+from pathlib import Path
+
 import pytest
 import yaml
 
@@ -30,7 +32,7 @@ from variation.schemas.classification_response_schema import (
 @pytest.fixture(scope="module")
 def all_fixtures():
     """Create fixture for classifiers"""
-    with open(f"{PROJECT_ROOT}/tests/fixtures/classifiers.yml") as stream:
+    with Path(f"{PROJECT_ROOT}/tests/fixtures/classifiers.yml").open() as stream:
         return yaml.safe_load(stream)
 
 

@@ -63,8 +63,8 @@ class QueryHandler:
             translator,
         ]
         self.to_vrs_handler = ToVRS(*to_vrs_params)
-        normalize_params = to_vrs_params + [uta_db]
+        normalize_params = [*to_vrs_params, uta_db]
         self.normalize_handler = Normalize(*normalize_params)
         self.to_copy_number_handler = ToCopyNumberVariation(
-            *to_vrs_params + [gene_query_handler, uta_db]
+            *[*to_vrs_params, gene_query_handler, uta_db]
         )

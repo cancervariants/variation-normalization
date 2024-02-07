@@ -1,6 +1,6 @@
 """Main application for FastAPI."""
+import datetime
 import traceback
-from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
 from urllib.parse import unquote
@@ -68,7 +68,7 @@ app = FastAPI(
     contact={
         "name": "Alex H. Wagner",
         "email": "Alex.Wagner@nationwidechildrens.org",
-        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab",  # noqa: E501
+        "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab",
     },
     license={
         "name": "MIT",
@@ -112,8 +112,7 @@ async def to_vrs(
     :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
     :return: ToVRSService model for variation
     """
-    resp = await query_handler.to_vrs_handler.to_vrs(unquote(q))
-    return resp
+    return await query_handler.to_vrs_handler.to_vrs(unquote(q))
 
 
 normalize_summary = (
@@ -148,11 +147,11 @@ async def normalize(
     ),
     baseline_copies: Optional[int] = Query(
         None,
-        description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",  # noqa: E501
+        description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",
     ),
     copy_change: Optional[models.CopyChange] = Query(
         None,
-        description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",  # noqa: E501
+        description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
     ),
 ) -> NormalizeService:
     """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
@@ -170,13 +169,12 @@ async def normalize(
         query.
     :return: NormalizeService for variation
     """
-    normalize_resp = await query_handler.normalize_handler.normalize(
+    return await query_handler.normalize_handler.normalize(
         unquote(q),
         hgvs_dup_del_mode=hgvs_dup_del_mode,
         baseline_copies=baseline_copies,
         copy_change=copy_change,
     )
-    return normalize_resp
 
 
 @app.get(
@@ -218,7 +216,8 @@ def translate_identifier(
         warnings=warnings,
         aliases=aliases,
         service_meta_=ServiceMeta(
-            version=__version__, response_datetime=datetime.now()
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
         ),
     )
 
@@ -258,7 +257,7 @@ def vrs_python_translate_from(
     :return: TranslateFromService containing VRS Allele object
     """
     variation_query = unquote(variation.strip())
-    warnings = list()
+    warnings = []
     vrs_variation = None
     try:
         resp = query_handler.vrs_python_tlr.translate_from(variation_query, fmt)
@@ -280,7 +279,8 @@ def vrs_python_translate_from(
         warnings=warnings,
         variation=vrs_variation,
         service_meta_=ServiceMeta(
-            version=__version__, response_datetime=datetime.now()
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -288,12 +288,16 @@ def vrs_python_translate_from(
     )
 
 
-g_to_p_summary = "Given GRCh38 gnomAD VCF, return VRS Variation object on MANE protein coordinate."  # noqa: E501
+g_to_p_summary = (
+    "Given GRCh38 gnomAD VCF, return VRS Variation object on MANE protein coordinate."
+)
 g_to_p_response_description = "A response to a validly-formed query."
 g_to_p_description = (
     "Return VRS Variation object on protein coordinate for variation provided."
 )
-q_description = "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."  # noqa: E501
+q_description = (
+    "GRCh38 gnomAD VCF (chr-pos-ref-alt) to normalize to MANE protein variation."
+)
 
 
 hgvs_dup_del_mode_decsr = (
@@ -344,11 +348,11 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
     """
     query = request_body
     request_body = request_body.model_dump(by_alias=True)
-    warnings = list()
+    warnings = []
 
     allele = _get_allele(request_body, warnings)
 
-    variations = list()
+    variations = []
     if allele:
         try:
             variations = query_handler.vrs_python_tlr.translate_to(
@@ -362,7 +366,8 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
         warnings=warnings,
         variations=variations,
         service_meta_=ServiceMeta(
-            version=__version__, response_datetime=datetime.now()
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -401,11 +406,11 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
     """
     query = request_body
     request_body = request_body.model_dump(by_alias=True)
-    warnings = list()
+    warnings = []
 
     allele = _get_allele(request_body, warnings)
 
-    variations = list()
+    variations = []
     if allele:
         try:
             variations = query_handler.vrs_python_tlr._to_hgvs(
@@ -419,7 +424,8 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
         warnings=warnings,
         variations=variations,
         service_meta_=ServiceMeta(
-            version=__version__, response_datetime=datetime.now()
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -452,12 +458,11 @@ async def hgvs_to_copy_number_count(
     :param do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToCopyNumberCountService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_count(
+    return await query_handler.to_copy_number_handler.hgvs_to_copy_number_count(
         unquote(hgvs_expr.strip()),
         baseline_copies,
         do_liftover,
     )
-    return resp
 
 
 @app.get(
@@ -483,12 +488,11 @@ async def hgvs_to_copy_number_change(
     :param do_liftover: Whether or not to liftover to GRCh38 assembly
     :return: HgvsToCopyNumberChangeService
     """
-    resp = await query_handler.to_copy_number_handler.hgvs_to_copy_number_change(
+    return await query_handler.to_copy_number_handler.hgvs_to_copy_number_change(
         unquote(hgvs_expr.strip()),
         copy_change,
         do_liftover,
     )
-    return resp
 
 
 @app.post(
@@ -518,7 +522,8 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
             copy_number_count=None,
             warnings=["Unhandled exception. See logs for more details."],
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         )
     else:
@@ -552,7 +557,8 @@ def parsed_to_cx_var(request_body: ParsedToCxVarQuery) -> ParsedToCxVarService:
             copy_number_count=None,
             warnings=["Unhandled exception. See logs for more details."],
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         )
     else:
@@ -600,13 +606,12 @@ def amplification_to_cx_var(
     :return: AmplificationToCxVarService containing Copy Number Change and
         list of warnings
     """
-    resp = query_handler.to_copy_number_handler.amplification_to_cx_var(
+    return query_handler.to_copy_number_handler.amplification_to_cx_var(
         gene=gene,
         sequence_id=sequence_id,
         start=start,
         end=end,
     )
-    return resp
 
 
 @app.get(
@@ -648,7 +653,10 @@ async def p_to_c(
     return ToCdnaService(
         c_data=c_data,
         warnings=[w] if w else [],
-        service_meta=ServiceMeta(version=__version__, response_datetime=datetime.now()),
+        service_meta=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+        ),
     )
 
 
@@ -656,7 +664,7 @@ async def p_to_c(
     "/variation/alignment_mapper/c_to_g",
     summary="Translate cDNA representation to genomic representation",
     response_description="A response to a validly-formed query.",
-    description="Given cDNA accession and positions for codon(s), return associated genomic"  # noqa: E501
+    description="Given cDNA accession and positions for codon(s), return associated genomic"
     " accession and positions for a given target genome assembly",
     response_model=ToGenomicService,
     response_model_exclude_none=True,
@@ -705,7 +713,10 @@ async def c_to_g(
     return ToGenomicService(
         g_data=g_data,
         warnings=[w] if w else [],
-        service_meta=ServiceMeta(version=__version__, response_datetime=datetime.now()),
+        service_meta=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+        ),
     )
 
 
@@ -756,5 +767,8 @@ async def p_to_g(
     return ToGenomicService(
         g_data=g_data,
         warnings=[w] if w else [],
-        service_meta=ServiceMeta(version=__version__, response_datetime=datetime.now()),
+        service_meta=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+        ),
     )

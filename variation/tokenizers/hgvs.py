@@ -12,7 +12,7 @@ class HGVS(Tokenizer):
     """The HGVS tokenizer class."""
 
     splitter = re.compile(
-        r"^(?P<accession>(NC_|NM_|NP_|ENSP|ENST)[^:\s]+):(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"  # noqa: E501
+        r"^(?P<accession>(NC_|NM_|NP_|ENSP|ENST)[^:\s]+):(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"
     )
 
     def match(self, input_string: str) -> Optional[HgvsToken]:
@@ -32,5 +32,5 @@ class HGVS(Tokenizer):
                 coordinate_type=AnnotationLayer(match_dict["coordinate"]),
                 change=match_dict["change"],
             )
-        else:
-            return None
+
+        return None

@@ -303,7 +303,7 @@ def test_get_parsed_ac_chr(test_cnv_handler):
         test_cnv_handler._get_parsed_ac_chr("NC_00000713", False)
     assert (
         str(e.value) == "SeqRepo unable to get translated identifiers for NC_00000713"
-    )  # noqa: E501
+    )
 
 
 def test_validate_pos(test_cnv_handler):
@@ -888,7 +888,9 @@ def test_invalid(test_cnv_handler):
     assert resp.warnings == ["hg18 assembly is not currently supported"]
 
     # Must give both assembly + chromosome or accession
-    ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
+    ac_assembly_chr_msg = (
+        "Must provide either `accession` or both `assembly` and `chromosome`"
+    )
     with pytest.raises(ValidationError) as e:
         ParsedToCxVarQuery(
             start0=31738809,

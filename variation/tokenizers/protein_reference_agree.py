@@ -1,4 +1,5 @@
 """A module for Reference Agree Tokenization."""
+import contextlib
 from typing import Optional
 
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
@@ -42,10 +43,8 @@ class ProteinReferenceAgree(Tokenizer):
                 aa1_to_aa3(ref)
             except KeyError:
                 # maybe 3 letter AA code was used
-                try:
+                with contextlib.suppress(KeyError):
                     aa1_ref = aa3_to_aa1(ref)
-                except KeyError:
-                    pass
             else:
                 aa1_ref = ref
 
@@ -56,3 +55,5 @@ class ProteinReferenceAgree(Tokenizer):
                     pos=pos,
                     ref=aa1_ref,
                 )
+
+        return None

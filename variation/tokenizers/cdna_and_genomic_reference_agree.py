@@ -41,5 +41,8 @@ class CdnaGenomicReferenceAgree(Tokenizer):
 
             if coordinate_type == AnnotationLayer.GENOMIC:
                 return GenomicReferenceAgreeToken(**params)
-            elif coordinate_type == AnnotationLayer.CDNA:
+
+            if coordinate_type == AnnotationLayer.CDNA:
                 return CdnaReferenceAgreeToken(**params)
+
+        return None

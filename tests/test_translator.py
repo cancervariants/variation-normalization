@@ -1,4 +1,6 @@
 """Module for testing translators"""
+from pathlib import Path
+
 import pytest
 import yaml
 
@@ -33,7 +35,7 @@ from variation.vrs_representation import VRSRepresentation
 @pytest.fixture(scope="module")
 def all_fixtures():
     """Create fixture for translators"""
-    with open(f"{PROJECT_ROOT}/tests/fixtures/translators.yml") as stream:
+    with Path(f"{PROJECT_ROOT}/tests/fixtures/translators.yml").open() as stream:
         return yaml.safe_load(stream)
 
 
@@ -92,7 +94,7 @@ async def translator_checks(
         assert len(translations) == len(expected), query
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_substitution(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -110,7 +112,7 @@ async def test_protein_substitution(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_cdna_substitution(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -128,7 +130,7 @@ async def test_cdna_substitution(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_substitution(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -146,7 +148,7 @@ async def test_genomic_substitution(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_stop_gain(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -164,7 +166,7 @@ async def test_protein_stop_gain(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_reference_agree(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -182,7 +184,7 @@ async def test_protein_reference_agree(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_cdna_reference_agree(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -200,7 +202,7 @@ async def test_cdna_reference_agree(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_reference_agree(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -218,7 +220,7 @@ async def test_genomic_reference_agree(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_delins(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -236,7 +238,7 @@ async def test_protein_delins(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_cdna_delins(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -254,7 +256,7 @@ async def test_cdna_delins(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_delins(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -272,7 +274,7 @@ async def test_genomic_delins(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_deletion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -290,7 +292,7 @@ async def test_protein_deletion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_cdna_deletion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -308,7 +310,7 @@ async def test_cdna_deletion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_deletion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -326,7 +328,7 @@ async def test_genomic_deletion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_deletion_ambiguous(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -344,7 +346,7 @@ async def test_genomic_deletion_ambiguous(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_protein_insertion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -362,7 +364,7 @@ async def test_protein_insertion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_cdna_insertion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -380,7 +382,7 @@ async def test_cdna_insertion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_insertion(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -398,7 +400,7 @@ async def test_genomic_insertion(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_duplication(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -416,7 +418,7 @@ async def test_genomic_duplication(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_duplication_ambiguous(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):
@@ -434,7 +436,7 @@ async def test_genomic_duplication_ambiguous(
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_amplification(
     all_fixtures, trans_params, test_tokenizer, test_classifier, test_validator
 ):

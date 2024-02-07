@@ -37,3 +37,5 @@ class CdnaDelIns(Tokenizer):
                 pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
                 inserted_sequence=match_dict["inserted_sequence"],
             )
+
+        return None

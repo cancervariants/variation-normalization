@@ -53,7 +53,7 @@ class ProteinDelIns(Translator):
         # First will translate valid result to VRS Allele
         classification: ProteinDelInsClassification = validation_result.classification
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos0,
@@ -63,4 +63,3 @@ class ProteinDelIns(Translator):
             warnings,
             alt=classification.inserted_sequence,
         )
-        return translation_result

@@ -679,7 +679,7 @@ def genomic_del6_cx_37(genomic_del6_37_loc):
     return models.CopyNumberChange(**params)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup1_copy_number_count(
     test_cnv_handler, genomic_dup1_38_cn, genomic_dup1_cn_37
 ):
@@ -712,7 +712,7 @@ async def test_genomic_dup1_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup1_copy_number_change(
     test_cnv_handler, genomic_dup1_cx_38, genomic_dup1_cx_37
 ):
@@ -735,7 +735,7 @@ async def test_genomic_dup1_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup1_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup2_copy_number_count(
     test_cnv_handler, genomic_dup2_38_cn, genomic_dup2_cn_37
 ):
@@ -766,7 +766,7 @@ async def test_genomic_dup2_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup2_copy_number_change(
     test_cnv_handler, genomic_dup2_cx_38, genomic_dup2_cx_37
 ):
@@ -789,7 +789,7 @@ async def test_genomic_dup2_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup2_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup3_copy_number_count(
     test_cnv_handler, genomic_del3_dup3_cn_38, genomic_del3_dup3_cn_37
 ):
@@ -820,7 +820,7 @@ async def test_genomic_dup3_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup3_copy_number_change(
     test_cnv_handler, genomic_dup3_cx_38, genomic_dup3_cx_37
 ):
@@ -843,7 +843,7 @@ async def test_genomic_dup3_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup3_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup4_copy_number_count(
     test_cnv_handler, genomic_dup4_cn_38, genomic_dup4_cn_37
 ):
@@ -874,7 +874,7 @@ async def test_genomic_dup4_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup4_copy_number_change(
     test_cnv_handler, genomic_dup4_cx_38, genomic_dup4_cx_37
 ):
@@ -897,7 +897,7 @@ async def test_genomic_dup4_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup4_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup5_copy_number_count(
     test_cnv_handler, genomic_dup5_cn_38, genomic_dup5_cn_37
 ):
@@ -928,7 +928,7 @@ async def test_genomic_dup5_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup5_copy_number_change(
     test_cnv_handler, genomic_dup5_cx_38, genomic_dup5_cx_37
 ):
@@ -951,7 +951,7 @@ async def test_genomic_dup5_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup5_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup6_copy_number_count(
     test_cnv_handler, genomic_dup6_cn_38, genomic_dup6_cn_37
 ):
@@ -982,7 +982,7 @@ async def test_genomic_dup6_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup6_copy_number_change(
     test_cnv_handler, genomic_dup6_cx_38, genomic_dup6_cx_37
 ):
@@ -1005,7 +1005,7 @@ async def test_genomic_dup6_copy_number_change(
     cnv_assertion_checks(resp, genomic_dup6_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del1_copy_number_count(
     test_cnv_handler, genomic_del1_38_cn, genomic_del1_cn_37
 ):
@@ -1036,7 +1036,7 @@ async def test_genomic_del1_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del1_copy_number_change(
     test_cnv_handler, genomic_del1_cx_38, genomic_del1_cx_37
 ):
@@ -1059,7 +1059,7 @@ async def test_genomic_del1_copy_number_change(
     cnv_assertion_checks(resp, genomic_del1_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del2_copy_number_count(
     test_cnv_handler, genomic_del2_38_cn, genomic_del2_cn_37
 ):
@@ -1090,7 +1090,7 @@ async def test_genomic_del2_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del2_copy_number_change(
     test_cnv_handler, genomic_del2_cx_38, genomic_del2_cx_37
 ):
@@ -1113,7 +1113,7 @@ async def test_genomic_del2_copy_number_change(
     cnv_assertion_checks(resp, genomic_del2_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del3_copy_number_count(
     test_cnv_handler, genomic_del3_dup3_cn_38, genomic_del3_dup3_cn_37
 ):
@@ -1144,7 +1144,7 @@ async def test_genomic_del3_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del3_copy_number_change(
     test_cnv_handler, genomic_del3_cx_38, genomic_del3_cx_37
 ):
@@ -1167,7 +1167,7 @@ async def test_genomic_del3_copy_number_change(
     cnv_assertion_checks(resp, genomic_del3_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del4_copy_number_count(
     test_cnv_handler, genomic_del4_cn_38, genomic_del4_cn_37
 ):
@@ -1198,7 +1198,7 @@ async def test_genomic_del4_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del4_copy_number_change(
     test_cnv_handler, genomic_del4_cx_38, genomic_del4_cx_37
 ):
@@ -1221,7 +1221,7 @@ async def test_genomic_del4_copy_number_change(
     cnv_assertion_checks(resp, genomic_del4_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del5_copy_number_count(
     test_cnv_handler, genomic_del5_cn_38, genomic_del5_cn_37
 ):
@@ -1252,7 +1252,7 @@ async def test_genomic_del5_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del5_copy_number_change(
     test_cnv_handler, genomic_del5_cx_38, genomic_del5_cx_37
 ):
@@ -1275,7 +1275,7 @@ async def test_genomic_del5_copy_number_change(
     cnv_assertion_checks(resp, genomic_del5_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del6_copy_number_count(
     test_cnv_handler, genomic_del6_cn_38, genomic_del6_cn_37
 ):
@@ -1306,7 +1306,7 @@ async def test_genomic_del6_copy_number_count(
     cnv_assertion_checks(resp, expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del6_copy_number_change(
     test_cnv_handler, genomic_del6_cx_38, genomic_del6_cx_37
 ):
@@ -1329,7 +1329,7 @@ async def test_genomic_del6_copy_number_change(
     cnv_assertion_checks(resp, genomic_del6_cx_38)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_invalid_cnv(test_cnv_handler):
     """Check that invalid input return warnings"""
     q = "DAG1 g.49568695dup"

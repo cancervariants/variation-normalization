@@ -74,22 +74,25 @@ class ProteinDeletion(Validator):
                     errors.append(invalid_aa1_seq_msg)
 
             # Validate that deleted sequence matches expected
-            if classification.nomenclature in {
-                Nomenclature.FREE_TEXT,
-                Nomenclature.HGVS,
-            }:
+            if (
+                classification.nomenclature
+                in {
+                    Nomenclature.FREE_TEXT,
+                    Nomenclature.HGVS,
+                }
+                and classification.deleted_sequence
+                and classification.pos1 is not None
+            ):
                 # HGVS deleted sequence includes start and end
-                if classification.deleted_sequence:
-                    if classification.pos1 is not None:
-                        invalid_del_seq_msg = self.validate_reference_sequence(
-                            p_ac,
-                            classification.pos0,
-                            classification.pos1,
-                            classification.deleted_sequence,
-                        )
+                invalid_del_seq_msg = self.validate_reference_sequence(
+                    p_ac,
+                    classification.pos0,
+                    classification.pos1,
+                    classification.deleted_sequence,
+                )
 
-                        if invalid_del_seq_msg:
-                            errors.append(invalid_del_seq_msg)
+                if invalid_del_seq_msg:
+                    errors.append(invalid_del_seq_msg)
 
             validation_results.append(
                 ValidationResult(

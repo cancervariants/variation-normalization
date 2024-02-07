@@ -43,6 +43,6 @@ try:
             "Status"
         ]
         print(eb_provisioned_product_status)
-except Exception as e:  # noqa: E722
+except Exception as e:
     print(e)
     print("The EB environment is already running....")

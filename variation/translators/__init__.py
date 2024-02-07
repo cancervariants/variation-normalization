@@ -19,3 +19,26 @@ from .protein_insertion import ProteinInsertion
 from .protein_reference_agree import ProteinReferenceAgree
 from .protein_stop_gain import ProteinStopGain
 from .protein_substitution import ProteinSubstitution
+
+__all__ = [
+    "Amplification",
+    "CdnaDeletion",
+    "CdnaDelIns",
+    "CdnaInsertion",
+    "CdnaReferenceAgree",
+    "CdnaSubstitution",
+    "GenomicDeletion",
+    "GenomicDeletionAmbiguous",
+    "GenomicDelIns",
+    "GenomicDuplication",
+    "GenomicDuplicationAmbiguous",
+    "GenomicInsertion",
+    "GenomicReferenceAgree",
+    "GenomicSubstitution",
+    "ProteinDeletion",
+    "ProteinDelIns",
+    "ProteinInsertion",
+    "ProteinReferenceAgree",
+    "ProteinStopGain",
+    "ProteinSubstitution",
+]

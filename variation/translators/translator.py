@@ -106,15 +106,14 @@ class Translator(ABC):
         gene_end = None
 
         for ext in gene_token.gene.extensions:
-            if ext.name == "ensembl_locations":
-                if ext.value:
-                    ensembl_loc = ext.value[0]
-                    gene_start = ensembl_loc["start"]
-                    gene_end = ensembl_loc["end"] - 1
+            if ext.name == "ensembl_locations" and ext.value:
+                ensembl_loc = ext.value[0]
+                gene_start = ensembl_loc["start"]
+                gene_end = ensembl_loc["end"] - 1
 
         if gene_start is None and gene_end is None:
             errors.append(
-                f"gene-normalizer unable to find Ensembl location for: {gene_token.token}"  # noqa: E501
+                f"gene-normalizer unable to find Ensembl location for: {gene_token.token}"
             )
 
         for pos in [pos0, pos1, pos2, pos3]:
@@ -124,7 +123,7 @@ class Translator(ABC):
 
                 if not (gene_start <= pos <= gene_end):
                     errors.append(
-                        f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"  # noqa: E501
+                        f"Inter-residue position {pos} out of index on {alt_ac} on gene, {gene_token.token}"
                     )
 
     def validate_reference_sequence(
@@ -245,5 +244,5 @@ class Translator(ABC):
                 og_ac=validation_result.accession,
                 validation_result=validation_result,
             )
-        else:
-            return None
+
+        return None

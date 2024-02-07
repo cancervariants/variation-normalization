@@ -786,7 +786,7 @@ def no_variation_check(resp, q):
     assert resp.variation is None, q
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def invalid_query_list_checks(query_list, test_handler):
     """Check that invalid queries in query list do not normalize"""
     for q in query_list:
@@ -794,7 +794,7 @@ async def invalid_query_list_checks(query_list, test_handler):
         no_variation_check(resp, q)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup1(
     test_handler,
     genomic_dup1_lse,
@@ -872,7 +872,7 @@ async def test_genomic_dup1(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup2(
     test_handler,
     genomic_dup2_lse,
@@ -942,7 +942,7 @@ async def test_genomic_dup2(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup3(
     test_handler,
     genomic_dup3_cx,
@@ -1007,7 +1007,7 @@ async def test_genomic_dup3(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup4(
     test_handler,
     genomic_dup4_cn,
@@ -1071,7 +1071,7 @@ async def test_genomic_dup4(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup5(
     test_handler,
     genomic_dup5_cn,
@@ -1135,7 +1135,7 @@ async def test_genomic_dup5(
         assert resp.variation is None, q
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_dup6(
     test_handler,
     genomic_dup6_cn,
@@ -1199,7 +1199,7 @@ async def test_genomic_dup6(
         assert resp.variation is None, q
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del1(
     test_handler,
     genomic_del1_lse,
@@ -1270,7 +1270,7 @@ async def test_genomic_del1(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del2(
     test_handler,
     genomic_del2_lse,
@@ -1356,7 +1356,7 @@ async def test_genomic_del2(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del3(
     test_handler,
     genomic_del3_dup3_cn_38,
@@ -1421,7 +1421,7 @@ async def test_genomic_del3(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del4(
     test_handler,
     genomic_del4_cn,
@@ -1493,7 +1493,7 @@ async def test_genomic_del4(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del5(
     test_handler,
     genomic_del5_cn_var,
@@ -1554,7 +1554,7 @@ async def test_genomic_del5(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_genomic_del6(
     test_handler,
     genomic_del6_cn_var,
@@ -1616,7 +1616,7 @@ async def test_genomic_del6(
     await invalid_query_list_checks(invalid_queries, test_handler)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_parameters(test_handler):
     """Check that valid and invalid parameters work as intended."""
     resp = await test_handler.normalize("7-140453136-A-T")

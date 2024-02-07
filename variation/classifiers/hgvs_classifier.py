@@ -117,12 +117,14 @@ class HgvsClassifier(Classifier):
                     if params["alt"] in {"Ter", "*"}:
                         params["alt"] = "*"
                         return ProteinStopGainClassification(**params)
-                    else:
-                        return ProteinSubstitutionClassification(**params)
-                elif classification_type == ClassificationType.PROTEIN_REFERENCE_AGREE:
+
+                    return ProteinSubstitutionClassification(**params)
+
+                if classification_type == ClassificationType.PROTEIN_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
                     return ProteinReferenceAgreeClassification(**params)
-                elif classification_type == ClassificationType.PROTEIN_DELINS:
+
+                if classification_type == ClassificationType.PROTEIN_DELINS:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -130,7 +132,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return ProteinDelInsClassification(**params)
-                elif classification_type == ClassificationType.PROTEIN_DELETION:
+
+                if classification_type == ClassificationType.PROTEIN_DELETION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -138,7 +141,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return ProteinDeletionClassification(**params)
-                elif classification_type == ClassificationType.PROTEIN_INSERTION:
+
+                if classification_type == ClassificationType.PROTEIN_INSERTION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -170,10 +174,12 @@ class HgvsClassifier(Classifier):
                 if classification_type == ClassificationType.CDNA_SUBSTITUTION:
                     params["pos"] = int(params["pos"])
                     return CdnaSubstitutionClassification(**params)
-                elif classification_type == ClassificationType.CDNA_REFERENCE_AGREE:
+
+                if classification_type == ClassificationType.CDNA_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
                     return CdnaReferenceAgreeClassification(**params)
-                elif classification_type == ClassificationType.CDNA_DELINS:
+
+                if classification_type == ClassificationType.CDNA_DELINS:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -181,7 +187,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return CdnaDelInsClassification(**params)
-                elif classification_type == ClassificationType.CDNA_DELETION:
+
+                if classification_type == ClassificationType.CDNA_DELETION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -189,7 +196,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return CdnaDeletionClassification(**params)
-                elif classification_type == ClassificationType.CDNA_INSERTION:
+
+                if classification_type == ClassificationType.CDNA_INSERTION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -197,6 +205,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return CdnaInsertionClassification(**params)
+
+        return None
 
     def _genomic_classification(
         self, token: HgvsToken, params: Dict
@@ -220,10 +230,12 @@ class HgvsClassifier(Classifier):
                 if classification_type == ClassificationType.GENOMIC_SUBSTITUTION:
                     params["pos"] = int(params["pos"])
                     return GenomicSubstitutionClassification(**params)
-                elif classification_type == ClassificationType.GENOMIC_REFERENCE_AGREE:
+
+                if classification_type == ClassificationType.GENOMIC_REFERENCE_AGREE:
                     params["pos"] = int(params["pos"])
                     return GenomicReferenceAgreeClassification(**params)
-                elif classification_type == ClassificationType.GENOMIC_DELINS:
+
+                if classification_type == ClassificationType.GENOMIC_DELINS:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -231,7 +243,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return GenomicDelInsClassification(**params)
-                elif classification_type == ClassificationType.GENOMIC_INSERTION:
+
+                if classification_type == ClassificationType.GENOMIC_INSERTION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -239,7 +252,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return GenomicInsertionClassification(**params)
-                elif classification_type == ClassificationType.GENOMIC_DELETION:
+
+                if classification_type == ClassificationType.GENOMIC_DELETION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -247,7 +261,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return GenomicDeletionClassification(**params)
-                elif classification_type == ClassificationType.GENOMIC_DUPLICATION:
+
+                if classification_type == ClassificationType.GENOMIC_DUPLICATION:
                     params["pos0"] = int(params["pos0"])
                     params["pos1"] = (
                         int(params["pos1"])
@@ -255,6 +270,8 @@ class HgvsClassifier(Classifier):
                         else params["pos1"]
                     )
                     return GenomicDuplicationClassification(**params)
+
+        return None
 
     def _genomic_ambiguous_classification(
         self, token: HgvsToken, params: Dict
@@ -271,7 +288,8 @@ class HgvsClassifier(Classifier):
         """
         if token.token.endswith("dup"):
             return self._genomic_dup_ambiguous_classification(token, params)
-        elif token.token.endswith("del"):
+
+        if token.token.endswith("del"):
             return self._genomic_del_ambiguous_classification(token, params)
 
         return None

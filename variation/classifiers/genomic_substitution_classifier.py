@@ -49,3 +49,5 @@ class GenomicSubstitutionClassifier(Classifier):
                 ref=genomic_sub_token.ref,
                 alt=genomic_sub_token.alt,
             )
+
+        return None

@@ -74,5 +74,7 @@ class ProteinSubstitution(Tokenizer):
 
                 if aa1_alt == "*":
                     return ProteinStopGainToken(**params)
-                else:
-                    return ProteinSubstitutionToken(**params)
+
+                return ProteinSubstitutionToken(**params)
+
+        return None

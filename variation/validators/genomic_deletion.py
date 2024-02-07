@@ -47,38 +47,40 @@ class GenomicDeletion(Validator):
             if invalid_ac_pos:
                 errors.append(invalid_ac_pos)
             else:
-                if classification.nomenclature in {
-                    Nomenclature.FREE_TEXT,
-                    Nomenclature.HGVS,
-                }:
+                if (
+                    classification.nomenclature
+                    in {
+                        Nomenclature.FREE_TEXT,
+                        Nomenclature.HGVS,
+                    }
+                    and classification.deleted_sequence
+                ):
                     # Validate deleted sequence
                     # HGVS deleted sequence includes start and end
-                    if classification.deleted_sequence:
-                        invalid_del_seq_message = self.validate_reference_sequence(
-                            alt_ac,
-                            classification.pos0,
-                            classification.pos1
-                            if classification.pos1
-                            else classification.pos0,
-                            classification.deleted_sequence,
-                        )
-
-                        if invalid_del_seq_message:
-                            errors.append(invalid_del_seq_message)
-
-            if not errors:
-                if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-                    # Validate reference sequence
-                    ref = classification.matching_tokens[0].ref
-                    validate_ref_msg = self.validate_reference_sequence(
+                    invalid_del_seq_message = self.validate_reference_sequence(
                         alt_ac,
-                        classification.pos0 - 1,
-                        end_pos=classification.pos0 + (len(ref) - 1),
-                        expected_ref=ref,
+                        classification.pos0,
+                        classification.pos1
+                        if classification.pos1
+                        else classification.pos0,
+                        classification.deleted_sequence,
                     )
 
-                    if validate_ref_msg:
-                        errors.append(validate_ref_msg)
+                    if invalid_del_seq_message:
+                        errors.append(invalid_del_seq_message)
+
+            if not errors and classification.nomenclature == Nomenclature.GNOMAD_VCF:
+                # Validate reference sequence
+                ref = classification.matching_tokens[0].ref
+                validate_ref_msg = self.validate_reference_sequence(
+                    alt_ac,
+                    classification.pos0 - 1,
+                    end_pos=classification.pos0 + (len(ref) - 1),
+                    expected_ref=ref,
+                )
+
+                if validate_ref_msg:
+                    errors.append(validate_ref_msg)
 
             if not errors and classification.gene_token:
                 # Validate positions exist within gene range

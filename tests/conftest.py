@@ -558,7 +558,7 @@ def assertion_checks(normalize_response, test_variation):
 def cnv_assertion_checks(resp, test_fixture):
     """Check that actual response for to copy number matches expected"""
     try:
-        getattr(resp, "copy_number_count")
+        resp.copy_number_count  # noqa: B018
     except AttributeError:
         actual = resp.copy_number_change.model_dump(exclude_none=True)
     else:

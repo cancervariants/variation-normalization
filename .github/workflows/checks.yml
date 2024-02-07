@@ -25,8 +25,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: black
-        uses: psf/black@stable
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-      - name: ruff
-        uses: chartboost/ruff-action@v1
+      - name: Install dependencies
+        run: python3 -m pip install ".[dev]"
+
+      - name: Check style
+        run: python3 -m ruff check . && ruff format --check .

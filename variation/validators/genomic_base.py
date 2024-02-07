@@ -58,7 +58,7 @@ class GenomicBase:
                 identifier
             )
         except KeyError:
-            logger.warning("Data Proxy unable to get metadata" f"for {identifier}")
+            logger.warning("Data Proxy unable to get metadata for %s", identifier)
         else:
             aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
             if aliases:

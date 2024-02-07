@@ -21,3 +21,28 @@ from .protein_insertion_classifier import ProteinInsertionClassifier
 from .protein_reference_agree import ProteinReferenceAgreeClassifier
 from .protein_stop_gain_classifier import ProteinStopGainClassifier
 from .protein_substitution_classifier import ProteinSubstitutionClassifier
+
+__all__ = [
+    "AmplificationClassifier",
+    "CdnaDeletionClassifier",
+    "CdnaDelInsClassifier",
+    "CdnaInsertionClassifier",
+    "CdnaReferenceAgreeClassifier",
+    "CdnaSubstitutionClassifier",
+    "GenomicDeletionAmbiguousClassifier",
+    "GenomicDeletionClassifier",
+    "GenomicDelInsClassifier",
+    "GenomicDuplicationAmbiguousClassifier",
+    "GenomicDuplicationClassifier",
+    "GenomicInsertionClassifier",
+    "GenomicReferenceAgreeClassifier",
+    "GenomicSubstitutionClassifier",
+    "GnomadVcfClassifier",
+    "HgvsClassifier",
+    "ProteinDeletionClassifier",
+    "ProteinDelInsClassifier",
+    "ProteinInsertionClassifier",
+    "ProteinReferenceAgreeClassifier",
+    "ProteinStopGainClassifier",
+    "ProteinSubstitutionClassifier",
+]
