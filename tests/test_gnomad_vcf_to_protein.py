@@ -156,7 +156,7 @@ def braf_600_reference_agree(braf_600loc):
 
 @pytest.fixture(scope="module")
 def kras_g12d():
-    """Fixture for KRAS G12C"""
+    """Fixture for KRAS G12D"""
     params = {
         "id": "ga4gh:VA.CB571ja_KfZM_Hjn9zjjgV1an3tDWRcl",
         "type": "Allele",
