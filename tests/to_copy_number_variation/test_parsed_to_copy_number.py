@@ -4,8 +4,8 @@ from copy import deepcopy
 import pytest
 from ga4gh.vrs import models
 from pydantic import ValidationError
-
 from tests.conftest import cnv_assertion_checks
+
 from variation.schemas.copy_number_schema import (
     ClinVarAssembly,
     Comparator,
