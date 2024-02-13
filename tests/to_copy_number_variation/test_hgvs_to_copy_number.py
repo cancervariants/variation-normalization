@@ -3,7 +3,6 @@ import copy
 
 import pytest
 from ga4gh.vrs import models
-
 from tests.conftest import cnv_assertion_checks
 
 
