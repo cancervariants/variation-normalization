@@ -581,11 +581,18 @@ class GnomadVcfToProteinVariation:
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
 
+        if p_data.gene and c_data.gene and p_data.gene != c_data.gene:
+            warnings.append(
+                f"Protein gene ({p_data.gene}) and cDNA gene ({c_data.gene}) mismatch"
+            )
+        gene = p_data.gene or c_data.gene
+        gene_context = self._get_gene_context(gene) if gene else None
+
         return GnomadVcfToProteinService(
             variation_query=vcf_query,
             variation=variation,
             vrs_ref_allele_seq=self._get_vrs_ref_allele_seq(variation.location, p_ac),
-            gene_context=self._get_gene_context(p_data.gene),
+            gene_context=gene_context,
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
