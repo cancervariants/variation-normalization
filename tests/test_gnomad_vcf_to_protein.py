@@ -388,6 +388,12 @@ async def test_delins(test_handler, delins_pos, delins_neg):
     assert resp.vrs_ref_allele_seq == "PRLLFPTNSSSHLVALQGQP"
     assert resp.gene_context
 
+    # CA16602420. Example where protein gene not found, but cDNA gene found
+    resp = await test_handler.gnomad_vcf_to_protein("7-140453136-AC-TT")
+    assert resp.variation
+    assert resp.gene_context
+    assert resp.warnings == []
+
 
 @pytest.mark.asyncio()
 async def test_invalid(test_handler):
