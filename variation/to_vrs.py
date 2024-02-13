@@ -1,5 +1,5 @@
 """Module for to_vrs endpoint."""
-from datetime import datetime
+import datetime
 from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
@@ -101,7 +101,8 @@ class ToVRS(VRSRepresentation):
             "search_term": q,
             "variations": variations,
             "service_meta_": ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
             "warnings": warnings,
         }

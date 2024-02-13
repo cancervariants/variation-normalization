@@ -112,10 +112,7 @@ class Validator(ABC):
                     errors=errors,
                 )
             ]
-        validation_results = await self.get_valid_invalid_results(
-            classification, accessions
-        )
-        return validation_results
+        return await self.get_valid_invalid_results(classification, accessions)
 
     def get_protein_accessions(self, gene_token: GeneToken, errors: List) -> List[str]:
         """Get accessions for variations with protein reference sequence.
@@ -194,31 +191,33 @@ class Validator(ABC):
 
         if gene_start_end["start"] is None and gene_start_end["end"] is None:
             return f"gene-normalizer unable to find Ensembl location for gene: {gene}"
-        else:
-            assembly = await self.uta.get_chr_assembly(alt_ac)
-            if assembly:
-                # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
-                # need to liftover to GRCh37 coords
-                chromosome, assembly = assembly
-                for key in gene_start_end.keys():
-                    gene_pos = gene_start_end[key]
-                    gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(
-                        chromosome, gene_pos
-                    )
-                    if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
-                        return f"{gene_pos} does not exist on {chromosome}"
-                    else:
-                        gene_start_end[key] = gene_pos_liftover[0][1]
 
-            gene_start = gene_start_end["start"]
-            gene_end = gene_start_end["end"]
+        assembly = await self.uta.get_chr_assembly(alt_ac)
+        if assembly:
+            # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
+            # need to liftover to GRCh37 coords
+            chromosome, assembly = assembly
+            for key in gene_start_end:
+                gene_pos = gene_start_end[key]
+                gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(
+                    chromosome, gene_pos
+                )
+                if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
+                    return f"{gene_pos} does not exist on {chromosome}"
 
-            for pos in [pos0, pos1, pos2, pos3]:
-                if pos not in ["?", None]:
-                    if residue_mode == "residue":
-                        pos -= 1
-                    if not (gene_start <= pos <= gene_end):
-                        return f"Position {pos} out of index on {alt_ac} on gene, {gene}"  # noqa: E501
+                gene_start_end[key] = gene_pos_liftover[0][1]
+
+        gene_start = gene_start_end["start"]
+        gene_end = gene_start_end["end"]
+
+        for pos in [pos0, pos1, pos2, pos3]:
+            if pos not in ["?", None]:
+                if residue_mode == "residue":
+                    pos -= 1
+                if not (gene_start <= pos <= gene_end):
+                    return f"Position {pos} out of index on {alt_ac} on gene, {gene}"
+
+        return None
 
     def validate_reference_sequence(
         self,
@@ -302,7 +301,7 @@ class Validator(ABC):
         else:
             if end_pos:
                 if not ref_len or (end_pos - start_pos != ref_len):
-                    msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"  # noqa: E501
+                    msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"
             else:
                 if not ref_len:
                     msg = f"Position ({start_pos}) not valid on accession ({ac})"
@@ -338,8 +337,8 @@ class Validator(ABC):
                             "should be listed from 5' to 3'"
                         )
                         break
-                    else:
-                        prev_pos = pos
+
+                    prev_pos = pos
         return invalid_msg
 
     def validate_ambiguous_classification(
@@ -413,15 +412,12 @@ class Validator(ABC):
             else:
                 errors.append(f"`aa0` not valid amino acid(s): {classification.aa0}")
 
-        if hasattr(classification, "aa1"):
-            if classification.aa1:
-                aa1_codes = get_aa1_codes(classification.aa1)
-                if aa1_codes:
-                    classification.aa1 = aa1_codes
-                else:
-                    errors.append(
-                        f"`aa1` not valid amino acid(s): {classification.aa1}"
-                    )
+        if hasattr(classification, "aa1") and classification.aa1:
+            aa1_codes = get_aa1_codes(classification.aa1)
+            if aa1_codes:
+                classification.aa1 = aa1_codes
+            else:
+                errors.append(f"`aa1` not valid amino acid(s): {classification.aa1}")
 
         if hasattr(classification, "inserted_sequence"):
             ins_codes = get_aa1_codes(classification.inserted_sequence)

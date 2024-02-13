@@ -1,4 +1,6 @@
 """Module for testing tokenizers"""
+from pathlib import Path
+
 import pytest
 import yaml
 
@@ -48,7 +50,7 @@ from variation.tokenizers import (
 @pytest.fixture(scope="module")
 def all_fixtures():
     """Create fixture for tokenizers"""
-    with open(f"{PROJECT_ROOT}/tests/fixtures/tokenizers.yml") as stream:
+    with Path(f"{PROJECT_ROOT}/tests/fixtures/tokenizers.yml").open() as stream:
         return yaml.safe_load(stream)
 
 

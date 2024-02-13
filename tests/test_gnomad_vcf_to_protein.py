@@ -263,7 +263,7 @@ def delins_neg():
     return models.Allele(**params)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_substitution(
     test_handler,
     braf_v600e,
@@ -327,7 +327,7 @@ async def test_substitution(
     assertion_checks(resp, multi_nuc_sub_neg)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_reference_agree(test_handler, vhl_reference_agree):
     """Test that reference agree queries return correct response"""
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
@@ -338,7 +338,7 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
     assert resp.warnings == []
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     """Test that insertion queries return correct response"""
     # positive strand (CA645561585)
@@ -356,7 +356,7 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     assert resp.warnings == []
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
     """Test that deletion queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
@@ -371,7 +371,7 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
     assert resp.warnings == []
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_delins(test_handler, delins_pos, delins_neg):
     """Test that delins queries return correct response"""
     # CA645561524, Positive Strand
@@ -389,7 +389,7 @@ async def test_delins(test_handler, delins_pos, delins_neg):
     assert resp.gene_context
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")

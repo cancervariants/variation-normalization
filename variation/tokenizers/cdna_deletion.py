@@ -38,3 +38,5 @@ class CdnaDeletion(Tokenizer):
                 pos1=int(match_dict["pos1"]) if match_dict["pos1"] else None,
                 deleted_sequence=match_dict["deleted_sequence"],
             )
+
+        return None

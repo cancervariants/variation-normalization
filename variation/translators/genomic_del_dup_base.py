@@ -117,44 +117,46 @@ class GenomicDelDupTranslator(Translator):
             if w:
                 warnings.append(w)
                 return None
-            else:
-                # assembly is either 37 or 38
-                if assembly == ClinVarAssembly.GRCH37:
-                    grch38_data = await self.get_grch38_data(
-                        classification, errors, validation_result.accession
-                    )
-                    if errors:
-                        warnings += errors
-                        return None
 
-                    pos0 = grch38_data.pos0 - 1
-                    if grch38_data.pos1 is None:
-                        pos1 = grch38_data.pos0
-                    else:
-                        pos1 = grch38_data.pos1
-                    residue_mode = ResidueMode.INTER_RESIDUE
-                    ac = grch38_data.ac
+            # assembly is either 37 or 38
+            if assembly == ClinVarAssembly.GRCH37:
+                grch38_data = await self.get_grch38_data(
+                    classification, errors, validation_result.accession
+                )
+                if errors:
+                    warnings += errors
+                    return None
 
-                    if alt_type == AltType.DELETION:
-                        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-                            ref = classification.matching_tokens[0].ref
-                            invalid_ref_msg = self.validate_reference_sequence(
-                                ac,
-                                pos0,
-                                pos0 + (len(ref) - 1),
-                                ref,
-                                residue_mode=residue_mode,
-                            )
-                            if invalid_ref_msg:
-                                warnings.append(invalid_ref_msg)
-                                return None
+                pos0 = grch38_data.pos0 - 1
+                if grch38_data.pos1 is None:
+                    pos1 = grch38_data.pos0
                 else:
-                    pos0 = classification.pos0
-                    pos1 = classification.pos1
-                    ac = validation_result.accession
-                    grch38_data = DelDupData(ac=ac, pos0=pos0, pos1=pos1)
+                    pos1 = grch38_data.pos1
+                residue_mode = ResidueMode.INTER_RESIDUE
+                ac = grch38_data.ac
 
-                assembly = ClinVarAssembly.GRCH38
+                if (
+                    alt_type == AltType.DELETION
+                    and classification.nomenclature == Nomenclature.GNOMAD_VCF
+                ):
+                    ref = classification.matching_tokens[0].ref
+                    invalid_ref_msg = self.validate_reference_sequence(
+                        ac,
+                        pos0,
+                        pos0 + (len(ref) - 1),
+                        ref,
+                        residue_mode=residue_mode,
+                    )
+                    if invalid_ref_msg:
+                        warnings.append(invalid_ref_msg)
+                        return None
+            else:
+                pos0 = classification.pos0
+                pos1 = classification.pos1
+                ac = validation_result.accession
+                grch38_data = DelDupData(ac=ac, pos0=pos0, pos1=pos1)
+
+            assembly = ClinVarAssembly.GRCH38
         else:
             pos0 = classification.pos0
             pos1 = classification.pos1
@@ -177,10 +179,7 @@ class GenomicDelDupTranslator(Translator):
 
             ac = grch38_data.ac
             pos0 = grch38_data.pos0 - 1
-            if grch38_data.pos1 is None:
-                pos1 = grch38_data.pos0
-            else:
-                pos1 = grch38_data.pos1
+            pos1 = grch38_data.pos0 if grch38_data.pos1 is None else grch38_data.pos1
             residue_mode = ResidueMode.INTER_RESIDUE
             self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 
@@ -211,11 +210,13 @@ class GenomicDelDupTranslator(Translator):
                 return None
 
         alt = None
-        if classification.nomenclature == Nomenclature.GNOMAD_VCF:
-            if alt_type == AltType.DELETION:
-                pos0 -= 1
-                pos1 -= 1
-                alt = classification.matching_tokens[0].alt
+        if (
+            classification.nomenclature == Nomenclature.GNOMAD_VCF
+            and alt_type == AltType.DELETION
+        ):
+            pos0 -= 1
+            pos1 -= 1
+            alt = classification.matching_tokens[0].alt
 
         if alt_type == AltType.INSERTION:
             alt = classification.inserted_sequence
@@ -268,5 +269,5 @@ class GenomicDelDupTranslator(Translator):
                 og_ac=validation_result.accession,
                 validation_result=validation_result,
             )
-        else:
-            return None
+
+        return None

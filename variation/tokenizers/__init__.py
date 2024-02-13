@@ -18,3 +18,25 @@ from .protein_delins import ProteinDelIns
 from .protein_insertion import ProteinInsertion
 from .protein_reference_agree import ProteinReferenceAgree
 from .protein_substitution import ProteinSubstitution
+
+__all__ = [
+    "CdnaGenomicReferenceAgree",
+    "CdnaDeletion",
+    "CdnaDelIns",
+    "CdnaInsertion",
+    "CdnaSubstitution",
+    "FreeTextCategorical",
+    "GeneSymbol",
+    "GenomicDeletion",
+    "GenomicDelIns",
+    "GenomicDuplication",
+    "GenomicInsertion",
+    "GenomicSubstitution",
+    "GnomadVCF",
+    "HGVS",
+    "ProteinDeletion",
+    "ProteinDelIns",
+    "ProteinInsertion",
+    "ProteinReferenceAgree",
+    "ProteinSubstitution",
+]

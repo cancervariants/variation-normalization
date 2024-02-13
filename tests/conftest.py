@@ -558,11 +558,11 @@ def assertion_checks(normalize_response, test_variation):
 def cnv_assertion_checks(resp, test_fixture):
     """Check that actual response for to copy number matches expected"""
     try:
-        getattr(resp, "copy_number_count")
+        cnc = resp.copy_number_count
     except AttributeError:
         actual = resp.copy_number_change.model_dump(exclude_none=True)
     else:
-        actual = resp.copy_number_count.model_dump(exclude_none=True)
+        actual = cnc.model_dump(exclude_none=True)
     expected = test_fixture.model_dump(exclude_none=True)
     assert actual == expected
     assert resp.warnings == []

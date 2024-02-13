@@ -21,7 +21,7 @@ class VrsSeqLocAcStatus(str, Enum):
     NA = "na"
 
 
-AC_PRIORITY_LABELS = [m for m in VrsSeqLocAcStatus.__members__.values()]
+AC_PRIORITY_LABELS = list(VrsSeqLocAcStatus.__members__.values())
 
 
 class TranslationResult(BaseModel):

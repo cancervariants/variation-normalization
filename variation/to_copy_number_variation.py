@@ -1,5 +1,5 @@
 """Module for to copy number variation translation"""
-from datetime import datetime
+import datetime
 from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote
 
@@ -216,7 +216,8 @@ class ToCopyNumberVariation(ToVRS):
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
             copy_number_count=cn_var,
         )
@@ -248,7 +249,8 @@ class ToCopyNumberVariation(ToVRS):
             hgvs_expr=hgvs_expr,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
             copy_number_change=cx_var,
         )
@@ -290,9 +292,8 @@ class ToCopyNumberVariation(ToVRS):
             else:
                 raise ToCopyNumberError(str(error))
         else:
-            raise ToCopyNumberError(
-                f"{og_assembly.value} assembly is not currently supported"
-            )
+            msg = f"{og_assembly.value} assembly is not currently supported"
+            raise ToCopyNumberError(msg)
 
         return ParsedAccessionSummary(lifted_over=lifted_over, accession=accession)
 
@@ -324,7 +325,7 @@ class ToCopyNumberVariation(ToVRS):
             chromosome = grch_record.split(":")[-1]
 
             if grch_record.startswith("GRCh38") or not do_liftover:
-                new_ac = [a for a in aliases if a.startswith("ga4gh")][0]
+                new_ac = next(a for a in aliases if a.startswith("ga4gh"))
             else:
                 grch38_query = grch_record.replace("GRCh37", "GRCh38")
                 aliases, error = self.seqrepo_access.translate_identifier(
@@ -337,7 +338,8 @@ class ToCopyNumberVariation(ToVRS):
                 lifted_over = True
                 new_ac = aliases[0]
         else:
-            raise ToCopyNumberError(f"Not a supported genomic accession: {accession}")
+            msg = f"Not a supported genomic accession: {accession}"
+            raise ToCopyNumberError(msg)
 
         return ParsedChromosomeSummary(
             accession=new_ac, chromosome=chromosome, lifted_over=lifted_over
@@ -354,14 +356,15 @@ class ToCopyNumberVariation(ToVRS):
         try:
             ref = self.seqrepo_access.sr[accession][pos - 1]
         except ValueError as e:
-            raise ToCopyNumberError(
-                f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
-            )
-        except KeyError:
-            raise ToCopyNumberError(f"Accession not found in SeqRepo: {accession}")
+            msg = f"SeqRepo ValueError: {str(e).replace('start', 'Position')}"
+            raise ToCopyNumberError(msg) from e
+        except KeyError as e:
+            msg = f"Accession not found in SeqRepo: {accession}"
+            raise ToCopyNumberError(msg) from e
         else:
             if ref == "":
-                raise ToCopyNumberError(f"Position ({pos}) is not valid on {accession}")
+                msg = f"Position ({pos}) is not valid on {accession}"
+                raise ToCopyNumberError(msg) from None
 
     def _get_vrs_loc_start_or_end(
         self,
@@ -527,11 +530,10 @@ class ToCopyNumberVariation(ToVRS):
                     chromosome, pos
                 )
                 if not liftover:
-                    raise ToCopyNumberError(
-                        f"Unable to liftover: {chromosome} with pos {pos}"
-                    )
-                else:
-                    liftover_pos[k] = liftover[0][1]
+                    msg = f"Unable to liftover: {chromosome} with pos {pos}"
+                    raise ToCopyNumberError(msg)
+
+                liftover_pos[k] = liftover[0][1]
 
         return liftover_pos
 
@@ -608,7 +610,8 @@ class ToCopyNumberVariation(ToVRS):
         service_params = {
             "warnings": warnings,
             "service_meta_": ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         }
 
@@ -645,7 +648,7 @@ class ToCopyNumberVariation(ToVRS):
         :return: AmplificationToCxVarService containing Copy Number Change and
             list of warnings
         """
-        warnings = list()
+        warnings = []
         amplification_label = None
         variation = None
         try:
@@ -715,6 +718,7 @@ class ToCopyNumberVariation(ToVRS):
             copy_number_change=variation,
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         )

@@ -40,3 +40,5 @@ class CdnaInsertion(Tokenizer):
                 pos1=pos1,
                 inserted_sequence=inserted_sequence,
             )
+
+        return None

@@ -55,17 +55,19 @@ def validate_parsed_fields(cls, v: Dict) -> Dict:
     - `end_pos_comparator` is required when `end_pos_type` is an Indefinite Range
     - End positions must be greater than start positions
     """
-    ac_assembly_chr_msg = "Must provide either `accession` or both `assembly` and `chromosome`"  # noqa: E501
+    ac_assembly_chr_msg = (
+        "Must provide either `accession` or both `assembly` and `chromosome`"
+    )
     assembly = v.assembly
     chromosome = v.chromosome
     assembly_chr_set = assembly and chromosome
-    assert v.accession or assembly_chr_set, ac_assembly_chr_msg  # noqa: E501
+    assert v.accession or assembly_chr_set, ac_assembly_chr_msg
 
     if assembly_chr_set:
         pattern = r"^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$"
         assert re.match(
             pattern, chromosome
-        ), f"`chromosome`, {chromosome}, does not match r'{pattern}'"  # noqa: E501
+        ), f"`chromosome`, {chromosome}, does not match r'{pattern}'"
 
     start0 = v.start0
     start1 = v.start1
@@ -75,7 +77,7 @@ def validate_parsed_fields(cls, v: Dict) -> Dict:
     elif v.start_pos_type == ParsedPosType.INDEFINITE_RANGE:
         assert (
             v.start_pos_comparator
-        ), "`start_pos_comparator` is required for indefinite ranges"  # noqa: E501
+        ), "`start_pos_comparator` is required for indefinite ranges"
 
     end0 = v.end0
     end1 = v.end1
@@ -85,7 +87,7 @@ def validate_parsed_fields(cls, v: Dict) -> Dict:
     elif v.end_pos_type == ParsedPosType.INDEFINITE_RANGE:
         assert (
             v.end_pos_comparator
-        ), "`end_pos_comparator` is required for indefinite ranges"  # noqa: E501
+        ), "`end_pos_comparator` is required for indefinite ranges"
 
     err_msg = "end positions must be greater than start"
     if start1 is None:
@@ -216,13 +218,9 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         copies_comparator = v.copies_comparator
 
         if copies_type == ParsedPosType.DEFINITE_RANGE:
-            assert (
-                copies1
-            ), "`copies1` must be provided for `copies_type == ParsedPosType.DEFINITE_RANGE`"  # noqa: E501
+            assert copies1, "`copies1` must be provided for `copies_type == ParsedPosType.DEFINITE_RANGE`"
         elif copies_type == ParsedPosType.INDEFINITE_RANGE:
-            assert (
-                copies_comparator
-            ), "`copies_comparator` must be provided for `copies_type == ParsedPosType.INDEFINITE_RANGE`"  # noqa: E501
+            assert copies_comparator, "`copies_comparator` must be provided for `copies_type == ParsedPosType.INDEFINITE_RANGE`"
 
         return v
 

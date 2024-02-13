@@ -156,20 +156,26 @@ Next, view the OpenAPI docs on your local machine:
 
 ### Init coding style tests
 
-Code style is managed by [Ruff](https://github.com/astral-sh/ruff) and checked prior to commit.
+Code style is managed by [Ruff](https://docs.astral.sh/ruff/) and checked prior to commit.
+
+Check style with `ruff`:
+
+```shell
+python3 -m ruff format . && python3 -m ruff check --fix .
+```
 
 We use [pre-commit](https://pre-commit.com/#usage) to run conformance tests.
 
 This ensures:
 
-* Check code style
-* Check for added large files
-* Detect AWS Credentials
-* Detect Private Key
+* Style correctness
+* No large files
+* AWS credentials are present
+* Private key is present
 
-Before first commit run:
+Pre-commit *must* be installed before your first commit. Use the following command:
 
-```shell
+```commandline
 pre-commit install
 ```
 

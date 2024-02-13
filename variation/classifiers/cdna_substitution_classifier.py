@@ -48,3 +48,5 @@ class CdnaSubstitutionClassifier(Classifier):
                 ref=cdna_sub_token.ref,
                 alt=cdna_sub_token.alt,
             )
+
+        return None

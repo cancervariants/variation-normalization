@@ -1,5 +1,5 @@
 """Module for Variation Normalization."""
-from datetime import datetime
+import datetime
 from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
@@ -129,10 +129,12 @@ class Normalize(ToVRS):
             if not hgvs_dup_del_mode:
                 hgvs_dup_del_mode = HGVSDupDelModeOption.DEFAULT
 
-            if hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
-                if not baseline_copies:
-                    warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"  # noqa: E501
-                    return None, warning
+            if (
+                hgvs_dup_del_mode == HGVSDupDelModeOption.COPY_NUMBER_COUNT
+                and not baseline_copies
+            ):
+                warning = f"{hgvs_dup_del_mode.value} mode requires `baseline_copies`"
+                return None, warning
 
         return hgvs_dup_del_mode, warning
 
@@ -163,7 +165,8 @@ class Normalize(ToVRS):
             "variation": variation,
             "warnings": warnings,
             "service_meta_": ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         }
 
@@ -221,9 +224,7 @@ class Normalize(ToVRS):
                             translation_result.vrs_seq_loc_ac_status
                             == VrsSeqLocAcStatus.NA
                         ):
-                            classification_type = (
-                                translation_result.validation_result.classification.classification_type.value
-                            )
+                            classification_type = translation_result.validation_result.classification.classification_type.value
                             if classification_type.startswith(("protein", "cdna")):
                                 # Only supports protein/cDNA at the moment
                                 warnings.append("Unable to find MANE representation")

@@ -55,7 +55,7 @@ class ProteinInsertion(Translator):
             validation_result.classification
         )
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos0,
@@ -65,4 +65,3 @@ class ProteinInsertion(Translator):
             warnings,
             alt=classification.inserted_sequence,
         )
-        return translation_result

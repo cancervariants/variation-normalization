@@ -55,7 +55,7 @@ class ProteinReferenceAgree(Translator):
             validation_result.classification
         )
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos,
@@ -65,4 +65,3 @@ class ProteinReferenceAgree(Translator):
             warnings,
             ref=classification.ref,
         )
-        return translation_result

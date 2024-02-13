@@ -1,4 +1,5 @@
 """Module for general functionality throughout the app"""
+import contextlib
 import re
 from typing import Dict, List, Literal, Optional, Tuple, Union
 
@@ -101,10 +102,8 @@ def get_aa1_codes(aa: str) -> Optional[str]:
             _aa1_to_aa3(aa)
         except KeyError:
             # see if it's 3 AA
-            try:
+            with contextlib.suppress(KeyError):
                 aa1 = _aa3_to_aa1(aa)
-            except KeyError:
-                pass
         else:
             aa1 = aa
 
@@ -147,11 +146,16 @@ def get_ambiguous_type(
             (pos0 == "?", isinstance(pos1, int), isinstance(pos2, int), pos3 is None)
         ):
             ambiguous_type = AmbiguousType.AMBIGUOUS_5
-    elif ambiguous_regex_type == AmbiguousRegexType.REGEX_3:
-        if all(
-            (isinstance(pos0, int), pos1 is None, isinstance(pos2, int), pos3 == "?")
-        ):
-            ambiguous_type = AmbiguousType.AMBIGUOUS_7
+    elif all(
+        (
+            ambiguous_regex_type == AmbiguousRegexType.REGEX_3,
+            isinstance(pos0, int),
+            pos1 is None,
+            isinstance(pos2, int),
+            pos3 == "?",
+        )
+    ):
+        ambiguous_type = AmbiguousType.AMBIGUOUS_7
 
     return ambiguous_type
 

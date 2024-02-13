@@ -53,7 +53,7 @@ class CdnaDeletion(Translator):
         cds_start = validation_result.cds_start
         classification: CdnaDeletionClassification = validation_result.classification
 
-        translation_result = await self.get_p_or_cdna_translation_result(
+        return await self.get_p_or_cdna_translation_result(
             endpoint_name,
             validation_result,
             classification.pos0,
@@ -63,4 +63,3 @@ class CdnaDeletion(Translator):
             warnings,
             cds_start=cds_start,
         )
-        return translation_result

@@ -122,5 +122,5 @@ class GenomicReferenceAgree(Translator):
                 og_ac=validation_result.accession,
                 validation_result=validation_result,
             )
-        else:
-            return None
+
+        return None

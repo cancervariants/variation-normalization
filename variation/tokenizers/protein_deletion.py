@@ -92,3 +92,4 @@ class ProteinDeletion(Tokenizer):
                     pos1=pos1,
                     deleted_sequence=one_letter_del_seq,
                 )
+        return None

@@ -1,5 +1,5 @@
 """Module for translating VCF-like to protein VRS Allele representation"""
-from datetime import datetime
+import datetime
 from typing import List, Optional, Tuple
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -193,16 +193,17 @@ class GnomadVcfToProteinVariation:
         """
         tokens = self.tokenizer.perform(vcf_query, warnings)
         if not tokens:
-            raise GnomadVcfToProteinError("No tokens found")
+            msg = "No tokens found"
+            raise GnomadVcfToProteinError(msg)
 
         classification = self.classifier.perform(tokens)
         if not classification:
-            raise GnomadVcfToProteinError("No classification found")
+            msg = "No classification found"
+            raise GnomadVcfToProteinError(msg)
 
         if classification.nomenclature != Nomenclature.GNOMAD_VCF:
-            raise GnomadVcfToProteinError(
-                f"{vcf_query} is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
-            )
+            msg = f"{vcf_query} is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
+            raise GnomadVcfToProteinError(msg)
 
         validation_summary = await self.validator.perform(classification)
         valid_results = validation_summary.valid_results
@@ -213,10 +214,9 @@ class GnomadVcfToProteinVariation:
                 reverse=True,
             )
             return valid_results[0]
-        else:
-            raise GnomadVcfToProteinError(
-                f"{vcf_query} is not a valid gnomad vcf query"
-            )
+
+        msg = f"{vcf_query} is not a valid gnomad vcf query"
+        raise GnomadVcfToProteinError(msg)
 
     @staticmethod
     def _get_alt_type_and_prefix_match(
@@ -359,7 +359,8 @@ class GnomadVcfToProteinVariation:
                 elif char == "C":
                     rna_seq += "G"
                 else:
-                    raise ValueError(f"{char} is not a supported nucleotide")
+                    msg = f"{char} is not a supported nucleotide"
+                    raise ValueError(msg)
         else:
             # We only need to replace T/U for DNA->RNA
             rna_seq = dna_seq.replace("T", "U")
@@ -398,7 +399,8 @@ class GnomadVcfToProteinVariation:
         try:
             variation = normalize(variation, self.seqrepo_access)
         except (KeyError, AttributeError) as e:
-            raise GnomadVcfToProteinError(f"VRS-Python unable to normalize allele: {e}")
+            msg = f"VRS-Python unable to normalize allele: {e}"
+            raise GnomadVcfToProteinError(msg) from e
 
         # Add VRS digests for VRS Allele and VRS Sequence Location
         variation.id = ga4gh_identify(variation)
@@ -459,7 +461,8 @@ class GnomadVcfToProteinVariation:
                 variation=variation,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
-                    version=__version__, response_datetime=datetime.now()
+                    version=__version__,
+                    response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
                 ),
             )
 
@@ -498,7 +501,8 @@ class GnomadVcfToProteinVariation:
                 variation=variation,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
-                    version=__version__, response_datetime=datetime.now()
+                    version=__version__,
+                    response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
                 ),
             )
 
@@ -516,7 +520,8 @@ class GnomadVcfToProteinVariation:
                 variation=variation,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
-                    version=__version__, response_datetime=datetime.now()
+                    version=__version__,
+                    response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
                 ),
             )
 
@@ -538,7 +543,8 @@ class GnomadVcfToProteinVariation:
                 variation=variation,
                 warnings=warnings,
                 service_meta_=ServiceMeta(
-                    version=__version__, response_datetime=datetime.now()
+                    version=__version__,
+                    response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
                 ),
             )
 
@@ -582,6 +588,7 @@ class GnomadVcfToProteinVariation:
             gene_context=self._get_gene_context(p_data.gene),
             warnings=warnings,
             service_meta_=ServiceMeta(
-                version=__version__, response_datetime=datetime.now()
+                version=__version__,
+                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
             ),
         )

@@ -41,15 +41,15 @@ PROTEIN_SUBSTITUTION = re.compile(
 )
 
 PROTEIN_INSERTION = re.compile(
-    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+)ins(?P<inserted_sequence>[a-zA-z]+)$"  # noqa: E501
+    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+)ins(?P<inserted_sequence>[a-zA-z]+)$"
 )
 
 PROTEIN_DELINS = re.compile(
-    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)(_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+))?delins(?P<inserted_sequence>[a-zA-z]+)$"  # noqa: E501
+    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)(_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+))?delins(?P<inserted_sequence>[a-zA-z]+)$"
 )
 
 PROTEIN_DELETION = re.compile(
-    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)(_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+))?del(?P<deleted_sequence>[a-zA-z]+)?$"  # noqa: E501
+    r"^(?P<aa0>[a-zA-z]+)(?P<pos0>\d+)(_(?P<aa1>[a-zA-z]+)(?P<pos1>\d+))?del(?P<deleted_sequence>[a-zA-z]+)?$"
 )
 
 PROTEIN_REFERENCE_AGREE = re.compile(r"^(?P<ref>[a-zA-z]+)(?P<pos>\d+)=$")

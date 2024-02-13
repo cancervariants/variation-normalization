@@ -1,5 +1,5 @@
 """Module for classification."""
-from typing import List, Optional
+from typing import ClassVar, List, Optional
 
 from variation.classifiers import (
     AmplificationClassifier,
@@ -35,7 +35,7 @@ class Classify:
 
     hgvs_classifier = HgvsClassifier()
     gnomad_vcf_classifier = GnomadVcfClassifier()
-    classifiers: List[Classifier] = [
+    classifiers: ClassVar[List[Classifier]] = [
         ProteinDelInsClassifier(),
         ProteinSubstitutionClassifier(),
         ProteinStopGainClassifier(),

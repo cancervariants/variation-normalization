@@ -37,3 +37,5 @@ class CdnaSubstitution(Tokenizer):
                 ref=match_dict["ref"],
                 alt=match_dict["alt"],
             )
+
+        return None

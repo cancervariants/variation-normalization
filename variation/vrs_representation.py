@@ -46,10 +46,9 @@ class VRSRepresentation:
             errors.append("Start/End must be valid ints")
             return None
 
-        if coordinate == "c":
-            if cds_start:
-                start += cds_start
-                end += cds_start
+        if coordinate == "c" and cds_start:
+            start += cds_start
+            end += cds_start
         return start, end
 
     @staticmethod

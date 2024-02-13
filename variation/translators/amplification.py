@@ -65,5 +65,5 @@ class Amplification(Translator):
             return TranslationResult(
                 vrs_variation=vrs_cx, validation_result=validation_result
             )
-        else:
-            return None
+
+        return None

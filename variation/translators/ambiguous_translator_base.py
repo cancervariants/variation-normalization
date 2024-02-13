@@ -188,29 +188,29 @@ class AmbiguousTranslator(Translator):
             if w:
                 warnings.append(w)
                 return None
+
+            # assembly is either 37 or 38
+            if assembly == ClinVarAssembly.GRCH37:
+                grch38_data = await self.get_grch38_data_ambiguous(
+                    classification, errors, validation_result.accession
+                )
+                if errors:
+                    warnings += errors
+                    return None
+
+                ac = grch38_data.ac
+                pos0 = grch38_data.pos0
+                pos1 = grch38_data.pos1
+                pos2 = grch38_data.pos2
+                pos3 = grch38_data.pos3
             else:
-                # assembly is either 37 or 38
-                if assembly == ClinVarAssembly.GRCH37:
-                    grch38_data = await self.get_grch38_data_ambiguous(
-                        classification, errors, validation_result.accession
-                    )
-                    if errors:
-                        warnings += errors
-                        return None
+                ac = validation_result.accession
+                pos0 = classification.pos0
+                pos1 = classification.pos1
+                pos2 = classification.pos2
+                pos3 = classification.pos3
 
-                    ac = grch38_data.ac
-                    pos0 = grch38_data.pos0
-                    pos1 = grch38_data.pos1
-                    pos2 = grch38_data.pos2
-                    pos3 = grch38_data.pos3
-                else:
-                    ac = validation_result.accession
-                    pos0 = classification.pos0
-                    pos1 = classification.pos1
-                    pos2 = classification.pos2
-                    pos3 = classification.pos3
-
-                assembly = ClinVarAssembly.GRCH38
+            assembly = ClinVarAssembly.GRCH38
         else:
             ac = validation_result.accession
             pos0 = classification.pos0
@@ -306,5 +306,5 @@ class AmbiguousTranslator(Translator):
                 og_ac=validation_result.accession,
                 validation_result=validation_result,
             )
-        else:
-            return None
+
+        return None

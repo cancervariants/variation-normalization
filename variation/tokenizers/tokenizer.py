@@ -1,6 +1,6 @@
 """Module for Tokenization."""
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple
+from typing import ClassVar, Dict, Optional, Tuple
 
 from cool_seq_tool.schemas import AnnotationLayer
 
@@ -10,7 +10,9 @@ from variation.schemas.token_response_schema import Token
 class Tokenizer(ABC):
     """The tokenizer class."""
 
-    coord_types = {k: v.value for k, v in AnnotationLayer.__members__.items()}
+    coord_types: ClassVar[Dict[str, str]] = {
+        k: v.value for k, v in AnnotationLayer.__members__.items()
+    }
 
     @abstractmethod
     def match(self, input_string: str) -> Optional[Token]:
