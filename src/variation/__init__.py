@@ -3,7 +3,7 @@ import logging
 from os import environ
 
 if "VARIATION_NORM_EB_PROD" in environ:
-    LOG_FN = "/var/variation.log"
+    LOG_FN = "/tmp/variation.log"  # noqa: S108
 else:
     LOG_FN = "variation.log"
 
