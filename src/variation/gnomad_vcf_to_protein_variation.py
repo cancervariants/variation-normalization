@@ -585,8 +585,7 @@ class GnomadVcfToProteinVariation:
             warnings.append(
                 f"Protein gene ({p_data.gene}) and cDNA gene ({c_data.gene}) mismatch"
             )
-        else:
-            gene = p_data.gene or c_data.gene
+        gene = p_data.gene or c_data.gene
         gene_context = self._get_gene_context(gene) if gene else None
 
         return GnomadVcfToProteinService(
