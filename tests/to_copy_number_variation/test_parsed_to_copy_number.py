@@ -46,10 +46,8 @@ def cn_gain2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.-SqT6JTz0WpKfGQjdHnuJnyK8YMcAmez",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.2f5wWnJ52UShqq0wRTahKWH-YFCFTixG",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.AsXvWL1-2i5U_buw6_niVIxD6zTbAuS6",
@@ -69,10 +67,8 @@ def cn_gain2_37():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.gtS4om__GNKDFZxdtno7Cwiv_8Tv0_As",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.knW3_K9Kj2bvgGvnW3uorAEhZ9lnBD4F",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.zIMZb3Ft7RdWa5XYq0PxIlezLY2ccCgt",
@@ -92,10 +88,8 @@ def cn_loss1():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.ckk73c3GG4x-P0uL5Iv1tzBPxYea1V03",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.S_YZii49zAuWk8hA71OD5Ud1mtQRpw5T",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -115,10 +109,8 @@ def cn_loss2():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.6vQIGMEa94FNmLBwQLHRTHaf_yrjMnBz",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.xeLChE7XHqLtLjrVEBnHpxvtdWjRA0Aw",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -138,10 +130,8 @@ def cn_definite_number():
     """
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.8xU8MDlKeD7kyhiVJmSwvi3iV78ReIc5",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.NqQ42igO9R3BBbA7q7jQ_81rfZOjpzGg",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -182,10 +172,8 @@ def cx_definite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.gn7z-74PrlvMWAVK7jsP9oYnp0pCezee",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.jOyDc0XwpyvY-SqxowgWxb7N5ODEYc4I",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -205,10 +193,8 @@ def cx_indefinite_ranges():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.2lbeFEsxiN9sdMRtqiaYaM0HPy2UJWEC",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.-XBGqDkrHG7D19jCYuvNfEeJoBSBEHFA",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -228,10 +214,8 @@ def cx_number_indefinite():
     """
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.38jEUd5AhCbQk9hB36hS6mEqRKlY7ugj",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.XuivAIjbPg8CLUUz7TZXO6mJWfAfU6HJ",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -244,25 +228,29 @@ def cx_number_indefinite():
     return models.CopyNumberChange(**variation)
 
 
+GRCH37_CHR7_VRS_ID = "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86"
+GRCH38_CHR7_VRS_ID = "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+
+
 def test_get_parsed_ac(test_cnv_handler):
     """Test that _get_parsed_ac works correctly"""
     for assembly in [ClinVarAssembly.GRCH37, ClinVarAssembly.HG19]:
         resp = test_cnv_handler._get_parsed_ac(assembly, "chr7", use_grch38=False)
         assert resp.lifted_over is False
-        assert resp.accession == "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86"
+        assert resp.accession == GRCH37_CHR7_VRS_ID
 
         resp = test_cnv_handler._get_parsed_ac(assembly, "chr7", use_grch38=True)
         assert resp.lifted_over is True
-        assert resp.accession == "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+        assert resp.accession == GRCH38_CHR7_VRS_ID
 
     for assembly in [ClinVarAssembly.GRCH38, ClinVarAssembly.HG38]:
         resp = test_cnv_handler._get_parsed_ac(assembly, "chr7", use_grch38=False)
         assert resp.lifted_over is False
-        assert resp.accession == "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+        assert resp.accession == GRCH38_CHR7_VRS_ID
 
         resp = test_cnv_handler._get_parsed_ac(assembly, "chr7", use_grch38=True)
         assert resp.lifted_over is False
-        assert resp.accession == "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+        assert resp.accession == GRCH38_CHR7_VRS_ID
 
     with pytest.raises(ToCopyNumberError) as e:
         test_cnv_handler._get_parsed_ac(
@@ -278,18 +266,18 @@ def test_get_parsed_ac(test_cnv_handler):
 def test_get_parsed_ac_chr(test_cnv_handler):
     """Test that _get_parsed_ac_chr works correctly"""
     resp = test_cnv_handler._get_parsed_ac_chr("NC_000007.13", False)
-    assert resp.accession == "ga4gh:SQ.IW78mgV5Cqf6M24hy52hPjyyo5tCCd86"
+    assert resp.accession == GRCH37_CHR7_VRS_ID
     assert resp.chromosome == "chr7"
     assert resp.lifted_over is False
 
     resp = test_cnv_handler._get_parsed_ac_chr("NC_000007.13", True)
-    assert resp.accession == "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+    assert resp.accession == GRCH38_CHR7_VRS_ID
     assert resp.chromosome == "chr7"
     assert resp.lifted_over is True
 
     for do_liftover in [True, False]:
         resp = test_cnv_handler._get_parsed_ac_chr("NC_000007.14", do_liftover)
-        assert resp.accession == "ga4gh:SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul"
+        assert resp.accession == GRCH38_CHR7_VRS_ID
         assert resp.chromosome == "chr7"
         assert resp.lifted_over is False
 
@@ -419,7 +407,7 @@ def test_parsed_copy_number_gain(test_cnv_handler, cn_gain1, cn_gain2, cn_gain2_
         end_pos_comparator=Comparator.GT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    cnv_assertion_checks(resp, cn_gain1)
+    cnv_assertion_checks(resp, cn_gain1, check_vrs_id=True)
 
     rb = ParsedToCnVarQuery(
         start0=143134063,
@@ -717,7 +705,6 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([3, 5])
-    expected.id = "ga4gh:CN.Z-nHquCOaZ9-7qlEiHJjTCNTun8rphs5"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range <=
@@ -735,7 +722,6 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = models.Range([None, 3])
-    expected.id = "ga4gh:CN.ATCEmOahCspjTUZwYcg3hZVEhonOxqZ0"
     cnv_assertion_checks(resp, expected)
 
     # copies is indefinite range >=
@@ -753,7 +739,6 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     expected = deepcopy(cn_definite_number)
     expected.copies = [3, None]
-    expected.id = "ga4gh:CN.sXOp5QcykicrYTyRgzJvk4O9ha6ignDd"
     cnv_assertion_checks(resp, expected)
 
     # start_pos and end_pos indefinite range
@@ -769,12 +754,13 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
         end_pos_comparator=Comparator.LT_OR_EQUAL,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    assert resp.copy_number_count.model_dump(exclude_none=True) == {
+    cnc = resp.copy_number_count.model_dump(exclude_none=True)
+    assert cnc.pop("id").startswith("ga4gh:CN.")
+    assert cnc["location"].pop("id").startswith("ga4gh:SL.")
+    assert cnc == {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Hw32hEhUrWYl1j3Nty4cmrZlbveSw8oF",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.nXrqjadKZikhhdHvDmgVovb0HiKoXRq7",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -805,7 +791,7 @@ def test_parsed_to_cx_var(
         end_pos_type=ParsedPosType.NUMBER,
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
-    cnv_assertion_checks(resp, cx_numbers)
+    cnv_assertion_checks(resp, cx_numbers, check_vrs_id=True)
 
     # start and end use definite ranges
     rb = ParsedToCxVarQuery(

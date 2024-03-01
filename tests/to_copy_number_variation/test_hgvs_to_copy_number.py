@@ -1,5 +1,4 @@
 """Module for testing the hgvs to copy number count and copy number change endpoints"""
-import copy
 
 import pytest
 from ga4gh.vrs import models
@@ -22,7 +21,6 @@ def genomic_dup1_cx_38(genomic_dup1_seq_loc_not_normalized):
 def genomic_dup1_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.ntKfbY4eZVFNOAMuZPb4RBRhINxvOmM9",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
@@ -38,7 +36,6 @@ def genomic_dup1_cn_37(genomic_dup1_37_loc):
     """Create test fixture copy number count variation (not normalized)"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.-TsNBiFhHFcWLb7pz9GCWcJunlBmb_B4",
         "location": genomic_dup1_37_loc,
         "copies": 3,
     }
@@ -50,7 +47,6 @@ def genomic_dup1_cx_37(genomic_dup1_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.inPVJ3ANsN-Xb22HakFf_BmMg73gZiFo",
         "location": genomic_dup1_37_loc,
         "copyChange": "efo:0030069",
     }
@@ -62,7 +58,6 @@ def genomic_dup2_cx_38(genomic_dup2_seq_loc_normalized):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.uchcAvP6DXLirT7zASWHcWwmGWPLc8ye",
         "location": genomic_dup2_seq_loc_normalized,
         "copyChange": "efo:0030067",
     }
@@ -73,7 +68,6 @@ def genomic_dup2_cx_38(genomic_dup2_seq_loc_normalized):
 def genomic_dup2_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.g5_YcFgvTQSCuirJLMviwlue4NTb9EJ-",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -89,7 +83,6 @@ def genomic_dup2_cn_37(genomic_dup2_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.jQdYqHKs7Y7BPQq5lBIddKd208iJrskw",
         "location": genomic_dup2_37_loc,
         "copies": 3,
     }
@@ -101,7 +94,6 @@ def genomic_dup2_cx_37(genomic_dup2_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.6Nzma3vnsYb7ZqJ0XSiqv2F8-XFDKMyP",
         "location": genomic_dup2_37_loc,
         "copyChange": "efo:0030067",
     }
@@ -113,7 +105,6 @@ def genomic_dup3_cx_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.3CEaG1qP1k9AU_aae_iIUx4uaTb72N1R",
         "location": genomic_del3_dup3_loc_not_normalized,
         "copyChange": "efo:0030072",
     }
@@ -124,7 +115,6 @@ def genomic_dup3_cx_38(genomic_del3_dup3_loc_not_normalized):
 def genomic_dup3_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.xDN-t4g0hLgYTKyh3_88Drln1HdishyF",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -140,7 +130,6 @@ def genomic_del3_dup3_cn_37(genomic_dup3_37_loc):
     """Create test fixture copy number variation for del/dup 3 on GRCh37"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.TFwnv4Lv7f2ZvboyqSBygWbC57QzuQ8R",
         "location": genomic_dup3_37_loc,
         "copies": 2,
     }
@@ -152,7 +141,6 @@ def genomic_dup3_cx_37(genomic_dup3_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.A9Z_PAgta0MwukOSjrntOneG9N66_FED",
         "location": genomic_dup3_37_loc,
         "copyChange": "efo:0030072",
     }
@@ -164,7 +152,6 @@ def genomic_dup4_cn_38(genomic_dup4_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.KqbQewUgZYfmottbgn1xYq58DiPVU5SZ",
         "location": genomic_dup4_loc,
         "copies": 3,
     }
@@ -176,7 +163,6 @@ def genomic_dup4_cx_38(genomic_dup4_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.X0nbb6qzkjqisoT8Ls_7-OS9KkYfTCCu",
         "location": genomic_dup4_loc,
         "copyChange": "efo:0030069",
     }
@@ -187,7 +173,6 @@ def genomic_dup4_cx_38(genomic_dup4_loc):
 def genomic_dup4_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.WVXqGHNVaD96semkKQVfTuEo4TN-yMGE",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.iy_UbUrvECxFRX5LPTH_KPojdlT7BKsf",
@@ -203,7 +188,6 @@ def genomic_dup4_cn_37(genomic_dup4_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.m19rHAtbxPm8ojn1pZm7Pq7e00WJkE75",
         "location": genomic_dup4_37_loc,
         "copies": 3,
     }
@@ -215,7 +199,6 @@ def genomic_dup4_cx_37(genomic_dup4_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.5cVAesP5EKfh3uOTXe-BWyHdsFEvW7a0",
         "location": genomic_dup4_37_loc,
         "copyChange": "efo:0030069",
     }
@@ -227,7 +210,6 @@ def genomic_dup5_cn_38(genomic_dup5_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.hTq6Z10Mg7rS_T_uoODhF24HmvRdEkLk",
         "location": genomic_dup5_loc,
         "copies": 4,
     }
@@ -239,7 +221,6 @@ def genomic_dup5_cx_38(genomic_dup5_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.bR_i_ztx0rLrEbML1B_xoqJ50W39qlKN",
         "location": genomic_dup5_loc,
         "copyChange": "efo:0030067",
     }
@@ -250,7 +231,6 @@ def genomic_dup5_cx_38(genomic_dup5_loc):
 def genomic_dup5_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.hS8rIdNliH9F4YuLlHhxLIdrHVVrCEXz",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -266,7 +246,6 @@ def genomic_dup5_cn_37(genomic_dup5_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.QdhteI3bI3qRFEZOk9pmICPsKFI6MCXd",
         "location": genomic_dup5_37_loc,
         "copies": 4,
     }
@@ -278,7 +257,6 @@ def genomic_dup5_cx_37(genomic_dup5_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.PJWAoRYtFYcewmPtM5W2eG6TSef7gAyJ",
         "location": genomic_dup5_37_loc,
         "copyChange": "efo:0030067",
     }
@@ -290,7 +268,6 @@ def genomic_dup6_cn_38(genomic_dup6_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.KSFn5KQIPuPVJ6FjWaF0vzl7eRwwHbX9",
         "location": genomic_dup6_loc,
         "copies": 2,
     }
@@ -302,7 +279,6 @@ def genomic_dup6_cx_38(genomic_dup6_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.5irbnyk3aqsHCEbs2WAgiNpChn3asZgQ",
         "location": genomic_dup6_loc,
         "copyChange": "efo:0030064",
     }
@@ -313,7 +289,6 @@ def genomic_dup6_cx_38(genomic_dup6_loc):
 def genomic_dup6_37_loc():
     """Create test fixture GRCh37 duplication location"""
     return {
-        "id": "ga4gh:SL.xoQ6AO6YVSUdlvcO5WtpXGJykEbMktY6",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -329,7 +304,6 @@ def genomic_dup6_cn_37(genomic_dup6_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.SijB_fXpFimGmPnWe2YHNcVv4NyEp9Uo",
         "location": genomic_dup6_37_loc,
         "copies": 2,
     }
@@ -341,7 +315,6 @@ def genomic_dup6_cx_37(genomic_dup6_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.IkUmxq_kjLmo2mPv4eg9fgcd3B12tT4G",
         "location": genomic_dup6_37_loc,
         "copyChange": "efo:0030064",
     }
@@ -353,7 +326,6 @@ def genomic_del1_cx_38(genomic_del1_seq_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.LWRBNtBgcETMXEKezrr7WUPjO9WoOaqL",
         "location": genomic_del1_seq_loc,
         "copyChange": "efo:0030064",
     }
@@ -364,7 +336,6 @@ def genomic_del1_cx_38(genomic_del1_seq_loc):
 def genomic_del1_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.zz9AUA6ANv3OPftr3dI-7GxGeaZKeADW",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
@@ -380,7 +351,6 @@ def genomic_del1_cn_37(genomic_del1_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN._n2CTBQdDMSObUf6DPdj5t7XLPAQ-Ojt",
         "location": genomic_del1_37_loc,
         "copies": 1,
     }
@@ -392,7 +362,6 @@ def genomic_del1_cx_37(genomic_del1_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.KqiBf1gspLI7WQu-wVOFYrG1HhLyqFlV",
         "location": genomic_del1_37_loc,
         "copyChange": "efo:0030064",
     }
@@ -404,7 +373,6 @@ def genomic_del2_cx_38(genomic_del2_seq_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.ehFxhcx6VUozuQxTd4vskjpaUIptU0Qg",
         "location": genomic_del2_seq_loc,
         "copyChange": "efo:0030071",
     }
@@ -415,7 +383,6 @@ def genomic_del2_cx_38(genomic_del2_seq_loc):
 def genomic_del2_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.BwPpPS55EYrek4Gs7xdd8sNjYJvcZRi7",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.VNBualIltAyi2AI_uXcKU7M9XUOuA7MS",
@@ -431,7 +398,6 @@ def genomic_del2_cn_37(genomic_del2_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.ic8DuXVLz-cFut46rneGHbkACsEQg832",
         "location": genomic_del2_37_loc,
         "copies": 1,
     }
@@ -443,7 +409,6 @@ def genomic_del2_cx_37(genomic_del2_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.0i-lR3bpBiuYAGC4D7UErkrrgrawJahz",
         "location": genomic_del2_37_loc,
         "copyChange": "efo:0030071",
     }
@@ -455,7 +420,6 @@ def genomic_del3_cx_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.-9fCLzZprnBM-nl08MJUo5oqZ4ehduv7",
         "location": genomic_del3_dup3_loc_not_normalized,
         "copyChange": "efo:0030069",
     }
@@ -466,7 +430,6 @@ def genomic_del3_cx_38(genomic_del3_dup3_loc_not_normalized):
 def genomic_del3_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.xDN-t4g0hLgYTKyh3_88Drln1HdishyF",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -482,7 +445,6 @@ def genomic_del3_cx_37(genomic_del3_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.uiJMtQrX_-w3-ehTTu7o2ByqatZYhYVu",
         "location": genomic_del3_37_loc,
         "copyChange": "efo:0030069",
     }
@@ -494,7 +456,6 @@ def genomic_del4_cn_38(genomic_del4_seq_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.2k3RnvQtBIIIqSqVlTT7Uh0KeuD8LIpK",
         "location": genomic_del4_seq_loc,
         "copies": 4,
     }
@@ -506,7 +467,6 @@ def genomic_del4_cx_38(genomic_del4_seq_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.1DiUzraiKZLJb8oF8ynARS816fthsJpV",
         "location": genomic_del4_seq_loc,
         "copyChange": "efo:0030067",
     }
@@ -517,7 +477,6 @@ def genomic_del4_cx_38(genomic_del4_seq_loc):
 def genomic_del4_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.2ORImLGRcezhWXDYI9sZvLwFGPDH9WKS",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -533,7 +492,6 @@ def genomic_del4_cn_37(genomic_del4_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Mv42RTfmPVQV4nSoytbDbK4cfsUO0wyD",
         "location": genomic_del4_37_loc,
         "copies": 4,
     }
@@ -545,7 +503,6 @@ def genomic_del4_cx_37(genomic_del4_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.CJdXMZXSEE4hCIwjGxke4EWY7lMENYPj",
         "location": genomic_del4_37_loc,
         "copyChange": "efo:0030067",
     }
@@ -557,7 +514,6 @@ def genomic_del5_cn_38(genomic_del5_seq_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.VIYxNpNj8c5ulSfr8mFkxTBCGMunoUIN",
         "location": genomic_del5_seq_loc,
         "copies": 2,
     }
@@ -569,7 +525,6 @@ def genomic_del5_cx_38(genomic_del5_seq_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.w-H5jcMK0AijJomgeu_LhN5IQ_0Z0GIi",
         "location": genomic_del5_seq_loc,
         "copyChange": "efo:0030064",
     }
@@ -580,7 +535,6 @@ def genomic_del5_cx_38(genomic_del5_seq_loc):
 def genomic_del5_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.xYPrcJoKhU-xWyeBB4-DzYmFYOEynMBy",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.v7noePfnNpK8ghYXEqZ9NukMXW7YeNsm",
@@ -596,7 +550,6 @@ def genomic_del5_cn_37(genomic_del5_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.9qwSqDhzXCHPSWycZ-qePwwEXrCpQ02A",
         "location": genomic_del5_37_loc,
         "copies": 2,
     }
@@ -608,7 +561,6 @@ def genomic_del5_cx_37(genomic_del5_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.ICA0LcW-0gaOgJziPZJcGdXQ_MR3OiDu",
         "location": genomic_del5_37_loc,
         "copyChange": "efo:0030064",
     }
@@ -620,7 +572,6 @@ def genomic_del6_cn_38(genomic_del6_seq_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.CZEc44pX7Dh9yJARvvz6EW9oQvgkbwYf",
         "location": genomic_del6_seq_loc,
         "copies": 1,
     }
@@ -632,7 +583,6 @@ def genomic_del6_cx_38(genomic_del6_seq_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.02f8o7Gz9y11bMOWl7Vacc3V5J5M82bH",
         "location": genomic_del6_seq_loc,
         "copyChange": "efo:0030071",
     }
@@ -643,7 +593,6 @@ def genomic_del6_cx_38(genomic_del6_seq_loc):
 def genomic_del6_37_loc():
     """Create test fixture GRCh37 deletion location"""
     return {
-        "id": "ga4gh:SL.nENEk628TbRKyB9H9n12ssAQZnpwJDUo",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.KqaUhJMW3CDjhoVtBetdEKT1n6hM-7Ek",
@@ -659,7 +608,6 @@ def genomic_del6_cn_37(genomic_del6_37_loc):
     """Create test fixture copy number count variation"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.dPP5zGqiwSPNnuj49POIaul6_3msLwgF",
         "location": genomic_del6_37_loc,
         "copies": 1,
     }
@@ -671,7 +619,6 @@ def genomic_del6_cx_37(genomic_del6_37_loc):
     """Create test fixture copy number change variation"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.2YOJ93--D5aER5HsmnM4JP8GLWCcKKN-",
         "location": genomic_del6_37_loc,
         "copyChange": "efo:0030071",
     }
@@ -689,7 +636,7 @@ async def test_genomic_dup1_copy_number_count(
         baseline_copies=2,
         do_liftover=False,
     )
-    cnv_assertion_checks(resp, genomic_dup1_38_cn)
+    cnv_assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True)
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_count(
@@ -702,14 +649,6 @@ async def test_genomic_dup1_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_dup1_38_cn)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=1, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_dup1_38_cn)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.BvXjVTvckz3zAp8yATcQjLp-1sWyEO9d"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_dup1_copy_number_change(
@@ -720,7 +659,7 @@ async def test_genomic_dup1_copy_number_change(
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
         q, copy_change="efo:0030069", do_liftover=False
     )
-    cnv_assertion_checks(resp, genomic_dup1_cx_38)
+    cnv_assertion_checks(resp, genomic_dup1_cx_38, check_vrs_id=True)
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_cnv_handler.hgvs_to_copy_number_change(
@@ -755,14 +694,6 @@ async def test_genomic_dup2_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_dup2_38_cn)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=1, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_dup2_38_cn)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.40RjBTowl-97BT5vsPUgqdLJKNvL583c"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()
@@ -810,14 +741,6 @@ async def test_genomic_dup3_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=2, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del3_dup3_cn_38)
-    expected.copies = 3
-    expected.id = "ga4gh:CN.k_3m5Hu3_J5Mb8Rx8zH0plZ12U0XD1Du"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_dup3_copy_number_change(
@@ -863,14 +786,6 @@ async def test_genomic_dup4_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_dup4_cn_38)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=1, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_dup4_cn_38)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.214AwcxGQiu1rY8UYQpud23sQI5DJbm1"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()
@@ -918,14 +833,6 @@ async def test_genomic_dup5_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_dup5_cn_38)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=4, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_dup5_cn_38)
-    expected.copies = 5
-    expected.id = "ga4gh:CN.XvDElgE55k4blDLkzlDhwh5xcGyZrucn"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_dup5_copy_number_change(
@@ -971,14 +878,6 @@ async def test_genomic_dup6_copy_number_count(
         q, baseline_copies=1, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_dup6_cn_38)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=2, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_dup6_cn_38)
-    expected.copies = 3
-    expected.id = "ga4gh:CN.px3rDGLGlOmJLGKBoojl1UrFKu6Rhb1P"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()
@@ -1026,14 +925,6 @@ async def test_genomic_del1_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_del1_38_cn)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=3, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del1_38_cn)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.S0viz7yEPYtrHIBxBLlCKnIc9x8FspQp"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_del1_copy_number_change(
@@ -1079,14 +970,6 @@ async def test_genomic_del2_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_del2_38_cn)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=4, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del2_38_cn)
-    expected.copies = 3
-    expected.id = "ga4gh:CN.d8thjAuvDC3acnDwFnz2Mg6PEMipVNJk"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()
@@ -1134,14 +1017,6 @@ async def test_genomic_del3_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=2, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del3_dup3_cn_38)
-    expected.copies = 1
-    expected.id = "ga4gh:CN.vqcaYwbK8oewMEtKbP2pn5npQtkOAGdo"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_del3_copy_number_change(
@@ -1187,14 +1062,6 @@ async def test_genomic_del4_copy_number_count(
         q, baseline_copies=5, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_del4_cn_38)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=3, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del4_cn_38)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.9qA8nLBcResblQhR0xfz16vPHP-tYXIA"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()
@@ -1242,14 +1109,6 @@ async def test_genomic_del5_copy_number_count(
     )
     cnv_assertion_checks(resp, genomic_del5_cn_38)
 
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=2, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del5_cn_38)
-    expected.copies = 1
-    expected.id = "ga4gh:CN.7tln8gxFt8FfLrJH7XlcX7PVSQCQqnNZ"
-    cnv_assertion_checks(resp, expected)
-
 
 @pytest.mark.asyncio()
 async def test_genomic_del5_copy_number_change(
@@ -1295,14 +1154,6 @@ async def test_genomic_del6_copy_number_count(
         q, baseline_copies=2, do_liftover=True
     )
     cnv_assertion_checks(resp, genomic_del6_cn_38)
-
-    resp = await test_cnv_handler.hgvs_to_copy_number_count(
-        q, baseline_copies=3, do_liftover=True
-    )
-    expected = copy.deepcopy(genomic_del6_cn_38)
-    expected.copies = 2
-    expected.id = "ga4gh:CN.ydRovIJjiYNRUGv0w3iJ-pgK08MuYqGR"
-    cnv_assertion_checks(resp, expected)
 
 
 @pytest.mark.asyncio()

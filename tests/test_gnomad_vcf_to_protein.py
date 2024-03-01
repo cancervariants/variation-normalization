@@ -15,9 +15,7 @@ def test_handler(test_query_handler):
 def mmel1_l30m():
     """Create test fixture for MMEL1 L30M"""
     params = {
-        "id": "ga4gh:VA.OqqETz467CITELOZsYDukkab7JaOWiZf",
         "location": {
-            "id": "ga4gh:SL.Q7kfcqUWpIyEOgxcgPK1sRfgWPDv7zKA",
             "end": 30,
             "start": 29,
             "sequenceReference": {
@@ -36,9 +34,7 @@ def mmel1_l30m():
 def cdk11a_e314del():
     """Create test fixture for CDK11A Glu314del"""
     params = {
-        "id": "ga4gh:VA._CVnGazN6KosqrFnDx7kny-rb6yAZWtB",
         "location": {
-            "id": "ga4gh:SL.VqI6HuIFmm4XP3ocOTaobGxwqg4m6Ooi",
             "end": 321,
             "start": 308,
             "sequenceReference": {
@@ -62,9 +58,7 @@ def cdk11a_e314del():
 def protein_insertion2():
     """Create test fixture for LRP8 p.Gln25_Leu26insArg (CA860540)"""
     params = {
-        "id": "ga4gh:VA.5KWhsli69ac5zyoGf40Owu4CVNKy27So",
         "location": {
-            "id": "ga4gh:SL.I4c4NL0g3vBajHe44faZFQtrcqrbA14d",
             "end": 25,
             "start": 25,
             "sequenceReference": {
@@ -83,7 +77,6 @@ def protein_insertion2():
 def atad3a_loc():
     """Create test fixture for ATAD3A location"""
     return {
-        "id": "ga4gh:SL.xiP3uciIfJy_f44wNKCBvtsb35BC330Q",
         "end": 7,
         "start": 6,
         "sequenceReference": {
@@ -98,7 +91,6 @@ def atad3a_loc():
 def atad3a_i7v(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Val"""
     params = {
-        "id": "ga4gh:VA.i_L_bjPfI4XLMIKmVklV6eDLKEl1f7PD",
         "location": atad3a_loc,
         "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -110,7 +102,6 @@ def atad3a_i7v(atad3a_loc):
 def atad3a_i7t(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Thr"""
     params = {
-        "id": "ga4gh:VA.C8QO-YAfG66yj7cEwjEhkEfSd-oCSKfc",
         "location": atad3a_loc,
         "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -122,7 +113,6 @@ def atad3a_i7t(atad3a_loc):
 def atad3a_i7m(atad3a_loc):
     """Create test fixture for ATAD3A Ile7Met"""
     params = {
-        "id": "ga4gh:VA.Fhmv3GK3bcIJRXOkigS9QNMzAWGW3WGa",
         "location": atad3a_loc,
         "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -134,7 +124,6 @@ def atad3a_i7m(atad3a_loc):
 def braf_v600l(braf_600loc):
     """Create test fixture for BRAF Val600Leu."""
     params = {
-        "id": "ga4gh:VA.c6f1MPfquVRPZO46wVzCaGaU8QnXoHNN",
         "location": braf_600loc,
         "state": {"sequence": "L", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -146,7 +135,6 @@ def braf_v600l(braf_600loc):
 def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
-        "id": "ga4gh:VA.wS6kJNbPkRJDIWg8F4CjOMQ5mcJzD_X4",
         "location": braf_600loc,
         "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -158,10 +146,8 @@ def braf_600_reference_agree(braf_600loc):
 def kras_g12d():
     """Fixture for KRAS G12D"""
     params = {
-        "id": "ga4gh:VA.CB571ja_KfZM_Hjn9zjjgV1an3tDWRcl",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.OndkjmujtyUEZSjjCv0C-gpwnVbRgfj8",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",
@@ -181,10 +167,8 @@ def multi_nuc_sub_pos():
     positive strand (CA16042245)
     """
     params = {
-        "id": "ga4gh:VA.q_fhdDFpLT38y6TPU1EMtc2StwRGRVx0",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.xcqWKkKU83UBmLq5Q1yrH6IyLvWkMcWk",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",
@@ -204,10 +188,8 @@ def multi_nuc_sub_neg():
     negative strand (CA1139661942)
     """
     params = {
-        "id": "ga4gh:VA.6K950oAyNXfIkPTmSHzX8f8wpNUroBGK",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.RiO0HagK846MBCJZK7NVcDtlYPkdaXC4",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",
@@ -225,10 +207,8 @@ def multi_nuc_sub_neg():
 def delins_pos():
     """Create test fixture for the protein consequence of a delins on positive strand (CA645561524)"""
     params = {
-        "id": "ga4gh:VA.vBQ2TCfRHiG3ud_vqE88BNZEK7Qw28kg",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.1btwhKRj0zZQwo-_CalR-WavTB019t-V",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",
@@ -246,10 +226,8 @@ def delins_pos():
 def delins_neg():
     """Create test fixture for the protein consequence of a delins on negative strand (ClinVar ID 1217291)"""
     params = {
-        "id": "ga4gh:VA.iSDLORgPGz21BetTQM5grpXyB3tIfZwl",
         "type": "Allele",
         "location": {
-            "id": "ga4gh:SL.cmPqZ9vkQlmV_eWEW3MFKFeVtT_n1-yc",
             "type": "SequenceLocation",
             "sequenceReference": {
                 "type": "SequenceReference",
@@ -285,7 +263,7 @@ async def test_substitution(
 
     # Reading Frame 2, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-A-T")
-    assertion_checks(resp, braf_v600e)
+    assertion_checks(resp, braf_v600e, check_vrs_id=True)
     assert resp.gene_context
     assert resp.vrs_ref_allele_seq == "V"
     assert resp.warnings == []

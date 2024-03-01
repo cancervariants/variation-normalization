@@ -1,5 +1,6 @@
 """Create methods used throughout tests."""
 import asyncio
+import contextlib
 
 import pytest
 from cool_seq_tool.app import CoolSeqTool
@@ -93,7 +94,6 @@ def prpf8_ncbi_seq_loc():
         },
         "start": 1650628,
         "end": 1684867,
-        "id": "ga4gh:SL.1i49iv3wcBq7SaOA14cs1Kz7SR6DkCw1",
         "type": "SequenceLocation",
     }
 
@@ -129,9 +129,7 @@ def braf_v600e(braf_600loc):
 def vhl_reference_agree():
     """Create NP_000542.1:p.Pro61 fixture."""
     params = {
-        "id": "ga4gh:VA.RMmwTvhrPVwfMZ6knsf5zMWQn_F1ukYh",
         "location": {
-            "id": "ga4gh:SL.8TZYB8Oqqn93q07zrsNhvRW1JjNpaQXc",
             "end": 61,
             "start": 60,
             "sequenceReference": {
@@ -150,9 +148,7 @@ def vhl_reference_agree():
 def protein_insertion():
     """Create test fixture for NP protein insertion (CA645561585)."""
     params = {
-        "id": "ga4gh:VA.AOCCh_BU5wKkdgoDNqkORF_x4GQwWh1T",
         "location": {
-            "id": "ga4gh:SL.ciWb1ylkqUxiviU1djijiuYVZcgsnQnV",
             "end": 770,
             "start": 770,
             "sequenceReference": {
@@ -173,9 +169,7 @@ def protein_deletion_np_range():
     range for deletion.
     """
     params = {
-        "id": "ga4gh:VA.3Rk_RElDfX820edkQOHsTTYRogr0EMEY",
         "location": {
-            "id": "ga4gh:SL.kOTzy0aLlw0yqnmf29Zk8wh65zHQwere",
             "end": 759,
             "start": 754,
             "sequenceReference": {
@@ -199,9 +193,7 @@ def protein_deletion_np_range():
 def braf_v600e_genomic_sub():
     """Create test fixture for NC_000007.14:g.140753336A>T"""
     params = {
-        "id": "ga4gh:VA.LX3ooHBAiZdKY4RfTXcliUmkj48mnD_M",
         "location": {
-            "id": "ga4gh:SL.XutGzMvqbzN-vnxmPt2MJf7ehxmB0opi",
             "end": 140753336,
             "start": 140753335,
             "sequenceReference": {
@@ -264,7 +256,6 @@ def genomic_dup1_38_cn(genomic_dup1_seq_loc_not_normalized):
 def genomic_dup2_seq_loc_normalized():
     """Create genomic dup2 sequence location"""
     return {
-        "id": "ga4gh:SL.rVXa8TXm6WTEw-_Lom6A347Q45SB7CON",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -280,7 +271,6 @@ def genomic_dup2_38_cn(genomic_dup2_seq_loc_normalized):
     """Create test fixture for copy number count dup2 on GRCh38"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.C8WuNCba5AN1RoXK1enXgALlM1Qz6X6i",
         "location": genomic_dup2_seq_loc_normalized,
         "copies": 3,
     }
@@ -291,7 +281,6 @@ def genomic_dup2_38_cn(genomic_dup2_seq_loc_normalized):
 def genomic_del3_dup3_loc_not_normalized():
     """Create genomic del3 dup3 sequence location"""
     return {
-        "id": "ga4gh:SL.-zCp7JBaKQ0niPDueJkuCgQhRIQ50hKw",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -306,7 +295,6 @@ def genomic_del3_dup3_loc_not_normalized():
 def genomic_dup4_loc():
     """Create genomic dup4 sequence location"""
     return {
-        "id": "ga4gh:SL.o8sCaAaW2a2f_HsNBTsHOCnWRvIyru0y",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.-A1QmD_MatoqxvgVxBLZTONHz9-c7nQo",
@@ -321,7 +309,6 @@ def genomic_dup4_loc():
 def genomic_dup5_loc():
     """Create genomic dup5 sequence location"""
     return {
-        "id": "ga4gh:SL.O__pyYq_u7R__2NUbI3koxxkeCBL7WXq",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -336,7 +323,6 @@ def genomic_dup5_loc():
 def genomic_dup6_loc():
     """Create genomic dup6 sequence location"""
     return {
-        "id": "ga4gh:SL.Ls2wfxI-2V2OdMY5HHttwlSwgbpNf_j2",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -351,7 +337,6 @@ def genomic_dup6_loc():
 def genomic_del1_seq_loc():
     """Create genomic del1 sequence location"""
     return {
-        "id": "ga4gh:SL.zMba5wGtQWQmdFd70yEqMYszGoRaYX25",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
@@ -367,7 +352,6 @@ def genomic_del1_lse(genomic_del1_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.gztc0BFS6p5V1_QVnEYIJ6DwzZQeDCd2",
         "location": genomic_del1_seq_loc,
         "state": {
             "length": 0,
@@ -384,7 +368,6 @@ def genomic_del1_38_cn(genomic_del1_seq_loc):
     """Create test fixture for copy number count del1 on GRCh38"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.wRj3ZKNriLtPDVj0VlPaTCQfklj2ocGU",
         "location": genomic_del1_seq_loc,
         "copies": 1,
     }
@@ -395,7 +378,6 @@ def genomic_del1_38_cn(genomic_del1_seq_loc):
 def genomic_del2_seq_loc():
     """Create genomic del2 sequence location"""
     return {
-        "id": "ga4gh:SL.usVkXRvjfX0cEXLvP87Oi8eJJGyizjQF",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
@@ -411,7 +393,6 @@ def genomic_del2_lse(genomic_del2_seq_loc):
     """Create a test fixture for genomic del LSE."""
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.9NmH0sRYerurt-CE6WlF9UaxZiujByIE",
         "location": genomic_del2_seq_loc,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -428,7 +409,6 @@ def genomic_del2_38_cn(genomic_del2_seq_loc):
     """Create test fixture for copy number count del1 on GRCh38"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.i7HRf9gge1HJKzazgvtinosa0bE3gHJu",
         "location": genomic_del2_seq_loc,
         "copies": 1,
     }
@@ -439,7 +419,6 @@ def genomic_del2_38_cn(genomic_del2_seq_loc):
 def genomic_del4_seq_loc():
     """Create genomic del4 sequence location"""
     return {
-        "id": "ga4gh:SL.bWbNmdT__ptImBwTAIYdyNfazhwvEtXD",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -454,7 +433,6 @@ def genomic_del4_seq_loc():
 def genomic_del5_seq_loc():
     """Create genomic del5 sequence location"""
     return {
-        "id": "ga4gh:SL.WDxMzftZLrwp2eQJrlasKuY4ns99wG0v",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.w0WZEvgJF0zf_P4yyTzjjv9oW1z61HHP",
@@ -469,7 +447,6 @@ def genomic_del5_seq_loc():
 def genomic_del6_seq_loc():
     """Create genomic del6 sequence location"""
     return {
-        "id": "ga4gh:SL.TKIwU5OzGgOWIpnzAHfkCLB7vrKupKhD",
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.0iKlIQk2oZLoeOG9P1riRU6hvL5Ux8TV",
@@ -484,7 +461,6 @@ def genomic_del6_seq_loc():
 def grch38_genomic_insertion_seq_loc():
     """Create test fixture for GRCh38 genomic insertion seq location"""
     return {
-        "id": "ga4gh:SL.oVzSkGhh3QJ0FAgihm-kNr9CJbF_7Ln2",
         "end": 39724743,
         "start": 39724731,
         "sequenceReference": {
@@ -499,7 +475,6 @@ def grch38_genomic_insertion_seq_loc():
 def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
     """Create a test fixture for NC_000017.10:g.37880993_37880994insGCTTACGTGATG"""
     params = {
-        "id": "ga4gh:VA.eorsJMgis9uDdRRPVd3srYofdPaM_xn2",
         "location": grch38_genomic_insertion_seq_loc,
         "state": {
             "length": 24,
@@ -528,7 +503,6 @@ def braf_amplification(braf_ncbi_seq_loc):
 def prpf8_amplification(prpf8_ncbi_seq_loc):
     """Create test fixture for PRPF8 Amplification"""
     params = {
-        "id": "ga4gh:CX.KH_rYvTqg5Hq0ysqbrh8JR20oeLYa7bk",
         "location": prpf8_ncbi_seq_loc,
         "copyChange": "efo:0030072",
         "type": "CopyNumberChange",
@@ -541,28 +515,53 @@ def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number variation for del/dup 3 on GRCh38"""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.rPsK0krAHgmXhDZEw4fqymR0iDQa3UCJ",
         "location": genomic_del3_dup3_loc_not_normalized,
         "copies": 2,
     }
     return models.CopyNumberCount(**params)
 
 
-def assertion_checks(normalize_response, test_variation):
+def _delete_id(vrs_obj_dict):
+    """Delete ID property from VRS object"""
+    with contextlib.suppress(KeyError):
+        # Some fixtures have IDs for other tests
+        del vrs_obj_dict["id"]
+
+
+def assertion_checks(normalize_response, test_variation, check_vrs_id=False):
     """Check that normalize_response and test_variation are equal."""
     actual = normalize_response.variation.model_dump(exclude_none=True)
-    expected = test_variation.model_dump(exclude_none=True)
+    if not check_vrs_id:
+        assert actual.pop("id").startswith(("ga4gh:VA.", "ga4gh:CX", "ga4gh:CN."))
+        assert actual["location"].pop("id").startswith("ga4gh:SL.")
+
+    expected = test_variation.copy().model_dump(exclude_none=True)
+    if not check_vrs_id:
+        _delete_id(expected)
+        _delete_id(expected["location"])
+
     assert actual == expected, "variation"
 
 
-def cnv_assertion_checks(resp, test_fixture):
+def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False):
     """Check that actual response for to copy number matches expected"""
     try:
         cnc = resp.copy_number_count
     except AttributeError:
         actual = resp.copy_number_change.model_dump(exclude_none=True)
+        prefix = "ga4gh:CX."
     else:
         actual = cnc.model_dump(exclude_none=True)
-    expected = test_fixture.model_dump(exclude_none=True)
+        prefix = "ga4gh:CN."
+
+    if not check_vrs_id:
+        assert actual.pop("id").startswith(prefix)
+        assert actual["location"].pop("id").startswith("ga4gh:SL.")
+
+    expected = test_fixture.copy().model_dump(exclude_none=True)
+    if not check_vrs_id:
+        _delete_id(expected)
+        _delete_id(expected["location"])
+
     assert actual == expected
     assert resp.warnings == []
