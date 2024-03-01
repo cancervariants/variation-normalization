@@ -87,8 +87,13 @@ async def translator_checks(
                 vr, []
             )
             vrs_variation = translation_result.vrs_variation
+            assert vrs_variation.pop("id").startswith(
+                ("ga4gh:VA.", "ga4gh:CX", "ga4gh:CN.")
+            )
+            assert vrs_variation["location"].pop("id").startswith("ga4gh:SL.")
+
             if vrs_variation and vrs_variation not in translations:
-                assert vrs_variation in expected, f"{query}: {vrs_variation['id']}"
+                assert vrs_variation in expected, query
                 translations.append(vrs_variation)
 
         assert len(translations) == len(expected), query

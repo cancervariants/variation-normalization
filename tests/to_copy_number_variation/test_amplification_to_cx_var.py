@@ -1,6 +1,7 @@
 """Module for testing Amplification to Copy Number Change"""
 import pytest
 from ga4gh.vrs import models
+from tests.conftest import cnv_assertion_checks
 
 
 @pytest.fixture(scope="module")
@@ -30,19 +31,13 @@ def test_amplification_to_cx_var(
     """Test that amplification_to_cx_var method works correctly"""
     # Using gene normalizer
     resp = test_cnv_handler.amplification_to_cx_var(gene="braf")
-    assert resp.copy_number_change.model_dump(
-        exclude_none=True
-    ) == braf_amplification.model_dump(exclude_none=True)
+    cnv_assertion_checks(resp, braf_amplification, check_vrs_id=True)
     assert resp.amplification_label == "BRAF Amplification"
-    assert resp.warnings == []
 
     # Gene with > 1 sequence location
     resp = test_cnv_handler.amplification_to_cx_var(gene="PRPF8")
-    assert resp.copy_number_change.model_dump(
-        exclude_none=True
-    ) == prpf8_amplification.model_dump(exclude_none=True)
+    cnv_assertion_checks(resp, prpf8_amplification)
     assert resp.amplification_label == "PRPF8 Amplification"
-    assert resp.warnings == []
 
     # Gene with no location. This should NOT return a variation
     resp = test_cnv_handler.amplification_to_cx_var(gene="ifnr")
@@ -56,11 +51,8 @@ def test_amplification_to_cx_var(
     resp = test_cnv_handler.amplification_to_cx_var(
         gene="KIT", sequence_id="NC_000004.11", start=55599321, end=55599321
     )
-    assert resp.copy_number_change.model_dump(
-        exclude_none=True
-    ) == kit_amplification.model_dump(exclude_none=True)
+    cnv_assertion_checks(resp, kit_amplification)
     assert resp.amplification_label == "KIT Amplification"
-    assert resp.warnings == []
 
     # Sequence_id not found in seqrepo
     resp = test_cnv_handler.amplification_to_cx_var(
