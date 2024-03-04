@@ -257,10 +257,12 @@ class ParsedToCnVarService(ServiceResponse):
         json_schema_extra={
             "example": {
                 "copy_number_count": {
-                    "id": "ga4gh:CN.Qrs0TaGCcJiibMvhcML6BTSCVtX95FBl",
+                    "id": "ga4gh:CN.pbVk38-x5YGW7yhEtaBnWYjrzcb25L16",
+                    "digest": "pbVk38-x5YGW7yhEtaBnWYjrzcb25L16",
                     "type": "CopyNumberCount",
                     "location": {
-                        "id": "ga4gh:SL.g6xj5oKF99OysSxcfHyGYbh8NFNn2r61",
+                        "id": "ga4gh:SL.6jZXELPqf5JDeN4CpOGde8foTUkHi1jy",
+                        "digest": "6jZXELPqf5JDeN4CpOGde8foTUkHi1jy",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -322,10 +324,12 @@ class ParsedToCxVarService(ServiceResponse):
             "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
-                    "id": "ga4gh:CX.BTNwndSs3RylLhtL9Y45GePsVX35eeTT",
+                    "id": "ga4gh:CX.5kaJC-7Jj851bfJ6EipsHV413feg1T4T",
+                    "digest": "5kaJC-7Jj851bfJ6EipsHV413feg1T4T",
                     "location": {
                         "type": "SequenceLocation",
-                        "id": "ga4gh:SL.Pu3oAKHColJSZ3zY_Xu5MeezINaTFlNq",
+                        "id": "ga4gh:SL.Iz_azSFTEulx7tCluLgGhE1n0hTLUocb",
+                        "digest": "Iz_azSFTEulx7tCluLgGhE1n0hTLUocb",
                         "sequenceReference": {
                             "type": "SequenceReference",
                             "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -375,10 +379,12 @@ class AmplificationToCxVarService(ServiceResponse):
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.89PECTeQjhhXnNW9yg24DheWOQMgmKk2",
+                    "id": "ga4gh:CX._UsXDMCLtPwsVKiNByhbwfS569K1wLWW",
+                    "digest": "_UsXDMCLtPwsVKiNByhbwfS569K1wLWW",
                     "type": "CopyNumberChange",
                     "location": {
-                        "id": "ga4gh:SL.uNBZoxhjhohl24VlIut-JxPJAGfJ7EQE",
+                        "id": "ga4gh:SL.0nPwKHYNnTmJ06G-gSmz8BEhB_NTp-0B",
+                        "digest": "0nPwKHYNnTmJ06G-gSmz8BEhB_NTp-0B",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",

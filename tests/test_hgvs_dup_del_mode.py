@@ -15,9 +15,11 @@ def test_handler(test_query_handler):
 @pytest.fixture(scope="module")
 def genomic_dup1_lse(genomic_dup1_seq_loc_normalized):
     """Create a test fixture for genomic dup LSE."""
+    digest = "vfLfV0PTIdjGBINwgHKFBoVjPSkZ7s5-"
     params = {
         "type": "Allele",
-        "id": "ga4gh:VA.CHNQRjx52keAGF5WcbvKORtfLiitZKE4",
+        "id": f"ga4gh:VA.{digest}",
+        "digest": digest,
         "location": genomic_dup1_seq_loc_normalized,
         "state": {
             "type": "ReferenceLengthExpression",
@@ -32,9 +34,11 @@ def genomic_dup1_lse(genomic_dup1_seq_loc_normalized):
 @pytest.fixture(scope="module")
 def genomic_dup1_cx(genomic_dup1_seq_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
+    digest = "yHUIaSwa0aIRvhfiTUIHPTkjNdaQdN4P"
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.7WKEz2E_jwZZdyRc2Gw-_LIbHDJyRXwr",
+        "id": f"ga4gh:CX.{digest}",
+        "digest": digest,
         "location": genomic_dup1_seq_loc_not_normalized,
         "copyChange": "efo:0030072",
     }
@@ -336,7 +340,6 @@ def genomic_dup6_cn(genomic_dup6_loc):
     """Create a test fixture for genomic dup copy number count."""
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.KSFn5KQIPuPVJ6FjWaF0vzl7eRwwHbX9",
         "location": genomic_dup6_loc,
         "copies": 2,
     }

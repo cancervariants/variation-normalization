@@ -450,10 +450,8 @@ def gnomad_vcf_genomic_delins3():
             "type": "SequenceLocation",
         },
         "state": {
-            "length": 26,
-            "repeatSubunitLength": 24,
             "sequence": "GGCAGCGCATAAAGCGCATTCTCCGG",
-            "type": "ReferenceLengthExpression",
+            "type": "LiteralSequenceExpression",
         },
         "type": "Allele",
     }

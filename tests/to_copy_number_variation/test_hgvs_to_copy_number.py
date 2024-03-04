@@ -8,9 +8,11 @@ from tests.conftest import cnv_assertion_checks
 @pytest.fixture(scope="module")
 def genomic_dup1_cx_38(genomic_dup1_seq_loc_not_normalized):
     """Create test fixture copy number change variation"""
+    digest = "Zzws_y4cnoooQ7WXjg2B3nKIyFWXzOg3"
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.d8BWSLNKN0K4n8ySG0jWPCr4cJIqEf5g",
+        "id": f"ga4gh:CX.{digest}",
+        "digest": digest,
         "location": genomic_dup1_seq_loc_not_normalized,
         "copyChange": "efo:0030069",
     }

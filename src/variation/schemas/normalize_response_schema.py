@@ -82,9 +82,11 @@ class NormalizeService(ServiceResponse):
             "example": {
                 "variation_query": "BRAF V600E",
                 "variation": {
-                    "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
+                    "id": "ga4gh:VA.j4XnsLZcdzDIYa5pvvXM7t1wn9OITr0L",
+                    "digest": "j4XnsLZcdzDIYa5pvvXM7t1wn9OITr0L",
                     "location": {
-                        "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
+                        "id": "ga4gh:SL.t-3DrWALhgLdXHsupI-e-M00aL3HgK3y",
+                        "digest": "t-3DrWALhgLdXHsupI-e-M00aL3HgK3y",
                         "end": 600,
                         "start": 599,
                         "sequenceReference": {

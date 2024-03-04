@@ -19,10 +19,12 @@ class HgvsToCopyNumberCountService(ServiceResponse):
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_count": {
-                    "id": "ga4gh:CN.07iM14yvZ80N_AiaM7G_V4f1pCkmFYz4",
+                    "id": "ga4gh:CN.gF1l6Zh6aY3vy_TR7rrat6FTmwiwIukY",
+                    "digest": "gF1l6Zh6aY3vy_TR7rrat6FTmwiwIukY",
                     "type": "CopyNumberCount",
                     "location": {
-                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
+                        "id": "ga4gh:SL.2vbgFGHGB0QGODwgZNi05fWbROkkjf04",
+                        "digest": "2vbgFGHGB0QGODwgZNi05fWbROkkjf04",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -55,10 +57,12 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.d8BWSLNKN0K4n8ySG0jWPCr4cJIqEf5g",
+                    "id": "ga4gh:CX.Zzws_y4cnoooQ7WXjg2B3nKIyFWXzOg3",
+                    "digest": "Zzws_y4cnoooQ7WXjg2B3nKIyFWXzOg3",
                     "type": "CopyNumberChange",
                     "location": {
-                        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
+                        "id": "ga4gh:SL.2vbgFGHGB0QGODwgZNi05fWbROkkjf04",
+                        "digest": "2vbgFGHGB0QGODwgZNi05fWbROkkjf04",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
