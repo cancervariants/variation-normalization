@@ -5,6 +5,7 @@ import pytest
 import yaml
 
 from tests import PROJECT_ROOT
+from tests.conftest import _vrs_id_and_digest_existence_checks
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
 from variation.translators import (
     Amplification,
@@ -87,10 +88,7 @@ async def translator_checks(
                 vr, []
             )
             vrs_variation = translation_result.vrs_variation
-            assert vrs_variation.pop("id").startswith(
-                ("ga4gh:VA.", "ga4gh:CX", "ga4gh:CN.")
-            )
-            assert vrs_variation["location"].pop("id").startswith("ga4gh:SL.")
+            _vrs_id_and_digest_existence_checks(vrs_variation)
 
             if vrs_variation and vrs_variation not in translations:
                 assert vrs_variation in expected, query

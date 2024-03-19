@@ -27,9 +27,11 @@ class ToVRSService(BaseModel):
                 "warnings": [],
                 "variations": [
                     {
-                        "id": "ga4gh:VA.PJu8CCaVzEyqXMAEcMNegyDWyvT_jzNn",
+                        "id": "ga4gh:VA.GGJOybg6mckctDlXxLY1kHZQ6dbB0U75",
+                        "digest": "GGJOybg6mckctDlXxLY1kHZQ6dbB0U75",
                         "location": {
-                            "id": "ga4gh:SL.EpHaD2ygDuPMvyURI9L4yetEwF3W0G7G",
+                            "id": "ga4gh:SL.0Y2ZW1zB9mf0qGesJx1kDYtwfB-67Gnf",
+                            "digest": "0Y2ZW1zB9mf0qGesJx1kDYtwfB-67Gnf",
                             "end": 600,
                             "start": 599,
                             "sequenceReference": {
@@ -42,9 +44,11 @@ class ToVRSService(BaseModel):
                         "type": "Allele",
                     },
                     {
-                        "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
+                        "id": "ga4gh:VA.j4XnsLZcdzDIYa5pvvXM7t1wn9OITr0L",
+                        "digest": "j4XnsLZcdzDIYa5pvvXM7t1wn9OITr0L",
                         "location": {
-                            "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
+                            "id": "ga4gh:SL.t-3DrWALhgLdXHsupI-e-M00aL3HgK3y",
+                            "digest": "t-3DrWALhgLdXHsupI-e-M00aL3HgK3y",
                             "end": 600,
                             "start": 599,
                             "sequenceReference": {
@@ -57,9 +61,11 @@ class ToVRSService(BaseModel):
                         "type": "Allele",
                     },
                     {
-                        "id": "ga4gh:VA.c-oRhbu7nDrBrSW2fPbFlDM15V6jiaho",
+                        "id": "ga4gh:VA.jSy0uhhLefGH3396djPYcJeSVyDvRYGc",
+                        "digest": "jSy0uhhLefGH3396djPYcJeSVyDvRYGc",
                         "location": {
-                            "id": "ga4gh:SL.gkevJbLNOScKXhxhzOZXiG3hW8zeyo-q",
+                            "id": "ga4gh:SL.CowRxWqyJfqVwlfs5YdswnrnZDQL5QCi",
+                            "digest": "CowRxWqyJfqVwlfs5YdswnrnZDQL5QCi",
                             "start": 599,
                             "end": 600,
                             "sequenceReference": {
@@ -72,9 +78,11 @@ class ToVRSService(BaseModel):
                         "type": "Allele",
                     },
                     {
-                        "id": "ga4gh:VA.3ex0cvKXjHbq8NLuitOAfVwSPzqZUFrR",
+                        "id": "ga4gh:VA.T1wKHKsXNF6gm7BJJ9kkyCgYrdzeG5Eh",
+                        "digest": "T1wKHKsXNF6gm7BJJ9kkyCgYrdzeG5Eh",
                         "location": {
-                            "id": "ga4gh:SL.Q4MXez2kHFPQqGJKLP8quVHAskuCrOAA",
+                            "id": "ga4gh:SL.5_mc1jrXsfhj-Cp8iFEEtvgHWXRtPerb",
+                            "digest": "5_mc1jrXsfhj-Cp8iFEEtvgHWXRtPerb",
                             "start": 599,
                             "end": 600,
                             "sequenceReference": {

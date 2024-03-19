@@ -44,10 +44,12 @@ class TranslateToQuery(BaseModel):
         json_schema_extra={
             "example": {
                 "variation": {
-                    "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
+                    "id": "ga4gh:VA.nmp-bzYpO00NYIqr3CaVF0ZH2ZpSj1ly",
+                    "digest": "nmp-bzYpO00NYIqr3CaVF0ZH2ZpSj1ly",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
+                        "id": "ga4gh:SL.hVna-JOV5bBTGdXexL--IQm135MG3bGT",
+                        "digest": "hVna-JOV5bBTGdXexL--IQm135MG3bGT",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",
@@ -74,10 +76,12 @@ class TranslateToHGVSQuery(BaseModel):
         json_schema_extra={
             "example": {
                 "variation": {
-                    "id": "ga4gh:VA.ztz4yxckrW1j7YFSprOz_T9gwLdMc6LB",
+                    "id": "ga4gh:VA.nmp-bzYpO00NYIqr3CaVF0ZH2ZpSj1ly",
+                    "digest": "nmp-bzYpO00NYIqr3CaVF0ZH2ZpSj1ly",
                     "type": "Allele",
                     "location": {
-                        "id": "ga4gh:SL.txr-jqnTLuz_3RVrPamx9cYniAFJg977",
+                        "id": "ga4gh:SL.hVna-JOV5bBTGdXexL--IQm135MG3bGT",
+                        "digest": "hVna-JOV5bBTGdXexL--IQm135MG3bGT",
                         "type": "SequenceLocation",
                         "sequenceReference": {
                             "type": "SequenceReference",

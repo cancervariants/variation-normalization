@@ -21,12 +21,16 @@ def cn_gain1():
     """Create test fixture for clinvar copy number gain.
     https://www.ncbi.nlm.nih.gov/clinvar/variation/145208/?new_evidence=true
     """
+    cn_digest = "pbVk38-x5YGW7yhEtaBnWYjrzcb25L16"
+    loc_digest = "6jZXELPqf5JDeN4CpOGde8foTUkHi1jy"
     variation = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.Qrs0TaGCcJiibMvhcML6BTSCVtX95FBl",
+        "id": f"ga4gh:CN.{cn_digest}",
+        "digest": cn_digest,
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.g6xj5oKF99OysSxcfHyGYbh8NFNn2r61",
+            "id": f"ga4gh:SL.{loc_digest}",
+            "digest": loc_digest,
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.S_KjnFVz-FE7M0W6yoaUDgYxLPc1jyWU",
@@ -147,12 +151,16 @@ def cn_definite_number():
 @pytest.fixture(scope="module")
 def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
+    cx_digest = "5kaJC-7Jj851bfJ6EipsHV413feg1T4T"
+    loc_digest = "Iz_azSFTEulx7tCluLgGhE1n0hTLUocb"
     variation = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.BTNwndSs3RylLhtL9Y45GePsVX35eeTT",
+        "id": f"ga4gh:CX.{cx_digest}",
+        "digest": cx_digest,
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.Pu3oAKHColJSZ3zY_Xu5MeezINaTFlNq",
+            "id": f"ga4gh:SL.{loc_digest}",
+            "digest": loc_digest,
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.8_liLu1aycC0tPQPFmUaGXJLDs5SbPZ5",
@@ -755,8 +763,10 @@ def test_to_parsed_cn_var(test_cnv_handler, cn_definite_number):
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
     cnc = resp.copy_number_count.model_dump(exclude_none=True)
-    assert cnc.pop("id").startswith("ga4gh:CN.")
-    assert cnc["location"].pop("id").startswith("ga4gh:SL.")
+    cn_digest = cnc.pop("digest")
+    assert cnc.pop("id") == f"ga4gh:CN.{cn_digest}"
+    loc_digest = cnc["location"].pop("digest")
+    assert cnc["location"].pop("id") == f"ga4gh:SL.{loc_digest}"
     assert cnc == {
         "type": "CopyNumberCount",
         "location": {

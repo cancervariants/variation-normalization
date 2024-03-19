@@ -72,6 +72,7 @@ def test_cnv_handler(test_query_handler):
 @pytest.fixture(scope="session")
 def braf_ncbi_seq_loc():
     """Create test fixture for BRAF ncbi priority sequence location"""
+    digest = "0nPwKHYNnTmJ06G-gSmz8BEhB_NTp-0B"
     return {
         "sequenceReference": {
             "type": "SequenceReference",
@@ -79,7 +80,8 @@ def braf_ncbi_seq_loc():
         },
         "start": 140713327,
         "end": 140924929,
-        "id": "ga4gh:SL.uNBZoxhjhohl24VlIut-JxPJAGfJ7EQE",
+        "id": f"ga4gh:SL.{digest}",
+        "digest": digest,
         "type": "SequenceLocation",
     }
 
@@ -101,8 +103,10 @@ def prpf8_ncbi_seq_loc():
 @pytest.fixture(scope="session")
 def braf_600loc():
     """Create test fixture for BRAF 600 location"""
+    digest = "t-3DrWALhgLdXHsupI-e-M00aL3HgK3y"
     return {
-        "id": "ga4gh:SL.ZA1XNKhCT_7m2UtmnYb8ZYOVS4eplMEK",
+        "id": f"ga4gh:SL.{digest}",
+        "digest": digest,
         "end": 600,
         "start": 599,
         "sequenceReference": {
@@ -116,8 +120,10 @@ def braf_600loc():
 @pytest.fixture(scope="session")
 def braf_v600e(braf_600loc):
     """Create BRAF V600E protein test fixture."""
+    digest = "j4XnsLZcdzDIYa5pvvXM7t1wn9OITr0L"
     params = {
-        "id": "ga4gh:VA.4XBXAxSAk-WyAu5H0S1-plrk_SCTW1PO",
+        "id": f"ga4gh:VA.{digest}",
+        "digest": digest,
         "location": braf_600loc,
         "state": {"sequence": "E", "type": "LiteralSequenceExpression"},
         "type": "Allele",
@@ -211,8 +217,10 @@ def braf_v600e_genomic_sub():
 @pytest.fixture(scope="session")
 def genomic_dup1_seq_loc_normalized():
     """Create test fixture containing genomic dup1 sequence location normalized"""
+    digest = "XyxdODl0lLloyj3EQgIzIOEukl2WiaHw"
     return {
-        "id": "ga4gh:SL.f0nAiaxOC3rPToQEYRRhbVBNO6HKutyc",
+        "id": f"ga4gh:SL.{digest}",
+        "digest": digest,
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
@@ -228,8 +236,10 @@ def genomic_dup1_seq_loc_not_normalized():
     """Create test fixture containing genomic dup1 sequence location that was
     normalized
     """
+    digest = "2vbgFGHGB0QGODwgZNi05fWbROkkjf04"
     return {
-        "id": "ga4gh:SL.y4-cVA2VxMCDxb9gV2oFrzC386yrEVqh",
+        "id": f"ga4gh:SL.{digest}",
+        "digest": digest,
         "sequenceReference": {
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
@@ -243,9 +253,11 @@ def genomic_dup1_seq_loc_not_normalized():
 @pytest.fixture(scope="session")
 def genomic_dup1_38_cn(genomic_dup1_seq_loc_not_normalized):
     """Create test fixture for copy number count dup1 on GRCh38"""
+    digest = "gF1l6Zh6aY3vy_TR7rrat6FTmwiwIukY"
     params = {
         "type": "CopyNumberCount",
-        "id": "ga4gh:CN.07iM14yvZ80N_AiaM7G_V4f1pCkmFYz4",
+        "id": f"ga4gh:CN.{digest}",
+        "digest": digest,
         "location": genomic_dup1_seq_loc_not_normalized,
         "copies": 3,
     }
@@ -490,8 +502,10 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 @pytest.fixture(scope="session")
 def braf_amplification(braf_ncbi_seq_loc):
     """Create test fixture for BRAF Amplification"""
+    digest = "_UsXDMCLtPwsVKiNByhbwfS569K1wLWW"
     params = {
-        "id": "ga4gh:CX.89PECTeQjhhXnNW9yg24DheWOQMgmKk2",
+        "id": f"ga4gh:CX.{digest}",
+        "digest": digest,
         "location": braf_ncbi_seq_loc,
         "copyChange": "efo:0030072",
         "type": "CopyNumberChange",
@@ -521,24 +535,47 @@ def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
     return models.CopyNumberCount(**params)
 
 
-def _delete_id(vrs_obj_dict):
-    """Delete ID property from VRS object"""
+def _delete_id_and_digest(vrs_obj_dict):
+    """Delete id and digest properties from VRS object"""
     with contextlib.suppress(KeyError):
         # Some fixtures have IDs for other tests
         del vrs_obj_dict["id"]
+
+    with contextlib.suppress(KeyError):
+        # Some fixtures have digests for other tests
+        del vrs_obj_dict["digest"]
+
+
+def _vrs_id_and_digest_existence_checks(vrs_obj_dict, prefix=None):
+    """Check that VRS id and digest exists.
+
+    Does not check actual values.
+    `vrs_obj_dict` will be mutated (id and digest fields removed).
+    """
+    variation_vrs_digest = vrs_obj_dict.pop("digest")
+    variation_vrs_id = vrs_obj_dict.pop("id")
+
+    if not prefix:
+        prefix = ("ga4gh:VA.", "ga4gh:CX", "ga4gh:CN.")
+
+    assert variation_vrs_id.startswith(prefix)
+    assert variation_vrs_id.endswith(variation_vrs_digest)
+
+    location_vrs_digest = vrs_obj_dict["location"].pop("digest")
+    location_vrs_id = vrs_obj_dict["location"].pop("id")
+    assert location_vrs_id == f"ga4gh:SL.{location_vrs_digest}"
 
 
 def assertion_checks(normalize_response, test_variation, check_vrs_id=False):
     """Check that normalize_response and test_variation are equal."""
     actual = normalize_response.variation.model_dump(exclude_none=True)
     if not check_vrs_id:
-        assert actual.pop("id").startswith(("ga4gh:VA.", "ga4gh:CX", "ga4gh:CN."))
-        assert actual["location"].pop("id").startswith("ga4gh:SL.")
+        _vrs_id_and_digest_existence_checks(actual)
 
     expected = test_variation.copy().model_dump(exclude_none=True)
     if not check_vrs_id:
-        _delete_id(expected)
-        _delete_id(expected["location"])
+        _delete_id_and_digest(expected)
+        _delete_id_and_digest(expected["location"])
 
     assert actual == expected, "variation"
 
@@ -555,13 +592,12 @@ def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False):
         prefix = "ga4gh:CN."
 
     if not check_vrs_id:
-        assert actual.pop("id").startswith(prefix)
-        assert actual["location"].pop("id").startswith("ga4gh:SL.")
+        _vrs_id_and_digest_existence_checks(actual, prefix=prefix)
 
     expected = test_fixture.copy().model_dump(exclude_none=True)
     if not check_vrs_id:
-        _delete_id(expected)
-        _delete_id(expected["location"])
+        _delete_id_and_digest(expected)
+        _delete_id_and_digest(expected["location"])
 
     assert actual == expected
     assert resp.warnings == []

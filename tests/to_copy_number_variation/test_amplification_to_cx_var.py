@@ -9,11 +9,11 @@ def kit_amplification():
     """Create test fixture for KIT amplification"""
     params = {
         "type": "CopyNumberChange",
-        "id": "ga4gh:CX.wQv1KnYyhMd1aKoXFrOVzT3rMNvo0OIS",
+        "id": "ga4gh:CX.8ENbdAlnf3hK6681-74YhcnfD-J6WQbN",
         "copyChange": "efo:0030072",
         "location": {
             "type": "SequenceLocation",
-            "id": "ga4gh:SL.5UgZnBz5pAVUWzNMyC1YJBeVnAA_DGUE",
+            "id": "ga4gh:SL.2xCHxtZBqOXxl4W4ACxq9Um4FqcqZKxL",
             "sequenceReference": {
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.iy7Zfceb5_VGtTQzJ-v5JpPbpeifHD_V",

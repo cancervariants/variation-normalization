@@ -450,10 +450,8 @@ def gnomad_vcf_genomic_delins3():
             "type": "SequenceLocation",
         },
         "state": {
-            "length": 26,
-            "repeatSubunitLength": 24,
             "sequence": "GGCAGCGCATAAAGCGCATTCTCCGG",
-            "type": "ReferenceLengthExpression",
+            "type": "LiteralSequenceExpression",
         },
         "type": "Allele",
     }
@@ -930,28 +928,31 @@ async def test_no_matches(test_handler):
 async def test_service_meta():
     """Test that service meta info populates correctly."""
     response = await normalize_get_response("BRAF v600e", "default")
-    service_meta = response.service_meta_
-    assert service_meta.name == "variation-normalizer"
-    assert service_meta.version
-    assert isinstance(service_meta.response_datetime, datetime)
+    service_meta = response["service_meta_"]
+    assert service_meta["name"] == "variation-normalizer"
+    assert service_meta["version"]
+    assert isinstance(service_meta["response_datetime"], datetime)
     assert (
-        service_meta.url == "https://github.com/cancervariants/variation-normalization"
+        service_meta["url"]
+        == "https://github.com/cancervariants/variation-normalization"
     )
 
     response = await normalize_get_response("this-wont-normalize", "default")
-    service_meta = response.service_meta_
-    assert service_meta.name == "variation-normalizer"
-    assert service_meta.version
-    assert isinstance(service_meta.response_datetime, datetime)
+    service_meta = response["service_meta_"]
+    assert service_meta["name"] == "variation-normalizer"
+    assert service_meta["version"]
+    assert isinstance(service_meta["response_datetime"], datetime)
     assert (
-        service_meta.url == "https://github.com/cancervariants/variation-normalization"
+        service_meta["url"]
+        == "https://github.com/cancervariants/variation-normalization"
     )
 
     response = await to_vrs_get_response("this-wont-normalize")
-    service_meta = response.service_meta_
-    assert service_meta.name == "variation-normalizer"
-    assert service_meta.version
-    assert isinstance(service_meta.response_datetime, datetime)
+    service_meta = response["service_meta_"]
+    assert service_meta["name"] == "variation-normalizer"
+    assert service_meta["version"]
+    assert isinstance(service_meta["response_datetime"], datetime)
     assert (
-        service_meta.url == "https://github.com/cancervariants/variation-normalization"
+        service_meta["url"]
+        == "https://github.com/cancervariants/variation-normalization"
     )
