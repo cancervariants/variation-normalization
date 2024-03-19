@@ -10,6 +10,7 @@ from bioutils.exceptions import BioutilsError
 from cool_seq_tool.schemas import Assembly, ResidueMode
 from fastapi import FastAPI, Query
 from ga4gh.vrs import models
+from ga4gh.vrs.extras.translator import ValidationError as VrsPythonValidationError
 from hgvs.exceptions import HGVSError
 from pydantic import ValidationError
 
@@ -215,16 +216,14 @@ def translate_identifier(
     )
 
 
-from_fmt_descr = (
-    "Format of input variation to translate. Must be one of `beacon`, "
-    "`gnomad`, `hgvs`, or `spdi`"
-)
+from_fmt_descr = "Format of input variation to translate. Must be one of `beacon`, `gnomad`, `hgvs`, or `spdi`. If not provided, will assume the appropriate format."
+require_validation_descr = "If `True` then validation checks must pass in order to return a VRS object. A `ValidationError` will be raised if validation checks fail. If `False` then VRS object will be returned even if validation checks fail. Defaults to `True`."
+rle_seq_limit_descr = "If RLE is set as the new state after normalization, this sets the limit for the length of the `sequence`. To exclude `sequence` from the response, set to 0. For no limit, set to `None`."
 
 
 @app.get(
     "/variation/translate_from",
-    summary="Given variation as beacon, gnomad, hgvs or spdi representation, "
-    "return VRS Allele object using vrs-python's translator class",
+    summary="Given variation as beacon, gnomad, hgvs or spdi representation, return VRS Allele object using VRS-Python's AlleleTranslator class",
     response_description="A response to a validly-formed query.",
     description="Return VRS Allele object",
     tags=[Tag.VRS_PYTHON],
@@ -232,30 +231,49 @@ from_fmt_descr = (
 def vrs_python_translate_from(
     variation: str = Query(
         ...,
-        description="Variation to translate to VRS object."
-        " Must be represented as either beacon, "
-        "gnomad, hgvs, or spdi.",
+        description="Variation to translate to VRS object. Must be represented as either beacon, gnomad, hgvs, or spdi.",
     ),
     fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr),
+    assembly_name: str = Query(
+        "GRCh38",
+        description="Assembly used for `variation`. Only used for beacon and gnomad.",
+    ),
+    require_validation: bool = Query(True, description=require_validation_descr),
+    rle_seq_limit: Optional[int] = Query(50, description=rle_seq_limit_descr),
 ) -> dict:
-    """Given variation query, return VRS Allele object using vrs-python"s translator
-        class
+    """Given variation query, return VRS Allele object.
+    This endpoint exposes vrs-python AlleleTranslator's translate_from method
 
-    :param str variation: Variation to translate to VRS object. Must be represented
-        as either beacon, gnomad, hgvs, or spdi
-    :param Optional[TranslateFromFormat] fmt: Format of variation. If not supplied,
-        vrs-python will infer its format.
+    :param variation: Variation to translate to VRS object. Must be represented as
+        either beacon, gnomad, hgvs, or spdi.
+    :param fmt: Format of input variation to translate. Must be one of `beacon`,
+        `gnomad`, `hgvs`, or `spdi`. If not provided, will assume the appropriate format
+    :param assembly_name: Assembly used for `variation`. Only used for beacon and gnomad
+    :param require_validation: If `True` then validation checks must pass in order to
+        return a VRS object. A `ValidationError` will be raised if validation checks
+        fail. If `False` then VRS object will be returned even if validation checks
+        fail. Defaults to `True`.
+    :param rle_seq_limit: If RLE is set as the new state after normalization, this sets
+        the limit for the length of the `sequence`. To exclude `sequence` from the
+        response, set to 0. For no limit, set to `None`.
     :return: TranslateFromService containing VRS Allele object
     """
     variation_query = unquote(variation.strip())
     warnings = []
     vrs_variation = None
     try:
-        resp = query_handler.vrs_python_tlr.translate_from(variation_query, fmt)
+        resp = query_handler.vrs_python_tlr.translate_from(
+            variation_query,
+            fmt,
+            assembly_name=assembly_name,
+            require_validation=require_validation,
+            rle_seq_limit=rle_seq_limit,
+        )
     except (
         KeyError,
         ValueError,
         ValidationError,
+        VrsPythonValidationError,
     ) as e:
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
