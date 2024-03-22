@@ -1,25 +1,10 @@
 # Variation Normalization
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5894937.svg)](https://doi.org/10.5281/zenodo.5894937)
+[![image](https://img.shields.io/pypi/v/variation-normalizer.svg)](https://pypi.python.org/pypi/variation-normalizer) [![image](https://img.shields.io/pypi/l/variation-normalizer.svg)](https://pypi.python.org/pypi/variation-normalizer) [![image](https://img.shields.io/pypi/pyversions/variation-normalizer.svg)](https://pypi.python.org/pypi/variation-normalizer) [![Actions status](https://github.com/cancervariants/variation-normalization/actions/workflows/checks.yaml/badge.svg)](https://github.com/cancervariants/variation-normalization/actions/checks.yaml)[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5894937.svg)](https://doi.org/10.5281/zenodo.5894937)
 
-Services and guidelines for normalizing variation terms to [VRS](https://vrs.ga4gh.org/en/latest) compatible representations.
-
-Public OpenAPI endpoint: <https://normalize.cancervariants.org/variation>
-
-Installing with pip:
-
-```shell
-pip install variation-normalizer
-```
-
-The variation-normalization repo depends on VRS models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS. The correspondences between packages may be summarized as:
-
-| variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
-| ---- | --- | ---- | --- |
-| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
-| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.8.X | 0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
-
-## About
+<!-- description -->
+The Variation Normalizer parses and translates free-text descriptions of genomic variations into computable objects conforming to the [Variation Representation Specification (VRS)](https://vrs.ga4gh.org/en/latest), enabling consistent and accurate variant harmonization across a diversity of genomic knowledge resources.
+<!-- /description -->
 
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
 
@@ -36,7 +21,33 @@ Variation Normalizer accepts input from GRCh37 or GRCh8 assemblies.
 
 We are working towards adding more types of variations, coordinates, and representations.
 
-### Endpoints
+---
+
+[Live OpenAPI endpoint](https://normalize.cancervariants.org/variation)
+
+---
+
+## Installation
+
+Install from [PyPI](https://pypi.org/project/variation-normalizer):
+
+```shell
+python3 -m pip install variation-normalizer
+```
+
+---
+
+## VRS Versioning
+
+The variation-normalization repo depends on VRS models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS. The correspondences between packages may be summarized as:
+
+| variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
+| ---- | --- | ---- | --- |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
+| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | 0.8.X | 0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
+
+
+### Available Endpoints
 
 #### `/to_vrs`
 
@@ -48,7 +59,7 @@ Returns a VRS Variation aligned to the prioritized transcript. The Variation Nor
 
 If a genomic variation query _is_ given a gene (E.g. `BRAF g.140753336A>T`), the associated cDNA representation will be returned. This is because the gene provides additional strand context. If a genomic variation query is _not_ given a gene, the GRCh38 representation will be returned.
 
-## Developer Instructions
+## Development
 
 Clone the repo:
 
@@ -68,7 +79,7 @@ pipenv shell
 pipenv update && pipenv install --dev
 ```
 
-### Backend Services
+### Required resources
 
 Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
 
@@ -154,11 +165,11 @@ uvicorn variation.main:app --reload
 Next, view the OpenAPI docs on your local machine:
 <http://127.0.0.1:8000/variation>
 
-### Init coding style tests
+### Code QC
 
 Code style is managed by [Ruff](https://docs.astral.sh/ruff/) and checked prior to commit.
 
-Check style with `ruff`:
+To perform formatting and check style:
 
 ```shell
 python3 -m ruff format . && python3 -m ruff check --fix .
