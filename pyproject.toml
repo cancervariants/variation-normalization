@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 requires-python = ">=3.8"
 description = "VICC normalization routine for variations"
@@ -49,7 +50,7 @@ Source = "https://github.com/cancervariants/variation-normalization"
 "Bug Tracker" = "https://github.com/cancervariants/variation-normalization/issues"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
@@ -72,7 +73,8 @@ branch = true
 [tool.ruff]
 src = ["src"]
 
-lint.select = [
+[tool.ruff.lint]
+select = [
   "F",  # https://docs.astral.sh/ruff/rules/#pyflakes-f
   "E", "W",  # https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
   "I",  # https://docs.astral.sh/ruff/rules/#isort-i
@@ -100,8 +102,7 @@ lint.select = [
   "PGH",  # https://docs.astral.sh/ruff/rules/#pygrep-hooks-pgh
   "RUF",  # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
 ]
-
-lint.fixable = [
+fixable = [
   "I",
   "F401",
   "D",
@@ -132,7 +133,7 @@ lint.fixable = [
 # W191 - tab-indentation*
 # PGH003 - blanket-type-ignore
 # *ignored for compatibility with formatter
-lint.ignore = [
+ignore = [
   "ANN101", "ANN003",
   "D203", "D205", "D206", "D213", "D300", "D400", "D415",
   "E111", "E114", "E117", "E501",
