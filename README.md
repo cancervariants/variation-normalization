@@ -6,21 +6,6 @@
 The Variation Normalizer parses and translates free-text descriptions of genomic variations into computable objects conforming to the [Variation Representation Specification (VRS)](https://vrs.ga4gh.org/en/latest), enabling consistent and accurate variant harmonization across a diversity of genomic knowledge resources.
 <!-- /description -->
 
-Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
-
-Variation Normalization is limited to the following types of variants:
-
-* HGVS expressions and text representations (ex: `BRAF V600E`):
-  * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
-  * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
-  * **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
-* gnomAD-style VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
-  * **genomic (g.)**: substitution, deletion, insertion
-
-Variation Normalizer accepts input from GRCh37 or GRCh8 assemblies.
-
-We are working towards adding more types of variations, coordinates, and representations.
-
 ---
 
 [Live OpenAPI endpoint](https://normalize.cancervariants.org/variation)
@@ -37,7 +22,25 @@ python3 -m pip install variation-normalizer
 
 ---
 
-## VRS Versioning
+## Normalization
+
+Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
+
+Variation Normalization is limited to the following types of variants:
+
+* HGVS expressions and text representations (ex: `BRAF V600E`):
+  * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
+  * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
+  * **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
+* gnomAD-style VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
+  * **genomic (g.)**: substitution, deletion, insertion
+
+Variation Normalizer accepts input from GRCh37 or GRCh8 assemblies.
+
+We are working towards adding more types of variations, coordinates, and representations.
+
+
+### VRS Versioning
 
 The variation-normalization repo depends on VRS models, and therefore each variation-normalizer package on PyPI uses a particular version of VRS. The correspondences between packages may be summarized as:
 
