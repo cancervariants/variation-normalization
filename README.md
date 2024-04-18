@@ -220,7 +220,10 @@ abfb8a2bf499: Pull complete
 c987b6c75b9d: Pull complete  
 6cafe4b33812: Pull complete  
 03f7d4217df5: Pull complete  
-Digest: sha256:0390108e54c500f72afe5b187ecfb1eb9ef14f21fdc0af18e819660e7c9430c4 Status: Downloaded newer image for biocommons/seqrepo:latest docker.io/biocommons/seqrepo:latest c.) Once the image is downloaded , Start the container with the command : docker run -net <"name of the network> --name seqrepo biocommons/seqrepo The Name of the network is the network name which was created above. Running the above command will start downloading the sequences file required by Variation Normalizer. By default the volume of this container is sharable. Other containers which are on same network can access it by appending this the docker command: --volumes-from seqrepo where seqrepo is the name of the container.For efficiency , the container can be run in daemon mode or seperate terminal so that other tasks can be performed in parallel.  
+Digest: sha256:0390108e54c500f72afe5b187ecfb1eb9ef14f21fdc0af18e819660e7c9430c4 Status: Downloaded newer image for biocommons/seqrepo:latest docker.io/biocommons/seqrepo:latest  
+ c.) Once the image is downloaded , Start the container with the command :  
+ docker run -net <"name of the network> --name seqrepo biocommons/seqrepo  
+ The Name of the network is the network name which was created above. Running the above command will start downloading the sequences file required by Variation Normalizer. By default the volume of this container is sharable. Other containers which are on same network can access it by appending this to the docker command: --volumes-from seqrepo where seqrepo is the name of the container.For efficiency , the container can be run in daemon mode or seperate terminal so that other tasks can be performed in parallel.  
 
 ## UTA  
 The Postgres UTA instance is another dependancy required for Variation Normalizer. To setup Container for UTA postgres Db instance. Follow the following steps:  
@@ -247,4 +250,5 @@ There is no image hosted on Docker hub for the Variation Normalizer. Hence we ne
 a.) To build the image from the docker file. Run the command from the directory where Docker File is there.  
 command : docker build -t variation-normalization .  
 b.) Once the image is created, Start the container with the command :  
-command : docker run --net <network name> --name variationnormalizer -p 8000:80 --volumes-from seqrepo <"image name">:<"tag name">  
+command : docker run --net <"network name"> --name variationnormalizer -p 8000:80 --volumes-from seqrepo <"image name">:<"tag name">  
+for e.g docker run --net tulip-net --name variationnormalizer -p 80:80 --volumes-from seqrepo -d variation-normalization:latest  
