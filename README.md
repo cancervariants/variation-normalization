@@ -204,46 +204,47 @@ pytest tests/
 ## Docker Setup:  
 This Section deals with setting up of Variation Normalizer via docker. 
 
-The Variation Normalizer depends upon several Modules , therefore its recommended to setup docker containers of these Modules before starting the Variation Normalizer container.Please ensure the target machine( where the Variation Normalizer is to be deployed as docker isntalled in it.Otherwise docker commands wont work.
-To Create Docker network , Please type following command.
-command : docker network create <"name of the network> for e.g we have used "tulip-net"
-Please follow below steps for Docker Setup of Variation Normalizer and its dependant containers.
+The Variation Normalizer depends upon several Modules , therefore its recommended to setup docker containers of these Modules before starting the Variation Normalizer container.Please ensure the target machine( where the Variation Normalizer is to be deployed has docker installed, otherwise docker commands wont work.  
+To Create Docker network , Please type following command.  
+command : docker network create <"name of the network> for e.g we have used "tulip-net"  
+Please follow below steps for Docker Setup of Variation Normalizer and its dependant containers.  
 
-SeqRepo Variation Normalizer depends on SeqRepo database. We need to create docker image for Seqrepo. It is recomended to start first with this image as volume attached to Seqrepo takes time to download and its size is depending upon the version is 10 GB +.
-a.) Pull the image from Docker Hub Repository by typing following command in terminal.
-Command : docker pull biocommons/seqrepo
-b.) This will initiate display the output something like this:
-Using default tag: latest latest: Pulling from biocommons/seqrepo 125a6e411906: Pull complete
-4da135235d92: Pull complete
-abfb8a2bf499: Pull complete
-c987b6c75b9d: Pull complete
-6cafe4b33812: Pull complete
-03f7d4217df5: Pull complete
-Digest: sha256:0390108e54c500f72afe5b187ecfb1eb9ef14f21fdc0af18e819660e7c9430c4 Status: Downloaded newer image for biocommons/seqrepo:latest docker.io/biocommons/seqrepo:latest c.) Once the image is downloaded , Start the container with the command : docker run -net <"name of the network> --name seqrepo biocommons/seqrepo The Name of the network is the network name which was created above. Running the above command will start downloading the sequences file required by Variation Normalizer. By default the volume of this container is sharable. Other containers which are on same network can access it by appending this the docker command: --volumes-from seqrepo where seqrepo is the name of the container.For efficiency , the container can be run in daemon mode or seperate terminal so that other tasks can be performed in parallel.
+## SeqRepo  
+Variation Normalizer depends on SeqRepo database. We need to create docker image for Seqrepo. It is recomended to start first with this image as volume attached to Seqrepo takes time to download and its size depending upon the version is 10 GB +.  
+a.) Pull the image from Docker Hub Repository by typing following command in terminal.  
+Command : docker pull biocommons/seqrepo  
+b.) This will initiate display the output something like this:  
+Using default tag: latest latest: Pulling from biocommons/seqrepo 125a6e411906: Pull complete  
+4da135235d92: Pull complete  
+abfb8a2bf499: Pull complete  
+c987b6c75b9d: Pull complete  
+6cafe4b33812: Pull complete  
+03f7d4217df5: Pull complete  
+Digest: sha256:0390108e54c500f72afe5b187ecfb1eb9ef14f21fdc0af18e819660e7c9430c4 Status: Downloaded newer image for biocommons/seqrepo:latest docker.io/biocommons/seqrepo:latest c.) Once the image is downloaded , Start the container with the command : docker run -net <"name of the network> --name seqrepo biocommons/seqrepo The Name of the network is the network name which was created above. Running the above command will start downloading the sequences file required by Variation Normalizer. By default the volume of this container is sharable. Other containers which are on same network can access it by appending this the docker command: --volumes-from seqrepo where seqrepo is the name of the container.For efficiency , the container can be run in daemon mode or seperate terminal so that other tasks can be performed in parallel.  
 
-## UTA
-The Postgres UTA instance is another dependancy required for Variation Normalizer. To setup Container for UTA postgres Db instance. Follow the following steps:
-a.) Pull the image from Docker Hub Repository by typing following command in terminal.
-Set the uta_v env variable by typing command uta_v=<"name of the version>. For eg uta_v=uta_20210129b.
-Command : docker pull biocommons/uta:$uta_v
-b.) Once the image is downnloaded, Start the container with the command :
-docker run 
--d 
--e POSTGRES_PASSWORD=some-password-that-you-make-up 
--v /tmp:/tmp 
--v uta_vol:/var/lib/postgresql/data 
---name $uta_v 
---net=<"name of the network> \
-biocommons/uta:$uta_v
+## UTA  
+The Postgres UTA instance is another dependancy required for Variation Normalizer. To setup Container for UTA postgres Db instance. Follow the following steps:  
+a.) Pull the image from Docker Hub Repository by typing following command in terminal.  
+Set the uta_v env variable by typing command uta_v=<"name of the version>. For eg uta_v=uta_20210129b.  
+Command : docker pull biocommons/uta:$uta_v  
+b.) Once the image is downnloaded, Start the container with the command :  
+docker run  
+-d  
+-e POSTGRES_PASSWORD=some-password-that-you-make-up  
+-v /tmp:/tmp  
+-v uta_vol:/var/lib/postgresql/data  
+--name $uta_v  
+--net=<"name of the network> \  
+biocommons/uta:$uta_v  
 
-## Dynamo db
-The AWS provides docker image for the local instance. The Dynamo DB even though as a local instance requires AWS username and AWS password. We can provide dummy values for these environment variables. These variables have been initialized in the docker file.
-a.) Pull the image from Docker Hub Repository and Start the container with the command in terminal.
-Command : docker run --net tulip-net -d --name dynamodb -p 8001:8001 amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -port 8001
+## Dynamo db  
+The AWS provides docker image for the local instance. The Dynamo DB even though as a local instance requires AWS username and AWS password. We can provide dummy values for these environment variables. These variables have been initialized in the docker file.  
+a.) Pull the image from Docker Hub Repository and Start the container with the command in terminal.  
+Command : docker run --net tulip-net -d --name dynamodb -p 8001:8001 amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -port 8001  
 
-## Variation Normalizer
-There is no image hosted on Docker hub for the Variation Normalizer. Hence we need to build image for Variation Normalizer from the docker File. The Docker File is already there in the repo.
-a.) To build the image from the docker file. Run the command from the directory where Docker File is there.
-command : docker build -t variation-normalization .
-b.) Once the image is created, Start the container with the command :
-command : docker run --net <network name> --name variationnormalizer -p 8000:80 --volumes-from seqrepo <"image name">:<"tag name">
+## Variation Normalizer  
+There is no image hosted on Docker hub for the Variation Normalizer. Hence we need to build image for Variation Normalizer from the docker File. The Docker File is already there in the repo.  
+a.) To build the image from the docker file. Run the command from the directory where Docker File is there.  
+command : docker build -t variation-normalization .  
+b.) Once the image is created, Start the container with the command :  
+command : docker run --net <network name> --name variationnormalizer -p 8000:80 --volumes-from seqrepo <"image name">:<"tag name">  
