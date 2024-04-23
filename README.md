@@ -209,19 +209,10 @@ To create a new Docker network, use the [docker network create](https://docs.doc
 
 ## SeqRepo  
 Variation Normalizer depends on [Biocommons SeqRepo](https://github.com/biocommons/biocommons.seqrepo).  It is recommended to have the image as a volume attached to SeqRepo since the size exceeds 10 GB and can take a while to download.
-a.) Pull the image from Docker Hub Repository by typing following command in terminal.  
-Command : docker pull biocommons/seqrepo  
-b.) This will initiate display the output something like this:  
-Using default tag: latest latest: Pulling from biocommons/seqrepo 125a6e411906: Pull complete  
-4da135235d92: Pull complete  
-abfb8a2bf499: Pull complete  
-c987b6c75b9d: Pull complete  
-6cafe4b33812: Pull complete  
-03f7d4217df5: Pull complete  
-Digest: sha256:0390108e54c500f72afe5b187ecfb1eb9ef14f21fdc0af18e819660e7c9430c4 Status: Downloaded newer image for biocommons/seqrepo:latest docker.io/biocommons/seqrepo:latest  
- c.) Once the image is downloaded , Start the container with the command :  
- docker run -net <"name of the network> --name seqrepo biocommons/seqrepo  
- The Name of the network is the network name which was created above. Running the above command will start downloading the sequences file required by Variation Normalizer. By default the volume of this container is sharable. Other containers which are on same network can access it by appending this to the docker command: --volumes-from seqrepo where seqrepo is the name of the container.For efficiency , the container can be run in daemon mode or seperate terminal so that other tasks can be performed in parallel.  
+1. Pull the image from Docker Hub Repository: 
+
+```shell
+docker pull biocommons/seqrepo
 
 ## UTA  
 The Postgres UTA instance is another dependancy required for Variation Normalizer. To setup Container for UTA postgres Db instance. Follow the following steps:  
