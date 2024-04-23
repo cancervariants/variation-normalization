@@ -208,7 +208,7 @@ The Variation Normalizer depends upon several Modules , therefore its recommende
 To create a new Docker network, use the [docker network create](https://docs.docker.com/reference/cli/docker/network/create/) command. For example, `docker network create tulip-net`
 
 ## SeqRepo  
-Variation Normalizer depends on SeqRepo database. We need to create docker image for Seqrepo. It is recomended to start first with this image as volume attached to Seqrepo takes time to download and its size depending upon the version is 10 GB +.  
+Variation Normalizer depends on [Biocommons SeqRepo](https://github.com/biocommons/biocommons.seqrepo).  It is recommended to have the image as a volume attached to SeqRepo since the size exceeds 10 GB and can take a while to download.
 a.) Pull the image from Docker Hub Repository by typing following command in terminal.  
 Command : docker pull biocommons/seqrepo  
 b.) This will initiate display the output something like this:  
