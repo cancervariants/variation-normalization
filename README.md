@@ -205,9 +205,7 @@ pytest tests/
 This section deals with setting up Variation Normalizer's backend dependencies via Docker. You must have Docker installed for this section. See more [here](https://docs.docker.com/engine/install/).
 
 The Variation Normalizer depends upon several Modules , therefore its recommended to setup docker containers of these Modules before starting the Variation Normalizer container.Please ensure the target machine( where the Variation Normalizer is to be deployed has docker installed, otherwise docker commands wont work.  
-To Create Docker network , Please type following command.  
-command : docker network create <"name of the network> for e.g we have used "tulip-net"  
-Please follow below steps for Docker Setup of Variation Normalizer and its dependant containers.  
+To create a new Docker network, use the [docker network create](https://docs.docker.com/reference/cli/docker/network/create/) command. For example, `docker network create tulip-net`
 
 ## SeqRepo  
 Variation Normalizer depends on SeqRepo database. We need to create docker image for Seqrepo. It is recomended to start first with this image as volume attached to Seqrepo takes time to download and its size depending upon the version is 10 GB +.  
