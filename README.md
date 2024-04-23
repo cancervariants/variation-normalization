@@ -230,7 +230,7 @@ docker run
 biocommons/uta:$uta_v  
 
 ### DynamoDB 
-The AWS provides docker image for the local instance. The Dynamo DB even though as a local instance requires AWS username and AWS password. We can provide dummy values for these environment variables. These variables have been initialized in the docker file.  
+AWS provides a docker image for the local instance. The DynamoDB local instance requires credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`). You can provide dummy values for these if you do not have an AWS account.
 a.) Pull the image from Docker Hub Repository and Start the container with the command in terminal.  
 Command : docker run --net tulip-net -d --name dynamodb -p 8001:8001 amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -port 8001  
 
