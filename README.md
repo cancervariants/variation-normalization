@@ -202,7 +202,7 @@ pytest tests/
 ```
 
 ## Docker Setup:  
-This Section deals with setting up of Variation Normalizer via docker. 
+This section deals with setting up Variation Normalizer's backend dependencies via Docker. You must have Docker installed for this section. See more [here](https://docs.docker.com/engine/install/).
 
 The Variation Normalizer depends upon several Modules , therefore its recommended to setup docker containers of these Modules before starting the Variation Normalizer container.Please ensure the target machine( where the Variation Normalizer is to be deployed has docker installed, otherwise docker commands wont work.  
 To Create Docker network , Please type following command.  
