@@ -200,3 +200,44 @@ From the _root_ directory of the repository:
 ```shell
 pytest tests/
 ```
+
+## Docker Setup:  
+This section deals with setting up Variation Normalizer's backend dependencies via Docker. You must have Docker installed for this section. See more [here](https://docs.docker.com/engine/install/).
+
+To create a new Docker network, use the [docker network create](https://docs.docker.com/reference/cli/docker/network/create/) command. For example, `docker network create tulip-net`
+
+## SeqRepo  
+Variation Normalizer depends on [Biocommons SeqRepo](https://github.com/biocommons/biocommons.seqrepo).  It is recommended to have the image as a volume attached to SeqRepo since the size exceeds 10 GB and can take a while to download.
+1. Pull the image from Docker Hub Repository: 
+
+```shell
+docker pull biocommons/seqrepo
+
+## UTA  
+The Postgres UTA instance is another dependancy required for Variation Normalizer. To setup Container for UTA postgres Db instance. Follow the following steps:  
+a.) Pull the image from Docker Hub Repository by typing following command in terminal.  
+Set the uta_v env variable by typing command uta_v=<"name of the version>. For eg uta_v=uta_20210129b.  
+Command : docker pull biocommons/uta:$uta_v  
+b.) Once the image is downnloaded, Start the container with the command :  
+docker run  
+-d  
+-e POSTGRES_PASSWORD=some-password-that-you-make-up  
+-v /tmp:/tmp  
+-v uta_vol:/var/lib/postgresql/data  
+--name $uta_v  
+--net=<"name of the network> \  
+biocommons/uta:$uta_v  
+
+### DynamoDB 
+AWS provides a docker image for the local instance. The DynamoDB local instance requires credentials (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`). You can provide dummy values for these if you do not have an AWS account.
+1. Pull the image from Docker Hub repository and start the container:
+
+```shell
+docker run --net tulip-net -d --name dynamodb -p 8001:8001 amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -port 8001  
+
+### Running the Dockerfile locally
+
+1. Build the image from the docker file:
+
+```shell
+docker build -t variation-normalization .  
