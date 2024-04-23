@@ -235,10 +235,9 @@ AWS provides a docker image for the local instance. The DynamoDB local instance 
 ```shell
 docker run --net tulip-net -d --name dynamodb -p 8001:8001 amazon/dynamodb-local:1.18.0 -jar DynamoDBLocal.jar -port 8001  
 
-## Variation Normalizer  
-There is no image hosted on Docker hub for the Variation Normalizer. Hence we need to build image for Variation Normalizer from the docker File. The Docker File is already there in the repo.  
-a.) To build the image from the docker file. Run the command from the directory where Docker File is there.  
-command : docker build -t variation-normalization .  
-b.) Once the image is created, Start the container with the command :  
-command : docker run --net <"network name"> --name variationnormalizer -p 8000:80 --volumes-from seqrepo <"image name">:<"tag name">  
-for e.g docker run --net tulip-net --name variationnormalizer -p 80:80 --volumes-from seqrepo -d variation-normalization:latest  
+### Running the Dockerfile locally
+
+1. Build the image from the docker file:
+
+```shell
+docker build -t variation-normalization .  
