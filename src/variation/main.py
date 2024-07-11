@@ -10,7 +10,7 @@ from bioutils.exceptions import BioutilsError
 from cool_seq_tool.schemas import Assembly, ResidueMode
 from fastapi import FastAPI, Query
 from ga4gh.vrs import models
-from ga4gh.vrs.extras.translator import ValidationError as VrsPythonValidationError
+from ga4gh.vrs.dataproxy import DataProxyValidationError
 from hgvs.exceptions import HGVSError
 from pydantic import ValidationError
 
@@ -273,7 +273,7 @@ def vrs_python_translate_from(
         KeyError,
         ValueError,
         ValidationError,
-        VrsPythonValidationError,
+        DataProxyValidationError,
     ) as e:
         warnings.append(f"vrs-python translator raised {type(e).__name__}: {e}")
     except HGVSError as e:
