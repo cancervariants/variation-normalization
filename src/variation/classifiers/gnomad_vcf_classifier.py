@@ -1,4 +1,5 @@
 """A module for the gnomAD VCF Classifier"""
+
 from typing import List, Optional, Union
 
 from variation.classifiers.classifier import Classifier

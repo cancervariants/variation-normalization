@@ -1,4 +1,5 @@
 """Module for to_vrs endpoint response schema."""
+
 from typing import List, Union
 
 from ga4gh.vrs import models

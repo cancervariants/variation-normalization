@@ -1,4 +1,5 @@
 """Module for Translation Response Schema."""
+
 from enum import Enum
 from typing import Dict, Optional
 

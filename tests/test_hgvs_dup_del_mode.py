@@ -1,4 +1,5 @@
 """Module for testing HGVS Dup Del mode."""
+
 import pytest
 from ga4gh.vrs import models
 

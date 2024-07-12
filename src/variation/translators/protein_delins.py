@@ -1,4 +1,5 @@
 """Module for Protein DelIns Translation."""
+
 from typing import List, Optional
 
 from cool_seq_tool.schemas import AnnotationLayer

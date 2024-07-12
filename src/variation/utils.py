@@ -1,4 +1,5 @@
 """Module for general functionality throughout the app"""
+
 import contextlib
 import re
 from typing import Dict, List, Literal, Optional, Tuple, Union

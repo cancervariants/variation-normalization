@@ -1,4 +1,5 @@
 """Module for testing translators"""
+
 from pathlib import Path
 
 import pytest

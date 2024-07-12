@@ -1,4 +1,5 @@
 """Module for testing Amplification to Copy Number Change"""
+
 import pytest
 from ga4gh.vrs import models
 from tests.conftest import cnv_assertion_checks

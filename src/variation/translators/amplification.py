@@ -1,4 +1,5 @@
 """Module for Amplification Translation."""
+
 from typing import List, Optional
 
 from ga4gh.core import ga4gh_identify

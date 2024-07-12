@@ -1,4 +1,5 @@
 """Module for providing methods for handling queries."""
+
 from typing import Optional
 
 from cool_seq_tool.app import CoolSeqTool

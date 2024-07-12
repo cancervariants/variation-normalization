@@ -1,4 +1,5 @@
 """A module for the Cdna Substitution Classifier."""
+
 from typing import List, Optional
 
 from variation.classifiers.classifier import Classifier
