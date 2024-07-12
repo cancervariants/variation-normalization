@@ -165,7 +165,7 @@ ignore = [
 # ARG002 - unused-method-argument
 "tests/*" = ["ANN001", "ANN2", "S101", "B011", "SLF001", "INP001"]
 "src/variation/schemas/*" = ["ANN001", "ANN201", "N805", "S101"]
-"codebuild/*" = ["T201"]
+"codebuild/*" = ["T201", "INP001"]
 "src/variation/validators/*" = ["ARG002"]
 "src/variation/translators/*" = ["ARG002"]
 
