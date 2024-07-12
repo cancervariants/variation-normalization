@@ -28,7 +28,11 @@ def _quiet_upstream_libs() -> None:
 def configure_logging(
     log_level: int = logging.DEBUG, quiet_upstream: bool = True
 ) -> None:
-    """TODO"""
+    """Configure logging.
+
+    :param log_level: global log level to set
+    :param quiet_upstream: if True, turn off debug logging for a selection of libraries
+    """
     log_filename = (
         "/tmp/variation.log"  # noqa: S108
         if "VARIATION_NORM_EB_PROD" in os.environ
