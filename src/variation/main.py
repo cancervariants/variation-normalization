@@ -1,7 +1,10 @@
 """Main application for FastAPI."""
 
 import datetime
+import logging
 import traceback
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from enum import Enum
 from typing import List, Optional, Union
 from urllib.parse import unquote
@@ -15,7 +18,7 @@ from ga4gh.vrs.extras.translator import ValidationError as VrsPythonValidationEr
 from hgvs.exceptions import HGVSError
 from pydantic import ValidationError
 
-from variation import logger
+from variation.log_config import configure_logging
 from variation.query import QueryHandler
 from variation.schemas import ServiceMeta
 from variation.schemas.copy_number_schema import (
@@ -43,6 +46,8 @@ from variation.schemas.vrs_python_translator_schema import (
 )
 from variation.version import __version__
 
+_logger = logging.getLogger(__name__)
+
 
 class Tag(Enum):
     """Define tag names for endpoints"""
@@ -56,6 +61,17 @@ class Tag(Enum):
 
 
 query_handler = QueryHandler()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator:  # noqa: ARG001
+    """Configure FastAPI instance lifespan.
+
+    :param app: FastAPI app instance
+    :return: async context handler
+    """
+    configure_logging()
+    yield
 
 
 app = FastAPI(
@@ -538,7 +554,7 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> dict:
         resp = query_handler.to_copy_number_handler.parsed_to_copy_number(request_body)
     except Exception:
         traceback_resp = traceback.format_exc().splitlines()
-        logger.exception(traceback_resp)
+        _logger.exception(traceback_resp)
 
         return ParsedToCnVarService(
             copy_number_count=None,
@@ -571,7 +587,7 @@ def parsed_to_cx_var(request_body: ParsedToCxVarQuery) -> dict:
         resp = query_handler.to_copy_number_handler.parsed_to_copy_number(request_body)
     except Exception:
         traceback_resp = traceback.format_exc().splitlines()
-        logger.exception(traceback_resp)
+        _logger.exception(traceback_resp)
 
         return ParsedToCxVarService(
             copy_number_count=None,
@@ -665,7 +681,7 @@ async def p_to_c(
             p_ac, p_start_pos, p_end_pos, residue_mode
         )
     except Exception as e:
-        logger.error("Unhandled exception: %s", str(e))
+        _logger.error("Unhandled exception: %s", str(e))
         w = "Unhandled exception. See logs for more information."
         c_data = None
     return ToCdnaService(
@@ -725,7 +741,7 @@ async def c_to_g(
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:
-        logger.error("Unhandled exception: %s", str(e))
+        _logger.error("Unhandled exception: %s", str(e))
         w = "Unhandled exception. See logs for more information."
         g_data = None
     return ToGenomicService(
@@ -779,7 +795,7 @@ async def p_to_g(
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:
-        logger.error("Unhandled exception: %s", str(e))
+        _logger.error("Unhandled exception: %s", str(e))
         w = "Unhandled exception. See logs for more information."
         g_data = None
     return ToGenomicService(
