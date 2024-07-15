@@ -1,6 +1,7 @@
 """Create methods used throughout tests."""
 import asyncio
 import contextlib
+import logging
 
 import pytest
 from cool_seq_tool.app import CoolSeqTool
@@ -12,6 +13,33 @@ from variation.classify import Classify
 from variation.query import QueryHandler
 from variation.tokenize import Tokenize
 from variation.tokenizers import GeneSymbol
+
+
+def pytest_addoption(parser):
+    """Add custom commands to pytest invocation.
+    See https://docs.pytest.org/en/7.1.x/reference/reference.html#parser
+    """
+    parser.addoption(
+        "--verbose-logs",
+        action="store_true",
+        default=False,
+        help="show noisy module logs",
+    )
+
+
+def pytest_configure(config):
+    """Configure pytest setup."""
+    if not config.getoption("--verbose-logs"):
+        logging.getLogger("cool_seq_tool").setLevel(logging.INFO)
+        logging.getLogger("boto3").setLevel(logging.ERROR)
+        logging.getLogger("botocore").setLevel(logging.ERROR)
+        logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
+        logging.getLogger("hgvs.parser").setLevel(logging.INFO)
+        logging.getLogger("biocommons.seqrepo.seqaliasdb.seqaliasdb").setLevel(
+            logging.INFO
+        )
+        logging.getLogger("biocommons.seqrepo.fastadir.fastadir").setLevel(logging.INFO)
+        logging.getLogger("asyncio").setLevel(logging.INFO)
 
 
 @pytest.fixture(scope="session")
