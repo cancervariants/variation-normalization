@@ -1,7 +1,6 @@
 """Module for to_vrs endpoint."""
 
 import datetime
-from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -50,14 +49,14 @@ class ToVRS(VRSRepresentation):
 
     async def get_translations(
         self,
-        valid_results: List[ValidationResult],
-        warnings: List,
-        endpoint_name: Optional[Endpoint] = None,
+        valid_results: list[ValidationResult],
+        warnings: list,
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Tuple[List[TranslationResult], List[str]]:
+    ) -> tuple[list[TranslationResult], list[str]]:
         """Get translation results
 
         :param valid_results: List of valid results for a given input

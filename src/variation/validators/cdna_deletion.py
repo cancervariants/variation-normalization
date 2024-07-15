@@ -1,7 +1,5 @@
 """The module for cDNA Deletion Validation."""
 
-from typing import List
-
 from variation.schemas.classification_response_schema import (
     CdnaDeletionClassification,
     Classification,
@@ -16,8 +14,8 @@ class CdnaDeletion(Validator):
     """The cDNA Deletion Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaDeletionClassification, accessions: List[str]
-    ) -> List[ValidationResult]:
+        self, classification: CdnaDeletionClassification, accessions: list[str]
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -97,8 +95,8 @@ class CdnaDeletion(Validator):
         return classification_type == ClassificationType.CDNA_DELETION
 
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

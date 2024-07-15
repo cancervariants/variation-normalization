@@ -1,7 +1,7 @@
 """Module for Validation."""
 
 from abc import ABC, abstractmethod
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import LiftOver
@@ -38,7 +38,7 @@ class Validator(ABC):
         transcript_mappings: TranscriptMappings,
         uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
-        liftover: LiftOver
+        liftover: LiftOver,
     ) -> None:
         """Initialize the DelIns validator.
 
@@ -57,8 +57,8 @@ class Validator(ABC):
 
     @abstractmethod
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.
@@ -82,8 +82,8 @@ class Validator(ABC):
 
     @abstractmethod
     async def get_valid_invalid_results(
-        self, classification: Classification, accessions: List
-    ) -> List[ValidationResult]:
+        self, classification: Classification, accessions: list
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -91,7 +91,7 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
 
-    async def validate(self, classification: Classification) -> List[ValidationResult]:
+    async def validate(self, classification: Classification) -> list[ValidationResult]:
         """Get list of associated accessions for a classification. Use these accessions
         to perform validation checks (pos exists, accession is valid, reference sequence
         matches expected, etc). Gets list of validation results for a given
@@ -119,7 +119,7 @@ class Validator(ABC):
             ]
         return await self.get_valid_invalid_results(classification, accessions)
 
-    def get_protein_accessions(self, gene_token: GeneToken, errors: List) -> List[str]:
+    def get_protein_accessions(self, gene_token: GeneToken, errors: list) -> list[str]:
         """Get accessions for variations with protein reference sequence.
 
         :param gene_token: Gene token for a classification
@@ -133,7 +133,7 @@ class Validator(ABC):
             )
         return accessions
 
-    def get_cdna_accessions(self, gene_token: GeneToken, errors: List) -> List[str]:
+    def get_cdna_accessions(self, gene_token: GeneToken, errors: list) -> list[str]:
         """Get accessions for variations with cDNA reference sequence.
 
         :param gene_token: Gene token for a classification
@@ -148,8 +148,8 @@ class Validator(ABC):
         return accessions
 
     async def get_genomic_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get genomic RefSeq accessions for variations with genomic reference sequence.
 
         :param classification: Classification for a list of tokens
@@ -166,11 +166,11 @@ class Validator(ABC):
         gene: str,
         alt_ac: str,
         pos0: int,
-        pos1: Optional[int],
-        pos2: Optional[int] = None,
-        pos3: Optional[int] = None,
+        pos1: int | None,
+        pos2: int | None = None,
+        pos3: int | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
 
@@ -230,7 +230,7 @@ class Validator(ABC):
         end_pos: int,
         expected_ref: str,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence.
         This is also in translator, but there is a ticket to have this method be moved
         to cool-seq-tool. Once added, will be removed
@@ -254,7 +254,7 @@ class Validator(ABC):
 
         return err_msg
 
-    async def get_cds_start(self, ac: str) -> Tuple[Optional[int], Optional[str]]:
+    async def get_cds_start(self, ac: str) -> tuple[int | None, str | None]:
         """Get coding start site for accession
 
         :param ac: Accession to get coding start site for
@@ -276,9 +276,9 @@ class Validator(ABC):
         self,
         ac: str,
         start_pos: int,
-        end_pos: Optional[int] = None,
+        end_pos: int | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Validate that accession exists and that position(s) exist on accession
 
         :param ac: Accession
@@ -315,10 +315,10 @@ class Validator(ABC):
     @staticmethod
     def validate_5_prime_to_3_prime(
         pos0: int,
-        pos1: Optional[Union[int, Literal["?"]]],
-        pos2: Optional[Union[int, Literal["?"]]] = None,
-        pos3: Optional[Union[int, Literal["?"]]] = None,
-    ) -> Optional[str]:
+        pos1: int | Literal["?"] | None,
+        pos2: int | Literal["?"] | None = None,
+        pos3: int | Literal["?"] | None = None,
+    ) -> str | None:
         """Validate that positions are unique and listed from 5' to 3'
 
         :param pos0: Position 0
@@ -347,11 +347,9 @@ class Validator(ABC):
 
     def validate_ambiguous_classification(
         self,
-        classification: Union[
-            GenomicDeletionAmbiguousClassification,
-            GenomicDuplicationAmbiguousClassification,
-        ],
-    ) -> Optional[str]:
+        classification: GenomicDeletionAmbiguousClassification
+        | GenomicDuplicationAmbiguousClassification,
+    ) -> str | None:
         """Validate that ambiguous type is supported and that positions are unique and
         listed from 5' to 3'
 
@@ -378,15 +376,13 @@ class Validator(ABC):
 
     def validate_protein_hgvs_classification(
         self,
-        classification: Union[
-            ProteinDelInsClassification,
-            ProteinDeletionClassification,
-            ProteinInsertionClassification,
-            ProteinReferenceAgreeClassification,
-            ProteinStopGainClassification,
-            ProteinSubstitutionClassification,
-        ],
-    ) -> List[str]:
+        classification: ProteinDelInsClassification
+        | ProteinDeletionClassification
+        | ProteinInsertionClassification
+        | ProteinReferenceAgreeClassification
+        | ProteinStopGainClassification
+        | ProteinSubstitutionClassification,
+    ) -> list[str]:
         """Validate protein HGVS classification
 
         :param classification: Classification

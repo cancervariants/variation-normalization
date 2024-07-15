@@ -6,7 +6,6 @@ import traceback
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from enum import Enum
-from typing import List, Optional, Union
 from urllib.parse import unquote
 
 import pkg_resources
@@ -18,6 +17,7 @@ from ga4gh.vrs.dataproxy import DataProxyValidationError
 from hgvs.exceptions import HGVSError
 from pydantic import ValidationError
 
+from variation import __version__
 from variation.log_config import configure_logging
 from variation.query import QueryHandler
 from variation.schemas import ServiceMeta
@@ -44,7 +44,6 @@ from variation.schemas.vrs_python_translator_schema import (
     TranslateToService,
     VrsPythonMeta,
 )
-from variation.version import __version__
 
 _logger = logging.getLogger(__name__)
 
@@ -152,14 +151,14 @@ hgvs_dup_del_mode_decsr = (
 )
 async def normalize(
     q: str = Query(..., description=q_description),
-    hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = Query(
+    hgvs_dup_del_mode: HGVSDupDelModeOption | None = Query(
         HGVSDupDelModeOption.DEFAULT, description=hgvs_dup_del_mode_decsr
     ),
-    baseline_copies: Optional[int] = Query(
+    baseline_copies: int | None = Query(
         None,
         description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",
     ),
-    copy_change: Optional[models.CopyChange] = Query(
+    copy_change: models.CopyChange | None = Query(
         None,
         description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
     ),
@@ -199,7 +198,7 @@ async def normalize(
 )
 def translate_identifier(
     identifier: str = Query(..., description="The identifier to find aliases for"),
-    target_namespaces: Optional[str] = Query(
+    target_namespaces: str | None = Query(
         None, description="The namespaces of the aliases, separated by commas"
     ),
 ) -> TranslateIdentifierService:
@@ -250,13 +249,13 @@ def vrs_python_translate_from(
         ...,
         description="Variation to translate to VRS object. Must be represented as either beacon, gnomad, hgvs, or spdi.",
     ),
-    fmt: Optional[TranslateFromFormat] = Query(None, description=from_fmt_descr),
+    fmt: TranslateFromFormat | None = Query(None, description=from_fmt_descr),
     assembly_name: str = Query(
         "GRCh38",
         description="Assembly used for `variation`. Only used for beacon and gnomad.",
     ),
     require_validation: bool = Query(True, description=require_validation_descr),
-    rle_seq_limit: Optional[int] = Query(50, description=rle_seq_limit_descr),
+    rle_seq_limit: int | None = Query(50, description=rle_seq_limit_descr),
 ) -> dict:
     """Given variation query, return VRS Allele object.
     This endpoint exposes vrs-python AlleleTranslator's translate_from method
@@ -352,8 +351,8 @@ hgvs_dup_del_mode_decsr = (
 
 
 def _get_allele(
-    request_body: Union[TranslateToQuery, TranslateToHGVSQuery], warnings: List
-) -> Optional[models.Allele]:
+    request_body: TranslateToQuery | TranslateToHGVSQuery, warnings: list
+) -> models.Allele | None:
     """Return VRS allele object from request body. `warnings` will get updated if
     exceptions are raised
 
@@ -484,7 +483,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> dict:
 )
 async def hgvs_to_copy_number_count(
     hgvs_expr: str = Query(..., description="Variation query"),
-    baseline_copies: Optional[int] = Query(
+    baseline_copies: int | None = Query(
         ..., description="Baseline copies for duplication"
     ),
     do_liftover: bool = Query(
@@ -619,11 +618,9 @@ amplification_to_cx_var_descr = (
 )
 def amplification_to_cx_var(
     gene: str = Query(..., description="Gene query"),
-    sequence_id: Optional[str] = Query(None, description="Sequence identifier"),
-    start: Optional[int] = Query(
-        None, description="Start position as residue coordinate"
-    ),
-    end: Optional[int] = Query(None, description="End position as residue coordinate"),
+    sequence_id: str | None = Query(None, description="Sequence identifier"),
+    start: int | None = Query(None, description="Start position as residue coordinate"),
+    end: int | None = Query(None, description="End position as residue coordinate"),
 ) -> dict:
     """Given amplification query, return Copy Number Change Variation
     Parameter priority:
@@ -708,7 +705,7 @@ async def c_to_g(
     c_ac: str = Query(..., description="cDNA RefSeq accession"),
     c_start_pos: int = Query(..., description="cDNA start position for codon"),
     c_end_pos: int = Query(..., description="cDNA end position for codon"),
-    cds_start: Optional[int] = Query(
+    cds_start: int | None = Query(
         None, description="CDS start site. If not provided, this will be computed."
     ),
     residue_mode: ResidueMode = Query(

@@ -1,7 +1,5 @@
 """A module for the Reference Agree Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     Nomenclature,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class ProteinReferenceAgreeClassifier(Classifier):
     """The Reference Agree Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the protein reference agree
         classification.
 
@@ -22,7 +20,7 @@ class ProteinReferenceAgreeClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.PROTEIN_REFERENCE_AGREE]]
 
-    def match(self, tokens: List[Token]) -> ProteinReferenceAgreeClassification:
+    def match(self, tokens: list[Token]) -> ProteinReferenceAgreeClassification:
         """Return the protein reference agree classification from a list of token
         matches.
 

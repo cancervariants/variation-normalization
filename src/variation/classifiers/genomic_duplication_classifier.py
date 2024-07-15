@@ -1,7 +1,5 @@
 """A module for the Genomic Duplication Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDuplicationClassification,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class GenomicDuplicationClassifier(Classifier):
     """The Genomic Duplication Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the genomic duplication classification.
 
         :return: List of list of tokens, where order matters, that represent a genomic
@@ -21,7 +19,7 @@ class GenomicDuplicationClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.GENOMIC_DUPLICATION]]
 
-    def match(self, tokens: List[Token]) -> GenomicDuplicationClassification:
+    def match(self, tokens: list[Token]) -> GenomicDuplicationClassification:
         """Return the genomic duplication classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a

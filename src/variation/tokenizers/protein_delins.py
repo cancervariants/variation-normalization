@@ -1,7 +1,5 @@
 """A module for Protein DelIns Tokenization Class."""
 
-from typing import Optional
-
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
 from variation.regex import PROTEIN_DELINS
@@ -12,7 +10,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class ProteinDelIns(Tokenizer):
     """Class for tokenizing DelIns on the protein reference sequence."""
 
-    def match(self, input_string: str) -> Optional[ProteinDelInsToken]:
+    def match(self, input_string: str) -> ProteinDelInsToken | None:
         """Return a ProteinDelInsToken match if one exists.
 
         :param input_string: The input string to match

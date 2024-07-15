@@ -1,7 +1,6 @@
 """Module for Translation Response Schema."""
 
 from enum import Enum
-from typing import Dict, Optional
 
 from cool_seq_tool.schemas import TranscriptPriority
 from pydantic import BaseModel, StrictStr
@@ -28,8 +27,8 @@ AC_PRIORITY_LABELS = list(VrsSeqLocAcStatus.__members__.values())
 class TranslationResult(BaseModel):
     """Translation Result"""
 
-    vrs_variation: Optional[Dict] = {}
-    vrs_seq_loc_ac: Optional[StrictStr] = None
+    vrs_variation: dict | None = {}
+    vrs_seq_loc_ac: StrictStr | None = None
     vrs_seq_loc_ac_status: VrsSeqLocAcStatus = VrsSeqLocAcStatus.NA
-    og_ac: Optional[StrictStr] = None
+    og_ac: StrictStr | None = None
     validation_result: ValidationResult

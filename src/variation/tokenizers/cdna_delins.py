@@ -1,7 +1,5 @@
 """A module for Cdna Deletion Tokenization."""
 
-from typing import Optional
-
 from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.regex import CDNA_GENOMIC_DELINS
@@ -12,7 +10,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class CdnaDelIns(Tokenizer):
     """Class for tokenizing delins at the cdna reference sequence."""
 
-    def match(self, input_string: str) -> Optional[CdnaDelInsToken]:
+    def match(self, input_string: str) -> CdnaDelInsToken | None:
         """Return a CdnaDelInsToken match if one exists.
 
         :param input_string: The input string to match

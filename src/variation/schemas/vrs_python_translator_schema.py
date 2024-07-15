@@ -1,7 +1,7 @@
 """Module for vrs-python translator endpoint response schema"""
 
 from enum import Enum
-from typing import List, Literal, Optional, Union
+from typing import Literal
 
 from ga4gh.vrs import models
 from pydantic import BaseModel, ConfigDict, StrictStr
@@ -71,7 +71,7 @@ class TranslateToHGVSQuery(BaseModel):
     """Query fields for Translate To HGVS Service"""
 
     variation: models.Allele
-    namespace: Optional[str] = None
+    namespace: str | None = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -103,14 +103,14 @@ class TranslateFromQuery(BaseModel):
     """Query fields for Translate From Service"""
 
     variation: StrictStr
-    fmt: Optional[TranslateFromFormat] = None
+    fmt: TranslateFromFormat | None = None
 
 
 class TranslateService(BaseModel):
     """Response schema for vrs-python translator endpoints"""
 
-    query: Union[TranslateFromQuery, TranslateToQuery, TranslateToHGVSQuery]
-    warnings: List[StrictStr] = []
+    query: TranslateFromQuery | TranslateToQuery | TranslateToHGVSQuery
+    warnings: list[StrictStr] = []
     service_meta_: ServiceMeta
     vrs_python_meta_: VrsPythonMeta
 
@@ -118,10 +118,10 @@ class TranslateService(BaseModel):
 class TranslateFromService(TranslateService):
     """Response schema for vrs-python translate from endpoint"""
 
-    variation: Optional[models.Allele] = None
+    variation: models.Allele | None = None
 
 
 class TranslateToService(TranslateService):
     """Response schema for vrs-python translate to endpoint"""
 
-    variations: List[StrictStr]
+    variations: list[StrictStr]

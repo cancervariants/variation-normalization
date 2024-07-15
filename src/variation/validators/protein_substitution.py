@@ -1,7 +1,5 @@
 """The module for Protein Substitution Validation."""
 
-from typing import List
-
 from variation.schemas.classification_response_schema import (
     Classification,
     ClassificationType,
@@ -16,8 +14,8 @@ class ProteinSubstitution(Validator):
     """The Protein Substitution Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: ProteinSubstitutionClassification, accessions: List[str]
-    ) -> List[ValidationResult]:
+        self, classification: ProteinSubstitutionClassification, accessions: list[str]
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -69,8 +67,8 @@ class ProteinSubstitution(Validator):
         return classification_type == ClassificationType.PROTEIN_SUBSTITUTION
 
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

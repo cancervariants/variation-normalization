@@ -2,7 +2,7 @@
 
 import contextlib
 import re
-from typing import Dict, List, Literal, Optional, Tuple, Union
+from typing import Literal
 
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
@@ -14,7 +14,7 @@ from variation.schemas.classification_response_schema import AmbiguousType
 from variation.schemas.service_schema import ClinVarAssembly
 
 
-def update_warnings_for_no_resp(label: str, warnings: List[str]) -> None:
+def update_warnings_for_no_resp(label: str, warnings: list[str]) -> None:
     """Mutate `warnings` when unable to return a response
 
     :param label: Initial input query
@@ -25,8 +25,8 @@ def update_warnings_for_no_resp(label: str, warnings: List[str]) -> None:
 
 
 def _get_priority_sequence_location(
-    locations: List[Dict], seqrepo_access: SeqRepoAccess
-) -> Optional[Dict]:
+    locations: list[dict], seqrepo_access: SeqRepoAccess
+) -> dict | None:
     """Get prioritized sequence location from list of locations
     Will prioritize GRCh8 over GRCh37. Will also only support chromosomes.
 
@@ -66,7 +66,7 @@ def _get_priority_sequence_location(
 
 def get_priority_sequence_location(
     gene: domain_models.Gene, seqrepo_access: SeqRepoAccess
-) -> Optional[Dict]:
+) -> dict | None:
     """Get prioritized sequence location from a gene
     Will prioritize NCBI and then Ensembl. GRCh38 will be chosen over GRCh37.
 
@@ -86,7 +86,7 @@ def get_priority_sequence_location(
     return ncbi_loc or ensembl_loc
 
 
-def get_aa1_codes(aa: str) -> Optional[str]:
+def get_aa1_codes(aa: str) -> str | None:
     """Get 1 letter AA codes given possible AA string (either 1 or 3 letter).
     Will also validate the input AA string.
 
@@ -112,12 +112,12 @@ def get_aa1_codes(aa: str) -> Optional[str]:
 
 
 def get_ambiguous_type(
-    pos0: Union[int, Literal["?"]],
-    pos1: Optional[Union[int, Literal["?"]]],
-    pos2: Union[int, Literal["?"]],
-    pos3: Optional[Union[int, Literal["?"]]],
+    pos0: int | Literal["?"],
+    pos1: int | Literal["?"] | None,
+    pos2: int | Literal["?"],
+    pos3: int | Literal["?"] | None,
     ambiguous_regex_type: AmbiguousRegexType,
-) -> Optional[AmbiguousType]:
+) -> AmbiguousType | None:
     """Get the ambiguous type given positions and regex used
 
     :param pos0: Position 0
@@ -163,7 +163,7 @@ def get_ambiguous_type(
 
 def get_assembly(
     seqrepo_access: SeqRepoAccess, alt_ac: str
-) -> Tuple[Optional[ClinVarAssembly], Optional[str]]:
+) -> tuple[ClinVarAssembly | None, str | None]:
     """Get GRCh assembly for given genomic RefSeq accession
 
     :param seqrepo_access: Access to SeqRepo client
@@ -189,8 +189,8 @@ def get_assembly(
 
 
 def get_refget_accession(
-    seqrepo_access: SeqRepoAccess, alias: str, errors: List[str]
-) -> Optional[str]:
+    seqrepo_access: SeqRepoAccess, alias: str, errors: list[str]
+) -> str | None:
     """Get refget accession for a given alias
 
     :param seqrepo_access: Access to SeqRepo client

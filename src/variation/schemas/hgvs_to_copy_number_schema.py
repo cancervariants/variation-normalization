@@ -1,7 +1,5 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
 
-from typing import Optional
-
 from ga4gh.vrs import models
 from pydantic import ConfigDict, StrictStr
 
@@ -13,7 +11,7 @@ class HgvsToCopyNumberCountService(ServiceResponse):
     """A response for translating HGVS to copy number count."""
 
     hgvs_expr: StrictStr
-    copy_number_count: Optional[models.CopyNumberCount] = None
+    copy_number_count: models.CopyNumberCount | None = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -51,7 +49,7 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
     """A response for translating HGVS to copy number change."""
 
     hgvs_expr: StrictStr
-    copy_number_change: Optional[models.CopyNumberChange] = None
+    copy_number_change: models.CopyNumberChange | None = None
 
     model_config = ConfigDict(
         json_schema_extra={

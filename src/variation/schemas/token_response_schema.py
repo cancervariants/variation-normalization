@@ -1,7 +1,7 @@
 """Module for schemas related to tokenization."""
 
 from enum import Enum
-from typing import Literal, Optional
+from typing import Literal
 
 from cool_seq_tool.schemas import AnnotationLayer
 from ga4gh.core import domain_models
@@ -255,4 +255,4 @@ class GeneToken(Token):
 
     matched_value: StrictStr
     token_type: Literal[TokenType.GENE] = TokenType.GENE
-    gene: Optional[domain_models.Gene] = None
+    gene: domain_models.Gene | None = None

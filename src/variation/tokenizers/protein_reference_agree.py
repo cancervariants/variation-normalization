@@ -1,7 +1,6 @@
 """A module for Reference Agree Tokenization."""
 
 import contextlib
-from typing import Optional
 
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
@@ -13,7 +12,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class ProteinReferenceAgree(Tokenizer):
     """Class for tokenizing Reference Agree on protein reference sequence."""
 
-    def match(self, input_string: str) -> Optional[ProteinReferenceAgreeToken]:
+    def match(self, input_string: str) -> ProteinReferenceAgreeToken | None:
         """Return a ProteinReferenceAgreeToken match if one exists.
 
         :param str input_string: The input string to match

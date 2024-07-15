@@ -1,7 +1,5 @@
 """A module for the Genomic Deletion Ambiguous Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDeletionAmbiguousClassification,
@@ -14,7 +12,7 @@ from variation.utils import get_ambiguous_type
 class GenomicDeletionAmbiguousClassifier(Classifier):
     """The Genomic Deletion Ambiguous Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the genomic ambiguous deletion
         classification.
 
@@ -23,7 +21,7 @@ class GenomicDeletionAmbiguousClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.GENOMIC_DELETION_AMBIGUOUS]]
 
-    def match(self, tokens: List[Token]) -> GenomicDeletionAmbiguousClassification:
+    def match(self, tokens: list[Token]) -> GenomicDeletionAmbiguousClassification:
         """Return the genomic ambiguous deletion classification from a list of token
         matches.
 

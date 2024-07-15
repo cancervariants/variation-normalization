@@ -1,7 +1,5 @@
 """A module for the Protein Substitution Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     Nomenclature,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class ProteinSubstitutionClassifier(Classifier):
     """The ProteinSubstitution Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the protein substitution
         classification.
 
@@ -22,7 +20,7 @@ class ProteinSubstitutionClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.PROTEIN_SUBSTITUTION]]
 
-    def match(self, tokens: List[Token]) -> ProteinSubstitutionClassification:
+    def match(self, tokens: list[Token]) -> ProteinSubstitutionClassification:
         """Return the protein substitution classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a
