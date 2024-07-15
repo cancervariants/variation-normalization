@@ -74,6 +74,9 @@ branch = true
 src = ["src"]
 
 [tool.ruff.lint]
+exclude = [
+    "codebuild/*"
+]
 select = [
   "F",  # https://docs.astral.sh/ruff/rules/#pyflakes-f
   "E", "W",  # https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
