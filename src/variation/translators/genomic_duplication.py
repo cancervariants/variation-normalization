@@ -1,4 +1,5 @@
 """Module for Genomic Duplication Translation."""
+
 from variation.schemas.classification_response_schema import ClassificationType
 from variation.translators.genomic_del_dup_base import GenomicDelDupTranslator
 

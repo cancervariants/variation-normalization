@@ -1,4 +1,5 @@
 """The module for Genomic Substitution Validation."""
+
 from typing import List
 
 from variation.schemas.classification_response_schema import (

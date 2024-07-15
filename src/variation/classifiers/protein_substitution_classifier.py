@@ -1,4 +1,5 @@
 """A module for the Protein Substitution Classifier."""
+
 from typing import List
 
 from variation.classifiers.classifier import Classifier

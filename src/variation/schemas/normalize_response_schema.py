@@ -1,4 +1,5 @@
 """Module for normalize endpoint response schema."""
+
 from datetime import datetime
 from enum import Enum
 from typing import List, Literal, Optional, Union
@@ -26,9 +27,9 @@ class ServiceMeta(BaseModel):
     name: Literal["variation-normalizer"] = "variation-normalizer"
     version: StrictStr
     response_datetime: datetime
-    url: Literal[
+    url: Literal["https://github.com/cancervariants/variation-normalization"] = (
         "https://github.com/cancervariants/variation-normalization"
-    ] = "https://github.com/cancervariants/variation-normalization"
+    )
 
     model_config = ConfigDict(
         json_schema_extra={
