@@ -105,20 +105,20 @@ From the _root_ directory:
 pip install seqrepo
 sudo mkdir /usr/local/share/seqrepo
 sudo chown $USER /usr/local/share/seqrepo
-seqrepo pull -i 2021-01-29  # Replace with latest version using `seqrepo list-remote-instances` if outdated
+seqrepo pull -i 2024-02-20/  # Replace with latest version using `seqrepo list-remote-instances` if outdated
 ```
 
 If you get an error similar to the one below:
 
 ```shell
-PermissionError: [Error 13] Permission denied: '/usr/local/share/seqrepo/2021-01-29._fkuefgd' -> '/usr/local/share/seqrepo/2021-01-29'
+PermissionError: [Error 13] Permission denied: '/usr/local/share/seqrepo/2024-02-20/._fkuefgd' -> '/usr/local/share/seqrepo/2024-02-20/'
 ```
 
 You will want to do the following:\
 (*Might not be ._fkuefgd, so replace with your error message path*)
 
 ```shell
-sudo mv /usr/local/share/seqrepo/2021-01-29._fkuefgd /usr/local/share/seqrepo/2021-01-29
+sudo mv /usr/local/share/seqrepo/2024-02-20._fkuefgd /usr/local/share/seqrepo/2024-02-20
 exit
 ```
 
