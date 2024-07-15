@@ -4,7 +4,8 @@ from abc import ABC, abstractmethod
 from typing import List, Literal, Optional, Tuple, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.mappers import LiftOver
+from cool_seq_tool.schemas import Assembly, ResidueMode
 from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import SourceName
@@ -37,6 +38,7 @@ class Validator(ABC):
         transcript_mappings: TranscriptMappings,
         uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
+        liftover: LiftOver
     ) -> None:
         """Initialize the DelIns validator.
 
@@ -44,12 +46,14 @@ class Validator(ABC):
         :param transcript_mappings: Access to transcript mappings
         :param uta: Access to UTA queries
         :param gene_normalizer: Access to gene-normalizer
+        :param liftover: Instance to provide mapping between human genome assemblies
         """
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self.uta = uta
         self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
         self.gene_normalizer = gene_normalizer
+        self.liftover = liftover
 
     @abstractmethod
     async def get_accessions(
@@ -200,13 +204,12 @@ class Validator(ABC):
             chromosome, assembly = assembly
             for key in gene_start_end:
                 gene_pos = gene_start_end[key]
-                gene_pos_liftover = self.uta.liftover_38_to_37.convert_coordinate(
-                    chromosome, gene_pos
+                gene_pos_liftover = self.liftover.get_liftover(
+                    chromosome, gene_pos, Assembly.GRCH37
                 )
                 if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
                     return f"{gene_pos} does not exist on {chromosome}"
-
-                gene_start_end[key] = gene_pos_liftover[0][1]
+                gene_start_end[key] = gene_pos_liftover[1]
 
         gene_start = gene_start_end["start"]
         gene_end = gene_start_end["end"]

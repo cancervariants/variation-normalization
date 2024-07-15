@@ -46,8 +46,9 @@ class QueryHandler:
         mane_transcript = cool_seq_tool.mane_transcript
         transcript_mappings = cool_seq_tool.transcript_mappings
         self.vrs_python_tlr = VrsPythonTranslator(data_proxy=self.seqrepo_access)
+        liftover = cool_seq_tool.liftover
         validator = Validate(
-            self.seqrepo_access, transcript_mappings, uta_db, gene_query_handler
+            self.seqrepo_access, transcript_mappings, uta_db, gene_query_handler, liftover
         )
         hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         translator = Translate(
@@ -70,5 +71,5 @@ class QueryHandler:
             *[*to_vrs_params, mane_transcript, gene_query_handler]
         )
         self.to_copy_number_handler = ToCopyNumberVariation(
-            *[*to_vrs_params, gene_query_handler, uta_db]
+            *[*to_vrs_params, gene_query_handler, uta_db, liftover]
         )
