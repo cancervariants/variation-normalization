@@ -1,4 +1,5 @@
 """A module for tokenization."""
+
 from typing import List
 
 from variation.schemas.token_response_schema import Token, TokenType

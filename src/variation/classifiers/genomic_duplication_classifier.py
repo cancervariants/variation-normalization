@@ -1,4 +1,5 @@
 """A module for the Genomic Duplication Classifier."""
+
 from typing import List
 
 from variation.classifiers.classifier import Classifier

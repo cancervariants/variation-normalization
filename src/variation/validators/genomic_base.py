@@ -1,4 +1,5 @@
 """Module for Genomic Validation methods."""
+
 import logging
 from typing import List, Optional
 
@@ -10,8 +11,7 @@ from variation.schemas.classification_response_schema import (
     Nomenclature,
 )
 
-logger = logging.getLogger("variation")
-logger.setLevel(logging.DEBUG)
+_logger = logging.getLogger(__name__)
 
 
 class GenomicBase:
@@ -58,7 +58,7 @@ class GenomicBase:
                 identifier
             )
         except KeyError:
-            logger.warning("Data Proxy unable to get metadata for %s", identifier)
+            _logger.warning("Data Proxy unable to get metadata for %s", identifier)
         else:
             aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
             if aliases:

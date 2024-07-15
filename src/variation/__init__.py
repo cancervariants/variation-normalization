@@ -1,4 +1,5 @@
 """The Variation Normalization package."""
+
 from importlib.metadata import PackageNotFoundError, version
 
 try:

@@ -1,4 +1,5 @@
 """Module containing schemas used in HGVS To Copy Number endpoints"""
+
 from typing import Optional
 
 from ga4gh.vrs import models
