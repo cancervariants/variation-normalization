@@ -1,7 +1,5 @@
 """A module for Cdna Substitution Tokenization."""
 
-from typing import Optional
-
 from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.regex import CDNA_GENOMIC_SUBSTITUTION
@@ -12,7 +10,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class CdnaSubstitution(Tokenizer):
     """Class for tokenizing Substitution at the cdna reference sequence."""
 
-    def match(self, input_string: str) -> Optional[CdnaSubstitutionToken]:
+    def match(self, input_string: str) -> CdnaSubstitutionToken | None:
         """Return a CdnaSubstitutionToken match if one exists.
 
         :param input_string: The input string to match

@@ -1,7 +1,5 @@
 """A module for Genomic Deletion Tokenization."""
 
-from typing import Optional
-
 from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.regex import (
@@ -21,7 +19,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class GenomicDeletion(Tokenizer):
     """Class for tokenizing Deletion at the genomic reference sequence."""
 
-    def match(self, input_string: str) -> Optional[GenomicDeletionToken]:
+    def match(self, input_string: str) -> GenomicDeletionToken | None:
         """Return a GenomicDeletionToken match if one exists.
 
         :param input_string: The input string to match

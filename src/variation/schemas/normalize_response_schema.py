@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Literal, Optional, Union
+from typing import Literal
 
 from ga4gh.vrs import models
 from pydantic import BaseModel, ConfigDict, StrictStr, model_validator
@@ -46,7 +46,7 @@ class ServiceMeta(BaseModel):
 class ServiceResponse(BaseModel):
     """Base response model for services"""
 
-    warnings: List[StrictStr] = []
+    warnings: list[StrictStr] = []
     service_meta_: ServiceMeta
 
     @model_validator(mode="after")
@@ -74,9 +74,9 @@ class NormalizeService(ServiceResponse):
     """A response to normalizing a variation to a single GA4GH VRS Variation"""
 
     variation_query: StrictStr
-    variation: Optional[
-        Union[models.Allele, models.CopyNumberCount, models.CopyNumberChange]
-    ] = None
+    variation: (
+        models.Allele | models.CopyNumberCount | models.CopyNumberChange | None
+    ) = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -114,7 +114,7 @@ class TranslateIdentifierService(ServiceResponse):
     """A response to translating identifiers."""
 
     identifier_query: StrictStr
-    aliases: List[StrictStr] = []
+    aliases: list[StrictStr] = []
 
     model_config = ConfigDict(
         json_schema_extra={

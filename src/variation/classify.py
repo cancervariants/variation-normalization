@@ -1,6 +1,6 @@
 """Module for classification."""
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar
 
 from variation.classifiers import (
     AmplificationClassifier,
@@ -36,7 +36,7 @@ class Classify:
 
     hgvs_classifier = HgvsClassifier()
     gnomad_vcf_classifier = GnomadVcfClassifier()
-    classifiers: ClassVar[List[Classifier]] = [
+    classifiers: ClassVar[list[Classifier]] = [
         ProteinDelInsClassifier(),
         ProteinSubstitutionClassifier(),
         ProteinStopGainClassifier(),
@@ -60,7 +60,7 @@ class Classify:
         AmplificationClassifier(),
     ]
 
-    def perform(self, tokens: List[Token]) -> Optional[Classification]:
+    def perform(self, tokens: list[Token]) -> Classification | None:
         """Classify a list of tokens.
 
         :param tokens: List of tokens found

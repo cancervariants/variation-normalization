@@ -1,6 +1,6 @@
 """Module for Genomic Deletion Translation."""
 
-from typing import List, NamedTuple, Optional, Union
+from typing import NamedTuple
 
 from cool_seq_tool.schemas import ResidueMode
 from ga4gh.vrs import models
@@ -29,7 +29,7 @@ class DelDupData(NamedTuple):
 
     ac: StrictStr
     pos0: StrictInt
-    pos1: Optional[StrictInt]
+    pos1: StrictInt | None
 
 
 class GenomicDelDupTranslator(Translator):
@@ -39,10 +39,9 @@ class GenomicDelDupTranslator(Translator):
 
     async def get_grch38_data(
         self,
-        classification: Union[
-            GenomicDeletionClassification, GenomicDuplicationClassification
-        ],
-        errors: List[str],
+        classification: GenomicDeletionClassification
+        | GenomicDuplicationClassification,
+        errors: list[str],
         ac: str,
     ) -> DelDupData:
         """Get GRCh38 data for genomic duplication or deletion classification
@@ -81,13 +80,13 @@ class GenomicDelDupTranslator(Translator):
     async def translate(
         self,
         validation_result: ValidationResult,
-        warnings: List[str],
-        endpoint_name: Optional[Endpoint] = None,
+        warnings: list[str],
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Optional[TranslationResult]:
+    ) -> TranslationResult | None:
         """Translate validation result to VRS representation
 
         :param validation_result: Validation result for a classification

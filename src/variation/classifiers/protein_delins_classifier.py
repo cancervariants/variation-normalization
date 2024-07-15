@@ -1,7 +1,5 @@
 """A module for the Protein DelIns Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     Nomenclature,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class ProteinDelInsClassifier(Classifier):
     """The Protein DelIns Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the protein delins classification.
 
         :return: List of list of tokens, where order matters, that represent a protein
@@ -21,7 +19,7 @@ class ProteinDelInsClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.PROTEIN_DELINS]]
 
-    def match(self, tokens: List[Token]) -> ProteinDelInsClassification:
+    def match(self, tokens: list[Token]) -> ProteinDelInsClassification:
         """Return the protein delins classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a

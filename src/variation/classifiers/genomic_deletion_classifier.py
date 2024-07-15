@@ -1,7 +1,5 @@
 """A module for the Genomic Deletion Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDeletionClassification,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class GenomicDeletionClassifier(Classifier):
     """The Genomic Deletion Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the genomic deletion classification.
 
         :return: List of list of tokens, where order matters, that represent a genomic
@@ -21,7 +19,7 @@ class GenomicDeletionClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.GENOMIC_DELETION]]
 
-    def match(self, tokens: List[Token]) -> GenomicDeletionClassification:
+    def match(self, tokens: list[Token]) -> GenomicDeletionClassification:
         """Return the genomic deletion classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a

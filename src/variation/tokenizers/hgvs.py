@@ -1,7 +1,6 @@
 """Module for HGVS tokenization."""
 
 import re
-from typing import Optional
 
 from cool_seq_tool.schemas import AnnotationLayer
 
@@ -16,7 +15,7 @@ class HGVS(Tokenizer):
         r"^(?P<accession>(NC_|NM_|NP_|ENSP|ENST)[^:\s]+):(?P<coordinate>[cgnpr])\.(?P<change>\S+)$"
     )
 
-    def match(self, input_string: str) -> Optional[HgvsToken]:
+    def match(self, input_string: str) -> HgvsToken | None:
         """Return HGVS token matches from input string.
 
         :param input_string: The input string to match

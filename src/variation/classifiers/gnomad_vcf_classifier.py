@@ -1,7 +1,5 @@
 """A module for the gnomAD VCF Classifier"""
 
-from typing import List, Optional, Union
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDeletionClassification,
@@ -17,7 +15,7 @@ from variation.schemas.token_response_schema import GnomadVcfToken, TokenType
 class GnomadVcfClassifier(Classifier):
     """The gnomAD VCF Classifier"""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the gnomad vcf classification.
 
         :return: List of list of tokens, where order matters, that represent a gnomad
@@ -27,14 +25,13 @@ class GnomadVcfClassifier(Classifier):
 
     def match(
         self, token: GnomadVcfToken
-    ) -> Optional[
-        Union[
-            GenomicReferenceAgreeClassification,
-            GenomicSubstitutionClassification,
-            GenomicInsertionClassification,
-            GenomicDeletionClassification,
-        ]
-    ]:
+    ) -> (
+        GenomicReferenceAgreeClassification
+        | GenomicSubstitutionClassification
+        | GenomicInsertionClassification
+        | GenomicDeletionClassification
+        | None
+    ):
         """Return the genomic classification (either reference agree, substitution,
         insertion, or deletion) from a gnomad vcf token.
         Currently only support simple genomic variation.

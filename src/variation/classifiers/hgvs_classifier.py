@@ -1,7 +1,6 @@
 """A module for the HGVS Classifier."""
 
 from re import Match, Pattern
-from typing import Dict, List, Optional
 
 from cool_seq_tool.schemas import AnnotationLayer
 
@@ -45,7 +44,7 @@ from variation.utils import get_ambiguous_type
 class HgvsClassifier(Classifier):
     """The HGVS Classifier."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the hgvs classification.
 
         :return: List of list of tokens, where order matters, that represent a hgvs
@@ -53,7 +52,7 @@ class HgvsClassifier(Classifier):
         """
         return [[TokenType.HGVS]]
 
-    def match(self, token: HgvsToken) -> Optional[Classification]:
+    def match(self, token: HgvsToken) -> Classification | None:
         """Return the classification from a hgvs token using regex matches to determine
         the type of classification.
 
@@ -81,7 +80,7 @@ class HgvsClassifier(Classifier):
         return classification
 
     @staticmethod
-    def _regex_match(change: str, regex: Pattern) -> Optional[Match]:
+    def _regex_match(change: str, regex: Pattern) -> Match | None:
         """Strip parentheses from `change` and return whether or not `change` matches
         the `regex`
 
@@ -96,8 +95,8 @@ class HgvsClassifier(Classifier):
         return match
 
     def _protein_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding protein
         classification if a match is found
 
@@ -155,8 +154,8 @@ class HgvsClassifier(Classifier):
         return None
 
     def _cdna_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding cdna
         classification if a match is found
 
@@ -210,8 +209,8 @@ class HgvsClassifier(Classifier):
         return None
 
     def _genomic_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding genomic
         classification if a match is found. Only checks against 'simple'
         duplication/deletions.
@@ -275,8 +274,8 @@ class HgvsClassifier(Classifier):
         return None
 
     def _genomic_ambiguous_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding genomic
         ambiguous classification if a match is found. Only checks against ambiguous
         duplication/deletions.
@@ -296,7 +295,7 @@ class HgvsClassifier(Classifier):
         return None
 
     @staticmethod
-    def _update_ambiguous_params(params: Dict, regex_type: AmbiguousRegexType) -> None:
+    def _update_ambiguous_params(params: dict, regex_type: AmbiguousRegexType) -> None:
         """Mutates `params` to match correct types and gets associated ambiguous type
         from fields in `params`
 
@@ -332,8 +331,8 @@ class HgvsClassifier(Classifier):
             params["ambiguous_type"] = ambiguous_type
 
     def _genomic_dup_ambiguous_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding genomic
         ambiguous duplication classification if a match is found. Only checks against
         genomic ambiguous duplications.
@@ -363,8 +362,8 @@ class HgvsClassifier(Classifier):
         return None
 
     def _genomic_del_ambiguous_classification(
-        self, token: HgvsToken, params: Dict
-    ) -> Optional[Classification]:
+        self, token: HgvsToken, params: dict
+    ) -> Classification | None:
         """Determine if hgvs token matches regex checks and return corresponding genomic
         ambiguous deletion classification if a match is found. Only checks against
         genomic ambiguous deletion.

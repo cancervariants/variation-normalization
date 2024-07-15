@@ -1,7 +1,5 @@
 """The module for Cdna Insertion Validation."""
 
-from typing import List
-
 from variation.schemas.classification_response_schema import (
     CdnaInsertionClassification,
     Classification,
@@ -16,8 +14,8 @@ class CdnaInsertion(Validator):
     """The Cdna Insertion Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaInsertionClassification, accessions: List[str]
-    ) -> List[ValidationResult]:
+        self, classification: CdnaInsertionClassification, accessions: list[str]
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -74,8 +72,8 @@ class CdnaInsertion(Validator):
         return classification_type == ClassificationType.CDNA_INSERTION
 
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

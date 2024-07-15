@@ -1,6 +1,6 @@
 """Define supported variation types"""
 
-from typing import Literal, Optional, Union
+from typing import Literal
 
 from pydantic import BaseModel, StrictInt, StrictStr
 
@@ -23,15 +23,15 @@ class Deletion(BaseModel):
     """Define model for deletion variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt] = None
-    deleted_sequence: Optional[StrictStr] = None
+    pos1: StrictInt | None = None
+    deleted_sequence: StrictStr | None = None
 
 
 class ProteinDeletion(Deletion):
     """Define model for protein deletion"""
 
     aa0: StrictStr
-    aa1: Optional[StrictStr] = None
+    aa1: StrictStr | None = None
 
 
 class Insertion(BaseModel):
@@ -65,7 +65,7 @@ class DelIns(BaseModel):
     """Define model for delins variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt] = None
+    pos1: StrictInt | None = None
     inserted_sequence: StrictStr
 
 
@@ -73,20 +73,20 @@ class ProteinDelIns(DelIns):
     """Define model for protein delins variation"""
 
     aa0: StrictStr
-    aa1: Optional[StrictStr] = None
+    aa1: StrictStr | None = None
 
 
 class Duplication(BaseModel):
     """Define model for duplication variation"""
 
     pos0: StrictInt
-    pos1: Optional[StrictInt] = None
+    pos1: StrictInt | None = None
 
 
 class DupDelAmbiguous(BaseModel):
     """Define model for duplication/deletion ambiguous variation"""
 
-    pos0: Union[StrictInt, Literal["?"]]
-    pos1: Optional[Union[StrictInt, Literal["?"]]] = None
-    pos2: Union[StrictInt, Literal["?"]]
-    pos3: Optional[Union[StrictInt, Literal["?"]]] = None
+    pos0: StrictInt | Literal["?"]
+    pos1: StrictInt | Literal["?"] | None = None
+    pos2: StrictInt | Literal["?"]
+    pos3: StrictInt | Literal["?"] | None = None

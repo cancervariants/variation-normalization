@@ -1,7 +1,5 @@
 """A module for the Protein Stop Gain Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     Nomenclature,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class ProteinStopGainClassifier(Classifier):
     """The Protein Stop Gain Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the protein stop gain classification.
 
         :return: List of list of tokens, where order matters, that represent a protein
@@ -21,7 +19,7 @@ class ProteinStopGainClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.PROTEIN_STOP_GAIN]]
 
-    def match(self, tokens: List[Token]) -> ProteinStopGainClassification:
+    def match(self, tokens: list[Token]) -> ProteinStopGainClassification:
         """Return the protein stop gain classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a

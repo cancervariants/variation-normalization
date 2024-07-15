@@ -1,7 +1,5 @@
 """A module for Genomic Insertion Tokenization."""
 
-from typing import Optional
-
 from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.regex import CDNA_GENOMIC_INSERTION
@@ -14,7 +12,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class GenomicInsertion(Tokenizer):
     """Class for tokenizing Insertion at the genomic reference sequence."""
 
-    def match(self, input_string: str) -> Optional[GenomicInsertionToken]:
+    def match(self, input_string: str) -> GenomicInsertionToken | None:
         """Return a GenomicInsertionToken match if one exists.
 
         :param input_string: The input string to match

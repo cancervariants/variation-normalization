@@ -1,7 +1,6 @@
 """A module for tokenizing Protein Deletions."""
 
 import re
-from typing import Optional
 
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
@@ -19,7 +18,7 @@ class ProteinDeletion(Tokenizer):
     )
     splitter = re.compile(pattern)
 
-    def match(self, input_string: str) -> Optional[ProteinDeletionToken]:
+    def match(self, input_string: str) -> ProteinDeletionToken | None:
         """Return a ProteinDeletionToken match if one exists.
 
         :param input_string: The input string to match

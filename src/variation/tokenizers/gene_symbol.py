@@ -1,7 +1,5 @@
 """Module for Gene Symbol tokenization."""
 
-from typing import Optional
-
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.token_response_schema import GeneToken
@@ -18,7 +16,7 @@ class GeneSymbol(Tokenizer):
         """
         self.gene_normalizer = gene_normalizer
 
-    def match(self, input_string: str) -> Optional[GeneToken]:
+    def match(self, input_string: str) -> GeneToken | None:
         """Return tokens that are genes
 
         :param input_string: Input string

@@ -1,7 +1,5 @@
 """Module for to_vrs endpoint response schema."""
 
-from typing import List, Union
-
 from ga4gh.vrs import models
 from pydantic import BaseModel, ConfigDict, StrictStr
 
@@ -13,12 +11,12 @@ class ToVRSService(BaseModel):
     """Define model for translation response."""
 
     search_term: StrictStr
-    warnings: List[StrictStr] = []
-    variations: Union[
-        List[models.Allele],
-        List[models.CopyNumberCount],
-        List[models.CopyNumberChange],
-    ] = []
+    warnings: list[StrictStr] = []
+    variations: (
+        list[models.Allele]
+        | list[models.CopyNumberCount]
+        | list[models.CopyNumberChange]
+    ) = []
     service_meta_: ServiceMeta
 
     model_config = ConfigDict(

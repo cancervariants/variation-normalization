@@ -1,7 +1,5 @@
 """A module for the Cdna Substitution Classifier."""
 
-from typing import List, Optional
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaSubstitutionClassification,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class CdnaSubstitutionClassifier(Classifier):
     """The Cdna Substitution Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the cdna substitution classification.
 
         :return: List of list of tokens, where order matters, that represent a cdna
@@ -28,7 +26,7 @@ class CdnaSubstitutionClassifier(Classifier):
             ],
         ]
 
-    def match(self, tokens: List[Token]) -> Optional[CdnaSubstitutionClassification]:
+    def match(self, tokens: list[Token]) -> CdnaSubstitutionClassification | None:
         """Return the cdna substitution classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a
