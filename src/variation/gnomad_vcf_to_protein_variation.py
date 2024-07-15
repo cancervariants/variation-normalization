@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import ResidueMode, Strand
-from ga4gh.core import core_models, ga4gh_identify
+from ga4gh.core import domain_models, ga4gh_identify
 from ga4gh.vrs import models, normalize
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
@@ -408,7 +408,7 @@ class GnomadVcfToProteinVariation:
         variation.location.id = ga4gh_identify(variation.location)
         return variation
 
-    def _get_gene_context(self, gene: str) -> Optional[core_models.Gene]:
+    def _get_gene_context(self, gene: str) -> Optional[domain_models.Gene]:
         """Get additional gene information from gene-normalizer
 
         :param gene: Gene symbol
