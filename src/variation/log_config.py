@@ -47,7 +47,7 @@ def configure_logging(
     logger = logging.getLogger("variation")
     logger.setLevel(log_level)
 
-    if "METAKB_NORM_EB_PROD" in os.environ:
+    if "VARIATION_NORM_EB_PROD" in os.environ:
         # force debug logging in production server
         logger.handlers = []
         handler = logging.StreamHandler()
