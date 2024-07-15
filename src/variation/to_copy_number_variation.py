@@ -5,6 +5,8 @@ from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import LiftOver
+from cool_seq_tool.schemas import Assembly
 from cool_seq_tool.sources import UtaDatabase
 from ga4gh.core import ga4gh_identify
 from ga4gh.vrs import models
@@ -82,6 +84,7 @@ class ToCopyNumberVariation(ToVRS):
         translator: Translate,
         gene_normalizer: GeneQueryHandler,
         uta: UtaDatabase,
+        liftover: LiftOver
     ) -> None:
         """Initialize theToCopyNumberVariation class
 
@@ -92,10 +95,12 @@ class ToCopyNumberVariation(ToVRS):
         :param translator: Instance for translating valid results to VRS representations
         :param gene_normalizer: Client for normalizing gene concepts
         :param uta: Access to UTA queries
+        :param liftover: Instance to provide mapping between human genome assemblies
         """
         super().__init__(seqrepo_access, tokenizer, classifier, validator, translator)
         self.gene_normalizer = gene_normalizer
         self.uta = uta
+        self.liftover = liftover
 
     async def _get_valid_results(self, q: str) -> Tuple[List[ValidationResult], List]:
         """Get valid results for to copy number variation endpoint
@@ -527,14 +532,14 @@ class ToCopyNumberVariation(ToVRS):
             ("end1", end1),
         ]:
             if pos is not None:
-                liftover = self.uta.liftover_37_to_38.convert_coordinate(
-                    chromosome, pos
+                liftover = self.liftover.get_liftover(
+                    chromosome, pos, Assembly.GRCH38
                 )
                 if not liftover:
                     msg = f"Unable to liftover: {chromosome} with pos {pos}"
                     raise ToCopyNumberError(msg)
 
-                liftover_pos[k] = liftover[0][1]
+                liftover_pos[k] = liftover[1]
 
         return liftover_pos
 
