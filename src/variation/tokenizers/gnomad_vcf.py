@@ -1,4 +1,5 @@
 """A module for gnomad VCF tokenization"""
+
 import re
 from typing import Optional
 

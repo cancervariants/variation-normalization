@@ -1,4 +1,5 @@
 """A module for Protein DelIns Tokenization Class."""
+
 from typing import Optional
 
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1

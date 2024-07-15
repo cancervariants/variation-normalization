@@ -1,4 +1,5 @@
 """Module for Validation."""
+
 from abc import ABC, abstractmethod
 from typing import List, Literal, Optional, Tuple, Union
 

@@ -1,4 +1,5 @@
 """Module containing regex patterns"""
+
 import re
 from typing import Any, List, Tuple
 

@@ -1,4 +1,5 @@
 """Module for vrs-python translator endpoint response schema"""
+
 from enum import Enum
 from typing import List, Literal, Optional, Union
 
@@ -13,9 +14,9 @@ class VrsPythonMeta(BaseModel):
 
     name: Literal["vrs-python"] = "vrs-python"
     version: StrictStr
-    url: Literal[
+    url: Literal["https://github.com/ga4gh/vrs-python"] = (
         "https://github.com/ga4gh/vrs-python"
-    ] = "https://github.com/ga4gh/vrs-python"
+    )
 
 
 class TranslateFromFormat(str, Enum):

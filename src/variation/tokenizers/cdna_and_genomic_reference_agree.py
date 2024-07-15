@@ -1,4 +1,5 @@
 """A module for Reference Agree Tokenization on cDNA and genomic reference sequence."""
+
 from typing import Optional, Union
 
 from cool_seq_tool.schemas import AnnotationLayer

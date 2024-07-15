@@ -1,4 +1,5 @@
 """Module for schemas related to tokenization."""
+
 from enum import Enum
 from typing import Literal, Optional
 
@@ -131,9 +132,9 @@ class ProteinStopGainToken(Token, StopGain):
 class ProteinReferenceAgreeToken(Token, ProteinReferenceAgree):
     """Token for reference agree on protein reference sequence"""
 
-    token_type: Literal[
+    token_type: Literal[TokenType.PROTEIN_REFERENCE_AGREE] = (
         TokenType.PROTEIN_REFERENCE_AGREE
-    ] = TokenType.PROTEIN_REFERENCE_AGREE
+    )
     coordinate_type: Literal[AnnotationLayer.PROTEIN] = AnnotationLayer.PROTEIN
 
 
@@ -148,9 +149,9 @@ class GenomicReferenceAgreeToken(Token, ReferenceAgree):
     """Token for reference agree on genomic reference sequence"""
 
     coordinate_type: Literal[AnnotationLayer.GENOMIC] = AnnotationLayer.GENOMIC
-    token_type: Literal[
+    token_type: Literal[TokenType.GENOMIC_REFERENCE_AGREE] = (
         TokenType.GENOMIC_REFERENCE_AGREE
-    ] = TokenType.GENOMIC_REFERENCE_AGREE
+    )
 
 
 class ProteinDeletionToken(Token, ProteinDeletion):
@@ -177,9 +178,9 @@ class GenomicDeletionToken(Token, Deletion):
 class GenomicDeletionAmbiguousToken(Token, DupDelAmbiguous):
     """Token for ambiguous deletion on genomic reference sequence"""
 
-    token_type: Literal[
+    token_type: Literal[TokenType.GENOMIC_DELETION_AMBIGUOUS] = (
         TokenType.GENOMIC_DELETION_AMBIGUOUS
-    ] = TokenType.GENOMIC_DELETION_AMBIGUOUS
+    )
     coordinate_type: Literal[AnnotationLayer.GENOMIC] = AnnotationLayer.GENOMIC
     ambiguous_regex_type: AmbiguousRegexType
 
@@ -236,9 +237,9 @@ class GenomicDuplicationToken(Token, Duplication):
 class GenomicDuplicationAmbiguousToken(Token, DupDelAmbiguous):
     """Ambiguous duplication on genomic reference sequence"""
 
-    token_type: Literal[
+    token_type: Literal[TokenType.GENOMIC_DUPLICATION_AMBIGUOUS] = (
         TokenType.GENOMIC_DUPLICATION_AMBIGUOUS
-    ] = TokenType.GENOMIC_DUPLICATION_AMBIGUOUS
+    )
     coordinate_type: Literal[AnnotationLayer.GENOMIC] = AnnotationLayer.GENOMIC
     ambiguous_regex_type: AmbiguousRegexType
 

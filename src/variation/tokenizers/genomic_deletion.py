@@ -1,4 +1,5 @@
 """A module for Genomic Deletion Tokenization."""
+
 from typing import Optional
 
 from cool_seq_tool.schemas import AnnotationLayer

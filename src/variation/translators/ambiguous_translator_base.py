@@ -1,4 +1,5 @@
 """Module for translating genomic ambiguous deletions and duplications"""
+
 from typing import Dict, List, Literal, NamedTuple, Optional, Union
 
 from ga4gh.vrs import models

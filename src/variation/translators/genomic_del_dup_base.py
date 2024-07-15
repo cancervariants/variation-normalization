@@ -1,4 +1,5 @@
 """Module for Genomic Deletion Translation."""
+
 from typing import List, NamedTuple, Optional, Union
 
 from cool_seq_tool.schemas import ResidueMode

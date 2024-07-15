@@ -1,4 +1,5 @@
 """Module for testing gnomad_vcf_to_protein works correctly"""
+
 import pytest
 from ga4gh.vrs import models
 
