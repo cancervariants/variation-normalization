@@ -74,7 +74,7 @@ branch = true
 src = ["src"]
 
 [tool.ruff.lint]
-exclude = [
+extend-exclude = [
     "codebuild/*"
 ]
 select = [
