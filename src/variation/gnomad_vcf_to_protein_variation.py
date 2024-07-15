@@ -1,7 +1,6 @@
 """Module for translating VCF-like to protein VRS Allele representation"""
 
 import datetime
-from typing import List, Optional, Tuple
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
@@ -51,7 +50,7 @@ def _get_char_match_count(
 
 def _trim_prefix_or_suffix(
     aa_ref: str, aa_alt: str, aa_start_pos: int = 0, trim_prefix: bool = True
-) -> Tuple[str, str, int]:
+) -> tuple[str, str, int]:
     """Trim prefix or suffix matches
 
     :param aa_ref: Amino acid reference sequence
@@ -182,8 +181,8 @@ class GnomadVcfToProteinVariation:
         self.gene_normalizer = gene_normalizer
 
     async def _get_valid_result(
-        self, vcf_query: str, warnings: List
-    ) -> List[ValidationResult]:
+        self, vcf_query: str, warnings: list
+    ) -> list[ValidationResult]:
         """Get gnomad vcf validation summary
 
         :param vcf_query: gnomad vcf input query
@@ -222,7 +221,7 @@ class GnomadVcfToProteinVariation:
     @staticmethod
     def _get_alt_type_and_prefix_match(
         len_g_ref: int, len_g_alt: int, g_ref: str, g_alt: str
-    ) -> Tuple[AltType, int]:
+    ) -> tuple[AltType, int]:
         """Get genomic alteration type and number of prefixes match
 
         :param len_g_ref: Length of genomic reference sequence
@@ -260,7 +259,7 @@ class GnomadVcfToProteinVariation:
         strand: Strand,
         g_start_pos: int,
         g_end_pos: int,
-    ) -> Tuple[int, int, int]:
+    ) -> tuple[int, int, int]:
         """Get genomic positions to cover the range of codons
 
         :param c_start_pos: cDNA start position
@@ -408,7 +407,7 @@ class GnomadVcfToProteinVariation:
         variation.location.id = ga4gh_identify(variation.location)
         return variation
 
-    def _get_gene_context(self, gene: str) -> Optional[domain_models.Gene]:
+    def _get_gene_context(self, gene: str) -> domain_models.Gene | None:
         """Get additional gene information from gene-normalizer
 
         :param gene: Gene symbol
@@ -423,7 +422,7 @@ class GnomadVcfToProteinVariation:
 
     def _get_vrs_ref_allele_seq(
         self, location: models.SequenceLocation, p_ac: str
-    ) -> Optional[str]:
+    ) -> str | None:
         """Return reference sequence given a VRS location.
 
         :param location: VRS Location object

@@ -1,7 +1,6 @@
 """Module for Variation Normalization."""
 
 import datetime
-from typing import List, Optional, Tuple
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -61,8 +60,8 @@ class Normalize(ToVRS):
 
     @staticmethod
     def _get_priority_translation_result(
-        translations: List[TranslationResult], ac_status: VrsSeqLocAcStatus
-    ) -> Optional[TranslationResult]:
+        translations: list[TranslationResult], ac_status: VrsSeqLocAcStatus
+    ) -> TranslationResult | None:
         """Get prioritized translation result. Tries to find translation results with
         the same `vrs_seq_loc_ac_status` as `ac_status`. If more than one translation
         result is found, will try to find translation result where `og_ac` (original
@@ -109,10 +108,10 @@ class Normalize(ToVRS):
 
     @staticmethod
     def get_hgvs_dup_del_mode(
-        tokens: List[Token],
-        hgvs_dup_del_mode: Optional[HGVSDupDelModeOption] = None,
-        baseline_copies: Optional[int] = None,
-    ) -> Tuple[Optional[HGVSDupDelModeOption], Optional[str]]:
+        tokens: list[Token],
+        hgvs_dup_del_mode: HGVSDupDelModeOption | None = None,
+        baseline_copies: int | None = None,
+    ) -> tuple[HGVSDupDelModeOption | None, str | None]:
         """Get option to use for hgvs dup del mode
 
         :param tokens: List of tokens found in an input query
@@ -142,11 +141,9 @@ class Normalize(ToVRS):
     async def normalize(
         self,
         q: str,
-        hgvs_dup_del_mode: Optional[
-            HGVSDupDelModeOption
-        ] = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        hgvs_dup_del_mode: HGVSDupDelModeOption | None = HGVSDupDelModeOption.DEFAULT,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
     ) -> NormalizeService:
         """Normalize a given variation.
 

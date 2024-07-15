@@ -83,7 +83,7 @@ def val_params(test_cool_seq_tool, test_gene_normalizer):
         test_cool_seq_tool.transcript_mappings,
         test_cool_seq_tool.uta_db,
         test_gene_normalizer,
-        test_cool_seq_tool.liftover
+        test_cool_seq_tool.liftover,
     ]
 
 

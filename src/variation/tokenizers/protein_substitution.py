@@ -1,7 +1,5 @@
 """A module for Protein Substitution Tokenization."""
 
-from typing import Optional, Union
-
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
 from variation.regex import PROTEIN_SUBSTITUTION
@@ -17,7 +15,7 @@ class ProteinSubstitution(Tokenizer):
 
     def match(
         self, input_string: str
-    ) -> Optional[Union[ProteinSubstitutionToken, ProteinStopGainToken]]:
+    ) -> ProteinSubstitutionToken | ProteinStopGainToken | None:
         """Return a ProteinSubstitutionToken or ProteinStopGainToken match if one
         exists.
 

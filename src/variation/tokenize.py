@@ -1,7 +1,5 @@
 """A module for tokenization."""
 
-from typing import List
-
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.tokenizers import (
     HGVS,
@@ -35,7 +33,7 @@ class Tokenize:
     def __init__(self, gene_symbol: GeneSymbol) -> None:
         """Initialize the tokenize class."""
         self.gene_symbol = gene_symbol
-        self.tokenizers: List[Tokenizer] = [
+        self.tokenizers: list[Tokenizer] = [
             HGVS(),
             GnomadVCF(),
             self.gene_symbol,
@@ -63,7 +61,7 @@ class Tokenize:
             GenomicDuplication(),
         ]
 
-    def perform(self, search_string: str, warnings: List[str]) -> List[Token]:
+    def perform(self, search_string: str, warnings: list[str]) -> list[Token]:
         """Return a list of tokens for a given search string
 
         :param search_string: The input string to search on
@@ -72,7 +70,7 @@ class Tokenize:
         """
         terms = search_string.split()
 
-        tokens: List[Token] = []
+        tokens: list[Token] = []
         for term in terms:
             if not term:
                 continue
@@ -81,7 +79,7 @@ class Tokenize:
             for tokenizer in self.tokenizers:
                 res = tokenizer.match(term)
                 if res:
-                    if isinstance(res, List):
+                    if isinstance(res, list):
                         for r in res:
                             tokens.append(r)
                             if not matched:

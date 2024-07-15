@@ -1,7 +1,5 @@
 """A module for Protein Insertion Tokenization Class."""
 
-from typing import Optional
-
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
 from variation.regex import PROTEIN_INSERTION
@@ -12,7 +10,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class ProteinInsertion(Tokenizer):
     """Class for tokenizing Insertions on the protein reference sequence."""
 
-    def match(self, input_string: str) -> Optional[ProteinInsertionToken]:
+    def match(self, input_string: str) -> ProteinInsertionToken | None:
         """Return token that match the input string."""
         og_input_string = input_string
 

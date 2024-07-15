@@ -1,7 +1,5 @@
 """Module for Validation."""
 
-from typing import List
-
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import LiftOver
 from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
@@ -43,7 +41,7 @@ class Validate:
         transcript_mappings: TranscriptMappings,
         uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
-        liftover: LiftOver
+        liftover: LiftOver,
     ) -> None:
         """Initialize the validate class. Will create an instance variable,
         `validators`, which is a list of Validators for supported variation types.
@@ -55,7 +53,7 @@ class Validate:
         :param liftover: Instance to provide mapping between human genome assemblies
         """
         params = [seqrepo_access, transcript_mappings, uta, gene_normalizer, liftover]
-        self.validators: List[Validator] = [
+        self.validators: list[Validator] = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),

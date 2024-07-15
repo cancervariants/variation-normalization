@@ -1,7 +1,5 @@
 """The module for Protein Stop Gain Validation."""
 
-from typing import List
-
 from variation.schemas.classification_response_schema import (
     Classification,
     ClassificationType,
@@ -16,8 +14,8 @@ class ProteinStopGain(Validator):
     """The Protein Stop Gain Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: ProteinStopGainClassification, accessions: List[str]
-    ) -> List[ValidationResult]:
+        self, classification: ProteinStopGainClassification, accessions: list[str]
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -72,8 +70,8 @@ class ProteinStopGain(Validator):
         return classification_type == ClassificationType.PROTEIN_STOP_GAIN
 
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

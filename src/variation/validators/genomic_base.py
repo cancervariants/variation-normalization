@@ -1,7 +1,6 @@
 """Module for Genomic Validation methods."""
 
 import logging
-from typing import List, Optional
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.sources import UtaDatabase
@@ -28,7 +27,7 @@ class GenomicBase:
 
     """The Genomic Base class."""
 
-    async def get_nc_accessions(self, classification: Classification) -> List[str]:
+    async def get_nc_accessions(self, classification: Classification) -> list[str]:
         """Get NC accession for a given classification."""
         if classification.nomenclature == Nomenclature.HGVS:
             nc_accessions = [classification.ac]
@@ -50,7 +49,7 @@ class GenomicBase:
 
         return nc_accessions
 
-    def get_nc_accession(self, identifier: str) -> Optional[str]:
+    def get_nc_accession(self, identifier: str) -> str | None:
         """Given an identifier (assembly+chr), return nc accession."""
         nc_accession = None
         try:

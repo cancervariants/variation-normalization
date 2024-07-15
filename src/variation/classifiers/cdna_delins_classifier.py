@@ -1,7 +1,5 @@
 """A module for the Cdna DelIns Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     CdnaDelInsClassification,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class CdnaDelInsClassifier(Classifier):
     """The Cdna DelIns Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the cdna delins classification.
 
         :return: List of list of tokens, where order matters, that represent a cdna
@@ -21,7 +19,7 @@ class CdnaDelInsClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.CDNA_DELINS]]
 
-    def match(self, tokens: List[Token]) -> CdnaDelInsClassification:
+    def match(self, tokens: list[Token]) -> CdnaDelInsClassification:
         """Return the cdna delins classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a

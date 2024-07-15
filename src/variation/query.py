@@ -1,7 +1,5 @@
 """Module for providing methods for handling queries."""
 
-from typing import Optional
-
 from cool_seq_tool.app import CoolSeqTool
 from ga4gh.vrs.extras.translator import AlleleTranslator as VrsPythonTranslator
 from gene.database import create_db
@@ -24,7 +22,7 @@ class QueryHandler:
 
     def __init__(
         self,
-        gene_query_handler: Optional[GeneQueryHandler] = None,
+        gene_query_handler: GeneQueryHandler | None = None,
     ) -> None:
         """Initialize QueryHandler instance.
         :param gene_query_handler: Gene normalizer query handler instance. If this is
@@ -48,7 +46,11 @@ class QueryHandler:
         self.vrs_python_tlr = VrsPythonTranslator(data_proxy=self.seqrepo_access)
         liftover = cool_seq_tool.liftover
         validator = Validate(
-            self.seqrepo_access, transcript_mappings, uta_db, gene_query_handler, liftover
+            self.seqrepo_access,
+            transcript_mappings,
+            uta_db,
+            gene_query_handler,
+            liftover,
         )
         hgvs_dup_del_mode = HGVSDupDelMode(self.seqrepo_access)
         translator = Translate(

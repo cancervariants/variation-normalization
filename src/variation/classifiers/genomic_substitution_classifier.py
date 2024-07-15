@@ -1,7 +1,5 @@
 """A module for the Genomic Substitution Classifier."""
 
-from typing import List, Optional
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicSubstitutionClassification,
@@ -13,7 +11,7 @@ from variation.schemas.token_response_schema import Token, TokenType
 class GenomicSubstitutionClassifier(Classifier):
     """The Genomic Substitution Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the genomic substitution
         classification.
 
@@ -29,7 +27,7 @@ class GenomicSubstitutionClassifier(Classifier):
             ],
         ]
 
-    def match(self, tokens: List[Token]) -> Optional[GenomicSubstitutionClassification]:
+    def match(self, tokens: list[Token]) -> GenomicSubstitutionClassification | None:
         """Return the genomic substitution classification from a list of token matches.
 
         :param tokens: List of ordered tokens that are exact match candidates for a
