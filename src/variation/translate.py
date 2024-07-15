@@ -1,4 +1,5 @@
 """Module for translation."""
+
 from typing import List, Optional
 
 from cool_seq_tool.handlers import SeqRepoAccess

@@ -1,4 +1,5 @@
 """Module for translating VCF-like to protein VRS Allele representation"""
+
 import datetime
 from typing import List, Optional, Tuple
 
@@ -67,7 +68,7 @@ def _trim_prefix_or_suffix(
         len_aa_alt = len(aa_alt)
 
         # Trim prefixes
-        range_len = len_aa_ref if len_aa_ref < len_aa_alt else len_aa_alt
+        range_len = min(len_aa_alt, len_aa_ref)
         aa_match = _get_char_match_count(
             range_len, aa_ref, aa_alt, trim_prefix=trim_prefix
         )
@@ -271,8 +272,8 @@ class GnomadVcfToProteinVariation:
             for the original position change
         """
         # Get cDNA reading frame
-        start_reading_frame = self.mane_transcript._get_reading_frame(c_start_pos + 1)
-        end_reading_frame = self.mane_transcript._get_reading_frame(c_end_pos)
+        start_reading_frame = self.mane_transcript._get_reading_frame(c_start_pos + 1)  # noqa: SLF001
+        end_reading_frame = self.mane_transcript._get_reading_frame(c_end_pos)  # noqa: SLF001
 
         # Get genomic position range change
         # This ensures that there 3 nucleotides needed for codon

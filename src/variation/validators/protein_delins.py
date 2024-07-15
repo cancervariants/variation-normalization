@@ -1,4 +1,5 @@
 """The module for Protein DelIns Validation."""
+
 from typing import List
 
 from variation.schemas.classification_response_schema import (

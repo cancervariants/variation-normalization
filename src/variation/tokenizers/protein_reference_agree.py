@@ -1,4 +1,5 @@
 """A module for Reference Agree Tokenization."""
+
 import contextlib
 from typing import Optional
 

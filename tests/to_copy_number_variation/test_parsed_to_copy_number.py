@@ -1,4 +1,5 @@
 """Test that parsed_to_copy_number works correctly"""
+
 from copy import deepcopy
 
 import pytest

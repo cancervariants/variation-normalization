@@ -1,4 +1,5 @@
 """Module for Gene Symbol tokenization."""
+
 from typing import Optional
 
 from gene.query import QueryHandler as GeneQueryHandler

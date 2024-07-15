@@ -1,4 +1,5 @@
 """A module for the HGVS Classifier."""
+
 from re import Match, Pattern
 from typing import Dict, List, Optional
 

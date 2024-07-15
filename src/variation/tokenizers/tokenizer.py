@@ -1,4 +1,5 @@
 """Module for Tokenization."""
+
 from abc import ABC, abstractmethod
 from typing import ClassVar, Dict, Optional, Tuple
 

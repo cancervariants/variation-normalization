@@ -1,4 +1,5 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
+
 from typing import Dict, List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess

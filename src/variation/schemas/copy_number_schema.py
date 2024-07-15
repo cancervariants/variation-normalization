@@ -1,4 +1,5 @@
 """Module containing schemas for services"""
+
 import re
 from enum import Enum
 from typing import Dict, Optional
@@ -44,7 +45,7 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-def validate_parsed_fields(cls, v: Dict) -> Dict:
+def validate_parsed_fields(cls, v: Dict) -> Dict:  # noqa: ARG001
     """Validate base copy number query fields
     - `accession` or both `assembly` and `chromosome` must be provided
     - `start1` is required when `start_pos_type` is a definite
