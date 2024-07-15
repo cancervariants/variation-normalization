@@ -1,7 +1,5 @@
 """Module for translation."""
 
-from typing import List, Optional
-
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.sources import UtaDatabase
@@ -61,7 +59,7 @@ class Translate:
         """
         params = [seqrepo_access, mane_transcript, uta, vrs, hgvs_dup_del_mode]
 
-        self.translators: List[Translator] = [
+        self.translators: list[Translator] = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
             GenomicSubstitution(*params),
@@ -87,13 +85,13 @@ class Translate:
     async def perform(
         self,
         validation_result: ValidationResult,  # this is always valid
-        warnings: List[str],
-        endpoint_name: Optional[Endpoint] = None,
+        warnings: list[str],
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Optional[TranslationResult]:
+    ) -> TranslationResult | None:
         """Translate validation result to VRS representation
 
         :param validation_result: Validation result for a classification

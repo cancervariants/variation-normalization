@@ -1,7 +1,5 @@
 """A module for Reference Agree Tokenization on cDNA and genomic reference sequence."""
 
-from typing import Optional, Union
-
 from cool_seq_tool.schemas import AnnotationLayer
 
 from variation.regex import CDNA_GENOMIC_REFERENCE_AGREE
@@ -17,7 +15,7 @@ class CdnaGenomicReferenceAgree(Tokenizer):
 
     def match(
         self, input_string: str
-    ) -> Optional[Union[CdnaReferenceAgreeToken, GenomicReferenceAgreeToken]]:
+    ) -> CdnaReferenceAgreeToken | GenomicReferenceAgreeToken | None:
         """Return a CdnaReferenceAgreeToken or GenomicReferenceAgreeToken match if
         one exists.
 

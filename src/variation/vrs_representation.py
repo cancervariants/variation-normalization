@@ -1,7 +1,5 @@
 """Module for generating VRS objects"""
 
-from typing import Dict, List, Optional, Tuple, Union
-
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
 from ga4gh.core import ga4gh_identify
@@ -27,8 +25,8 @@ class VRSRepresentation:
 
     @staticmethod
     def get_start_end(
-        coordinate: str, start: int, end: int, cds_start: int, errors: List
-    ) -> Optional[Tuple[int, int]]:
+        coordinate: str, start: int, end: int, cds_start: int, errors: list
+    ) -> tuple[int, int] | None:
         """Get start and end coordinates.
 
         :param str coordinate: Coordinate used. Must be either `p`, `c`, or `g`
@@ -73,8 +71,8 @@ class VRSRepresentation:
     @staticmethod
     def get_sequence_loc(
         refget_accession: str,
-        start: Union[int, models.Range],
-        end: Union[int, models.Range],
+        start: int | models.Range,
+        end: int | models.Range,
     ) -> models.Location:
         """Return VRS location
 
@@ -94,14 +92,12 @@ class VRSRepresentation:
     def vrs_allele(
         self,
         ac: str,
-        start: Union[int, models.Range],
-        end: Union[int, models.Range],
-        sstate: Union[
-            models.LiteralSequenceExpression, models.ReferenceLengthExpression
-        ],
+        start: int | models.Range,
+        end: int | models.Range,
+        sstate: models.LiteralSequenceExpression | models.ReferenceLengthExpression,
         alt_type: AltType,
-        errors: List[str],
-    ) -> Optional[Dict]:
+        errors: list[str],
+    ) -> dict | None:
         """Create a VRS Allele object.
 
         :param ac: Accession
@@ -152,11 +148,11 @@ class VRSRepresentation:
         end: int,
         coordinate: AnnotationLayer,
         alt_type: AltType,
-        errors: List[str],
-        cds_start: Optional[int] = None,
-        alt: Optional[str] = None,
+        errors: list[str],
+        cds_start: int | None = None,
+        alt: str | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Translate accession and position to VRS Allele Object.
 
         :param ac: Accession

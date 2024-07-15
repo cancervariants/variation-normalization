@@ -1,7 +1,5 @@
 """A module for the Genomic Duplication Ambiguous Classifier."""
 
-from typing import List
-
 from variation.classifiers.classifier import Classifier
 from variation.schemas.classification_response_schema import (
     GenomicDuplicationAmbiguousClassification,
@@ -14,7 +12,7 @@ from variation.utils import get_ambiguous_type
 class GenomicDuplicationAmbiguousClassifier(Classifier):
     """The Genomic Duplication Ambiguous Classifier class."""
 
-    def exact_match_candidates(self) -> List[List[TokenType]]:
+    def exact_match_candidates(self) -> list[list[TokenType]]:
         """Return the token match candidates for the genomic ambiguous duplication
         classification.
 
@@ -23,7 +21,7 @@ class GenomicDuplicationAmbiguousClassifier(Classifier):
         """
         return [[TokenType.GENE, TokenType.GENOMIC_DUPLICATION_AMBIGUOUS]]
 
-    def match(self, tokens: List[Token]) -> GenomicDuplicationAmbiguousClassification:
+    def match(self, tokens: list[Token]) -> GenomicDuplicationAmbiguousClassification:
         """Return the genomic ambiguous duplication classification from a list of token
         matches.
 

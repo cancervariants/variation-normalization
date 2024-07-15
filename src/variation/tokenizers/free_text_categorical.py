@@ -1,7 +1,5 @@
 """A module for free text categorical variation tokenization"""
 
-from typing import Optional
-
 from variation.schemas.token_response_schema import AmplificationToken
 from variation.tokenizers.tokenizer import Tokenizer
 
@@ -9,7 +7,7 @@ from variation.tokenizers.tokenizer import Tokenizer
 class FreeTextCategorical(Tokenizer):
     """The Free Text Categorical tokenizer class"""
 
-    def match(self, input_string: str) -> Optional[AmplificationToken]:
+    def match(self, input_string: str) -> AmplificationToken | None:
         """Return tokens that match the input string.
         Only supports amplification for now
 

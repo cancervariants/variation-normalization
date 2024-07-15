@@ -1,6 +1,6 @@
 """Module for translating genomic ambiguous deletions and duplications"""
 
-from typing import Dict, List, Literal, NamedTuple, Optional, Union
+from typing import Literal, NamedTuple
 
 from ga4gh.vrs import models
 from pydantic import StrictInt, StrictStr, ValidationError
@@ -25,10 +25,10 @@ class AmbiguousData(NamedTuple):
     """Represents Ambiguous data"""
 
     ac: StrictStr
-    pos0: Union[StrictInt, Literal["?"]]
-    pos1: Optional[Union[StrictInt, Literal["?"]]]
-    pos2: Union[StrictInt, Literal["?"]]
-    pos3: Optional[Union[StrictInt, Literal["?"]]]
+    pos0: StrictInt | Literal["?"]
+    pos1: StrictInt | Literal["?"] | None
+    pos2: StrictInt | Literal["?"]
+    pos3: StrictInt | Literal["?"] | None
 
 
 class AmbiguousTranslator(Translator):
@@ -38,13 +38,11 @@ class AmbiguousTranslator(Translator):
 
     async def get_grch38_data_ambiguous(
         self,
-        classification: Union[
-            GenomicDeletionAmbiguousClassification,
-            GenomicDuplicationAmbiguousClassification,
-        ],
-        errors: List[str],
+        classification: GenomicDeletionAmbiguousClassification
+        | GenomicDuplicationAmbiguousClassification,
+        errors: list[str],
         ac: str,
-    ) -> Optional[AmbiguousData]:
+    ) -> AmbiguousData | None:
         """Get GRCh38 data for genomic ambiguous duplication or deletion classification
 
         :param classification: Classification to get translation for
@@ -112,12 +110,12 @@ class AmbiguousTranslator(Translator):
         self,
         ambiguous_type: AmbiguousType,
         ac: str,
-        pos0: Union[int, Literal["?"]],
-        pos1: Optional[Union[int, Literal["?"]]],
-        pos2: Union[int, Literal["?"]],
-        pos3: Optional[Union[int, Literal["?"]]],
-        warnings: List[str],
-    ) -> Dict:
+        pos0: int | Literal["?"],
+        pos1: int | Literal["?"] | None,
+        pos2: int | Literal["?"],
+        pos3: int | Literal["?"] | None,
+        warnings: list[str],
+    ) -> dict:
         """Get VRS Sequence Location
 
         :param ambiguous_type: Type of ambiguous expression used
@@ -155,13 +153,13 @@ class AmbiguousTranslator(Translator):
     async def translate(
         self,
         validation_result: ValidationResult,
-        warnings: List[str],
-        endpoint_name: Optional[Endpoint] = None,
+        warnings: list[str],
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Optional[TranslationResult]:
+    ) -> TranslationResult | None:
         """Translate validation result to VRS representation
 
         :param validation_result: Validation result for a classification

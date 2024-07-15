@@ -1,7 +1,5 @@
 """Module for Genomic Substitution Translation."""
 
-from typing import List, Optional
-
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode, Strand
 from ga4gh.vrs import models
 
@@ -36,13 +34,13 @@ class GenomicSubstitution(Translator):
     async def translate(
         self,
         validation_result: ValidationResult,
-        warnings: List[str],
-        endpoint_name: Optional[Endpoint] = None,
+        warnings: list[str],
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Optional[TranslationResult]:
+    ) -> TranslationResult | None:
         """Translate validation result to VRS representation
 
         :param validation_result: Validation result for a classification

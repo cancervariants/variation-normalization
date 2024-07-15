@@ -1,7 +1,5 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 
-from typing import Dict, List, Optional, Union
-
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
 from ga4gh.core import ga4gh_identify
@@ -26,18 +24,16 @@ class HGVSDupDelMode:
 
     def default_mode(
         self,
-        alt_type: Union[
-            AltType.DELETION,
-            AltType.DELETION_AMBIGUOUS,
-            AltType.DUPLICATION,
-            AltType.DUPLICATION_AMBIGUOUS,
-        ],
-        location: Dict,
+        alt_type: AltType.DELETION
+        | AltType.DELETION_AMBIGUOUS
+        | AltType.DUPLICATION
+        | AltType.DUPLICATION_AMBIGUOUS,
+        location: dict,
         vrs_seq_loc_ac: str,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
-        alt: Optional[str] = None,
-    ) -> Optional[Dict]:
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
+        alt: str | None = None,
+    ) -> dict | None:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous - copy_number_change
             if copy_change not provided:
@@ -66,15 +62,13 @@ class HGVSDupDelMode:
 
     def copy_number_count_mode(
         self,
-        alt_type: Union[
-            AltType.DELETION,
-            AltType.DELETION_AMBIGUOUS,
-            AltType.DUPLICATION,
-            AltType.DUPLICATION_AMBIGUOUS,
-        ],
-        location: Dict,
+        alt_type: AltType.DELETION
+        | AltType.DELETION_AMBIGUOUS
+        | AltType.DUPLICATION
+        | AltType.DUPLICATION_AMBIGUOUS,
+        location: dict,
         baseline_copies: int,
-    ) -> Dict:
+    ) -> dict:
         """Return a VRS Copy Number Variation.
 
         :param alt_type: The type of alteration
@@ -91,15 +85,13 @@ class HGVSDupDelMode:
 
     def copy_number_change_mode(
         self,
-        alt_type: Union[
-            AltType.DELETION,
-            AltType.DELETION_AMBIGUOUS,
-            AltType.DUPLICATION,
-            AltType.DUPLICATION_AMBIGUOUS,
-        ],
-        location: Dict,
-        copy_change: Optional[models.CopyChange] = None,
-    ) -> Dict:
+        alt_type: AltType.DELETION
+        | AltType.DELETION_AMBIGUOUS
+        | AltType.DUPLICATION
+        | AltType.DUPLICATION_AMBIGUOUS,
+        location: dict,
+        copy_change: models.CopyChange | None = None,
+    ) -> dict:
         """Return copy number change variation
 
         :param alt_type: The type of alteration
@@ -122,11 +114,11 @@ class HGVSDupDelMode:
 
     def allele_mode(
         self,
-        location: Dict,
+        location: dict,
         alt_type: AltType,
         vrs_seq_loc_ac: str,
         alt: str,
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Return a VRS Allele with a normalized LiteralSequenceExpression or
         ReferenceLengthExpression.
 
@@ -171,14 +163,14 @@ class HGVSDupDelMode:
     def interpret_variation(
         self,
         alt_type: AltType,
-        location: Dict,
-        errors: List,
+        location: dict,
+        errors: list,
         hgvs_dup_del_mode: HGVSDupDelModeOption,
         vrs_seq_loc_ac: str,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
-        alt: Optional[str] = None,
-    ) -> Dict:
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
+        alt: str | None = None,
+    ) -> dict:
         """Interpret variation using HGVSDupDelMode
 
         :param alt_type: Alteration type

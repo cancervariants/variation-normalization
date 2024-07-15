@@ -1,7 +1,6 @@
 """A module for gnomad VCF tokenization"""
 
 import re
-from typing import Optional
 
 from variation.schemas.token_response_schema import GnomadVcfToken
 from variation.tokenizers.tokenizer import Tokenizer
@@ -16,7 +15,7 @@ class GnomadVCF(Tokenizer):
         re.IGNORECASE,
     )
 
-    def match(self, input_string: str) -> Optional[GnomadVcfToken]:
+    def match(self, input_string: str) -> GnomadVcfToken | None:
         """Return a GnomadVCFToken if a match exists.
 
         :param input_string: The input string to match

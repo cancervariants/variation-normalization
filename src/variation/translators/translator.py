@@ -1,7 +1,6 @@
 """Module for translation."""
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
@@ -62,12 +61,12 @@ class Translator(ABC):
     async def translate(
         self,
         validation_result: ValidationResult,
-        endpoint_name: Optional[Endpoint] = None,
+        endpoint_name: Endpoint | None = None,
         hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
         do_liftover: bool = False,
-    ) -> Optional[TranslationResult]:
+    ) -> TranslationResult | None:
         """Translate validation result to VRS representation
 
         :param validation_result: Validation result for a classification
@@ -87,9 +86,9 @@ class Translator(ABC):
         alt_ac: str,
         pos0: int,
         pos1: int,
-        errors: List[str],
-        pos2: Optional[int] = None,
-        pos3: Optional[int] = None,
+        errors: list[str],
+        pos2: int | None = None,
+        pos3: int | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
     ) -> None:
         """Check that positions are valid on a gene. Will mutate `errors` if invalid.
@@ -134,7 +133,7 @@ class Translator(ABC):
         end_pos: int,
         expected_ref: str,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence
         This is also in validator, but there is a ticket to have this method be moved
         to cool-seq-tool. Once added, will be removed
@@ -165,12 +164,12 @@ class Translator(ABC):
         start_pos: int,
         end_pos: int,
         alt_type: AltType,
-        coordinate_type: Union[AnnotationLayer.PROTEIN, AnnotationLayer.CDNA],
-        errors: List[str],
-        cds_start: Optional[int] = None,
-        ref: Optional[str] = None,
-        alt: Optional[str] = None,
-    ) -> Optional[TranslationResult]:
+        coordinate_type: AnnotationLayer.PROTEIN | AnnotationLayer.CDNA,
+        errors: list[str],
+        cds_start: int | None = None,
+        ref: str | None = None,
+        alt: str | None = None,
+    ) -> TranslationResult | None:
         """Get translation result for validation result. Used for unambiguous
         variations on protein or cDNA coordinate types
 

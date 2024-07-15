@@ -1,7 +1,7 @@
 """Module for to copy number variation translation"""
 
 import datetime
-from typing import Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import NamedTuple
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -84,7 +84,7 @@ class ToCopyNumberVariation(ToVRS):
         translator: Translate,
         gene_normalizer: GeneQueryHandler,
         uta: UtaDatabase,
-        liftover: LiftOver
+        liftover: LiftOver,
     ) -> None:
         """Initialize theToCopyNumberVariation class
 
@@ -102,7 +102,7 @@ class ToCopyNumberVariation(ToVRS):
         self.uta = uta
         self.liftover = liftover
 
-    async def _get_valid_results(self, q: str) -> Tuple[List[ValidationResult], List]:
+    async def _get_valid_results(self, q: str) -> tuple[list[ValidationResult], list]:
         """Get valid results for to copy number variation endpoint
 
         :param q: Input query string
@@ -152,13 +152,11 @@ class ToCopyNumberVariation(ToVRS):
         self,
         copy_number_type: HGVSDupDelModeOption,
         do_liftover: bool,
-        valid_results: Tuple[List[ValidationResult], List[str]],
-        warnings: List[str],
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
-    ) -> Tuple[
-        Optional[Union[models.CopyNumberCount, models.CopyNumberChange]], List[str]
-    ]:
+        valid_results: tuple[list[ValidationResult], list[str]],
+        warnings: list[str],
+        baseline_copies: int | None = None,
+        copy_change: models.CopyChange | None = None,
+    ) -> tuple[models.CopyNumberCount | models.CopyNumberChange | None, list[str]]:
         """Return copy number variation and warnings response
 
         :param copy_number_type: The type of copy number variation. Must be either
@@ -231,7 +229,7 @@ class ToCopyNumberVariation(ToVRS):
     async def hgvs_to_copy_number_change(
         self,
         hgvs_expr: str,
-        copy_change: Optional[models.CopyChange],
+        copy_change: models.CopyChange | None,
         do_liftover: bool = False,
     ) -> HgvsToCopyNumberChangeService:
         """Given hgvs, return copy number change variation
@@ -378,9 +376,9 @@ class ToCopyNumberVariation(ToVRS):
         pos0: int,
         pos_type: ParsedPosType,
         is_start: bool = True,
-        pos1: Optional[int] = None,
-        comparator: Optional[Comparator] = None,
-    ) -> Union[int, models.Range]:
+        pos1: int | None = None,
+        comparator: Comparator | None = None,
+    ) -> int | models.Range:
         """Get VRS Sequence Location start and end values
 
         :param accession: Genomic accession for sequence
@@ -421,12 +419,12 @@ class ToCopyNumberVariation(ToVRS):
         start_pos_type: ParsedPosType,
         end0: int,
         end_pos_type: ParsedPosType,
-        start1: Optional[int] = None,
-        end1: Optional[int] = None,
+        start1: int | None = None,
+        end1: int | None = None,
         liftover_pos: bool = False,
-        start_pos_comparator: Optional[Comparator] = None,
-        end_pos_comparator: Optional[Comparator] = None,
-    ) -> Tuple[Optional[Dict], Optional[str]]:
+        start_pos_comparator: Comparator | None = None,
+        end_pos_comparator: Comparator | None = None,
+    ) -> tuple[dict | None, str | None]:
         """Get sequence location for parsed components. Accession will be validated.
 
         :param accession: Genomic accession for sequence
@@ -505,9 +503,9 @@ class ToCopyNumberVariation(ToVRS):
         chromosome: str,
         start0: int,
         end0: int,
-        start1: Optional[int],
-        end1: Optional[int],
-    ) -> Dict:
+        start1: int | None,
+        end1: int | None,
+    ) -> dict:
         """Liftover GRCh37 positions to GRCh38 positions
 
         :param chromosome: Chromosome. Must be contain 'chr' prefix, i.e 'chr7'.
@@ -532,9 +530,7 @@ class ToCopyNumberVariation(ToVRS):
             ("end1", end1),
         ]:
             if pos is not None:
-                liftover = self.liftover.get_liftover(
-                    chromosome, pos, Assembly.GRCH38
-                )
+                liftover = self.liftover.get_liftover(chromosome, pos, Assembly.GRCH38)
                 if not liftover:
                     msg = f"Unable to liftover: {chromosome} with pos {pos}"
                     raise ToCopyNumberError(msg)
@@ -544,8 +540,8 @@ class ToCopyNumberVariation(ToVRS):
         return liftover_pos
 
     def parsed_to_copy_number(
-        self, request_body: Union[ParsedToCnVarQuery, ParsedToCxVarQuery]
-    ) -> Union[ParsedToCnVarService, ParsedToCxVarService]:
+        self, request_body: ParsedToCnVarQuery | ParsedToCxVarQuery
+    ) -> ParsedToCnVarService | ParsedToCxVarService:
         """Given parsed genomic components, return Copy Number Count or Copy Number
         Change Variation
 
@@ -635,9 +631,9 @@ class ToCopyNumberVariation(ToVRS):
     def amplification_to_cx_var(
         self,
         gene: str,
-        sequence_id: Optional[str] = None,
-        start: Optional[int] = None,
-        end: Optional[int] = None,
+        sequence_id: str | None = None,
+        start: int | None = None,
+        end: int | None = None,
     ) -> AmplificationToCxVarService:
         """Return Copy Number Change Variation for Amplification query
         Parameter priority:

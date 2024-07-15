@@ -2,7 +2,6 @@
 
 import re
 from enum import Enum
-from typing import Dict, Optional
 
 from ga4gh.vrs import models
 from pydantic import (
@@ -45,7 +44,7 @@ class ClinVarAssembly(str, Enum):
     HG18 = "hg18"
 
 
-def validate_parsed_fields(cls, v: Dict) -> Dict:  # noqa: ARG001
+def validate_parsed_fields(cls, v: dict) -> dict:  # noqa: ARG001
     """Validate base copy number query fields
     - `accession` or both `assembly` and `chromosome` must be provided
     - `start1` is required when `start_pos_type` is a definite
@@ -100,20 +99,20 @@ def validate_parsed_fields(cls, v: Dict) -> Dict:  # noqa: ARG001
 class ParsedToCopyNumberQuery(BaseModel):
     """Define base model for parsed to copy number queries"""
 
-    assembly: Optional[ClinVarAssembly] = Field(
+    assembly: ClinVarAssembly | None = Field(
         default=None,
         description=(
             "Assembly. Ignored, along with `chromosome`, if `accession` is " "provided."
         ),
     )
-    chromosome: Optional[StrictStr] = Field(
+    chromosome: StrictStr | None = Field(
         default=None,
         description=(
             "Chromosome. Must contain `chr` prefix, i.e. 'chr7'. Must provide "
             "when `assembly` is provided."
         ),
     )
-    accession: Optional[StrictStr] = Field(
+    accession: StrictStr | None = Field(
         default=None,
         description=(
             "Genomic RefSeq accession. If `accession` is provided, will "
@@ -133,7 +132,7 @@ class ParsedToCopyNumberQuery(BaseModel):
             "range, this will be the min end position."
         ),
     )
-    start_pos_comparator: Optional[Comparator] = Field(
+    start_pos_comparator: Comparator | None = Field(
         default=None,
         description=(
             "Must provide when `start_pos_type` is an Indefinite Range. "
@@ -141,7 +140,7 @@ class ParsedToCopyNumberQuery(BaseModel):
             "(#_?), set to '<='. To represent (?_#), set to '>='."
         ),
     )
-    end_pos_comparator: Optional[Comparator] = Field(
+    end_pos_comparator: Comparator | None = Field(
         default=None,
         description=(
             "Must provide when `end_pos_type` is an Indefinite Range. "
@@ -157,14 +156,14 @@ class ParsedToCopyNumberQuery(BaseModel):
         default=ParsedPosType.NUMBER,
         description="Type of the end value in the VRS SequenceLocation",
     )
-    start1: Optional[StrictInt] = Field(
+    start1: StrictInt | None = Field(
         default=None,
         description=(
             "Only provided when `start_pos_type` is a Definite Range, this "
             "will be the max start position."
         ),
     )
-    end1: Optional[StrictInt] = Field(
+    end1: StrictInt | None = Field(
         default=None,
         description=(
             "Only provided when `end_pos_type` is a Definite Range, this "
@@ -186,7 +185,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
             "is an Definite Range, this will be the `min` copies."
         ),
     )
-    copies1: Optional[StrictInt] = Field(
+    copies1: StrictInt | None = Field(
         default=None,
         description=(
             "Must provide when `copies_type` is a Definite Range. This will "
@@ -197,7 +196,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         default=ParsedPosType.NUMBER,
         description="Type for the `copies` in the `location`",
     )
-    copies_comparator: Optional[Comparator] = Field(
+    copies_comparator: Comparator | None = Field(
         default=None,
         description=(
             "Must provide when `copies_type` is an Indefinite Range. "
@@ -206,7 +205,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
     )
 
     @model_validator(mode="after")
-    def validate_fields(cls, v: Dict) -> Dict:
+    def validate_fields(cls, v: dict) -> dict:
         """Validate fields.
 
         - `copies1` should exist when `copies_type == ParsedPosType.DEFINITE_RANGE`
@@ -252,7 +251,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
 class ParsedToCnVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Count"""
 
-    copy_number_count: Optional[models.CopyNumberCount] = None
+    copy_number_count: models.CopyNumberCount | None = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -291,7 +290,7 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
     copy_change: models.CopyChange
 
     @model_validator(mode="after")
-    def validate_fields(cls, v: Dict) -> Dict:
+    def validate_fields(cls, v: dict) -> dict:
         """Validate fields"""
         validate_parsed_fields(cls, v)
         return v
@@ -318,7 +317,7 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
 class ParsedToCxVarService(ServiceResponse):
     """A response for translating parsed components to Copy Number Change"""
 
-    copy_number_change: Optional[models.CopyNumberChange] = None
+    copy_number_change: models.CopyNumberChange | None = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -355,18 +354,18 @@ class AmplificationToCxVarQuery(BaseModel):
     """Define query for amplification to copy number change variation endpoint"""
 
     gene: str
-    sequence_id: Optional[str] = None
-    start: Optional[int] = None
-    end: Optional[int] = None
-    sequence_location: Optional[models.SequenceLocation] = None
+    sequence_id: str | None = None
+    start: int | None = None
+    end: int | None = None
+    sequence_location: models.SequenceLocation | None = None
 
 
 class AmplificationToCxVarService(ServiceResponse):
     """A response for translating Amplification queries to Copy Number Change"""
 
-    query: Optional[AmplificationToCxVarQuery] = None
-    amplification_label: Optional[str]
-    copy_number_change: Optional[models.CopyNumberChange]
+    query: AmplificationToCxVarQuery | None = None
+    amplification_label: str | None
+    copy_number_change: models.CopyNumberChange | None
 
     model_config = ConfigDict(
         json_schema_extra={

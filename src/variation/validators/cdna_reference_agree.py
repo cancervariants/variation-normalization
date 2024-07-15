@@ -1,7 +1,5 @@
 """The module for Cdna Substitution Validation."""
 
-from typing import List
-
 from variation.schemas.classification_response_schema import (
     CdnaReferenceAgreeClassification,
     Classification,
@@ -16,8 +14,8 @@ class CdnaReferenceAgree(Validator):
     """The Cdna Reference Agree Validator class."""
 
     async def get_valid_invalid_results(
-        self, classification: CdnaReferenceAgreeClassification, accessions: List[str]
-    ) -> List[ValidationResult]:
+        self, classification: CdnaReferenceAgreeClassification, accessions: list[str]
+    ) -> list[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
         :param classification: A classification for a list of tokens
@@ -58,8 +56,8 @@ class CdnaReferenceAgree(Validator):
         return classification_type == ClassificationType.CDNA_REFERENCE_AGREE
 
     async def get_accessions(
-        self, classification: Classification, errors: List
-    ) -> List[str]:
+        self, classification: Classification, errors: list
+    ) -> list[str]:
         """Get accessions for a given classification.
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.

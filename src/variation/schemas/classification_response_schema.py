@@ -1,7 +1,7 @@
 """Module for Classification schema."""
 
 from enum import Enum
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, StrictStr
 
@@ -59,10 +59,10 @@ class Classification(BaseModel):
     """Classification for a list of tokens."""
 
     classification_type: ClassificationType
-    matching_tokens: List[Token] = []
+    matching_tokens: list[Token] = []
     nomenclature: Nomenclature
-    gene_token: Optional[GeneToken] = None
-    ac: Optional[StrictStr] = None
+    gene_token: GeneToken | None = None
+    ac: StrictStr | None = None
 
 
 class ProteinSubstitutionClassification(Classification, Substitution):

@@ -1,7 +1,7 @@
 """Module for Tokenization."""
 
 from abc import ABC, abstractmethod
-from typing import ClassVar, Dict, Optional, Tuple
+from typing import ClassVar
 
 from cool_seq_tool.schemas import AnnotationLayer
 
@@ -11,12 +11,12 @@ from variation.schemas.token_response_schema import Token
 class Tokenizer(ABC):
     """The tokenizer class."""
 
-    coord_types: ClassVar[Dict[str, str]] = {
+    coord_types: ClassVar[dict[str, str]] = {
         k: v.value for k, v in AnnotationLayer.__members__.items()
     }
 
     @abstractmethod
-    def match(self, input_string: str) -> Optional[Token]:
+    def match(self, input_string: str) -> Token | None:
         """Return tokens that match the input string.
 
         :param input_string: Input string
@@ -25,8 +25,8 @@ class Tokenizer(ABC):
         raise NotImplementedError
 
     def strip_coord_prefix(
-        self, input_string: str, match_coord_type: Optional[AnnotationLayer] = None
-    ) -> Tuple[Optional[AnnotationLayer], Optional[str]]:
+        self, input_string: str, match_coord_type: AnnotationLayer | None = None
+    ) -> tuple[AnnotationLayer | None, str | None]:
         """Strip parentheses and coordinate type from string
 
         :param input_string: Input string
@@ -42,7 +42,7 @@ class Tokenizer(ABC):
         def _strip(
             coord_type: str,
             string: str,
-            match_coord_type: Optional[AnnotationLayer] = None,
+            match_coord_type: AnnotationLayer | None = None,
         ) -> str:
             """Strip parentheses and coordinate type from string
 
