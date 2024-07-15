@@ -1,4 +1,5 @@
 """Module for generating VRS objects"""
+
 from typing import Dict, List, Optional, Tuple, Union
 
 from cool_seq_tool.handlers import SeqRepoAccess

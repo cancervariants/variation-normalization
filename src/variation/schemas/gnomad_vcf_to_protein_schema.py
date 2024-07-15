@@ -1,4 +1,5 @@
 """Module for gnomad vcf to protein response schema"""
+
 from typing import Optional
 
 from ga4gh.core import core_models

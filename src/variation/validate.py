@@ -1,4 +1,5 @@
 """Module for Validation."""
+
 from typing import List
 
 from cool_seq_tool.handlers import SeqRepoAccess

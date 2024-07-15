@@ -1,4 +1,5 @@
 """Module for Classification methods."""
+
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
@@ -35,10 +36,8 @@ class Classifier(ABC):
             matters, to represent a given classification. `False`, otherwise.
         """
         token_types = [t.token_type for t in tokens]
-        exact_matches: List[List[str]] = []
-
-        for candidate in self.exact_match_candidates():
-            if token_types == candidate:
-                exact_matches.append(candidate)
+        exact_matches: List[List[TokenType]] = [
+            c for c in self.exact_match_candidates() if token_types == c
+        ]
 
         return len(exact_matches) == 1

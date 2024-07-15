@@ -1,4 +1,5 @@
 """Module for testing the normalize endpoint."""
+
 from datetime import datetime
 
 import pytest
@@ -507,7 +508,7 @@ def gnomad_vcf_genomic_delins5():
 
 
 @pytest.mark.asyncio()
-async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a, tp53_g262c):
+async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     """Test that protein substitutions normalize correctly."""
     resp = await test_handler.normalize("     BRAF      V600E    ")
     assertion_checks(resp, braf_v600e, check_vrs_id=True)

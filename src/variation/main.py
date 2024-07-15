@@ -1,4 +1,5 @@
 """Main application for FastAPI."""
+
 import datetime
 import logging
 import traceback
@@ -63,7 +64,7 @@ query_handler = QueryHandler()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator:
+async def lifespan(app: FastAPI) -> AsyncGenerator:  # noqa: ARG001
     """Configure FastAPI instance lifespan.
 
     :param app: FastAPI app instance
@@ -454,7 +455,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> dict:
     variations = []
     if allele:
         try:
-            variations = query_handler.vrs_python_tlr._to_hgvs(
+            variations = query_handler.vrs_python_tlr._to_hgvs(  # noqa: SLF001
                 allele, namespace=request_body.get("namespace") or "refseq"
             )
         except ValueError as e:

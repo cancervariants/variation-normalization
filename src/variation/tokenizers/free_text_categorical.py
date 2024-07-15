@@ -1,4 +1,5 @@
 """A module for free text categorical variation tokenization"""
+
 from typing import Optional
 
 from variation.schemas.token_response_schema import AmplificationToken
