@@ -2,6 +2,7 @@
 from typing import List
 
 from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.mappers import LiftOver
 from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
@@ -41,6 +42,7 @@ class Validate:
         transcript_mappings: TranscriptMappings,
         uta: UtaDatabase,
         gene_normalizer: GeneQueryHandler,
+        liftover: LiftOver
     ) -> None:
         """Initialize the validate class. Will create an instance variable,
         `validators`, which is a list of Validators for supported variation types.
@@ -49,8 +51,9 @@ class Validate:
         :param transcript_mappings: Access to transcript mappings
         :param uta: Access to UTA queries
         :param gene_normalizer: Access to gene-normalizer
+        :param liftover: Instance to provide mapping between human genome assemblies
         """
-        params = [seqrepo_access, transcript_mappings, uta, gene_normalizer]
+        params = [seqrepo_access, transcript_mappings, uta, gene_normalizer, liftover]
         self.validators: List[Validator] = [
             ProteinSubstitution(*params),
             CdnaSubstitution(*params),
