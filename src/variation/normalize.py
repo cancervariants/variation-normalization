@@ -7,6 +7,7 @@ from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.sources import UtaDatabase
 from ga4gh.vrs import models
 
+from variation import __version__
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema import (
@@ -25,7 +26,6 @@ from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.utils import update_warnings_for_no_resp
 from variation.validate import Validate
-from variation import __version__
 
 
 class Normalize(ToVRS):
