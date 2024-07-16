@@ -11,6 +11,20 @@ from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
 # Define deletion alt types
 DELS = {AltType.DELETION_AMBIGUOUS, AltType.DELETION}
 
+# Define supported alt types for HGVS Dup Del Mode
+DELS_DUPS = {AltType.DELETION, AltType.DELETION_AMBIGUOUS, AltType.DUPLICATION, AltType.DUPLICATION_AMBIGUOUS}
+
+
+def _check_supported_alt_type(alt_type: AltType) -> None:
+    """Check that ``alt_type`` is one of ``DUP_DELS``
+
+    :param alt_type: Alteration type
+    :raises ValueError: If ``alt_type`` not one of ``DELS_DUPS``.
+    """
+    if alt_type not in DELS_DUPS:
+        err_msg = f"`alt_type` must be one of: {DELS_DUPS}"
+        raise ValueError(err_msg)
+
 
 class HGVSDupDelMode:
     """Class for handling how to interpret HGVS duplications and deletions."""
@@ -24,10 +38,7 @@ class HGVSDupDelMode:
 
     def default_mode(
         self,
-        alt_type: AltType.DELETION
-        | AltType.DELETION_AMBIGUOUS
-        | AltType.DUPLICATION
-        | AltType.DUPLICATION_AMBIGUOUS,
+        alt_type: AltType,
         location: dict,
         vrs_seq_loc_ac: str,
         baseline_copies: int | None = None,
@@ -43,14 +54,17 @@ class HGVSDupDelMode:
         else
             allele
 
-        :param alt_type: The type of alteration
+        :param alt_type: The type of alteration. Must be one of ``DELS_DUPS``.
         :param location: Sequence Location object
         :param vrs_seq_loc_ac: Accession used in VRS Sequence Location
         :param baseline_copies: Baseline copies for Copy Number Count variation
         :param copy_change: copy change for Copy Number Change Variation
         :param alt: Alteration
+        :raises ValueError: If ``alt_type`` not one of ``DELS_DUPS``.
         :return: VRS Variation object represented as a dict
         """
+        _check_supported_alt_type(alt_type)
+
         variation = None
         if not baseline_copies and alt_type in AMBIGUOUS_REGIONS:
             variation = self.copy_number_change_mode(alt_type, location, copy_change)
@@ -62,20 +76,20 @@ class HGVSDupDelMode:
 
     def copy_number_count_mode(
         self,
-        alt_type: AltType.DELETION
-        | AltType.DELETION_AMBIGUOUS
-        | AltType.DUPLICATION
-        | AltType.DUPLICATION_AMBIGUOUS,
+        alt_type: AltType,
         location: dict,
         baseline_copies: int,
     ) -> dict:
         """Return a VRS Copy Number Variation.
 
-        :param alt_type: The type of alteration
+        :param alt_type: The type of alteration. Must be one of ``DELS_DUPS``.
         :param location: VRS SequenceLocation
         :param baseline_copies: Baseline copies number
+        :raises ValueError: If ``alt_type`` not one of ``DELS_DUPS``.
         :return: VRS Copy Number object represented as a dict
         """
+        _check_supported_alt_type(alt_type)
+
         copies = baseline_copies - 1 if alt_type in DELS else baseline_copies + 1
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
@@ -85,20 +99,20 @@ class HGVSDupDelMode:
 
     def copy_number_change_mode(
         self,
-        alt_type: AltType.DELETION
-        | AltType.DELETION_AMBIGUOUS
-        | AltType.DUPLICATION
-        | AltType.DUPLICATION_AMBIGUOUS,
+        alt_type: AltType,
         location: dict,
         copy_change: models.CopyChange | None = None,
     ) -> dict:
         """Return copy number change variation
 
-        :param alt_type: The type of alteration
+        :param alt_type: The type of alteration. Must be one of ``DELS_DUPS``.
         :param location: VRS SequenceLocation
         :param copy_change: The copy change
+        :raises ValueError: If ``alt_type`` not one of ``DELS_DUPS``.
         :return: Copy Number Change variation as a dict
         """
+        _check_supported_alt_type(alt_type)
+
         if not copy_change:
             copy_change = (
                 models.CopyChange.EFO_0030067
