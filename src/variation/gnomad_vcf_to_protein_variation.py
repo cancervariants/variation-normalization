@@ -10,6 +10,7 @@ from ga4gh.vrs import models, normalize
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
 
+from variation import __version__
 from variation.classify import Classify
 from variation.schemas.classification_response_schema import Nomenclature
 from variation.schemas.gnomad_vcf_to_protein_schema import GnomadVcfToProteinService
@@ -19,7 +20,6 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.validate import Validate
-from variation import __version__
 
 
 class GnomadVcfToProteinError(Exception):

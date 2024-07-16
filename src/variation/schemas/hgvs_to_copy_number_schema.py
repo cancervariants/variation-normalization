@@ -3,8 +3,8 @@
 from ga4gh.vrs import models
 from pydantic import ConfigDict, StrictStr
 
-from variation.schemas.normalize_response_schema import ServiceResponse
 from variation import __version__
+from variation.schemas.normalize_response_schema import ServiceResponse
 
 
 class HgvsToCopyNumberCountService(ServiceResponse):
