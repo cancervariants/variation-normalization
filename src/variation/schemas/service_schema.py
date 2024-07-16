@@ -7,7 +7,7 @@ from cool_seq_tool.schemas import ToGenomicService as ToGenomic
 from pydantic import ConfigDict
 
 from variation.schemas.normalize_response_schema import ServiceMeta
-from variation.version import __version__
+from variation import __version__
 
 
 class ClinVarAssembly(str, Enum):
