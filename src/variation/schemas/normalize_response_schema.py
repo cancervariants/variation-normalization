@@ -7,7 +7,7 @@ from typing import Literal
 from ga4gh.vrs import models
 from pydantic import BaseModel, ConfigDict, StrictStr, model_validator
 
-from variation.version import __version__
+from variation import __version__
 
 
 class HGVSDupDelModeOption(str, Enum):

@@ -25,7 +25,7 @@ from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.utils import update_warnings_for_no_resp
 from variation.validate import Validate
-from variation.version import __version__
+from variation import __version__
 
 
 class Normalize(ToVRS):
