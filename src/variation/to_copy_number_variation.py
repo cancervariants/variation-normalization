@@ -43,7 +43,7 @@ from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.utils import get_priority_sequence_location
 from variation.validate import Validate
-from variation.version import __version__
+from variation import __version__
 
 VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_DUPLICATION,
