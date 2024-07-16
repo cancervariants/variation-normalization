@@ -12,7 +12,12 @@ from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
 DELS = {AltType.DELETION_AMBIGUOUS, AltType.DELETION}
 
 # Define supported alt types for HGVS Dup Del Mode
-DELS_DUPS = {AltType.DELETION, AltType.DELETION_AMBIGUOUS, AltType.DUPLICATION, AltType.DUPLICATION_AMBIGUOUS}
+DELS_DUPS = {
+    AltType.DELETION,
+    AltType.DELETION_AMBIGUOUS,
+    AltType.DUPLICATION,
+    AltType.DUPLICATION_AMBIGUOUS,
+}
 
 
 def _check_supported_alt_type(alt_type: AltType) -> None:
