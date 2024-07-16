@@ -1,7 +1,0 @@
-[run]
-source =
-   variant/
-   tests/
-omit =
-   setup.py
-   docs/*
