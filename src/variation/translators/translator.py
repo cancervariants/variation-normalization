@@ -164,7 +164,7 @@ class Translator(ABC):
         start_pos: int,
         end_pos: int,
         alt_type: AltType,
-        coordinate_type: AnnotationLayer.PROTEIN | AnnotationLayer.CDNA,
+        coordinate_type: AnnotationLayer,
         errors: list[str],
         cds_start: int | None = None,
         ref: str | None = None,
@@ -184,8 +184,15 @@ class Translator(ABC):
             `coordinate_type == AnnotationLayer.CDNA`.
         :param ref: Expected reference sequence
         :param alt: Expected change
+        :raises ValueError: If ``coordinate`` type not one of
+            ``AnnotationLayer.PROTEIN`` or ``AnnotationLayer.CDNA``
         :return: Translation result if successful. Else, `None`
         """
+        supported_coordinate_types = {AnnotationLayer.PROTEIN, AnnotationLayer.CDNA}
+        if coordinate_type not in supported_coordinate_types:
+            err_msg = f"`coordinate_type` must be one of {supported_coordinate_types}"
+            raise ValueError(err_msg)
+
         vrs_allele = None
         vrs_seq_loc_ac = None
         vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
