@@ -3,8 +3,8 @@
 from ga4gh.vrs import models
 from pydantic import BaseModel, ConfigDict, StrictStr
 
+from variation import __version__
 from variation.schemas.normalize_response_schema import ServiceMeta
-from variation.version import __version__
 
 
 class ToVRSService(BaseModel):

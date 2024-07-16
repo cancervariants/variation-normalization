@@ -19,7 +19,7 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.validate import Validate
-from variation.version import __version__
+from variation import __version__
 
 
 class GnomadVcfToProteinError(Exception):
