@@ -14,6 +14,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
 from pydantic import ValidationError
 
+from variation import __version__
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.classification_response_schema import ClassificationType
@@ -43,7 +44,6 @@ from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.utils import get_priority_sequence_location
 from variation.validate import Validate
-from variation import __version__
 
 VALID_CLASSIFICATION_TYPES = [
     ClassificationType.GENOMIC_DUPLICATION,

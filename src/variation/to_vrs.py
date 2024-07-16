@@ -6,6 +6,7 @@ from urllib.parse import unquote
 from cool_seq_tool.handlers import SeqRepoAccess
 from ga4gh.vrs import models
 
+from variation import __version__
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
 from variation.schemas.normalize_response_schema import (
@@ -18,7 +19,6 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
 from variation.validate import Validate
-from variation import __version__
 from variation.vrs_representation import VRSRepresentation
 
 
