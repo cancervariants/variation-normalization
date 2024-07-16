@@ -6,8 +6,8 @@ from cool_seq_tool.schemas import ToCdnaService as ToCdna
 from cool_seq_tool.schemas import ToGenomicService as ToGenomic
 from pydantic import ConfigDict
 
-from variation.schemas.normalize_response_schema import ServiceMeta
 from variation import __version__
+from variation.schemas.normalize_response_schema import ServiceMeta
 
 
 class ClinVarAssembly(str, Enum):
