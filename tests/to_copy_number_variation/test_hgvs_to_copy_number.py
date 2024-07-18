@@ -29,6 +29,7 @@ def genomic_dup1_37_loc():
         },
         "start": 49568694,
         "end": 49568695,
+        "sequence": "G",
         "type": "SequenceLocation",
     }
 
@@ -76,6 +77,7 @@ def genomic_dup2_37_loc():
         },
         "start": 33229406,
         "end": 33229410,
+        "sequence": "TCTA",
         "type": "SequenceLocation",
     }
 
@@ -344,6 +346,7 @@ def genomic_del1_37_loc():
         },
         "start": 10191494,
         "end": 10191495,
+        "sequence": "T",
         "type": "SequenceLocation",
     }
 
@@ -391,6 +394,7 @@ def genomic_del2_37_loc():
         },
         "start": 10188278,
         "end": 10188297,
+        "sequence": "ATGTTGACGGACAGCCTAT",
         "type": "SequenceLocation",
     }
 

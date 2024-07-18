@@ -23,6 +23,7 @@ def mmel1_l30m():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.iQ8F_pnsiQOLohiV2qh3OWRZiftUt8jZ",
             },
+            "sequence": "L",
             "type": "SequenceLocation",
         },
         "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
@@ -42,6 +43,7 @@ def cdk11a_e314del():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.N728VSRRMHJ1SrhJgKqJOCaa3l5Z4sqm",
             },
+            "sequence": "EEEEEEEEEEEEE",
             "type": "SequenceLocation",
         },
         "state": {
@@ -66,6 +68,7 @@ def protein_insertion2():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.qgIh8--4F6IpxRwX_lVtD2BhepH5B5Ef",
             },
+            "Sequence": "Q",
             "type": "SequenceLocation",
         },
         "state": {"sequence": "R", "type": "LiteralSequenceExpression"},
@@ -84,6 +87,7 @@ def atad3a_loc():
             "type": "SequenceReference",
             "refgetAccession": "SQ.MHPOY_7fv8V9SktyvaTxulVFSK6XCxM8",
         },
+        "sequence": "I",
         "type": "SequenceLocation",
     }
 
@@ -156,6 +160,7 @@ def kras_g12d():
             },
             "start": 11,
             "end": 12,
+            "sequence": "G",
         },
         "state": {"type": "LiteralSequenceExpression", "sequence": "D"},
     }
@@ -177,6 +182,7 @@ def multi_nuc_sub_pos():
             },
             "start": 242,
             "end": 244,
+            "sequence": "LP",
         },
         "state": {"type": "LiteralSequenceExpression", "sequence": "PS"},
     }
@@ -198,6 +204,7 @@ def multi_nuc_sub_neg():
             },
             "start": 235,
             "end": 236,
+            "sequence": "S",
         },
         "state": {"type": "LiteralSequenceExpression", "sequence": "G"},
     }
@@ -217,6 +224,7 @@ def delins_pos():
             },
             "start": 746,
             "end": 752,
+            "sequence": "LREATS",
         },
         "state": {"type": "LiteralSequenceExpression", "sequence": "Q"},
     }
@@ -236,6 +244,7 @@ def delins_neg():
             },
             "start": 239,
             "end": 259,
+            "sequence": "PRLLFPTNSSSHLVALQGQP",
         },
         "state": {"type": "LiteralSequenceExpression", "sequence": "TLTA"},
     }
@@ -266,7 +275,6 @@ async def test_substitution(
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-A-T")
     assertion_checks(resp, braf_v600e, check_vrs_id=True)
     assert resp.gene_context
-    assert resp.vrs_ref_allele_seq == "V"
     assert resp.warnings == []
 
     # Reading Frame 3, Negative Strand
@@ -312,7 +320,6 @@ async def test_reference_agree(test_handler, vhl_reference_agree):
     # https://www.ncbi.nlm.nih.gov/clinvar/variation/379039/?new_evidence=true
     resp = await test_handler.gnomad_vcf_to_protein("3-10142030-C-T")
     assertion_checks(resp, vhl_reference_agree)
-    assert resp.vrs_ref_allele_seq == "P"
     assert resp.gene_context
     assert resp.warnings == []
 
@@ -323,14 +330,14 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
     # positive strand (CA645561585)
     resp = await test_handler.gnomad_vcf_to_protein("7-55181319-C-CGGGTTA")
     assertion_checks(resp, protein_insertion)
-    assert resp.vrs_ref_allele_seq is None
+    assert resp.variation.location.sequence is None
     assert resp.gene_context
     assert resp.warnings == []
 
     # negative strand (CA860540)
     resp = await test_handler.gnomad_vcf_to_protein("1-53327836-A-AGCC")
     assertion_checks(resp, protein_insertion2)
-    assert resp.vrs_ref_allele_seq is None
+    assert resp.variation.location.sequence is None
     assert resp.gene_context
     assert resp.warnings == []
 
@@ -340,7 +347,6 @@ async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del)
     """Test that deletion queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range)
-    assert resp.vrs_ref_allele_seq == "LRENT"
     assert resp.gene_context
     assert resp.warnings == []
 
@@ -356,7 +362,6 @@ async def test_delins(test_handler, delins_pos, delins_neg):
     # CA645561524, Positive Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-55174776-TTAAGAGAAGCAACATCT-CAA")
     assertion_checks(resp, delins_pos)
-    assert resp.vrs_ref_allele_seq == "LREATS"
     assert resp.gene_context
 
     # ClinVar ID 1217291, Negative Strand
@@ -364,7 +369,6 @@ async def test_delins(test_handler, delins_pos, delins_neg):
         "X-153870419-GCTGCCCCTGCAAGGCCACCAGGTGGCTGCTGGAGTTGGTGGGGAAGAGCAGGCGCGG-CTGTCAATGT"
     )
     assertion_checks(resp, delins_neg)
-    assert resp.vrs_ref_allele_seq == "PRLLFPTNSSSHLVALQGQP"
     assert resp.gene_context
 
     # CA16602420. Example where protein gene not found, but cDNA gene found
@@ -379,7 +383,6 @@ async def test_invalid(test_handler):
     """Test that invalid queries return correct response"""
     resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation is None
-    assert resp.vrs_ref_allele_seq is None
     assert resp.gene_context is None
     assert resp.warnings == [
         "BRAF V600E is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
@@ -387,12 +390,10 @@ async def test_invalid(test_handler):
 
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation is None
-    assert resp.vrs_ref_allele_seq is None
     assert resp.gene_context is None
     assert set(resp.warnings) == {"Unable to get cDNA and protein representation"}
 
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation is None
-    assert resp.vrs_ref_allele_seq is None
     assert resp.gene_context is None
     assert resp.warnings == ["20-2-TC-TG is not a valid gnomad vcf query"]

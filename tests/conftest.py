@@ -143,6 +143,7 @@ def braf_600loc():
             "type": "SequenceReference",
             "refgetAccession": "SQ.cQvw4UsHHRRlogxbWCB8W-mKD4AraM9y",
         },
+        "sequence": "V",
         "type": "SequenceLocation",
     }
 
@@ -172,6 +173,7 @@ def vhl_reference_agree():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.z-Oa0pZkJ6GHJHOYM7h5mY_umc0SJzTu",
             },
+            "sequence": "P",
             "type": "SequenceLocation",
         },
         "state": {"sequence": "P", "type": "LiteralSequenceExpression"},
@@ -212,6 +214,7 @@ def protein_deletion_np_range():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.AF1UFydIo02-bMplonKSfxlWY2q6ze3m",
             },
+            "sequence": "LRENT",
             "type": "SequenceLocation",
         },
         "state": {
@@ -236,6 +239,7 @@ def braf_v600e_genomic_sub():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
             },
+            "sequence": "A",
             "type": "SequenceLocation",
         },
         "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
@@ -255,6 +259,7 @@ def genomic_dup1_seq_loc_normalized():
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
         },
+        "sequence": "GG",
         "start": 49531260,
         "end": 49531262,
         "type": "SequenceLocation",
@@ -276,6 +281,7 @@ def genomic_dup1_seq_loc_not_normalized():
         },
         "start": 49531261,
         "end": 49531262,
+        "sequence": "G",
         "type": "SequenceLocation",
     }
 
@@ -304,6 +310,7 @@ def genomic_dup2_seq_loc_normalized():
         },
         "start": 33211289,
         "end": 33211293,
+        "sequence": "TCTA",
         "type": "SequenceLocation",
     }
 
@@ -385,6 +392,7 @@ def genomic_del1_seq_loc():
         },
         "start": 10149810,
         "end": 10149811,
+        "sequence": "T",
         "type": "SequenceLocation",
     }
 
@@ -424,6 +432,7 @@ def genomic_del2_seq_loc():
             "type": "SequenceReference",
             "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
         },
+        "sequence": "ATGTTGACGGACAGCCTAT",
         "start": 10146594,
         "end": 10146613,
         "type": "SequenceLocation",
@@ -509,6 +518,7 @@ def grch38_genomic_insertion_seq_loc():
             "type": "SequenceReference",
             "refgetAccession": "SQ.dLZ15tNO1Ur0IcGjwc3Sdi_0A6Yf4zm7",
         },
+        "sequence": "TACGTGATGGCT",
         "type": "SequenceLocation",
     }
 
@@ -602,7 +612,7 @@ def assertion_checks(normalize_response, test_variation, check_vrs_id=False):
     if not check_vrs_id:
         _vrs_id_and_digest_existence_checks(actual)
 
-    expected = test_variation.copy().model_dump(exclude_none=True)
+    expected = test_variation.model_copy().model_dump(exclude_none=True)
     if not check_vrs_id:
         _delete_id_and_digest(expected)
         _delete_id_and_digest(expected["location"])
@@ -624,7 +634,7 @@ def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False):
     if not check_vrs_id:
         _vrs_id_and_digest_existence_checks(actual, prefix=prefix)
 
-    expected = test_fixture.copy().model_dump(exclude_none=True)
+    expected = test_fixture.model_copy().model_dump(exclude_none=True)
     if not check_vrs_id:
         _delete_id_and_digest(expected)
         _delete_id_and_digest(expected["location"])

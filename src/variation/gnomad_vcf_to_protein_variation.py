@@ -4,7 +4,7 @@ import datetime
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
-from cool_seq_tool.schemas import ResidueMode, Strand
+from cool_seq_tool.schemas import Strand
 from ga4gh.core import domain_models, ga4gh_identify
 from ga4gh.vrs import models, normalize
 from gene.query import QueryHandler as GeneQueryHandler
@@ -19,6 +19,7 @@ from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
+from variation.utils import get_vrs_loc_seq
 from variation.validate import Validate
 
 
@@ -372,11 +373,17 @@ class GnomadVcfToProteinVariation:
         return aa
 
     def _get_protein_representation(
-        self, ga4gh_seq_id: str, aa_start_pos: int, aa_end_pos: int, aa_alt: str
+        self,
+        ga4gh_seq_id: str,
+        p_ac: str,
+        aa_start_pos: int,
+        aa_end_pos: int,
+        aa_alt: str,
     ) -> models.Allele:
         """Create VRS Allele for protein representation
 
         :param ga4gh_seq_id: GA4GH identifier for protein accession
+        :param p_ac: RefSeq or Ensembl protein accession
         :param aa_start_pos: Protein start position (inter-residue coordinates)
         :param aa_end_pos: Protein end position (inter-residue coordinates)
         :param aa_alt: Protein alternate sequence
@@ -402,6 +409,12 @@ class GnomadVcfToProteinVariation:
             msg = f"VRS-Python unable to normalize allele: {e}"
             raise GnomadVcfToProteinError(msg) from e
 
+        loc_seq = get_vrs_loc_seq(
+            self.seqrepo_access, p_ac, variation.location.start, variation.location.end
+        )
+        if loc_seq:
+            variation.location.sequence = models.SequenceString(root=loc_seq)
+
         # Add VRS digests for VRS Allele and VRS Sequence Location
         variation.id = ga4gh_identify(variation)
         variation.location.id = ga4gh_identify(variation.location)
@@ -419,25 +432,6 @@ class GnomadVcfToProteinVariation:
             if gene_norm_resp.match_type != GeneMatchType.NO_MATCH
             else None
         )
-
-    def _get_vrs_ref_allele_seq(
-        self, location: models.SequenceLocation, p_ac: str
-    ) -> str | None:
-        """Return reference sequence given a VRS location.
-
-        :param location: VRS Location object
-        :param identifier: Identifier for allele
-        :return: VRS ref seq allele
-        """
-        start = location.start
-        end = location.end
-        if isinstance(start, int) and isinstance(end, int) and (start != end):
-            ref, _ = self.seqrepo_access.get_reference_sequence(
-                p_ac, start, end, residue_mode=ResidueMode.INTER_RESIDUE
-            )
-        else:
-            ref = None
-        return ref
 
     async def gnomad_vcf_to_protein(self, vcf_query: str) -> GnomadVcfToProteinService:
         """Get protein consequence for gnomAD-VCF like expression
@@ -576,7 +570,7 @@ class GnomadVcfToProteinVariation:
         # Create the protein VRS Allele
         try:
             variation = self._get_protein_representation(
-                p_ga4gh_seq_id, aa_start_pos, aa_end_pos, aa_alt
+                p_ga4gh_seq_id, p_ac, aa_start_pos, aa_end_pos, aa_alt
             )
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
@@ -591,7 +585,6 @@ class GnomadVcfToProteinVariation:
         return GnomadVcfToProteinService(
             variation_query=vcf_query,
             variation=variation,
-            vrs_ref_allele_seq=self._get_vrs_ref_allele_seq(variation.location, p_ac),
             gene_context=gene_context,
             warnings=warnings,
             service_meta_=ServiceMeta(
