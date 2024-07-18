@@ -42,7 +42,7 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import get_priority_sequence_location
+from variation.utils import get_priority_sequence_location, get_vrs_loc_seq
 from variation.validate import Validate
 
 VALID_CLASSIFICATION_TYPES = [
@@ -184,7 +184,14 @@ class ToCopyNumberVariation(ToVRS):
                 do_liftover=do_liftover,
             )
             if translations:
-                variation = translations[0].vrs_variation
+                translation_result = translations[0]
+                variation = translation_result.vrs_variation
+                variation["location"]["sequence"] = get_vrs_loc_seq(
+                    self.seqrepo_access,
+                    translation_result.vrs_seq_loc_ac,
+                    variation["location"]["start"],
+                    variation["location"]["end"],
+                )
 
         if variation:
             if copy_number_type == HGVSDupDelModeOption.COPY_NUMBER_COUNT:
@@ -493,6 +500,9 @@ class ToCopyNumberVariation(ToVRS):
             sequenceReference=models.SequenceReference(refgetAccession=sequence),
             start=start_vrs,
             end=end_vrs,
+            sequence=get_vrs_loc_seq(
+                self.seqrepo_access, accession, start_vrs, end_vrs
+            ),
         )
         seq_loc.id = ga4gh_identify(seq_loc)
 

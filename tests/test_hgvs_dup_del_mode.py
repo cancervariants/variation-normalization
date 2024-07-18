@@ -56,6 +56,7 @@ def genomic_dup1_free_text_seq_loc_normalized():
         },
         "start": 1032,
         "end": 1034,
+        "sequence": "GG",
         "type": "SequenceLocation",
     }
 
@@ -70,6 +71,7 @@ def genomic_dup1_free_text_seq_loc_not_normalized():
         },
         "start": 1033,
         "end": 1034,
+        "sequence": "G",
         "type": "SequenceLocation",
     }
 
@@ -138,6 +140,7 @@ def seq_loc_gt_100_bp():
         },
         "start": 33211289,
         "end": 33211490,
+        "sequence": "TCTACTTCTTCCCACCAAAGCATTTTGAAAAGTGTATATCAAGGCAGCGATAAAAAAAACCTGGTAAAAGTTCTTCAAACTTTATTGCTCCAGTAGGCTTAAAAACAATGAGAAACCAACAAACTTCAGCAGCTTTAAAAAAAGTAACACTTCAGTTTTTCCTATTCGTTTTTCTCCGAAGGTAATTGCCTCCCAGATCTG",
         "type": "SequenceLocation",
     }
 
@@ -167,6 +170,7 @@ def genomic_dup2_free_text_seq_loc():
         },
         "start": 256,
         "end": 260,
+        "sequence": "TAGA",
         "type": "SequenceLocation",
     }
 
@@ -399,6 +403,7 @@ def genomic_del1_free_text_seq_loc():
         },
         "start": 557,
         "end": 558,
+        "sequence": "T",
         "type": "SequenceLocation",
     }
 
@@ -513,6 +518,7 @@ def genomic_del2_free_text_seq_loc():
         },
         "start": 491,
         "end": 510,
+        "sequence": "ATGTTGACGGACAGCCTAT",
         "type": "SequenceLocation",
     }
 
