@@ -7,7 +7,9 @@ from typing import Literal
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
 from cool_seq_tool.handlers import SeqRepoAccess
+from cool_seq_tool.schemas import ResidueMode
 from ga4gh.core import domain_models
+from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import AmbiguousRegexType
 from variation.schemas.classification_response_schema import AmbiguousType
@@ -209,3 +211,29 @@ def get_refget_accession(
 
         refget_accession = ids[0].split("ga4gh:")[-1]
     return refget_accession
+
+
+def get_vrs_loc_seq(
+    seqrepo_access: SeqRepoAccess,
+    identifier: str,
+    start: int | models.Range | None,
+    end: int | models.Range | None,
+) -> str | None:
+    """Get the literal sequence encoded by the ``identifier`` at the start and end
+    coordinates.
+
+    Does not support locations that do not have both start/end as ints
+
+    :param seqrepo_access: Access to SeqRepo client
+    :param identifier: Accession for VRS Location (not ga4gh)
+    :param start: Start position (inter-residue)
+    :param end: End position (inter-residue)
+    :return: Get the literal sequence at the given location
+    """
+    if isinstance(start, int) and isinstance(end, int) and (start != end):
+        ref, _ = seqrepo_access.get_reference_sequence(
+            identifier, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+        )
+    else:
+        ref = None
+    return ref or None  # get_reference_sequence can return empty str

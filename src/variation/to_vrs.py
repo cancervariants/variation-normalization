@@ -18,6 +18,7 @@ from variation.schemas.translation_response_schema import TranslationResult
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
 from variation.translate import Translate
+from variation.utils import get_vrs_loc_seq
 from variation.validate import Validate
 from variation.vrs_representation import VRSRepresentation
 
@@ -88,6 +89,31 @@ class ToVRS(VRSRepresentation):
 
         return translations, warnings
 
+    def _get_vrs_variations(self, translations: list[TranslationResult]) -> list[dict]:
+        """Get translated VRS Variations.
+
+        This method will also add ``sequence`` to the variation's location
+
+        :param translations: List of translation results
+        :return: List of unique VRS Variations
+        """
+        variations = []
+        _added_variation_ids = set()
+
+        # Ensure only unique VRS variations are in the list of variations returned
+        for tr in translations:
+            if tr.vrs_variation["id"] not in _added_variation_ids:
+                vrs_variation = tr.vrs_variation
+                vrs_variation["location"]["sequence"] = get_vrs_loc_seq(
+                    self.seqrepo_access,
+                    tr.vrs_seq_loc_ac,
+                    vrs_variation["location"]["start"],
+                    vrs_variation["location"]["end"],
+                )
+                variations.append(vrs_variation)
+                _added_variation_ids.add(vrs_variation["id"])
+        return variations
+
     async def to_vrs(self, q: str) -> ToVRSService:
         """Return a VRS-like representation of all validated variations for a query.
 
@@ -134,15 +160,6 @@ class ToVRS(VRSRepresentation):
             translations = []
             warnings = validation_summary.warnings
 
-        if not translations:
-            variations = []
-        else:
-            variations = []
-            # Ensure only unique VRS variations are in the list of variations returned
-            for tr in translations:
-                if tr.vrs_variation not in variations:
-                    variations.append(tr.vrs_variation)
-
         params["warnings"] = warnings
-        params["variations"] = variations
+        params["variations"] = self._get_vrs_variations(translations)
         return ToVRSService(**params)

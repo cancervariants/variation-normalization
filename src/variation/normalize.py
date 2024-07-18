@@ -10,6 +10,7 @@ from ga4gh.vrs import models
 from variation import __version__
 from variation.classify import Classify
 from variation.schemas.app_schemas import Endpoint
+from variation.schemas.classification_response_schema import ClassificationType
 from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     NormalizeService,
@@ -21,10 +22,11 @@ from variation.schemas.translation_response_schema import (
     TranslationResult,
     VrsSeqLocAcStatus,
 )
+from variation.schemas.validation_response_schema import ValidationSummary
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import update_warnings_for_no_resp
+from variation.utils import get_vrs_loc_seq, update_warnings_for_no_resp
 from variation.validate import Validate
 
 
@@ -138,6 +140,40 @@ class Normalize(ToVRS):
 
         return hgvs_dup_del_mode, warning
 
+    def _get_location_seq(
+        self,
+        validation_summary: ValidationSummary,
+        variation: dict,
+        priority_translation_result: TranslationResult,
+    ) -> str | None:
+        """Get reference sequence for a Sequence Location
+
+        Does not support:
+        - Ambiguous genomic deletions or duplications
+        - Amplifications
+        - Variations that are not Allele or Copy Number
+
+        :param validation_summary: Validation summary for classification containing
+            valid and invalid results
+        :param variation: VRS Variation object
+        :param priority_translation_result: Prioritized translation result
+        :return: Reference sequence for a sequence location if found
+        """
+        valid_result = validation_summary.valid_results[0]
+        classification_type = valid_result.classification.classification_type
+        if classification_type not in {
+            ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
+            ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
+            ClassificationType.AMPLIFICATION,
+        } and variation["type"] in {"Allele", "CopyNumberChange", "CopyNumberCount"}:
+            return get_vrs_loc_seq(
+                self.seqrepo_access,
+                priority_translation_result.vrs_seq_loc_ac,
+                variation["location"]["start"],
+                variation["location"]["end"],
+            )
+        return None
+
     async def normalize(
         self,
         q: str,
@@ -231,26 +267,11 @@ class Normalize(ToVRS):
                 try:
                     variation = translation_result.vrs_variation
                 except AttributeError as e:
-                    # vrs_ref_allele_seq = None
                     warnings.append(str(e))
                 else:
-                    pass
-                    # valid_result = validation_summary.valid_results[0]
-                    # classification_type = valid_result.classification.classification_type
-                    # if classification_type not in {
-                    #     ClassificationType.GENOMIC_DELETION_AMBIGUOUS,
-                    #     ClassificationType.GENOMIC_DUPLICATION_AMBIGUOUS,
-                    #     ClassificationType.AMPLIFICATION,
-                    # }:
-                    #     variation_type = variation["type"]
-                    #     if variation_type in {
-                    #         "Allele", "CopyNumberChange", "CopyNumberCount"
-                    #     }:
-                    #         vrs_ref_allele_seq = self.get_ref_allele_seq(
-                    #             variation["location"], translation_result.vrs_seq_loc_ac
-                    #         )
-                    # else:
-                    #     vrs_ref_allele_seq = None
+                    variation["location"]["sequence"] = self._get_location_seq(
+                        validation_summary, variation, translation_result
+                    )
 
                 if not variation:
                     update_warnings_for_no_resp(label, warnings)
