@@ -201,18 +201,18 @@ pytest tests/
 
 ### Docker Setup
 
-From the root directory , where Docker and docker-compose file are , run the following commands
+From the root directory , where Docker and docker-compose file are , run the following commands  
 
-docker-compose up -d db
-docker-compose up -d uta
-docker-compose up -d dynamodb-local
+*docker-compose up -d db
+*docker-compose up -d uta
+*docker-compose up -d dynamodb-local
 
 Wait for all container to start , Db service which is seqrepo container takes time and exits once the sequence download is over. 
 
 Before starting the Variation-normalizer service, check the following:
 
 * Db container(seqrepo) has finished downloading data and has exited.
-* UTA service has dispalyed the message " database system is ready to accept connections" in logs.
+* UTA service logs has dispalyed the message " database system is ready to accept connections" in logs.
 * Dynamodb container is up and running
 
 Start the Variation Normalizer container with the following commnad:
