@@ -126,16 +126,16 @@ class GenomicDelDupTranslator(Translator):
                 warnings.append(w)
                 return None
 
-            grch38_data = await self.get_grch38_data(
-                classification, errors, validation_result.accession
-            )
-            if assembly == ClinVarAssembly.GRCH37 and errors:
-                warnings += errors
-                return None
-            mane_genes = grch38_data.mane_genes
-
             # assembly is either 37 or 38
             if assembly == ClinVarAssembly.GRCH37:
+                grch38_data = await self.get_grch38_data(
+                    classification, errors, validation_result.accession
+                )
+                if errors:
+                    warnings += errors
+                    return None
+
+                mane_genes = grch38_data.mane_genes
                 pos0 = grch38_data.pos0 - 1
                 if grch38_data.pos1 is None:
                     pos1 = grch38_data.pos0
@@ -163,6 +163,12 @@ class GenomicDelDupTranslator(Translator):
                 pos0 = classification.pos0
                 pos1 = classification.pos1
                 ac = validation_result.accession
+                # `g_to_grch38` return inter-residue, but we want residue here
+                # so we increment start by 1
+                _grch38_data = await self.mane_transcript.g_to_grch38(
+                    ac, pos0 + 1, pos0, get_mane_genes=True
+                )
+                mane_genes = _grch38_data.mane_genes
                 grch38_data = DelDupData(
                     ac=ac, pos0=pos0, pos1=pos1, mane_genes=mane_genes
                 )
