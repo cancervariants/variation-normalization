@@ -87,9 +87,11 @@ class GenomicReferenceAgree(Translator):
                     vrs_seq_loc_ac = mane.refseq
                     coord_type = AnnotationLayer.CDNA
                     validation_result.classification = classification
+                    extensions = None
                 else:
                     vrs_seq_loc_ac = mane.ac
                     coord_type = AnnotationLayer.GENOMIC
+                    extensions = self._mane_gene_extensions(mane.mane_genes)
 
                 vrs_allele = self.vrs.to_vrs_allele(
                     vrs_seq_loc_ac,
@@ -100,6 +102,7 @@ class GenomicReferenceAgree(Translator):
                     warnings,
                     cds_start=mane.coding_start_site if gene else None,
                     residue_mode=ResidueMode.INTER_RESIDUE,
+                    extensions=extensions,
                 )
         else:
             vrs_seq_loc_ac = validation_result.accession

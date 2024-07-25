@@ -606,11 +606,24 @@ def _vrs_id_and_digest_existence_checks(vrs_obj_dict, prefix=None):
     assert location_vrs_id == f"ga4gh:SL.{location_vrs_digest}"
 
 
-def assertion_checks(normalize_response, test_variation, check_vrs_id=False):
+def assertion_checks(
+    normalize_response, test_variation, mane_genes_exts=False, check_vrs_id=False
+):
     """Check that normalize_response and test_variation are equal."""
     actual = normalize_response.variation.model_dump(exclude_none=True)
     if not check_vrs_id:
         _vrs_id_and_digest_existence_checks(actual)
+
+    # Check MANE genes existence
+    if mane_genes_exts:
+        extensions = actual.pop("extensions")
+        assert len(extensions) == 1
+
+        mane_genes_ext = extensions[0]
+        assert mane_genes_ext["name"] == "mane_genes"
+        for mane_gene in mane_genes_ext["value"]:
+            assert mane_gene["ncbi_gene_id"]
+            assert mane_gene["symbol"]
 
     expected = test_variation.model_copy().model_dump(exclude_none=True)
     if not check_vrs_id:
