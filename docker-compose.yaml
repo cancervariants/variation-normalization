@@ -1,5 +1,5 @@
 version: "3.9"
- 
+
 services:
   app:
     build:
@@ -10,29 +10,30 @@ services:
       AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
       AWS_DEFAULT_REGION: 'us-west-2'
       GENE_NORM_DB_URL: http://dynamodb-local:8000
- 
+      UTA_DB_URL: postgresql://anonymous@localhost:5432/uta/uta_20210129b
+
     links:
      - "dynamodb-local"
-    
+
     ports:
       - "8001:80"
-    
+
     volumes:
       - seqrepo_vol:/usr/local/share/seqrepo
     command: >
-      sh -c "pipenv run gene_norm_update --update_all --update_merged &&
-             cd src wait_for_db &&
-             pipenv run uvicorn variation.main:app --log-level debug --port 80 --host 0.0.0.0"
+      sh -c "gene_norm_update --update_all --update_merged &&
+             cd src &&
+             uvicorn variation.main:app --log-level debug --port 80 --host 0.0.0.0"
     depends_on:
-      - db
+      - seqrepo
       - dynamodb-local
       - uta
-      
-  db:
-    image: biocommons/seqrepo:latest
+
+  seqrepo:
+    image: biocommons/seqrepo:2024-02-20
     volumes:
       - seqrepo_vol:/usr/local/share/seqrepo
-  
+
   uta:
     image: biocommons/uta:uta_20210129b
     environment:
@@ -52,7 +53,9 @@ services:
     volumes:
      - "seqrepo_vol:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
- 
+
 volumes:
   seqrepo_vol:
+    external: true
   uta_vol:
+    external: true

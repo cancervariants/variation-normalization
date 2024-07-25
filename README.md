@@ -201,22 +201,28 @@ pytest tests/
 
 ### Docker Setup
 
-From the root directory , where Docker and docker-compose file are , run the following commands:  
+From the root directory, run the following commands:
 
-*docker-compose up -d db
-*docker-compose up -d uta
-*docker-compose up -d dynamodb-local
+```shell
+docker-compose up -d seqrepo
+docker-compose up -d uta
+docker-compose up -d dynamodb-local
+```
 
-Wait for all containers to start , Db service which is seqrepo container takes time and exits once the sequences download is over. 
+Wait for all containers to start, the `seqrepo` service is seqrepo container takes time and exits once the sequences download is over.
 
-Before starting the Variation-normalizer service, check the following:
+Before starting the Variation Normalizer service, check the following:
 
-* Db container(seqrepo) has finished downloading data and has exited.
-* UTA service has dispalyed the message " database system is ready to accept connections" in logs.
+* SeqRepo container has finished downloading data and has exited.
+* UTA service has displayed the message " database system is ready to accept connections" in logs.
 * Dynamodb container is up and running.
 
-Start the Variation Normalizer container with the following commnad: 
+Start the Variation Normalizer container with the following command:
 
+```shell
 docker-compose up -d app
+```
 
-The container will be up and running however , it downloads the gene normalizer data and that takes time. Please wait till the ETL for gene database is done. After that Variation normalizer is ready to use.
+> NOTE: This downloads the Gene Normalizer data and will take some time. Please wait
+> until the Gene Normalizer ETL is complete. Afterwards, the Variation Normalizer is
+ready to use
