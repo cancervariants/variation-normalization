@@ -89,7 +89,7 @@ class GenomicDelIns(Translator):
                     coord_type = AnnotationLayer.CDNA
                     validation_result.classification = classification
                 else:
-                    vrs_seq_loc_ac = mane.alt_ac
+                    vrs_seq_loc_ac = mane.ac
                     coord_type = AnnotationLayer.GENOMIC
 
                 vrs_allele = self.vrs.to_vrs_allele(

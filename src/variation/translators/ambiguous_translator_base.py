@@ -52,20 +52,24 @@ class AmbiguousTranslator(Translator):
         """
         pos0, pos1, pos2, pos3, new_ac = None, None, None, None, None
         if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
+            # `g_to_grch38` return inter-residue, but we want residue here
+            # so we increment start by 1
             grch38_pos0_pos1 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos1
+                ac, classification.pos0 + 1, classification.pos1
             )
             if grch38_pos0_pos1:
-                pos0, pos1 = grch38_pos0_pos1["pos"]
-                ac_pos0_pos1 = grch38_pos0_pos1["ac"]
+                pos0, pos1 = grch38_pos0_pos1.pos
+                ac_pos0_pos1 = grch38_pos0_pos1.ac
 
+                # `g_to_grch38` return inter-residue, but we want residue here
+                # so we increment start by 1
                 grch38_pos2_pos3 = await self.mane_transcript.g_to_grch38(
-                    ac, classification.pos2, classification.pos3
+                    ac, classification.pos2 + 1, classification.pos3
                 )
 
                 if grch38_pos2_pos3:
-                    pos2, pos3 = grch38_pos2_pos3["pos"]
-                    ac_pos2_pos3 = grch38_pos2_pos3["ac"]
+                    pos2, pos3 = grch38_pos2_pos3.pos
+                    ac_pos2_pos3 = grch38_pos2_pos3.ac
 
                     if ac_pos0_pos1 != ac_pos2_pos3:
                         errors.append(
@@ -78,22 +82,26 @@ class AmbiguousTranslator(Translator):
             AmbiguousType.AMBIGUOUS_2,
             AmbiguousType.AMBIGUOUS_5,
         }:
+            # `g_to_grch38` return inter-residue, but we want residue here
+            # so we increment start by 1
             grch38 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos1, classification.pos2
+                ac, classification.pos1 + 1, classification.pos2
             )
             if grch38:
-                pos1, pos2 = grch38["pos"]
-                new_ac = grch38["ac"]
+                pos1, pos2 = grch38.pos
+                new_ac = grch38.ac
         elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
+            # `g_to_grch38` return inter-residue, but we want residue here
+            # so we increment start by 1
             grch38 = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos2
+                ac, classification.pos0 + 1, classification.pos2
             )
             if grch38:
                 (
                     pos0,
                     pos2,
-                ) = grch38["pos"]
-                new_ac = grch38["ac"]
+                ) = grch38.pos
+                new_ac = grch38.ac
 
         if not new_ac:
             errors.append(f"Unable to find a GRCh38 accession for: {ac}")

@@ -272,8 +272,8 @@ class GnomadVcfToProteinVariation:
             for the original position change
         """
         # Get cDNA reading frame
-        start_reading_frame = self.mane_transcript._get_reading_frame(c_start_pos + 1)  # noqa: SLF001
-        end_reading_frame = self.mane_transcript._get_reading_frame(c_end_pos)  # noqa: SLF001
+        start_reading_frame = self.mane_transcript.get_reading_frame(c_start_pos + 1)
+        end_reading_frame = self.mane_transcript.get_reading_frame(c_end_pos)
 
         # Get genomic position range change
         # This ensures that there 3 nucleotides needed for codon
