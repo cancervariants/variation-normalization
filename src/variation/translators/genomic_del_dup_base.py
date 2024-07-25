@@ -54,19 +54,23 @@ class GenomicDelDupTranslator(Translator):
         pos0, pos1, new_ac = None, None, None
 
         if classification.pos1:
+            # `g_to_grch38` return inter-residue, but we want residue here
+            # so we increment start by 1
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos1
+                ac, classification.pos0 + 1, classification.pos1
             )
             if grch38_pos:
-                pos0, pos1 = grch38_pos["pos"]
-                new_ac = grch38_pos["ac"]
+                pos0, pos1 = grch38_pos.pos
+                new_ac = grch38_pos.ac
         else:
+            # `g_to_grch38` return inter-residue, but we want residue here
+            # so we increment start by 1
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0, classification.pos0
+                ac, classification.pos0 + 1, classification.pos0
             )
             if grch38_pos:
-                pos0, _ = grch38_pos["pos"]
-                new_ac = grch38_pos["ac"]
+                pos0, _ = grch38_pos.pos
+                new_ac = grch38_pos.ac
 
         if not new_ac:
             errors.append(f"Unable to find a GRCh38 accession for: {ac}")
