@@ -2,7 +2,7 @@
 
 from typing import NamedTuple
 
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import ManeGeneData, ResidueMode
 from ga4gh.vrs import models
 from pydantic import StrictInt, StrictStr, ValidationError
 
@@ -30,6 +30,7 @@ class DelDupData(NamedTuple):
     ac: StrictStr
     pos0: StrictInt
     pos1: StrictInt | None
+    mane_genes: list[ManeGeneData] | None
 
 
 class GenomicDelDupTranslator(Translator):
@@ -51,32 +52,34 @@ class GenomicDelDupTranslator(Translator):
         :param ac: Genomic RefSeq accession
         :return: Data on GRCh38 assembly if successful liftover. Else, `None`
         """
-        pos0, pos1, new_ac = None, None, None
+        pos0, pos1, new_ac, mane_genes = None, None, None, None
 
         if classification.pos1:
             # `g_to_grch38` return inter-residue, but we want residue here
             # so we increment start by 1
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0 + 1, classification.pos1
+                ac, classification.pos0 + 1, classification.pos1, get_mane_genes=True
             )
             if grch38_pos:
                 pos0, pos1 = grch38_pos.pos
                 new_ac = grch38_pos.ac
+                mane_genes = grch38_pos.mane_genes
         else:
             # `g_to_grch38` return inter-residue, but we want residue here
             # so we increment start by 1
             grch38_pos = await self.mane_transcript.g_to_grch38(
-                ac, classification.pos0 + 1, classification.pos0
+                ac, classification.pos0 + 1, classification.pos0, get_mane_genes=True
             )
             if grch38_pos:
                 pos0, _ = grch38_pos.pos
                 new_ac = grch38_pos.ac
+                mane_genes = grch38_pos.mane_genes
 
         if not new_ac:
             errors.append(f"Unable to find a GRCh38 accession for: {ac}")
 
         try:
-            data = DelDupData(ac=new_ac, pos0=pos0, pos1=pos1)
+            data = DelDupData(ac=new_ac, pos0=pos0, pos1=pos1, mane_genes=mane_genes)
         except ValidationError:
             data = None
         return data
@@ -114,6 +117,7 @@ class GenomicDelDupTranslator(Translator):
         vrs_variation = None
         vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
         residue_mode = ResidueMode.RESIDUE
+        mane_genes = None
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
             errors = []
@@ -131,6 +135,7 @@ class GenomicDelDupTranslator(Translator):
                     warnings += errors
                     return None
 
+                mane_genes = grch38_data.mane_genes
                 pos0 = grch38_data.pos0 - 1
                 if grch38_data.pos1 is None:
                     pos1 = grch38_data.pos0
@@ -158,7 +163,15 @@ class GenomicDelDupTranslator(Translator):
                 pos0 = classification.pos0
                 pos1 = classification.pos1
                 ac = validation_result.accession
-                grch38_data = DelDupData(ac=ac, pos0=pos0, pos1=pos1)
+                # `g_to_grch38` return inter-residue, but we want residue here
+                # so we increment start by 1
+                _grch38_data = await self.mane_transcript.g_to_grch38(
+                    ac, pos0 + 1, pos0, get_mane_genes=True
+                )
+                mane_genes = _grch38_data.mane_genes
+                grch38_data = DelDupData(
+                    ac=ac, pos0=pos0, pos1=pos1, mane_genes=mane_genes
+                )
 
             assembly = ClinVarAssembly.GRCH38
         else:
@@ -184,6 +197,7 @@ class GenomicDelDupTranslator(Translator):
             ac = grch38_data.ac
             pos0 = grch38_data.pos0 - 1
             pos1 = grch38_data.pos0 if grch38_data.pos1 is None else grch38_data.pos1
+            mane_genes = grch38_data.mane_genes
             residue_mode = ResidueMode.INTER_RESIDUE
             self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 
@@ -246,6 +260,7 @@ class GenomicDelDupTranslator(Translator):
                 baseline_copies=baseline_copies,
                 copy_change=copy_change,
                 alt=alt,
+                extensions=self._mane_gene_extensions(mane_genes),
             )
         elif endpoint_name == Endpoint.HGVS_TO_COPY_NUMBER_COUNT:
             vrs_variation = self.hgvs_dup_del_mode.copy_number_count_mode(

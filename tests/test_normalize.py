@@ -588,13 +588,13 @@ async def test_cdna_and_genomic_substitution(
     assertion_checks(resp, braf_v600e_nucleotide)
 
     resp = await test_handler.normalize("NC_000007.13:g.140453136A>T")
-    assertion_checks(resp, braf_v600e_genomic_sub)
+    assertion_checks(resp, braf_v600e_genomic_sub, mane_genes_exts=True)
 
     resp = await test_handler.normalize("7-140453136-A-T")  # 37
-    assertion_checks(resp, braf_v600e_genomic_sub)
+    assertion_checks(resp, braf_v600e_genomic_sub, mane_genes_exts=True)
 
     resp = await test_handler.normalize("7-140753336-A-T")  # 38
-    assertion_checks(resp, braf_v600e_genomic_sub)
+    assertion_checks(resp, braf_v600e_genomic_sub, mane_genes_exts=True)
 
     resp = await test_handler.normalize("BRAF V600E (g.140453136A>T)")
     assertion_checks(resp, braf_v600e_nucleotide)
@@ -604,7 +604,7 @@ async def test_cdna_and_genomic_substitution(
 
     # More than 1 gene (EGFR and EGFR-AS1)
     resp = await test_handler.normalize("NC_000007.13:g.55249071C>T")
-    assertion_checks(resp, genomic_sub_grch38)
+    assertion_checks(resp, genomic_sub_grch38, mane_genes_exts=True)
 
     resp = await test_handler.normalize("EGFR g.55249071C>T")
     assertion_checks(resp, genomic_substitution)
@@ -612,7 +612,7 @@ async def test_cdna_and_genomic_substitution(
     # MNV genomic substitution (CA009580)
     q = "5-112175770-GGAA-AGAA"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_sub_mnv)
+    assertion_checks(resp, gnomad_vcf_genomic_sub_mnv, mane_genes_exts=True)
 
 
 @pytest.mark.asyncio()
@@ -637,20 +637,17 @@ async def test_genomic_reference_agree(
 ):
     """Test that genomic reference agree normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453136=")
-    assertion_checks(
-        resp,
-        grch38_braf_genom_reference_agree,
-    )
+    assertion_checks(resp, grch38_braf_genom_reference_agree, mane_genes_exts=True)
 
     resp = await test_handler.normalize("7-140453136-A-A")
-    assertion_checks(resp, grch38_braf_genom_reference_agree)
+    assertion_checks(resp, grch38_braf_genom_reference_agree, mane_genes_exts=True)
 
     resp = await test_handler.normalize("7-140753336-A-A")
-    assertion_checks(resp, grch38_braf_genom_reference_agree)
+    assertion_checks(resp, grch38_braf_genom_reference_agree, mane_genes_exts=True)
 
     q = "7-140753336-ACT-ACT"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, grch38_braf_genom_reference_agree)
+    assertion_checks(resp, grch38_braf_genom_reference_agree, mane_genes_exts=True)
 
     resp = await test_handler.normalize("BRAF g.140453136=")
     assertion_checks(resp, cdna_reference_agree)
@@ -685,14 +682,14 @@ async def test_genomic_delins(
 ):
     """Test that Genomic DelIns normalizes correctly."""
     resp = await test_handler.normalize("NC_000007.13:g.140453135_140453136delinsAT")
-    assertion_checks(resp, grch38_genomic_delins1)
+    assertion_checks(resp, grch38_genomic_delins1, mane_genes_exts=True)
 
     resp = await test_handler.normalize("NC_000003.12:g.10149938delinsAA")
-    assertion_checks(resp, grch38_genomic_delins2)
+    assertion_checks(resp, grch38_genomic_delins2, mane_genes_exts=True)
 
     q = "3-10149938-C-AA"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, grch38_genomic_delins2)
+    assertion_checks(resp, grch38_genomic_delins2, mane_genes_exts=True)
 
     q = "BRAF g.140453135_140453136delinsAT"
     resp = await test_handler.normalize(q)
@@ -702,11 +699,11 @@ async def test_genomic_delins(
     # allele?hgvsOrDescriptor=NM_000249.3%3Ac.489_498delinsGAGGCTTT
     q = "3-37050340-AAAAGCTTTA-GAGGCTTT"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_delins1)
+    assertion_checks(resp, gnomad_vcf_genomic_delins1, mane_genes_exts=True)
 
     q = "16-68846036-AG-TGAGTTT"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_delins2)
+    assertion_checks(resp, gnomad_vcf_genomic_delins2, mane_genes_exts=True)
 
     # NC_000023.10:g.70350063_70350064delinsAGGCAGCGCATAAAGCGCATTCTCCG
     # NC_000023.10:g.70350063_70350064insGGCAGCGCATAAAGCGCATTCTCC
@@ -714,33 +711,33 @@ async def test_genomic_delins(
     # allele?hgvsOrDescriptor=NC_000023.11%3Ag.71130213_71130214insGGCAGCGCATAAAGCGCATTCTCC noqa: E501
     q = "X-70350063-AG-AGGCAGCGCATAAAGCGCATTCTCCG"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_delins3)
+    assertion_checks(resp, gnomad_vcf_genomic_delins3, mane_genes_exts=True)
 
     # CA523275412
     q = "1-55509715-AC-A"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_delins4)
+    assertion_checks(resp, gnomad_vcf_genomic_delins4, mane_genes_exts=True)
 
     # CA497925643
     q = "17-7578455-CGCGG-CGCG"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, gnomad_vcf_genomic_delins5)
+    assertion_checks(resp, gnomad_vcf_genomic_delins5, mane_genes_exts=True)
 
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     q = "3-10149810-CT-C"  # 38
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
     # gnomad should always return lse even if provided other hgvs dup del mode option
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_COUNT)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
 
 @pytest.mark.asyncio()
@@ -806,7 +803,7 @@ async def test_genomic_deletion(test_handler, genomic_deletion):
     # CA915940709
     q = "NC_000003.12:g.10146527_10146528del"
     resp1 = await test_handler.normalize(q)
-    assertion_checks(resp1, genomic_deletion)
+    assertion_checks(resp1, genomic_deletion, mane_genes_exts=True)
 
     resp2 = await test_handler.normalize("NC_000003.12:g.10146527_10146528delCT")
     assert resp2.variation.id == resp1.variation.id
@@ -853,14 +850,14 @@ async def test_genomic_insertion(
     resp = await test_handler.normalize(
         "NC_000017.10:g.37880993_37880994insGCTTACGTGATG"
     )
-    assertion_checks(resp, grch38_genomic_insertion_variation)
+    assertion_checks(resp, grch38_genomic_insertion_variation, mane_genes_exts=True)
 
     resp = await test_handler.normalize("ERBB2 g.37880993_37880994insGCTTACGTGATG")
     assertion_checks(resp, genomic_insertion)
 
     q = "17-37880993-G-GGCTTACGTGATG"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, grch38_genomic_insertion_variation)
+    assertion_checks(resp, grch38_genomic_insertion_variation, mane_genes_exts=True)
 
 
 @pytest.mark.asyncio()
