@@ -4,8 +4,9 @@ from abc import ABC, abstractmethod
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
-from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, ManeGeneData, ResidueMode
 from cool_seq_tool.sources import UtaDatabase
+from ga4gh.core import entity_models
 from ga4gh.vrs import models
 
 from variation.hgvs_dup_del_mode import HGVSDupDelMode
@@ -253,3 +254,25 @@ class Translator(ABC):
             )
 
         return None
+
+    @staticmethod
+    def _mane_gene_extensions(
+        mane_genes: list[ManeGeneData],
+    ) -> list[entity_models.Extension] | None:
+        """Transform mane genes to list of extensions
+
+        This is only used in Genomic translators
+
+        :param mane_genes: Optional list of mane gene data
+        :return: List of extensions containing mane gene data if found. Otherwise,
+            ``None``
+        """
+        mane_genes_exts = None
+        if mane_genes:
+            mane_genes_exts = [
+                entity_models.Extension(
+                    name="mane_genes",
+                    value=mane_genes,
+                )
+            ]
+        return mane_genes_exts

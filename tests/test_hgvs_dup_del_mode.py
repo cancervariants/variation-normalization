@@ -763,60 +763,60 @@ async def test_genomic_dup1(
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NC_000003.12%3Ag.49531262dup
     q = "NC_000003.12:g.49531262dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030072,
     )
-    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
 
     q = "NC_000003.11:g.49568695dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030072,
     )
-    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True)
+    assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
 
     # Free Text
     for q in ["DAG1 g.49568695dup", "DAG1 g.49531262dup"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup1_free_text_lse)
+        assertion_checks(resp, genomic_dup1_free_text_lse, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup1_free_text_lse)
+        assertion_checks(resp, genomic_dup1_free_text_lse, mane_genes_exts=True)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup1_free_text_cn)
+        assertion_checks(resp, genomic_dup1_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-        assertion_checks(resp, genomic_dup1_free_text_lse)
+        assertion_checks(resp, genomic_dup1_free_text_lse, mane_genes_exts=True)
 
     # Invalid
     invalid_queries = [
@@ -842,51 +842,51 @@ async def test_genomic_dup2(
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/allele?hgvsOrDescriptor=NM_004006.2%3Ac.20_23dup
     q = "NC_000023.11:g.33211290_33211293dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup2_lse)
+    assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup2_38_cn)
+    assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup2_cx)
+    assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_dup2_lse)
+    assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
 
     q = "NC_000023.10:g.33229407_33229410dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup2_lse)
+    assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup2_38_cn)
+    assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup2_cx)
+    assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_dup2_lse)
+    assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
 
     # Free text
     for q in ["DMD g.33211290_33211293dup", "DMD g.33229407_33229410dup"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup2_free_text_default)
+        assertion_checks(resp, genomic_dup2_free_text_default, mane_genes_exts=True)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup2_free_text_cn)
+        assertion_checks(resp, genomic_dup2_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-        assertion_checks(resp, genomic_dup2_free_text_default)
+        assertion_checks(resp, genomic_dup2_free_text_default, mane_genes_exts=True)
 
     # Greater than 100 bps -> rse
     q = "NC_000023.11:g.33211290_33211490dup"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_dup2_rle2)
+    assertion_checks(resp, genomic_dup2_rle2, mane_genes_exts=True)
 
     # Invalid
     invalid_queries = [
@@ -1167,54 +1167,54 @@ async def test_genomic_del1(
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10149811del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del1_38_cn)
+    assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030064,
     )
-    assertion_checks(resp, genomic_del1_cx)
+    assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
     q = "NC_000003.11:g.10191495del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del1_38_cn)
+    assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030064,
     )
-    assertion_checks(resp, genomic_del1_cx)
+    assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_del1_lse)
+    assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
     # Free text
     for q in ["VHL g.10191495del", "VHL g.10149811del"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del1_free_text_lse)
+        assertion_checks(resp, genomic_del1_free_text_lse, mane_genes_exts=True)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del1_free_text_cn)
+        assertion_checks(resp, genomic_del1_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-        assertion_checks(resp, genomic_del1_free_text_lse)
+        assertion_checks(resp, genomic_del1_free_text_lse, mane_genes_exts=True)
 
     # Invalid
     invalid_queries = [
@@ -1239,68 +1239,68 @@ async def test_genomic_del2(
     """Test that genomic deletion works correctly."""
     q = "NC_000003.12:g.10146595_10146613del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del2_38_cn)
+    assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030069,
     )
-    assertion_checks(resp, genomic_del2_cx)
+    assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     q = "NC_000003.11:g.10188279_10188297del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del2_38_cn)
+    assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030069,
     )
-    assertion_checks(resp, genomic_del2_cx)
+    assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     # Free text
     for q in ["VHL g.10188279_10188297del", "VHL g.10146595_10146613del"]:  # 37  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del2_free_text_default)
+        assertion_checks(resp, genomic_del2_free_text_default, mane_genes_exts=True)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del2_free_text_cnv)
+        assertion_checks(resp, genomic_del2_free_text_cnv, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
-        assertion_checks(resp, genomic_del2_free_text_default)
+        assertion_checks(resp, genomic_del2_free_text_default, mane_genes_exts=True)
 
     # Check that del > 100 bps returns LSE
     q = "NC_000023.11:g.33211290_33211490del"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_del2_lse2)
+    assertion_checks(resp, genomic_del2_lse2, mane_genes_exts=True)
 
     # gnomad vcf
     q = "3-10146594-AATGTTGACGGACAGCCTAT-A"
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     q = "3-10188278-AATGTTGACGGACAGCCTAT-A"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_del2_lse)
+    assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
 
     # Invalid
     invalid_queries = [

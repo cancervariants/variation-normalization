@@ -2,7 +2,7 @@
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
-from ga4gh.core import ga4gh_identify
+from ga4gh.core import entity_models, ga4gh_identify
 from ga4gh.vrs import models, normalize
 from pydantic import ValidationError
 
@@ -97,6 +97,7 @@ class VRSRepresentation:
         sstate: models.LiteralSequenceExpression | models.ReferenceLengthExpression,
         alt_type: AltType,
         errors: list[str],
+        extensions: list[entity_models.Extension] | None = None,
     ) -> dict | None:
         """Create a VRS Allele object.
 
@@ -106,6 +107,7 @@ class VRSRepresentation:
         :param sstate: State
         :param alt_type: Type of alteration
         :param errors: List of errors
+        :param extensions: List of extensions for variation
         :return: VRS Allele object represented as a Dict
         """
         refget_accession = get_refget_accession(self.seqrepo_access, ac, errors)
@@ -117,7 +119,7 @@ class VRSRepresentation:
         except ValueError as e:
             errors.append(f"Unable to get sequence location: {e}")
             return None
-        allele = models.Allele(location=location, state=sstate)
+        allele = models.Allele(location=location, state=sstate, extensions=extensions)
         # Ambiguous regions do not get normalized
         if alt_type not in AMBIGUOUS_REGIONS:
             try:
@@ -152,6 +154,7 @@ class VRSRepresentation:
         cds_start: int | None = None,
         alt: str | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        extensions: list[entity_models.Extension] | None = None,
     ) -> dict | None:
         """Translate accession and position to VRS Allele Object.
 
@@ -164,6 +167,7 @@ class VRSRepresentation:
         :param cds_start: Coding start site
         :param alt: Alteration
         :param residue_mode: Residue mode for ``start`` and ``end`` positions
+        :param extensions: List of extensions for variation
         :return: VRS Allele Object
         """
         coords = self.get_start_end(coordinate, start, end, cds_start, errors)
@@ -224,4 +228,6 @@ class VRSRepresentation:
             return None
 
         sstate = models.LiteralSequenceExpression(sequence=state)
-        return self.vrs_allele(ac, new_start, new_end, sstate, alt_type, errors)
+        return self.vrs_allele(
+            ac, new_start, new_end, sstate, alt_type, errors, extensions=extensions
+        )
