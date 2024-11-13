@@ -1,4 +1,5 @@
 """Module for Protein Stop Gain Translation."""
+
 from typing import List, Optional
 
 from cool_seq_tool.schemas import AnnotationLayer
@@ -33,10 +34,10 @@ class ProteinStopGain(Translator):
         validation_result: ValidationResult,
         warnings: List[str],
         endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
-        do_liftover: bool = False,
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,  # noqa: ARG002
+        baseline_copies: Optional[int] = None,  # noqa: ARG002
+        copy_change: Optional[models.CopyChange] = None,  # noqa: ARG002
+        do_liftover: bool = False,  # noqa: ARG002
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 

@@ -1,4 +1,5 @@
 """The Variation Normalization package."""
+
 import logging
 from os import environ
 

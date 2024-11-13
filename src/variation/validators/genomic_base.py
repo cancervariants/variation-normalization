@@ -1,4 +1,5 @@
 """Module for Genomic Validation methods."""
+
 import logging
 from typing import List, Optional
 

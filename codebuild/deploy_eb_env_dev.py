@@ -1,4 +1,5 @@
 """Module to deploy to staging EB environment."""
+
 import time
 
 import boto3

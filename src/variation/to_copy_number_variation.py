@@ -1,4 +1,5 @@
 """Module for to copy number variation translation"""
+
 import datetime
 from typing import Dict, List, NamedTuple, Optional, Tuple, Union
 from urllib.parse import unquote

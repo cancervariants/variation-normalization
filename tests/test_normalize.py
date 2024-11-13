@@ -1,4 +1,5 @@
 """Module for testing the normalize endpoint."""
+
 from datetime import datetime
 
 import pytest

@@ -1,4 +1,5 @@
 """Module for Variation Normalization."""
+
 import datetime
 from typing import List, Optional, Tuple
 from urllib.parse import unquote

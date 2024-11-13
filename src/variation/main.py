@@ -1,4 +1,5 @@
 """Main application for FastAPI."""
+
 import datetime
 import traceback
 from enum import Enum
@@ -438,7 +439,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> dict:
     variations = []
     if allele:
         try:
-            variations = query_handler.vrs_python_tlr._to_hgvs(
+            variations = query_handler.vrs_python_tlr._to_hgvs(  # noqa: SLF001
                 allele, namespace=request_body.get("namespace") or "refseq"
             )
         except ValueError as e:

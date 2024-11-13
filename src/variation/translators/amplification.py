@@ -1,4 +1,5 @@
 """Module for Amplification Translation."""
+
 from typing import List, Optional
 
 from ga4gh.core import ga4gh_identify
@@ -29,11 +30,11 @@ class Amplification(Translator):
         self,
         validation_result: ValidationResult,
         warnings: List[str],
-        endpoint_name: Optional[Endpoint] = None,
-        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,
-        baseline_copies: Optional[int] = None,
-        copy_change: Optional[models.CopyChange] = None,
-        do_liftover: bool = False,
+        endpoint_name: Optional[Endpoint] = None,  # noqa: ARG002
+        hgvs_dup_del_mode: HGVSDupDelModeOption = HGVSDupDelModeOption.DEFAULT,  # noqa: ARG002
+        baseline_copies: Optional[int] = None,  # noqa: ARG002
+        copy_change: Optional[models.CopyChange] = None,  # noqa: ARG002
+        do_liftover: bool = False,  # noqa: ARG002
     ) -> Optional[TranslationResult]:
         """Translate validation result to VRS representation
 

@@ -1,4 +1,5 @@
 """Module for Classification methods."""
+
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
@@ -39,6 +40,6 @@ class Classifier(ABC):
 
         for candidate in self.exact_match_candidates():
             if token_types == candidate:
-                exact_matches.append(candidate)
+                exact_matches.append(candidate)  # noqa: PERF401
 
         return len(exact_matches) == 1

@@ -1,4 +1,5 @@
 """Module containing schemas for services"""
+
 from enum import Enum
 
 from cool_seq_tool.schemas import ToCdnaService as ToCdna

@@ -1,4 +1,5 @@
 """Module for classification."""
+
 from typing import ClassVar, List, Optional
 
 from variation.classifiers import (

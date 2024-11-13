@@ -1,4 +1,5 @@
 """A module for tokenizing Protein Deletions."""
+
 import re
 from typing import Optional
 

@@ -1,4 +1,5 @@
 """Module for testing tokenizers"""
+
 from pathlib import Path
 
 import pytest

@@ -1,4 +1,5 @@
 """A module for Protein Substitution Tokenization."""
+
 from typing import Optional, Union
 
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1

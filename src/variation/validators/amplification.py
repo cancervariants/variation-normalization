@@ -1,4 +1,5 @@
 """Module for Amplification validation"""
+
 from typing import List
 
 from variation.schemas.classification_response_schema import (
@@ -14,7 +15,9 @@ class Amplification(Validator):
     """The Insertion Validator Base class."""
 
     async def get_valid_invalid_results(
-        self, classification: AmplificationClassification, accessions: List
+        self,
+        classification: AmplificationClassification,
+        accessions: List,  # noqa: ARG002
     ) -> List[ValidationResult]:
         """Get list of validation results for a given classification and accessions
 
@@ -41,7 +44,9 @@ class Amplification(Validator):
         return classification_type == ClassificationType.AMPLIFICATION
 
     async def get_accessions(
-        self, classification: Classification, errors: List
+        self,
+        classification: Classification,  # noqa: ARG002
+        errors: List,  # noqa: ARG002
     ) -> List:
         """Return empty list since amplification does not require accessions
 

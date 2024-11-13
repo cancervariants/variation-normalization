@@ -1,4 +1,5 @@
 """Module for terminating EB staging environment."""
+
 import json
 import time
 

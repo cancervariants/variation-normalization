@@ -1,4 +1,5 @@
 """Module for HGVS tokenization."""
+
 import re
 from typing import Optional
 
