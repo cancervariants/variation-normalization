@@ -149,6 +149,8 @@ ignore = [
 # ANN001 - missing-type-function-argument
 # ANN2 - missing-return-type
 # ANN201 - Missing type annotation
+# D100 - undocumented-public-module
+# D102 - undocumented-public-class
 # N805 - invalid-first-argument-name-for-method
 # S101 - assert
 # B011 - assert-false
@@ -156,7 +158,16 @@ ignore = [
 # INP001 - implicit-namespace-package
 # RUF001 - ambiguous-unicode-character-string
 # ARG002 - unused-method-argument
-"tests/*" = ["ANN001", "ANN2", "S101", "B011", "SLF001", "INP001"]
+"tests/*" = [
+    "ANN001",
+    "ANN2",
+    "D100",
+    "D102",
+    "S101",
+    "B011",
+    "SLF001",
+    "INP001"
+]
 "src/variation/schemas/*" = ["ANN001", "ANN201", "N805", "S101"]
 "codebuild/*" = ["T201", "INP001"]
 "src/variation/validators/*" = ["ARG002"]
@@ -165,6 +176,9 @@ ignore = [
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
 extend-immutable-calls = ["fastapi.Query"]
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
 
 [tool.ruff.format]
 docstring-code-format = true
