@@ -22,7 +22,12 @@ python3 -m pip install variation-normalizer
 
 ---
 
-## Normalization
+| variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
+| ---- | --- | ---- | --- |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
+| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | >=0.8.X | >=0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
+
+## About
 
 Variation Normalization works by using four main steps: tokenization, classification, validation, and translation. During tokenization, we split strings on whitespace and parse to determine the type of token. During classification, we specify the order of tokens a classification can have. We then do validation checks such as ensuring references for a nucleotide or amino acid matches the expected value and validating a position exists on the given transcript. During translation, we return a VRS Allele object.
 
