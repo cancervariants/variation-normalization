@@ -5,7 +5,8 @@ import datetime
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.schemas import Strand
-from ga4gh.core import domain_models, ga4gh_identify
+from ga4gh.core import ga4gh_identify
+from ga4gh.core.models import MappableConcept
 from ga4gh.vrs import models, normalize
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
@@ -413,14 +414,14 @@ class GnomadVcfToProteinVariation:
             self.seqrepo_access, p_ac, variation.location.start, variation.location.end
         )
         if loc_seq:
-            variation.location.sequence = models.SequenceString(root=loc_seq)
+            variation.location.sequence = models.sequenceString(root=loc_seq)
 
         # Add VRS digests for VRS Allele and VRS Sequence Location
         variation.id = ga4gh_identify(variation)
         variation.location.id = ga4gh_identify(variation.location)
         return variation
 
-    def _get_gene_context(self, gene: str) -> domain_models.Gene | None:
+    def _get_gene_context(self, gene: str) -> MappableConcept | None:
         """Get additional gene information from gene-normalizer
 
         :param gene: Gene symbol

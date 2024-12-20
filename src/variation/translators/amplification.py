@@ -1,6 +1,7 @@
 """Module for Amplification Translation."""
 
 from ga4gh.core import ga4gh_identify
+from ga4gh.core.models import MappableConcept
 from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import Endpoint
@@ -52,7 +53,7 @@ class Amplification(Translator):
         if priority_seq_loc:
             vrs_cx = models.CopyNumberChange(
                 location=models.SequenceLocation(**priority_seq_loc),
-                copyChange=models.CopyChange.EFO_0030072,
+                copyChange=MappableConcept(primaryCode=models.CopyChange.EFO_0030072),
             )
             vrs_cx.id = ga4gh_identify(vrs_cx)
             vrs_cx = vrs_cx.model_dump(exclude_none=True)

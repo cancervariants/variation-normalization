@@ -2,7 +2,8 @@
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
-from ga4gh.core import entity_models, ga4gh_identify
+from ga4gh.core import ga4gh_identify
+from ga4gh.core.models import Extension
 from ga4gh.vrs import models, normalize
 from pydantic import ValidationError
 
@@ -97,7 +98,7 @@ class VRSRepresentation:
         sstate: models.LiteralSequenceExpression | models.ReferenceLengthExpression,
         alt_type: AltType,
         errors: list[str],
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Create a VRS Allele object.
 
@@ -154,7 +155,7 @@ class VRSRepresentation:
         cds_start: int | None = None,
         alt: str | None = None,
         residue_mode: ResidueMode = ResidueMode.RESIDUE,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Translate accession and position to VRS Allele Object.
 

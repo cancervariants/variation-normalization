@@ -2,7 +2,8 @@
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
-from ga4gh.core import entity_models, ga4gh_identify
+from ga4gh.core import ga4gh_identify
+from ga4gh.core.models import Extension, MappableConcept
 from ga4gh.vrs import models, normalize
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
@@ -49,7 +50,7 @@ class HGVSDupDelMode:
         baseline_copies: int | None = None,
         copy_change: models.CopyChange | None = None,
         alt: str | None = None,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Use default characteristics to return a variation.
         If baseline_copies not provided and endpoints are ambiguous - copy_number_change
@@ -92,7 +93,7 @@ class HGVSDupDelMode:
         alt_type: AltType,
         location: dict,
         baseline_copies: int,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict:
         """Return a VRS Copy Number Variation.
 
@@ -119,7 +120,7 @@ class HGVSDupDelMode:
         alt_type: AltType,
         location: dict,
         copy_change: models.CopyChange | None = None,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict:
         """Return copy number change variation
 
@@ -142,7 +143,9 @@ class HGVSDupDelMode:
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
         cx = models.CopyNumberChange(
-            location=seq_loc, copyChange=copy_change, extensions=extensions
+            location=seq_loc,
+            copyChange=MappableConcept(primaryCode=copy_change),
+            extensions=extensions,
         )
         cx.id = ga4gh_identify(cx)
         return cx.model_dump(exclude_none=True)
@@ -153,7 +156,7 @@ class HGVSDupDelMode:
         alt_type: AltType,
         vrs_seq_loc_ac: str,
         alt: str,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Return a VRS Allele with a normalized LiteralSequenceExpression or
         ReferenceLengthExpression.
@@ -208,7 +211,7 @@ class HGVSDupDelMode:
         baseline_copies: int | None = None,
         copy_change: models.CopyChange | None = None,
         alt: str | None = None,
-        extensions: list[entity_models.Extension] | None = None,
+        extensions: list[Extension] | None = None,
     ) -> dict:
         """Interpret variation using HGVSDupDelMode
 

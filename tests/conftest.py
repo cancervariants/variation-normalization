@@ -542,12 +542,12 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 @pytest.fixture(scope="session")
 def braf_amplification(braf_ncbi_seq_loc):
     """Create test fixture for BRAF Amplification"""
-    digest = "_UsXDMCLtPwsVKiNByhbwfS569K1wLWW"
+    digest = "uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV"
     params = {
         "id": f"ga4gh:CX.{digest}",
         "digest": digest,
         "location": braf_ncbi_seq_loc,
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -558,7 +558,7 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
     """Create test fixture for PRPF8 Amplification"""
     params = {
         "location": prpf8_ncbi_seq_loc,
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)

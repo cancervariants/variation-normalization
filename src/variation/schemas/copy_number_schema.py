@@ -324,8 +324,8 @@ class ParsedToCxVarService(ServiceResponse):
             "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
-                    "id": "ga4gh:CX.5kaJC-7Jj851bfJ6EipsHV413feg1T4T",
-                    "digest": "5kaJC-7Jj851bfJ6EipsHV413feg1T4T",
+                    "id": "ga4gh:CX.XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD",
+                    "digest": "XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD",
                     "location": {
                         "type": "SequenceLocation",
                         "id": "ga4gh:SL.Iz_azSFTEulx7tCluLgGhE1n0hTLUocb",
@@ -337,7 +337,7 @@ class ParsedToCxVarService(ServiceResponse):
                         "start": 10000,
                         "end": 1223133,
                     },
-                    "copyChange": "efo:0030069",
+                    "copyChange": {"primaryCode": "EFO:0030069"},
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
@@ -379,8 +379,8 @@ class AmplificationToCxVarService(ServiceResponse):
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "id": "ga4gh:CX._UsXDMCLtPwsVKiNByhbwfS569K1wLWW",
-                    "digest": "_UsXDMCLtPwsVKiNByhbwfS569K1wLWW",
+                    "id": "ga4gh:CX.uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV",
+                    "digest": "uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV",
                     "type": "CopyNumberChange",
                     "location": {
                         "id": "ga4gh:SL.0nPwKHYNnTmJ06G-gSmz8BEhB_NTp-0B",
@@ -393,7 +393,7 @@ class AmplificationToCxVarService(ServiceResponse):
                         "start": 140713327,
                         "end": 140924929,
                     },
-                    "copyChange": "efo:0030072",
+                    "copyChange": {"primaryCode": "EFO:0030072"},
                 },
                 "service_meta_": {
                     "version": __version__,
