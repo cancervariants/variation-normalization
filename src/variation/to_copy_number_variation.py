@@ -9,7 +9,6 @@ from cool_seq_tool.mappers import LiftOver
 from cool_seq_tool.schemas import Assembly
 from cool_seq_tool.sources import UtaDatabase
 from ga4gh.core import ga4gh_identify
-from ga4gh.core.models import MappableConcept
 from ga4gh.vrs import models
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import MatchType as GeneMatchType
@@ -43,7 +42,11 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import get_priority_sequence_location, get_vrs_loc_seq
+from variation.utils import (
+    get_copy_change,
+    get_priority_sequence_location,
+    get_vrs_loc_seq,
+)
 from variation.validate import Validate
 
 VALID_CLASSIFICATION_TYPES = [
@@ -605,7 +608,7 @@ class ToCopyNumberVariation(ToVRS):
             if is_cx:
                 variation = models.CopyNumberChange(
                     location=seq_loc,
-                    copyChange=MappableConcept(primaryCode=request_body.copy_change),
+                    copyChange=get_copy_change(request_body.copy_change),
                 )
                 variation.id = ga4gh_identify(variation)
             else:
@@ -717,9 +720,7 @@ class ToCopyNumberVariation(ToVRS):
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_cx = models.CopyNumberChange(
                         location=vrs_location,
-                        copyChange=MappableConcept(
-                            primaryCode=models.CopyChange.EFO_0030072.value
-                        ),
+                        copyChange=get_copy_change(models.CopyChange.EFO_0030072),
                     )
                     vrs_cx.id = ga4gh_identify(vrs_cx)
                     variation = models.CopyNumberChange(

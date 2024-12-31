@@ -3,11 +3,14 @@
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
 from ga4gh.core import ga4gh_identify
-from ga4gh.core.models import Extension, MappableConcept
+from ga4gh.core.models import (
+    Extension,
+)
 from ga4gh.vrs import models, normalize
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
+from variation.utils import get_copy_change
 
 # Define deletion alt types
 DELS = {AltType.DELETION_AMBIGUOUS, AltType.DELETION}
@@ -144,7 +147,7 @@ class HGVSDupDelMode:
         seq_loc.id = ga4gh_identify(seq_loc)
         cx = models.CopyNumberChange(
             location=seq_loc,
-            copyChange=MappableConcept(primaryCode=copy_change),
+            copyChange=get_copy_change(copy_change),
             extensions=extensions,
         )
         cx.id = ga4gh_identify(cx)

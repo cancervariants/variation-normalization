@@ -70,7 +70,18 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
                         "start": 49531261,
                         "end": 49531262,
                     },
-                    "copyChange": {"primaryCode": "EFO:0030069"},
+                    "copyChange": {
+                        "primaryCode": "EFO:0030069",
+                        "mappings": [
+                            {
+                                "coding": {
+                                    "system": "https://www.ebi.ac.uk/efo/",
+                                    "code": "EFO:0030069",
+                                },
+                                "relation": "exactMatch",
+                            }
+                        ],
+                    },
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",

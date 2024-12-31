@@ -8,7 +8,7 @@ from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.schemas import ResidueMode
-from ga4gh.core.models import MappableConcept
+from ga4gh.core.models import Coding, ConceptMapping, MappableConcept, Relation
 from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import AmbiguousRegexType
@@ -237,3 +237,21 @@ def get_vrs_loc_seq(
     else:
         ref = None
     return ref or None  # get_reference_sequence can return empty str
+
+
+def get_copy_change(efo_code: models.CopyChange) -> MappableConcept:
+    """Get mappable concept for EFO code with exactMatch relation
+
+    :param efo_code: EFO code represented as a CURIE
+    :return: Mappable concept for EFO code with exactMatch relation
+
+    """
+    return MappableConcept(
+        primaryCode=efo_code,
+        mappings=[
+            ConceptMapping(
+                relation=Relation.EXACT_MATCH,
+                coding=Coding(code=efo_code, system="https://www.ebi.ac.uk/efo/"),
+            )
+        ],
+    )

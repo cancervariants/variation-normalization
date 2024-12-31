@@ -337,7 +337,18 @@ class ParsedToCxVarService(ServiceResponse):
                         "start": 10000,
                         "end": 1223133,
                     },
-                    "copyChange": {"primaryCode": "EFO:0030069"},
+                    "copyChange": {
+                        "primaryCode": "EFO:0030069",
+                        "mappings": [
+                            {
+                                "coding": {
+                                    "system": "https://www.ebi.ac.uk/efo/",
+                                    "code": "EFO:0030069",
+                                },
+                                "relation": "exactMatch",
+                            }
+                        ],
+                    },
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
@@ -393,7 +404,18 @@ class AmplificationToCxVarService(ServiceResponse):
                         "start": 140713327,
                         "end": 140924929,
                     },
-                    "copyChange": {"primaryCode": "EFO:0030072"},
+                    "copyChange": {
+                        "primaryCode": "EFO:0030072",
+                        "mappings": [
+                            {
+                                "coding": {
+                                    "system": "https://www.ebi.ac.uk/efo/",
+                                    "code": "EFO:0030072",
+                                },
+                                "relation": "exactMatch",
+                            }
+                        ],
+                    },
                 },
                 "service_meta_": {
                     "version": __version__,
