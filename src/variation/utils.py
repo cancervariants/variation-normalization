@@ -239,12 +239,11 @@ def get_vrs_loc_seq(
     return ref or None  # get_reference_sequence can return empty str
 
 
-def get_copy_change(efo_code: models.CopyChange) -> MappableConcept:
+def get_copy_change_concept(efo_code: models.CopyChange) -> MappableConcept:
     """Get mappable concept for EFO code with exactMatch relation
 
     :param efo_code: EFO code represented as a CURIE
     :return: Mappable concept for EFO code with exactMatch relation
-
     """
     return MappableConcept(
         primaryCode=efo_code,
