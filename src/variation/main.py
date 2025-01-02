@@ -235,7 +235,7 @@ def translate_identifier(
         aliases=aliases,
         service_meta_=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
     )
 
@@ -315,7 +315,7 @@ def vrs_python_translate_from(
         variation=vrs_variation,
         service_meta_=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -423,7 +423,7 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
         variations=variations,
         service_meta_=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -481,7 +481,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
         variations=variations,
         service_meta_=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
         vrs_python_meta_=VrsPythonMeta(
             version=pkg_resources.get_distribution("ga4gh.vrs").version
@@ -579,7 +579,7 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
             warnings=["Unhandled exception. See logs for more details."],
             service_meta_=ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
         )
 
@@ -612,7 +612,7 @@ def parsed_to_cx_var(request_body: ParsedToCxVarQuery) -> ParsedToCxVarService:
             warnings=["Unhandled exception. See logs for more details."],
             service_meta_=ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
         )
 
@@ -705,7 +705,7 @@ async def p_to_c(
         warnings=[w] if w else [],
         service_meta=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
     )
 
@@ -765,7 +765,7 @@ async def c_to_g(
         warnings=[w] if w else [],
         service_meta=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
     )
 
@@ -819,6 +819,6 @@ async def p_to_g(
         warnings=[w] if w else [],
         service_meta=ServiceMeta(
             version=__version__,
-            response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
     )
