@@ -24,8 +24,7 @@ python3 -m pip install variation-normalizer
 
 | variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
 | ---- | --- | ---- | --- |
-| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
-| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | >=0.8.X | >=0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | >=0.11.Z | >=0.6.Z | [2.0.0-ballot.2024-11](https://github.com/ga4gh/vrs/tree/2.0.0-ballot.2024-11) |
 
 ## About
 
@@ -50,8 +49,13 @@ The variation-normalization repo depends on VRS models, and therefore each varia
 
 | variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
 | ---- | --- | ---- | --- |
-| [main](https://github.com/cancervariants/variation-normalization/tree/main) | 0.6.X | 0.1.X | [1.X.X](https://github.com/ga4gh/vrs) |
-| [staging](https://github.com/cancervariants/variation-normalization/tree/staging) | >=0.8.X | >=0.3.X | [2.0-alpha](https://github.com/ga4gh/vrs/tree/2.0-alpha) |
+| [main](https://github.com/cancervariants/variation-normalization/tree/main) | >=0.11.Z | >=0.6.Z | [2.0.0-ballot.2024-11](https://github.com/ga4gh/vrs/tree/2.0.0-ballot.2024-11) |
+
+### Previous VRS Versioning
+
+The correspondences between the packages that are **no longer maintained** may be summarized as:
+
+| [vrs-1.3](https://github.com/cancervariants/variation-normalization/tree/vrs-1.3) | 0.6.Z | 0.1.Z | [1.3](https://github.com/ga4gh/vrs/tree/1.3) |
 
 ### Available Endpoints
 
