@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Literal
 
 from cool_seq_tool.schemas import AnnotationLayer
-from ga4gh.core import domain_models
+from ga4gh.core.models import MappableConcept
 from pydantic import BaseModel, StrictInt, StrictStr
 
 from variation.schemas.app_schemas import AmbiguousRegexType
@@ -255,4 +255,4 @@ class GeneToken(Token):
 
     matched_value: StrictStr
     token_type: Literal[TokenType.GENE] = TokenType.GENE
-    gene: domain_models.Gene | None = None
+    gene: MappableConcept | None = None

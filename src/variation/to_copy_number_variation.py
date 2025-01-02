@@ -42,7 +42,11 @@ from variation.schemas.validation_response_schema import ValidationResult
 from variation.to_vrs import ToVRS
 from variation.tokenize import Tokenize
 from variation.translate import Translate
-from variation.utils import get_priority_sequence_location, get_vrs_loc_seq
+from variation.utils import (
+    get_copy_change_concept,
+    get_priority_sequence_location,
+    get_vrs_loc_seq,
+)
 from variation.validate import Validate
 
 VALID_CLASSIFICATION_TYPES = [
@@ -603,7 +607,8 @@ class ToCopyNumberVariation(ToVRS):
         else:
             if is_cx:
                 variation = models.CopyNumberChange(
-                    location=seq_loc, copyChange=request_body.copy_change
+                    location=seq_loc,
+                    copyChange=get_copy_change_concept(request_body.copy_change),
                 )
                 variation.id = ga4gh_identify(variation)
             else:
@@ -715,7 +720,9 @@ class ToCopyNumberVariation(ToVRS):
                     vrs_location.id = ga4gh_identify(vrs_location)
                     vrs_cx = models.CopyNumberChange(
                         location=vrs_location,
-                        copyChange=models.CopyChange.EFO_0030072.value,
+                        copyChange=get_copy_change_concept(
+                            models.CopyChange.EFO_0030072
+                        ),
                     )
                     vrs_cx.id = ga4gh_identify(vrs_cx)
                     variation = models.CopyNumberChange(
