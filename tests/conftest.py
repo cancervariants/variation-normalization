@@ -12,6 +12,7 @@ from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.classify import Classify
 from variation.query import QueryHandler
+from variation.schemas.normalize_response_schema import NormalizeService
 from variation.tokenize import Tokenize
 from variation.tokenizers import GeneSymbol
 
@@ -542,12 +543,12 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 @pytest.fixture(scope="session")
 def braf_amplification(braf_ncbi_seq_loc):
     """Create test fixture for BRAF Amplification"""
-    digest = "_UsXDMCLtPwsVKiNByhbwfS569K1wLWW"
+    digest = "uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV"
     params = {
         "id": f"ga4gh:CX.{digest}",
         "digest": digest,
         "location": braf_ncbi_seq_loc,
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -558,7 +559,7 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
     """Create test fixture for PRPF8 Amplification"""
     params = {
         "location": prpf8_ncbi_seq_loc,
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -606,6 +607,21 @@ def _vrs_id_and_digest_existence_checks(vrs_obj_dict, prefix=None):
     assert location_vrs_id == f"ga4gh:SL.{location_vrs_digest}"
 
 
+def _mane_gene_ext_checks(actual_vo: dict) -> None:
+    """Check mane gene extensions existence
+
+    :param actual_vo: Actual VRS object represented as a dictionary
+    """
+    extensions = actual_vo.pop("extensions")
+    assert len(extensions) == 1
+
+    mane_genes_ext = extensions[0]
+    assert mane_genes_ext["name"] == "mane_genes"
+    for mane_gene in mane_genes_ext["value"]:
+        assert mane_gene["ncbi_gene_id"]
+        assert mane_gene["symbol"]
+
+
 def assertion_checks(
     normalize_response, test_variation, mane_genes_exts=False, check_vrs_id=False
 ):
@@ -616,14 +632,7 @@ def assertion_checks(
 
     # Check MANE genes existence
     if mane_genes_exts:
-        extensions = actual.pop("extensions")
-        assert len(extensions) == 1
-
-        mane_genes_ext = extensions[0]
-        assert mane_genes_ext["name"] == "mane_genes"
-        for mane_gene in mane_genes_ext["value"]:
-            assert mane_gene["ncbi_gene_id"]
-            assert mane_gene["symbol"]
+        _mane_gene_ext_checks(actual)
 
     expected = test_variation.model_copy().model_dump(exclude_none=True)
     if not check_vrs_id:
@@ -633,21 +642,50 @@ def assertion_checks(
     assert actual == expected, "variation"
 
 
-def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False):
+def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False, mane_genes_exts=False):
     """Check that actual response for to copy number matches expected"""
-    try:
-        cnc = resp.copy_number_count
-    except AttributeError:
-        actual = resp.copy_number_change.model_dump(exclude_none=True)
-        prefix = "ga4gh:CX."
+
+    def _update_expected_mappings(expected_):
+        """Modify test fixture copy to include mappable concept object for CX var"""
+        expected_["copyChange"]["mappings"] = [
+            {
+                "relation": "exactMatch",
+                "coding": {
+                    "system": "https://www.ebi.ac.uk/efo/",
+                    "code": expected_["copyChange"]["primaryCode"],
+                },
+            }
+        ]
+
+    expected = test_fixture.model_copy(deep=True).model_dump(exclude_none=True)
+
+    if isinstance(resp, NormalizeService):
+        actual = resp.variation
+        if isinstance(actual, models.CopyNumberChange):
+            _update_expected_mappings(expected)
+            prefix = "ga4gh:CX."
+        elif isinstance(actual, models.CopyNumberCount):
+            prefix = "ga4gh:CN."
+
+        actual = actual.model_dump(exclude_none=True)
     else:
-        actual = cnc.model_dump(exclude_none=True)
-        prefix = "ga4gh:CN."
+        try:
+            cnc = resp.copy_number_count
+        except AttributeError:
+            _update_expected_mappings(expected)
+            actual = resp.copy_number_change.model_dump(exclude_none=True)
+            prefix = "ga4gh:CX."
+        else:
+            actual = cnc.model_dump(exclude_none=True)
+            prefix = "ga4gh:CN."
+
+    # Check MANE genes existence
+    if mane_genes_exts:
+        _mane_gene_ext_checks(actual)
 
     if not check_vrs_id:
         _vrs_id_and_digest_existence_checks(actual, prefix=prefix)
 
-    expected = test_fixture.model_copy().model_dump(exclude_none=True)
     if not check_vrs_id:
         _delete_id_and_digest(expected)
         _delete_id_and_digest(expected["location"])

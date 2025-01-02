@@ -781,12 +781,13 @@ protein_deletion:
                   },
                 "type": "SequenceLocation",
               },
-            "state": {
+            "state":
+              {
                 "type": "ReferenceLengthExpression",
                 "repeatSubunitLength": 5,
                 "length": 0,
                 "sequence": "",
-            },
+              },
             "type": "Allele",
           },
           {
@@ -801,12 +802,13 @@ protein_deletion:
                   },
                 "type": "SequenceLocation",
               },
-            "state": {
+            "state":
+              {
                 "type": "ReferenceLengthExpression",
                 "repeatSubunitLength": 5,
                 "length": 0,
                 "sequence": "",
-            },
+              },
             "type": "Allele",
           },
         ]
@@ -881,12 +883,13 @@ genomic_deletion:
                   },
                 "type": "SequenceLocation",
               },
-            "state": {
+            "state":
+              {
                 "type": "ReferenceLengthExpression",
                 "repeatSubunitLength": 2,
                 "length": 2,
                 "sequence": "AG",
-            },
+              },
             "type": "Allele",
           },
         ]
@@ -1134,7 +1137,10 @@ genomic_insertion:
                 "end": 7572948,
               },
             "state":
-              { "type": "LiteralSequenceExpression", "sequence": "TTTTTTTTTNNNNN" },
+              {
+                "type": "LiteralSequenceExpression",
+                "sequence": "TTTTTTTTTNNNNN",
+              },
           },
         ]
 
@@ -1156,7 +1162,21 @@ genomic_deletion_ambiguous:
                 "start": [null, 31120495],
                 "end": [33339477, null],
               },
-            "copyChange": "efo:0030067",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030067",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030067",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
     - query: NC_000023.10:g.(?_31138613)_(33357594_?)del
@@ -1175,7 +1195,21 @@ genomic_deletion_ambiguous:
                 "start": [null, 31138612],
                 "end": [33357594, null],
               },
-            "copyChange": "efo:0030067",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030067",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030067",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
     - query: NC_000002.12:g.(?_110104900)_(110207160_?)del
@@ -1194,7 +1228,21 @@ genomic_deletion_ambiguous:
                 "start": [null, 110104899],
                 "end": [110207160, null],
               },
-            "copyChange": "efo:0030067",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030067",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030067",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
     - query: NC_000024.10:g.(?_14076802)_(57165209_?)del
@@ -1213,7 +1261,21 @@ genomic_deletion_ambiguous:
                 "start": [null, 14076801],
                 "end": [57165209, null],
               },
-            "copyChange": "efo:0030067",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030067",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030067",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
 
@@ -1288,7 +1350,21 @@ genomic_duplication_ambiguous:
                 "start": [31060226, 31100350],
                 "end": [33274278, 33417151],
               },
-            "copyChange": "efo:0030070",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030070",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030070",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
     - query: NC_000023.11:g.(?_154021812)_154092209dup
@@ -1307,7 +1383,21 @@ genomic_duplication_ambiguous:
                 "start": [null, 154021811],
                 "end": 154092209,
               },
-            "copyChange": "efo:0030070",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030070",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030070",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
     - query: NC_000020.11:g.(?_30417576)_(31394018_?)dup
@@ -1326,7 +1416,21 @@ genomic_duplication_ambiguous:
                 "start": [null, 30417575],
                 "end": [31394018, null],
               },
-            "copyChange": "efo:0030070",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030070",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030070",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]
 
@@ -1348,6 +1452,20 @@ amplification:
                 "start": 140713327,
                 "end": 140924929,
               },
-            "copyChange": "efo:0030072",
+            "copyChange":
+              {
+                "primaryCode": "EFO:0030072",
+                "mappings":
+                  [
+                    {
+                      "relation": "exactMatch",
+                      "coding":
+                        {
+                          "code": "EFO:0030072",
+                          "system": "https://www.ebi.ac.uk/efo/",
+                        },
+                    },
+                  ],
+              },
           },
         ]

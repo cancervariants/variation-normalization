@@ -152,7 +152,7 @@ def cn_definite_number():
 @pytest.fixture(scope="module")
 def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
-    cx_digest = "5kaJC-7Jj851bfJ6EipsHV413feg1T4T"
+    cx_digest = "XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD"
     loc_digest = "Iz_azSFTEulx7tCluLgGhE1n0hTLUocb"
     variation = {
         "type": "CopyNumberChange",
@@ -169,7 +169,7 @@ def cx_numbers():
             "start": 10000,
             "end": 1223133,
         },
-        "copyChange": "efo:0030069",
+        "copyChange": {"primaryCode": "EFO:0030069"},
     }
     return models.CopyNumberChange(**variation)
 
@@ -190,7 +190,7 @@ def cx_definite_ranges():
             "start": [10000, 10005],
             "end": [1223130, 1223133],
         },
-        "copyChange": "efo:0030069",
+        "copyChange": {"primaryCode": "EFO:0030069"},
     }
     return models.CopyNumberChange(**variation)
 
@@ -211,7 +211,7 @@ def cx_indefinite_ranges():
             "start": [None, 10000],
             "end": [1223130, None],
         },
-        "copyChange": "efo:0030069",
+        "copyChange": {"primaryCode": "EFO:0030069"},
     }
     return models.CopyNumberChange(**variation)
 
@@ -232,7 +232,7 @@ def cx_number_indefinite():
             "start": 10000,
             "end": [1223130, None],
         },
-        "copyChange": "efo:0030069",
+        "copyChange": {"primaryCode": "EFO:0030069"},
     }
     return models.CopyNumberChange(**variation)
 
@@ -859,7 +859,7 @@ def test_invalid(test_cnv_handler):
             copy_change="efo:1234",
             accession="NC_000001.10",
         )
-    assert "Input should be 'efo:" in str(e.value)
+    assert "Input should be 'EFO:" in str(e.value)
 
     # NCBI36/hg18 assembly
     rb = ParsedToCxVarQuery(

@@ -11,7 +11,7 @@ def kit_amplification():
     params = {
         "type": "CopyNumberChange",
         "id": "ga4gh:CX.8ENbdAlnf3hK6681-74YhcnfD-J6WQbN",
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
         "location": {
             "type": "SequenceLocation",
             "id": "ga4gh:SL.2xCHxtZBqOXxl4W4ACxq9Um4FqcqZKxL",
