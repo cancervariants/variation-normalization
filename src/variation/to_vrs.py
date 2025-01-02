@@ -128,7 +128,7 @@ class ToVRS(VRSRepresentation):
             "variations": variations,
             "service_meta_": ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
             "warnings": warnings,
         }

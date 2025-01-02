@@ -232,7 +232,7 @@ class ToCopyNumberVariation(ToVRS):
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
             copy_number_count=cn_var,
         )
@@ -265,7 +265,7 @@ class ToCopyNumberVariation(ToVRS):
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
             copy_number_change=cx_var,
         )
@@ -628,7 +628,7 @@ class ToCopyNumberVariation(ToVRS):
             "warnings": warnings,
             "service_meta_": ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
         }
 
@@ -738,6 +738,6 @@ class ToCopyNumberVariation(ToVRS):
             warnings=warnings,
             service_meta_=ServiceMeta(
                 version=__version__,
-                response_datetime=datetime.datetime.now(tz=datetime.timezone.utc),
+                response_datetime=datetime.datetime.now(tz=datetime.UTC),
             ),
         )
