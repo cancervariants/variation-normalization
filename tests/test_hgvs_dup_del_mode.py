@@ -3,7 +3,7 @@
 import pytest
 from ga4gh.vrs import models
 
-from tests.conftest import assertion_checks
+from tests.conftest import assertion_checks, cnv_assertion_checks
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 
 
@@ -35,13 +35,13 @@ def genomic_dup1_lse(genomic_dup1_seq_loc_normalized):
 @pytest.fixture(scope="module")
 def genomic_dup1_cx(genomic_dup1_seq_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
-    digest = "yHUIaSwa0aIRvhfiTUIHPTkjNdaQdN4P"
+    digest = "GU4QwgBqWmlwshiv6CCtvynDEHkHBVv2"
     params = {
         "type": "CopyNumberChange",
         "id": f"ga4gh:CX.{digest}",
         "digest": digest,
         "location": genomic_dup1_seq_loc_not_normalized,
-        "copyChange": "efo:0030072",
+        "copyChange": {"primaryCode": "EFO:0030072"},
     }
     return models.CopyNumberChange(**params)
 
@@ -125,7 +125,7 @@ def genomic_dup2_cx(genomic_dup2_seq_loc_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup2_seq_loc_normalized,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -208,7 +208,7 @@ def genomic_dup3_cx(genomic_del3_dup3_loc_not_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_dup3_loc_not_normalized,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -233,7 +233,7 @@ def genomic_dup3_free_text_cx(genomic_dup3_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup3_free_text_subject,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -255,7 +255,7 @@ def genomic_dup4_cx(genomic_dup4_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup4_loc,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -291,7 +291,7 @@ def genomic_dup4_free_text_cx(genomic_dup4_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup4_free_text_subject,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -313,7 +313,7 @@ def genomic_dup5_cx(genomic_dup5_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup5_loc,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -335,7 +335,7 @@ def genomic_dup6_cx(genomic_dup6_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup6_loc,
-        "copyChange": "efo:0030070",
+        "copyChange": {"primaryCode": "EFO:0030070"},
     }
     return models.CopyNumberChange(**params)
 
@@ -373,7 +373,7 @@ def genomic_del1_cx(genomic_del1_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del1_seq_loc,
-        "copyChange": "efo:0030064",
+        "copyChange": {"primaryCode": "EFO:0030064"},
     }
     return models.CopyNumberChange(**params)
 
@@ -488,7 +488,7 @@ def genomic_del2_cx(genomic_del2_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del2_seq_loc,
-        "copyChange": "efo:0030069",
+        "copyChange": {"primaryCode": "EFO:0030069"},
     }
     return models.CopyNumberChange(**params)
 
@@ -556,7 +556,7 @@ def genomic_del3_cx(genomic_del3_dup3_loc_not_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_dup3_loc_not_normalized,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -581,7 +581,7 @@ def genomic_del3_free_text_cx(genomic_del3_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_free_text_subject,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -603,7 +603,7 @@ def genomic_del4_cx(genomic_del4_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del4_seq_loc,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -639,7 +639,7 @@ def genomic_del4_free_text_cx(genomic_del4_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del4_free_text_subject,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -668,7 +668,7 @@ def genomic_uncertain_del_2():
             "end": [110207160, None],
             "type": "SequenceLocation",
         },
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -687,7 +687,7 @@ def genomic_uncertain_del_y():
             "end": [57165209, None],
             "type": "SequenceLocation",
         },
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -710,7 +710,7 @@ def genomic_del5_cx_var(genomic_del5_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del5_seq_loc,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -721,7 +721,7 @@ def genomic_del6_cx_var(genomic_del6_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del6_seq_loc,
-        "copyChange": "efo:0030067",
+        "copyChange": {"primaryCode": "EFO:0030067"},
     }
     return models.CopyNumberChange(**params)
 
@@ -771,14 +771,16 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True)
+    cnv_assertion_checks(
+        resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True
+    )
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030072,
     )
-    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
@@ -790,14 +792,16 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True)
+    cnv_assertion_checks(
+        resp, genomic_dup1_38_cn, check_vrs_id=True, mane_genes_exts=True
+    )
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030072,
     )
-    assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_dup1_lse, check_vrs_id=True, mane_genes_exts=True)
@@ -813,7 +817,7 @@ async def test_genomic_dup1(
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup1_free_text_cn, mane_genes_exts=True)
+        cnv_assertion_checks(resp, genomic_dup1_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         assertion_checks(resp, genomic_dup1_free_text_lse, mane_genes_exts=True)
@@ -847,10 +851,10 @@ async def test_genomic_dup2(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
@@ -862,10 +866,10 @@ async def test_genomic_dup2(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_dup2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_dup2_lse, mane_genes_exts=True)
@@ -878,7 +882,7 @@ async def test_genomic_dup2(
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup2_free_text_cn, mane_genes_exts=True)
+        cnv_assertion_checks(resp, genomic_dup2_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         assertion_checks(resp, genomic_dup2_free_text_default, mane_genes_exts=True)
@@ -909,34 +913,34 @@ async def test_genomic_dup3(
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup3_cx)
+    cnv_assertion_checks(resp, genomic_dup3_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_del3_dup3_cn_38)
+    cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030070,
     )
-    assertion_checks(resp, genomic_dup3_cx)
+    cnv_assertion_checks(resp, genomic_dup3_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup3_cx)
+    cnv_assertion_checks(resp, genomic_dup3_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_del3_dup3_cn_38)
+    cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup3_cx)
+    cnv_assertion_checks(resp, genomic_dup3_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -944,12 +948,12 @@ async def test_genomic_dup3(
     # Free Text
     for q in ["DMD g.(31147274_31147278)_(31182737_31182739)dup"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup3_free_text_cx)
+        cnv_assertion_checks(resp, genomic_dup3_free_text_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
         )
-        assertion_checks(resp, genomic_dup3_free_text_cn)
+        cnv_assertion_checks(resp, genomic_dup3_free_text_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -974,30 +978,30 @@ async def test_genomic_dup4(
     """Test that genomic duplication works correctly."""
     q = "NC_000020.11:g.(?_30417576)_(31394018_?)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup4_cx)
+    cnv_assertion_checks(resp, genomic_dup4_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup4_cn)
+    cnv_assertion_checks(resp, genomic_dup4_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup4_cx)
+    cnv_assertion_checks(resp, genomic_dup4_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000020.10:g.(?_29652252)_(29981821_?)dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup4_cx)
+    cnv_assertion_checks(resp, genomic_dup4_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup4_cn)
+    cnv_assertion_checks(resp, genomic_dup4_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup4_cx)
+    cnv_assertion_checks(resp, genomic_dup4_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1008,12 +1012,12 @@ async def test_genomic_dup4(
         "PRPF8 g.(?_1674442)_(1684571_?)dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup4_free_text_cx)
+        cnv_assertion_checks(resp, genomic_dup4_free_text_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup4_free_text_cn)
+        cnv_assertion_checks(resp, genomic_dup4_free_text_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1036,30 +1040,30 @@ async def test_genomic_dup5(
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.(?_154021812)_154092209dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup5_cx)
+    cnv_assertion_checks(resp, genomic_dup5_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup5_cn)
+    cnv_assertion_checks(resp, genomic_dup5_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup5_cx)
+    cnv_assertion_checks(resp, genomic_dup5_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.(?_153287263)_153357667dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup5_cx)
+    cnv_assertion_checks(resp, genomic_dup5_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_dup5_cn)
+    cnv_assertion_checks(resp, genomic_dup5_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup5_cx)
+    cnv_assertion_checks(resp, genomic_dup5_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1070,12 +1074,12 @@ async def test_genomic_dup5(
         "MECP2 g.(?_154021812)_154092209dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup5_cx)
+        cnv_assertion_checks(resp, genomic_dup5_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_dup5_cn)
+        cnv_assertion_checks(resp, genomic_dup5_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1100,30 +1104,30 @@ async def test_genomic_dup6(
     """Test that genomic duplication works correctly."""
     q = "NC_000023.11:g.154021812_(154092209_?)dup"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup6_cx)
+    cnv_assertion_checks(resp, genomic_dup6_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_dup6_cn)
+    cnv_assertion_checks(resp, genomic_dup6_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup6_cx)
+    cnv_assertion_checks(resp, genomic_dup6_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.153287263_(153357667_?)dup"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_dup6_cx)
+    cnv_assertion_checks(resp, genomic_dup6_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
     )
-    assertion_checks(resp, genomic_dup6_cn)
+    cnv_assertion_checks(resp, genomic_dup6_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_dup6_cx)
+    cnv_assertion_checks(resp, genomic_dup6_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1134,12 +1138,12 @@ async def test_genomic_dup6(
         "MECP2 g.154021812_(154092209_?)dup",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_dup6_cx)
+        cnv_assertion_checks(resp, genomic_dup6_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=1
         )
-        assertion_checks(resp, genomic_dup6_cn)
+        cnv_assertion_checks(resp, genomic_dup6_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1172,14 +1176,14 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030064,
     )
-    assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
@@ -1191,14 +1195,14 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del1_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030064,
     )
-    assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
@@ -1211,7 +1215,7 @@ async def test_genomic_del1(
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del1_free_text_cn, mane_genes_exts=True)
+        cnv_assertion_checks(resp, genomic_del1_free_text_cn, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         assertion_checks(resp, genomic_del1_free_text_lse, mane_genes_exts=True)
@@ -1244,14 +1248,14 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030069,
     )
-    assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
@@ -1263,14 +1267,14 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del2_38_cn, mane_genes_exts=True)
 
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
         copy_change=models.CopyChange.EFO_0030069,
     )
-    assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
+    cnv_assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     assertion_checks(resp, genomic_del2_lse, mane_genes_exts=True)
@@ -1283,7 +1287,7 @@ async def test_genomic_del2(
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del2_free_text_cnv, mane_genes_exts=True)
+        cnv_assertion_checks(resp, genomic_del2_free_text_cnv, mane_genes_exts=True)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         assertion_checks(resp, genomic_del2_free_text_default, mane_genes_exts=True)
@@ -1323,30 +1327,30 @@ async def test_genomic_del3(
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del3_cx)
+    cnv_assertion_checks(resp, genomic_del3_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
     )
-    assertion_checks(resp, genomic_del3_dup3_cn_38)
+    cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del3_cx)
+    cnv_assertion_checks(resp, genomic_del3_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.(31078344_31118468)_(33292395_33435268)del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del3_cx)
+    cnv_assertion_checks(resp, genomic_del3_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
     )
-    assertion_checks(resp, genomic_del3_dup3_cn_38)
+    cnv_assertion_checks(resp, genomic_del3_dup3_cn_38)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del3_cx)
+    cnv_assertion_checks(resp, genomic_del3_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1357,12 +1361,12 @@ async def test_genomic_del3(
         "EFNB1 g.(68839265_68839268)_(68841120_68841125)del",  # 38
     ]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del3_free_text_cx)
+        cnv_assertion_checks(resp, genomic_del3_free_text_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=3
         )
-        assertion_checks(resp, genomic_del3_free_text_cn)
+        cnv_assertion_checks(resp, genomic_del3_free_text_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1390,51 +1394,51 @@ async def test_genomic_del4(
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_31120496)_(33339477_?)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del4_cx)
+    cnv_assertion_checks(resp, genomic_del4_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del4_cn)
+    cnv_assertion_checks(resp, genomic_del4_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del4_cx)
+    cnv_assertion_checks(resp, genomic_del4_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.(?_31138613)_(33357594_?)del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del4_cx)
+    cnv_assertion_checks(resp, genomic_del4_cx)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del4_cn)
+    cnv_assertion_checks(resp, genomic_del4_cn)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del4_cx)
+    cnv_assertion_checks(resp, genomic_del4_cx)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000002.12:g.(?_110104900)_(110207160_?)del"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_uncertain_del_2)
+    cnv_assertion_checks(resp, genomic_uncertain_del_2)
 
     q = "NC_000024.10:g.(?_14076802)_(57165209_?)del"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, genomic_uncertain_del_y)
+    cnv_assertion_checks(resp, genomic_uncertain_del_y)
 
     # Free Text
     for q in ["COL4A4 g.(?_227022028)_(227025830_?)del"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del4_free_text_cx)
+        cnv_assertion_checks(resp, genomic_del4_free_text_cx)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del4_free_text_cn)
+        cnv_assertion_checks(resp, genomic_del4_free_text_cn)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1458,30 +1462,30 @@ async def test_genomic_del5(
     """Test that genomic deletion works correctly."""
     q = "NC_000023.11:g.(?_18575354)_18653629del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del5_cx_var)
+    cnv_assertion_checks(resp, genomic_del5_cx_var)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=4
     )
-    assertion_checks(resp, genomic_del5_cn_var)
+    cnv_assertion_checks(resp, genomic_del5_cn_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del5_cx_var)
+    cnv_assertion_checks(resp, genomic_del5_cx_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000023.10:g.(?_18593474)_18671749del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del5_cx_var)
+    cnv_assertion_checks(resp, genomic_del5_cx_var)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=4
     )
-    assertion_checks(resp, genomic_del5_cn_var)
+    cnv_assertion_checks(resp, genomic_del5_cn_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del5_cx_var)
+    cnv_assertion_checks(resp, genomic_del5_cx_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1489,12 +1493,12 @@ async def test_genomic_del5(
     # Free text
     for q in ["CDKL5 g.(?_18575354)_18653629del"]:
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del5_cx_var)
+        cnv_assertion_checks(resp, genomic_del5_cx_var)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=4
         )
-        assertion_checks(resp, genomic_del5_cn_var)
+        cnv_assertion_checks(resp, genomic_del5_cn_var)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
@@ -1519,30 +1523,30 @@ async def test_genomic_del6(
     """Test that genomic deletion works correctly."""
     q = "NC_000006.12:g.133462764_(133464858_?)del"  # 38
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del6_cx_var)
+    cnv_assertion_checks(resp, genomic_del6_cx_var)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del6_cn_var)
+    cnv_assertion_checks(resp, genomic_del6_cn_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del6_cx_var)
+    cnv_assertion_checks(resp, genomic_del6_cx_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
 
     q = "NC_000006.11:g.133783902_(133785996_?)del"  # 37
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-    assertion_checks(resp, genomic_del6_cx_var)
+    cnv_assertion_checks(resp, genomic_del6_cx_var)
 
     resp = await test_handler.normalize(
         q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
     )
-    assertion_checks(resp, genomic_del6_cn_var)
+    cnv_assertion_checks(resp, genomic_del6_cn_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.COPY_NUMBER_CHANGE)
-    assertion_checks(resp, genomic_del6_cx_var)
+    cnv_assertion_checks(resp, genomic_del6_cx_var)
 
     resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
     no_variation_check(resp, q)
@@ -1550,12 +1554,12 @@ async def test_genomic_del6(
     # Free text
     for q in ["EYA4 g.133462764_(133464858_?)del"]:  # 38
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.DEFAULT)
-        assertion_checks(resp, genomic_del6_cx_var)
+        cnv_assertion_checks(resp, genomic_del6_cx_var)
 
         resp = await test_handler.normalize(
             q, HGVSDupDelModeOption.COPY_NUMBER_COUNT, baseline_copies=2
         )
-        assertion_checks(resp, genomic_del6_cn_var)
+        cnv_assertion_checks(resp, genomic_del6_cn_var)
 
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)

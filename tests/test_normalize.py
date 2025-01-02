@@ -5,7 +5,7 @@ from datetime import datetime
 import pytest
 from ga4gh.vrs import models
 
-from tests.conftest import assertion_checks
+from tests.conftest import assertion_checks, cnv_assertion_checks
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
@@ -865,12 +865,12 @@ async def test_amplification(test_handler, braf_amplification, prpf8_amplificati
     """Test that amplification normalizes correctly."""
     q = "BRAF Amplification"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, braf_amplification, check_vrs_id=True)
+    cnv_assertion_checks(resp, braf_amplification, check_vrs_id=True)
 
     # Gene with > 1 sequence location
     q = "PRPF8 AMPLIFICATION"
     resp = await test_handler.normalize(q)
-    assertion_checks(resp, prpf8_amplification)
+    cnv_assertion_checks(resp, prpf8_amplification)
 
     # Gene with no location. This should NOT return a variation
     resp = await test_handler.normalize("IFNR amplification")
