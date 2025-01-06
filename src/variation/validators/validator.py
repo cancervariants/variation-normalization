@@ -169,7 +169,7 @@ class Validator(ABC):
         pos1: int | None,
         pos2: int | None = None,
         pos3: int | None = None,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
@@ -180,7 +180,7 @@ class Validator(ABC):
         :param pos1: Queried genomic position
         :param pos2: Queried genomic position
         :param pos3: Queried genomic position
-        :param residue_mode: Residue mode for positions
+        :param coordinate_type: Coordinate type for positions
         :return: Invalid error message if invalid. Else, `None`
         """
         gene_start_end = {"start": None, "end": None}
@@ -216,7 +216,7 @@ class Validator(ABC):
 
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in ["?", None]:
-                if residue_mode == "residue":
+                if coordinate_type == CoordinateType.RESIDUE:
                     pos -= 1
                 if not (gene_start <= pos <= gene_end):
                     return f"Position {pos} out of index on {alt_ac} on gene, {gene}"
@@ -229,7 +229,7 @@ class Validator(ABC):
         start_pos: int,
         end_pos: int,
         expected_ref: str,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence.
         This is also in translator, but there is a ticket to have this method be moved
@@ -239,11 +239,11 @@ class Validator(ABC):
         :param start_pos: Start position
         :param end_pos: End position
         :param expected_ref: The expected reference sequence (from input string)
-        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :param coordinate_type: Coordinate type for `start_pos` and `end_pos`
         :return: Invalid message if invalid. If valid, `None`
         """
         actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
-            ac, start=start_pos, end=end_pos, coordinate_type=residue_mode
+            ac, start=start_pos, end=end_pos, coordinate_type=coordinate_type
         )
 
         if not err_msg and (actual_ref != expected_ref):
@@ -277,18 +277,18 @@ class Validator(ABC):
         ac: str,
         start_pos: int,
         end_pos: int | None = None,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that accession exists and that position(s) exist on accession
 
         :param ac: Accession
         :param start_pos: Start position on accession
         :param end_position: End position on accession
-        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :param coordinate_type: Coordinate type for `start_pos` and `end_pos`
         :return: If valid accession and position(s) on accession, `None`. If invalid
             accession or invalid position(s) on accession, return error message
         """
-        if residue_mode == CoordinateType.RESIDUE:
+        if coordinate_type == CoordinateType.RESIDUE:
             start_pos -= 1
 
         msg = None

@@ -678,9 +678,9 @@ async def p_to_c(
     p_ac: str = Query(..., description="Protein RefSeq accession"),
     p_start_pos: int = Query(..., description="Protein start position"),
     p_end_pos: int = Query(..., description="Protein end position"),
-    residue_mode: CoordinateType = Query(
+    coordinate_type: CoordinateType = Query(
         CoordinateType.RESIDUE,
-        description="Residue mode for `p_start_pos` and `p_end_pos`",
+        description="Coordinate type for `p_start_pos` and `p_end_pos`",
     ),
 ) -> ToCdnaService:
     """Translate protein representation to cDNA representation
@@ -688,13 +688,13 @@ async def p_to_c(
     :param str p_ac: Protein RefSeq accession
     :param int p_start_pos: Protein start position
     :param int p_end_pos: Protein end position
-    :param CoordinateType residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
+    :param CoordinateType coordinate_type: Coordinate type for `p_start_pos` and `p_end_pos`.
     :return: ToCdnaService containing cDNA representation, warnings, and
         service meta
     """
     try:
         c_data, w = await query_handler.alignment_mapper.p_to_c(
-            p_ac, p_start_pos, p_end_pos, residue_mode
+            p_ac, p_start_pos, p_end_pos, coordinate_type
         )
     except Exception as e:
         _logger.error("Unhandled exception: %s", str(e))
@@ -727,9 +727,9 @@ async def c_to_g(
     cds_start: int | None = Query(
         None, description="CDS start site. If not provided, this will be computed."
     ),
-    residue_mode: CoordinateType = Query(
+    coordinate_type: CoordinateType = Query(
         CoordinateType.RESIDUE,
-        description="Residue mode for `c_start_pos` and `c_end_pos`",
+        description="Coordinate type for `c_start_pos` and `c_end_pos`",
     ),
     target_genome_assembly: Assembly = Query(
         Assembly.GRCH38, description="Genomic assembly to map to"
@@ -742,7 +742,7 @@ async def c_to_g(
     :param int c_end_pos: cDNA end position for codon
     :param Optional[int] cds_start: CDS start site. If not provided, this will be
         computed.
-    :param CoordinateType residue_mode: Residue mode for `c_start_pos` and `c_end_pos`.
+    :param CoordinateType coordinate_type: Coordinate type for `c_start_pos` and `c_end_pos`.
     :param Assembly target_genome_assembly: Genome assembly to get genomic data for
     :return: ToGenomicService containing genomic representation, warnings, and
         service meta
@@ -753,7 +753,7 @@ async def c_to_g(
             c_start_pos,
             c_end_pos,
             cds_start=cds_start,
-            coordinate_type=residue_mode,
+            coordinate_type=coordinate_type,
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:
@@ -784,9 +784,9 @@ async def p_to_g(
     p_ac: str = Query(..., description="Protein RefSeq accession"),
     p_start_pos: int = Query(..., description="Protein start position"),
     p_end_pos: int = Query(..., description="Protein end position"),
-    residue_mode: CoordinateType = Query(
+    coordinate_type: CoordinateType = Query(
         CoordinateType.RESIDUE,
-        description="Residue mode for `p_start_pos` and `p_end_pos`",
+        description="Coordinate type for `p_start_pos` and `p_end_pos`",
     ),
     target_genome_assembly: Assembly = Query(
         Assembly.GRCH38, description="Genomic assembly to map to"
@@ -797,7 +797,7 @@ async def p_to_g(
     :param str p_ac: Protein RefSeq accession
     :param int p_start_pos: Protein start position
     :param int p_end_pos: Protein end position
-    :param CoordinateType residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
+    :param CoordinateType coordinate_type: Coordinate type for `p_start_pos` and `p_end_pos`.
     :param Assembly target_genome_assembly: Genome assembly to get genomic data for
     :return: ToGenomicService containing genomic representation, warnings, and
         service meta
@@ -807,7 +807,7 @@ async def p_to_g(
             p_ac,
             p_start_pos,
             p_end_pos,
-            coordinate_type=residue_mode,
+            coordinate_type=coordinate_type,
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:
