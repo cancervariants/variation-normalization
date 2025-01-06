@@ -101,7 +101,7 @@ class GenomicReferenceAgree(Translator):
                     AltType.REFERENCE_AGREE,
                     warnings,
                     cds_start=mane.coding_start_site if gene else None,
-                    residue_mode=CoordinateType.INTER_RESIDUE,
+                    coordinate_type=CoordinateType.INTER_RESIDUE,
                     extensions=extensions,
                 )
         else:
@@ -113,7 +113,7 @@ class GenomicReferenceAgree(Translator):
                 AnnotationLayer.GENOMIC,
                 AltType.REFERENCE_AGREE,
                 warnings,
-                residue_mode=CoordinateType.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

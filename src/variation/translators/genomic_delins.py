@@ -103,7 +103,7 @@ class GenomicDelIns(Translator):
                     warnings,
                     alt=classification.inserted_sequence,
                     cds_start=mane.coding_start_site if gene else None,
-                    residue_mode=CoordinateType.INTER_RESIDUE,
+                    coordinate_type=CoordinateType.INTER_RESIDUE,
                     extensions=extensions,
                 )
         else:
@@ -116,7 +116,7 @@ class GenomicDelIns(Translator):
                 AltType.DELINS,
                 warnings,
                 alt=classification.inserted_sequence,
-                residue_mode=CoordinateType.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

@@ -116,7 +116,7 @@ class GenomicDelDupTranslator(Translator):
         grch38_data = None
         vrs_variation = None
         vrs_seq_loc_ac_status = VrsSeqLocAcStatus.NA
-        residue_mode = CoordinateType.RESIDUE
+        coordinate_type = CoordinateType.RESIDUE
         mane_genes = None
 
         if do_liftover or endpoint_name == Endpoint.NORMALIZE:
@@ -141,7 +141,7 @@ class GenomicDelDupTranslator(Translator):
                     pos1 = grch38_data.pos0
                 else:
                     pos1 = grch38_data.pos1
-                residue_mode = CoordinateType.INTER_RESIDUE
+                coordinate_type = CoordinateType.INTER_RESIDUE
                 ac = grch38_data.ac
 
                 if (
@@ -154,7 +154,7 @@ class GenomicDelDupTranslator(Translator):
                         pos0,
                         pos0 + (len(ref) - 1),
                         ref,
-                        coordinate_type=residue_mode,
+                        coordinate_type=coordinate_type,
                     )
                     if invalid_ref_msg:
                         warnings.append(invalid_ref_msg)
@@ -198,7 +198,7 @@ class GenomicDelDupTranslator(Translator):
             pos0 = grch38_data.pos0 - 1
             pos1 = grch38_data.pos0 if grch38_data.pos1 is None else grch38_data.pos1
             mane_genes = grch38_data.mane_genes
-            residue_mode = CoordinateType.INTER_RESIDUE
+            coordinate_type = CoordinateType.INTER_RESIDUE
             self.is_valid(classification.gene_token, ac, pos0, pos1, errors)
 
             if errors:
@@ -211,7 +211,7 @@ class GenomicDelDupTranslator(Translator):
                 pos1,
                 "g",
                 try_longest_compatible=True,
-                coordinate_type=residue_mode,
+                coordinate_type=coordinate_type,
                 gene=classification.gene_token.token
                 if classification.gene_token
                 else None,
@@ -223,7 +223,7 @@ class GenomicDelDupTranslator(Translator):
                 vrs_seq_loc_ac_status = mane.status
                 pos0 = mane.pos[0] + mane.coding_start_site
                 pos1 = mane.pos[1] + mane.coding_start_site
-                residue_mode = CoordinateType.INTER_RESIDUE
+                coordinate_type = CoordinateType.INTER_RESIDUE
             else:
                 return None
 
@@ -239,7 +239,7 @@ class GenomicDelDupTranslator(Translator):
         if alt_type == AltType.INSERTION:
             alt = classification.inserted_sequence
 
-        start = pos0 if residue_mode == CoordinateType.INTER_RESIDUE else pos0 - 1
+        start = pos0 if coordinate_type == CoordinateType.INTER_RESIDUE else pos0 - 1
         end = pos1 if pos1 else pos0
 
         refget_accession = get_refget_accession(self.seqrepo_access, ac, warnings)

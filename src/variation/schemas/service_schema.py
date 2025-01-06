@@ -28,7 +28,7 @@ class CdnaRepresentation(BaseModel, extra="forbid"):
     c_start_pos: StrictInt
     c_end_pos: StrictInt
     cds_start: StrictInt
-    residue_mode: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
+    coordinate_type: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -37,7 +37,7 @@ class CdnaRepresentation(BaseModel, extra="forbid"):
                 "c_start_pos": 1797,
                 "c_end_pos": 1800,
                 "cds_start": 226,
-                "residue_mode": CoordinateType.INTER_RESIDUE.value,
+                "coordinate_type": CoordinateType.INTER_RESIDUE.value,
             }
         }
     )
@@ -58,7 +58,7 @@ class ToCdnaService(BaseModel, extra="forbid"):
                     "c_start_pos": 1797,
                     "c_end_pos": 1800,
                     "cds_start": 226,
-                    "residue_mode": "inter-residue",
+                    "coordinate_type": "inter-residue",
                 },
                 "warnings": [],
                 "service_meta": {
@@ -78,7 +78,7 @@ class GenomicRepresentation(BaseModel, extra="forbid"):
     g_ac: StrictStr
     g_start_pos: StrictInt
     g_end_pos: StrictInt
-    residue_mode: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
+    coordinate_type: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -86,7 +86,7 @@ class GenomicRepresentation(BaseModel, extra="forbid"):
                 "g_ac": "NC_000007.13",
                 "g_start_pos": 140453134,
                 "g_end_pos": 140453137,
-                "residue_mode": CoordinateType.INTER_RESIDUE.value,
+                "coordinate_type": CoordinateType.INTER_RESIDUE.value,
             }
         }
     )
@@ -106,7 +106,7 @@ class ToGenomicService(BaseModel, extra="forbid"):
                     "g_ac": "NC_000007.13",
                     "g_start_pos": 140453134,
                     "g_end_pos": 140453137,
-                    "residue_mode": "inter-residue",
+                    "coordinate_type": "inter-residue",
                 },
                 "warnings": [],
                 "service_meta": {

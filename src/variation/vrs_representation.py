@@ -154,7 +154,7 @@ class VRSRepresentation:
         errors: list[str],
         cds_start: int | None = None,
         alt: str | None = None,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
         extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Translate accession and position to VRS Allele Object.
@@ -167,7 +167,7 @@ class VRSRepresentation:
         :param errors: List of errors
         :param cds_start: Coding start site
         :param alt: Alteration
-        :param residue_mode: Residue mode for ``start`` and ``end`` positions
+        :param coordinate_type: Coordinate type for ``start`` and ``end`` positions
         :param extensions: List of extensions for variation
         :return: VRS Allele Object
         """
@@ -179,9 +179,9 @@ class VRSRepresentation:
         else:
             new_start, new_end = coords
 
-        if residue_mode == CoordinateType.RESIDUE:
+        if coordinate_type == CoordinateType.RESIDUE:
             new_start -= 1
-            residue_mode = CoordinateType.INTER_RESIDUE
+            coordinate_type = CoordinateType.INTER_RESIDUE
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
@@ -199,7 +199,7 @@ class VRSRepresentation:
         }:
             if alt_type == AltType.REFERENCE_AGREE:
                 state, _ = self.seqrepo_access.get_reference_sequence(
-                    ac, start=new_start, end=new_end, coordinate_type=residue_mode
+                    ac, start=new_start, end=new_end, coordinate_type=coordinate_type
                 )
                 if state is None:
                     errors.append(
@@ -215,7 +215,7 @@ class VRSRepresentation:
 
         elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
-                ac, start=new_start, end=new_end, coordinate_type=residue_mode
+                ac, start=new_start, end=new_end, coordinate_type=coordinate_type
             )
             if ref is not None:
                 state = ref + ref

@@ -90,7 +90,7 @@ class Translator(ABC):
         errors: list[str],
         pos2: int | None = None,
         pos3: int | None = None,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
     ) -> None:
         """Check that positions are valid on a gene. Will mutate `errors` if invalid.
 
@@ -101,7 +101,7 @@ class Translator(ABC):
         :param errors: List of errors. Will get mutated if invalid.
         :param pos2: Position 2 (GRCh38 assembly)
         :param pos3: Position 3 (GRCh38 assembly)
-        :param residue_mode: Residue mode for positions
+        :param coordinate_type: Coordinate type for positions
         """
         gene_start = None
         gene_end = None
@@ -119,7 +119,7 @@ class Translator(ABC):
 
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in {"?", None}:
-                if residue_mode == CoordinateType.RESIDUE:
+                if coordinate_type == CoordinateType.RESIDUE:
                     pos -= 1
 
                 if not (gene_start <= pos <= gene_end):
@@ -133,7 +133,7 @@ class Translator(ABC):
         start_pos: int,
         end_pos: int,
         expected_ref: str,
-        residue_mode: CoordinateType = CoordinateType.RESIDUE,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence
         This is also in validator, but there is a ticket to have this method be moved
@@ -143,11 +143,11 @@ class Translator(ABC):
         :param start_pos: Start position
         :param end_pos: End position
         :param expected_ref: The expected reference sequence (from input string)
-        :param residue_mode: Residue mode for `start_pos` and `end_pos`
+        :param coordinate_type: Coordinate type for `start_pos` and `end_pos`
         :return: Invalid message if invalid. If valid, `None`
         """
         actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
-            ac, start=start_pos, end=end_pos, coordinate_type=residue_mode
+            ac, start=start_pos, end=end_pos, coordinate_type=coordinate_type
         )
 
         if not err_msg and (actual_ref != expected_ref):
@@ -227,7 +227,7 @@ class Translator(ABC):
                     errors,
                     cds_start=cds_start,
                     alt=alt,
-                    residue_mode=CoordinateType.INTER_RESIDUE,
+                    coordinate_type=CoordinateType.INTER_RESIDUE,
                 )
 
         if not vrs_allele:
@@ -241,7 +241,7 @@ class Translator(ABC):
                 errors,
                 cds_start=cds_start,
                 alt=alt,
-                residue_mode=CoordinateType.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:
