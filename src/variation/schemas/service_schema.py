@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Literal
 
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import CoordinateType
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 
 from variation import __version__
@@ -28,7 +28,7 @@ class CdnaRepresentation(BaseModel, extra="forbid"):
     c_start_pos: StrictInt
     c_end_pos: StrictInt
     cds_start: StrictInt
-    residue_mode: Literal["inter-residue"] = ResidueMode.INTER_RESIDUE.value
+    residue_mode: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -37,7 +37,7 @@ class CdnaRepresentation(BaseModel, extra="forbid"):
                 "c_start_pos": 1797,
                 "c_end_pos": 1800,
                 "cds_start": 226,
-                "residue_mode": ResidueMode.INTER_RESIDUE.value,
+                "residue_mode": CoordinateType.INTER_RESIDUE.value,
             }
         }
     )
@@ -78,7 +78,7 @@ class GenomicRepresentation(BaseModel, extra="forbid"):
     g_ac: StrictStr
     g_start_pos: StrictInt
     g_end_pos: StrictInt
-    residue_mode: Literal["inter-residue"] = ResidueMode.INTER_RESIDUE.value
+    residue_mode: Literal["inter-residue"] = CoordinateType.INTER_RESIDUE.value
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -86,7 +86,7 @@ class GenomicRepresentation(BaseModel, extra="forbid"):
                 "g_ac": "NC_000007.13",
                 "g_start_pos": 140453134,
                 "g_end_pos": 140453137,
-                "residue_mode": ResidueMode.INTER_RESIDUE.value,
+                "residue_mode": CoordinateType.INTER_RESIDUE.value,
             }
         }
     )

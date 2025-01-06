@@ -10,7 +10,7 @@ from urllib.parse import unquote
 
 import pkg_resources
 from bioutils.exceptions import BioutilsError
-from cool_seq_tool.schemas import Assembly, ResidueMode
+from cool_seq_tool.schemas import Assembly, CoordinateType
 from fastapi import FastAPI, Query
 from ga4gh.vrs import models
 from ga4gh.vrs.dataproxy import DataProxyValidationError
@@ -678,8 +678,8 @@ async def p_to_c(
     p_ac: str = Query(..., description="Protein RefSeq accession"),
     p_start_pos: int = Query(..., description="Protein start position"),
     p_end_pos: int = Query(..., description="Protein end position"),
-    residue_mode: ResidueMode = Query(
-        ResidueMode.RESIDUE,
+    residue_mode: CoordinateType = Query(
+        CoordinateType.RESIDUE,
         description="Residue mode for `p_start_pos` and `p_end_pos`",
     ),
 ) -> ToCdnaService:
@@ -688,7 +688,7 @@ async def p_to_c(
     :param str p_ac: Protein RefSeq accession
     :param int p_start_pos: Protein start position
     :param int p_end_pos: Protein end position
-    :param ResidueMode residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
+    :param CoordinateType residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
     :return: ToCdnaService containing cDNA representation, warnings, and
         service meta
     """
@@ -727,8 +727,8 @@ async def c_to_g(
     cds_start: int | None = Query(
         None, description="CDS start site. If not provided, this will be computed."
     ),
-    residue_mode: ResidueMode = Query(
-        ResidueMode.RESIDUE,
+    residue_mode: CoordinateType = Query(
+        CoordinateType.RESIDUE,
         description="Residue mode for `c_start_pos` and `c_end_pos`",
     ),
     target_genome_assembly: Assembly = Query(
@@ -742,7 +742,7 @@ async def c_to_g(
     :param int c_end_pos: cDNA end position for codon
     :param Optional[int] cds_start: CDS start site. If not provided, this will be
         computed.
-    :param ResidueMode residue_mode: Residue mode for `c_start_pos` and `c_end_pos`.
+    :param CoordinateType residue_mode: Residue mode for `c_start_pos` and `c_end_pos`.
     :param Assembly target_genome_assembly: Genome assembly to get genomic data for
     :return: ToGenomicService containing genomic representation, warnings, and
         service meta
@@ -753,7 +753,7 @@ async def c_to_g(
             c_start_pos,
             c_end_pos,
             cds_start=cds_start,
-            residue_mode=residue_mode,
+            coordinate_type=residue_mode,
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:
@@ -784,8 +784,8 @@ async def p_to_g(
     p_ac: str = Query(..., description="Protein RefSeq accession"),
     p_start_pos: int = Query(..., description="Protein start position"),
     p_end_pos: int = Query(..., description="Protein end position"),
-    residue_mode: ResidueMode = Query(
-        ResidueMode.RESIDUE,
+    residue_mode: CoordinateType = Query(
+        CoordinateType.RESIDUE,
         description="Residue mode for `p_start_pos` and `p_end_pos`",
     ),
     target_genome_assembly: Assembly = Query(
@@ -797,7 +797,7 @@ async def p_to_g(
     :param str p_ac: Protein RefSeq accession
     :param int p_start_pos: Protein start position
     :param int p_end_pos: Protein end position
-    :param ResidueMode residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
+    :param CoordinateType residue_mode: Residue mode for `p_start_pos` and `p_end_pos`.
     :param Assembly target_genome_assembly: Genome assembly to get genomic data for
     :return: ToGenomicService containing genomic representation, warnings, and
         service meta
@@ -807,7 +807,7 @@ async def p_to_g(
             p_ac,
             p_start_pos,
             p_end_pos,
-            residue_mode=residue_mode,
+            coordinate_type=residue_mode,
             target_genome_assembly=target_genome_assembly,
         )
     except Exception as e:

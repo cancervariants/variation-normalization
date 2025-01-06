@@ -7,7 +7,7 @@ from typing import Literal
 from bioutils.sequences import aa1_to_aa3 as _aa1_to_aa3
 from bioutils.sequences import aa3_to_aa1 as _aa3_to_aa1
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import CoordinateType
 from ga4gh.core.models import Coding, ConceptMapping, MappableConcept, Relation
 from ga4gh.vrs import models
 
@@ -232,7 +232,7 @@ def get_vrs_loc_seq(
     """
     if isinstance(start, int) and isinstance(end, int) and (start != end):
         ref, _ = seqrepo_access.get_reference_sequence(
-            identifier, start, end, residue_mode=ResidueMode.INTER_RESIDUE
+            identifier, start, end, coordinate_type=CoordinateType.INTER_RESIDUE
         )
     else:
         ref = None

@@ -1,6 +1,6 @@
 """Module for Genomic Substitution Translation."""
 
-from cool_seq_tool.schemas import AnnotationLayer, ResidueMode, Strand
+from cool_seq_tool.schemas import AnnotationLayer, CoordinateType, Strand
 from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import Endpoint
@@ -73,7 +73,7 @@ class GenomicSubstitution(Translator):
                 classification.pos,
                 AnnotationLayer.GENOMIC,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
                 gene=gene,
             )
 
@@ -124,7 +124,7 @@ class GenomicSubstitution(Translator):
                     errors,
                     alt=classification.alt,
                     cds_start=mane.coding_start_site if gene else None,
-                    residue_mode=ResidueMode.INTER_RESIDUE,
+                    residue_mode=CoordinateType.INTER_RESIDUE,
                     extensions=extensions,
                 )
         else:
@@ -137,7 +137,7 @@ class GenomicSubstitution(Translator):
                 AltType.SUBSTITUTION,
                 errors,
                 alt=classification.alt,
-                residue_mode=ResidueMode.RESIDUE,
+                residue_mode=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

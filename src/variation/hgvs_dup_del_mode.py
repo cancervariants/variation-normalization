@@ -1,7 +1,7 @@
 """Module for hgvs_dup_del_mode in normalize endpoint."""
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.schemas import ResidueMode
+from cool_seq_tool.schemas import CoordinateType
 from ga4gh.core import ga4gh_identify
 from ga4gh.core.models import (
     Extension,
@@ -179,7 +179,7 @@ class HGVSDupDelMode:
                 vrs_seq_loc_ac,
                 start=location["start"],
                 end=location["end"],
-                residue_mode=ResidueMode.INTER_RESIDUE,
+                coordinate_type=CoordinateType.INTER_RESIDUE,
             )
 
             if ref:
