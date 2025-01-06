@@ -1,6 +1,6 @@
 """Module for Genomic Reference Agree Translation."""
 
-from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, CoordinateType
 from ga4gh.vrs import models
 
 from variation.schemas.app_schemas import Endpoint
@@ -70,7 +70,7 @@ class GenomicReferenceAgree(Translator):
                 classification.pos,
                 AnnotationLayer.GENOMIC,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
                 gene=gene,
             )
 
@@ -101,7 +101,7 @@ class GenomicReferenceAgree(Translator):
                     AltType.REFERENCE_AGREE,
                     warnings,
                     cds_start=mane.coding_start_site if gene else None,
-                    residue_mode=ResidueMode.INTER_RESIDUE,
+                    residue_mode=CoordinateType.INTER_RESIDUE,
                     extensions=extensions,
                 )
         else:
@@ -113,7 +113,7 @@ class GenomicReferenceAgree(Translator):
                 AnnotationLayer.GENOMIC,
                 AltType.REFERENCE_AGREE,
                 warnings,
-                residue_mode=ResidueMode.RESIDUE,
+                residue_mode=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

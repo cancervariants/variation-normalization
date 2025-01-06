@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
-from cool_seq_tool.schemas import AnnotationLayer, ManeGeneData, ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, CoordinateType, ManeGeneData
 from cool_seq_tool.sources import UtaDatabase
 from ga4gh.core.models import Extension
 from ga4gh.vrs import models
@@ -90,7 +90,7 @@ class Translator(ABC):
         errors: list[str],
         pos2: int | None = None,
         pos3: int | None = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
     ) -> None:
         """Check that positions are valid on a gene. Will mutate `errors` if invalid.
 
@@ -119,7 +119,7 @@ class Translator(ABC):
 
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in {"?", None}:
-                if residue_mode == ResidueMode.RESIDUE:
+                if residue_mode == CoordinateType.RESIDUE:
                     pos -= 1
 
                 if not (gene_start <= pos <= gene_end):
@@ -133,7 +133,7 @@ class Translator(ABC):
         start_pos: int,
         end_pos: int,
         expected_ref: str,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence
         This is also in validator, but there is a ticket to have this method be moved
@@ -147,7 +147,7 @@ class Translator(ABC):
         :return: Invalid message if invalid. If valid, `None`
         """
         actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
-            ac, start=start_pos, end=end_pos, residue_mode=residue_mode
+            ac, start=start_pos, end=end_pos, coordinate_type=residue_mode
         )
 
         if not err_msg and (actual_ref != expected_ref):
@@ -205,7 +205,7 @@ class Translator(ABC):
                 end_pos if end_pos is not None else start_pos,
                 coordinate_type,
                 try_longest_compatible=True,
-                residue_mode=ResidueMode.RESIDUE,
+                coordinate_type=CoordinateType.RESIDUE,
                 ref=ref,
             )
 
@@ -227,7 +227,7 @@ class Translator(ABC):
                     errors,
                     cds_start=cds_start,
                     alt=alt,
-                    residue_mode=ResidueMode.INTER_RESIDUE,
+                    residue_mode=CoordinateType.INTER_RESIDUE,
                 )
 
         if not vrs_allele:
@@ -241,7 +241,7 @@ class Translator(ABC):
                 errors,
                 cds_start=cds_start,
                 alt=alt,
-                residue_mode=ResidueMode.RESIDUE,
+                residue_mode=CoordinateType.RESIDUE,
             )
 
         if vrs_allele and vrs_seq_loc_ac:

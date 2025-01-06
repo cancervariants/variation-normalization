@@ -1,7 +1,7 @@
 """Module for generating VRS objects"""
 
 from cool_seq_tool.handlers import SeqRepoAccess
-from cool_seq_tool.schemas import AnnotationLayer, ResidueMode
+from cool_seq_tool.schemas import AnnotationLayer, CoordinateType
 from ga4gh.core import ga4gh_identify
 from ga4gh.core.models import Extension
 from ga4gh.vrs import models, normalize
@@ -154,7 +154,7 @@ class VRSRepresentation:
         errors: list[str],
         cds_start: int | None = None,
         alt: str | None = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
         extensions: list[Extension] | None = None,
     ) -> dict | None:
         """Translate accession and position to VRS Allele Object.
@@ -179,9 +179,9 @@ class VRSRepresentation:
         else:
             new_start, new_end = coords
 
-        if residue_mode == ResidueMode.RESIDUE:
+        if residue_mode == CoordinateType.RESIDUE:
             new_start -= 1
-            residue_mode = ResidueMode.INTER_RESIDUE
+            residue_mode = CoordinateType.INTER_RESIDUE
 
         # Right now, this follows HGVS conventions
         # This will change once we support other representations
@@ -199,7 +199,7 @@ class VRSRepresentation:
         }:
             if alt_type == AltType.REFERENCE_AGREE:
                 state, _ = self.seqrepo_access.get_reference_sequence(
-                    ac, start=new_start, end=new_end, residue_mode=residue_mode
+                    ac, start=new_start, end=new_end, coordinate_type=residue_mode
                 )
                 if state is None:
                     errors.append(
@@ -215,7 +215,7 @@ class VRSRepresentation:
 
         elif alt_type == AltType.DUPLICATION:
             ref, _ = self.seqrepo_access.get_reference_sequence(
-                ac, start=new_start, end=new_end, residue_mode=residue_mode
+                ac, start=new_start, end=new_end, coordinate_type=residue_mode
             )
             if ref is not None:
                 state = ref + ref

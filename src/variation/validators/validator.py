@@ -5,7 +5,7 @@ from typing import Literal
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import LiftOver
-from cool_seq_tool.schemas import Assembly, ResidueMode
+from cool_seq_tool.schemas import Assembly, CoordinateType
 from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 from gene.schemas import SourceName
@@ -169,7 +169,7 @@ class Validator(ABC):
         pos1: int | None,
         pos2: int | None = None,
         pos3: int | None = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate whether free text genomic query is valid input.
         If invalid input, add error to list of errors
@@ -229,7 +229,7 @@ class Validator(ABC):
         start_pos: int,
         end_pos: int,
         expected_ref: str,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that expected reference sequence matches actual reference sequence.
         This is also in translator, but there is a ticket to have this method be moved
@@ -243,7 +243,7 @@ class Validator(ABC):
         :return: Invalid message if invalid. If valid, `None`
         """
         actual_ref, err_msg = self.seqrepo_access.get_reference_sequence(
-            ac, start=start_pos, end=end_pos, residue_mode=residue_mode
+            ac, start=start_pos, end=end_pos, coordinate_type=residue_mode
         )
 
         if not err_msg and (actual_ref != expected_ref):
@@ -277,7 +277,7 @@ class Validator(ABC):
         ac: str,
         start_pos: int,
         end_pos: int | None = None,
-        residue_mode: ResidueMode = ResidueMode.RESIDUE,
+        residue_mode: CoordinateType = CoordinateType.RESIDUE,
     ) -> str | None:
         """Validate that accession exists and that position(s) exist on accession
 
@@ -288,7 +288,7 @@ class Validator(ABC):
         :return: If valid accession and position(s) on accession, `None`. If invalid
             accession or invalid position(s) on accession, return error message
         """
-        if residue_mode == ResidueMode.RESIDUE:
+        if residue_mode == CoordinateType.RESIDUE:
             start_pos -= 1
 
         msg = None
