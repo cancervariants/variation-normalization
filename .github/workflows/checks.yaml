@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   deps:
     name: deps py${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
