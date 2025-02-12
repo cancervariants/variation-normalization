@@ -27,7 +27,7 @@ class GeneSymbol(Tokenizer):
 
         if norm_match_type != 0:
             gene = norm_resp.gene
-            label = gene.label
+            label = gene.name
             return GeneToken(
                 token=label,
                 input_string=input_string,
