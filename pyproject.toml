@@ -29,7 +29,7 @@ dependencies = [
     "uvicorn",
     "pydantic ==2.*",
     "ga4gh.vrs[extras] ==2.0.0a14",
-    "gene-normalizer ~=0.7.0",
+    "gene-normalizer >=0.8.0",
     "boto3",
     "cool-seq-tool ~=0.12.0",
     "bioutils"
