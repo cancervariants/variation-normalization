@@ -620,6 +620,7 @@ def _mane_gene_ext_checks(actual_vo: dict) -> None:
     for mane_gene in mane_genes_ext["value"]:
         assert mane_gene["ncbi_gene_id"]
         assert mane_gene["symbol"]
+        assert mane_gene["status"]
 
 
 def assertion_checks(
