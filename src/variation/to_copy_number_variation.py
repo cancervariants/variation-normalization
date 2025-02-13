@@ -681,7 +681,7 @@ class ToCopyNumberVariation(ToVRS):
             if gene_norm_resp.match_type != GeneMatchType.NO_MATCH:
                 vrs_location = None
                 gene = gene_norm_resp.gene
-                gene_norm_label = gene.label
+                gene_norm_label = gene.name
                 amplification_label = f"{gene_norm_label} Amplification"
                 if all((sequence_id, start, end)):
                     # User provided input to make sequence location
