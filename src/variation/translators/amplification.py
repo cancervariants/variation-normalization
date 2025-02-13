@@ -58,7 +58,7 @@ class Amplification(Translator):
             vrs_cx = vrs_cx.model_dump(exclude_none=True)
         else:
             vrs_cx = None
-            warnings.append(f"No VRS SequenceLocation found for gene: {gene.label}")
+            warnings.append(f"No VRS SequenceLocation found for gene: {gene.name}")
 
         if vrs_cx:
             return TranslationResult(

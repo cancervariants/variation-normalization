@@ -68,7 +68,6 @@ def protein_insertion2():
                 "type": "SequenceReference",
                 "refgetAccession": "SQ.qgIh8--4F6IpxRwX_lVtD2BhepH5B5Ef",
             },
-            "Sequence": "Q",
             "type": "SequenceLocation",
         },
         "state": {"sequence": "R", "type": "LiteralSequenceExpression"},
