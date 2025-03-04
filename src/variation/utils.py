@@ -61,7 +61,7 @@ def _get_priority_sequence_location(
 
         if location:
             # DynamoDB stores as Decimal, so need to convert to int
-            for k in {"start", "end"}:
+            for k in ("start", "end"):
                 location[k] = int(location[k])
     return location
 

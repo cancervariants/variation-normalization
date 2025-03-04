@@ -528,7 +528,7 @@ def gnomad_vcf_genomic_delins5():
     return models.Allele(**params)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     """Test that protein substitutions normalize correctly."""
     resp = await test_handler.normalize("     BRAF      V600E    ")
@@ -547,21 +547,21 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
     assertion_checks(resp, dis3_p63a)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_polypeptide_truncation(test_handler, vhl):
     """Test that polypeptide truncations normalize correctly."""
     resp = await test_handler.normalize("NP_000542.1:p.Tyr185Ter")
     assertion_checks(resp, vhl)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_reference_agree(test_handler, vhl_reference_agree):
     """Test that reference agrees normalize correctly."""
     resp = await test_handler.normalize("NP_000542.1:p.Pro61=")
     assertion_checks(resp, vhl_reference_agree)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_cdna_and_genomic_substitution(
     test_handler,
     braf_v600e_nucleotide,
@@ -615,7 +615,7 @@ async def test_cdna_and_genomic_substitution(
     assertion_checks(resp, gnomad_vcf_genomic_sub_mnv, mane_genes_exts=True)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_cdna_reference_agree(test_handler, cdna_reference_agree):
     """Test that cdna Reference Agree normalizes correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799= ")
@@ -631,7 +631,7 @@ async def test_cdna_reference_agree(test_handler, cdna_reference_agree):
     assertion_checks(resp, cdna_reference_agree)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_genomic_reference_agree(
     test_handler, cdna_reference_agree, grch38_braf_genom_reference_agree
 ):
@@ -653,7 +653,7 @@ async def test_genomic_reference_agree(
     assertion_checks(resp, cdna_reference_agree)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
     """Test that cdna DelIns normalizes correctly."""
     resp = await test_handler.normalize("    NM_004448.4:c.2326_2327delinsCT    ")
@@ -666,7 +666,7 @@ async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
     assertion_checks(resp, nm_000551)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_genomic_delins(
     test_handler,
     grch38_genomic_delins1,
@@ -740,7 +740,7 @@ async def test_genomic_delins(
     assertion_checks(resp, genomic_del1_lse, mane_genes_exts=True)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_protein_delins(test_handler, protein_delins):
     """Test that Amnio Acid DelIns normalizes correctly."""
     resp = await test_handler.normalize("NP_001333827.1:p.Leu747_Thr751delinsPro")
@@ -756,7 +756,7 @@ async def test_protein_delins(test_handler, protein_delins):
     assertion_checks(resp, protein_delins)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_protein_deletion(test_handler, protein_deletion_np_range):
     """Test that Protein Deletion normalizes correctly."""
     resp = await test_handler.normalize("NP_004439.2:p.Leu755_Thr759del")
@@ -777,7 +777,7 @@ async def test_protein_deletion(test_handler, protein_deletion_np_range):
     assert resp.variation is None
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_cdna_deletion(test_handler, cdna_deletion):
     """Test that cdna deletion normalizes correctly."""
     # https://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_caid?caid=CA645372623
@@ -797,7 +797,7 @@ async def test_cdna_deletion(test_handler, cdna_deletion):
     assertion_checks(resp, cdna_deletion)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_genomic_deletion(test_handler, genomic_deletion):
     """Test that genomic deletion normalizes correctly"""
     # CA915940709
@@ -816,7 +816,7 @@ async def test_genomic_deletion(test_handler, genomic_deletion):
     assert resp.variation is None
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_protein_insertion(test_handler, protein_insertion):
     """Test that protein insertion normalizes correctly."""
     resp = await test_handler.normalize("NP_005219.2:p.Asp770_Asn771insGlyLeu")
@@ -835,14 +835,14 @@ async def test_protein_insertion(test_handler, protein_insertion):
     assertion_checks(resp, protein_insertion)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_cdna_insertion(test_handler, cdna_insertion):
     """Test that cdna insertion normalizes correctly."""
     resp = await test_handler.normalize("ENST00000331728.9:c.2049_2050insA")
     assertion_checks(resp, cdna_insertion)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_genomic_insertion(
     test_handler, genomic_insertion, grch38_genomic_insertion_variation
 ):
@@ -860,7 +860,7 @@ async def test_genomic_insertion(
     assertion_checks(resp, grch38_genomic_insertion_variation, mane_genes_exts=True)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_amplification(test_handler, braf_amplification, prpf8_amplification):
     """Test that amplification normalizes correctly."""
     q = "BRAF Amplification"
@@ -877,7 +877,7 @@ async def test_amplification(test_handler, braf_amplification, prpf8_amplificati
     assert resp.variation is None
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_valid_queries(test_handler):
     """Test that valid queries don"t throw exceptions. Used for queries that
     revealed bugs in service.
@@ -902,7 +902,7 @@ async def test_valid_queries(test_handler):
         assert resp.variation, q
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_no_matches(test_handler):
     """Test no matches work correctly."""
     queries = [
@@ -943,7 +943,7 @@ async def test_no_matches(test_handler):
         assert resp.variation is None
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_service_meta():
     """Test that service meta info populates correctly."""
     response = await normalize_get_response("BRAF v600e", "default")

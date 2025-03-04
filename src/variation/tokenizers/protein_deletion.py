@@ -78,9 +78,9 @@ class ProteinDeletion(Tokenizer):
 
             if all(
                 (
-                    type(aa0) == type(one_letter_aa0),
-                    type(aa1) == type(one_letter_aa1),
-                    type(deleted_sequence) == type(one_letter_del_seq),
+                    type(aa0) is type(one_letter_aa0),
+                    type(aa1) is type(one_letter_aa1),
+                    type(deleted_sequence) is type(one_letter_del_seq),
                 )
             ):
                 return ProteinDeletionToken(
