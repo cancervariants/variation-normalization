@@ -6,6 +6,7 @@ import traceback
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from enum import Enum
+from typing import Annotated
 from urllib.parse import unquote
 
 import pkg_resources
@@ -114,15 +115,12 @@ q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 a
 @app.get(
     "/variation/to_vrs",
     summary=translate_summary,
-    response_model=ToVRSService,
     response_model_exclude_none=True,
     response_description=translate_response_description,
     description=translate_description,
     tags=[Tag.MAIN],
 )
-async def to_vrs(
-    q: str = Query(..., description=q_description),
-) -> ToVRSService:
+async def to_vrs(q: Annotated[str, Query(description=q_description)]) -> ToVRSService:
     """Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s).
     Performs fully-justified allele normalization. Does not do any liftover operations
     or make any inferences about the query.
@@ -152,25 +150,28 @@ hgvs_dup_del_mode_decsr = (
 @app.get(
     "/variation/normalize",
     summary=normalize_summary,
-    response_model=NormalizeService,
     response_model_exclude_none=True,
     response_description=normalize_response_description,
     description=normalize_description,
     tags=[Tag.MAIN],
 )
 async def normalize(
-    q: str = Query(..., description=q_description),
-    hgvs_dup_del_mode: HGVSDupDelModeOption | None = Query(
-        HGVSDupDelModeOption.DEFAULT, description=hgvs_dup_del_mode_decsr
-    ),
-    baseline_copies: int | None = Query(
-        None,
-        description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",
-    ),
-    copy_change: models.CopyChange | None = Query(
-        None,
-        description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
-    ),
+    q: Annotated[str, Query(description=q_description)],
+    hgvs_dup_del_mode: Annotated[
+        HGVSDupDelModeOption | None, Query(description=hgvs_dup_del_mode_decsr)
+    ] = HGVSDupDelModeOption.DEFAULT,
+    baseline_copies: Annotated[
+        int | None,
+        Query(
+            description="Baseline copies for HGVS duplications and deletions represented as Copy Number Count Variation",
+        ),
+    ] = None,
+    copy_change: Annotated[
+        models.CopyChange | None,
+        Query(
+            description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
+        ),
+    ] = None,
 ) -> NormalizeService:
     """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
     or GRCh38 assembly to a single VRS Variation. Performs fully-justified allele
@@ -199,16 +200,16 @@ async def normalize(
     "/variation/translate_identifier",
     summary="Given an identifier, use SeqRepo to return a list of aliases.",
     response_description="A response to a validly-formed query.",
-    response_model=TranslateIdentifierService,
     response_model_exclude_none=True,
     description="Return list of aliases for an identifier",
     tags=[Tag.SEQREPO],
 )
 def translate_identifier(
-    identifier: str = Query(..., description="The identifier to find aliases for"),
-    target_namespaces: str | None = Query(
-        None, description="The namespaces of the aliases, separated by commas"
-    ),
+    identifier: Annotated[str, Query(description="The identifier to find aliases for")],
+    target_namespaces: Annotated[
+        str | None,
+        Query(description="The namespaces of the aliases, separated by commas"),
+    ] = None,
 ) -> TranslateIdentifierService:
     """Return data containing identifier aliases.
 
@@ -248,24 +249,31 @@ rle_seq_limit_descr = "If RLE is set as the new state after normalization, this 
 @app.get(
     "/variation/translate_from",
     summary="Given variation as beacon, gnomad, hgvs or spdi representation, return VRS Allele object using VRS-Python's AlleleTranslator class",
-    response_model=TranslateFromService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Allele object",
     tags=[Tag.VRS_PYTHON],
 )
 def vrs_python_translate_from(
-    variation: str = Query(
-        ...,
-        description="Variation to translate to VRS object. Must be represented as either beacon, gnomad, hgvs, or spdi.",
-    ),
-    fmt: TranslateFromFormat | None = Query(None, description=from_fmt_descr),
-    assembly_name: str = Query(
-        "GRCh38",
-        description="Assembly used for `variation`. Only used for beacon and gnomad.",
-    ),
-    require_validation: bool = Query(True, description=require_validation_descr),
-    rle_seq_limit: int | None = Query(50, description=rle_seq_limit_descr),
+    variation: Annotated[
+        str,
+        Query(
+            description="Variation to translate to VRS object. Must be represented as either beacon, gnomad, hgvs, or spdi.",
+        ),
+    ],
+    fmt: Annotated[
+        TranslateFromFormat | None, Query(description=from_fmt_descr)
+    ] = None,
+    assembly_name: Annotated[
+        str,
+        Query(
+            description="Assembly used for `variation`. Only used for beacon and gnomad.",
+        ),
+    ] = "GRCH38",
+    require_validation: Annotated[
+        bool, Query(description=require_validation_descr)
+    ] = True,
+    rle_seq_limit: Annotated[int | None, Query(description=rle_seq_limit_descr)] = 50,
 ) -> TranslateFromService:
     """Given variation query, return VRS Allele object.
     This endpoint exposes vrs-python AlleleTranslator's translate_from method
@@ -338,14 +346,13 @@ q_description = (
 @app.get(
     "/variation/gnomad_vcf_to_protein",
     summary=g_to_p_summary,
-    response_model=GnomadVcfToProteinService,
     response_model_exclude_none=True,
     response_description=g_to_p_response_description,
     description=g_to_p_description,
     tags=[Tag.TO_PROTEIN_VARIATION],
 )
 async def gnomad_vcf_to_protein(
-    q: str = Query(..., description=q_description),
+    q: Annotated[str, Query(description=q_description)],
 ) -> GnomadVcfToProteinService:
     """Return VRS representation for variation on protein coordinate.
 
@@ -384,7 +391,6 @@ def _get_allele(
     "/variation/translate_to",
     summary="Given VRS Allele object as a dict, return variation expressed as "
     "queried format using vrs-python's translator class",
-    response_model=TranslateToService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return variation in queried format representation. "
@@ -443,7 +449,6 @@ to_hgvs_descr = (
 @app.post(
     "/variation/vrs_allele_to_hgvs",
     summary="Given VRS Allele object as a dict, return HGVS expression(s)",
-    response_model=TranslateToService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description=to_hgvs_descr,
@@ -492,20 +497,19 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
 @app.get(
     "/variation/hgvs_to_copy_number_count",
     summary="Given HGVS expression, return VRS Copy Number Count Variation",
-    response_model=HgvsToCopyNumberCountService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_count(
-    hgvs_expr: str = Query(..., description="Variation query"),
-    baseline_copies: int | None = Query(
-        ..., description="Baseline copies for duplication"
-    ),
-    do_liftover: bool = Query(
-        False, description="Whether or not to liftover " "to GRCh38 assembly."
-    ),
+    hgvs_expr: Annotated[str, Query(description="Variation query")],
+    baseline_copies: Annotated[
+        int | None, Query(description="Baseline copies for duplication")
+    ],
+    do_liftover: Annotated[
+        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+    ] = False,
 ) -> HgvsToCopyNumberCountService:
     """Given hgvs expression, return copy number count variation
 
@@ -524,18 +528,17 @@ async def hgvs_to_copy_number_count(
 @app.get(
     "/variation/hgvs_to_copy_number_change",
     summary="Given HGVS expression, return VRS Copy Number Change Variation",
-    response_model=HgvsToCopyNumberChangeService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Change Variation",
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_change(
-    hgvs_expr: str = Query(..., description="Variation query"),
-    copy_change: models.CopyChange = Query(..., description="The copy change"),
-    do_liftover: bool = Query(
-        False, description="Whether or not to liftover " "to GRCh38 assembly."
-    ),
+    hgvs_expr: Annotated[str, Query(description="Variation query")],
+    copy_change: Annotated[models.CopyChange, Query(description="The copy change")],
+    do_liftover: Annotated[
+        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+    ] = False,
 ) -> HgvsToCopyNumberChangeService:
     """Given hgvs expression, return copy number change variation
 
@@ -555,7 +558,6 @@ async def hgvs_to_copy_number_change(
     "/variation/parsed_to_cn_var",
     summary="Given parsed genomic components, return VRS Copy Number Count "
     "Variation",
-    response_model=ParsedToCnVarService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
@@ -588,7 +590,6 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
     "/variation/parsed_to_cx_var",
     summary="Given parsed genomic components, return VRS Copy Number Change "
     "Variation",
-    response_model=ParsedToCxVarService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Change Variation",
@@ -629,17 +630,20 @@ amplification_to_cx_var_descr = (
 @app.get(
     "/variation/amplification_to_cx_var",
     summary="Given amplification query, return VRS Copy Number Change Variation",
-    response_model=AmplificationToCxVarService,
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description=amplification_to_cx_var_descr,
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 def amplification_to_cx_var(
-    gene: str = Query(..., description="Gene query"),
-    sequence_id: str | None = Query(None, description="Sequence identifier"),
-    start: int | None = Query(None, description="Start position as residue coordinate"),
-    end: int | None = Query(None, description="End position as residue coordinate"),
+    gene: Annotated[str, Query(description="Gene query")],
+    sequence_id: Annotated[str | None, Query(description="Sequence identifier")] = None,
+    start: Annotated[
+        int | None, Query(description="Start position as residue coordinate")
+    ] = None,
+    end: Annotated[
+        int | None, Query(description="End position as residue coordinate")
+    ] = None,
 ) -> AmplificationToCxVarService:
     """Given amplification query, return Copy Number Change Variation
     Parameter priority:
@@ -670,18 +674,19 @@ def amplification_to_cx_var(
     response_description="A response to a validly-formed query.",
     description="Given protein accession and positions, return associated cDNA "
     "accession and positions to codon(s)",
-    response_model=ToCdnaService,
     response_model_exclude_none=True,
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_c(
-    p_ac: str = Query(..., description="Protein RefSeq accession"),
-    p_start_pos: int = Query(..., description="Protein start position"),
-    p_end_pos: int = Query(..., description="Protein end position"),
-    coordinate_type: CoordinateType = Query(
-        CoordinateType.RESIDUE,
-        description="Coordinate type for `p_start_pos` and `p_end_pos`",
-    ),
+    p_ac: Annotated[str, Query(description="Protein RefSeq accession")],
+    p_start_pos: Annotated[int, Query(description="Protein start position")],
+    p_end_pos: Annotated[int, Query(description="Protein end position")],
+    coordinate_type: Annotated[
+        CoordinateType,
+        Query(
+            description="Coordinate type for `p_start_pos` and `p_end_pos`",
+        ),
+    ] = CoordinateType.RESIDUE,
 ) -> ToCdnaService:
     """Translate protein representation to cDNA representation
 
@@ -696,8 +701,8 @@ async def p_to_c(
         c_data, w = await query_handler.alignment_mapper.p_to_c(
             p_ac, p_start_pos, p_end_pos, coordinate_type
         )
-    except Exception as e:
-        _logger.error("Unhandled exception: %s", str(e))
+    except Exception:
+        _logger.exception("Unhandled exception: %s")
         w = "Unhandled exception. See logs for more information."
         c_data = None
     return ToCdnaService(
@@ -716,24 +721,26 @@ async def p_to_c(
     response_description="A response to a validly-formed query.",
     description="Given cDNA accession and positions for codon(s), return associated genomic"
     " accession and positions for a given target genome assembly",
-    response_model=ToGenomicService,
     response_model_exclude_none=True,
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def c_to_g(
-    c_ac: str = Query(..., description="cDNA RefSeq accession"),
-    c_start_pos: int = Query(..., description="cDNA start position for codon"),
-    c_end_pos: int = Query(..., description="cDNA end position for codon"),
-    cds_start: int | None = Query(
-        None, description="CDS start site. If not provided, this will be computed."
-    ),
-    coordinate_type: CoordinateType = Query(
-        CoordinateType.RESIDUE,
-        description="Coordinate type for `c_start_pos` and `c_end_pos`",
-    ),
-    target_genome_assembly: Assembly = Query(
-        Assembly.GRCH38, description="Genomic assembly to map to"
-    ),
+    c_ac: Annotated[str, Query(description="cDNA RefSeq accession")],
+    c_start_pos: Annotated[int, Query(description="cDNA start position for codon")],
+    c_end_pos: Annotated[int, Query(description="cDNA end position for codon")],
+    cds_start: Annotated[
+        int | None,
+        Query(description="CDS start site. If not provided, this will be computed."),
+    ] = None,
+    coordinate_type: Annotated[
+        CoordinateType,
+        Query(
+            description="Coordinate type for `c_start_pos` and `c_end_pos`",
+        ),
+    ] = CoordinateType.RESIDUE,
+    target_genome_assembly: Annotated[
+        Assembly, Query(description="Genomic assembly to map to")
+    ] = Assembly.GRCH38,
 ) -> ToGenomicService:
     """Translate cDNA representation to genomic representation
 
@@ -756,8 +763,8 @@ async def c_to_g(
             coordinate_type=coordinate_type,
             target_genome_assembly=target_genome_assembly,
         )
-    except Exception as e:
-        _logger.error("Unhandled exception: %s", str(e))
+    except Exception:
+        _logger.exception("Unhandled exception")
         w = "Unhandled exception. See logs for more information."
         g_data = None
     return ToGenomicService(
@@ -776,21 +783,22 @@ async def c_to_g(
     response_description="A response to a validly-formed query.",
     description="Given protein accession and positions, return associated genomic "
     "accession and positions for a given target genome assembly",
-    response_model=ToGenomicService,
     response_model_exclude_none=True,
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_g(
-    p_ac: str = Query(..., description="Protein RefSeq accession"),
-    p_start_pos: int = Query(..., description="Protein start position"),
-    p_end_pos: int = Query(..., description="Protein end position"),
-    coordinate_type: CoordinateType = Query(
-        CoordinateType.RESIDUE,
-        description="Coordinate type for `p_start_pos` and `p_end_pos`",
-    ),
-    target_genome_assembly: Assembly = Query(
-        Assembly.GRCH38, description="Genomic assembly to map to"
-    ),
+    p_ac: Annotated[str, Query(description="Protein RefSeq accession")],
+    p_start_pos: Annotated[int, Query(description="Protein start position")],
+    p_end_pos: Annotated[int, Query(description="Protein end position")],
+    coordinate_type: Annotated[
+        CoordinateType,
+        Query(
+            description="Coordinate type for `p_start_pos` and `p_end_pos`",
+        ),
+    ] = CoordinateType.RESIDUE,
+    target_genome_assembly: Annotated[
+        Assembly, Query(description="Genomic assembly to map to")
+    ] = Assembly.GRCH38,
 ) -> ToGenomicService:
     """Translate protein representation to genomic representation
 
@@ -810,8 +818,8 @@ async def p_to_g(
             coordinate_type=coordinate_type,
             target_genome_assembly=target_genome_assembly,
         )
-    except Exception as e:
-        _logger.error("Unhandled exception: %s", str(e))
+    except Exception:
+        _logger.exception("Unhandled exception")
         w = "Unhandled exception. See logs for more information."
         g_data = None
     return ToGenomicService(

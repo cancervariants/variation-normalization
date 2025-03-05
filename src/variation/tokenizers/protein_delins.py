@@ -70,9 +70,9 @@ class ProteinDelIns(Tokenizer):
 
             if all(
                 (
-                    type(aa0) == type(one_letter_aa0),
-                    type(aa1) == type(one_letter_aa1),
-                    type(inserted_sequence) == type(one_letter_ins_seq),
+                    type(aa0) is type(one_letter_aa0),
+                    type(aa1) is type(one_letter_aa1),
+                    type(inserted_sequence) is type(one_letter_ins_seq),
                 )
             ):
                 return ProteinDelInsToken(
