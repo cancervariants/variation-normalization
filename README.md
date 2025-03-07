@@ -102,6 +102,7 @@ You must also have Gene Normalization's DynamoDB running in a separate terminal 
 For more information about the gene-normalizer and how to load the database, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
 
 #### SeqRepo
+
 Variation Normalization relies on [seqrepo](https://github.com/biocommons/biocommons.seqrepo), which you must download yourself.
 
 Variation Normalizer uses seqrepo to retrieve sequences at given positions on a transcript.
@@ -122,7 +123,7 @@ PermissionError: [Error 13] Permission denied: '/usr/local/share/seqrepo/2024-02
 ```
 
 You will want to do the following:\
-(*Might not be ._fkuefgd, so replace with your error message path*)
+(_Might not be .\_fkuefgd, so replace with your error message path_)
 
 ```shell
 sudo mv /usr/local/share/seqrepo/2024-02-20._fkuefgd /usr/local/share/seqrepo/2024-02-20
@@ -135,6 +136,8 @@ Use the `SEQREPO_ROOT_DIR` environment variable to set the path of an already ex
 
 Variation Normalizer also uses [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) which uses [UTA](https://github.com/biocommons/uta) as the underlying PostgreSQL database.
 
+##### Installing UTA Locally
+
 _The following commands will likely need modification appropriate for the installation environment._
 
 1. Install [PostgreSQL](https://www.postgresql.org/)
@@ -146,21 +149,61 @@ _The following commands will likely need modification appropriate for the instal
     createdb -U postgres -O uta_admin uta
     ```
 
-3. To install locally, from the _variation/data_ directory:
+3. To install locally:
 
 ```shell
-export UTA_VERSION=uta_20210129.pgd.gz
+export UTA_VERSION=uta_20210129b.pgd.gz
 curl -O http://dl.biocommons.org/uta/$UTA_VERSION
-gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5433
+gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5432
 ```
-
-##### UTA Installation Issues
 
 If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
 
+##### Installing UTA via Docker
+
+For this, you will need to install Docker. We recommend using
+[Docker Desktop](https://docs.docker.com/desktop/).
+
+Once Docker is running, from the root of the directory, run the following:
+
+```shell
+docker volume create --name=uta_vol
+docker compose up
+```
+
+This should start the following container:
+
+* [uta](https://github.com/biocommons/uta): a database of transcripts and alignments (localhost:5432)
+
+Check that the container is running:
+
+```shell
+$ docker ps
+CONTAINER ID        IMAGE                                    //  NAMES
+a40576b8cf1f        biocommons/uta:uta_20210129b              //  variation-normalization-uta-1
+```
+
+Depending on your network and host, the _first_ run is likely to take 5-15
+minutes in order to download and install data. Subsequent startups should be
+nearly instantaneous.
+
+Next, you will need to run the following to create a required table, indexes, and update
+permissions:
+
+```shell
+docker exec -i variation-normalization-uta-1 psql -U postgres -d uta < uta-setup.sql
+```
+
+You can test UTA and seqrepo installations like so:
+
+```shell
+$ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20210129b.transcript'
+314227
+```
+
 ##### Connecting to the UTA database
 
-To connect to the UTA database, you can use the default url (`postgresql://uta_admin@localhost:5433/uta/uta_20210129`). If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host:port/database/schema`.
+To connect to the UTA database, you can use the default url (`postgresql://uta_admin:uta@localhost:5432/uta/uta_20210129b`). If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host:port/database/schema`.
 
 ## Starting the Variation Normalization Service Locally
 
