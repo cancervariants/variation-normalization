@@ -173,7 +173,7 @@ You can test UTA and seqrepo installations like so:
 
 ```shell
 $ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
-314227
+329090
 ```
 
 ##### Installing UTA Locally
