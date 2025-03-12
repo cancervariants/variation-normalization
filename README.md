@@ -136,28 +136,10 @@ Use the `SEQREPO_ROOT_DIR` environment variable to set the path of an already ex
 
 Variation Normalizer also uses [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) which uses [UTA](https://github.com/biocommons/uta) as the underlying PostgreSQL database.
 
-##### Installing UTA Locally
+We provide two options for installing UTA:
 
-_The following commands will likely need modification appropriate for the installation environment._
-
-1. Install [PostgreSQL](https://www.postgresql.org/)
-2. Create user and database.
-
-    ```shell
-    createuser -U postgres uta_admin
-    createuser -U postgres anonymous
-    createdb -U postgres -O uta_admin uta
-    ```
-
-3. To install locally:
-
-```shell
-export UTA_VERSION=uta_20241220.pgd.gz
-curl -O http://dl.biocommons.org/uta/$UTA_VERSION
-gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5432
-```
-
-If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
+1. [Using Docker](#installing-uta-via-docker): This is the preferred way
+2. [Locally](#installing-uta-locally)
 
 ##### Installing UTA via Docker
 
@@ -187,19 +169,35 @@ Depending on your network and host, the _first_ run is likely to take 5-15
 minutes in order to download and install data. Subsequent startups should be
 nearly instantaneous.
 
-Next, you will need to run the following to create a required table, indexes, and update
-permissions:
-
-```shell
-docker exec -i variation-normalization-uta-1 psql -U postgres -d uta < uta-setup.sql
-```
-
 You can test UTA and seqrepo installations like so:
 
 ```shell
 $ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
 314227
 ```
+
+##### Installing UTA Locally
+
+_The following commands will likely need modification appropriate for the installation environment._
+
+1. Install [PostgreSQL](https://www.postgresql.org/)
+2. Create user and database.
+
+    ```shell
+    createuser -U postgres uta_admin
+    createuser -U postgres anonymous
+    createdb -U postgres -O uta_admin uta
+    ```
+
+3. To install locally:
+
+```shell
+export UTA_VERSION=uta_20241220.pgd.gz
+curl -O http://dl.biocommons.org/uta/$UTA_VERSION
+gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5432
+```
+
+If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
 
 ##### Connecting to the UTA database
 

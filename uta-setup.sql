@@ -1,3 +1,4 @@
+\c uta;
 CREATE TABLE uta_20241220.genomic AS
 SELECT t.hgnc, aes.alt_ac, aes.alt_aln_method,
     aes.alt_strand, ae.start_i AS alt_start_i,
