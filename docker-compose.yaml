@@ -1,0 +1,17 @@
+services:
+  uta:
+    # Test:
+    # psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
+    # 329090
+    image: biocommons/uta:uta_20241220
+    environment:
+      - POSTGRES_PASSWORD=some-password-that-you-make-up
+    volumes:
+      - uta_vol:/var/lib/postgresql/data
+      - ./uta-setup.sql:/docker-entrypoint-initdb.d/uta-setup.sql
+    ports:
+      - 5432:5432
+
+volumes:
+  uta_vol:
+    external: true
