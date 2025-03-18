@@ -28,10 +28,10 @@ services:
     #   seqrepo:
     #     condition: service_completed_successfully
 
-  seqrepo:
-    image: biocommons/seqrepo:2024-12-20
-    volumes:
-      - seqrepo_vol:/usr/local/share/seqrepo
+  # seqrepo:
+  #   image: biocommons/seqrepo:2024-12-20
+  #   volumes:
+  #     - seqrepo_vol:/usr/local/share/seqrepo
 
   uta:
     # Test:
