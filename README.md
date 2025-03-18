@@ -91,11 +91,14 @@ pipenv update && pipenv install --dev
 
 ### Required resources
 
-Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
+Variation Normalization relies on some local data caches which you will need to set up.
+We provide instructions on how to setup your development environment using Docker.
+
+* Gene Normalizer: Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization).
 
 #### Gene Normalizer
 
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
+ You must load all sources _and_ merged concepts.
 
 You must also have Gene Normalization's DynamoDB running in a separate terminal for the application to work.
 
@@ -150,6 +153,8 @@ Once Docker is running, from the root of the directory, run the following:
 
 ```shell
 docker volume create --name=uta_vol
+docker volume create --name=seqrepo_vol
+docker volume create --name=gene_norm_ddb_vol
 docker compose up
 ```
 

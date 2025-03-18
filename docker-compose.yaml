@@ -1,4 +1,38 @@
 services:
+
+  app:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION}
+    environment:
+      SEQREPO_ROOT_DIR: /usr/local/share/seqrepo/2024-12-20
+      AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+      AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+      AWS_DEFAULT_REGION: 'us-east-2'
+      GENE_NORM_DB_URL: http://dynamodb-local:8000
+      UTA_DB_URL: postgresql://anonymous@uta:5432/uta/uta_20241220
+
+    links:
+     - "dynamodb-local"
+
+    ports:
+      - "8001:80"
+
+    volumes:
+      - gene_norm_ddb_vol:/home/dynamodblocal/dynamodb_local_latest
+      - uta_vol:/var/lib/postgresql/data
+      - seqrepo_vol:/usr/local/share/seqrepo
+    # TODO: RSYNC is blocked. Need to comment out if seqrepo already installed. Uncomment if you do not have seqrepo setup.
+    # depends_on:
+    #   seqrepo:
+    #     condition: service_completed_successfully
+
+  seqrepo:
+    image: biocommons/seqrepo:2024-12-20
+    volumes:
+      - seqrepo_vol:/usr/local/share/seqrepo
+
   uta:
     # Test:
     # psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
@@ -12,6 +46,19 @@ services:
     ports:
       - 5432:5432
 
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/dynamodb_local_latest"
+    image: cancervariants/gene-normalizer-ddb:latest
+    ports:
+     - "8000:8000"
+    volumes:
+      - gene_norm_ddb_vol:/home/dynamodblocal/dynamodb_local_latest
+    working_dir: /home/dynamodblocal
+
 volumes:
+  gene_norm_ddb_vol:
+    external: true
   uta_vol:
+    external: true
+  seqrepo_vol:
     external: true
