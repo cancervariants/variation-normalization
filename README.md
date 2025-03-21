@@ -152,6 +152,7 @@ For this, you will need to install Docker. We recommend using
 Once Docker is running, from the root of the directory, run the following:
 
 ```shell
+export VERSION=$(python3 -m setuptools_scm | sed -E 's/[-+].*//')
 docker volume create --name=uta_vol
 docker volume create --name=seqrepo_vol
 docker volume create --name=gene_norm_ddb_vol
