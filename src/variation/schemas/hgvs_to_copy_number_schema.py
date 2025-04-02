@@ -56,8 +56,8 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
             "example": {
                 "hgvs_expr": "NC_000003.12:g.49531262dup",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.30bDl5yhHzjc4M5uGS_8IeYMzHQksQGh",
-                    "digest": "30bDl5yhHzjc4M5uGS_8IeYMzHQksQGh",
+                    "id": "ga4gh:CX.-PXHqkvTzdzEdLKzZ3Co7YysLSYuFShj",
+                    "digest": "-PXHqkvTzdzEdLKzZ3Co7YysLSYuFShj",
                     "type": "CopyNumberChange",
                     "location": {
                         "id": "ga4gh:SL.2vbgFGHGB0QGODwgZNi05fWbROkkjf04",
@@ -70,18 +70,7 @@ class HgvsToCopyNumberChangeService(ServiceResponse):
                         "start": 49531261,
                         "end": 49531262,
                     },
-                    "copyChange": {
-                        "primaryCode": "EFO:0030069",
-                        "mappings": [
-                            {
-                                "coding": {
-                                    "system": "https://www.ebi.ac.uk/efo/",
-                                    "code": "EFO:0030069",
-                                },
-                                "relation": "exactMatch",
-                            }
-                        ],
-                    },
+                    "copyChange": "complete genomic loss",
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
