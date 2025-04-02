@@ -543,12 +543,12 @@ def grch38_genomic_insertion_variation(grch38_genomic_insertion_seq_loc):
 @pytest.fixture(scope="session")
 def braf_amplification(braf_ncbi_seq_loc):
     """Create test fixture for BRAF Amplification"""
-    digest = "uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV"
+    digest = "h7unj-f_djER28-h2Q6Prvo3C90O4d3M"
     params = {
         "id": f"ga4gh:CX.{digest}",
         "digest": digest,
         "location": braf_ncbi_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030072"},
+        "copyChange": "high-level gain",
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -559,7 +559,7 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
     """Create test fixture for PRPF8 Amplification"""
     params = {
         "location": prpf8_ncbi_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030072"},
+        "copyChange": "high-level gain",
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -645,25 +645,11 @@ def assertion_checks(
 
 def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False, mane_genes_exts=False):
     """Check that actual response for to copy number matches expected"""
-
-    def _update_expected_mappings(expected_):
-        """Modify test fixture copy to include mappable concept object for CX var"""
-        expected_["copyChange"]["mappings"] = [
-            {
-                "relation": "exactMatch",
-                "coding": {
-                    "system": "https://www.ebi.ac.uk/efo/",
-                    "code": expected_["copyChange"]["primaryCode"],
-                },
-            }
-        ]
-
     expected = test_fixture.model_copy(deep=True).model_dump(exclude_none=True)
 
     if isinstance(resp, NormalizeService):
         actual = resp.variation
         if isinstance(actual, models.CopyNumberChange):
-            _update_expected_mappings(expected)
             prefix = "ga4gh:CX."
         elif isinstance(actual, models.CopyNumberCount):
             prefix = "ga4gh:CN."
@@ -673,7 +659,6 @@ def cnv_assertion_checks(resp, test_fixture, check_vrs_id=False, mane_genes_exts
         try:
             cnc = resp.copy_number_count
         except AttributeError:
-            _update_expected_mappings(expected)
             actual = resp.copy_number_change.model_dump(exclude_none=True)
             prefix = "ga4gh:CX."
         else:

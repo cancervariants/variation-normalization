@@ -10,7 +10,6 @@ from ga4gh.vrs import models, normalize
 
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
 from variation.schemas.token_response_schema import AMBIGUOUS_REGIONS, AltType
-from variation.utils import get_copy_change_concept
 
 # Define deletion alt types
 DELS = {AltType.DELETION_AMBIGUOUS, AltType.DELETION}
@@ -138,16 +137,14 @@ class HGVSDupDelMode:
 
         if not copy_change:
             copy_change = (
-                models.CopyChange.EFO_0030067
-                if alt_type in DELS
-                else models.CopyChange.EFO_0030070
+                models.CopyChange.LOSS if alt_type in DELS else models.CopyChange.GAIN
             )
 
         seq_loc = models.SequenceLocation(**location)
         seq_loc.id = ga4gh_identify(seq_loc)
         cx = models.CopyNumberChange(
             location=seq_loc,
-            copyChange=get_copy_change_concept(copy_change),
+            copyChange=copy_change,
             extensions=extensions,
         )
         cx.id = ga4gh_identify(cx)

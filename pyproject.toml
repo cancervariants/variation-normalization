@@ -28,8 +28,8 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic ==2.*",
-    "ga4gh.vrs[extras] ==2.0.0a14",
-    "gene-normalizer >=0.8.0",
+    "ga4gh.vrs[extras] ==2.*",
+    "gene-normalizer >=0.9.0",
     "boto3",
     "cool-seq-tool ~=0.13.0",
     "bioutils"
