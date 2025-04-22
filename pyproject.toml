@@ -31,7 +31,7 @@ dependencies = [
     "ga4gh.vrs[extras] ==2.*",
     "gene-normalizer >=0.9.0",
     "boto3",
-    "cool-seq-tool ~=0.13.0",
+    "cool-seq-tool ~=0.13.1",
     "bioutils"
 ]
 dynamic = ["version"]
