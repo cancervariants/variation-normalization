@@ -22,5 +22,5 @@ pydantic = "==2.*"
 "ga4gh.vrs" = {version = "==2.*", extras = ["extras"]}
 gene-normalizer = ">=0.9.0"
 boto3 = "*"
-cool-seq-tool = "~=0.13.0"
+cool-seq-tool = "~=0.13.1"
 bioutils = "*"
