@@ -91,11 +91,14 @@ pipenv update && pipenv install --dev
 
 ### Required resources
 
-Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
+Variation Normalization relies on some local data caches which you will need to set up.
+We provide instructions on how to setup your development environment using Docker.
+
+* Gene Normalizer: Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization).
 
 #### Gene Normalizer
 
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
+ You must load all sources _and_ merged concepts.
 
 You must also have Gene Normalization's DynamoDB running in a separate terminal for the application to work.
 
@@ -136,6 +139,47 @@ Use the `SEQREPO_ROOT_DIR` environment variable to set the path of an already ex
 
 Variation Normalizer also uses [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) which uses [UTA](https://github.com/biocommons/uta) as the underlying PostgreSQL database.
 
+We provide two options for installing UTA:
+
+1. [Using Docker](#installing-uta-via-docker): This is the preferred way
+2. [Locally](#installing-uta-locally)
+
+##### Installing UTA via Docker
+
+For this, you will need to install Docker. We recommend using
+[Docker Desktop](https://docs.docker.com/desktop/).
+
+Once Docker is running, from the root of the directory, run the following:
+
+```shell
+export VERSION=$(git describe --tags --abbrev=0)
+docker volume create --name=uta_vol
+docker compose -f compose-dev.yaml up --build
+```
+
+This should start the following container:
+
+* [uta](https://github.com/biocommons/uta): a database of transcripts and alignments (localhost:5432)
+
+Check that the container is running:
+
+```shell
+$ docker ps
+CONTAINER ID        IMAGE                                    //  NAMES
+a40576b8cf1f        biocommons/uta:uta_20241220              //  variation-normalization-uta-1
+```
+
+Depending on your network and host, the _first_ run is likely to take 5-15
+minutes in order to download and install data. Subsequent startups should be
+nearly instantaneous.
+
+You can test UTA and seqrepo installations like so:
+
+```shell
+$ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
+329090
+```
+
 ##### Installing UTA Locally
 
 _The following commands will likely need modification appropriate for the installation environment._
@@ -158,48 +202,6 @@ gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localh
 ```
 
 If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
-
-##### Installing UTA via Docker
-
-For this, you will need to install Docker. We recommend using
-[Docker Desktop](https://docs.docker.com/desktop/).
-
-Once Docker is running, from the root of the directory, run the following:
-
-```shell
-docker volume create --name=uta_vol
-docker compose up
-```
-
-This should start the following container:
-
-* [uta](https://github.com/biocommons/uta): a database of transcripts and alignments (localhost:5432)
-
-Check that the container is running:
-
-```shell
-$ docker ps
-CONTAINER ID        IMAGE                                    //  NAMES
-a40576b8cf1f        biocommons/uta:uta_20241220              //  variation-normalization-uta-1
-```
-
-Depending on your network and host, the _first_ run is likely to take 5-15
-minutes in order to download and install data. Subsequent startups should be
-nearly instantaneous.
-
-Next, you will need to run the following to create a required table, indexes, and update
-permissions:
-
-```shell
-docker exec -i variation-normalization-uta-1 psql -U postgres -d uta < uta-setup.sql
-```
-
-You can test UTA and seqrepo installations like so:
-
-```shell
-$ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
-314227
-```
 
 ##### Connecting to the UTA database
 
