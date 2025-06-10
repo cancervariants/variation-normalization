@@ -152,7 +152,7 @@ def cn_definite_number():
 @pytest.fixture(scope="module")
 def cx_numbers():
     """Create test fixture for copy number change using numbers for start and end"""
-    cx_digest = "XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD"
+    cx_digest = "AikSAwyBq4t71coigYRGxcsvuWyAUU-8"
     loc_digest = "Iz_azSFTEulx7tCluLgGhE1n0hTLUocb"
     variation = {
         "type": "CopyNumberChange",
@@ -169,7 +169,7 @@ def cx_numbers():
             "start": 10000,
             "end": 1223133,
         },
-        "copyChange": {"primaryCode": "EFO:0030069"},
+        "copyChange": "complete genomic loss",
     }
     return models.CopyNumberChange(**variation)
 
@@ -190,7 +190,7 @@ def cx_definite_ranges():
             "start": [10000, 10005],
             "end": [1223130, 1223133],
         },
-        "copyChange": {"primaryCode": "EFO:0030069"},
+        "copyChange": "complete genomic loss",
     }
     return models.CopyNumberChange(**variation)
 
@@ -211,7 +211,7 @@ def cx_indefinite_ranges():
             "start": [None, 10000],
             "end": [1223130, None],
         },
-        "copyChange": {"primaryCode": "EFO:0030069"},
+        "copyChange": "complete genomic loss",
     }
     return models.CopyNumberChange(**variation)
 
@@ -232,7 +232,7 @@ def cx_number_indefinite():
             "start": 10000,
             "end": [1223130, None],
         },
-        "copyChange": {"primaryCode": "EFO:0030069"},
+        "copyChange": "complete genomic loss",
     }
     return models.CopyNumberChange(**variation)
 
@@ -795,7 +795,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223133,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.NUMBER,
@@ -808,7 +808,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.DEFINITE_RANGE,
@@ -823,7 +823,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.INDEFINITE_RANGE,
@@ -838,7 +838,7 @@ def test_parsed_to_cx_var(
     rb = ParsedToCxVarQuery(
         start0=10001,
         end0=1223130,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
         assembly=ClinVarAssembly.GRCH38,
         chromosome="chrY",
         start_pos_type=ParsedPosType.NUMBER,
@@ -856,16 +856,16 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10491132,
             end0=10535643,
-            copy_change="efo:1234",
+            copy_change="EFO:0030071",
             accession="NC_000001.10",
         )
-    assert "Input should be 'EFO:" in str(e.value)
+    assert "Input should be 'complete genomic loss', 'high-level loss'," in str(e.value)
 
     # NCBI36/hg18 assembly
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=models.CopyChange.EFO_0030070,
+        copy_change=models.CopyChange.GAIN,
         assembly=ClinVarAssembly.NCBI36,
         chromosome="chr1",
     )
@@ -876,7 +876,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=2623228,
         end0=3150942,
-        copy_change=models.CopyChange.EFO_0030070,
+        copy_change=models.CopyChange.GAIN,
         assembly=ClinVarAssembly.HG18,
         chromosome="chr1",
     )
@@ -892,7 +892,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.EFO_0030070,
+            copy_change=models.CopyChange.GAIN,
             assembly="hg38",
         )
     assert ac_assembly_chr_msg in str(e.value)
@@ -902,7 +902,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.EFO_0030070,
+            copy_change=models.CopyChange.GAIN,
             chromosome="chr15",
         )
     assert ac_assembly_chr_msg in str(e.value)
@@ -912,7 +912,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=31738809,
             end0=32217725,
-            copy_change=models.CopyChange.EFO_0030070,
+            copy_change=models.CopyChange.GAIN,
         )
     assert ac_assembly_chr_msg in str(e.value)
 
@@ -921,7 +921,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223133,
-            copy_change=models.CopyChange.EFO_0030070,
+            copy_change=models.CopyChange.GAIN,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="z",
         )
@@ -934,7 +934,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223133,
-            copy_change=models.CopyChange.EFO_0030070,
+            copy_change=models.CopyChange.GAIN,
             assembly="GRCh99",
         )
     assert "Input should be 'GRCh38'," in str(e.value)
@@ -943,7 +943,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=10491132,
         end0=10535643,
-        copy_change=models.CopyChange.EFO_0030070,
+        copy_change=models.CopyChange.GAIN,
         accession="NC_00002310",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -956,7 +956,7 @@ def test_invalid(test_cnv_handler):
     rb = ParsedToCxVarQuery(
         start0=31738809,
         end0=2302991250,
-        copy_change=models.CopyChange.EFO_0030070,
+        copy_change=models.CopyChange.GAIN,
         accession="NC_000015.10",
     )
     resp = test_cnv_handler.parsed_to_copy_number(rb)
@@ -968,7 +968,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=models.CopyChange.EFO_0030069,
+            copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
             start_pos_type=ParsedPosType.DEFINITE_RANGE,
@@ -983,7 +983,7 @@ def test_invalid(test_cnv_handler):
         ParsedToCxVarQuery(
             start0=10001,
             end0=1223130,
-            copy_change=models.CopyChange.EFO_0030069,
+            copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
             assembly=ClinVarAssembly.GRCH38,
             chromosome="chrY",
             start_pos_type=ParsedPosType.DEFINITE_RANGE,

@@ -324,8 +324,8 @@ class ParsedToCxVarService(ServiceResponse):
             "example": {
                 "copy_number_change": {
                     "type": "CopyNumberChange",
-                    "id": "ga4gh:CX.XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD",
-                    "digest": "XIsVHbhEUbXraIgpgV4ToCa-6oZWMRUD",
+                    "id": "ga4gh:CX.AikSAwyBq4t71coigYRGxcsvuWyAUU-8",
+                    "digest": "AikSAwyBq4t71coigYRGxcsvuWyAUU-8",
                     "location": {
                         "type": "SequenceLocation",
                         "id": "ga4gh:SL.Iz_azSFTEulx7tCluLgGhE1n0hTLUocb",
@@ -337,18 +337,7 @@ class ParsedToCxVarService(ServiceResponse):
                         "start": 10000,
                         "end": 1223133,
                     },
-                    "copyChange": {
-                        "primaryCode": "EFO:0030069",
-                        "mappings": [
-                            {
-                                "coding": {
-                                    "system": "https://www.ebi.ac.uk/efo/",
-                                    "code": "EFO:0030069",
-                                },
-                                "relation": "exactMatch",
-                            }
-                        ],
-                    },
+                    "copyChange": "complete genomic loss",
                 },
                 "service_meta_": {
                     "name": "variation-normalizer",
@@ -390,8 +379,8 @@ class AmplificationToCxVarService(ServiceResponse):
                 },
                 "amplification_label": "BRAF Amplification",
                 "copy_number_change": {
-                    "id": "ga4gh:CX.uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV",
-                    "digest": "uPQaLz6KSwXWdsjNUZ5kRn3znBZF5YwV",
+                    "id": "ga4gh:CX.h7unj-f_djER28-h2Q6Prvo3C90O4d3M",
+                    "digest": "h7unj-f_djER28-h2Q6Prvo3C90O4d3M",
                     "type": "CopyNumberChange",
                     "location": {
                         "id": "ga4gh:SL.0nPwKHYNnTmJ06G-gSmz8BEhB_NTp-0B",
@@ -404,18 +393,7 @@ class AmplificationToCxVarService(ServiceResponse):
                         "start": 140713327,
                         "end": 140924929,
                     },
-                    "copyChange": {
-                        "primaryCode": "EFO:0030072",
-                        "mappings": [
-                            {
-                                "coding": {
-                                    "system": "https://www.ebi.ac.uk/efo/",
-                                    "code": "EFO:0030072",
-                                },
-                                "relation": "exactMatch",
-                            }
-                        ],
-                    },
+                    "copyChange": "high-level gain",
                 },
                 "service_meta_": {
                     "version": __version__,

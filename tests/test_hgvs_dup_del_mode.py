@@ -35,13 +35,13 @@ def genomic_dup1_lse(genomic_dup1_seq_loc_normalized):
 @pytest.fixture(scope="module")
 def genomic_dup1_cx(genomic_dup1_seq_loc_not_normalized):
     """Create a test fixture for genomic dup copy number change."""
-    digest = "GU4QwgBqWmlwshiv6CCtvynDEHkHBVv2"
+    digest = "LoyMVDQ2uoTjpHukDh12-nOJyoWTmHKG"
     params = {
         "type": "CopyNumberChange",
         "id": f"ga4gh:CX.{digest}",
         "digest": digest,
         "location": genomic_dup1_seq_loc_not_normalized,
-        "copyChange": {"primaryCode": "EFO:0030072"},
+        "copyChange": "high-level gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -125,7 +125,7 @@ def genomic_dup2_cx(genomic_dup2_seq_loc_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup2_seq_loc_normalized,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -208,7 +208,7 @@ def genomic_dup3_cx(genomic_del3_dup3_loc_not_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_dup3_loc_not_normalized,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -233,7 +233,7 @@ def genomic_dup3_free_text_cx(genomic_dup3_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup3_free_text_subject,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -255,7 +255,7 @@ def genomic_dup4_cx(genomic_dup4_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup4_loc,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -291,7 +291,7 @@ def genomic_dup4_free_text_cx(genomic_dup4_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup4_free_text_subject,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -313,7 +313,7 @@ def genomic_dup5_cx(genomic_dup5_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup5_loc,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -335,7 +335,7 @@ def genomic_dup6_cx(genomic_dup6_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_dup6_loc,
-        "copyChange": {"primaryCode": "EFO:0030070"},
+        "copyChange": "gain",
     }
     return models.CopyNumberChange(**params)
 
@@ -373,7 +373,7 @@ def genomic_del1_cx(genomic_del1_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del1_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030064"},
+        "copyChange": "regional base ploidy",
     }
     return models.CopyNumberChange(**params)
 
@@ -488,7 +488,7 @@ def genomic_del2_cx(genomic_del2_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del2_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030069"},
+        "copyChange": "complete genomic loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -556,7 +556,7 @@ def genomic_del3_cx(genomic_del3_dup3_loc_not_normalized):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_dup3_loc_not_normalized,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -581,7 +581,7 @@ def genomic_del3_free_text_cx(genomic_del3_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del3_free_text_subject,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -603,7 +603,7 @@ def genomic_del4_cx(genomic_del4_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del4_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -639,7 +639,7 @@ def genomic_del4_free_text_cx(genomic_del4_free_text_subject):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del4_free_text_subject,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -668,7 +668,7 @@ def genomic_uncertain_del_2():
             "end": [110207160, None],
             "type": "SequenceLocation",
         },
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -687,7 +687,7 @@ def genomic_uncertain_del_y():
             "end": [57165209, None],
             "type": "SequenceLocation",
         },
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
         "type": "CopyNumberChange",
     }
     return models.CopyNumberChange(**params)
@@ -710,7 +710,7 @@ def genomic_del5_cx_var(genomic_del5_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del5_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -721,7 +721,7 @@ def genomic_del6_cx_var(genomic_del6_seq_loc):
     params = {
         "type": "CopyNumberChange",
         "location": genomic_del6_seq_loc,
-        "copyChange": {"primaryCode": "EFO:0030067"},
+        "copyChange": "loss",
     }
     return models.CopyNumberChange(**params)
 
@@ -778,7 +778,7 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030072,
+        copy_change=models.CopyChange.HIGH_LEVEL_GAIN,
     )
     cnv_assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
@@ -799,7 +799,7 @@ async def test_genomic_dup1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030072,
+        copy_change=models.CopyChange.HIGH_LEVEL_GAIN,
     )
     cnv_assertion_checks(resp, genomic_dup1_cx, check_vrs_id=True, mane_genes_exts=True)
 
@@ -923,7 +923,7 @@ async def test_genomic_dup3(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030070,
+        copy_change=models.CopyChange.GAIN,
     )
     cnv_assertion_checks(resp, genomic_dup3_cx)
 
@@ -1181,7 +1181,7 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030064,
+        copy_change=models.CopyChange.REGIONAL_BASE_PLOIDY,
     )
     cnv_assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
@@ -1200,7 +1200,7 @@ async def test_genomic_del1(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030064,
+        copy_change=models.CopyChange.REGIONAL_BASE_PLOIDY,
     )
     cnv_assertion_checks(resp, genomic_del1_cx, mane_genes_exts=True)
 
@@ -1253,7 +1253,7 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
     )
     cnv_assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
@@ -1272,7 +1272,7 @@ async def test_genomic_del2(
     resp = await test_handler.normalize(
         q,
         HGVSDupDelModeOption.COPY_NUMBER_CHANGE,
-        copy_change=models.CopyChange.EFO_0030069,
+        copy_change=models.CopyChange.COMPLETE_GENOMIC_LOSS,
     )
     cnv_assertion_checks(resp, genomic_del2_cx, mane_genes_exts=True)
 
