@@ -1,11 +1,6 @@
-# export VERSION=$(git describe --tags --abbrev=0)
-# docker compose -f compose-dev.yaml up --build
 services:
   api:
-    build:
-      context: .
-      args:
-        VERSION: ${VERSION}
+    image: cancervariants/variation-normalizer-api:latest
     environment:
       SEQREPO_ROOT_DIR: /usr/local/share/seqrepo/2024-12-20
       AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
