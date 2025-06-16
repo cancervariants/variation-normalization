@@ -151,7 +151,11 @@ docker compose up
 > This assumes you have a local [SeqRepo](https://github.com/biocommons/biocommons.seqrepo)
 installed at `/usr/local/share/seqrepo/2024-12-20`. If you have it installed elsewhere,
 please update the `SEQREPO_ROOT_DIR` environment variable in
-[compose.yaml](./compose.yaml).
+[compose.yaml](./compose.yaml).\
+> If you're using Docker Desktop, you'll want to go to Settings -> Resources -> File sharing
+and add `/usr/local/share/seqrepo` under the `Virtual file shares` section. Otherwise,
+you will get the following error:
+`OSError: Unable to open SeqRepo directory /usr/local/share/seqrepo/2024-12-20`.
 
 Point your browser to <http://localhost:8001/variation/>.
 
