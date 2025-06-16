@@ -147,8 +147,8 @@ docker volume create --name=uta_vol
 docker compose up
 ```
 
-[!NOTE]
-This assumes you have a local [SeqRepo](https://github.com/biocommons/biocommons.seqrepo)
+> [!NOTE]
+> This assumes you have a local [SeqRepo](https://github.com/biocommons/biocommons.seqrepo)
 installed at `/usr/local/share/seqrepo/2024-12-20`. If you have it installed elsewhere,
 please update the `SEQREPO_ROOT_DIR` environment variable in
 [compose.yaml](./compose.yaml).
