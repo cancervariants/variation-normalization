@@ -97,10 +97,7 @@ class Normalize(ToVRS):
             # accession. If that doesn't match, we'll just sort the original
             # acs and return the first element. Later on, we'll want to figure
             # out a better way to do this.
-            if og_ac_preferred_match:
-                translation_result = og_ac_preferred_match
-            else:
-                translation_result = preferred_translations[0]
+            translation_result = og_ac_preferred_match or preferred_translations[0]
         elif len_preferred_translations == 1:
             translation_result = preferred_translations[0]
         else:

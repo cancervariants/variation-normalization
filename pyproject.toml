@@ -39,8 +39,8 @@ dynamic = ["version"]
 [project.optional-dependencies]
 tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio"]
 dev = [
-    "pre-commit>=4.0.1",
-    "ruff==0.8.6",
+    "pre-commit>=4.2.0",
+    "ruff==0.12.1",
     "psycopg2-binary",
     "jupyter",
     "ipykernel"

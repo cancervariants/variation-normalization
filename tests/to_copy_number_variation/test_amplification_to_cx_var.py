@@ -45,7 +45,7 @@ def test_amplification_to_cx_var(
     assert resp.copy_number_change is None
     assert resp.amplification_label == "IFNR Amplification"
     assert resp.warnings == [
-        "gene-normalizer could not find a priority sequence " "location for gene: IFNR"
+        "gene-normalizer could not find a priority sequence location for gene: IFNR"
     ]
 
     # Using sequence_id, start, end
@@ -62,7 +62,7 @@ def test_amplification_to_cx_var(
     assert resp.copy_number_change is None
     assert resp.amplification_label == "BRAF Amplification"
     assert resp.warnings == [
-        "SeqRepo unable to get translated identifiers for " "NC_000007"
+        "SeqRepo unable to get translated identifiers for NC_000007"
     ]
 
     # pos not on valid sequence_id
