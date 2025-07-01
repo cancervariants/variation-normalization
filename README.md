@@ -147,7 +147,7 @@ docker volume create --name=uta_vol
 docker compose up
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 > This assumes you have a local [SeqRepo](https://github.com/biocommons/biocommons.seqrepo)
 installed at `/usr/local/share/seqrepo/2024-12-20`. If you have it installed elsewhere,
 please update the `SEQREPO_ROOT_DIR` environment variable in
@@ -156,6 +156,9 @@ please update the `SEQREPO_ROOT_DIR` environment variable in
 and add `/usr/local/share/seqrepo` under the `Virtual file shares` section. Otherwise,
 you will get the following error:
 `OSError: Unable to open SeqRepo directory /usr/local/share/seqrepo/2024-12-20`.
+> [!TIP]
+> If you want a clean slate, run `docker compose down -v` to remove containers and
+> volumes, then `docker compose up --build` to rebuild and start fresh containers.
 
 Point your browser to <http://localhost:8001/variation/>.
 
