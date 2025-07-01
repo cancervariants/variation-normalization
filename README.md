@@ -91,15 +91,15 @@ pipenv update && pipenv install --dev
 
 ### Required resources
 
-Variation Normalization relies on some local data caches which you will need to set up. It uses pipenv to manage its environment, which you will also need to install.
+Variation Normalization relies on some local data caches which you will need to set up.
+We provide instructions on how to setup your development environment using Docker.
 
-#### Gene Normalizer
-
-Variation Normalization relies on data from [Gene Normalization](https://github.com/cancervariants/gene-normalization). You must load all sources _and_ merged concepts.
-
-You must also have Gene Normalization's DynamoDB running in a separate terminal for the application to work.
-
-For more information about the gene-normalizer and how to load the database, visit the [README](https://github.com/cancervariants/gene-normalization/blob/main/README.md).
+* [SeqRepo](https://github.com/biocommons/biocommons.seqrepo): You must setup SeqRepo
+locally following [these steps](#seqrepo).
+* [Gene Normalizer](https://github.com/cancervariants/gene-normalization): The Variation
+Normalizer uses Gene Normalizer to get normalized gene concept information.
+* [Universal Transcript Archive (UTA)](https://github.com/biocommons/uta): The Variation
+Normalizer uses [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) which uses UTA as the underlying PostgreSQL database.
 
 #### SeqRepo
 
@@ -132,89 +132,36 @@ exit
 
 Use the `SEQREPO_ROOT_DIR` environment variable to set the path of an already existing SeqRepo directory. The default is `/usr/local/share/seqrepo/latest`.
 
-#### UTA
+## Docker Installation (Preferred)
 
-Variation Normalizer also uses [**C**ommon **O**perations **O**n **L**ots-of **Seq**uences Tool (cool-seq-tool)](https://github.com/GenomicMedLab/cool-seq-tool) which uses [UTA](https://github.com/biocommons/uta) as the underlying PostgreSQL database.
+We recommend installing the Variation Normalizer using Docker.
 
-We provide two options for installing UTA:
+### Requirements
 
-1. [Using Docker](#installing-uta-via-docker): This is the preferred way
-2. [Locally](#installing-uta-locally)
+* [Docker](https://docs.docker.com/get-started/get-docker/)
 
-##### Installing UTA via Docker
-
-For this, you will need to install Docker. We recommend using
-[Docker Desktop](https://docs.docker.com/desktop/).
-
-Once Docker is running, from the root of the directory, run the following:
+### Build, (re)create, and start containers
 
 ```shell
 docker volume create --name=uta_vol
 docker compose up
 ```
 
-This should start the following container:
+> [!IMPORTANT]
+> This assumes you have a local [SeqRepo](https://github.com/biocommons/biocommons.seqrepo)
+installed at `/usr/local/share/seqrepo/2024-12-20`. If you have it installed elsewhere,
+please update the `SEQREPO_ROOT_DIR` environment variable in
+[compose.yaml](./compose.yaml).\
+> If you're using Docker Desktop, you'll want to go to Settings -> Resources -> File sharing
+and add `/usr/local/share/seqrepo` under the `Virtual file shares` section. Otherwise,
+you will get the following error:
+`OSError: Unable to open SeqRepo directory /usr/local/share/seqrepo/2024-12-20`.
 
-* [uta](https://github.com/biocommons/uta): a database of transcripts and alignments (localhost:5432)
+> [!TIP]
+> If you want a clean slate, run `docker compose down -v` to remove containers and
+> volumes, then `docker compose up --build` to rebuild and start fresh containers.
 
-Check that the container is running:
-
-```shell
-$ docker ps
-CONTAINER ID        IMAGE                                    //  NAMES
-a40576b8cf1f        biocommons/uta:uta_20241220              //  variation-normalization-uta-1
-```
-
-Depending on your network and host, the _first_ run is likely to take 5-15
-minutes in order to download and install data. Subsequent startups should be
-nearly instantaneous.
-
-You can test UTA and seqrepo installations like so:
-
-```shell
-$ psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
-329090
-```
-
-##### Installing UTA Locally
-
-_The following commands will likely need modification appropriate for the installation environment._
-
-1. Install [PostgreSQL](https://www.postgresql.org/)
-2. Create user and database.
-
-    ```shell
-    createuser -U postgres uta_admin
-    createuser -U postgres anonymous
-    createdb -U postgres -O uta_admin uta
-    ```
-
-3. To install locally:
-
-```shell
-export UTA_VERSION=uta_20241220.pgd.gz
-curl -O http://dl.biocommons.org/uta/$UTA_VERSION
-gzip -cdq ${UTA_VERSION} | grep -v "^REFRESH MATERIALIZED VIEW" | psql -h localhost -U uta_admin --echo-errors --single-transaction -v ON_ERROR_STOP=1 -d uta -p 5432
-```
-
-If you have trouble installing UTA, you can visit [these two READMEs](https://github.com/ga4gh/vrs-python/tree/main/docs/setup_help).
-
-##### Connecting to the UTA database
-
-To connect to the UTA database, you can use the default url (`postgresql://uta_admin@localhost:5432/uta/uta_20241220`). If you do not wish to use the default, you must set the environment variable `UTA_DB_URL` which has the format of `driver://user:pass@host:port/database/schema`.
-
-## Starting the Variation Normalization Service Locally
-
-`gene-normalizer`s dynamodb and the `uta` database must be running.
-
-To start the service, run the following:
-
-```shell
-uvicorn variation.main:app --reload
-```
-
-Next, view the OpenAPI docs on your local machine:
-<http://127.0.0.1:8000/variation>
+Point your browser to <http://localhost:8001/variation/>.
 
 ### Code QC
 
