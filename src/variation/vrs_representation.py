@@ -202,9 +202,7 @@ class VRSRepresentation:
                     ac, start=new_start, end=new_end, coordinate_type=coordinate_type
                 )
                 if state is None:
-                    errors.append(
-                        f"Unable to get sequence on {ac} from " f"{new_start}"
-                    )
+                    errors.append(f"Unable to get sequence on {ac} from {new_start}")
                     return None
             else:
                 state = alt or ""

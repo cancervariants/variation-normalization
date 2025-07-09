@@ -99,7 +99,7 @@ app = FastAPI(
 )
 
 translate_summary = (
-    "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS" " variation(s)."
+    "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s)."
 )
 translate_description = (
     "Translate a human readable variation description to "
@@ -228,7 +228,7 @@ def translate_identifier(
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
     except Exception as e:
-        warnings = [f"SeqRepo could not translate identifier, {identifier}:" f" {e}"]
+        warnings = [f"SeqRepo could not translate identifier, {identifier}: {e}"]
 
     return TranslateIdentifierService(
         identifier_query=identifier,
@@ -508,7 +508,7 @@ async def hgvs_to_copy_number_count(
         int | None, Query(description="Baseline copies for duplication")
     ],
     do_liftover: Annotated[
-        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+        bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
     ] = False,
 ) -> HgvsToCopyNumberCountService:
     """Given hgvs expression, return copy number count variation
@@ -537,7 +537,7 @@ async def hgvs_to_copy_number_change(
     hgvs_expr: Annotated[str, Query(description="Variation query")],
     copy_change: Annotated[models.CopyChange, Query(description="The copy change")],
     do_liftover: Annotated[
-        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+        bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
     ] = False,
 ) -> HgvsToCopyNumberChangeService:
     """Given hgvs expression, return copy number change variation
@@ -556,8 +556,7 @@ async def hgvs_to_copy_number_change(
 
 @app.post(
     "/variation/parsed_to_cn_var",
-    summary="Given parsed genomic components, return VRS Copy Number Count "
-    "Variation",
+    summary="Given parsed genomic components, return VRS Copy Number Count Variation",
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
@@ -588,8 +587,7 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
 
 @app.post(
     "/variation/parsed_to_cx_var",
-    summary="Given parsed genomic components, return VRS Copy Number Change "
-    "Variation",
+    summary="Given parsed genomic components, return VRS Copy Number Change Variation",
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Change Variation",
