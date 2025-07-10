@@ -1,6 +1,5 @@
 """Create methods used throughout tests."""
 
-import asyncio
 import contextlib
 import logging
 
@@ -42,14 +41,6 @@ def pytest_configure(config):
         )
         logging.getLogger("biocommons.seqrepo.fastadir.fastadir").setLevel(logging.INFO)
         logging.getLogger("asyncio").setLevel(logging.INFO)
-
-
-@pytest.fixture(scope="session")
-def event_loop():
-    """Create an instance of the default event loop for each test case."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
 
 
 @pytest.fixture(scope="session")
@@ -565,7 +556,7 @@ def prpf8_amplification(prpf8_ncbi_seq_loc):
     return models.CopyNumberChange(**params)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def genomic_del3_dup3_cn_38(genomic_del3_dup3_loc_not_normalized):
     """Create test fixture copy number variation for del/dup 3 on GRCh38"""
     params = {
