@@ -124,7 +124,7 @@ def atad3a_i7m(atad3a_loc):
     return models.Allele(**params)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def braf_v600l(braf_600loc):
     """Create test fixture for BRAF Val600Leu."""
     params = {
@@ -135,7 +135,7 @@ def braf_v600l(braf_600loc):
     return models.Allele(**params)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
