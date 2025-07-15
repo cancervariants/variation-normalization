@@ -55,6 +55,8 @@ The variation-normalization repo depends on VRS models, and therefore each varia
 
 The correspondences between the packages that are **no longer maintained** may be summarized as:
 
+| variation-normalization branch | variation-normalizer version | gene-normalizer version | VRS version |
+| ---- | --- | ---- | --- |
 | [vrs-1.3](https://github.com/cancervariants/variation-normalization/tree/vrs-1.3) | 0.6.Z | 0.1.Z | [1.3](https://github.com/ga4gh/vrs/tree/1.3) |
 
 ### Available Endpoints
