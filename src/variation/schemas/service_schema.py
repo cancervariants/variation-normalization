@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Literal
 
-from cool_seq_tool.schemas import CoordinateType
+from cool_seq_tool.schemas import CdsOverlap, CoordinateType
 from pydantic import BaseModel, ConfigDict, StrictInt, StrictStr
 
 from variation import __version__
@@ -113,6 +113,54 @@ class ToGenomicService(BaseModel, extra="forbid"):
                     "version": __version__,
                     "response_datetime": "2022-09-29T15:08:18.696882",
                     "name": "variation-normalizer",
+                    "url": "https://github.com/cancervariants/variation-normalization",
+                },
+            }
+        }
+    )
+
+
+class FeatureOverlapService(BaseModel, extra="forbid"):
+    """Service model response for feature overlap"""
+
+    feature_overlap: dict[str, list[CdsOverlap]] | None = None
+    warnings: list[StrictStr] = []
+    service_meta: ServiceMeta
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "feature_overlap": {
+                    "BRAF": [
+                        {
+                            "cds": {
+                                "id": "ga4gh:SL.fYRYzNIAoe6UQF9MT1XaYsFscoU68ZJv",
+                                "type": "SequenceLocation",
+                                "sequenceReference": {
+                                    "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                                    "type": "SequenceReference",
+                                },
+                                "start": 140726493,
+                                "end": 140726516,
+                            },
+                            "overlap": {
+                                "id": "ga4gh:SL.fYRYzNIAoe6UQF9MT1XaYsFscoU68ZJv",
+                                "type": "SequenceLocation",
+                                "sequenceReference": {
+                                    "refgetAccession": "SQ.F-LrLMe1SRpfUZHkQmvkVKFEGaoDeHul",
+                                    "type": "SequenceReference",
+                                },
+                                "start": 140726493,
+                                "end": 140726516,
+                            },
+                        }
+                    ],
+                },
+                "warnings": [],
+                "service_meta_": {
+                    "name": "variation-normalizer",
+                    "version": __version__,
+                    "response_datetime": "2021-04-05T16:44:15.367831",
                     "url": "https://github.com/cancervariants/variation-normalization",
                 },
             }
