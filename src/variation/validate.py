@@ -1,11 +1,14 @@
 """Module for Validation."""
 
+from typing import Literal
+
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import LiftOver
 from cool_seq_tool.sources import TranscriptMappings, UtaDatabase
 from gene.query import QueryHandler as GeneQueryHandler
 
 from variation.schemas.classification_response_schema import Classification
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.validation_response_schema import ValidationSummary
 from variation.validators import (
     Amplification,
@@ -29,7 +32,7 @@ from variation.validators import (
     ProteinStopGain,
     ProteinSubstitution,
 )
-from variation.validators.validator import Validator
+from variation.validators.validator import GenomicValidator, Validator
 
 
 class Validate:
@@ -76,11 +79,18 @@ class Validate:
             Amplification(*params),
         ]
 
-    async def perform(self, classification: Classification) -> ValidationSummary:
+    async def perform(
+        self,
+        classification: Classification,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> ValidationSummary:
         """Get validation summary containing invalid and valid results for a
         classification
 
         :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for `q`. Only used when `q` is using
+            genomic free text of gnomad vcf format
         :return: Validation summary for classification containing valid and invalid
             results
         """
@@ -94,7 +104,15 @@ class Validate:
             if validator.validates_classification_type(
                 classification.classification_type
             ):
-                validation_results = await validator.validate(classification)
+                if isinstance(validator, GenomicValidator):
+                    validation_results = await validator.validate(
+                        classification, input_assembly=input_assembly
+                    )
+                else:
+                    validation_results = await validator.validate(
+                        classification,
+                    )
+
                 for validation_result in validation_results:
                     if validation_result.is_valid:
                         found_valid_result = True

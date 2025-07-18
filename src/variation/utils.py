@@ -208,8 +208,8 @@ def get_refget_accession(
     else:
         if not ids:
             errors.append(f"Unable to find ga4gh sequence identifiers for: {alias}")
-
-        refget_accession = ids[0].split("ga4gh:")[-1]
+        else:
+            refget_accession = ids[0].split("ga4gh:")[-1]
     return refget_accession
 
 
