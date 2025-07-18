@@ -331,70 +331,85 @@ class Validator(ABC):
 class GenomicValidator(Validator):
     """The Validator for genomic variants"""
 
-    async def _get_nc_accessions(
+    async def _get_free_text_accessions(
         self,
         classification: Classification,
         input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
         | None = None,
     ) -> list[str]:
-        """Get genomic RefSeq accession for a given classification.
+        """Get accessions for a gene
 
         :param classification: A classification for a list of tokens
-        :param input_assembly: Assembly used for initial input query. Only used when
-            initial query is using genomic free text or gnomad vcf format
+        :param input_assembly: Assembly used for initial input query.
         :return: List of genomic RefSeq accessions
         """
-        if classification.nomenclature == Nomenclature.FREE_TEXT:
-            nc_accessions = await self.uta.get_ac_from_gene(
-                classification.gene_token.matched_value
-            )
+        nc_accessions = await self.uta.get_ac_from_gene(
+            classification.gene_token.matched_value
+        )
 
-            # If input assembly is provided, get the NC accession for that assembly
-            if input_assembly:
-                updated_nc_accessions = []
-                for alt_ac in nc_accessions:
-                    aliases, _ = self.seqrepo_access.translate_identifier(
-                        alt_ac, input_assembly
-                    )
-                    if aliases:
-                        updated_nc_accessions.append(alt_ac)
-                        break
+        # If input assembly is provided, get the NC accession for that assembly
+        if input_assembly:
+            updated_nc_accessions = []
+            for alt_ac in nc_accessions:
+                aliases, _ = self.seqrepo_access.translate_identifier(
+                    alt_ac, input_assembly
+                )
+                if aliases:
+                    updated_nc_accessions.append(alt_ac)
+                    break
 
-                nc_accessions = updated_nc_accessions
-        elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
-            gnomad_vcf_token = classification.matching_tokens[0]
-            chromosome = gnomad_vcf_token.chromosome
-            nc_accessions = []
-
-            if input_assembly:
-                alt_ac = self._get_nc_accession(f"{input_assembly.value}:{chromosome}")
-                if alt_ac:
-                    nc_accessions.append(alt_ac)
-            else:
-                for assembly in [ClinVarAssembly.GRCH38, ClinVarAssembly.GRCH37]:
-                    alt_ac = self._get_nc_accession(f"{assembly.value}:{chromosome}")
-                    if alt_ac:
-                        nc_accessions.append(alt_ac)
-
-        else:
-            raise NotImplementedError
+            nc_accessions = updated_nc_accessions
 
         return nc_accessions
 
-    def _get_nc_accession(self, identifier: str) -> str | None:
-        """Given an identifier (assembly+chr), return nc accession."""
-        nc_accession = None
-        try:
-            translated_identifiers, _ = self.seqrepo_access.translate_identifier(
-                identifier
-            )
-        except KeyError:
-            _logger.warning("Data Proxy unable to get metadata for %s", identifier)
+    def _get_gnomad_vcf_accessions(
+        self,
+        classification: Classification,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> list[str]:
+        """Get accessions for a chromosome
+
+        :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for initial input query.
+        :return: List of genomic RefSeq accessions
+        """
+
+        def _get_nc_accession(identifier: str) -> str | None:
+            """Given an identifier (assembly+chr), return RefSeq genomic accession.
+
+            :param identifier: assembly+chr
+            :return: RefSeq genomic accession, if found
+            """
+            nc_accession = None
+            try:
+                translated_identifiers, _ = self.seqrepo_access.translate_identifier(
+                    identifier
+                )
+            except KeyError:
+                _logger.warning("Data Proxy unable to get metadata for %s", identifier)
+            else:
+                aliases = [
+                    a for a in translated_identifiers if a.startswith("refseq:NC_")
+                ]
+                if aliases:
+                    nc_accession = aliases[0].split(":")[-1]
+            return nc_accession
+
+        gnomad_vcf_token = classification.matching_tokens[0]
+        chromosome = gnomad_vcf_token.chromosome
+        nc_accessions = []
+
+        if input_assembly:
+            alt_ac = _get_nc_accession(f"{input_assembly.value}:{chromosome}")
+            if alt_ac:
+                nc_accessions.append(alt_ac)
         else:
-            aliases = [a for a in translated_identifiers if a.startswith("refseq:NC_")]
-            if aliases:
-                nc_accession = aliases[0].split(":")[-1]
-        return nc_accession
+            for assembly in [ClinVarAssembly.GRCH38, ClinVarAssembly.GRCH37]:
+                alt_ac = _get_nc_accession(f"{assembly.value}:{chromosome}")
+                if alt_ac:
+                    nc_accessions.append(alt_ac)
+        return nc_accessions
 
     async def _validate_gene_pos(
         self,
@@ -501,7 +516,7 @@ class GenomicValidator(Validator):
         input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
         | None = None,
     ) -> list[str]:
-        """Get accessions for a given classification.
+        """Get genomic RefSeq accessions for a given classification.
 
         If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
         in the HGVS expression.
@@ -512,15 +527,23 @@ class GenomicValidator(Validator):
         :param input_assembly: Assembly used for initial input query. Only used when
             initial query is using genomic free text or gnomad vcf format
         :return: List of accessions
+        :raises NotImplementedError: If nomenclature is not supported
         """
         if classification.nomenclature == Nomenclature.HGVS:
             accessions = [classification.ac]
-        else:
-            accessions = await self._get_nc_accessions(
+        elif classification.nomenclature == Nomenclature.FREE_TEXT:
+            accessions = await self._get_free_text_accessions(
                 classification, input_assembly=input_assembly
             )
-            if not accessions:
-                errors.append("No genomic accessions found")
+        elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            accessions = self._get_gnomad_vcf_accessions(
+                classification, input_assembly=input_assembly
+            )
+        else:
+            raise NotImplementedError
+
+        if not accessions:
+            errors.append("No genomic accessions found")
         return accessions
 
     def validate_ambiguous_classification(

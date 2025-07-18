@@ -28,6 +28,7 @@ class GenomicSubstitution(GenomicValidator):
         else:
             # HGVS is only 1 nuc
             end_pos = classification.pos
+
         for alt_ac in accessions:
             errors = []
 

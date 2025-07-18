@@ -39,6 +39,7 @@ class ProteinSubstitution(Validator):
                 ]
 
         validation_results = []
+
         for p_ac in accessions:
             errors = []
 
