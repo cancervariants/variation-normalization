@@ -6,7 +6,6 @@ from .cdna_delins import CdnaDelIns
 from .cdna_insertion import CdnaInsertion
 from .cdna_reference_agree import CdnaReferenceAgree
 from .cdna_substitution import CdnaSubstitution
-from .genomic_base import GenomicBase
 from .genomic_deletion import GenomicDeletion
 from .genomic_deletion_ambiguous import GenomicDeletionAmbiguous
 from .genomic_delins import GenomicDelIns
@@ -29,7 +28,6 @@ __all__ = [
     "CdnaInsertion",
     "CdnaReferenceAgree",
     "CdnaSubstitution",
-    "GenomicBase",
     "GenomicDelIns",
     "GenomicDeletion",
     "GenomicDeletionAmbiguous",

@@ -1,6 +1,7 @@
 """Module for Variation Normalization."""
 
 import datetime
+from typing import Literal
 from urllib.parse import unquote
 
 from cool_seq_tool.handlers import SeqRepoAccess
@@ -16,6 +17,7 @@ from variation.schemas.normalize_response_schema import (
     NormalizeService,
     ServiceMeta,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import GnomadVcfToken, Token
 from variation.schemas.translation_response_schema import (
     AC_PRIORITY_LABELS,
@@ -175,14 +177,21 @@ class Normalize(ToVRS):
         self,
         q: str,
         hgvs_dup_del_mode: HGVSDupDelModeOption | None = HGVSDupDelModeOption.DEFAULT,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
         baseline_copies: int | None = None,
         copy_change: models.CopyChange | None = None,
     ) -> NormalizeService:
-        """Normalize a given variation.
+        """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
+        or GRCh38 assembly to a VRS variation. Performs fully-justfied allele
+        normalization. Will liftover to GRCh38 (if necessary) and align to a priority
+        transcript. Will make inferences about the query.
 
         :param q: HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly
         :param hgvs_dup_del_mode: This parameter determines how to interpret HGVS
             dup/del expressions in VRS.
+        :param input_assembly: Assembly used for `q`. Only used when `q` is using
+            genomic free text or gnomad vcf format
         :param baseline_copies: Baseline copies for HGVS duplications and deletions
         :param copy_change: The copy change for HGVS duplications and deletions
             represented as Copy Number Change Variation.
@@ -226,7 +235,9 @@ class Normalize(ToVRS):
             return NormalizeService(**params)
 
         # Get validation summary for classification
-        validation_summary = await self.validator.perform(classification)
+        validation_summary = await self.validator.perform(
+            classification, input_assembly=input_assembly
+        )
         if not validation_summary:
             update_warnings_for_no_resp(label, validation_summary.warnings)
             params["warnings"] = warnings

@@ -6,7 +6,7 @@ import traceback
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Literal
 from urllib.parse import unquote
 
 import pkg_resources
@@ -40,6 +40,7 @@ from variation.schemas.normalize_response_schema import (
     TranslateIdentifierService,
 )
 from variation.schemas.service_schema import (
+    ClinVarAssembly,
     FeatureOverlapService,
     ToCdnaService,
     ToGenomicService,
@@ -176,6 +177,12 @@ async def normalize(
             description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
         ),
     ] = None,
+    input_assembly: Annotated[
+        Literal[ClinVarAssembly.GRCH37] | Literal[ClinVarAssembly.GRCH38] | None,
+        Query(
+            description="Assembly used for `q`. Only used when `q` is using genomic free text or gnomad vcf format",
+        ),
+    ] = None,
 ) -> NormalizeService:
     """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
     or GRCh38 assembly to a single VRS Variation. Performs fully-justified allele
@@ -190,11 +197,14 @@ async def normalize(
     :param copy_change: The copy change for HGVS duplications and deletions represented
         as Copy Number Change Variation. If not set, will use default `copy_change` for
         query.
+    :param input_assembly: Assembly used for `q`. Only used when `q` is using genomic
+        free text or gnomad vcf format
     :return: NormalizeService for variation
     """
     return await query_handler.normalize_handler.normalize(
         unquote(q),
         hgvs_dup_del_mode=hgvs_dup_del_mode,
+        input_assembly=input_assembly,
         baseline_copies=baseline_copies,
         copy_change=copy_change,
     )
