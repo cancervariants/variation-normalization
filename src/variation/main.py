@@ -9,11 +9,11 @@ from enum import Enum
 from typing import Annotated, Literal
 from urllib.parse import unquote
 
-import pkg_resources
 from bioutils.exceptions import BioutilsError
 from cool_seq_tool.mappers.feature_overlap import FeatureOverlap, FeatureOverlapError
 from cool_seq_tool.schemas import Assembly, CoordinateType
 from fastapi import FastAPI, Query
+from ga4gh.vrs import __version__ as vrs_python_version
 from ga4gh.vrs import models
 from ga4gh.vrs.dataproxy import DataProxyValidationError
 from hgvs.exceptions import HGVSError
@@ -339,9 +339,7 @@ def vrs_python_translate_from(
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
@@ -445,9 +443,7 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
@@ -502,9 +498,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
