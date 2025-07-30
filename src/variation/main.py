@@ -365,14 +365,24 @@ q_description = (
 )
 async def gnomad_vcf_to_protein(
     q: Annotated[str, Query(description=q_description)],
+    input_assembly: Annotated[
+        Literal[ClinVarAssembly.GRCH37] | Literal[ClinVarAssembly.GRCH38] | None,
+        Query(
+            description="Assembly used for `q`.",
+        ),
+    ] = None,
 ) -> GnomadVcfToProteinService:
     """Return VRS representation for variation on protein coordinate.
 
     :param q: gnomad VCF to normalize to protein variation.
+    :param input_assembly: Assembly used for `q`.
     :return: GnomadVcfToProteinService for variation
     """
     q = unquote(q.strip())
-    return await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
+    return await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
+        q,
+        input_assembly=input_assembly,
+    )
 
 
 hgvs_dup_del_mode_decsr = (

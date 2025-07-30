@@ -1,6 +1,7 @@
 """Module for translating VCF-like to protein VRS Allele representation"""
 
 import datetime
+from typing import Literal
 
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
@@ -16,6 +17,7 @@ from variation.classify import Classify
 from variation.schemas.classification_response_schema import Nomenclature
 from variation.schemas.gnomad_vcf_to_protein_schema import GnomadVcfToProteinService
 from variation.schemas.normalize_response_schema import ServiceMeta
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import AltType
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.tokenize import Tokenize
@@ -183,12 +185,16 @@ class GnomadVcfToProteinVariation:
         self.gene_normalizer = gene_normalizer
 
     async def _get_valid_result(
-        self, vcf_query: str, warnings: list
+        self,
+        vcf_query: str,
+        warnings: list,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38] | None,
     ) -> list[ValidationResult]:
         """Get gnomad vcf validation summary
 
         :param vcf_query: gnomad vcf input query
         :param warnings: List of warnings
+        :param input_assembly: Assembly used for `q`.
         :raises GnomadVcfToProteinError: If no tokens, classifications, or valid results
             are found. Also if ``vcf_query`` is not a gnomAD VCF-like query.
         :return: List of valid results for a gnomad VCF query
@@ -207,7 +213,9 @@ class GnomadVcfToProteinVariation:
             msg = f"{vcf_query} is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
             raise GnomadVcfToProteinError(msg)
 
-        validation_summary = await self.validator.perform(classification)
+        validation_summary = await self.validator.perform(
+            classification, input_assembly=input_assembly
+        )
         valid_results = validation_summary.valid_results
         if valid_results:
             # Temporary work around until issue-490 complete
@@ -434,12 +442,18 @@ class GnomadVcfToProteinVariation:
             else None
         )
 
-    async def gnomad_vcf_to_protein(self, vcf_query: str) -> GnomadVcfToProteinService:
+    async def gnomad_vcf_to_protein(
+        self,
+        vcf_query: str,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> GnomadVcfToProteinService:
         """Get protein consequence for gnomAD-VCF like expression
         Assumes input query uses GRCh38 representation
 
         :param vcf_query: gnomAD VCF-like expression (``chr-pos-ref-alt``) on the GRCh38
             assembly
+        :param input_assembly: Assembly used for `q`.
         :return: GnomadVcfToProteinService containing protein VRS Allele, if translation
             was successful
         """
@@ -448,7 +462,9 @@ class GnomadVcfToProteinVariation:
 
         # First we need to validate the input query
         try:
-            valid_result = await self._get_valid_result(vcf_query, warnings)
+            valid_result = await self._get_valid_result(
+                vcf_query, warnings, input_assembly=input_assembly
+            )
         except GnomadVcfToProteinError as e:
             warnings.append(str(e))
             return GnomadVcfToProteinService(
