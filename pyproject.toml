@@ -1,5 +1,6 @@
 [project]
 name = "variation-normalizer"
+version = "0.15.2"
 authors = [
     {name = "Alex Wagner"},
     {name = "Kori Kuzma"},
@@ -34,7 +35,6 @@ dependencies = [
     "cool-seq-tool ~=0.14.2",
     "bioutils"
 ]
-dynamic = ["version"]
 
 [project.optional-dependencies]
 tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio"]
@@ -54,10 +54,8 @@ Source = "https://github.com/cancervariants/variation-normalization"
 "Bug Tracker" = "https://github.com/cancervariants/variation-normalization/issues"
 
 [build-system]
-requires = ["setuptools>=64", "setuptools_scm>=8"]
+requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
