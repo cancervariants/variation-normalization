@@ -9,7 +9,7 @@ The mode can be set to `default`, `copy_number_count`, `copy_number_change`, or 
 - if baseline_copies is not set and endpoints are ambiguous:
     - copy_number_change
     - if copy_change not provided:
-        - copy_change = `efo:0030067` (loss) if del, `efo:0030070` (gain) if dup
+        - copy_change = "loss" if del, "gain" if dup
 - elif baseline_copies is provided:
     - copy_number_count
     - copies are baseline_copies + 1 for dup, baseline_copies - 1 for del
