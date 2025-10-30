@@ -1213,8 +1213,6 @@ async def test_invalid_cnv(test_cnv_handler):
         "NC_000018.9:g.(48556994_48573289)_48573471dup",
         "NC_000018.9:g.48556994_(48573289_48573471)dup",
     ]:
-        resp = await test_cnv_handler.hgvs_to_copy_number_change(
-            q, copy_change="efo:0030070"
-        )
+        resp = await test_cnv_handler.hgvs_to_copy_number_change(q, copy_change="gain")
         assert resp.warnings == [f"Unable to find classification for: {q}"], q
         assert resp.copy_number_change is None, q

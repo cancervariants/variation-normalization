@@ -307,7 +307,7 @@ class ParsedToCxVarQuery(ParsedToCopyNumberQuery):
                 "accession": None,
                 "start0": 10001,
                 "end0": 1223133,
-                "copy_change": "efo:0030069",
+                "copy_change": "complete genomic loss",
                 "start_pos_type": "number",
                 "end_pos_type": "number",
                 "start1": None,
