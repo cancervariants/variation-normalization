@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio"]
+tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml"]
 dev = [
     "pre-commit>=4.2.0",
     "ruff==0.12.1",
