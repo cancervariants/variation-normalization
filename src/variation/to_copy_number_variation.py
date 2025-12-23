@@ -413,11 +413,10 @@ class ToCopyNumberVariation(ToVRS):
             vrs_val = models.Range(
                 [pos0 - 1 if is_start else pos0, pos1 - 1 if is_start else pos1]
             )
+        elif comparator == Comparator.LT_OR_EQUAL:
+            vrs_val = models.Range([None, pos0 - 1 if is_start else pos0])
         else:
-            if comparator == Comparator.LT_OR_EQUAL:
-                vrs_val = models.Range([None, pos0 - 1 if is_start else pos0])
-            else:
-                vrs_val = models.Range([pos0 - 1 if is_start else pos0, None])
+            vrs_val = models.Range([pos0 - 1 if is_start else pos0, None])
 
         return vrs_val
 
@@ -615,11 +614,10 @@ class ToCopyNumberVariation(ToVRS):
                     copies = request_body.copies0
                 elif request_body.copies_type == ParsedPosType.DEFINITE_RANGE:
                     copies = models.Range([request_body.copies0, request_body.copies1])
+                elif request_body.copies_comparator == Comparator.LT_OR_EQUAL:
+                    copies = models.Range([None, request_body.copies0])
                 else:
-                    if request_body.copies_comparator == Comparator.LT_OR_EQUAL:
-                        copies = models.Range([None, request_body.copies0])
-                    else:
-                        copies = models.Range([request_body.copies0, None])
+                    copies = models.Range([request_body.copies0, None])
                 variation = models.CopyNumberCount(location=seq_loc, copies=copies)
                 variation.id = ga4gh_identify(variation)
 

@@ -44,28 +44,25 @@ class GenomicDeletion(GenomicValidator):
             )
             if invalid_ac_pos:
                 errors.append(invalid_ac_pos)
-            else:
-                if (
-                    classification.nomenclature
-                    in {
-                        Nomenclature.FREE_TEXT,
-                        Nomenclature.HGVS,
-                    }
-                    and classification.deleted_sequence
-                ):
-                    # Validate deleted sequence
-                    # HGVS deleted sequence includes start and end
-                    invalid_del_seq_message = self.validate_reference_sequence(
-                        alt_ac,
-                        classification.pos0,
-                        classification.pos1
-                        if classification.pos1
-                        else classification.pos0,
-                        classification.deleted_sequence,
-                    )
+            elif (
+                classification.nomenclature
+                in {
+                    Nomenclature.FREE_TEXT,
+                    Nomenclature.HGVS,
+                }
+                and classification.deleted_sequence
+            ):
+                # Validate deleted sequence
+                # HGVS deleted sequence includes start and end
+                invalid_del_seq_message = self.validate_reference_sequence(
+                    alt_ac,
+                    classification.pos0,
+                    classification.pos1 if classification.pos1 else classification.pos0,
+                    classification.deleted_sequence,
+                )
 
-                    if invalid_del_seq_message:
-                        errors.append(invalid_del_seq_message)
+                if invalid_del_seq_message:
+                    errors.append(invalid_del_seq_message)
 
             if not errors and classification.nomenclature == Nomenclature.GNOMAD_VCF:
                 # Validate reference sequence

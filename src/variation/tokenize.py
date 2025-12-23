@@ -1,5 +1,7 @@
 """A module for tokenization."""
 
+from typing import TYPE_CHECKING
+
 from variation.schemas.token_response_schema import Token, TokenType
 from variation.tokenizers import (
     HGVS,
@@ -22,7 +24,9 @@ from variation.tokenizers import (
     ProteinReferenceAgree,
     ProteinSubstitution,
 )
-from variation.tokenizers.tokenizer import Tokenizer
+
+if TYPE_CHECKING:
+    from variation.tokenizers.tokenizer import Tokenizer
 
 r"(\((\?|d+)_(\?|\d+)\))_(\((\?|\d+)_(\?|\d+)\))dup"
 
