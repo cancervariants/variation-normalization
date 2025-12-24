@@ -19,7 +19,7 @@ ruff = "==0.5.0"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "==2.*"
-"ga4gh.vrs" = {version = ">=2.1.3,<3.0", extras = ["extras"]}
+"ga4gh.vrs" = {version = ">=2.2.0,<3.0", extras = ["extras"]}
 gene-normalizer = ">=0.9.0"
 boto3 = "*"
 cool-seq-tool = "~=0.14.2"
