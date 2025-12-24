@@ -1,5 +1,7 @@
 """Module for translation."""
 
+from typing import TYPE_CHECKING
+
 from cool_seq_tool.handlers import SeqRepoAccess
 from cool_seq_tool.mappers import ManeTranscript
 from cool_seq_tool.sources import UtaDatabase
@@ -32,8 +34,10 @@ from variation.translators import (
     ProteinStopGain,
     ProteinSubstitution,
 )
-from variation.translators.translator import Translator
 from variation.vrs_representation import VRSRepresentation
+
+if TYPE_CHECKING:
+    from variation.translators.translator import Translator
 
 
 class Translate:

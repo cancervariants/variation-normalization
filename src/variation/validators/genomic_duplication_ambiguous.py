@@ -45,10 +45,10 @@ class GenomicDuplicationAmbiguous(GenomicValidator):
             if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
                 start_pos = classification.pos0
                 end_pos = classification.pos3
-            elif (
-                classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2
-                or classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5
-            ):
+            elif classification.ambiguous_type in {
+                AmbiguousType.AMBIGUOUS_2,
+                AmbiguousType.AMBIGUOUS_5,
+            }:
                 start_pos = classification.pos1
                 end_pos = classification.pos2
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
