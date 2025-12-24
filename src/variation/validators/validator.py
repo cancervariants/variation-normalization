@@ -231,9 +231,8 @@ class Validator(ABC):
             if end_pos:
                 if not ref_len or (end_pos - start_pos != ref_len):
                     msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"
-            else:
-                if not ref_len:
-                    msg = f"Position ({start_pos}) not valid on accession ({ac})"
+            elif not ref_len:
+                msg = f"Position ({start_pos}) not valid on accession ({ac})"
 
         return msg
 
@@ -467,7 +466,7 @@ class GenomicValidator(Validator):
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in ["?", None]:
                 if coordinate_type == CoordinateType.RESIDUE:
-                    pos -= 1
+                    pos -= 1  # noqa: PLW2901
                 if not (gene_start <= pos <= gene_end):
                     return f"Position {pos} out of index on {alt_ac} on gene, {gene}"
 

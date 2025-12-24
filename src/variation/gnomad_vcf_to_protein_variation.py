@@ -286,7 +286,6 @@ class GnomadVcfToProteinVariation:
 
         # Get genomic position range change
         # This ensures that there 3 nucleotides needed for codon
-        strand = strand
         start_ix = start_reading_frame - 1
         if strand == Strand.NEGATIVE:
             new_g_end_pos = g_end_pos + (start_reading_frame - 1)

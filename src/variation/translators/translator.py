@@ -118,7 +118,7 @@ class Translator(ABC):
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in {"?", None}:
                 if coordinate_type == CoordinateType.RESIDUE:
-                    pos -= 1
+                    pos -= 1  # noqa: PLW2901
 
                 if not (gene_start <= pos <= gene_end):
                     errors.append(

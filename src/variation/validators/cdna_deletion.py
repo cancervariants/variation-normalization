@@ -43,38 +43,37 @@ class CdnaDeletion(Validator):
 
             if cds_start_err_msg:
                 errors.append(cds_start_err_msg)
-            else:
-                if classification.nomenclature in {
-                    Nomenclature.FREE_TEXT,
-                    Nomenclature.HGVS,
-                }:
-                    # # validate deleted sequence
-                    # HGVS deleted sequence includes start and end
-                    start = cds_start + classification.pos0
-                    end = (
-                        cds_start + classification.pos1
-                        if classification.pos1 is not None
-                        else start
+            elif classification.nomenclature in {
+                Nomenclature.FREE_TEXT,
+                Nomenclature.HGVS,
+            }:
+                # # validate deleted sequence
+                # HGVS deleted sequence includes start and end
+                start = cds_start + classification.pos0
+                end = (
+                    cds_start + classification.pos1
+                    if classification.pos1 is not None
+                    else start
+                )
+                if classification.deleted_sequence:
+                    invalid_del_seq_msg = self.validate_reference_sequence(
+                        c_ac,
+                        start,
+                        end_pos=end,
+                        expected_ref=classification.deleted_sequence,
                     )
-                    if classification.deleted_sequence:
-                        invalid_del_seq_msg = self.validate_reference_sequence(
-                            c_ac,
-                            start,
-                            end_pos=end,
-                            expected_ref=classification.deleted_sequence,
-                        )
 
-                        if invalid_del_seq_msg:
-                            errors.append(invalid_del_seq_msg)
-                    else:
-                        # Validate accession and positions
-                        invalid_ac_pos_msg = self.validate_ac_and_pos(
-                            c_ac,
-                            start,
-                            end_pos=end,
-                        )
-                        if invalid_ac_pos_msg:
-                            errors.append(invalid_ac_pos_msg)
+                    if invalid_del_seq_msg:
+                        errors.append(invalid_del_seq_msg)
+                else:
+                    # Validate accession and positions
+                    invalid_ac_pos_msg = self.validate_ac_and_pos(
+                        c_ac,
+                        start,
+                        end_pos=end,
+                    )
+                    if invalid_ac_pos_msg:
+                        errors.append(invalid_ac_pos_msg)
 
             validation_results.append(
                 ValidationResult(
