@@ -15,7 +15,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -23,7 +22,8 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 description = "VICC normalization routine for variations"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "biocommons.seqrepo",
     "fastapi",
@@ -39,7 +39,8 @@ dependencies = [
 [project.optional-dependencies]
 tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml"]
 dev = [
-    "pre-commit>=4.2.0",
+    "fastapi[standard]",
+    "prek>=0.2.23",
     "ruff==0.14.10",
     "psycopg2-binary",
     "jupyter",
