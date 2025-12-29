@@ -145,7 +145,7 @@ We recommend installing the Variation Normalizer using Docker.
 ### Build, (re)create, and start containers
 
 ```shell
-docker volume create --name=uta_vol
+docker volume create uta_vol
 docker compose up
 ```
 
