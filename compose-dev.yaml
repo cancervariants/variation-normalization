@@ -14,6 +14,7 @@ services:
       AWS_DEFAULT_REGION: us-east-2
       GENE_NORM_DB_URL: http://gene-dynamodb-local:8000
       UTA_DB_URL: postgresql://anonymous@uta:5432/uta/uta_20241220
+      WAGS_TAILS_DIR: /tmp/wags_tails
 
     ports:
       - 127.0.0.1:8001:80
