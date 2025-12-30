@@ -180,7 +180,7 @@ protein_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "P", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "P", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
@@ -199,7 +199,7 @@ protein_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "P", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "P", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
@@ -218,7 +218,7 @@ protein_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "E", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "E", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
@@ -343,7 +343,7 @@ cdna_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "T", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "T", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
@@ -365,7 +365,7 @@ genomic_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "A", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "A", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
@@ -384,7 +384,7 @@ genomic_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "T", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "T", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
           {
@@ -399,7 +399,7 @@ genomic_reference_agree:
                   },
                 "type": "SequenceLocation",
               },
-            "state": { "sequence": "A", "type": "LiteralSequenceExpression" },
+            "state": { "sequence": "A", "type": "ReferenceLengthExpression", "length": 1, "repeatSubunitLength": 1 },
             "type": "Allele",
           },
         ]
