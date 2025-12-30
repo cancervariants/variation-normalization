@@ -168,7 +168,12 @@ def vhl_reference_agree():
             "sequence": "P",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "P", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "P",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)

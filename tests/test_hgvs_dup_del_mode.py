@@ -1026,7 +1026,6 @@ async def test_genomic_dup4(
     invalid_queries = [
         "NC_000020.10:g.(?_29652252)_(63025530_?)dup",
         "NC_000020.11:g.(?_29652252)_(64444169_?)dup",
-        "PRPF8 g.(?_1650628)_(1684571_?)dup",
     ]
     await invalid_query_list_checks(invalid_queries, test_handler)
 

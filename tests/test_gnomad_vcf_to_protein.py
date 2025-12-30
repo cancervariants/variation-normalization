@@ -141,7 +141,12 @@ def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
         "location": braf_600loc,
-        "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "V",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
