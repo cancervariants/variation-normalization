@@ -148,7 +148,12 @@ def cdna_reference_agree(braf_cdna_seq_loc):
     """Create test fixture for NM_004333.4:c.1799=."""
     params = {
         "location": braf_cdna_seq_loc,
-        "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "T",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -406,7 +411,12 @@ def grch38_braf_genom_reference_agree():
             "sequence": "A",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "A",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
