@@ -541,7 +541,6 @@ class GnomadVcfToProteinVariation:
         new_g_start_pos, new_g_end_pos, genomic_start_ix = self._get_genomic_pos_range(
             c_data.pos[0], c_data.pos[1], strand, g_start_pos, g_end_pos
         )
-
         # Get genomic reference sequence
         ref, w = self.seqrepo_access.get_reference_sequence(
             g_ac, new_g_start_pos, new_g_end_pos
@@ -562,9 +561,15 @@ class GnomadVcfToProteinVariation:
             ref = ref[::-1]
 
         # Get genomic altered sequence
-        alt = self._get_genomic_alt(
-            g_ac, g_alt, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
-        )
+        if alt_type == AltType.DELETION and genomic_start_ix == 0:
+            retained_dna = self.seqrepo_access.get_reference_sequence(
+                g_ac, new_g_start_pos + len_g_ref, new_g_end_pos
+            )[0]
+            alt = g_alt + retained_dna
+        else:
+            alt = self._get_genomic_alt(
+                g_ac, g_alt, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
+            )
 
         # DNA -> RNA -> Protein (1 AA)
         aa_ref = self._dna_to_aa(ref, strand)
@@ -577,8 +582,7 @@ class GnomadVcfToProteinVariation:
         )
         aa_ref, aa_alt, _ = _trim_prefix_or_suffix(aa_ref, aa_alt, trim_prefix=False)
 
-        # Get protein end position
-        if alt_type == AltType.DELETION:
+        if alt_type == AltType.DELETION and genomic_start_ix != 0:
             aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
         else:
             aa_end_pos = p_data.pos[1]

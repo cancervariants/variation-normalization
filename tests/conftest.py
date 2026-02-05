@@ -199,6 +199,46 @@ def protein_insertion():
 
 
 @pytest.fixture(scope="session")
+def pik3r1_deletion():
+    "Create test fixture for PIK3R1 deletion"
+    params = {
+        "location": {
+            "end": 573,
+            "start": 570,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.jwl0YkGsFI99ObXiyutSbGP4K8D_yi5K",
+            },
+            "sequence": "IQL",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
+def cdkn2a_substitution():
+    "Create test fixture for CDKN2A deletion"
+    params = {
+        "location": {
+            "end": 58,
+            "start": 57,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.ezr7VxeJXsAWsbni4UYOKyGUTjD82dIY",
+            },
+            "sequence": "R",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "*", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
 def protein_deletion_np_range():
     """Create test fixture for protein deletion using NP accession and
     range for deletion.
