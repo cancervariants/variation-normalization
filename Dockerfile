@@ -19,8 +19,9 @@ RUN apt-get update && \
     apt-get install -y libpq-dev gcc && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip setuptools setuptools_scm
-RUN pip install '.'
+RUN pip install --upgrade pip setuptools_scm
+RUN pip install "setuptools>=64,<81"
+RUN pip install  .
 
 USER appuser
 
