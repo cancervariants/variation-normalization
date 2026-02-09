@@ -134,6 +134,10 @@ exit
 
 Use the `SEQREPO_ROOT_DIR` environment variable to set the path of an already existing SeqRepo directory. The default is `/usr/local/share/seqrepo/latest`.
 
+#### UTA
+
+You must download `uta_20241220.pgd.gz` from <https://dl.biocommons.org/uta/> using a web browser and move it to the root of the repository.
+
 ## Docker Installation (Preferred)
 
 We recommend installing the Variation Normalizer using Docker.

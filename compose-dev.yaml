@@ -47,6 +47,12 @@ services:
       - POSTGRES_PASSWORD=some-password-that-you-make-up
     volumes:
       - uta_vol:/var/lib/postgresql/data
+      - type: bind
+        source: ./uta_20241220.pgd.gz
+        target: /tmp/uta_20241220.pgd.gz
+        read_only: true
+        bind:
+          create_host_path: false
       - ./uta-setup.sql:/docker-entrypoint-initdb.d/uta-setup.sql
     ports:
       - 127.0.0.1:5432:5432
