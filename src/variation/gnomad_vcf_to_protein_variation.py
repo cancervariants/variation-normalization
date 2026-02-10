@@ -561,10 +561,25 @@ class GnomadVcfToProteinVariation:
             ref = ref[::-1]
 
         # Get genomic altered sequence
+        # For deletions that occur in the first reading frame, the retained,
+        # altered sequence would include the original string provided in the
+        # alt section of the VCF expression + the dna sequence that is retained
+        # within the computed genomic position range
         if alt_type == AltType.DELETION and genomic_start_ix == 0:
-            retained_dna = self.seqrepo_access.get_reference_sequence(
+            retained_dna, w = self.seqrepo_access.get_reference_sequence(
                 g_ac, new_g_start_pos + len_g_ref, new_g_end_pos
-            )[0]
+            )
+            if w:
+                warnings.append(w)
+                return GnomadVcfToProteinService(
+                    variation_query=vcf_query,
+                    variation=variation,
+                    warnings=warnings,
+                    service_meta_=ServiceMeta(
+                        version=__version__,
+                        response_datetime=datetime.datetime.now(tz=datetime.UTC),
+                    ),
+                )
             alt = g_alt + retained_dna
         else:
             alt = self._get_genomic_alt(
