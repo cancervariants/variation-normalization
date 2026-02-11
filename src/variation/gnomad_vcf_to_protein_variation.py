@@ -78,7 +78,7 @@ def _trim_prefix_or_suffix(
         if aa_match:
             aa_start_pos += aa_match
             aa_alt = aa_alt[aa_match:] if trim_prefix else aa_alt[:-aa_match]
-            aa_ref = aa_ref[aa_match:] if trim_prefix else aa_ref[:-aa_ref]
+            aa_ref = aa_ref[aa_match:] if trim_prefix else aa_ref[:-aa_match]
 
     return aa_ref, aa_alt, aa_start_pos
 
@@ -299,6 +299,7 @@ class GnomadVcfToProteinVariation:
         self,
         g_ac: str,
         g_input_alt: str,
+        len_g_ref: int,
         g_end_pos: int,
         alt_type: AltType,
         genomic_start_ix: int,
@@ -309,6 +310,8 @@ class GnomadVcfToProteinVariation:
 
         :param g_ac: Genomic accession
         :param g_input_alt: Original alteration provided by VCF-like query
+        :param len_g_ref: Length of genomic reference sequence in the input VCF-like
+            expression
         :param g_end_pos: Genomic end position for codon
         :param alt_type: The type of alteration
         :param genomic_start_ix: The start index for the original genomic start position
@@ -316,15 +319,20 @@ class GnomadVcfToProteinVariation:
         :param ref: The genomic reference sequence
         :return: The updated genomic alteration
         """
+        if strand == Strand.POSITIVE:
+            input_alt = g_input_alt
+        else:
+            input_alt = g_input_alt[::-1]
+
         if alt_type == AltType.DELETION:
-            alt = ""
+            # Apply the VCF replacement directly in the codon-aligned DNA window.
+            # This keeps deletion handling consistent across reading frames.
+            alt = ref[:genomic_start_ix]
+            alt += input_alt
+            alt += ref[genomic_start_ix + len_g_ref :]
         else:
             alt = ref[:genomic_start_ix]
-
-            if strand == Strand.POSITIVE:
-                alt += g_input_alt
-            else:
-                alt += g_input_alt[::-1]
+            alt += input_alt
 
             if alt_type == AltType.SUBSTITUTION:
                 alt += ref[len(alt) :]
@@ -563,7 +571,7 @@ class GnomadVcfToProteinVariation:
 
         # Get genomic altered sequence
         alt = self._get_genomic_alt(
-            g_ac, g_alt, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
+            g_ac, g_alt, len_g_ref, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
         )
 
         # DNA -> RNA -> Protein (1 AA)
