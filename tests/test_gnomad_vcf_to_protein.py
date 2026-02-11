@@ -348,13 +348,33 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 
 
 @pytest.mark.asyncio
-async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
+async def test_deletion(
+    test_handler,
+    pik3r1_deletion,
+    cdkn2a_substitution,
+    protein_deletion_np_range,
+    cdk11a_e314del,
+):
     """Test that deletion queries return correct response"""
+    # Reading Frame 0, Positive Strand (CA3250144726)
+    resp = await test_handler.gnomad_vcf_to_protein("5-68295290-ATCCAGC-A")
+    assertion_checks(resp, pik3r1_deletion)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 0, Negative Strand (CA16602756)
+    resp = await test_handler.gnomad_vcf_to_protein("9-21971187-G-A")
+    assertion_checks(resp, cdkn2a_substitution)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 0, Positive Strand (CA645372623)
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range)
     assert resp.gene_context
     assert resp.warnings == []
 
+    # Reading Frame 2, Negative Strand (CA521012075)
     resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
     assertion_checks(resp, cdk11a_e314del)
     assert resp.gene_context

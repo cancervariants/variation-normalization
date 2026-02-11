@@ -304,19 +304,25 @@ class GnomadVcfToProteinVariation:
         alt_type: AltType,
         genomic_start_ix: int,
         strand: Strand,
-        ref: str,
+        window_ref: str,
     ) -> str:
-        """Get entire genomic altered sequence
+        """Build altered DNA from a codon-aligned genomic window.
+
+        The fetched ``window_ref`` includes codon context around the original VCF edit.
+        We apply the edit in that window so downstream DNA->AA translation uses a
+        consistent codon-aligned reference/alternate pair.
 
         :param g_ac: Genomic accession
         :param g_input_alt: Original alteration provided by VCF-like query
         :param len_g_ref: Length of genomic reference sequence in the input VCF-like
-            expression
+            expression (edit span length, NOT the codon-aligned window length)
         :param g_end_pos: Genomic end position for codon
         :param alt_type: The type of alteration
         :param genomic_start_ix: The start index for the original genomic start position
+            within ``window_ref``
         :param strand: Strand
-        :param ref: The genomic reference sequence
+        :param window_ref: The codon-aligned genomic reference sequence fetched from
+            SeqRepo
         :return: The updated genomic alteration
         """
         if strand == Strand.POSITIVE:
@@ -325,19 +331,20 @@ class GnomadVcfToProteinVariation:
             input_alt = g_input_alt[::-1]
 
         if alt_type == AltType.DELETION:
-            # Apply the VCF replacement directly in the codon-aligned DNA window.
-            # This keeps deletion handling consistent across reading frames.
-            alt = ref[:genomic_start_ix]
+            # Apply VCF replacement directly in the codon-aligned DNA window:
+            # alt = left_context + vcf_alt + right_context
+            # The right context starts after the VCF edit span (len_g_ref)
+            alt = window_ref[:genomic_start_ix]
             alt += input_alt
-            alt += ref[genomic_start_ix + len_g_ref :]
+            alt += window_ref[genomic_start_ix + len_g_ref :]
         else:
-            alt = ref[:genomic_start_ix]
+            alt = window_ref[:genomic_start_ix]
             alt += input_alt
 
             if alt_type == AltType.SUBSTITUTION:
-                alt += ref[len(alt) :]
+                alt += window_ref[len(alt) :]
             else:
-                alt += ref[len(ref) - genomic_start_ix :]
+                alt += window_ref[len(window_ref) - genomic_start_ix :]
 
             # We need to get the entire inserted sequence. It needs to be a factor of 3
             # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa). The reason why we
@@ -587,7 +594,8 @@ class GnomadVcfToProteinVariation:
 
         # Get protein end position
         if alt_type == AltType.DELETION:
-            aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
+            # Inter-residue coordinates use exclusive end
+            aa_end_pos = aa_start_pos + len(aa_ref)
         else:
             aa_end_pos = p_data.pos[1]
 
