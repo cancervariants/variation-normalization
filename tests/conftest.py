@@ -197,6 +197,7 @@ def protein_insertion():
     }
     return models.Allele(**params)
 
+
 @pytest.fixture(scope="session")
 def pik3r1_deletion():
     "Create test fixture for PIK3R1 deletion"
@@ -235,6 +236,7 @@ def cdkn2a_substitution():
         "type": "Allele",
     }
     return models.Allele(**params)
+
 
 @pytest.fixture(scope="session")
 def protein_deletion_np_range():

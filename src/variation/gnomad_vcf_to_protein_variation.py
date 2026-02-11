@@ -575,7 +575,14 @@ class GnomadVcfToProteinVariation:
 
         # Get genomic altered sequence
         alt = self._get_genomic_alt(
-            g_ac, g_alt, len_g_ref, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
+            g_ac,
+            g_alt,
+            len_g_ref,
+            new_g_end_pos,
+            alt_type,
+            genomic_start_ix,
+            strand,
+            ref,
         )
 
         # DNA -> RNA -> Protein (1 AA)
