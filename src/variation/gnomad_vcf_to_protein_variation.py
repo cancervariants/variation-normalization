@@ -325,10 +325,7 @@ class GnomadVcfToProteinVariation:
             SeqRepo
         :return: The updated genomic alteration
         """
-        if strand == Strand.POSITIVE:
-            input_alt = g_input_alt
-        else:
-            input_alt = g_input_alt[::-1]
+        input_alt = g_input_alt if strand == Strand.POSITIVE else g_input_alt[::-1]
 
         if alt_type == AltType.DELETION:
             # Apply VCF replacement directly in the codon-aligned DNA window:
