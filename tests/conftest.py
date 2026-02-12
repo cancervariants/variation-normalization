@@ -220,7 +220,7 @@ def pik3r1_deletion():
 
 @pytest.fixture(scope="session")
 def cdkn2a_substitution():
-    "Create test fixture for CDKN2A deletion"
+    "Create test fixture for CDKN2A substituion"
     params = {
         "location": {
             "end": 58,
@@ -233,6 +233,31 @@ def cdkn2a_substitution():
             "type": "SequenceLocation",
         },
         "state": {"sequence": "*", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
+def cftr_deletion():
+    "Create test fixture for CFTR deletion"
+    params = {
+        "location": {
+            "end": 508,
+            "start": 507,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.AvhcyzQ2F9LxMY9D2t9xngz49OPU6yRn",
+            },
+            "sequence": "F",
+            "type": "SequenceLocation",
+        },
+        "state": {
+            "length": 0,
+            "repeatSubunitLength": 1,
+            "sequence": "",
+            "type": "ReferenceLengthExpression",
+        },
         "type": "Allele",
     }
     return models.Allele(**params)

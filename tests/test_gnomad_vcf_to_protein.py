@@ -259,6 +259,7 @@ def delins_neg():
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
+    cdkn2a_substitution,
     braf_v600e,
     braf_v600l,
     braf_600_reference_agree,
@@ -271,6 +272,12 @@ async def test_substitution(
     multi_nuc_sub_neg,
 ):
     """Test that substitution queries return correct response"""
+    # Reading Frame 0, Negative Strand (CA16602756)
+    resp = await test_handler.gnomad_vcf_to_protein("9-21971187-G-A")
+    assertion_checks(resp, cdkn2a_substitution)
+    assert resp.gene_context
+    assert resp.warnings == []
+
     # Reading Frame 1, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753337-C-A")
     assertion_checks(resp, braf_v600l)
@@ -351,7 +358,7 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 async def test_deletion(
     test_handler,
     pik3r1_deletion,
-    cdkn2a_substitution,
+    cftr_deletion,
     protein_deletion_np_range,
     cdk11a_e314del,
 ):
@@ -362,9 +369,9 @@ async def test_deletion(
     assert resp.gene_context
     assert resp.warnings == []
 
-    # Reading Frame 0, Negative Strand (CA16602756)
-    resp = await test_handler.gnomad_vcf_to_protein("9-21971187-G-A")
-    assertion_checks(resp, cdkn2a_substitution)
+    # Reading Frame 1, Positive Strand (CA118639)
+    resp = await test_handler.gnomad_vcf_to_protein("7-117559591-TCTT-T")
+    assertion_checks(resp, cftr_deletion)
     assert resp.gene_context
     assert resp.warnings == []
 
