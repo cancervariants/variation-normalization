@@ -256,6 +256,56 @@ def delins_neg():
     return models.Allele(**params)
 
 
+@pytest.fixture(scope="module")
+def brca1_del():
+    """Test fixture for a deletion on a negative strand in the first (0) reading frame (CA003783)"""
+    params = {
+        "type": "Allele",
+        "location": {
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.nUzIPnHMyQV52hzgBbKl5vlbSwx8M8_Y",
+            },
+            "start": 22,
+            "end": 23,
+            "sequence": "E",
+        },
+        "state": {
+            "type": "ReferenceLengthExpression",
+            "length": 0,
+            "sequence": "",
+            "repeatSubunitLength": 1,
+        },
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def egfr_del():
+    """Test fixture for a deletion on a positive strand in the third (2) reading frame (CA175996)"""
+    params = {
+        "type": "Allele",
+        "location": {
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            },
+            "start": 745,
+            "end": 750,
+            "sequence": "ELREA",
+        },
+        "state": {
+            "type": "ReferenceLengthExpression",
+            "length": 0,
+            "sequence": "",
+            "repeatSubunitLength": 5,
+        },
+    }
+    return models.Allele(**params)
+
+
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
@@ -361,11 +411,25 @@ async def test_deletion(
     cftr_deletion,
     protein_deletion_np_range,
     cdk11a_e314del,
+    brca1_del,
+    egfr_del,
 ):
     """Test that deletion queries return correct response"""
     # Reading Frame 0, Positive Strand (CA3250144726)
     resp = await test_handler.gnomad_vcf_to_protein("5-68295290-ATCCAGC-A")
     assertion_checks(resp, pik3r1_deletion)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 0, Positive Strand (CA645372623)
+    resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
+    assertion_checks(resp, protein_deletion_np_range)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 0, Negative Strand (CA003783)
+    resp = await test_handler.gnomad_vcf_to_protein("17-43124028-CTCT-CT")
+    assertion_checks(resp, brca1_del)
     assert resp.gene_context
     assert resp.warnings == []
 
@@ -375,9 +439,12 @@ async def test_deletion(
     assert resp.gene_context
     assert resp.warnings == []
 
-    # Reading Frame 0, Positive Strand (CA645372623)
-    resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
-    assertion_checks(resp, protein_deletion_np_range)
+    # Reading Frame 1, Negative Strand
+    # Can't find?
+
+    # Reading Frame 2, Positive Strand
+    resp = await test_handler.gnomad_vcf_to_protein("7-55174772-GGAATTAAGAGAAGC-G")
+    assertion_checks(resp, egfr_del)
     assert resp.gene_context
     assert resp.warnings == []
 
