@@ -439,10 +439,13 @@ async def test_deletion(
     assert resp.gene_context
     assert resp.warnings == []
 
-    # Reading Frame 1, Negative Strand
-    # Can't find?
+    # Reading Frame 1, Negative Strand (CA521012075)
+    resp = await test_handler.gnomad_vcf_to_protein("1-1708852-CT-C")
+    assertion_checks(resp, cdk11a_e314del)
+    assert resp.gene_context
+    assert resp.warnings == []
 
-    # Reading Frame 2, Positive Strand
+    # Reading Frame 2, Positive Strand (CA175996)
     resp = await test_handler.gnomad_vcf_to_protein("7-55174772-GGAATTAAGAGAAGC-G")
     assertion_checks(resp, egfr_del)
     assert resp.gene_context
