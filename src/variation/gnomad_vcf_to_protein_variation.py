@@ -304,11 +304,11 @@ class GnomadVcfToProteinVariation:
         alt_type: AltType,
         genomic_start_ix: int,
         strand: Strand,
-        window_ref: str,
+        codon_aligned_ref_seq: str,
     ) -> str:
         """Build altered DNA from a codon-aligned genomic window.
 
-        The fetched ``window_ref`` includes codon context around the original VCF edit.
+        The fetched ``codon_aligned_ref_seq`` includes codon context around the original VCF edit.
         We apply the edit in that window so downstream DNA->AA translation uses a
         consistent codon-aligned reference/alternate pair.
 
@@ -319,9 +319,9 @@ class GnomadVcfToProteinVariation:
         :param g_end_pos: Genomic end position for codon
         :param alt_type: The type of alteration
         :param genomic_start_ix: The start index for the original genomic start position
-            within ``window_ref``
+            within ``codon_aligned_ref_seq``
         :param strand: Strand
-        :param window_ref: The codon-aligned genomic reference sequence fetched from
+        :param codon_aligned_ref_seq: The codon-aligned genomic reference sequence fetched from
             SeqRepo
         :return: The updated genomic alteration
         """
@@ -331,17 +331,17 @@ class GnomadVcfToProteinVariation:
             # Apply VCF replacement directly in the codon-aligned DNA window:
             # alt = left_context + vcf_alt + right_context
             # The right context starts after the VCF edit span (len_g_ref)
-            alt = window_ref[:genomic_start_ix]
+            alt = codon_aligned_ref_seq[:genomic_start_ix]
             alt += input_alt
-            alt += window_ref[genomic_start_ix + len_g_ref :]
+            alt += codon_aligned_ref_seq[genomic_start_ix + len_g_ref :]
         else:
-            alt = window_ref[:genomic_start_ix]
+            alt = codon_aligned_ref_seq[:genomic_start_ix]
             alt += input_alt
 
             if alt_type == AltType.SUBSTITUTION:
-                alt += window_ref[len(alt) :]
+                alt += codon_aligned_ref_seq[len(alt) :]
             else:
-                alt += window_ref[len(window_ref) - genomic_start_ix :]
+                alt += codon_aligned_ref_seq[len(codon_aligned_ref_seq) - genomic_start_ix :]
 
             # We need to get the entire inserted sequence. It needs to be a factor of 3
             # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa). The reason why we
