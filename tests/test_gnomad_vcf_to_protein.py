@@ -255,6 +255,68 @@ def delins_neg():
     }
     return models.Allele(**params)
 
+@pytest.fixture(scope="session")
+def pik3r1_deletion():
+    "Create test fixture for PIK3R1 deletion"
+    params = {
+        "location": {
+            "end": 573,
+            "start": 570,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.jwl0YkGsFI99ObXiyutSbGP4K8D_yi5K",
+            },
+            "sequence": "IQL",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+@pytest.fixture(scope="session")
+def cdkn2a_substitution():
+    "Create test fixture for CDKN2A substituion"
+    params = {
+        "location": {
+            "end": 58,
+            "start": 57,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.ezr7VxeJXsAWsbni4UYOKyGUTjD82dIY",
+            },
+            "sequence": "R",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "*", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
+def cftr_deletion():
+    "Create test fixture for CFTR deletion"
+    params = {
+        "location": {
+            "end": 508,
+            "start": 507,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.AvhcyzQ2F9LxMY9D2t9xngz49OPU6yRn",
+            },
+            "sequence": "F",
+            "type": "SequenceLocation",
+        },
+        "state": {
+            "length": 0,
+            "repeatSubunitLength": 1,
+            "sequence": "",
+            "type": "ReferenceLengthExpression",
+        },
+        "type": "Allele",
+    }
+    return models.Allele(**params)
 
 @pytest.fixture(scope="module")
 def brca1_del():
