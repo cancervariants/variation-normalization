@@ -590,18 +590,11 @@ class GnomadVcfToProteinVariation:
         aa_alt = self._dna_to_aa(alt, strand)
 
         # Trim AA prefixes / suffixes and update the protein start position accordingly
-        aa_start_pos = p_data.pos[0]
+        aa_start_pos, aa_end_pos = p_data.pos
         aa_ref, aa_alt, aa_start_pos = _trim_prefix_or_suffix(
             aa_ref, aa_alt, aa_start_pos=aa_start_pos, trim_prefix=True
         )
         aa_ref, aa_alt, _ = _trim_prefix_or_suffix(aa_ref, aa_alt, trim_prefix=False)
-
-        # Get protein end position
-        if alt_type == AltType.DELETION:
-            # Inter-residue coordinates use exclusive end
-            aa_end_pos = aa_start_pos + len(aa_ref)
-        else:
-            aa_end_pos = p_data.pos[1]
 
         # Create the protein VRS Allele
         try:
