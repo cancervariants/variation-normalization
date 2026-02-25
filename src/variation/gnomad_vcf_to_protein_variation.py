@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from cool_seq_tool.mappers.mane_transcript import (
         CdnaRepresentation,
         DataRepresentation,
+        GenomicRepresentation,
         ProteinAndCdnaRepresentation,
     )
 
@@ -536,6 +537,33 @@ class GnomadVcfToProteinVariation:
         g_start_pos = token.pos  # residue (1-based), following gnomAD-VCF convention
         g_ref = token.ref
         g_alt = token.alt
+
+        # For GRCh37 input assembly, we need to liftover to GRCh38 and update variables
+        if input_assembly == ClinVarAssembly.GRCH37:
+            grch38_rep: (
+                GenomicRepresentation | None
+            ) = await self.mane_transcript.g_to_grch38(
+                ac=g_ac,
+                start_pos=g_start_pos,
+                end_pos=g_start_pos,
+                coordinate_type=CoordinateType.RESIDUE,
+            )
+            if not grch38_rep:
+                warnings.append(
+                    f"Unable to liftover {vcf_query} to GRCh38 representation"
+                )
+                return GnomadVcfToProteinService(
+                    variation_query=vcf_query,
+                    variation=variation,
+                    warnings=warnings,
+                    service_meta_=ServiceMeta(
+                        version=__version__,
+                        response_datetime=datetime.datetime.now(tz=datetime.UTC),
+                    ),
+                )
+
+            g_ac = grch38_rep.ac
+            g_start_pos = grch38_rep.pos[0] + 1  # Change back to residue
 
         len_g_ref = len(g_ref)
         len_g_alt = len(g_alt)

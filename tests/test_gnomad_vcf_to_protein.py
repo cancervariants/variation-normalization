@@ -404,6 +404,14 @@ async def test_substitution(
     assert resp.gene_context
     assert resp.warnings == []
 
+    # Use GRCh37
+    resp = await test_handler.gnomad_vcf_to_protein(
+        "7-140453136-A-T", input_assembly=ClinVarAssembly.GRCH37
+    )
+    assertion_checks(resp, braf_v600e, check_vrs_id=True)
+    assert resp.gene_context
+    assert resp.warnings == []
+
     # Reading Frame 3, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753335-C-A")
     assertion_checks(resp, braf_600_reference_agree)
@@ -573,3 +581,27 @@ async def test_invalid(test_handler):
     assert resp.variation is None
     assert resp.gene_context is None
     assert resp.warnings == ["20-2-TC-TG is not a valid gnomAD-VCF query"]
+
+
+@pytest.mark.asyncio
+async def test_liftover_failure(monkeypatch, test_handler):
+    """Test that liftover failure returns warnings"""
+
+    async def mock_g_to_grch38(*args, **kwargs):  # noqa: ARG001
+        return None
+
+    monkeypatch.setattr(
+        test_handler.mane_transcript,
+        "g_to_grch38",
+        mock_g_to_grch38,
+    )
+
+    resp = await test_handler.gnomad_vcf_to_protein(
+        "1-27755669-A-C",
+        input_assembly=ClinVarAssembly.GRCH37,
+    )
+
+    assert resp.variation is None
+    assert resp.warnings == [
+        "Unable to liftover 1-27755669-A-C to GRCh38 representation"
+    ]
