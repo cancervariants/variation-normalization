@@ -199,7 +199,7 @@ class GnomadVcfToProteinVariation:
         """Perform validation steps
 
         :param vcf_query: gnomAD-VCF input query
-        :param warnings: List of warnings. This
+        :param warnings: List of warnings.
         :param input_assembly: Assembly used for `vcf_query`.
         :raises GnomadVcfToProteinError: If no tokens, classifications, or valid results
             are found. Also if `vcf_query` is not a gnomAD-VCF query.
