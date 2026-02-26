@@ -2,16 +2,14 @@
 
 from variation.schemas.classification_response_schema import (
     AmbiguousType,
-    Classification,
     ClassificationType,
     GenomicDeletionAmbiguousClassification,
-    Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.validators.validator import Validator
+from variation.validators.validator import GenomicValidator
 
 
-class GenomicDeletionAmbiguous(Validator):
+class GenomicDeletionAmbiguous(GenomicValidator):
     """The Genomic Deletion Ambiguous Validator class."""
 
     async def get_valid_invalid_results(
@@ -47,10 +45,10 @@ class GenomicDeletionAmbiguous(Validator):
             if classification.ambiguous_type == AmbiguousType.AMBIGUOUS_1:
                 start_pos = classification.pos0
                 end_pos = classification.pos3
-            elif (
-                classification.ambiguous_type == AmbiguousType.AMBIGUOUS_2
-                or classification.ambiguous_type == AmbiguousType.AMBIGUOUS_5
-            ):
+            elif classification.ambiguous_type in {
+                AmbiguousType.AMBIGUOUS_2,
+                AmbiguousType.AMBIGUOUS_5,
+            }:
                 start_pos = classification.pos1
                 end_pos = classification.pos2
             elif classification.ambiguous_type == AmbiguousType.AMBIGUOUS_7:
@@ -100,21 +98,3 @@ class GenomicDeletionAmbiguous(Validator):
         ambiguous
         """
         return classification_type == ClassificationType.GENOMIC_DELETION_AMBIGUOUS
-
-    async def get_accessions(
-        self, classification: Classification, errors: list
-    ) -> list[str]:
-        """Get accessions for a given classification.
-        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
-        in the HGVS expression.
-        Else, will get all accessions associated to the gene
-
-        :param classification: The classification for list of tokens
-        :param errors: List of errors
-        :return: List of accessions
-        """
-        if classification.nomenclature == Nomenclature.HGVS:
-            accessions = [classification.ac]
-        else:
-            accessions = await self.get_genomic_accessions(classification, errors)
-        return accessions

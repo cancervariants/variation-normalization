@@ -6,13 +6,14 @@ import traceback
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from enum import Enum
-from typing import Annotated
+from typing import Annotated, Literal
 from urllib.parse import unquote
 
-import pkg_resources
 from bioutils.exceptions import BioutilsError
+from cool_seq_tool.mappers.feature_overlap import FeatureOverlap, FeatureOverlapError
 from cool_seq_tool.schemas import Assembly, CoordinateType
 from fastapi import FastAPI, Query
+from ga4gh.vrs import __version__ as vrs_python_version
 from ga4gh.vrs import models
 from ga4gh.vrs.dataproxy import DataProxyValidationError
 from hgvs.exceptions import HGVSError
@@ -39,6 +40,8 @@ from variation.schemas.normalize_response_schema import (
     TranslateIdentifierService,
 )
 from variation.schemas.service_schema import (
+    ClinVarAssembly,
+    FeatureOverlapService,
     ToCdnaService,
     ToGenomicService,
 )
@@ -64,9 +67,11 @@ class Tag(Enum):
     VRS_PYTHON = "VRS-Python"
     TO_COPY_NUMBER_VARIATION = "To Copy Number Variation"
     ALIGNMENT_MAPPER = "Alignment Mapper"
+    FEATURE_OVERLAP = "Feature Overlap"
 
 
 query_handler = QueryHandler()
+feature_overlap = FeatureOverlap(query_handler.seqrepo_access)
 
 
 @asynccontextmanager
@@ -99,7 +104,7 @@ app = FastAPI(
 )
 
 translate_summary = (
-    "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS" " variation(s)."
+    "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s)."
 )
 translate_description = (
     "Translate a human readable variation description to "
@@ -172,6 +177,12 @@ async def normalize(
             description="The copy change for HGVS duplications and deletions represented as Copy Number Change Variation.",
         ),
     ] = None,
+    input_assembly: Annotated[
+        Literal[ClinVarAssembly.GRCH37] | Literal[ClinVarAssembly.GRCH38] | None,
+        Query(
+            description="Assembly used for `q`. Only used when `q` is using genomic free text or gnomad vcf format",
+        ),
+    ] = None,
 ) -> NormalizeService:
     """Normalize and translate a HGVS, gnomAD VCF or Free Text description on GRCh37
     or GRCh38 assembly to a single VRS Variation. Performs fully-justified allele
@@ -186,11 +197,14 @@ async def normalize(
     :param copy_change: The copy change for HGVS duplications and deletions represented
         as Copy Number Change Variation. If not set, will use default `copy_change` for
         query.
+    :param input_assembly: Assembly used for `q`. Only used when `q` is using genomic
+        free text or gnomad vcf format
     :return: NormalizeService for variation
     """
     return await query_handler.normalize_handler.normalize(
         unquote(q),
         hgvs_dup_del_mode=hgvs_dup_del_mode,
+        input_assembly=input_assembly,
         baseline_copies=baseline_copies,
         copy_change=copy_change,
     )
@@ -228,7 +242,7 @@ def translate_identifier(
     except KeyError:
         warnings = [f"Identifier, {identifier}, does not exist in SeqRepo"]
     except Exception as e:
-        warnings = [f"SeqRepo could not translate identifier, {identifier}:" f" {e}"]
+        warnings = [f"SeqRepo could not translate identifier, {identifier}: {e}"]
 
     return TranslateIdentifierService(
         identifier_query=identifier,
@@ -325,9 +339,7 @@ def vrs_python_translate_from(
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
@@ -353,14 +365,24 @@ q_description = (
 )
 async def gnomad_vcf_to_protein(
     q: Annotated[str, Query(description=q_description)],
+    input_assembly: Annotated[
+        Literal[ClinVarAssembly.GRCH37] | Literal[ClinVarAssembly.GRCH38] | None,
+        Query(
+            description="Assembly used for `q`.",
+        ),
+    ] = None,
 ) -> GnomadVcfToProteinService:
     """Return VRS representation for variation on protein coordinate.
 
     :param q: gnomad VCF to normalize to protein variation.
+    :param input_assembly: Assembly used for `q`.
     :return: GnomadVcfToProteinService for variation
     """
     q = unquote(q.strip())
-    return await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(q)
+    return await query_handler.gnomad_vcf_to_protein_handler.gnomad_vcf_to_protein(
+        q,
+        input_assembly=input_assembly,
+    )
 
 
 hgvs_dup_del_mode_decsr = (
@@ -431,9 +453,7 @@ async def vrs_python_translate_to(request_body: TranslateToQuery) -> TranslateTo
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
@@ -488,9 +508,7 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),
         ),
-        vrs_python_meta_=VrsPythonMeta(
-            version=pkg_resources.get_distribution("ga4gh.vrs").version
-        ),
+        vrs_python_meta_=VrsPythonMeta(version=vrs_python_version),
     )
 
 
@@ -508,7 +526,7 @@ async def hgvs_to_copy_number_count(
         int | None, Query(description="Baseline copies for duplication")
     ],
     do_liftover: Annotated[
-        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+        bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
     ] = False,
 ) -> HgvsToCopyNumberCountService:
     """Given hgvs expression, return copy number count variation
@@ -537,7 +555,7 @@ async def hgvs_to_copy_number_change(
     hgvs_expr: Annotated[str, Query(description="Variation query")],
     copy_change: Annotated[models.CopyChange, Query(description="The copy change")],
     do_liftover: Annotated[
-        bool, Query(description="Whether or not to liftover " "to GRCh38 assembly.")
+        bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
     ] = False,
 ) -> HgvsToCopyNumberChangeService:
     """Given hgvs expression, return copy number change variation
@@ -556,8 +574,7 @@ async def hgvs_to_copy_number_change(
 
 @app.post(
     "/variation/parsed_to_cn_var",
-    summary="Given parsed genomic components, return VRS Copy Number Count "
-    "Variation",
+    summary="Given parsed genomic components, return VRS Copy Number Count Variation",
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Count Variation",
@@ -588,8 +605,7 @@ def parsed_to_cn_var(request_body: ParsedToCnVarQuery) -> ParsedToCnVarService:
 
 @app.post(
     "/variation/parsed_to_cx_var",
-    summary="Given parsed genomic components, return VRS Copy Number Change "
-    "Variation",
+    summary="Given parsed genomic components, return VRS Copy Number Change Variation",
     response_model_exclude_none=True,
     response_description="A response to a validly-formed query.",
     description="Return VRS Copy Number Change Variation",
@@ -825,6 +841,75 @@ async def p_to_g(
     return ToGenomicService(
         g_data=g_data,
         warnings=[w] if w else [],
+        service_meta=ServiceMeta(
+            version=__version__,
+            response_datetime=datetime.datetime.now(tz=datetime.UTC),
+        ),
+    )
+
+
+@app.get(
+    "/variation/feature_overlap",
+    summary="Given GRCh38 genomic data, find the overlapping MANE features (gene and cds)",
+    response_model_exclude_none=True,
+    response_description="A response to a validly-formed query.",
+    description="The genomic data is specified as a sequence location by `chromosome`, `start`, `end`. All CDS regions with which the input sequence location has nonzero base pair overlap will be returned.",
+    tags=[Tag.FEATURE_OVERLAP],
+)
+def get_feature_overlap(
+    start: Annotated[int, Query(description="GRCh38 start position")] = ...,
+    end: Annotated[int, Query(description="GRCh38 end position")] = ...,
+    chromosome: Annotated[
+        str | None,
+        Query(
+            description="Chromosome. 1..22, X, or Y. If not provided, must provide `identifier`. If both `chromosome` and `identifier` are provided, `chromosome` will be used."
+        ),
+    ] = None,
+    identifier: Annotated[
+        str | None,
+        Query(
+            description="Genomic identifier on GRCh38 assembly. If not provided, must provide `chromosome`. If both `chromosome` and `identifier` are provided, `chromosome` will be used."
+        ),
+    ] = None,
+    coordinate_type: Annotated[
+        CoordinateType, Query(description="Coordinate type for `start` and `end`")
+    ] = CoordinateType.RESIDUE,
+) -> FeatureOverlapService:
+    """Given GRCh38 genomic data, find the overlapping MANE features (gene and cds)
+    The genomic data is specified as a sequence location by `chromosome`, `start`,
+    `end`. All CDS regions with which the input sequence location has nonzero base
+    pair overlap will be returned.
+
+    :param start: GRCh38 start position
+    :param end: GRCh38 end position
+    :param chromosome: Chromosome. 1..22, X, or Y. If not provided, must provide
+        `identifier`. If both `chromosome` and `identifier` are provided,
+        `chromosome` will be used.
+    :param identifier: Genomic identifier on GRCh38 assembly. If not provided, must
+        provide `chromosome`. If both `chromosome` and `identifier` are provided,
+        `chromosome` will be used.
+    :param coordinate_type: Residue mode for `start` and `end`
+    :return: MANE feature (gene/cds) overlap data represented as a dict. The
+        dictionary will be keyed by genes which overlap the input sequence location.
+        Each gene contains a list of the overlapping CDS regions with the beginning
+        and end of the input sequence location's overlap with each
+    """
+    try:
+        overlap_data = feature_overlap.get_grch38_mane_gene_cds_overlap(
+            start=start,
+            end=end,
+            chromosome=chromosome,
+            identifier=identifier,
+            coordinate_type=coordinate_type,
+        )
+        errors = []
+    except FeatureOverlapError as e:
+        errors = [str(e)]
+        overlap_data = None
+
+    return FeatureOverlapService(
+        feature_overlap=overlap_data,
+        warnings=errors,
         service_meta=ServiceMeta(
             version=__version__,
             response_datetime=datetime.datetime.now(tz=datetime.UTC),

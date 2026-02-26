@@ -4,6 +4,7 @@ import pytest
 from ga4gh.vrs import models
 
 from tests.conftest import assertion_checks
+from variation.schemas.service_schema import ClinVarAssembly
 
 
 @pytest.fixture(scope="module")
@@ -124,7 +125,7 @@ def atad3a_i7m(atad3a_loc):
     return models.Allele(**params)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def braf_v600l(braf_600loc):
     """Create test fixture for BRAF Val600Leu."""
     params = {
@@ -135,12 +136,17 @@ def braf_v600l(braf_600loc):
     return models.Allele(**params)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def braf_600_reference_agree(braf_600loc):
     """Create test fixture for BRAF Val600=."""
     params = {
         "location": braf_600loc,
-        "state": {"sequence": "V", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "V",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -375,6 +381,17 @@ async def test_delins(test_handler, delins_pos, delins_neg):
     assert resp.variation
     assert resp.gene_context
     assert resp.warnings == []
+
+
+@pytest.mark.asyncio
+async def test_input_assembly(test_handler):
+    """Test that input assembly works correctly (issue #625)"""
+    resp = await test_handler.gnomad_vcf_to_protein(
+        "1-35227334-G-A", input_assembly=ClinVarAssembly.GRCH37
+    )
+    assert resp.variation
+    assert resp.gene_context
+    assert resp.gene_context.name == "GJB4"
 
 
 @pytest.mark.asyncio

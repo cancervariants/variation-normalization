@@ -1,16 +1,15 @@
 """The module for Genomic Substitution Validation."""
 
 from variation.schemas.classification_response_schema import (
-    Classification,
     ClassificationType,
     GenomicSubstitutionClassification,
     Nomenclature,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.validators.validator import Validator
+from variation.validators.validator import GenomicValidator
 
 
-class GenomicSubstitution(Validator):
+class GenomicSubstitution(GenomicValidator):
     """The Genomic Substitution Validator class."""
 
     async def get_valid_invalid_results(
@@ -57,21 +56,3 @@ class GenomicSubstitution(Validator):
         substitution.
         """
         return classification_type == ClassificationType.GENOMIC_SUBSTITUTION
-
-    async def get_accessions(
-        self, classification: Classification, errors: list
-    ) -> list[str]:
-        """Get accessions for a given classification.
-        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
-        in the HGVS expression.
-        Else, will get all accessions associated to the gene
-
-        :param classification: The classification for list of tokens
-        :param errors: List of errors
-        :return: List of accessions
-        """
-        if classification.nomenclature == Nomenclature.HGVS:
-            accessions = [classification.ac]
-        else:
-            accessions = await self.get_genomic_accessions(classification, errors)
-        return accessions

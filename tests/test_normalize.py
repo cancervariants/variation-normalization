@@ -9,6 +9,7 @@ from tests.conftest import assertion_checks, cnv_assertion_checks
 from variation.main import normalize as normalize_get_response
 from variation.main import to_vrs as to_vrs_get_response
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
+from variation.schemas.service_schema import ClinVarAssembly
 
 
 @pytest.fixture(scope="module")
@@ -147,7 +148,12 @@ def cdna_reference_agree(braf_cdna_seq_loc):
     """Create test fixture for NM_004333.4:c.1799=."""
     params = {
         "location": braf_cdna_seq_loc,
-        "state": {"sequence": "T", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "T",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -312,6 +318,66 @@ def gnomad_vcf_genomic_sub_mnv():
 
 
 @pytest.fixture(scope="module")
+def gnomad_vcf_genomic_sub_input_assembly37():
+    """Create a genomic substitution test fixture for 3-10191647-T-G using GRCh37."""
+    params = {
+        "location": {
+            "start": 10149962,
+            "end": 10149963,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            },
+            "sequence": "T",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def gnomad_vcf_genomic_sub_input_assembly38():
+    """Create a genomic substitution test fixture for 3-10191647-T-G using GRCh38."""
+    params = {
+        "location": {
+            "end": 10191647,
+            "start": 10191646,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.Zu7h9AggXxhTaGVsy7h_EZSChSZGcmgX",
+            },
+            "sequence": "T",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def free_text_genomic_sub_input_assembly():
+    """Create a genomic substitution test fixture for VHL g.10191647T>G."""
+    params = {
+        "location": {
+            "end": 710,
+            "start": 709,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.xBKOKptLLDr-k4hTyCetvARn16pDS_rW",
+            },
+            "sequence": "T",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "G", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
 def genomic_sub_grch38():
     """Create a genomic substitution GRCh38 test fixture."""
     params = {
@@ -345,7 +411,12 @@ def grch38_braf_genom_reference_agree():
             "sequence": "A",
             "type": "SequenceLocation",
         },
-        "state": {"sequence": "A", "type": "LiteralSequenceExpression"},
+        "state": {
+            "sequence": "A",
+            "type": "ReferenceLengthExpression",
+            "length": 1,
+            "repeatSubunitLength": 1,
+        },
         "type": "Allele",
     }
     return models.Allele(**params)
@@ -569,6 +640,9 @@ async def test_cdna_and_genomic_substitution(
     genomic_sub_grch38,
     braf_v600e_genomic_sub,
     gnomad_vcf_genomic_sub_mnv,
+    gnomad_vcf_genomic_sub_input_assembly37,
+    gnomad_vcf_genomic_sub_input_assembly38,
+    free_text_genomic_sub_input_assembly,
 ):
     """Test that cdna and genomic substitutions normalize correctly."""
     resp = await test_handler.normalize("NM_004333.4:c.1799T>A")
@@ -613,6 +687,33 @@ async def test_cdna_and_genomic_substitution(
     q = "5-112175770-GGAA-AGAA"
     resp = await test_handler.normalize(q)
     assertion_checks(resp, gnomad_vcf_genomic_sub_mnv, mane_genes_exts=True)
+
+    # Test gnomad vcf input assembly when both GRCh37 and GRCh38 are valid (CA351756720)
+    q = "3-10191647-T-G"
+    resp = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH37)
+    assertion_checks(
+        resp, gnomad_vcf_genomic_sub_input_assembly37, mane_genes_exts=True
+    )
+
+    resp1 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH38)
+    assertion_checks(
+        resp1, gnomad_vcf_genomic_sub_input_assembly38, mane_genes_exts=True
+    )
+
+    resp2 = await test_handler.normalize(q)
+    assert resp2.variation.id == resp1.variation.id
+
+    # Test free text input assembly when both GRCh37 and GRCh38 are valid (CA351756720)
+    q = "VHL g.10191647T>G"
+    resp1 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH37)
+    assertion_checks(resp1, free_text_genomic_sub_input_assembly)
+
+    q = "VHL g.10149963T>G"
+    resp2 = await test_handler.normalize(q, input_assembly=ClinVarAssembly.GRCH38)
+    assert resp2.variation.id == resp1.variation.id
+
+    resp3 = await test_handler.normalize(q)
+    assert resp3.variation.id == resp2.variation.id
 
 
 @pytest.mark.asyncio

@@ -1,0 +1,66 @@
+# export VERSION=$(git describe --tags --abbrev=0)
+# docker compose -f compose-dev.yaml up --build
+services:
+  api:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION}
+    environment:
+      SEQREPO_ROOT_DIR: /usr/local/share/seqrepo/2024-12-20
+      # Dummy AWS credentials, don't need to use real ones
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      AWS_DEFAULT_REGION: us-east-2
+      GENE_NORM_DB_URL: http://gene-dynamodb-local:8000
+      UTA_DB_URL: postgresql://anonymous@uta:5432/uta/uta_20241220
+      WAGS_TAILS_DIR: /tmp/wags_tails
+
+    ports:
+      - 127.0.0.1:8001:80
+
+    depends_on:
+      uta:
+        condition: service_started
+      gene-dynamodb-local:
+        condition: service_started
+
+    working_dir: /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+
+    volumes:
+      - uta_vol:/var/lib/postgresql/data
+      - /usr/local/share/seqrepo:/usr/local/share/seqrepo
+
+  uta:
+    # Test:
+    # psql -XAt postgres://anonymous@localhost/uta -c 'select count(*) from uta_20241220.transcript'
+    # 329090
+    image: biocommons/uta:uta_20241220
+    environment:
+      - POSTGRES_PASSWORD=some-password-that-you-make-up
+    volumes:
+      - uta_vol:/var/lib/postgresql/data
+      - type: bind
+        source: ./uta_20241220.pgd.gz
+        target: /tmp/uta_20241220.pgd.gz
+        read_only: true
+        bind:
+          create_host_path: false
+      - ./uta-setup.sql:/docker-entrypoint-initdb.d/uta-setup.sql
+    ports:
+      - 127.0.0.1:5432:5432
+
+  gene-dynamodb-local:
+    image: cancervariants/gene-normalizer-ddb:2025-12-29
+    ports:
+     - 127.0.0.1:8000:8000
+
+volumes:
+  uta_vol:
+    external: true

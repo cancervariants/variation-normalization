@@ -19,7 +19,6 @@ from variation.schemas.translation_response_schema import (
     VrsSeqLocAcStatus,
 )
 from variation.schemas.validation_response_schema import ValidationResult
-from variation.validators.genomic_base import GenomicBase
 from variation.vrs_representation import VRSRepresentation
 
 
@@ -44,7 +43,6 @@ class Translator(ABC):
         """
         self.seqrepo_access = seqrepo_access
         self.uta = uta
-        self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
         self.mane_transcript = mane_transcript
         self.vrs = vrs
         self.hgvs_dup_del_mode = hgvs_dup_del_mode
@@ -120,7 +118,7 @@ class Translator(ABC):
         for pos in [pos0, pos1, pos2, pos3]:
             if pos not in {"?", None}:
                 if coordinate_type == CoordinateType.RESIDUE:
-                    pos -= 1
+                    pos -= 1  # noqa: PLW2901
 
                 if not (gene_start <= pos <= gene_end):
                     errors.append(

@@ -59,9 +59,8 @@ class Tokenizer(ABC):
                 string = string[2:]
             elif string[0] == "(" and string[-1] == ")":
                 string = string[1:-1]
-            else:
-                if match_coord_type:
-                    string = None
+            elif match_coord_type:
+                string = None
 
             return string
 

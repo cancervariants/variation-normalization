@@ -1,5 +1,6 @@
 """Module for Validation."""
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Literal
 
@@ -16,6 +17,7 @@ from variation.schemas.classification_response_schema import (
     ClassificationType,
     GenomicDeletionAmbiguousClassification,
     GenomicDuplicationAmbiguousClassification,
+    Nomenclature,
     ProteinDeletionClassification,
     ProteinDelInsClassification,
     ProteinInsertionClassification,
@@ -23,14 +25,16 @@ from variation.schemas.classification_response_schema import (
     ProteinStopGainClassification,
     ProteinSubstitutionClassification,
 )
+from variation.schemas.service_schema import ClinVarAssembly
 from variation.schemas.token_response_schema import GeneToken
 from variation.schemas.validation_response_schema import ValidationResult
 from variation.utils import get_aa1_codes
-from variation.validators.genomic_base import GenomicBase
+
+_logger = logging.getLogger(__name__)
 
 
 class Validator(ABC):
-    """The validator class."""
+    """The Validator ABC."""
 
     def __init__(
         self,
@@ -40,7 +44,7 @@ class Validator(ABC):
         gene_normalizer: GeneQueryHandler,
         liftover: LiftOver,
     ) -> None:
-        """Initialize the DelIns validator.
+        """Initialize the Validator ABC.
 
         :param seqrepo_access: Access to SeqRepo data
         :param transcript_mappings: Access to transcript mappings
@@ -51,7 +55,6 @@ class Validator(ABC):
         self.transcript_mappings = transcript_mappings
         self.seqrepo_access = seqrepo_access
         self.uta = uta
-        self.genomic_base = GenomicBase(self.seqrepo_access, self.uta)
         self.gene_normalizer = gene_normalizer
         self.liftover = liftover
 
@@ -91,7 +94,10 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
 
-    async def validate(self, classification: Classification) -> list[ValidationResult]:
+    async def validate(
+        self,
+        classification: Classification,
+    ) -> list[ValidationResult]:
         """Get list of associated accessions for a classification. Use these accessions
         to perform validation checks (pos exists, accession is valid, reference sequence
         matches expected, etc). Gets list of validation results for a given
@@ -101,12 +107,7 @@ class Validator(ABC):
         :return: List of validation results containing invalid and valid results
         """
         errors = []
-
-        try:
-            # NC_ queries do not have gene tokens
-            accessions = await self.get_accessions(classification, errors)
-        except IndexError:
-            accessions = []
+        accessions = await self.get_accessions(classification, errors)
 
         if errors:
             return [
@@ -146,82 +147,6 @@ class Validator(ABC):
                 f"No cDNA accessions found for gene symbol: {gene_token.token}"
             )
         return accessions
-
-    async def get_genomic_accessions(
-        self, classification: Classification, errors: list
-    ) -> list[str]:
-        """Get genomic RefSeq accessions for variations with genomic reference sequence.
-
-        :param classification: Classification for a list of tokens
-        :param errors: List of errors
-        :return: List of possible genomic RefSeq accessions for the variation
-        """
-        accessions = await self.genomic_base.get_nc_accessions(classification)
-        if not accessions:
-            errors.append("No genomic accessions found")
-        return accessions
-
-    async def _validate_gene_pos(
-        self,
-        gene: str,
-        alt_ac: str,
-        pos0: int,
-        pos1: int | None,
-        pos2: int | None = None,
-        pos3: int | None = None,
-        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
-    ) -> str | None:
-        """Validate whether free text genomic query is valid input.
-        If invalid input, add error to list of errors
-
-        :param gene: Gene symbol
-        :param alt_ac: Genomic accession
-        :param pos0: Queried genomic position
-        :param pos1: Queried genomic position
-        :param pos2: Queried genomic position
-        :param pos3: Queried genomic position
-        :param coordinate_type: Coordinate type for positions
-        :return: Invalid error message if invalid. Else, `None`
-        """
-        gene_start_end = {"start": None, "end": None}
-        resp = self.gene_normalizer.search(gene, incl=SourceName.ENSEMBL.value)
-        if resp.source_matches:
-            ensembl_resp = resp.source_matches[SourceName.ENSEMBL]
-            if all(
-                (ensembl_resp, ensembl_resp.records, ensembl_resp.records[0].locations)
-            ):
-                ensembl_loc = ensembl_resp.records[0].locations[0]
-                gene_start_end["start"] = ensembl_loc.start
-                gene_start_end["end"] = ensembl_loc.end - 1
-
-        if gene_start_end["start"] is None and gene_start_end["end"] is None:
-            return f"gene-normalizer unable to find Ensembl location for gene: {gene}"
-
-        assembly = await self.uta.get_chr_assembly(alt_ac)
-        if assembly:
-            # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
-            # need to liftover to GRCh37 coords
-            chromosome, assembly = assembly
-            for key in gene_start_end:
-                gene_pos = gene_start_end[key]
-                gene_pos_liftover = self.liftover.get_liftover(
-                    chromosome, gene_pos, Assembly.GRCH37
-                )
-                if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
-                    return f"{gene_pos} does not exist on {chromosome}"
-                gene_start_end[key] = gene_pos_liftover[1]
-
-        gene_start = gene_start_end["start"]
-        gene_end = gene_start_end["end"]
-
-        for pos in [pos0, pos1, pos2, pos3]:
-            if pos not in ["?", None]:
-                if coordinate_type == CoordinateType.RESIDUE:
-                    pos -= 1
-                if not (gene_start <= pos <= gene_end):
-                    return f"Position {pos} out of index on {alt_ac} on gene, {gene}"
-
-        return None
 
     def validate_reference_sequence(
         self,
@@ -306,9 +231,8 @@ class Validator(ABC):
             if end_pos:
                 if not ref_len or (end_pos - start_pos != ref_len):
                     msg = f"Positions ({start_pos}, {end_pos}) not valid on accession ({ac})"
-            else:
-                if not ref_len:
-                    msg = f"Position ({start_pos}) not valid on accession ({ac})"
+            elif not ref_len:
+                msg = f"Position ({start_pos}) not valid on accession ({ac})"
 
         return msg
 
@@ -343,35 +267,6 @@ class Validator(ABC):
                         break
 
                     prev_pos = pos
-        return invalid_msg
-
-    def validate_ambiguous_classification(
-        self,
-        classification: GenomicDeletionAmbiguousClassification
-        | GenomicDuplicationAmbiguousClassification,
-    ) -> str | None:
-        """Validate that ambiguous type is supported and that positions are unique and
-        listed from 5' to 3'
-
-        :param classification: Ambiguous duplication or deletion classification
-        :return: Message if ambiguous type is not supported, positions are not unique,
-            or if positions are not listed from 5' to 3'. Else, `None`
-        """
-        invalid_msg = None
-        if classification.ambiguous_type not in {
-            AmbiguousType.AMBIGUOUS_1,
-            AmbiguousType.AMBIGUOUS_2,
-            AmbiguousType.AMBIGUOUS_5,
-            AmbiguousType.AMBIGUOUS_7,
-        }:
-            invalid_msg = f"{classification.ambiguous_type} is not yet supported"
-        else:
-            invalid_msg = self.validate_5_prime_to_3_prime(
-                classification.pos0,
-                pos1=classification.pos1,
-                pos2=classification.pos2,
-                pos3=classification.pos3,
-            )
         return invalid_msg
 
     def validate_protein_hgvs_classification(
@@ -430,3 +325,251 @@ class Validator(ABC):
                 )
 
         return errors
+
+
+class GenomicValidator(Validator):
+    """The Validator for genomic variants"""
+
+    async def _get_free_text_accessions(
+        self,
+        classification: Classification,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> list[str]:
+        """Get accessions for a gene
+
+        :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for initial input query.
+        :return: List of genomic RefSeq accessions
+        """
+        nc_accessions = await self.uta.get_ac_from_gene(
+            classification.gene_token.matched_value
+        )
+
+        # If input assembly is provided, get the NC accession for that assembly
+        if input_assembly:
+            updated_nc_accessions = []
+            for alt_ac in nc_accessions:
+                aliases, _ = self.seqrepo_access.translate_identifier(
+                    alt_ac, input_assembly
+                )
+                if aliases:
+                    updated_nc_accessions.append(alt_ac)
+                    break
+
+            nc_accessions = updated_nc_accessions
+
+        return nc_accessions
+
+    def _get_gnomad_vcf_accessions(
+        self,
+        classification: Classification,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> list[str]:
+        """Get accessions for a chromosome
+
+        :param classification: A classification for a list of tokens
+        :param input_assembly: Assembly used for initial input query.
+        :return: List of genomic RefSeq accessions
+        """
+
+        def _get_nc_accession(identifier: str) -> str | None:
+            """Given an identifier (assembly+chr), return RefSeq genomic accession.
+
+            :param identifier: assembly+chr
+            :return: RefSeq genomic accession, if found
+            """
+            nc_accession = None
+            try:
+                translated_identifiers, _ = self.seqrepo_access.translate_identifier(
+                    identifier
+                )
+            except KeyError:
+                _logger.warning("Data Proxy unable to get metadata for %s", identifier)
+            else:
+                aliases = [
+                    a for a in translated_identifiers if a.startswith("refseq:NC_")
+                ]
+                if aliases:
+                    nc_accession = aliases[0].split(":")[-1]
+            return nc_accession
+
+        gnomad_vcf_token = classification.matching_tokens[0]
+        chromosome = gnomad_vcf_token.chromosome
+        nc_accessions = []
+
+        if input_assembly:
+            alt_ac = _get_nc_accession(f"{input_assembly.value}:{chromosome}")
+            if alt_ac:
+                nc_accessions.append(alt_ac)
+        else:
+            for assembly in [ClinVarAssembly.GRCH38, ClinVarAssembly.GRCH37]:
+                alt_ac = _get_nc_accession(f"{assembly.value}:{chromosome}")
+                if alt_ac:
+                    nc_accessions.append(alt_ac)
+        return nc_accessions
+
+    async def _validate_gene_pos(
+        self,
+        gene: str,
+        alt_ac: str,
+        pos0: int,
+        pos1: int | None,
+        pos2: int | None = None,
+        pos3: int | None = None,
+        coordinate_type: CoordinateType = CoordinateType.RESIDUE,
+    ) -> str | None:
+        """Validate whether free text genomic query is valid input.
+        If invalid input, add error to list of errors
+
+        :param gene: Gene symbol
+        :param alt_ac: Genomic accession
+        :param pos0: Queried genomic position
+        :param pos1: Queried genomic position
+        :param pos2: Queried genomic position
+        :param pos3: Queried genomic position
+        :param coordinate_type: Coordinate type for positions
+        :return: Invalid error message if invalid. Else, `None`
+        """
+        gene_start_end = {"start": None, "end": None}
+        resp = self.gene_normalizer.search(gene, incl=SourceName.ENSEMBL.value)
+        if resp.source_matches:
+            ensembl_resp = resp.source_matches[SourceName.ENSEMBL]
+            if all(
+                (ensembl_resp, ensembl_resp.records, ensembl_resp.records[0].locations)
+            ):
+                ensembl_loc = ensembl_resp.records[0].locations[0]
+                gene_start_end["start"] = ensembl_loc.start
+                gene_start_end["end"] = ensembl_loc.end - 1
+
+        if gene_start_end["start"] is None and gene_start_end["end"] is None:
+            return f"gene-normalizer unable to find Ensembl location for gene: {gene}"
+
+        assembly = await self.uta.get_chr_assembly(alt_ac)
+        if assembly:
+            # Not in GRCh38 assembly. Gene normalizer only uses 38, so we
+            # need to liftover to GRCh37 coords
+            chromosome, assembly = assembly
+            for key in gene_start_end:
+                gene_pos = gene_start_end[key]
+                gene_pos_liftover = self.liftover.get_liftover(
+                    chromosome, gene_pos, Assembly.GRCH37
+                )
+                if gene_pos_liftover is None or len(gene_pos_liftover) == 0:
+                    return f"{gene_pos} does not exist on {chromosome}"
+                gene_start_end[key] = gene_pos_liftover[1]
+
+        gene_start = gene_start_end["start"]
+        gene_end = gene_start_end["end"]
+
+        for pos in [pos0, pos1, pos2, pos3]:
+            if pos not in ["?", None]:
+                if coordinate_type == CoordinateType.RESIDUE:
+                    pos -= 1  # noqa: PLW2901
+                if not (gene_start <= pos <= gene_end):
+                    return f"Position {pos} out of index on {alt_ac} on gene, {gene}"
+
+        return None
+
+    async def validate(
+        self,
+        classification: Classification,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> list[ValidationResult]:
+        """Get list of associated accessions for a classification. Use these accessions
+        to perform validation checks (pos exists, accession is valid, reference sequence
+        matches expected, etc). Gets list of validation results for a given
+        classification
+
+        :param classification: A classification for a list of tokens
+        :param input_assembly: Input assembly used for initial input query
+        :return: List of validation results containing invalid and valid results
+        """
+        errors = []
+
+        try:
+            # NC_ queries do not have gene tokens
+            accessions = await self.get_accessions(
+                classification, errors, input_assembly=input_assembly
+            )
+        except IndexError:
+            accessions = []
+
+        if errors:
+            return [
+                ValidationResult(
+                    accession=None,
+                    classification=classification,
+                    is_valid=False,
+                    errors=errors,
+                )
+            ]
+        return await self.get_valid_invalid_results(classification, accessions)
+
+    async def get_accessions(
+        self,
+        classification: Classification,
+        errors: list,
+        input_assembly: Literal[ClinVarAssembly.GRCH37, ClinVarAssembly.GRCH38]
+        | None = None,
+    ) -> list[str]:
+        """Get genomic RefSeq accessions for a given classification.
+
+        If `classification.nomenclature == Nomenclature.HGVS`, will return the accession
+        in the HGVS expression.
+        Else, will get all accessions associated to the gene
+
+        :param classification: The classification for list of tokens
+        :param errors: List of errors
+        :param input_assembly: Assembly used for initial input query. Only used when
+            initial query is using genomic free text or gnomad vcf format
+        :return: List of accessions
+        :raises NotImplementedError: If nomenclature is not supported
+        """
+        if classification.nomenclature == Nomenclature.HGVS:
+            accessions = [classification.ac]
+        elif classification.nomenclature == Nomenclature.FREE_TEXT:
+            accessions = await self._get_free_text_accessions(
+                classification, input_assembly=input_assembly
+            )
+        elif classification.nomenclature == Nomenclature.GNOMAD_VCF:
+            accessions = self._get_gnomad_vcf_accessions(
+                classification, input_assembly=input_assembly
+            )
+        else:
+            raise NotImplementedError
+
+        if not accessions:
+            errors.append("No genomic accessions found")
+        return accessions
+
+    def validate_ambiguous_classification(
+        self,
+        classification: GenomicDeletionAmbiguousClassification
+        | GenomicDuplicationAmbiguousClassification,
+    ) -> str | None:
+        """Validate that ambiguous type is supported and that positions are unique and
+        listed from 5' to 3'
+
+        :param classification: Ambiguous duplication or deletion classification
+        :return: Message if ambiguous type is not supported, positions are not unique,
+            or if positions are not listed from 5' to 3'. Else, `None`
+        """
+        invalid_msg = None
+        if classification.ambiguous_type not in {
+            AmbiguousType.AMBIGUOUS_1,
+            AmbiguousType.AMBIGUOUS_2,
+            AmbiguousType.AMBIGUOUS_5,
+            AmbiguousType.AMBIGUOUS_7,
+        }:
+            invalid_msg = f"{classification.ambiguous_type} is not yet supported"
+        else:
+            invalid_msg = self.validate_5_prime_to_3_prime(
+                classification.pos0,
+                pos1=classification.pos1,
+                pos2=classification.pos2,
+                pos3=classification.pos3,
+            )
+        return invalid_msg
