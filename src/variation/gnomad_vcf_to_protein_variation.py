@@ -341,7 +341,9 @@ class GnomadVcfToProteinVariation:
             if alt_type == AltType.SUBSTITUTION:
                 alt += codon_aligned_ref_seq[len(alt) :]
             else:
-                alt += codon_aligned_ref_seq[len(codon_aligned_ref_seq) - genomic_start_ix :]
+                alt += codon_aligned_ref_seq[
+                    len(codon_aligned_ref_seq) - genomic_start_ix :
+                ]
 
             # We need to get the entire inserted sequence. It needs to be a factor of 3
             # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa). The reason why we

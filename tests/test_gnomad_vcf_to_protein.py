@@ -255,6 +255,7 @@ def delins_neg():
     }
     return models.Allele(**params)
 
+
 @pytest.fixture(scope="session")
 def pik3r1_deletion():
     "Create test fixture for PIK3R1 deletion"
@@ -273,6 +274,7 @@ def pik3r1_deletion():
         "type": "Allele",
     }
     return models.Allele(**params)
+
 
 @pytest.fixture(scope="session")
 def cdkn2a_substitution():
@@ -449,7 +451,6 @@ async def test_deletion(
     cftr_deletion,
     protein_deletion_np_range,
     cdk11a_e314del,
-    brca1_del,
     egfr_del,
 ):
     """Test that deletion queries return correct response"""
