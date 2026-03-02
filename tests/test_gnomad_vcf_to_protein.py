@@ -469,6 +469,7 @@ async def test_deletion(
     # Reading Frame 0, Negative Strand (CA003783)
     resp = await test_handler.gnomad_vcf_to_protein("17-43124028-CTCT-CT")
     # No assertion checks since this should not return a VRS object (frameshifts are not supported in VRS)
+    # This will be added in issue-652
     assert resp.gene_context
     assert resp.warnings == []
 
