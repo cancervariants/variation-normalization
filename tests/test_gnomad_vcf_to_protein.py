@@ -322,31 +322,6 @@ def cftr_deletion():
 
 
 @pytest.fixture(scope="module")
-def brca1_del():
-    """Test fixture for a deletion on a negative strand in the first (0) reading frame (CA003783)"""
-    params = {
-        "type": "Allele",
-        "location": {
-            "type": "SequenceLocation",
-            "sequenceReference": {
-                "type": "SequenceReference",
-                "refgetAccession": "SQ.nUzIPnHMyQV52hzgBbKl5vlbSwx8M8_Y",
-            },
-            "start": 22,
-            "end": 23,
-            "sequence": "E",
-        },
-        "state": {
-            "type": "ReferenceLengthExpression",
-            "length": 0,
-            "sequence": "",
-            "repeatSubunitLength": 1,
-        },
-    }
-    return models.Allele(**params)
-
-
-@pytest.fixture(scope="module")
 def egfr_del():
     """Test fixture for a deletion on a positive strand in the third (2) reading frame (CA175996)"""
     params = {
@@ -476,7 +451,6 @@ async def test_deletion(
     cftr_deletion,
     protein_deletion_np_range,
     cdk11a_e314del,
-    brca1_del,
     egfr_del,
 ):
     """Test that deletion queries return correct response"""
@@ -494,7 +468,7 @@ async def test_deletion(
 
     # Reading Frame 0, Negative Strand (CA003783)
     resp = await test_handler.gnomad_vcf_to_protein("17-43124028-CTCT-CT")
-    assertion_checks(resp, brca1_del)
+    # No assertion checks since this should not return a VRS object (frameshifts are not supported in VRS)
     assert resp.gene_context
     assert resp.warnings == []
 
