@@ -256,9 +256,100 @@ def delins_neg():
     return models.Allele(**params)
 
 
+@pytest.fixture(scope="session")
+def pik3r1_deletion():
+    "Create test fixture for PIK3R1 deletion"
+    params = {
+        "location": {
+            "end": 573,
+            "start": 570,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.jwl0YkGsFI99ObXiyutSbGP4K8D_yi5K",
+            },
+            "sequence": "IQL",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "M", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
+def cdkn2a_substitution():
+    "Create test fixture for CDKN2A substituion"
+    params = {
+        "location": {
+            "end": 58,
+            "start": 57,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.ezr7VxeJXsAWsbni4UYOKyGUTjD82dIY",
+            },
+            "sequence": "R",
+            "type": "SequenceLocation",
+        },
+        "state": {"sequence": "*", "type": "LiteralSequenceExpression"},
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="session")
+def cftr_deletion():
+    "Create test fixture for CFTR deletion"
+    params = {
+        "location": {
+            "end": 508,
+            "start": 507,
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.AvhcyzQ2F9LxMY9D2t9xngz49OPU6yRn",
+            },
+            "sequence": "F",
+            "type": "SequenceLocation",
+        },
+        "state": {
+            "length": 0,
+            "repeatSubunitLength": 1,
+            "sequence": "",
+            "type": "ReferenceLengthExpression",
+        },
+        "type": "Allele",
+    }
+    return models.Allele(**params)
+
+
+@pytest.fixture(scope="module")
+def egfr_del():
+    """Test fixture for a deletion on a positive strand in the third (2) reading frame (CA175996)"""
+    params = {
+        "type": "Allele",
+        "location": {
+            "type": "SequenceLocation",
+            "sequenceReference": {
+                "type": "SequenceReference",
+                "refgetAccession": "SQ.vyo55F6mA6n2LgN4cagcdRzOuh38V4mE",
+            },
+            "start": 745,
+            "end": 750,
+            "sequence": "ELREA",
+        },
+        "state": {
+            "type": "ReferenceLengthExpression",
+            "length": 0,
+            "sequence": "",
+            "repeatSubunitLength": 5,
+        },
+    }
+    return models.Allele(**params)
+
+
 @pytest.mark.asyncio
 async def test_substitution(
     test_handler,
+    cdkn2a_substitution,
     braf_v600e,
     braf_v600l,
     braf_600_reference_agree,
@@ -271,6 +362,12 @@ async def test_substitution(
     multi_nuc_sub_neg,
 ):
     """Test that substitution queries return correct response"""
+    # Reading Frame 0, Negative Strand (CA16602756)
+    resp = await test_handler.gnomad_vcf_to_protein("9-21971187-G-A")
+    assertion_checks(resp, cdkn2a_substitution)
+    assert resp.gene_context
+    assert resp.warnings == []
+
     # Reading Frame 1, Negative Strand
     resp = await test_handler.gnomad_vcf_to_protein("7-140753337-C-A")
     assertion_checks(resp, braf_v600l)
@@ -348,13 +445,52 @@ async def test_insertion(test_handler, protein_insertion, protein_insertion2):
 
 
 @pytest.mark.asyncio
-async def test_deletion(test_handler, protein_deletion_np_range, cdk11a_e314del):
+async def test_deletion(
+    test_handler,
+    pik3r1_deletion,
+    cftr_deletion,
+    protein_deletion_np_range,
+    cdk11a_e314del,
+    egfr_del,
+):
     """Test that deletion queries return correct response"""
+    # Reading Frame 0, Positive Strand (CA3250144726)
+    resp = await test_handler.gnomad_vcf_to_protein("5-68295290-ATCCAGC-A")
+    assertion_checks(resp, pik3r1_deletion)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 0, Positive Strand (CA645372623)
     resp = await test_handler.gnomad_vcf_to_protein("17-39723966-TTGAGGGAAAACACAT-T")
     assertion_checks(resp, protein_deletion_np_range)
     assert resp.gene_context
     assert resp.warnings == []
 
+    # Reading Frame 0, Negative Strand (CA003783)
+    resp = await test_handler.gnomad_vcf_to_protein("17-43124028-CTCT-CT")
+    # No assertion checks since this should not return a VRS object (frameshifts are not supported in VRS)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 1, Positive Strand (CA118639)
+    resp = await test_handler.gnomad_vcf_to_protein("7-117559591-TCTT-T")
+    assertion_checks(resp, cftr_deletion)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 1, Negative Strand (CA521012075)
+    resp = await test_handler.gnomad_vcf_to_protein("1-1708852-CT-C")
+    assertion_checks(resp, cdk11a_e314del)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 2, Positive Strand (CA175996)
+    resp = await test_handler.gnomad_vcf_to_protein("7-55174772-GGAATTAAGAGAAGC-G")
+    assertion_checks(resp, egfr_del)
+    assert resp.gene_context
+    assert resp.warnings == []
+
+    # Reading Frame 2, Negative Strand (CA521012075)
     resp = await test_handler.gnomad_vcf_to_protein("1-1708855-TTCC-T")
     assertion_checks(resp, cdk11a_e314del)
     assert resp.gene_context

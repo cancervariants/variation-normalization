@@ -78,7 +78,7 @@ def _trim_prefix_or_suffix(
         if aa_match:
             aa_start_pos += aa_match
             aa_alt = aa_alt[aa_match:] if trim_prefix else aa_alt[:-aa_match]
-            aa_ref = aa_ref[aa_match:] if trim_prefix else aa_ref[:-aa_ref]
+            aa_ref = aa_ref[aa_match:] if trim_prefix else aa_ref[:-aa_match]
 
     return aa_ref, aa_alt, aa_start_pos
 
@@ -299,37 +299,51 @@ class GnomadVcfToProteinVariation:
         self,
         g_ac: str,
         g_input_alt: str,
+        len_g_ref: int,
         g_end_pos: int,
         alt_type: AltType,
         genomic_start_ix: int,
         strand: Strand,
-        ref: str,
+        codon_aligned_ref_seq: str,
     ) -> str:
-        """Get entire genomic altered sequence
+        """Build altered DNA from a codon-aligned genomic window.
+
+        The fetched ``codon_aligned_ref_seq`` includes codon context around the original VCF edit.
+        We apply the edit in that window so downstream DNA->AA translation uses a
+        consistent codon-aligned reference/alternate pair.
 
         :param g_ac: Genomic accession
         :param g_input_alt: Original alteration provided by VCF-like query
+        :param len_g_ref: Length of genomic reference sequence in the input VCF-like
+            expression (edit span length, NOT the codon-aligned window length)
         :param g_end_pos: Genomic end position for codon
         :param alt_type: The type of alteration
         :param genomic_start_ix: The start index for the original genomic start position
+            within ``codon_aligned_ref_seq``
         :param strand: Strand
-        :param ref: The genomic reference sequence
+        :param codon_aligned_ref_seq: The codon-aligned genomic reference sequence fetched from
+            SeqRepo
         :return: The updated genomic alteration
         """
-        if alt_type == AltType.DELETION:
-            alt = ""
-        else:
-            alt = ref[:genomic_start_ix]
+        input_alt = g_input_alt if strand == Strand.POSITIVE else g_input_alt[::-1]
 
-            if strand == Strand.POSITIVE:
-                alt += g_input_alt
-            else:
-                alt += g_input_alt[::-1]
+        if alt_type == AltType.DELETION:
+            # Apply VCF replacement directly in the codon-aligned DNA window:
+            # alt = left_context + vcf_alt + right_context
+            # The right context starts after the VCF edit span (len_g_ref)
+            alt = codon_aligned_ref_seq[:genomic_start_ix]
+            alt += input_alt
+            alt += codon_aligned_ref_seq[genomic_start_ix + len_g_ref :]
+        else:
+            alt = codon_aligned_ref_seq[:genomic_start_ix]
+            alt += input_alt
 
             if alt_type == AltType.SUBSTITUTION:
-                alt += ref[len(alt) :]
+                alt += codon_aligned_ref_seq[len(alt) :]
             else:
-                alt += ref[len(ref) - genomic_start_ix :]
+                alt += codon_aligned_ref_seq[
+                    len(codon_aligned_ref_seq) - genomic_start_ix :
+                ]
 
             # We need to get the entire inserted sequence. It needs to be a factor of 3
             # since DNA (3 nuc) -> RNA (3 nuc) -> Protein (1 aa). The reason why we
@@ -563,7 +577,14 @@ class GnomadVcfToProteinVariation:
 
         # Get genomic altered sequence
         alt = self._get_genomic_alt(
-            g_ac, g_alt, new_g_end_pos, alt_type, genomic_start_ix, strand, ref
+            g_ac,
+            g_alt,
+            len_g_ref,
+            new_g_end_pos,
+            alt_type,
+            genomic_start_ix,
+            strand,
+            ref,
         )
 
         # DNA -> RNA -> Protein (1 AA)
@@ -571,17 +592,11 @@ class GnomadVcfToProteinVariation:
         aa_alt = self._dna_to_aa(alt, strand)
 
         # Trim AA prefixes / suffixes and update the protein start position accordingly
-        aa_start_pos = p_data.pos[0]
+        aa_start_pos, aa_end_pos = p_data.pos
         aa_ref, aa_alt, aa_start_pos = _trim_prefix_or_suffix(
             aa_ref, aa_alt, aa_start_pos=aa_start_pos, trim_prefix=True
         )
         aa_ref, aa_alt, _ = _trim_prefix_or_suffix(aa_ref, aa_alt, trim_prefix=False)
-
-        # Get protein end position
-        if alt_type == AltType.DELETION:
-            aa_end_pos = aa_start_pos + (len(aa_ref) - 1)
-        else:
-            aa_end_pos = p_data.pos[1]
 
         # Create the protein VRS Allele
         try:
