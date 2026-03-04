@@ -1,6 +1,6 @@
 [project]
 name = "variation-normalizer"
-version = "0.15.2"
+version = "0.15.3"
 authors = [
     {name = "Alex Wagner"},
     {name = "Kori Kuzma"},
