@@ -124,6 +124,8 @@ ignore = [
     "D213",
     "D400",
     "D415",
+    # excessive type ignore requirements
+    "PGH003",
 ]
 
 [tool.ruff.lint.per-file-ignores]

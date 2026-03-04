@@ -469,6 +469,7 @@ async def test_deletion(
     # Reading Frame 0, Negative Strand (CA003783)
     resp = await test_handler.gnomad_vcf_to_protein("17-43124028-CTCT-CT")
     # No assertion checks since this should not return a VRS object (frameshifts are not supported in VRS)
+    # This will be added in issue-652
     assert resp.gene_context
     assert resp.warnings == []
 
@@ -536,9 +537,7 @@ async def test_invalid(test_handler):
     resp = await test_handler.gnomad_vcf_to_protein("BRAF V600E")
     assert resp.variation is None
     assert resp.gene_context is None
-    assert resp.warnings == [
-        "BRAF V600E is not a gnomAD VCF-like query (`chr-pos-ref-alt`)"
-    ]
+    assert resp.warnings == ["BRAF V600E is not a gnomAD-VCF query (`chr-pos-ref-alt`)"]
 
     resp = await test_handler.gnomad_vcf_to_protein("7-140753336-T-G")
     assert resp.variation is None
@@ -548,4 +547,4 @@ async def test_invalid(test_handler):
     resp = await test_handler.gnomad_vcf_to_protein("20-2-TC-TG")
     assert resp.variation is None
     assert resp.gene_context is None
-    assert resp.warnings == ["20-2-TC-TG is not a valid gnomad vcf query"]
+    assert resp.warnings == ["20-2-TC-TG is not a valid gnomAD-VCF query"]
