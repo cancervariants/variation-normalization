@@ -150,7 +150,6 @@ ignore = [
     "INP001",
     "PLR2004",
 ]
-"src/variation/schemas/*" = ["S101"]
 "codebuild/*" = ["T201", "INP001"]
 "src/variation/validators/*" = ["ARG002"]
 "src/variation/translators/*" = ["ARG002"]
