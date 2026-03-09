@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Literal
 
 from ga4gh.vrs import models
-from pydantic import BaseModel, ConfigDict, StrictStr, model_validator
+from pydantic import BaseModel, ConfigDict, StrictStr, field_validator
 
 from variation import __version__
 
@@ -49,11 +49,11 @@ class ServiceResponse(BaseModel):
     warnings: list[StrictStr] = []
     service_meta_: ServiceMeta
 
-    @model_validator(mode="after")
-    def unique_warnings(cls, v):
+    @field_validator("warnings")
+    @classmethod
+    def unique_warnings(cls, v: list[str]) -> list[str]:
         """Ensure unique warnings"""
-        v.warnings = list(set(v.warnings))
-        return v
+        return list(set(v))
 
     model_config = ConfigDict(
         json_schema_extra={
