@@ -127,6 +127,7 @@ class ParsedToCopyNumberQuery(BaseModel):
     def validate_parsed_fields(self) -> Self:
         """Validate base copy number query fields
 
+        :raise ValueError: If any of the following validation checks fail:
         - `accession` or both `assembly` and `chromosome` must be provided
         - `start1` is required when `start_pos_type` is a definite
         range.
@@ -136,45 +137,61 @@ class ParsedToCopyNumberQuery(BaseModel):
         - `end_pos_comparator` is required when `end_pos_type` is an Indefinite Range
         - End positions must be greater than start positions
         """
-        ac_assembly_chr_msg = (
-            "Must provide either `accession` or both `assembly` and `chromosome`"
-        )
         assembly = self.assembly
         chromosome = self.chromosome
         assembly_chr_set = assembly and chromosome
-        assert self.accession or assembly_chr_set, ac_assembly_chr_msg
+
+        if not self.accession and not assembly_chr_set:
+            msg = "Must provide either `accession` or both `assembly` and `chromosome`"
+            raise ValueError(msg)
 
         if assembly_chr_set:
             pattern = r"^chr(X|Y|([1-9]|1[0-9]|2[0-2]))$"
-            assert re.match(pattern, chromosome), (
-                f"`chromosome`, {chromosome}, does not match r'{pattern}'"
-            )
+            if not re.match(pattern, chromosome):
+                msg = f"`chromosome`, {chromosome}, does not match r'{pattern}'"
+                raise ValueError(msg)
 
         start0 = self.start0
         start1 = self.start1
         if self.start_pos_type == ParsedPosType.DEFINITE_RANGE:
-            assert start1 is not None, "`start1` is required for definite ranges"
-            assert start1 > start0, "`start0` must be less than `start1`"
-        elif self.start_pos_type == ParsedPosType.INDEFINITE_RANGE:
-            assert self.start_pos_comparator, (
-                "`start_pos_comparator` is required for indefinite ranges"
-            )
+            if start1 is None:
+                msg = "`start1` is required for definite ranges"
+                raise ValueError(msg)
+
+            if start1 <= start0:
+                msg = "`start0` must be less than `start1`"
+                raise ValueError(msg)
+        elif (
+            self.start_pos_type == ParsedPosType.INDEFINITE_RANGE
+            and not self.start_pos_comparator
+        ):
+            msg = "`start_pos_comparator` is required for indefinite ranges"
+            raise ValueError(msg)
 
         end0 = self.end0
         end1 = self.end1
         if self.end_pos_type == ParsedPosType.DEFINITE_RANGE:
-            assert end1 is not None, "`end1` is required for definite ranges"
-            assert end1 > end0, "`end0` must be less than `end1`"
-        elif self.end_pos_type == ParsedPosType.INDEFINITE_RANGE:
-            assert self.end_pos_comparator, (
-                "`end_pos_comparator` is required for indefinite ranges"
-            )
+            if end1 is None:
+                msg = "`end1` is required for definite ranges"
+                raise ValueError(msg)
 
-        err_msg = "end positions must be greater than start"
+            if end1 <= end0:
+                msg = "`end0` must be less than `end1`"
+                raise ValueError(msg)
+
+        if (
+            self.end_pos_type == ParsedPosType.INDEFINITE_RANGE
+            and not self.end_pos_comparator
+        ):
+            msg = "`end_pos_comparator` is required for indefinite ranges"
+            raise ValueError(msg)
+
+        end_pos_gt_start_msg = "end positions must be greater than start"
         if start1 is None:
-            assert end0 > start0, err_msg
-        else:
-            assert end0 > start1, err_msg
+            if end0 <= start0:
+                raise ValueError(end_pos_gt_start_msg)
+        elif end0 <= start1:
+            raise ValueError(end_pos_gt_start_msg)
         return self
 
 
@@ -211,6 +228,7 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
     def validate_fields(self) -> Self:
         """Validate fields.
 
+        :raise ValueError: If any of the following validation checks fail:
         - `copies1` should exist when `copies_type == ParsedPosType.DEFINITE_RANGE`
         - `copies_comparator` should exist when
             `copies_type == ParsedPosType.INDEFINITE_RANGE`
@@ -220,13 +238,12 @@ class ParsedToCnVarQuery(ParsedToCopyNumberQuery):
         copies_comparator = self.copies_comparator
 
         if copies_type == ParsedPosType.DEFINITE_RANGE:
-            assert copies1, (
-                "`copies1` must be provided for `copies_type == ParsedPosType.DEFINITE_RANGE`"
-            )
-        elif copies_type == ParsedPosType.INDEFINITE_RANGE:
-            assert copies_comparator, (
-                "`copies_comparator` must be provided for `copies_type == ParsedPosType.INDEFINITE_RANGE`"
-            )
+            if not copies1:
+                msg = "`copies1` must be provided for `copies_type == ParsedPosType.DEFINITE_RANGE`"
+                raise ValueError(msg)
+        elif copies_type == ParsedPosType.INDEFINITE_RANGE and not copies_comparator:
+            msg = "`copies_comparator` must be provided for `copies_type == ParsedPosType.INDEFINITE_RANGE`"
+            raise ValueError(msg)
 
         return self
 
