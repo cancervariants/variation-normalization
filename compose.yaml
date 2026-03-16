@@ -1,6 +1,6 @@
 services:
   api:
-    image: cancervariants/variation-normalizer-api:0.15.3
+    image: cancervariants/variation-normalizer-api:0.15.4
     environment:
       SEQREPO_ROOT_DIR: /usr/local/share/seqrepo/2024-12-20
       # Dummy AWS credentials, don't need to use real ones
