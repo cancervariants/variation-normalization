@@ -174,6 +174,7 @@ Point your browser to <http://localhost:8001/variation/>.
 Code style is managed by [Ruff](https://docs.astral.sh/ruff/) and checked prior to commit.
 
 To perform formatting and check style:
+
 ```shell
 python3 -m ruff format . && python3 -m ruff check --fix .
 ```
