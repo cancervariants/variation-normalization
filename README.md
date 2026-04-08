@@ -207,9 +207,11 @@ pytest tests/
 Production runtime dependencies need to be updated in three places:
 
 * `pyproject.toml` declares dependencies for the wheel that's published to PyPI
-* `requirements.txt` ... Maybe also used for Elastic Beanstalk?.
+* `requirements.txt` declares dependencies for our Elastic Beanstalk-based deployment
   * Note that it can be trivially regenerated with the command `uv pip compile pyproject.toml -o requirements.txt --no-annotate`
-* `Pipfile` declares dependencies for our Elastic Beanstalk-based deployment
+* `Pipfile` is used as a backup for Elastic Beanstalk dependency management
+
+Note that dev/testing dependencies only need to be updated in `pyproject.toml`.
 
 ### Creating a new release
 
