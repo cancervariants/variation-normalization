@@ -3,6 +3,10 @@
 # Health checks service up every 5m.
 FROM python:3.12-slim
 
+LABEL org.opencontainers.image.source=https://github.com/cancervariants/variation-normalization
+LABEL org.opencontainers.image.description="Variation Normalizer API container image"
+LABEL org.opencontainers.image.licenses=MIT
+
 WORKDIR /app
 
 ARG VERSION
