@@ -174,7 +174,6 @@ Point your browser to <http://localhost:8001/variation/>.
 Code style is managed by [Ruff](https://docs.astral.sh/ruff/) and checked prior to commit.
 
 To perform formatting and check style:
-
 ```shell
 python3 -m ruff format . && python3 -m ruff check --fix .
 ```
@@ -200,4 +199,33 @@ From the _root_ directory of the repository:
 
 ```shell
 pytest tests/
+```
+
+### Dependency management
+
+Production runtime dependencies need to be updated in three places:
+
+* `pyproject.toml` declares dependencies for the wheel that's published to PyPI
+* `requirements.txt` ... Maybe also used for Elastic Beanstalk?.
+  * Note that it can be trivially regenerated with the command `uv pip compile pyproject.toml -o requirements.txt --no-annotate`
+* `Pipfile` declares dependencies for our Elastic Beanstalk-based deployment
+
+### Creating a new release
+
+1. Version number must be updated manually. It's declared under `project.version` in `pyproject.toml`. Ensure that the version value for the Docker image in `compose.yaml` is similarly updated.
+2. Once a commit with an updated version is merged to the `staging` branch, create a new tag + GitHub release (from the `staging` branch). This triggers the PyPI publishing workflow. Presently, new commits to staging should not be merged to `main`.
+3. Pull down all changes (including the latest git tag) to your local environment:
+
+```shell
+git fetch -a
+```
+
+4. Create a new Docker image on the cancervariants Dockerhub profile:
+
+```shell
+export DOCKERHUB_ORG=cancervariants
+export VERSION=$(git describe --tags --abbrev=0)
+docker build --build-arg VERSION=$VERSION -t $DOCKERHUB_ORG/variation-normalizer-api:$VERSION -t $DOCKERHUB_ORG/variation-normalizer-api:latest .
+docker push $DOCKERHUB_ORG/variation-normalizer-api:$VERSION
+docker push $DOCKERHUB_ORG/variation-normalizer-api:latest
 ```
