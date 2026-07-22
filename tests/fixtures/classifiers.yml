@@ -91,6 +91,7 @@ cdna_delins:
     - query: ENST00000277541.6:c.7330delinsACA
     - query: NM_000551.3:c.615delinsAA
     - query: ENST00000257290.5:c.2524_2525delinsAT
+    - query: VHL L101G (c.301_302delinsGG)
   should_not_match:
     - query: N_005157.6:g.1423_1424delinsGT
     - query: c.1423delinsX
@@ -145,6 +146,8 @@ cdna_deletion:
     - query: NM_000535.6:c.2117delA
     - query: ENST00000256474.2:c.163delG
     - query: MLH1 c.1852_1854delAAG
+    - query: VHL F76del (c.227_229del)
+    - query: VHL T133fs (c.397del)
   should_not_match:
     - query: GENE c.1799_1800delTGinsAT
     - query: GENE c.2524_2525delinsAT
@@ -176,6 +179,7 @@ cdna_insertion:
   should_match:
     - query: NM_000551.3:c.230_231insTCT
     - query: NM_000551.3:c.358_359insAC
+    - query: VHL D126fs (c.375_376insC)
   should_not_match:
     - query: GENE 358_359insAC
     - query: accession:c.358_359insAC

@@ -21,6 +21,36 @@ class CdnaSubstitutionClassifier(Classifier):
             [TokenType.GENE, TokenType.CDNA_SUBSTITUTION],
             [
                 TokenType.GENE,
+                TokenType.PROTEIN_DELETION,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELINS,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_FRAMESHIFT,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_INSERTION,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_REFERENCE_AGREE,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_STOP_GAIN,
+                TokenType.CDNA_SUBSTITUTION,
+            ],
+            [
+                TokenType.GENE,
                 TokenType.PROTEIN_SUBSTITUTION,
                 TokenType.CDNA_SUBSTITUTION,
             ],
@@ -33,10 +63,7 @@ class CdnaSubstitutionClassifier(Classifier):
             cdna substitution classification
         :return: cdna substitution classification for the list of matched tokens
         """
-        if len(tokens) == 2:
-            gene_token, cdna_sub_token = tokens
-        else:
-            gene_token, _, cdna_sub_token = tokens
+        gene_token, cdna_sub_token = self.split_gene_cdna_tokens(tokens)
 
         if len(cdna_sub_token.ref) == len(cdna_sub_token.alt):
             return CdnaSubstitutionClassification(

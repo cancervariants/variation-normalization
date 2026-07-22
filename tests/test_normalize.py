@@ -766,6 +766,9 @@ async def test_cdna_delins(test_handler, nm_004448_cdna_delins, nm_000551):
     resp = await test_handler.normalize("NM_000551.3:c.615delinsAA")
     assertion_checks(resp, nm_000551)
 
+    resp2 = await test_handler.normalize("VHL I206fs (c.615delinsAA)")
+    assert resp2.variation == resp.variation
+
 
 @pytest.mark.asyncio
 async def test_genomic_delins(
@@ -893,6 +896,9 @@ async def test_cdna_deletion(test_handler, cdna_deletion):
     resp2 = await test_handler.normalize("NM_004448.3:c.2264_2278del")
     assert resp1.variation.id == resp2.variation.id
 
+    resp3 = await test_handler.normalize("ERBB2 Leu755_Thr759del c.2264_2278del")
+    assert resp3.variation == resp2.variation
+
     q = "ERBB2 c.2264_2278delTGAGGGAAAACACAT"
     resp = await test_handler.normalize(q)
     assertion_checks(resp, cdna_deletion)
@@ -941,6 +947,11 @@ async def test_cdna_insertion(test_handler, cdna_insertion):
     """Test that cdna insertion normalizes correctly."""
     resp = await test_handler.normalize("ENST00000331728.9:c.2049_2050insA")
     assertion_checks(resp, cdna_insertion)
+
+    # https://civicdb.org/variants/3096/summary
+    resp = await test_handler.normalize("NM_000551.3:c.230_231insTCT")
+    resp2 = await test_handler.normalize("VHL C77_N78insL (c.230_231insTCT)")
+    assert resp2.variation == resp.variation
 
 
 @pytest.mark.asyncio

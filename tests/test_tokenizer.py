@@ -23,6 +23,7 @@ from variation.schemas.token_response_schema import (
     GenomicSubstitutionToken,
     ProteinDeletionToken,
     ProteinDelInsToken,
+    ProteinFrameshiftToken,
     ProteinInsertionToken,
     ProteinReferenceAgreeToken,
     ProteinStopGainToken,
@@ -42,6 +43,7 @@ from variation.tokenizers import (
     GenomicSubstitution,
     ProteinDeletion,
     ProteinDelIns,
+    ProteinFrameshift,
     ProteinInsertion,
     ProteinReferenceAgree,
     ProteinSubstitution,
@@ -208,6 +210,14 @@ def test_cdna_insertion(all_fixtures):
     fixture_name = "cdna_insertion"
     tokenizer_instance = CdnaInsertion
     expected_token = CdnaInsertionToken
+    tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
+
+
+def test_protein_frameshift(all_fixtures):
+    """Test that protein frameshift tokenizer works"""
+    fixture_name = "protein_frameshift"
+    tokenizer_instance = ProteinFrameshift
+    expected_token = ProteinFrameshiftToken
     tokenizer_checks(all_fixtures, fixture_name, tokenizer_instance, expected_token)
 
 
