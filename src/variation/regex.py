@@ -55,6 +55,9 @@ PROTEIN_DELETION = re.compile(
 
 PROTEIN_REFERENCE_AGREE = re.compile(r"^(?P<ref>[a-zA-z]+)(?P<pos>\d+)=$")
 
+
+PROTEIN_FRAMESHIFT = re.compile(r"^(?P<ref>[a-zA-z]+)(?P<pos>\d+)fs$")
+
 GENOMIC_DUPLICATION = re.compile(r"^(?P<pos0>\d+)(_(?P<pos1>\d+))?dup$")
 
 # (#_#)_(#_#) OR (?_#)_(#_?)

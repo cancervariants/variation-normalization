@@ -20,6 +20,7 @@ from variation.tokenizers import (
     GnomadVCF,
     ProteinDeletion,
     ProteinDelIns,
+    ProteinFrameshift,
     ProteinInsertion,
     ProteinReferenceAgree,
     ProteinSubstitution,
@@ -57,6 +58,8 @@ class Tokenize:
             ProteinDeletion(),
             CdnaDeletion(),
             GenomicDeletion(),
+            # Frameshift
+            ProteinFrameshift(),
             # Insertion
             ProteinInsertion(),
             CdnaInsertion(),

@@ -26,6 +26,24 @@ class Classifier(ABC):
             classification.
         """
 
+    @staticmethod
+    def split_gene_cdna_tokens(tokens: list[Token]) -> tuple[Token, Token]:
+        """Split parsed HGVS tokens into gene and cDNA change token components.
+
+        Supports token lists with either two elements
+        (``gene``, ``cdna_change``) or three elements
+        (``gene``, ``protein_change``, ``cdna_change``).
+
+        :param tokens: Parsed HGVS tokens
+        :return: A tuple containing the gene symbol and cDNA change tokens
+        """
+        if len(tokens) == 2:
+            gene_token, cdna_change_token = tokens
+        else:
+            gene_token, _, cdna_change_token = tokens
+
+        return gene_token, cdna_change_token
+
     def can_classify(self, tokens: list[Token]) -> bool:
         """Return whether or not a list of tokens can be classified by a given
         classification

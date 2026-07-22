@@ -17,7 +17,44 @@ class CdnaInsertionClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a cdna
         insertion classification.
         """
-        return [[TokenType.GENE, TokenType.CDNA_INSERTION]]
+        return [
+            [TokenType.GENE, TokenType.CDNA_INSERTION],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELETION,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELINS,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_FRAMESHIFT,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_INSERTION,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_REFERENCE_AGREE,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_STOP_GAIN,
+                TokenType.CDNA_INSERTION,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_SUBSTITUTION,
+                TokenType.CDNA_INSERTION,
+            ],
+        ]
 
     def match(self, tokens: list[Token]) -> CdnaInsertionClassification:
         """Return the cdna insertion classification from a list of token matches.
@@ -26,7 +63,7 @@ class CdnaInsertionClassifier(Classifier):
             cdna insertion classification
         :return: cdna insertion classification for the list of matched tokens
         """
-        gene_token, cdna_ins_token = tokens
+        gene_token, cdna_ins_token = self.split_gene_cdna_tokens(tokens)
 
         return CdnaInsertionClassification(
             matching_tokens=tokens,

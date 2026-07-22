@@ -36,6 +36,7 @@ protein_substitution:
     - token: NP_
     - token: NP_:p.
     - token: c.Met918Thr
+    - token: D126fs
 
 protein_stop_gain:
   should_match:
@@ -277,6 +278,14 @@ genomic_deletion:
     - token: g._37880233del
     - token: g._37880233del
     - token: g.37880219
+
+protein_frameshift:
+  should_match:
+    - token: N141fs
+    - token: E55fs
+  should_not_match:
+    - token: E55Frameshift
+    - token: E55FS
 
 protein_insertion:
   should_match:
