@@ -22,6 +22,36 @@ class CdnaReferenceAgreeClassifier(Classifier):
             [TokenType.GENE, TokenType.CDNA_REFERENCE_AGREE],
             [
                 TokenType.GENE,
+                TokenType.PROTEIN_DELETION,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELINS,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_FRAMESHIFT,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_INSERTION,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_REFERENCE_AGREE,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_STOP_GAIN,
+                TokenType.CDNA_REFERENCE_AGREE,
+            ],
+            [
+                TokenType.GENE,
                 TokenType.PROTEIN_SUBSTITUTION,
                 TokenType.CDNA_REFERENCE_AGREE,
             ],
@@ -34,10 +64,7 @@ class CdnaReferenceAgreeClassifier(Classifier):
             cdna reference agree classification
         :return: cdna reference agree classification for the list of matched tokens
         """
-        if len(tokens) == 2:
-            gene_token, cdna_ref_agree_token = tokens
-        else:
-            gene_token, _, cdna_ref_agree_token = tokens
+        gene_token, cdna_ref_agree_token = self.split_gene_cdna_tokens(tokens)
 
         return CdnaReferenceAgreeClassification(
             matching_tokens=tokens,

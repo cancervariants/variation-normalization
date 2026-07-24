@@ -96,6 +96,7 @@ cdna_delins:
     - query: ENST00000318560.5:c.1423_1424delinsGT
     - query: ENST00000256474.2:c.364_365delinsAT
     - query: NM_000551.3:c.615delinsAA
+    - query: VHL L101G (c.301_302delinsGG)
   should_not_match:
     - query: NM_005228:c.2237_2253delinsTTGCT
     - query: ENST00000277541.6:c.7330479587395delinsACA
@@ -153,6 +154,8 @@ cdna_deletion:
     - query: NM_004448.3:c.2263_2277del
     - query: NM_000535.6:c.2117delA
     - query: NM_000535.6:c.2117del
+    - query: VHL F76del (c.227_229del)
+    - query: VHL T133fs (c.397del)
   should_not_match:
     - query: NM_000535.6:c.21174568delT
     - query: NM_000535.6:c.21145457delA
@@ -189,6 +192,7 @@ cdna_insertion:
     - query: NM_007294.3:c.2902_2903insTC
     - query: ENST00000331728.9:c.2049_2050insA
     - query: LIMK2 c.2049_2050insA
+    - query: VHL D126fs (c.375_376insC)
   should_not_match:
     - query: NM_007294.3:c.7224_7225insTC
     - query: LIMK2 c.486488_48649545656530insA

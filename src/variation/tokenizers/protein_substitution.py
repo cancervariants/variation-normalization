@@ -40,6 +40,9 @@ class ProteinSubstitution(Tokenizer):
             pos = int(match_dict["pos"])
             alt = match_dict["alt"]
 
+            if alt == "fs":
+                return None
+
             # One letter codes for ref and alt
             aa1_ref = None
             aa1_alt = None

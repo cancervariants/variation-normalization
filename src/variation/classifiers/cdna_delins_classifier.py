@@ -17,7 +17,44 @@ class CdnaDelInsClassifier(Classifier):
         :return: List of list of tokens, where order matters, that represent a cdna
         delins classification.
         """
-        return [[TokenType.GENE, TokenType.CDNA_DELINS]]
+        return [
+            [TokenType.GENE, TokenType.CDNA_DELINS],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELETION,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_DELINS,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_FRAMESHIFT,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_INSERTION,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_REFERENCE_AGREE,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_STOP_GAIN,
+                TokenType.CDNA_DELINS,
+            ],
+            [
+                TokenType.GENE,
+                TokenType.PROTEIN_SUBSTITUTION,
+                TokenType.CDNA_DELINS,
+            ],
+        ]
 
     def match(self, tokens: list[Token]) -> CdnaDelInsClassification:
         """Return the cdna delins classification from a list of token matches.
@@ -26,7 +63,7 @@ class CdnaDelInsClassifier(Classifier):
             cdna delins classification
         :return: cdna delins classification for the list of matched tokens
         """
-        gene_token, cdna_delins_token = tokens
+        gene_token, cdna_delins_token = self.split_gene_cdna_tokens(tokens)
 
         return CdnaDelInsClassification(
             matching_tokens=tokens,

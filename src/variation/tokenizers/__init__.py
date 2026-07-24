@@ -16,6 +16,7 @@ from .gnomad_vcf import GnomadVCF
 from .hgvs import HGVS
 from .protein_deletion import ProteinDeletion
 from .protein_delins import ProteinDelIns
+from .protein_frameshift import ProteinFrameshift
 from .protein_insertion import ProteinInsertion
 from .protein_reference_agree import ProteinReferenceAgree
 from .protein_substitution import ProteinSubstitution
@@ -37,6 +38,7 @@ __all__ = [
     "GnomadVCF",
     "ProteinDelIns",
     "ProteinDeletion",
+    "ProteinFrameshift",
     "ProteinInsertion",
     "ProteinReferenceAgree",
     "ProteinSubstitution",

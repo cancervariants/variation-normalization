@@ -47,6 +47,7 @@ class TokenType(str, Enum):
     PROTEIN_STOP_GAIN = "protein_stop_gain"
     PROTEIN_DELETION = "protein_deletion"
     PROTEIN_DELINS = "protein_delins"
+    PROTEIN_FRAMESHIFT = "protein_frameshift"
     PROTEIN_INSERTION = "protein_insertion"
     PROTEIN_SUBSTITUTION = "protein_substitution"
     PROTEIN_REFERENCE_AGREE = "protein_reference_agree"
@@ -158,6 +159,13 @@ class ProteinDeletionToken(Token, ProteinDeletion):
     """Token for deletion on protein reference sequence"""
 
     token_type: Literal[TokenType.PROTEIN_DELETION] = TokenType.PROTEIN_DELETION
+    coordinate_type: Literal[AnnotationLayer.PROTEIN] = AnnotationLayer.PROTEIN
+
+
+class ProteinFrameshiftToken(Token, Substitution):
+    """Token for frameshift on protein reference sequence"""
+
+    token_type: Literal[TokenType.PROTEIN_FRAMESHIFT] = TokenType.PROTEIN_FRAMESHIFT
     coordinate_type: Literal[AnnotationLayer.PROTEIN] = AnnotationLayer.PROTEIN
 
 

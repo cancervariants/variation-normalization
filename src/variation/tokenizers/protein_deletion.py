@@ -1,7 +1,5 @@
 """A module for tokenizing Protein Deletions."""
 
-import re
-
 from bioutils.sequences import aa1_to_aa3, aa3_to_aa1
 
 from variation.regex import PROTEIN_DELETION
@@ -11,12 +9,6 @@ from variation.tokenizers.tokenizer import Tokenizer
 
 class ProteinDeletion(Tokenizer):
     """Class for tokenizing Deletions on the protein reference sequence."""
-
-    pattern = (
-        r"^(?P<start_aa>[a-z]+)(?P<start_pos>\d+)"
-        r"(_(?P<end_aa>[a-z]+)(?P<end_pos>\d+))?del(?P<deleted_aa>[a-z]+)?$"
-    )
-    splitter = re.compile(pattern)
 
     def match(self, input_string: str) -> ProteinDeletionToken | None:
         """Return a ProteinDeletionToken match if one exists.
