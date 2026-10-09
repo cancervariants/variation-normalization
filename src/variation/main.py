@@ -39,6 +39,11 @@ from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     TranslateIdentifierService,
 )
+from variation.schemas.service_info import (
+    ServiceInfo,
+    ServiceOrganization,
+    ServiceType,
+)
 from variation.schemas.service_schema import (
     ClinVarAssembly,
     FeatureOverlapService,
@@ -103,6 +108,19 @@ app = FastAPI(
     swagger_ui_parameters={"tryItOutEnabled": True},
 )
 
+
+@app.get("/service-info", tags=[Tag.MAIN])
+def service_info() -> ServiceInfo:
+    """Return GA4GH service metadata for the Variation Normalizer.
+
+    :returns: Service metadata and the VRS specification version.
+    """
+    return ServiceInfo(
+        organization=ServiceOrganization(),
+        type=ServiceType(),
+    )
+
+
 translate_summary = (
     "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s)."
 )
@@ -115,6 +133,40 @@ translate_description = (
 )
 translate_response_description = "A  response to a validly-formed query."
 q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 assembly"
+q_examples = {
+    "free_text_protein": {
+        "summary": "Free text protein substitution",
+        "value": "BRAF V600E",
+    },
+    "hgvs_protein": {
+        "summary": "HGVS protein substitution",
+        "value": "NP_004324.2:p.Val600Glu",
+    },
+    "hgvs_cdna": {
+        "summary": "HGVS cDNA substitution",
+        "value": "NM_004333.4:c.1799T>A",
+    },
+    "hgvs_genomic": {
+        "summary": "HGVS genomic substitution (GRCh37)",
+        "value": "NC_000007.13:g.140453136A>T",
+    },
+    "gnomad_vcf": {
+        "summary": "gnomAD VCF substitution (GRCh38)",
+        "value": "7-140753336-A-T",
+    },
+    "free_text_deletion": {
+        "summary": "Free text protein deletion",
+        "value": "EGFR L747_T751del",
+    },
+    "hgvs_genomic_duplication": {
+        "summary": "HGVS genomic duplication",
+        "value": "NC_000003.12:g.49531262dup",
+    },
+    "amplification": {
+        "summary": "Free text amplification",
+        "value": "BRAF amplification",
+    },
+}
 
 
 @app.get(
@@ -125,7 +177,9 @@ q_description = "HGVS, gnomAD VCF or Free Text description on GRCh37 or GRCh38 a
     description=translate_description,
     tags=[Tag.MAIN],
 )
-async def to_vrs(q: Annotated[str, Query(description=q_description)]) -> ToVRSService:
+async def to_vrs(
+    q: Annotated[str, Query(description=q_description, openapi_examples=q_examples)],
+) -> ToVRSService:
     """Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s).
     Performs fully-justified allele normalization. Does not do any liftover operations
     or make any inferences about the query.
@@ -161,7 +215,7 @@ hgvs_dup_del_mode_decsr = (
     tags=[Tag.MAIN],
 )
 async def normalize(
-    q: Annotated[str, Query(description=q_description)],
+    q: Annotated[str, Query(description=q_description, openapi_examples=q_examples)],
     hgvs_dup_del_mode: Annotated[
         HGVSDupDelModeOption | None, Query(description=hgvs_dup_del_mode_decsr)
     ] = HGVSDupDelModeOption.DEFAULT,
@@ -219,7 +273,26 @@ async def normalize(
     tags=[Tag.SEQREPO],
 )
 def translate_identifier(
-    identifier: Annotated[str, Query(description="The identifier to find aliases for")],
+    identifier: Annotated[
+        str,
+        Query(
+            description="The identifier to find aliases for",
+            openapi_examples={
+                "refseq_transcript": {
+                    "summary": "RefSeq transcript",
+                    "value": "NM_004333.4",
+                },
+                "refseq_chromosome": {
+                    "summary": "RefSeq chromosome",
+                    "value": "NC_000007.14",
+                },
+                "grch38_chromosome": {
+                    "summary": "GRCh38 chromosome",
+                    "value": "GRCh38:7",
+                },
+            },
+        ),
+    ],
     target_namespaces: Annotated[
         str | None,
         Query(description="The namespaces of the aliases, separated by commas"),
@@ -273,6 +346,15 @@ def vrs_python_translate_from(
         str,
         Query(
             description="Variation to translate to VRS object. Must be represented as either beacon, gnomad, hgvs, or spdi.",
+            openapi_examples={
+                "hgvs": {
+                    "summary": "HGVS",
+                    "value": "NC_000007.14:g.140753336A>T",
+                },
+                "gnomad": {"summary": "gnomAD VCF", "value": "7-140753336-A-T"},
+                "spdi": {"summary": "SPDI", "value": "NC_000007.14:140753335:A:T"},
+                "beacon": {"summary": "Beacon", "value": "7 : 140753336 A > T"},
+            },
         ),
     ],
     fmt: Annotated[
@@ -283,7 +365,7 @@ def vrs_python_translate_from(
         Query(
             description="Assembly used for `variation`. Only used for beacon and gnomad.",
         ),
-    ] = "GRCH38",
+    ] = "GRCh38",
     require_validation: Annotated[
         bool, Query(description=require_validation_descr)
     ] = True,
@@ -364,7 +446,30 @@ q_description = (
     tags=[Tag.TO_PROTEIN_VARIATION],
 )
 async def gnomad_vcf_to_protein(
-    q: Annotated[str, Query(description=q_description)],
+    q: Annotated[
+        str,
+        Query(
+            description=q_description,
+            openapi_examples={
+                "substitution": {
+                    "summary": "Substitution",
+                    "value": "7-140753336-A-T",
+                },
+                "deletion": {
+                    "summary": "Deletion",
+                    "value": "7-55174772-GGAATTAAGAGAAGC-G",
+                },
+                "insertion": {
+                    "summary": "Insertion",
+                    "value": "7-55181319-C-CGGGTTA",
+                },
+                "deletion_insertion": {
+                    "summary": "Deletion-insertion",
+                    "value": "7-55174776-TTAAGAGAAGCAACATCT-CAA",
+                },
+            },
+        ),
+    ],
     input_assembly: Annotated[
         Literal[ClinVarAssembly.GRCH37] | Literal[ClinVarAssembly.GRCH38] | None,
         Query(
@@ -388,6 +493,24 @@ async def gnomad_vcf_to_protein(
 hgvs_dup_del_mode_decsr = (
     "This parameter determines how to interpret HGVS dup/del expressions in VRS."
 )
+hgvs_dup_del_examples = {
+    "duplication": {
+        "summary": "Genomic duplication",
+        "value": "NC_000003.12:g.49531262dup",
+    },
+    "ambiguous_duplication": {
+        "summary": "Genomic ambiguous duplication",
+        "value": "NC_000020.11:g.(?_30417576)_(31394018_?)dup",
+    },
+    "deletion": {
+        "summary": "Genomic deletion",
+        "value": "NC_000016.10:g.2087938_2087948del",
+    },
+    "ambiguous_deletion": {
+        "summary": "Genomic ambiguous deletion",
+        "value": "NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del",
+    },
+}
 
 
 def _get_allele(
@@ -521,9 +644,16 @@ async def vrs_python_to_hgvs(request_body: TranslateToHGVSQuery) -> TranslateToS
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_count(
-    hgvs_expr: Annotated[str, Query(description="Variation query")],
+    hgvs_expr: Annotated[
+        str,
+        Query(description="Variation query", openapi_examples=hgvs_dup_del_examples),
+    ],
     baseline_copies: Annotated[
-        int | None, Query(description="Baseline copies for duplication")
+        int | None,
+        Query(
+            description="Baseline copies for duplication",
+            openapi_examples={"diploid": {"summary": "Diploid", "value": 2}},
+        ),
     ],
     do_liftover: Annotated[
         bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
@@ -552,7 +682,10 @@ async def hgvs_to_copy_number_count(
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 async def hgvs_to_copy_number_change(
-    hgvs_expr: Annotated[str, Query(description="Variation query")],
+    hgvs_expr: Annotated[
+        str,
+        Query(description="Variation query", openapi_examples=hgvs_dup_del_examples),
+    ],
     copy_change: Annotated[models.CopyChange, Query(description="The copy change")],
     do_liftover: Annotated[
         bool, Query(description="Whether or not to liftover to GRCh38 assembly.")
@@ -652,7 +785,16 @@ amplification_to_cx_var_descr = (
     tags=[Tag.TO_COPY_NUMBER_VARIATION],
 )
 def amplification_to_cx_var(
-    gene: Annotated[str, Query(description="Gene query")],
+    gene: Annotated[
+        str,
+        Query(
+            description="Gene query",
+            openapi_examples={
+                "braf": {"summary": "BRAF", "value": "BRAF"},
+                "kit": {"summary": "KIT", "value": "KIT"},
+            },
+        ),
+    ],
     sequence_id: Annotated[str | None, Query(description="Sequence identifier")] = None,
     start: Annotated[
         int | None, Query(description="Start position as residue coordinate")
@@ -684,6 +826,10 @@ def amplification_to_cx_var(
     )
 
 
+p_ac_examples = {"braf": {"summary": "BRAF (NP_004324.2)", "value": "NP_004324.2"}}
+p_pos_examples = {"braf_v600": {"summary": "BRAF V600", "value": 600}}
+
+
 @app.get(
     "/variation/alignment_mapper/p_to_c",
     summary="Translate protein representation to cDNA representation",
@@ -694,9 +840,18 @@ def amplification_to_cx_var(
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_c(
-    p_ac: Annotated[str, Query(description="Protein RefSeq accession")],
-    p_start_pos: Annotated[int, Query(description="Protein start position")],
-    p_end_pos: Annotated[int, Query(description="Protein end position")],
+    p_ac: Annotated[
+        str,
+        Query(description="Protein RefSeq accession", openapi_examples=p_ac_examples),
+    ],
+    p_start_pos: Annotated[
+        int,
+        Query(description="Protein start position", openapi_examples=p_pos_examples),
+    ],
+    p_end_pos: Annotated[
+        int,
+        Query(description="Protein end position", openapi_examples=p_pos_examples),
+    ],
     coordinate_type: Annotated[
         CoordinateType,
         Query(
@@ -741,9 +896,33 @@ async def p_to_c(
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def c_to_g(
-    c_ac: Annotated[str, Query(description="cDNA RefSeq accession")],
-    c_start_pos: Annotated[int, Query(description="cDNA start position for codon")],
-    c_end_pos: Annotated[int, Query(description="cDNA end position for codon")],
+    c_ac: Annotated[
+        str,
+        Query(
+            description="cDNA RefSeq accession",
+            openapi_examples={
+                "braf": {"summary": "BRAF (NM_004333.6)", "value": "NM_004333.6"}
+            },
+        ),
+    ],
+    c_start_pos: Annotated[
+        int,
+        Query(
+            description="cDNA start position for codon",
+            openapi_examples={
+                "braf_v600": {"summary": "BRAF V600 codon start", "value": 1798}
+            },
+        ),
+    ],
+    c_end_pos: Annotated[
+        int,
+        Query(
+            description="cDNA end position for codon",
+            openapi_examples={
+                "braf_v600": {"summary": "BRAF V600 codon end", "value": 1800}
+            },
+        ),
+    ],
     cds_start: Annotated[
         int | None,
         Query(description="CDS start site. If not provided, this will be computed."),
@@ -803,9 +982,18 @@ async def c_to_g(
     tags=[Tag.ALIGNMENT_MAPPER],
 )
 async def p_to_g(
-    p_ac: Annotated[str, Query(description="Protein RefSeq accession")],
-    p_start_pos: Annotated[int, Query(description="Protein start position")],
-    p_end_pos: Annotated[int, Query(description="Protein end position")],
+    p_ac: Annotated[
+        str,
+        Query(description="Protein RefSeq accession", openapi_examples=p_ac_examples),
+    ],
+    p_start_pos: Annotated[
+        int,
+        Query(description="Protein start position", openapi_examples=p_pos_examples),
+    ],
+    p_end_pos: Annotated[
+        int,
+        Query(description="Protein end position", openapi_examples=p_pos_examples),
+    ],
     coordinate_type: Annotated[
         CoordinateType,
         Query(
@@ -857,12 +1045,25 @@ async def p_to_g(
     tags=[Tag.FEATURE_OVERLAP],
 )
 def get_feature_overlap(
-    start: Annotated[int, Query(description="GRCh38 start position")] = ...,
-    end: Annotated[int, Query(description="GRCh38 end position")] = ...,
+    start: Annotated[
+        int,
+        Query(
+            description="GRCh38 start position",
+            openapi_examples={"braf": {"summary": "BRAF CDS", "value": 140726494}},
+        ),
+    ] = ...,
+    end: Annotated[
+        int,
+        Query(
+            description="GRCh38 end position",
+            openapi_examples={"braf": {"summary": "BRAF CDS", "value": 140726516}},
+        ),
+    ] = ...,
     chromosome: Annotated[
         str | None,
         Query(
-            description="Chromosome. 1..22, X, or Y. If not provided, must provide `identifier`. If both `chromosome` and `identifier` are provided, `chromosome` will be used."
+            description="Chromosome. 1..22, X, or Y. If not provided, must provide `identifier`. If both `chromosome` and `identifier` are provided, `chromosome` will be used.",
+            openapi_examples={"chr7": {"summary": "Chromosome 7", "value": "7"}},
         ),
     ] = None,
     identifier: Annotated[
