@@ -13,8 +13,8 @@ from bioutils.exceptions import BioutilsError
 from cool_seq_tool.mappers.feature_overlap import FeatureOverlap, FeatureOverlapError
 from cool_seq_tool.schemas import Assembly, CoordinateType
 from fastapi import FastAPI, Query
-from ga4gh.vrs import VRS_VERSION, models
 from ga4gh.vrs import __version__ as vrs_python_version
+from ga4gh.vrs import models
 from ga4gh.vrs.dataproxy import DataProxyValidationError
 from hgvs.exceptions import HGVSError
 from pydantic import ValidationError
@@ -40,11 +40,9 @@ from variation.schemas.normalize_response_schema import (
     TranslateIdentifierService,
 )
 from variation.schemas.service_info import (
-    DataVersions,
-    Organization,
     ServiceInfo,
+    ServiceOrganization,
     ServiceType,
-    SpecMetadata,
 )
 from variation.schemas.service_schema import (
     ClinVarAssembly,
@@ -118,25 +116,8 @@ def service_info() -> ServiceInfo:
     :returns: Service metadata and the VRS specification version.
     """
     return ServiceInfo(
-        id="org.cancervariants.variation_normalizer",
-        name="Variation Normalizer",
-        type=ServiceType(
-            group="org.cancervariants",
-            artifact="Variation Normalizer API",
-            version=__version__,
-        ),
-        organization=Organization(
-            name="Variant Interpretation for Cancer Consortium",
-            url="https://cancervariants.org",
-        ),
-        version=__version__,
-        description="Normalize variation descriptions to GA4GH VRS objects.",
-        documentationUrl="https://github.com/cancervariants/variation-normalization",
-        spec_metadata=SpecMetadata(vrsVersion=VRS_VERSION),
-        data_versions=DataVersions(
-            utaSchema="uta_20241220",
-            seqrepoVersion="2024-12-20",
-        ),
+        organization=ServiceOrganization(),
+        type=ServiceType(),
     )
 
 
