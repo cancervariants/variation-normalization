@@ -39,6 +39,11 @@ from variation.schemas.normalize_response_schema import (
     HGVSDupDelModeOption,
     TranslateIdentifierService,
 )
+from variation.schemas.service_info import (
+    ServiceInfo,
+    ServiceOrganization,
+    ServiceType,
+)
 from variation.schemas.service_schema import (
     ClinVarAssembly,
     FeatureOverlapService,
@@ -102,6 +107,19 @@ app = FastAPI(
     openapi_url="/variation/openapi.json",
     swagger_ui_parameters={"tryItOutEnabled": True},
 )
+
+
+@app.get("/service-info", tags=[Tag.MAIN])
+def service_info() -> ServiceInfo:
+    """Return GA4GH service metadata for the Variation Normalizer.
+
+    :returns: Service metadata and the VRS specification version.
+    """
+    return ServiceInfo(
+        organization=ServiceOrganization(),
+        type=ServiceType(),
+    )
+
 
 translate_summary = (
     "Translate a HGVS, gnomAD VCF and Free Text descriptions to VRS variation(s)."
@@ -347,7 +365,7 @@ def vrs_python_translate_from(
         Query(
             description="Assembly used for `variation`. Only used for beacon and gnomad.",
         ),
-    ] = "GRCH38",
+    ] = "GRCh38",
     require_validation: Annotated[
         bool, Query(description=require_validation_descr)
     ] = True,
