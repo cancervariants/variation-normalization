@@ -301,7 +301,7 @@ def vrs_python_translate_from(
         Query(
             description="Assembly used for `variation`. Only used for beacon and gnomad.",
         ),
-    ] = "GRCH38",
+    ] = "GRCh38",
     require_validation: Annotated[
         bool, Query(description=require_validation_descr)
     ] = True,
