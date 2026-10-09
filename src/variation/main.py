@@ -465,7 +465,7 @@ async def gnomad_vcf_to_protein(
                 },
                 "deletion_insertion": {
                     "summary": "Deletion-insertion",
-                    "value": "2-74530927-TGC-CAT",
+                    "value": "7-55174776-TTAAGAGAAGCAACATCT-CAA",
                 },
             },
         ),
