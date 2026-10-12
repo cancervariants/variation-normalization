@@ -33,13 +33,69 @@ Variation Normalization works by using four main steps: tokenization, classifica
 Variation Normalization is limited to the following types of variants:
 
 * HGVS expressions and text representations (ex: `BRAF V600E`):
-  * **protein (p.)**: substitution, deletion, insertion, deletion-insertion
-  * **coding DNA (c.)**: substitution, deletion, insertion, deletion-insertion
-  * **genomic (g.)**: substitution, deletion, ambiguous deletion, insertion, deletion-insertion, duplication
+  * **protein (p.)**: substitution, stop gain, reference agree, deletion, insertion, deletion-insertion
+  * **coding DNA (c.)**: substitution, reference agree, deletion, insertion, deletion-insertion
+  * **genomic (g.)**: substitution, reference agree, deletion, ambiguous deletion, insertion, deletion-insertion, duplication, ambiguous duplication
 * gnomAD-style VCF (chr-pos-ref-alt, ex: `7-140753336-A-T`)
-  * **genomic (g.)**: substitution, deletion, insertion
+  * **genomic (g.)**: substitution, reference agree, deletion, insertion, deletion-insertion
+* Free text categorical variants (ex: `BRAF amplification`)
+  * amplification
 
 Variation Normalizer accepts input from GRCh37 or GRCh8 assemblies.
+
+### Supported Nomenclatures
+
+| Nomenclature | Format | Example |
+| --- | --- | --- |
+| HGVS | `{accession}:{coordinate type}.{change}` | `NP_004324.2:p.Val600Glu` |
+| Free text | `{gene} {protein change}` | `BRAF V600E` |
+| Free text | `{gene} {cdna or genomic change}` | `BRAF c.1799T>A` |
+| Free text | `{gene} {protein change} {cdna change}` | `BRAF V600E (c.1799T>A)` |
+| Free text | `{gene} {protein change} {genomic substitution}` | `BRAF V600E (g.140453136A>T)` |
+| Free text | `{gene} amplification` | `BRAF amplification` |
+| gnomAD VCF | `{chromosome}-{position}-{ref}-{alt}` | `7-140753336-A-T` |
+
+### Examples
+
+#### Protein (p.)
+
+| Variant type | Examples |
+| --- | --- |
+| Substitution | `BRAF V600E`, `NP_004324.2:p.Val600Glu` |
+| Stop gain | `NP_000542.1:p.Tyr185Ter`, `NP_000542.1:p.Tyr185*` |
+| Reference agree | `NP_000542.1:p.Pro61=` |
+| Deletion | `EGFR L747_T751del`, `NP_004439.2:p.Leu755_Thr759del` |
+| Insertion | `EGFR D770_N771insGL`, `NP_005219.2:p.Asp770_Asn771insGlyLeu` |
+| Deletion-insertion | `EGFR L747_T751delinsP`, `NP_001333827.1:p.Leu747_Thr751delinsPro` |
+
+#### Coding DNA (c.)
+
+| Variant type | Examples |
+| --- | --- |
+| Substitution | `BRAF c.1799T>A`, `BRAF V600E (c.1799T>A)`, `NM_004333.4:c.1799T>A`, `ENST00000288602.10:c.1799T>A` |
+| Reference agree | `BRAF c.1799=`, `BRAF V600E c.1799=`, `NM_004333.4:c.1799=` |
+| Deletion | `ERBB2 c.2264_2278delTGAGGGAAAACACAT`, `ERBB2 Leu755_Thr759del c.2264_2278del`, `NM_004448.3:c.2264_2278del` |
+| Insertion | `VHL C77_N78insL (c.230_231insTCT)`, `NM_000551.3:c.230_231insTCT` |
+| Deletion-insertion | `VHL I206fs (c.615delinsAA)`, `NM_000551.3:c.615delinsAA` |
+
+#### Genomic (g.)
+
+| Variant type | Examples |
+| --- | --- |
+| Substitution | `BRAF g.140453136A>T`, `BRAF V600E (g.140453136A>T)`, `NC_000007.13:g.140453136A>T`, `7-140753336-A-T` |
+| Reference agree | `BRAF g.140453136=`, `NC_000007.13:g.140453136=`, `7-140753336-A-A` |
+| Deletion | `NC_000003.12:g.10146527_10146528del`, `3-10146526-TCT-T` |
+| Ambiguous deletion | `NC_000023.11:g.(31060227_31100351)_(33274278_33417151)del`, `NC_000023.11:g.(?_31120496)_(33339477_?)del`, `NC_000023.11:g.(?_18575354)_18653629del`, `NC_000006.12:g.133462764_(133464858_?)del` |
+| Insertion | `ERBB2 g.37880993_37880994insGCTTACGTGATG`, `NC_000017.10:g.37880993_37880994insGCTTACGTGATG`, `17-37880993-G-GGCTTACGTGATG` |
+| Deletion-insertion | `BRAF g.140453135_140453136delinsAT`, `NC_000007.13:g.140453135_140453136delinsAT`, `3-10149938-C-AA` |
+| Duplication | `NC_000003.12:g.49531262dup`, `NC_000016.10:g.2087938_2087948dup` |
+| Ambiguous duplication | `NC_000023.11:g.(31060227_31100351)_(33274278_33417151)dup`, `NC_000020.11:g.(?_30417576)_(31394018_?)dup`, `NC_000023.11:g.(?_154021812)_154092209dup`, `NC_000023.11:g.154021812_(154092209_?)dup` |
+
+#### Categorical
+
+| Variant type | Examples |
+| --- | --- |
+| Amplification | `BRAF amplification` |
 
 We are working towards adding more types of variations, coordinates, and representations.
 
