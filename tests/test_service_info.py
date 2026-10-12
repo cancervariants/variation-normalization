@@ -9,7 +9,7 @@ from variation.main import app
 
 def test_service_info() -> None:
     """Expose service identity, VRS version, and reference data releases."""
-    response = TestClient(app).get("/service-info")
+    response = TestClient(app).get("/variation/service-info")
 
     assert response.status_code == 200
     info = response.json()

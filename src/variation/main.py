@@ -67,6 +67,7 @@ class Tag(Enum):
     """Define tag names for endpoints"""
 
     MAIN = "Main"
+    META = "Meta"
     SEQREPO = "SeqRepo"
     TO_PROTEIN_VARIATION = "To Protein Variation"
     VRS_PYTHON = "VRS-Python"
@@ -109,7 +110,7 @@ app = FastAPI(
 )
 
 
-@app.get("/service-info", tags=[Tag.MAIN])
+@app.get("/variation/service-info", tags=[Tag.META])
 def service_info() -> ServiceInfo:
     """Return GA4GH service metadata for the Variation Normalizer.
 
