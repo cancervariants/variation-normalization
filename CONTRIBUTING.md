@@ -6,15 +6,16 @@ are welcome.
 
 ## Before you start
 
-1. If you are not a repository maintainer, first [fork the repository on
-   GitHub](https://github.com/cancervariants/variation-normalization/fork).
-2. Check the open issues and pull requests before starting work.
-3. For a non-trivial change, open or comment on an issue so the proposed
+1. Check the open issues and pull requests before starting work.
+2. For a non-trivial change, open or comment on an issue so the proposed
    approach can be discussed.
-4. Keep each pull request focused on one change and include tests or
+3. Keep each pull request focused on one change and include tests or
    documentation when they are relevant.
 
 ## Development branches
+
+If you are not a repository maintainer, first [fork the repository on
+GitHub](https://github.com/cancervariants/variation-normalization/fork).
 
 Create contribution branches from `staging`, not `main`:
 
