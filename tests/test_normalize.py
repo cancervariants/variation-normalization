@@ -619,6 +619,33 @@ async def test_protein_substitution(test_handler, braf_v600e, dis3_p63a):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "query",
+    [
+        pytest.param("NP_000509.1:p.K83B", id="substitution-one-letter"),
+        pytest.param("NP_000509.1:p.Lys83Asx", id="substitution-three-letter"),
+        pytest.param("NP_000509.1:p.K83delinsB", id="delins-one-letter"),
+        pytest.param("NP_000509.1:p.Lys83delinsAsx", id="delins-three-letter"),
+    ],
+)
+async def test_protein_ambiguous_alternate(test_handler, query):
+    """Preserve an ambiguous alternate residue when normalizing HBB Providence."""
+    # ClinVar lists the historical alias K82B; NP_000509.1 includes the initiator
+    # methionine, placing this residue at Lys83. The delins forms describe the
+    # same replacement. Preserve B (Asp or Asn), rather than choosing one residue.
+    # https://www.ncbi.nlm.nih.gov/clinvar/variation/15319/
+    resp = await test_handler.normalize(query)
+
+    assert not resp.warnings
+    assert isinstance(resp.variation, models.Allele)
+    assert resp.variation.location.start == 82
+    assert resp.variation.location.end == 83
+    assert resp.variation.location.sequence.root == "K"
+    assert isinstance(resp.variation.state, models.LiteralSequenceExpression)
+    assert resp.variation.state.sequence.root == "B"
+
+
+@pytest.mark.asyncio
 async def test_polypeptide_truncation(test_handler, vhl):
     """Test that polypeptide truncations normalize correctly."""
     resp = await test_handler.normalize("NP_000542.1:p.Tyr185Ter")
