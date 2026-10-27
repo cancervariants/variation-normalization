@@ -23,10 +23,13 @@ protein_substitution:
     - token: p.Ala146Val
     - token: V0E
     - token: (p.TrpVal24CysArg)
+    - token: p.(Z600B)
+    - token: p.(J600Z)
+    - token: p.Glx600Asx
   should_not_match:
     - token: foo
     - token: p.(Arg54Ser
-    - token: p.(Z600B)
+    - token: p.(Z600!)
     - token: p.(Gly56Ala^Ser^Cys)
     - token: NP_004324.2:c.Val600Glu
     - token: NM_004985.4:c.437C>T

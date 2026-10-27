@@ -1032,11 +1032,11 @@ async def test_no_matches(test_handler):
         "NC_000007.13:g.4T<A",  # invalid hgvs format
         "test",
         "131",
-        "braf Z600E",  # invalid ref
-        "braf E600Z",  # invalid ref
+        "braf !600E",  # invalid ref
+        "braf E600!",  # invalid alt
         "Thr790Met",  # no gene/accession
         "p.Tyr365Ter",  # no accession
-        "ERBB2 G776delinsVCZ",
+        "ERBB2 G776delinsVC!",
         "NP005219.2:p.Glu746_Thr751delinsValAla",
         "NP_005219.2:p.Glu746Thr751delinsValAla",
         "EGFR L747_L474delinsP",
