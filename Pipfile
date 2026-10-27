@@ -16,7 +16,7 @@ ruff = "==0.5.0"
 
 [packages]
 "biocommons.seqrepo" = "*"
-fastapi = "*"
+fastapi = ">=0.105.0,<1.0"
 uvicorn = "*"
 pydantic = "==2.*"
 "ga4gh.vrs" = {version = ">=2.3.0,<3.0", extras = ["extras"]}
