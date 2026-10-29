@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml"]
+tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml", "httpx2"]
 dev = [
     "fastapi[standard]>=0.105.0,<1.0",
     "prek>=0.2.23",
