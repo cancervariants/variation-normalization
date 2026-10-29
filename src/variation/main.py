@@ -100,7 +100,7 @@ app = FastAPI(
         "email": "Alex.Wagner@nationwidechildrens.org",
         "url": "https://www.nationwidechildrens.org/specialties/institute-for-genomic-medicine/research-labs/wagner-lab",
     },
-    license={
+    license_info={
         "name": "MIT",
         "url": "https://github.com/cancervariants/variation-normalization/blob/main/LICENSE",
     },
