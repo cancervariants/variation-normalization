@@ -23,7 +23,7 @@ RUN apt-get update && \
     apt-get install -y libpq-dev gcc && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip setuptools_scm
+RUN python -m pip install --upgrade "pip>=26.2.2" setuptools_scm
 RUN pip install "setuptools>=64,<81"
 RUN pip install  .
 
