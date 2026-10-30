@@ -2,6 +2,7 @@
 
 import pytest
 from ga4gh.vrs import models
+from gene.schemas import SourceName
 
 from tests.conftest import assertion_checks, cnv_assertion_checks
 from variation.schemas.normalize_response_schema import HGVSDupDelModeOption
@@ -1455,6 +1456,7 @@ async def test_genomic_del4(
 @pytest.mark.asyncio
 async def test_genomic_del5(
     test_handler,
+    test_gene_normalizer,
     genomic_del5_cn_var,
     genomic_del5_cx_var,
 ):
@@ -1502,13 +1504,19 @@ async def test_genomic_del5(
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
 
+    # Ensembl locations are inter-residue; start is before the first residue.
+    gene_resp = test_gene_normalizer.search("CDKL5", incl=SourceName.ENSEMBL.value)
+    gene_start = (
+        gene_resp.source_matches[SourceName.ENSEMBL].records[0].locations[0].start
+    )
+
     # Invalid
     invalid_queries = [
         "NC_000023.10:g.(?_155270550)_155270570del",
         "NC_000023.11:g.(?_18593474)_18671749del"
         "CDKL5  g.(?_18443702)_18671700del",  # 37
         "CDKL5  g.(?_18425585)_18653631del",  # 38
-        "CDKL5  g.(?_18425582)_18653500del",  # 38
+        f"CDKL5 g.(?_{gene_start})_18653500del",  # 38
     ]
     await invalid_query_list_checks(invalid_queries, test_handler)
 
@@ -1516,6 +1524,7 @@ async def test_genomic_del5(
 @pytest.mark.asyncio
 async def test_genomic_del6(
     test_handler,
+    test_gene_normalizer,
     genomic_del6_cn_var,
     genomic_del6_cx_var,
 ):
@@ -1563,6 +1572,9 @@ async def test_genomic_del6(
         resp = await test_handler.normalize(q, HGVSDupDelModeOption.ALLELE)
         no_variation_check(resp, q)
 
+    gene_resp = test_gene_normalizer.search("EYA4", incl=SourceName.ENSEMBL.value)
+    gene_end = gene_resp.source_matches[SourceName.ENSEMBL].records[0].locations[0].end
+
     # Invalid
     invalid_queries = [
         "NC_000006.11:g.171115069_(171115080_?)del",
@@ -1570,7 +1582,7 @@ async def test_genomic_del6(
         "EYA4 g.133561700_(133853270_?)del",  # 37
         "EYA4 g.133561651_(133561708_?)del",  # 37
         "EYA4 g.133240513_(133240600_?)del",  # 38
-        "EYA4 g.133240515_(133532130_?)del",  # 38
+        f"EYA4 g.133240515_({gene_end + 1}_?)del",  # 38
     ]
     await invalid_query_list_checks(invalid_queries, test_handler)
 

@@ -1,6 +1,6 @@
 services:
   api:
-    image: ghcr.io/cancervariants/variation-normalizer-api:0.17.0
+    image: ghcr.io/cancervariants/variation-normalizer-api:0.17.1
     environment:
       SEQREPO_ROOT_DIR: /usr/local/share/seqrepo/2024-12-20
       # Dummy AWS credentials, don't need to use real ones
@@ -51,7 +51,7 @@ services:
       - 127.0.0.1:5432:5432
 
   gene-dynamodb-local:
-    image: cancervariants/gene-normalizer-ddb:2025-12-29
+    image: ghcr.io/cancervariants/gene-normalizer-ddb:2026-10-19
     ports:
      - 127.0.0.1:8000:8000
 

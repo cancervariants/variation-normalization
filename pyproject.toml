@@ -1,6 +1,6 @@
 [project]
 name = "variation-normalizer"
-version = "0.17.0"
+version = "0.17.1"
 authors = [
     {name = "Alex Wagner"},
     {name = "Kori Kuzma"},
@@ -26,7 +26,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 dependencies = [
     "biocommons.seqrepo",
-    "fastapi",
+    "fastapi>=0.105.0,<1.0",
     "uvicorn",
     "pydantic ==2.*",
     "ga4gh.vrs[extras] >=2.3.0,<3.0",
@@ -37,9 +37,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml"]
+tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml", "httpx2"]
 dev = [
-    "fastapi[standard]",
+    "fastapi[standard]>=0.105.0,<1.0",
     "prek>=0.2.23",
     "ruff==0.14.10",
     "psycopg2-binary",
