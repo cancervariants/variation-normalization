@@ -1,0 +1,86 @@
+[project]
+site_name = "Variation Normalizer"
+site_description = "Translate and normalize genomic variation descriptions into GA4GH VRS objects."
+site_url = "https://cancervariants.github.io/variation-normalization/"
+repo_url = "https://github.com/cancervariants/variation-normalization"
+repo_name = "cancervariants/variation-normalization"
+edit_uri = "edit/main/docs/"
+dev_addr = "127.0.0.1:8002"
+nav = [
+  { "Home" = "index.md" },
+  { "Getting started" = [
+    { "Installation" = "installation.md" },
+    { "Usage" = "usage.md" },
+  ] },
+  { "Variant support" = [
+    { "Supported nomenclatures" = "supported_nomenclatures.md" },
+    { "VRS compatibility" = "supported_vrs_versions.md" },
+    { "HGVS deletions and duplications" = "hgvs_dup_del_mode.md" },
+  ] },
+  { "API reference" = [
+    "api/index.md",
+    { "Query handler" = "api/query.md" },
+    { "Normalization" = "api/normalize.md" },
+    { "VRS translation" = "api/to_vrs.md" },
+    { "Copy number conversion" = "api/to_copy_number_variation.md" },
+    { "gnomAD VCF to protein" = "api/gnomad_vcf_to_protein_variation.md" },
+    { "HGVS mode handler" = "api/hgvs_dup_del_mode.md" },
+  ] },
+  { "Contributing" = "contributing.md" },
+  { "Changelog" = "changelog.md" },
+  { "License" = "license.md" },
+]
+
+[project.extra.version]
+provider = "mike"
+default = "latest"
+alias = true
+
+[project.theme]
+features = ["navigation.indexes", "content.code.copy"]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[project.plugins.mkdocstrings.handlers.python]
+paths = ["src"]
+options.docstring_style = "sphinx"
+options.filters = ["!^_[^_]"]
+options.inherited_members = false
+options.merge_init_into_class = true
+options.members_order = "source"
+options.separate_signature = true
+options.show_signature_annotations = true
+options.show_source = false
+options.show_symbol_type_heading = true
+options.show_symbol_type_toc = true
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+tables = {}
+pymdownx.details = {}
+pymdownx.superfences = {}
+pymdownx.inlinehilite = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+toc.permalink = true
+
+[project.markdown_extensions."mkdocs_github_changelog.extension:GithubReleaseChangelogExtension"]
+config = {}

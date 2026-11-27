@@ -37,6 +37,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+docs = ["zensical==0.0.69", "mkdocstrings==1.0.8", "mkdocstrings-python==2.0.10", "mkdocs-github-changelog==0.1.1"]
 tests = ["pytest>=6.0", "pytest-cov", "pytest-asyncio", "pyyaml", "httpx2"]
 dev = [
     "fastapi[standard]>=0.105.0,<1.0",
@@ -49,7 +50,7 @@ dev = [
 
 [project.urls]
 Homepage = "https://github.com/cancervariants/variation-normalization"
-Documentation = "https://github.com/cancervariants/variation-normalization"
+Documentation = "https://cancervariants.github.io/variation-normalization/"
 Changelog = "https://github.com/cancervariants/variation-normalization/releases"
 Source = "https://github.com/cancervariants/variation-normalization"
 "Bug Tracker" = "https://github.com/cancervariants/variation-normalization/issues"
